@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatafileTable component should render correctly 1`] = `
+<Table
+  actions={
+    Array [
+      Object {
+        "icon": [Function],
+        "onClick": [Function],
+        "tooltip": "Download file",
+      },
+      [Function],
+      [Function],
+    ]
+  }
+  columns={
+    Array [
+      Object {
+        "field": "name",
+        "title": "Name",
+      },
+      Object {
+        "field": "location",
+        "title": "Location",
+      },
+      Object {
+        "field": "size",
+        "filtering": false,
+        "render": [Function],
+        "title": "File Size",
+        "type": "numeric",
+      },
+      Object {
+        "field": "modTime",
+        "title": "Modified time",
+        "type": "datetime",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "location": "/test1",
+        "modTime": 2019-06-09T23:00:00.000Z,
+        "name": "Test 2-2-1",
+        "size": 500,
+      },
+      Object {
+        "location": "/test2",
+        "modTime": 2019-06-10T11:00:00.000Z,
+        "name": "Test 2-2-2",
+        "size": 9499,
+      },
+    ]
+  }
+  detailPanel={[Function]}
+  title="Datafile table"
+/>
+`;
+
+exports[`DatafileTable component should render details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Name: 
+    </b>
+     
+    Test
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      File Size: 
+    </b>
+     
+    1 B
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Location: 
+    </b>
+     
+    /test
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;

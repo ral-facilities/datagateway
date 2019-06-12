@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InvestigationTable component should render correctly 1`] = `
+<Table
+  columns={
+    Array [
+      Object {
+        "field": "title",
+        "title": "Title",
+      },
+      Object {
+        "field": "visitId",
+        "title": "Visit Id",
+        "type": "numeric",
+      },
+      Object {
+        "field": "rBNumber",
+        "title": "RB Number",
+      },
+      Object {
+        "field": "doi",
+        "title": "DOI",
+      },
+      Object {
+        "field": "size",
+        "filtering": false,
+        "render": [Function],
+        "title": "Size",
+        "type": "numeric",
+      },
+      Object {
+        "field": "instrument",
+        "title": "Instrument",
+      },
+      Object {
+        "field": "startDate",
+        "title": "Start Date",
+        "type": "date",
+      },
+      Object {
+        "field": "endDate",
+        "title": "End Date",
+        "type": "date",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "doi": "doi 1",
+        "endDate": 2019-06-11T00:00:00.000Z,
+        "instrument": "LARMOR",
+        "rBNumber": "1",
+        "size": 1,
+        "startDate": 2019-06-10T00:00:00.000Z,
+        "title": "Test 1",
+        "visitId": 1,
+      },
+      Object {
+        "doi": "doi 2",
+        "endDate": 2019-06-12T00:00:00.000Z,
+        "instrument": "LARMOR",
+        "rBNumber": "2",
+        "size": 10000,
+        "startDate": 2019-06-10T00:00:00.000Z,
+        "title": "Test 2",
+        "visitId": 2,
+      },
+    ]
+  }
+  detailPanel={[Function]}
+  title="Investigations table"
+/>
+`;
+
+exports[`InvestigationTable component should render details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Proposal: 
+    </b>
+     
+    1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Title: 
+    </b>
+     
+    Test
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Start Date: 
+    </b>
+     
+    Mon Jun 10 2019
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      End Date: 
+    </b>
+     
+    Tue Jun 11 2019
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;

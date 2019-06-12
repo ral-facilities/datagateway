@@ -1,6 +1,9 @@
 import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
+import InvestigationTable from './table/investigationTable.component';
+import DatasetTable from './table/datasetTable.component';
+import DatafileTable from './table/datafileTable.component';
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -32,16 +35,9 @@ class App extends React.Component<{}, { hasError: boolean }> {
     } else
       return (
         <div className="App">
-          <div
-            style={{
-              padding: 20,
-              background: 'green',
-              color: 'white',
-              margin: 5,
-            }}
-          >
-            datagateway-table
-          </div>
+          <InvestigationTable />
+          <DatasetTable />
+          <DatafileTable />
         </div>
       );
   }

@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatasetTable component should render correctly 1`] = `
+<Table
+  columns={
+    Array [
+      Object {
+        "field": "name",
+        "title": "Name",
+      },
+      Object {
+        "field": "size",
+        "filtering": false,
+        "render": [Function],
+        "title": "Size",
+        "type": "numeric",
+      },
+      Object {
+        "field": "createTime",
+        "title": "Create time",
+        "type": "datetime",
+      },
+      Object {
+        "field": "modTime",
+        "title": "Modified time",
+        "type": "datetime",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "createTime": 2019-06-09T23:00:00.000Z,
+        "modTime": 2019-06-09T23:00:00.000Z,
+        "name": "Test 2-1",
+        "size": 1,
+      },
+      Object {
+        "createTime": 2019-06-09T23:00:00.000Z,
+        "modTime": 2019-06-10T11:00:00.000Z,
+        "name": "Test 2-2",
+        "size": 9999,
+      },
+    ]
+  }
+  detailPanel={[Function]}
+  title="Dataset table"
+/>
+`;
+
+exports[`DatasetTable component should render details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Name: 
+    </b>
+     
+    Test
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Description: 
+    </b>
+     
+    Test
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;
