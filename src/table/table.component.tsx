@@ -5,7 +5,6 @@ import MaterialTable, {
   Action,
   Query,
   QueryResult,
-  Filter,
 } from 'material-table';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -58,7 +57,7 @@ export function formatBytes(bytes: number): string {
 
 interface TableProps {
   title: string;
-  data: EntityType[];
+  data: (query: Query) => Promise<QueryResult>;
   columns: Column[];
   detailPanel?: (rowData: EntityType) => React.ReactNode;
   actions?: (Action | ((rowData: EntityType) => Action))[];
@@ -69,67 +68,7 @@ const Table = (props: TableProps): React.ReactElement => {
     <MaterialTable
       icons={tableIcons}
       columns={props.columns}
-      data={(query: Query): Promise<QueryResult> =>
-        // normally we would pass filtering parameters to the server for it to do
-        // but for demo purposes we do it manually so we can show off our between
-        // date filter
-        new Promise((resolve, reject) => {
-          let filteredData = props.data;
-          if (query.filters) {
-            query.filters.forEach((filter: Filter) => {
-              const { type, field } = filter.column;
-              if (type === 'numeric') {
-                filteredData = filteredData.filter(row => {
-                  // @ts-ignore
-                  const value = row[field];
-                  return value + '' === filter.value;
-                });
-              } else if (type === 'date' || type === 'datetime') {
-                filteredData = filteredData.filter(row => {
-                  // @ts-ignore
-                  const value = row[field];
-                  const startDate = filter.value.startDate;
-                  const endDate = filter.value.endDate;
-
-                  if (
-                    startDate === 'Invalid Date' ||
-                    endDate === 'Invalid Date'
-                  ) {
-                    return true;
-                  }
-
-                  if (startDate & endDate) {
-                    return value >= startDate && value <= endDate;
-                  } else if (startDate) {
-                    return value >= startDate;
-                  } else if (endDate) {
-                    return value <= endDate;
-                  } else {
-                    return true;
-                  }
-                });
-              } else {
-                filteredData = filteredData.filter(row => {
-                  // @ts-ignore
-                  const value = row[field];
-                  return (
-                    value &&
-                    value
-                      .toString()
-                      .toUpperCase()
-                      .includes(filter.value.toUpperCase())
-                  );
-                });
-              }
-            });
-          }
-          resolve({
-            data: filteredData,
-            page: 1,
-            totalCount: filteredData.length,
-          });
-        })
-      }
+      data={props.data}
       title={props.title}
       options={{
         filtering: true,

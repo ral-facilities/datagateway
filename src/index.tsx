@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
+import axios from 'axios';
 
 const pluginName = 'datagateway-table';
 
@@ -17,6 +18,13 @@ const render = (): void => {
 if (process.env.NODE_ENV === `development`) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
+  // set session ID for use with API
+  axios
+    .post('/sessions', {}, { headers: { Authorization: 'user:password' } })
+    .then(response => {
+      console.log('done');
+      window.localStorage.setItem('daaas:token', response.data.sessionID);
+    });
 } else {
   log.setDefaultLevel(log.levels.ERROR);
 }

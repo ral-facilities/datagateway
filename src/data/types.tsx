@@ -1,26 +1,29 @@
 export interface InvestigationData {
-  title: string;
-  visitId: number;
-  rBNumber: string;
-  doi: string;
-  size: number;
-  instrument: string;
-  startDate: Date;
-  endDate: Date;
+  ID: string;
+  TITLE: string;
+  VISIT_ID: number;
+  RB_NUMBER: string;
+  DOI: string;
+  SIZE: number;
+  INSTRUMENT: string;
+  STARTDATE: Date;
+  ENDDATE: Date;
 }
 
 export interface DatasetData {
-  name: string;
-  size: number;
-  createTime: Date;
-  modTime: Date;
+  ID: string;
+  NAME: string;
+  SIZE: number;
+  CREATE_TIME: Date;
+  MOD_TIME: Date;
 }
 
 export interface DatafileData {
-  name: string;
-  location: string;
-  size: number;
-  modTime: Date;
+  ID: string;
+  NAME: string;
+  LOCATION: string;
+  SIZE: number;
+  MOD_TIME: Date;
 }
 
 export type EntityType = InvestigationData | DatasetData | DatafileData;

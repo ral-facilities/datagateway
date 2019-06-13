@@ -4,6 +4,12 @@ import * as log from 'loglevel';
 import InvestigationTable from './table/investigationTable.component';
 import DatasetTable from './table/datasetTable.component';
 import DatafileTable from './table/datafileTable.component';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  RouteComponentProps,
+} from 'react-router-dom';
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -35,9 +41,35 @@ class App extends React.Component<{}, { hasError: boolean }> {
     } else
       return (
         <div className="App">
-          <InvestigationTable />
-          <DatasetTable />
-          <DatafileTable />
+          <Router>
+            <Switch>
+              <Route
+                exact
+                path="/browse/investigation/"
+                component={InvestigationTable}
+              />
+              <Route
+                exact
+                path="/browse/investigation/:investigationId/dataset"
+                render={({
+                  match,
+                }: RouteComponentProps<{ investigationId: string }>) => (
+                  <DatasetTable
+                    investigationId={match.params.investigationId}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+                render={({
+                  match,
+                }: RouteComponentProps<{ datasetId: string }>) => (
+                  <DatafileTable datasetId={match.params.datasetId} />
+                )}
+              />
+            </Switch>
+          </Router>
         </div>
       );
   }
