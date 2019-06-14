@@ -3,14 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.1.1",
+    "@material-ui/icons": "^4.2.0",
     "@types/jest": "24.0.13",
     "@types/node": "12.0.7",
     "@types/react": "16.8.19",
     "@types/react-dom": "16.8.4",
+    "classnames": "^2.2.6",
     "loglevel": "^1.6.2",
+    "memoize-one": "^5.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
+    "react-virtualized": "^9.21.1",
     "single-spa-react": "^2.10.2",
     "typescript": "3.5.1"
   },
@@ -73,6 +78,10 @@
     ]
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.8",
+    "@types/material-ui": "^0.21.6",
+    "@types/memoize-one": "^4.1.1",
+    "@types/react-virtualized": "^9.21.2",
     "@types/single-spa-react": "^2.8.3",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",

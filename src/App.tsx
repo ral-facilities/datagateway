@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
+import Table from './table/table.component';
+import { foodDataDemoGenerator } from './data/demo';
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -32,16 +34,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
     } else
       return (
         <div className="App">
-          <div
-            style={{
-              padding: 20,
-              background: 'green',
-              color: 'white',
-              margin: 5,
-            }}
-          >
-            datagateway-table
-          </div>
+          <Table rows={foodDataDemoGenerator()} />
         </div>
       );
   }
