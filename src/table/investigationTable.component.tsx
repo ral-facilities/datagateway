@@ -1,13 +1,21 @@
 import React from 'react';
-import { ColDef } from 'ag-grid-community';
-import { investigationDemoData } from '../data/demo';
+import { ColDef, ICellRendererParams } from 'ag-grid-community';
 import Table from './table.component';
 import { formatBytes } from '../data/helpers';
+import { InvestigationData } from '../data/types';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const investifationColumnDefs: ColDef[] = [
+const investigationColumnDefs: ColDef[] = [
   {
     headerName: 'Title',
     field: 'TITLE',
+    /* eslint-disable-next-line react/display-name */
+    cellRendererFramework: (params: ICellRendererParams) => (
+      <Link to={`/browse/investigation/${params.data.ID}/dataset`}>
+        {params.value}
+      </Link>
+    ),
   },
   {
     headerName: 'Visit ID',
@@ -26,7 +34,7 @@ const investifationColumnDefs: ColDef[] = [
     headerName: 'Size',
     field: 'SIZE',
     type: 'numericColumn',
-    cellRenderer: params => formatBytes(params.value),
+    valueFormatter: params => formatBytes(params.value),
   },
   {
     headerName: 'Instrument',
@@ -44,10 +52,27 @@ const investifationColumnDefs: ColDef[] = [
   },
 ];
 
-const rowData = investigationDemoData;
-
 const InvestigationTable = (): React.ReactElement => {
-  return <Table columnDefs={investifationColumnDefs} rowData={rowData}></Table>;
+  const [data, setData] = React.useState<InvestigationData[]>([]);
+
+  React.useEffect(() => {
+    axios
+      .get('/investigations', {
+        headers: {
+          Authorization: window.localStorage.getItem('daaas:token'),
+        },
+      })
+      .then(response => {
+        let formattedData = response.data.map((data: InvestigationData) => ({
+          ...data,
+          STARTDATE: new Date(data.STARTDATE),
+          ENDDATE: new Date(data.ENDDATE),
+        }));
+        setData(formattedData);
+      });
+  }, []);
+
+  return <Table columnDefs={investigationColumnDefs} rowData={data}></Table>;
 };
 
 export default InvestigationTable;

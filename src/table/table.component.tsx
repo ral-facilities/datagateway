@@ -1,8 +1,8 @@
 import React from 'react';
+import { ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
-import { ColDef } from 'ag-grid-community';
 import { EntityType } from '../data/types';
 import DateFilter from './dateFilter.component';
 
@@ -21,6 +21,7 @@ const Table = (props: TableProps): React.ReactElement => {
       }}
     >
       <AgGridReact
+        reactNext={true}
         columnDefs={props.columnDefs}
         rowData={props.rowData}
         defaultColDef={{

@@ -6,9 +6,11 @@ import {
   KeyboardDateTimePicker,
 } from '@material-ui/pickers';
 
+type DatePickerType = Date | 'Invalid Date' | null;
+
 interface DateFilterState {
-  fromDate: Date | null;
-  toDate: Date | null;
+  fromDate: DatePickerType;
+  toDate: DatePickerType;
 }
 
 class DateFilter extends React.Component<IFilterParams, DateFilterState> {
@@ -27,6 +29,9 @@ class DateFilter extends React.Component<IFilterParams, DateFilterState> {
   public doesFilterPass(params: IDoesFilterPassParams): boolean {
     const cellDate = this.props.valueGetter(params.node);
     const { fromDate, toDate } = this.state;
+    if (fromDate === 'Invalid Date' || toDate === 'Invalid Date') {
+      return true;
+    }
     if (fromDate && toDate) {
       return cellDate >= fromDate && cellDate <= toDate;
     } else if (fromDate) {
@@ -38,14 +43,17 @@ class DateFilter extends React.Component<IFilterParams, DateFilterState> {
     }
   }
 
-  public getModel(): { fromDate: Date | null; toDate: Date | null } {
+  public getModel(): { fromDate: DatePickerType; toDate: DatePickerType } {
     return {
       fromDate: this.state.fromDate,
       toDate: this.state.toDate,
     };
   }
 
-  public setModel(model: { fromDate: Date | null; toDate: Date | null }): void {
+  public setModel(model: {
+    fromDate: DatePickerType;
+    toDate: DatePickerType;
+  }): void {
     this.setState(model);
   }
 
