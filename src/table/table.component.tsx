@@ -12,17 +12,20 @@ import {
   AutoSizer,
   Column,
   Table,
-  TableCellProps,
   TableHeaderProps,
   TableCellRenderer,
   RowMouseEventHandlerParams,
   SortDirection,
   SortDirectionType,
+  ColumnSizer,
+  defaultTableRowRenderer,
+  TableRowProps,
 } from 'react-virtualized';
 import classNames from 'classnames';
-import { Paper, TextField } from '@material-ui/core';
-import memoize, { EqualityFn } from 'memoize-one';
-import { FoodData } from '../data/types';
+import memoize from 'memoize-one';
+import { EntityType } from '../data/types';
+import { IconButton } from '@material-ui/core';
+import { ExpandMore, ExpandLess } from '@material-ui/icons';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -50,109 +53,24 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-class TextColumnFilter extends React.Component<
-  { label: string; onChange: (value: string) => void },
-  { value: string }
-> {
-  public constructor(props: {
-    label: string;
-    onChange: (value: string) => void;
-  }) {
-    super(props);
-    this.state = {
-      value: '',
-    };
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  private handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    this.props.onChange(event.target.value);
-    this.setState({
-      value: event.target.value,
-    });
-  }
-
-  public render(): React.ReactElement {
-    return (
-      <TextField
-        label={this.props.label}
-        value={this.state.value}
-        onChange={this.handleChange}
-        onClick={(e: React.MouseEvent) => e.stopPropagation()}
-        onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
-      />
-    );
-  }
-}
-
-class NumberColumnFilter extends React.Component<
-  {
-    label: string;
-    onChange: (value: { lt: number | null; gt: number | null }) => void;
-  },
-  { lessThan: number | null; greaterThan: number | null }
-> {
-  public constructor(props: {
-    label: string;
-    onChange: (value: { lt: number | null; gt: number | null }) => void;
-  }) {
-    super(props);
-    this.state = {
-      lessThan: null,
-      greaterThan: null,
-    };
-    this.handleGreaterThanChange = this.handleGreaterThanChange.bind(this);
-    this.handleLessThanChange = this.handleLessThanChange.bind(this);
-  }
-
-  private handleGreaterThanChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void {
-    const greaterThan = parseInt(event.target.value) || null;
-    this.props.onChange({ gt: greaterThan, lt: this.state.lessThan });
-    this.setState({
-      greaterThan,
-    });
-  }
-
-  private handleLessThanChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void {
-    const lessThan = parseInt(event.target.value) || null;
-    this.props.onChange({ lt: lessThan, gt: this.state.greaterThan });
-    this.setState({
-      lessThan,
-    });
-  }
-
-  public render(): React.ReactElement {
-    return (
-      <form>
-        <TextField
-          label="From"
-          value={this.state.greaterThan || ''}
-          onChange={this.handleGreaterThanChange}
-          onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
-        />
-        <TextField
-          label="To"
-          value={this.state.lessThan || ''}
-          onChange={this.handleLessThanChange}
-          onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
-        />
-      </form>
-    );
-  }
+interface ColumnType {
+  label: string;
+  dataKey: string;
+  flexGrow?: number;
+  type: 'string' | 'number' | 'date';
+  cellContentRenderer?: TableCellRenderer;
+  className?: string;
+  disableSort?: boolean;
+  filterComponent?: React.ReactElement;
 }
 
 interface MuiVirtualizedTableProps {
-  data: FoodData[];
+  data: EntityType[];
   headerHeight: number;
   rowHeight: number;
   columns: ColumnType[];
   rowCount: number;
+  detailsPanel: (rowData: EntityType) => React.ReactElement;
   rowClassName?: string;
   onRowClick?: (params: RowMouseEventHandlerParams) => void;
   filterBy?: string;
@@ -162,36 +80,46 @@ interface MuiVirtualizedTableProps {
 interface MuiVirtualizedTableState {
   sortBy: string;
   sortDirection: SortDirectionType;
+  selectedIndex: number;
+  detailPanelHeight: number;
 }
 
 class MuiVirtualizedTable extends React.PureComponent<
   MuiVirtualizedTableProps & WithStyles<typeof styles>,
   MuiVirtualizedTableState
 > {
+  private tableRef: React.RefObject<Table>;
+  private detailPanelRef: React.RefObject<HTMLDivElement>;
+
   public constructor(
     props: MuiVirtualizedTableProps & WithStyles<typeof styles>
   ) {
     super(props);
 
-    const sortBy = 'calories';
-    const sortDirection = SortDirection.ASC;
-
     this.state = {
-      sortDirection: sortDirection,
-      sortBy: sortBy,
+      sortDirection: SortDirection.ASC,
+      sortBy: '',
+      selectedIndex: -1,
+      detailPanelHeight: props.rowHeight,
     };
 
     this.sort = this.sort.bind(this);
+    this.tableRef = React.createRef();
+    this.detailPanelRef = React.createRef();
+  }
+
+  public componentDidUpdate(): void {
+    if (this.tableRef && this.tableRef.current) {
+      this.tableRef.current.recomputeRowHeights();
+    }
+    if (this.detailPanelRef && this.detailPanelRef.current) {
+      this.setState({
+        detailPanelHeight: this.detailPanelRef.current.clientHeight,
+      });
+    }
   }
 
   private memoizedSort = memoize(this.sortList);
-
-  // private static getDerivedStateFromProps(
-  //   newProps: MuiVirtualizedTableProps & WithStyles<typeof styles>,
-  //   prevState: MuiVirtualizedTableState
-  // ) {
-
-  // }
 
   private sort({
     sortBy,
@@ -209,7 +137,7 @@ class MuiVirtualizedTable extends React.PureComponent<
   }: {
     sortBy: string;
     sortDirection: SortDirectionType;
-  }): FoodData[] {
+  }): EntityType[] {
     const { data } = this.props;
     if (sortBy) {
       let updatedList = data.sort(function(a, b) {
@@ -240,8 +168,37 @@ class MuiVirtualizedTable extends React.PureComponent<
     });
   };
 
-  private cellRenderer = (props: TableCellProps): React.ReactNode => {
+  private rowRenderer = (
+    props: TableRowProps & {
+      detailsPanel: (rowData: EntityType) => React.ReactElement;
+    }
+  ): React.ReactNode => {
+    const { index, style, className, rowData } = props;
+    if (index === this.state.selectedIndex) {
+      return (
+        <div
+          style={{ ...style, display: 'flex', flexDirection: 'column' }}
+          className={className}
+          key={index}
+        >
+          {defaultTableRowRenderer({
+            ...props,
+            style: { width: style.width, height: this.props.rowHeight },
+          })}
+          <div ref={this.detailPanelRef} style={{ marginRight: 'auto' }}>
+            {props.detailsPanel(rowData)}
+          </div>
+        </div>
+      );
+    }
+    return defaultTableRowRenderer(props);
+  };
+
+  private cellRenderer: TableCellRenderer = props => {
     const { columns, classes, rowHeight } = this.props;
+    let cellValue = props.dataKey.split('.').reduce(function(prev, curr) {
+      return prev ? prev[curr] : null;
+    }, props.rowData);
     return (
       <TableCell
         component="div"
@@ -249,7 +206,9 @@ class MuiVirtualizedTable extends React.PureComponent<
         variant="body"
         style={{ height: rowHeight }}
       >
-        {props.cellData}
+        {columns[props.columnIndex - 1].type === 'date'
+          ? cellValue.toDateString()
+          : cellValue}
       </TableCell>
     );
   };
@@ -307,243 +266,112 @@ class MuiVirtualizedTable extends React.PureComponent<
     return (
       <AutoSizer>
         {({ height, width }) => (
-          <Table
-            className={classes.table}
-            height={height}
+          <ColumnSizer
             width={width}
-            {...tableProps}
-            data={this.props.data}
-            rowClassName={this.getRowClassName}
-            rowGetter={({ index }) => sortedList[index]}
-            sort={this.sort}
-            sortBy={this.state.sortBy}
-            sortDirection={this.state.sortDirection}
+            columnCount={columns.length}
+            columnMinWidth={100}
           >
-            {columns.map(
-              (
-                {
-                  cellContentRenderer = null,
-                  className,
-                  dataKey,
-                  disableSort,
-                  ...other
-                },
-                index
-              ) => {
-                let renderer;
-                if (cellContentRenderer != null) {
-                  renderer = (cellRendererProps: TableCellProps) =>
-                    this.cellRenderer({
-                      cellData: cellContentRenderer(cellRendererProps),
-                      columnIndex: index,
-                      dataKey: dataKey,
-                      isScrolling: false,
-                      rowData: {},
-                      rowIndex: index,
-                    });
-                } else {
-                  renderer = this.cellRenderer;
+            {({ columnWidth }) => (
+              <Table
+                ref={this.tableRef}
+                className={classes.table}
+                height={height}
+                width={width}
+                {...tableProps}
+                data={this.props.data}
+                rowClassName={this.getRowClassName}
+                rowGetter={({ index }) => sortedList[index]}
+                rowRenderer={props =>
+                  this.rowRenderer({
+                    ...props,
+                    detailsPanel: this.props.detailsPanel,
+                  })
                 }
-
-                return (
-                  <Column
-                    width={50}
-                    flexGrow={3}
-                    flexShrink={1}
-                    key={dataKey}
-                    headerRenderer={headerProps =>
-                      this.headerRenderer({
-                        ...headerProps,
-                        columnIndex: index,
-                      })
-                    }
-                    disableSort={disableSort}
-                    className={classNames(classes.flexContainer, className)}
-                    cellRenderer={renderer}
-                    dataKey={dataKey}
-                    {...other}
-                  />
-                );
-              }
+                rowHeight={({ index }) =>
+                  index === this.state.selectedIndex
+                    ? this.props.rowHeight + this.state.detailPanelHeight
+                    : this.props.rowHeight
+                }
+                sort={this.sort}
+                sortBy={this.state.sortBy}
+                sortDirection={this.state.sortDirection}
+              >
+                <Column
+                  width={70}
+                  style={{ marginLeft: '-10px' }}
+                  key="Expand"
+                  disableSort={true}
+                  headerRenderer={headerProps => (
+                    <TableCell
+                      component="div"
+                      className={classNames(
+                        classes.tableCell,
+                        classes.flexContainer,
+                        classes.noClick
+                      )}
+                      variant="head"
+                      style={{ height: this.props.headerHeight }}
+                    ></TableCell>
+                  )}
+                  cellRenderer={props => (
+                    <TableCell
+                      component="div"
+                      className={classNames(
+                        classes.tableCell,
+                        classes.flexContainer
+                      )}
+                      variant="body"
+                      style={{ height: this.props.rowHeight }}
+                    >
+                      {props.rowIndex !== this.state.selectedIndex ? (
+                        <IconButton
+                          onClick={() =>
+                            this.setState({ selectedIndex: props.rowIndex })
+                          }
+                        >
+                          <ExpandMore />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          onClick={() => this.setState({ selectedIndex: -1 })}
+                        >
+                          <ExpandLess />
+                        </IconButton>
+                      )}
+                    </TableCell>
+                  )}
+                  dataKey={'expand'}
+                />
+                {columns.map(
+                  ({ className, dataKey, disableSort, ...other }, index) => {
+                    return (
+                      <Column
+                        width={columnWidth}
+                        flexGrow={3}
+                        flexShrink={1}
+                        key={dataKey}
+                        headerRenderer={headerProps =>
+                          this.headerRenderer({
+                            ...headerProps,
+                            columnIndex: index,
+                          })
+                        }
+                        disableSort={disableSort}
+                        className={classNames(classes.flexContainer, className)}
+                        cellRenderer={this.cellRenderer}
+                        dataKey={dataKey}
+                        {...other}
+                      />
+                    );
+                  }
+                )}
+              </Table>
             )}
-          </Table>
+          </ColumnSizer>
         )}
       </AutoSizer>
     );
   }
 }
 
-const WrappedVirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
-
-interface ColumnType {
-  label: string;
-  dataKey: string;
-  flexGrow?: number;
-  numeric?: boolean;
-  cellContentRenderer?: TableCellRenderer;
-  className?: string;
-  disableSort?: boolean;
-  filterComponent?: React.ReactElement;
-}
-
-class ReactVirtualizedTable extends React.Component<
-  { rows: FoodData[] },
-  {
-    activeFilters: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    };
-  }
-> {
-  public constructor(props: { rows: FoodData[] }) {
-    super(props);
-    this.state = {
-      activeFilters: {},
-    };
-    this.onDessertChange = this.onDessertChange.bind(this);
-    this.onCalorieChange = this.onCalorieChange.bind(this);
-  }
-
-  private deepEqualityFn: EqualityFn = (
-    newFilter: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    },
-    oldFilter: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    }
-  ): boolean => {
-    if (Object.keys(newFilter).length !== Object.keys(oldFilter).length) {
-      return false;
-    }
-    for (let column in newFilter) {
-      if (newFilter[column] !== oldFilter[column]) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  private memoizedFilter = memoize(this.filter, this.deepEqualityFn);
-
-  public onDessertChange(value: string): void {
-    this.setState({
-      activeFilters: {
-        ...this.state.activeFilters,
-        dessert: value,
-      },
-    });
-  }
-
-  public onCalorieChange(value: {
-    lt: number | null;
-    gt: number | null;
-  }): void {
-    this.setState({
-      activeFilters: {
-        ...this.state.activeFilters,
-        calories: value,
-      },
-    });
-  }
-
-  private filter(filters: {
-    [column: string]: string | { lt: number | null; gt: number | null };
-  }): FoodData[] {
-    if (Object.keys(filters).length === 0) {
-      return this.props.rows;
-    }
-    let filteredRows: FoodData[] = [];
-    this.props.rows.forEach(element => {
-      let satisfyFilters = true;
-      for (let column in filters) {
-        if (column === 'dessert') {
-          if (
-            element[column]
-              .toLowerCase()
-              .indexOf((filters[column] as string).toLowerCase()) === -1
-          ) {
-            satisfyFilters = false;
-          }
-        }
-        if (column === 'calories') {
-          let between = true;
-          const betweenFilter = filters[column] as {
-            lt: number | null;
-            gt: number | null;
-          };
-          if (betweenFilter.lt !== null) {
-            if (element[column] > betweenFilter.lt) {
-              between = false;
-            }
-          }
-          if (betweenFilter.gt !== null) {
-            if (element[column] < betweenFilter.gt) {
-              between = false;
-            }
-          }
-          if (!between) {
-            satisfyFilters = false;
-          }
-        }
-      }
-      if (satisfyFilters) {
-        filteredRows.push(element);
-      }
-    });
-    return filteredRows;
-  }
-
-  public render(): React.ReactElement {
-    const dessertFilter = (
-      <TextColumnFilter label="Dessert" onChange={this.onDessertChange} />
-    );
-    const calorieFilter = (
-      <NumberColumnFilter label="Calories" onChange={this.onCalorieChange} />
-    );
-    const filteredRows = this.memoizedFilter(this.state.activeFilters);
-
-    return (
-      <Paper style={{ height: 400, width: '100%' }}>
-        <WrappedVirtualizedTable
-          data={filteredRows}
-          headerHeight={56}
-          rowHeight={56}
-          rowCount={filteredRows.length}
-          onRowClick={event => console.log(event)}
-          columns={[
-            {
-              label: 'Dessert',
-              dataKey: 'dessert',
-              filterComponent: dessertFilter,
-            },
-            {
-              label: 'Calories (g)',
-              dataKey: 'calories',
-              numeric: true,
-              filterComponent: calorieFilter,
-            },
-            {
-              label: 'Fat (g)',
-              dataKey: 'fat',
-              numeric: true,
-              disableSort: true,
-            },
-            {
-              label: 'Carbs (g)',
-              dataKey: 'carbs',
-              numeric: true,
-              disableSort: true,
-            },
-            {
-              label: 'Protein (g)',
-              dataKey: 'protein',
-              numeric: true,
-              disableSort: true,
-            },
-          ]}
-        />
-      </Paper>
-    );
-  }
-}
-
-export default ReactVirtualizedTable;
+export const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);

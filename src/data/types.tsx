@@ -8,6 +8,7 @@ export interface InvestigationData {
   INSTRUMENT: { NAME: string };
   STARTDATE: Date;
   ENDDATE: Date;
+  [key: string]: string | number | Date | { NAME: string };
 }
 
 export interface DatasetData {
@@ -16,6 +17,7 @@ export interface DatasetData {
   SIZE: number;
   CREATE_TIME: Date;
   MOD_TIME: Date;
+  [key: string]: string | number | Date;
 }
 
 export interface DatafileData {
@@ -24,9 +26,8 @@ export interface DatafileData {
   LOCATION: string;
   SIZE: number;
   MOD_TIME: Date;
+  [key: string]: string | number | Date;
 }
-
-export type EntityType = InvestigationData | DatasetData | DatafileData;
 
 export interface FoodData {
   id: number;
@@ -37,3 +38,9 @@ export interface FoodData {
   protein: number;
   [key: string]: string | number;
 }
+
+export type EntityType =
+  | InvestigationData
+  | DatasetData
+  | DatafileData
+  | FoodData;

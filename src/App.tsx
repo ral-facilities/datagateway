@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
-import Table from './table/table.component';
-import { foodDataDemoGenerator } from './data/demo';
+import { investigationDemoData } from './data/demo';
+import InvestigationTable from './table/investigationTable.component';
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -34,7 +34,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
     } else
       return (
         <div className="App">
-          <Table rows={foodDataDemoGenerator()} />
+          <InvestigationTable rows={investigationDemoData} />
         </div>
       );
   }
