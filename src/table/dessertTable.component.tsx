@@ -135,30 +135,25 @@ class DessertTable extends React.Component<
               label: 'Dessert',
               dataKey: 'dessert',
               filterComponent: dessertFilter,
-              type: 'string',
             },
             {
               label: 'Calories (g)',
               dataKey: 'calories',
-              type: 'number',
               filterComponent: calorieFilter,
             },
             {
               label: 'Fat (g)',
               dataKey: 'fat',
-              type: 'number',
               disableSort: true,
             },
             {
               label: 'Carbs (g)',
               dataKey: 'carbs',
-              type: 'number',
               disableSort: true,
             },
             {
               label: 'Protein (g)',
               dataKey: 'protein',
-              type: 'number',
               disableSort: true,
             },
           ]}

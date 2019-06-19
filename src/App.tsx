@@ -1,14 +1,16 @@
 import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
-import {
-  investigationDemoData,
-  datasetDemoData,
-  datafileDemoData,
-} from './data/demo';
 import InvestigationTable from './table/investigationTable.component';
 import DatafileTable from './table/datafileTable.component';
 import DatasetTable from './table/datasetTable.component';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  RouteComponentProps,
+  Link,
+} from 'react-router-dom';
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -40,9 +42,42 @@ class App extends React.Component<{}, { hasError: boolean }> {
     } else
       return (
         <div className="App">
-          <InvestigationTable rows={investigationDemoData} />
-          <DatasetTable rows={datasetDemoData} />
-          <DatafileTable rows={datafileDemoData} />
+          <Router>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => (
+                  <Link to="/browse/investigation">Browse investigations</Link>
+                )}
+              />
+              <Route
+                exact
+                path="/browse/investigation/"
+                component={InvestigationTable}
+              />
+              <Route
+                exact
+                path="/browse/investigation/:investigationId/dataset"
+                render={({
+                  match,
+                }: RouteComponentProps<{ investigationId: string }>) => (
+                  <DatasetTable
+                    investigationId={match.params.investigationId}
+                  />
+                )}
+              />
+              <Route
+                exact
+                path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+                render={({
+                  match,
+                }: RouteComponentProps<{ datasetId: string }>) => (
+                  <DatafileTable datasetId={match.params.datasetId} />
+                )}
+              />
+            </Switch>
+          </Router>
         </div>
       );
   }

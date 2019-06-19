@@ -20,13 +20,13 @@ import {
   ColumnSizer,
   defaultTableRowRenderer,
   TableRowProps,
+  TableCellProps,
 } from 'react-virtualized';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import { EntityType } from '../data/types';
 import { IconButton } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
-import { formatBytes } from '../data/helpers';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -58,7 +58,6 @@ interface ColumnType {
   label: string;
   dataKey: string;
   flexGrow?: number;
-  type: 'string' | 'number' | 'date' | 'filesize';
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
@@ -196,17 +195,15 @@ class MuiVirtualizedTable extends React.PureComponent<
   };
 
   private cellRenderer: TableCellRenderer = props => {
-    const { columns, classes, rowHeight } = this.props;
+    const { classes, rowHeight } = this.props;
 
-    // get cell values from nested data keys
-    let cellValue = props.dataKey.split('.').reduce(function(prev, curr) {
-      return prev ? prev[curr] : null;
-    }, props.rowData);
-
-    if (columns[props.columnIndex - 1].type === 'date') {
-      cellValue = cellValue.toDateString();
-    } else if (columns[props.columnIndex - 1].type === 'filesize') {
-      cellValue = formatBytes(cellValue);
+    let cellValue;
+    if (props.dataKey.indexOf('.') !== -1) {
+      cellValue = props.dataKey.split('.').reduce(function(prev, curr) {
+        return prev ? prev[curr] : null;
+      }, props.rowData);
+    } else {
+      cellValue = props.cellData;
     }
 
     return (
@@ -351,7 +348,27 @@ class MuiVirtualizedTable extends React.PureComponent<
                   dataKey={'expand'}
                 />
                 {columns.map(
-                  ({ className, dataKey, disableSort, ...other }, index) => {
+                  (
+                    {
+                      cellContentRenderer = null,
+                      className,
+                      dataKey,
+                      disableSort,
+                      ...other
+                    },
+                    index
+                  ) => {
+                    let renderer;
+                    if (cellContentRenderer != null) {
+                      renderer = (cellRendererProps: TableCellProps) =>
+                        this.cellRenderer({
+                          ...cellRendererProps,
+                          cellData: cellContentRenderer(cellRendererProps),
+                        });
+                    } else {
+                      renderer = this.cellRenderer;
+                    }
+
                     return (
                       <Column
                         width={columnWidth}
@@ -366,7 +383,7 @@ class MuiVirtualizedTable extends React.PureComponent<
                         }
                         disableSort={disableSort}
                         className={classNames(classes.flexContainer, className)}
-                        cellRenderer={this.cellRenderer}
+                        cellRenderer={renderer}
                         dataKey={dataKey}
                         {...other}
                       />

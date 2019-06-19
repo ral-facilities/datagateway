@@ -6,15 +6,18 @@ import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import { VirtualizedTable } from './table.component';
 import { formatBytes } from '../data/helpers';
+import axios from 'axios';
 
 interface DatafileTableProps {
-  rows: DatafileData[];
+  rows?: DatafileData[];
+  datasetId?: string;
 }
 
 interface DatafileTableState {
   activeFilters: {
     [column: string]: string | { lt: number | null; gt: number | null };
   };
+  data: DatafileData[];
 }
 
 class DatafileTable extends React.Component<
@@ -23,11 +26,34 @@ class DatafileTable extends React.Component<
 > {
   public constructor(props: DatafileTableProps) {
     super(props);
+    let data: DatafileData[] = [];
+    if (props.rows) {
+      data = props.rows;
+    }
     this.state = {
       activeFilters: {},
+      data,
     };
     this.onNameChange = this.onNameChange.bind(this);
     this.onSizeChange = this.onSizeChange.bind(this);
+  }
+
+  public componentDidMount(): void {
+    if (this.props.datasetId) {
+      axios
+        .get(
+          `/datafiles?filter={"where": {"DATASET_ID": "${this.props.datasetId}"}}`,
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('daaas:token'),
+            },
+          }
+        )
+        .then(response => {
+          this.setState({ data: response.data });
+          memoize(this.filter, this.deepEqualityFn);
+        });
+    }
   }
 
   private deepEqualityFn: EqualityFn = (
@@ -69,14 +95,17 @@ class DatafileTable extends React.Component<
     });
   }
 
-  private filter(filters: {
-    [column: string]: string | { lt: number | null; gt: number | null };
-  }): DatafileData[] {
+  private filter(
+    filters: {
+      [column: string]: string | { lt: number | null; gt: number | null };
+    },
+    data: DatafileData[]
+  ): DatafileData[] {
     if (Object.keys(filters).length === 0) {
-      return this.props.rows;
+      return data;
     }
     let filteredRows: DatafileData[] = [];
-    this.props.rows.forEach(element => {
+    data.forEach(element => {
       let satisfyFilters = true;
       for (let column in filters) {
         if (column === 'NAME') {
@@ -123,7 +152,10 @@ class DatafileTable extends React.Component<
     const sizeFilter = (
       <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
     );
-    const filteredRows = this.memoizedFilter(this.state.activeFilters);
+    const filteredRows = this.memoizedFilter(
+      this.state.activeFilters,
+      this.state.data
+    );
 
     return (
       <Paper style={{ height: 400, width: '100%' }}>
@@ -153,24 +185,23 @@ class DatafileTable extends React.Component<
             {
               label: 'Name',
               dataKey: 'NAME',
-              type: 'string',
               filterComponent: nameFilter,
             },
             {
               label: 'Location',
               dataKey: 'LOCATION',
-              type: 'string',
             },
             {
               label: 'Size',
               dataKey: 'SIZE',
-              type: 'filesize',
               filterComponent: sizeFilter,
+              cellContentRenderer: props => {
+                return formatBytes(props.cellData);
+              },
             },
             {
               label: 'Modified Time',
               dataKey: 'MOD_TIME',
-              type: 'date',
             },
           ]}
         />

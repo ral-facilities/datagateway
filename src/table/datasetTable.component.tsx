@@ -5,15 +5,20 @@ import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import { VirtualizedTable } from './table.component';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { formatBytes } from '../data/helpers';
 
 interface DatasetTableProps {
-  rows: DatasetData[];
+  rows?: DatasetData[];
+  investigationId?: string;
 }
 
 interface DatasetTableState {
   activeFilters: {
     [column: string]: string | { lt: number | null; gt: number | null };
   };
+  data: DatasetData[];
 }
 
 class DatasetTable extends React.Component<
@@ -22,11 +27,34 @@ class DatasetTable extends React.Component<
 > {
   public constructor(props: DatasetTableProps) {
     super(props);
+    let data: DatasetData[] = [];
+    if (props.rows) {
+      data = props.rows;
+    }
     this.state = {
       activeFilters: {},
+      data,
     };
     this.onNameChange = this.onNameChange.bind(this);
     this.onSizeChange = this.onSizeChange.bind(this);
+  }
+
+  public componentDidMount(): void {
+    if (this.props.investigationId) {
+      axios
+        .get(
+          `/datasets?filter={"where": {"INVESTIGATION_ID": "${this.props.investigationId}"}}`,
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('daaas:token'),
+            },
+          }
+        )
+        .then(response => {
+          this.setState({ data: response.data });
+          this.memoizedFilter = memoize(this.filter, this.deepEqualityFn);
+        });
+    }
   }
 
   private deepEqualityFn: EqualityFn = (
@@ -68,14 +96,17 @@ class DatasetTable extends React.Component<
     });
   }
 
-  private filter(filters: {
-    [column: string]: string | { lt: number | null; gt: number | null };
-  }): DatasetData[] {
+  private filter(
+    filters: {
+      [column: string]: string | { lt: number | null; gt: number | null };
+    },
+    data: DatasetData[]
+  ): DatasetData[] {
     if (Object.keys(filters).length === 0) {
-      return this.props.rows;
+      return data;
     }
     let filteredRows: DatasetData[] = [];
-    this.props.rows.forEach(element => {
+    data.forEach(element => {
       let satisfyFilters = true;
       for (let column in filters) {
         if (column === 'NAME') {
@@ -122,7 +153,10 @@ class DatasetTable extends React.Component<
     const sizeFilter = (
       <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
     );
-    const filteredRows = this.memoizedFilter(this.state.activeFilters);
+    const filteredRows = this.memoizedFilter(
+      this.state.activeFilters,
+      this.state.data
+    );
 
     return (
       <Paper style={{ height: 400, width: '100%' }}>
@@ -149,24 +183,33 @@ class DatasetTable extends React.Component<
             {
               label: 'Name',
               dataKey: 'NAME',
-              type: 'string',
+              cellContentRenderer: props => {
+                const datasetData = props.rowData as DatasetData;
+                return (
+                  <Link
+                    to={`/browse/investigation/${this.props.investigationId}/dataset/${datasetData.ID}/datafile`}
+                  >
+                    {datasetData.NAME}
+                  </Link>
+                );
+              },
               filterComponent: nameFilter,
             },
             {
               label: 'Size',
               dataKey: 'SIZE',
-              type: 'filesize',
               filterComponent: sizeFilter,
+              cellContentRenderer: props => {
+                return formatBytes(props.cellData);
+              },
             },
             {
               label: 'Create Time',
               dataKey: 'CREATE_TIME',
-              type: 'date',
             },
             {
               label: 'Modified Time',
               dataKey: 'MOD_TIME',
-              type: 'date',
             },
           ]}
         />

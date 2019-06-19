@@ -5,15 +5,19 @@ import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import { VirtualizedTable } from './table.component';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { formatBytes } from '../data/helpers';
 
 interface InvestigationTableProps {
-  rows: InvestigationData[];
+  rows?: InvestigationData[];
 }
 
 interface InvestigationTableState {
   activeFilters: {
     [column: string]: string | { lt: number | null; gt: number | null };
   };
+  data: InvestigationData[];
 }
 
 class InvestigationTable extends React.Component<
@@ -22,11 +26,29 @@ class InvestigationTable extends React.Component<
 > {
   public constructor(props: InvestigationTableProps) {
     super(props);
+    let data: InvestigationData[] = [];
+    if (props.rows) {
+      data = props.rows;
+    }
     this.state = {
       activeFilters: {},
+      data,
     };
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onSizeChange = this.onSizeChange.bind(this);
+  }
+
+  public componentDidMount(): void {
+    axios
+      .get('/investigations', {
+        headers: {
+          Authorization: window.localStorage.getItem('daaas:token'),
+        },
+      })
+      .then(response => {
+        this.setState({ data: response.data });
+        this.memoizedFilter = memoize(this.filter, this.deepEqualityFn);
+      });
   }
 
   private deepEqualityFn: EqualityFn = (
@@ -68,14 +90,17 @@ class InvestigationTable extends React.Component<
     });
   }
 
-  private filter(filters: {
-    [column: string]: string | { lt: number | null; gt: number | null };
-  }): InvestigationData[] {
+  private filter(
+    filters: {
+      [column: string]: string | { lt: number | null; gt: number | null };
+    },
+    data: InvestigationData[]
+  ): InvestigationData[] {
     if (Object.keys(filters).length === 0) {
-      return this.props.rows;
+      return data;
     }
     let filteredRows: InvestigationData[] = [];
-    this.props.rows.forEach(element => {
+    data.forEach(element => {
       let satisfyFilters = true;
       for (let column in filters) {
         if (column === 'TITLE') {
@@ -122,7 +147,10 @@ class InvestigationTable extends React.Component<
     const sizeFilter = (
       <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
     );
-    const filteredRows = this.memoizedFilter(this.state.activeFilters);
+    const filteredRows = this.memoizedFilter(
+      this.state.activeFilters,
+      this.state.data
+    );
 
     return (
       <Paper style={{ height: 400, width: '100%' }}>
@@ -137,17 +165,20 @@ class InvestigationTable extends React.Component<
             return (
               <div>
                 <Typography>
-                  <b>Proposal: </b> {investigationData.RB_NUMBER}
+                  <b>Proposal: </b>
+                  {investigationData.RB_NUMBER}
                 </Typography>
                 <Typography>
-                  <b>Title: </b> {investigationData.TITLE}
+                  <b>Title: </b>
+                  {investigationData.TITLE}
                 </Typography>
                 <Typography>
                   <b>Start Date: </b>
-                  {investigationData.STARTDATE.toDateString()}
+                  {investigationData.STARTDATE}
                 </Typography>
                 <Typography>
-                  <b>End Date: </b> {investigationData.ENDDATE.toDateString()}
+                  <b>End Date: </b>
+                  {investigationData.ENDDATE}
                 </Typography>
               </div>
             );
@@ -156,44 +187,49 @@ class InvestigationTable extends React.Component<
             {
               label: 'Title',
               dataKey: 'TITLE',
-              type: 'string',
+              cellContentRenderer: props => {
+                const investigationData = props.rowData as InvestigationData;
+                return (
+                  <Link
+                    to={`/browse/investigation/${investigationData.ID}/dataset`}
+                  >
+                    {investigationData.TITLE}
+                  </Link>
+                );
+              },
               filterComponent: titleFilter,
             },
             {
               label: 'Visit ID',
               dataKey: 'VISIT_ID',
-              type: 'number',
             },
             {
               label: 'RB Number',
               dataKey: 'RB_NUMBER',
-              type: 'string',
             },
             {
               label: 'DOI',
               dataKey: 'DOI',
-              type: 'string',
             },
             {
               label: 'Size',
               dataKey: 'SIZE',
-              type: 'filesize',
               filterComponent: sizeFilter,
+              cellContentRenderer: props => {
+                return formatBytes(props.cellData);
+              },
             },
             {
               label: 'Instrument',
               dataKey: 'INSTRUMENT.NAME',
-              type: 'string',
             },
             {
               label: 'Start Date',
               dataKey: 'STARTDATE',
-              type: 'date',
             },
             {
               label: 'End Date',
               dataKey: 'ENDDATE',
-              type: 'date',
             },
           ]}
         />
