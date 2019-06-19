@@ -26,6 +26,7 @@ import memoize from 'memoize-one';
 import { EntityType } from '../data/types';
 import { IconButton } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
+import { formatBytes } from '../data/helpers';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -57,7 +58,7 @@ interface ColumnType {
   label: string;
   dataKey: string;
   flexGrow?: number;
-  type: 'string' | 'number' | 'date';
+  type: 'string' | 'number' | 'date' | 'filesize';
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
@@ -196,9 +197,18 @@ class MuiVirtualizedTable extends React.PureComponent<
 
   private cellRenderer: TableCellRenderer = props => {
     const { columns, classes, rowHeight } = this.props;
+
+    // get cell values from nested data keys
     let cellValue = props.dataKey.split('.').reduce(function(prev, curr) {
       return prev ? prev[curr] : null;
     }, props.rowData);
+
+    if (columns[props.columnIndex - 1].type === 'date') {
+      cellValue = cellValue.toDateString();
+    } else if (columns[props.columnIndex - 1].type === 'filesize') {
+      cellValue = formatBytes(cellValue);
+    }
+
     return (
       <TableCell
         component="div"
@@ -206,9 +216,7 @@ class MuiVirtualizedTable extends React.PureComponent<
         variant="body"
         style={{ height: rowHeight }}
       >
-        {columns[props.columnIndex - 1].type === 'date'
-          ? cellValue.toDateString()
-          : cellValue}
+        {cellValue}
       </TableCell>
     );
   };

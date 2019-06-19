@@ -1,8 +1,14 @@
 import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
-import { investigationDemoData } from './data/demo';
+import {
+  investigationDemoData,
+  datasetDemoData,
+  datafileDemoData,
+} from './data/demo';
 import InvestigationTable from './table/investigationTable.component';
+import DatafileTable from './table/datafileTable.component';
+import DatasetTable from './table/datasetTable.component';
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -35,6 +41,8 @@ class App extends React.Component<{}, { hasError: boolean }> {
       return (
         <div className="App">
           <InvestigationTable rows={investigationDemoData} />
+          <DatasetTable rows={datasetDemoData} />
+          <DatafileTable rows={datafileDemoData} />
         </div>
       );
   }

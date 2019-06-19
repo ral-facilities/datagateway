@@ -1,31 +1,32 @@
 import React from 'react';
-import { InvestigationData, EntityType } from '../data/types';
+import { EntityType, DatafileData } from '../data/types';
 import memoize, { EqualityFn } from 'memoize-one';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import { VirtualizedTable } from './table.component';
+import { formatBytes } from '../data/helpers';
 
-interface InvestigationTableProps {
-  rows: InvestigationData[];
+interface DatafileTableProps {
+  rows: DatafileData[];
 }
 
-interface InvestigationTableState {
+interface DatafileTableState {
   activeFilters: {
     [column: string]: string | { lt: number | null; gt: number | null };
   };
 }
 
-class InvestigationTable extends React.Component<
-  InvestigationTableProps,
-  InvestigationTableState
+class DatafileTable extends React.Component<
+  DatafileTableProps,
+  DatafileTableState
 > {
-  public constructor(props: InvestigationTableProps) {
+  public constructor(props: DatafileTableProps) {
     super(props);
     this.state = {
       activeFilters: {},
     };
-    this.onTitleChange = this.onTitleChange.bind(this);
+    this.onNameChange = this.onNameChange.bind(this);
     this.onSizeChange = this.onSizeChange.bind(this);
   }
 
@@ -50,7 +51,7 @@ class InvestigationTable extends React.Component<
 
   private memoizedFilter = memoize(this.filter, this.deepEqualityFn);
 
-  public onTitleChange(value: string): void {
+  public onNameChange(value: string): void {
     this.setState({
       activeFilters: {
         ...this.state.activeFilters,
@@ -70,15 +71,15 @@ class InvestigationTable extends React.Component<
 
   private filter(filters: {
     [column: string]: string | { lt: number | null; gt: number | null };
-  }): InvestigationData[] {
+  }): DatafileData[] {
     if (Object.keys(filters).length === 0) {
       return this.props.rows;
     }
-    let filteredRows: InvestigationData[] = [];
+    let filteredRows: DatafileData[] = [];
     this.props.rows.forEach(element => {
       let satisfyFilters = true;
       for (let column in filters) {
-        if (column === 'TITLE') {
+        if (column === 'NAME') {
           if (
             element[column]
               .toLowerCase()
@@ -116,8 +117,8 @@ class InvestigationTable extends React.Component<
   }
 
   public render(): React.ReactElement {
-    const titleFilter = (
-      <TextColumnFilter label="Title" onChange={this.onTitleChange} />
+    const nameFilter = (
+      <TextColumnFilter label="Name" onChange={this.onNameChange} />
     );
     const sizeFilter = (
       <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
@@ -133,45 +134,31 @@ class InvestigationTable extends React.Component<
           rowCount={filteredRows.length}
           onRowClick={event => console.log(event)}
           detailsPanel={(rowData: EntityType) => {
-            const investigationData = rowData as InvestigationData;
+            const datafileData = rowData as DatafileData;
             return (
               <div>
                 <Typography>
-                  <b>Proposal: </b> {investigationData.RB_NUMBER}
+                  <b>Name: </b> {datafileData.NAME}
                 </Typography>
                 <Typography>
-                  <b>Title: </b> {investigationData.TITLE}
+                  <b>File Size: </b> {formatBytes(datafileData.SIZE)}
                 </Typography>
                 <Typography>
-                  <b>Start Date: </b>
-                  {investigationData.STARTDATE.toDateString()}
-                </Typography>
-                <Typography>
-                  <b>End Date: </b> {investigationData.ENDDATE.toDateString()}
+                  <b>Location: </b> {datafileData.LOCATION}
                 </Typography>
               </div>
             );
           }}
           columns={[
             {
-              label: 'Title',
-              dataKey: 'TITLE',
+              label: 'Name',
+              dataKey: 'NAME',
               type: 'string',
-              filterComponent: titleFilter,
+              filterComponent: nameFilter,
             },
             {
-              label: 'Visit ID',
-              dataKey: 'VISIT_ID',
-              type: 'number',
-            },
-            {
-              label: 'RB Number',
-              dataKey: 'RB_NUMBER',
-              type: 'string',
-            },
-            {
-              label: 'DOI',
-              dataKey: 'DOI',
+              label: 'Location',
+              dataKey: 'LOCATION',
               type: 'string',
             },
             {
@@ -181,18 +168,8 @@ class InvestigationTable extends React.Component<
               filterComponent: sizeFilter,
             },
             {
-              label: 'Instrument',
-              dataKey: 'INSTRUMENT.NAME',
-              type: 'string',
-            },
-            {
-              label: 'Start Date',
-              dataKey: 'STARTDATE',
-              type: 'date',
-            },
-            {
-              label: 'End Date',
-              dataKey: 'ENDDATE',
+              label: 'Modified Time',
+              dataKey: 'MOD_TIME',
               type: 'date',
             },
           ]}
@@ -202,4 +179,4 @@ class InvestigationTable extends React.Component<
   }
 }
 
-export default InvestigationTable;
+export default DatafileTable;

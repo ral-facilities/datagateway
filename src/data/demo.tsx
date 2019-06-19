@@ -1,4 +1,9 @@
-import { InvestigationData, FoodData } from './types';
+import {
+  InvestigationData,
+  FoodData,
+  DatafileData,
+  DatasetData,
+} from './types';
 
 export const investigationDemoData: InvestigationData[] = [
   {
@@ -26,6 +31,40 @@ export const investigationDemoData: InvestigationData[] = [
     },
     STARTDATE: new Date('2019-06-10'),
     ENDDATE: new Date('2019-06-12'),
+  },
+];
+
+export const datasetDemoData: DatasetData[] = [
+  {
+    ID: '1',
+    NAME: 'Test 2-1',
+    SIZE: 1,
+    CREATE_TIME: new Date('2019-06-10 00:00:00'),
+    MOD_TIME: new Date('2019-06-10 00:00:00'),
+  },
+  {
+    ID: '1',
+    NAME: 'Test 2-2',
+    SIZE: 9999,
+    CREATE_TIME: new Date('2019-06-10 00:00:00'),
+    MOD_TIME: new Date('2019-06-10 12:00:00'),
+  },
+];
+
+export const datafileDemoData: DatafileData[] = [
+  {
+    ID: '1',
+    NAME: 'Test 2-2-1',
+    LOCATION: '/test1',
+    SIZE: 500,
+    MOD_TIME: new Date('2019-06-10 00:00:00'),
+  },
+  {
+    ID: '2',
+    NAME: 'Test 2-2-2',
+    LOCATION: '/test2',
+    SIZE: 9499,
+    MOD_TIME: new Date('2019-06-10 12:00:00'),
   },
 ];
 
