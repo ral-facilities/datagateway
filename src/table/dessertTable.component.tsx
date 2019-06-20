@@ -127,7 +127,6 @@ class DessertTable extends React.Component<
           data={filteredRows}
           headerHeight={100}
           rowHeight={56}
-          detailsPanel={rowData => <div />}
           rowCount={filteredRows.length}
           onRowClick={event => console.log(event)}
           columns={[

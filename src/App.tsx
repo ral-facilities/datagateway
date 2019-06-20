@@ -11,6 +11,8 @@ import {
   RouteComponentProps,
   Link,
 } from 'react-router-dom';
+import DessertTable from './table/dessertTable.component';
+import { foodDataDemoGenerator } from './data/demo';
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -50,6 +52,11 @@ class App extends React.Component<{}, { hasError: boolean }> {
                 render={() => (
                   <Link to="/browse/investigation">Browse investigations</Link>
                 )}
+              />
+              <Route
+                exact
+                path="/desserts/"
+                render={() => <DessertTable rows={foodDataDemoGenerator()} />}
               />
               <Route
                 exact

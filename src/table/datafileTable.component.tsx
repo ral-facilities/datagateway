@@ -3,10 +3,11 @@ import { EntityType, DatafileData } from '../data/types';
 import memoize, { EqualityFn } from 'memoize-one';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography, IconButton } from '@material-ui/core';
 import { VirtualizedTable } from './table.component';
 import { formatBytes } from '../data/helpers';
 import axios from 'axios';
+import { GetApp } from '@material-ui/icons';
 
 interface DatafileTableProps {
   rows?: DatafileData[];
@@ -81,7 +82,7 @@ class DatafileTable extends React.Component<
     this.setState({
       activeFilters: {
         ...this.state.activeFilters,
-        TITLE: value,
+        NAME: value,
       },
     });
   }
@@ -164,7 +165,6 @@ class DatafileTable extends React.Component<
           headerHeight={100}
           rowHeight={56}
           rowCount={filteredRows.length}
-          onRowClick={event => console.log(event)}
           detailsPanel={(rowData: EntityType) => {
             const datafileData = rowData as DatafileData;
             return (
@@ -181,6 +181,18 @@ class DatafileTable extends React.Component<
               </div>
             );
           }}
+          actions={[
+            rowData => (
+              <IconButton
+                key="download"
+                onClick={() => {
+                  alert(`Downloading ${rowData.LOCATION}`);
+                }}
+              >
+                <GetApp />
+              </IconButton>
+            ),
+          ]}
           columns={[
             {
               label: 'Name',

@@ -159,7 +159,6 @@ class InvestigationTable extends React.Component<
           headerHeight={100}
           rowHeight={56}
           rowCount={filteredRows.length}
-          onRowClick={event => console.log(event)}
           detailsPanel={(rowData: EntityType) => {
             const investigationData = rowData as InvestigationData;
             return (

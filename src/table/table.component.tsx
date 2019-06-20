@@ -57,7 +57,6 @@ const styles = (theme: Theme): StyleRules =>
 interface ColumnType {
   label: string;
   dataKey: string;
-  flexGrow?: number;
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
@@ -70,11 +69,12 @@ interface MuiVirtualizedTableProps {
   rowHeight: number;
   columns: ColumnType[];
   rowCount: number;
-  detailsPanel: (rowData: EntityType) => React.ReactElement;
+  detailsPanel?: (rowData: EntityType) => React.ReactElement;
   rowClassName?: string;
   onRowClick?: (params: RowMouseEventHandlerParams) => void;
   filterBy?: string;
   filterValue?: string;
+  actions?: ((rowData: EntityType) => React.ReactElement)[];
 }
 
 interface MuiVirtualizedTableState {
@@ -286,12 +286,16 @@ class MuiVirtualizedTable extends React.PureComponent<
                 data={this.props.data}
                 rowClassName={this.getRowClassName}
                 rowGetter={({ index }) => sortedList[index]}
-                rowRenderer={props =>
-                  this.rowRenderer({
-                    ...props,
-                    detailsPanel: this.props.detailsPanel,
-                  })
-                }
+                rowRenderer={props => {
+                  if (this.props.detailsPanel) {
+                    return this.rowRenderer({
+                      ...props,
+                      detailsPanel: this.props.detailsPanel,
+                    });
+                  } else {
+                    return defaultTableRowRenderer(props);
+                  }
+                }}
                 rowHeight={({ index }) =>
                   index === this.state.selectedIndex
                     ? this.props.rowHeight + this.state.detailPanelHeight
@@ -301,52 +305,54 @@ class MuiVirtualizedTable extends React.PureComponent<
                 sortBy={this.state.sortBy}
                 sortDirection={this.state.sortDirection}
               >
-                <Column
-                  width={70}
-                  style={{ marginLeft: '-10px' }}
-                  key="Expand"
-                  disableSort={true}
-                  headerRenderer={headerProps => (
-                    <TableCell
-                      component="div"
-                      className={classNames(
-                        classes.tableCell,
-                        classes.flexContainer,
-                        classes.noClick
-                      )}
-                      variant="head"
-                      style={{ height: this.props.headerHeight }}
-                    ></TableCell>
-                  )}
-                  cellRenderer={props => (
-                    <TableCell
-                      component="div"
-                      className={classNames(
-                        classes.tableCell,
-                        classes.flexContainer
-                      )}
-                      variant="body"
-                      style={{ height: this.props.rowHeight }}
-                    >
-                      {props.rowIndex !== this.state.selectedIndex ? (
-                        <IconButton
-                          onClick={() =>
-                            this.setState({ selectedIndex: props.rowIndex })
-                          }
-                        >
-                          <ExpandMore />
-                        </IconButton>
-                      ) : (
-                        <IconButton
-                          onClick={() => this.setState({ selectedIndex: -1 })}
-                        >
-                          <ExpandLess />
-                        </IconButton>
-                      )}
-                    </TableCell>
-                  )}
-                  dataKey={'expand'}
-                />
+                {this.props.detailsPanel && (
+                  <Column
+                    width={70}
+                    style={{ marginLeft: '-10px' }}
+                    key="Expand"
+                    disableSort={true}
+                    headerRenderer={headerProps => (
+                      <TableCell
+                        component="div"
+                        className={classNames(
+                          classes.tableCell,
+                          classes.flexContainer,
+                          classes.noClick
+                        )}
+                        variant="head"
+                        style={{ height: this.props.headerHeight }}
+                      ></TableCell>
+                    )}
+                    cellRenderer={props => (
+                      <TableCell
+                        component="div"
+                        className={classNames(
+                          classes.tableCell,
+                          classes.flexContainer
+                        )}
+                        variant="body"
+                        style={{ height: this.props.rowHeight }}
+                      >
+                        {props.rowIndex !== this.state.selectedIndex ? (
+                          <IconButton
+                            onClick={() =>
+                              this.setState({ selectedIndex: props.rowIndex })
+                            }
+                          >
+                            <ExpandMore />
+                          </IconButton>
+                        ) : (
+                          <IconButton
+                            onClick={() => this.setState({ selectedIndex: -1 })}
+                          >
+                            <ExpandLess />
+                          </IconButton>
+                        )}
+                      </TableCell>
+                    )}
+                    dataKey={'expand'}
+                  />
+                )}
                 {columns.map(
                   (
                     {
@@ -389,6 +395,42 @@ class MuiVirtualizedTable extends React.PureComponent<
                       />
                     );
                   }
+                )}
+                {this.props.actions && (
+                  <Column
+                    width={70}
+                    key="Actions"
+                    disableSort={true}
+                    headerRenderer={headerProps => (
+                      <TableCell
+                        component="div"
+                        className={classNames(
+                          classes.tableCell,
+                          classes.flexContainer,
+                          classes.noClick
+                        )}
+                        variant="head"
+                        style={{ height: this.props.headerHeight }}
+                      ></TableCell>
+                    )}
+                    cellRenderer={props => (
+                      <TableCell
+                        component="div"
+                        className={classNames(
+                          classes.tableCell,
+                          classes.flexContainer
+                        )}
+                        variant="body"
+                        style={{ height: this.props.rowHeight }}
+                      >
+                        {this.props.actions !== undefined &&
+                          this.props.actions.map(element =>
+                            element(props.rowData)
+                          )}
+                      </TableCell>
+                    )}
+                    dataKey={'expand'}
+                  />
                 )}
               </Table>
             )}

@@ -82,7 +82,7 @@ class DatasetTable extends React.Component<
     this.setState({
       activeFilters: {
         ...this.state.activeFilters,
-        TITLE: value,
+        NAME: value,
       },
     });
   }
@@ -165,7 +165,6 @@ class DatasetTable extends React.Component<
           headerHeight={100}
           rowHeight={56}
           rowCount={filteredRows.length}
-          onRowClick={event => console.log(event)}
           detailsPanel={(rowData: EntityType) => {
             const datasetData = rowData as DatasetData;
             return (
