@@ -25,7 +25,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "serve:build": "npm run build & serve -l 5001 build",
-    "test": "react-scripts test --env=jsdom --coverage",
+    "test": "react-scripts test --env=jsdom --coverage --watchAll=false",
     "test:watch": "react-scripts test --env=jsdom --watch",
     "build:e2e": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "e2e:serve": "npm run build:e2e && node ./server/e2e-test-server.js",
