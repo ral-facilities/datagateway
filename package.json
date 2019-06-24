@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.1.2",
+    "@material-ui/icons": "^4.2.1",
     "@types/jest": "24.0.13",
     "@types/node": "12.0.7",
     "@types/react": "16.8.19",
@@ -10,7 +12,12 @@
     "loglevel": "^1.6.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-redux": "^5.1.1",
     "react-scripts": "3.0.1",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-mock-store": "^1.5.3",
+    "redux-thunk": "^2.3.0",
     "single-spa-react": "^2.10.2",
     "typescript": "3.5.1"
   },
@@ -73,6 +80,10 @@
     ]
   },
   "devDependencies": {
+    "@types/enzyme": "^3.9.4",
+    "@types/react-redux": "^7.1.0",
+    "@types/redux-logger": "^3.0.7",
+    "@types/redux-mock-store": "^1.0.1",
     "@types/single-spa-react": "^2.8.3",
     "@typescript-eslint/eslint-plugin": "^1.9.0",
     "@typescript-eslint/parser": "^1.9.0",
