@@ -4,10 +4,11 @@ import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
+import { RequestPluginRerenderType } from './state/actions/actions.types';
 
 const pluginName = 'datagateway-table';
 
-export const render = (): void => {
+const render = (): void => {
   let el = document.getElementById(pluginName);
   if (el) {
     ReactDOM.render(<App />, document.getElementById(pluginName));
@@ -35,6 +36,13 @@ function domElementGetter(): HTMLElement {
 
 window.addEventListener('single-spa:routing-event', () => {
   render();
+});
+
+document.addEventListener('daaas-frontend', e => {
+  const action = (e as CustomEvent).detail;
+  if (action.type === RequestPluginRerenderType) {
+    render();
+  }
 });
 
 const reactLifecycles = singleSpaReact({

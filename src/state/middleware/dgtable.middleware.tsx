@@ -1,6 +1,9 @@
 import { AnyAction, Dispatch, Middleware } from 'redux';
 import log from 'loglevel';
-import { render } from '../../index';
+import {
+  RegisterRouteType,
+  RequestPluginRerenderType,
+} from '../actions/actions.types';
 
 const microFrontendMessageId = 'daaas-frontend';
 
@@ -24,14 +27,14 @@ export const listenToMessages = (dispatch: Dispatch): void => {
     ) {
       // this is a valid message, so process it
       switch (pluginMessage.detail.type) {
-        case 'daaas:api:plugin_rerender':
-          render();
+        // ignore messages not meant for this plugin
+        case RequestPluginRerenderType:
+        case RegisterRouteType:
           break;
-
         default:
           // log and ignore
           log.warn(
-            `Unexpected message received from, not dispatched:\nevent.detail = ${JSON.stringify(
+            `Unexpected message received, not dispatched:\nevent.detail = ${JSON.stringify(
               pluginMessage.detail
             )}`
           );
