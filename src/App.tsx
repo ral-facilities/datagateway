@@ -10,9 +10,12 @@ import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import { Switch, Route } from 'react-router';
+import DGTableMiddleware, {
+  listenToMessages,
+} from './state/middleware/dgtable.middleware';
 
 const history = createBrowserHistory();
-const middleware = [thunk, routerMiddleware(history)];
+const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -28,6 +31,23 @@ const composeEnhancers =
 const store = createStore(
   AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))
+);
+
+listenToMessages(store.dispatch);
+
+const registerRouteAction = {
+  type: 'daaas:api:register_route',
+  payload: {
+    section: 'Data',
+    link: '/data',
+    plugin: 'datagateway-table',
+    displayName: 'DataGateway Table',
+    order: 0,
+  },
+};
+
+document.dispatchEvent(
+  new CustomEvent('daaas-frontend', { detail: registerRouteAction })
 );
 
 class App extends React.Component<{}, { hasError: boolean }> {
@@ -63,7 +83,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <Switch>
-                <Route exact path="/" component={ExampleComponent} />
+                <Route exact path="/data" component={ExampleComponent} />
               </Switch>
             </ConnectedRouter>
           </Provider>

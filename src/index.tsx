@@ -7,7 +7,7 @@ import * as log from 'loglevel';
 
 const pluginName = 'datagateway-table';
 
-const render = (): void => {
+export const render = (): void => {
   let el = document.getElementById(pluginName);
   if (el) {
     ReactDOM.render(<App />, document.getElementById(pluginName));
@@ -36,28 +36,6 @@ function domElementGetter(): HTMLElement {
 window.addEventListener('single-spa:routing-event', () => {
   render();
 });
-
-document.addEventListener('daaas-frontend', e => {
-  const action = (e as CustomEvent).detail;
-  if (action.type === 'daaas:api:plugin_rerender') {
-    render();
-  }
-});
-
-const registerRouteAction = {
-  type: 'daaas:api:register_route',
-  payload: {
-    section: 'Data',
-    link: '/data',
-    plugin: 'datagateway-table',
-    displayName: 'DataGateway Table',
-    order: 0,
-  },
-};
-
-document.dispatchEvent(
-  new CustomEvent('daaas-frontend', { detail: registerRouteAction })
-);
 
 const reactLifecycles = singleSpaReact({
   React,
