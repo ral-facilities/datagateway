@@ -7,8 +7,12 @@ import AppReducer from './state/reducers/app.reducer';
 import { Provider } from 'react-redux';
 import ExampleComponent from './example.component';
 import { createLogger } from 'redux-logger';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
+import { Switch, Route } from 'react-router';
 
-const middleware = [thunk];
+const history = createBrowserHistory();
+const middleware = [thunk, routerMiddleware(history)];
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -22,7 +26,7 @@ const composeEnhancers =
 /* eslint-enable */
 
 const store = createStore(
-  AppReducer(),
+  AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))
 );
 
@@ -57,7 +61,11 @@ class App extends React.Component<{}, { hasError: boolean }> {
       return (
         <div className="App">
           <Provider store={store}>
-            <ExampleComponent />
+            <ConnectedRouter history={history}>
+              <Switch>
+                <Route exact path="/" component={ExampleComponent} />
+              </Switch>
+            </ConnectedRouter>
           </Provider>
         </div>
       );
