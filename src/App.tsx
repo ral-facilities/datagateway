@@ -13,6 +13,7 @@ import { Switch, Route } from 'react-router';
 import DGTableMiddleware, {
   listenToMessages,
 } from './state/middleware/dgtable.middleware';
+import { RegisterRouteType } from './state/actions/actions.types';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -36,13 +37,14 @@ const store = createStore(
 listenToMessages(store.dispatch);
 
 const registerRouteAction = {
-  type: 'daaas:api:register_route',
+  type: RegisterRouteType,
   payload: {
     section: 'Data',
     link: '/data',
     plugin: 'datagateway-table',
     displayName: 'DataGateway Table',
     order: 0,
+    helpText: 'TODO: write some help text for the user tour',
   },
 };
 
@@ -58,7 +60,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
 
   public componentDidCatch(error: Error | null): void {
     this.setState({ hasError: true });
-    log.error(`demo_plugin failed with error: ${error}`);
+    log.error(`datagateway_table failed with error: ${error}`);
   }
 
   public render(): React.ReactNode {
