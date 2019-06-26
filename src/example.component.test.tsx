@@ -4,9 +4,10 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import { shallow as enzymeShallow, mount as enzymeMount } from 'enzyme';
 import configureStore, { MockStoreCreator } from 'redux-mock-store';
 import { initialState } from './state/reducers/dgtable.reducer';
-import { sortTable } from './state/actions/actions';
+import { sortTable, fetchInvestigationsRequest } from './state/actions/actions';
 import { StateType } from './state/app.types';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 describe('Example component', () => {
   let shallow: typeof enzymeShallow;
@@ -18,13 +19,23 @@ describe('Example component', () => {
     shallow = createShallow({});
     mount = createMount();
 
-    mockStore = configureStore();
+    mockStore = configureStore([thunk]);
     state = {
-      dgtable: initialState,
+      dgtable: { ...initialState },
     };
   });
 
   it('renders correctly', () => {
+    const wrapper = shallow(
+      <Provider store={mockStore(state)}>
+        <ExampleComponent />
+      </Provider>
+    );
+    expect(wrapper.dive().dive()).toMatchSnapshot();
+  });
+
+  it('renders circular progress when loading', () => {
+    state.dgtable.loading = true;
     const wrapper = shallow(
       <Provider store={mockStore(state)}>
         <ExampleComponent />
@@ -41,9 +52,29 @@ describe('Example component', () => {
       </Provider>
     );
 
-    wrapper.find('button').simulate('click');
+    wrapper
+      .find('button')
+      .first()
+      .simulate('click');
 
     expect(testStore.getActions().length).toEqual(1);
     expect(testStore.getActions()[0]).toEqual(sortTable('column1', 'ASC'));
+  });
+
+  it('sends fetchInvestigations action when button clicked', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <ExampleComponent />
+      </Provider>
+    );
+
+    wrapper
+      .find('button')
+      .last()
+      .simulate('click');
+
+    expect(testStore.getActions().length).toEqual(1);
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest());
   });
 });
