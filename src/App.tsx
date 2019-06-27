@@ -5,7 +5,6 @@ import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
 import { Provider } from 'react-redux';
-import ExampleComponent from './example.component';
 import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
@@ -14,6 +13,7 @@ import DGTableMiddleware, {
   listenToMessages,
 } from './state/middleware/dgtable.middleware';
 import { RegisterRouteType } from './state/actions/actions.types';
+import TestTable from './table/testTable';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -85,7 +85,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <Switch>
-                <Route exact path="/data" component={ExampleComponent} />
+                <Route exact path="/data" component={TestTable} />
               </Switch>
             </ConnectedRouter>
           </Provider>

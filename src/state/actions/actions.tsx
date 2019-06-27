@@ -1,4 +1,4 @@
-import { ActionType, ThunkResult, Investigation } from '../app.types';
+import { ActionType, ThunkResult, Investigation, Filter } from '../app.types';
 import {
   SortTablePayload,
   SortTableType,
@@ -13,7 +13,7 @@ import axios from 'axios';
 
 export const sortTable = (
   column: string,
-  order: 'ASC' | 'DESC'
+  order: 'asc' | 'desc'
 ): ActionType<SortTablePayload> => ({
   type: SortTableType,
   payload: {
@@ -44,11 +44,16 @@ export const fetchInvestigationsRequest = (): Action => ({
   type: FetchInvestigationsRequestType,
 });
 
-export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
+export const fetchInvestigations = (
+  filter?: Filter
+): ThunkResult<Promise<void>> => {
   return async dispatch => {
     dispatch(fetchInvestigationsRequest());
     await axios
       .get('/investigations', {
+        params: {
+          filter,
+        },
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
@@ -59,5 +64,15 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
       .catch(error => {
         dispatch(fetchInvestigationsFailure(error.message));
       });
+  };
+};
+
+export const sortInvestigationsTable = (
+  column: string,
+  order: 'asc' | 'desc'
+): ThunkResult<void> => {
+  return dispatch => {
+    dispatch(sortTable(column, order));
+    dispatch(fetchInvestigations({ order: `${column} ${order}` }));
   };
 };

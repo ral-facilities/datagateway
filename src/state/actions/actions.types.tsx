@@ -15,7 +15,7 @@ export const FetchInvestigationsSuccessType =
 
 export interface SortTablePayload {
   column: string;
-  order: 'ASC' | 'DESC';
+  order: 'asc' | 'desc';
 }
 
 export interface FetchInvestigationsFailurePayload {
