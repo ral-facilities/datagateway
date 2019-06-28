@@ -8,10 +8,11 @@ import {
   FetchInvestigationsFailurePayload,
   FetchInvestigationsSuccessType,
   FetchInvestigationsFailureType,
+  FilterTablePayload,
+  FilterTableType,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
-  sort: null,
   data: [],
   loading: false,
   error: null,
@@ -26,6 +27,19 @@ export function handleSortTable(
     sort: {
       column: payload.column,
       order: payload.order,
+    },
+  };
+}
+
+export function handleFilterTable(
+  state: DGTableState,
+  payload: FilterTablePayload
+): DGTableState {
+  return {
+    ...state,
+    filters: {
+      ...state.filters,
+      [payload.column]: payload.filter,
     },
   };
 }
@@ -65,6 +79,7 @@ export function handleFetchInvestigationsFailure(
 
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
+  [FilterTableType]: handleFilterTable,
   [FetchInvestigationsRequestType]: handleFetchInvestigationsRequest,
   [FetchInvestigationsSuccessType]: handleFetchInvestigationsSuccess,
   [FetchInvestigationsFailureType]: handleFetchInvestigationsFailure,

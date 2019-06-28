@@ -5,12 +5,9 @@ import {
   fetchInvestigationsSuccess,
   fetchInvestigationsFailure,
   sortInvestigationsTable,
+  filterTable,
 } from './actions';
-import {
-  SortTableType,
-  FetchInvestigationsRequestType,
-  FetchInvestigationsSuccessType,
-} from './actions.types';
+import { SortTableType, FilterTableType } from './actions.types';
 import axios from 'axios';
 import { StateType, Investigation } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -27,6 +24,12 @@ describe('Actions', () => {
     const action = sortTable('test', 'desc');
     expect(action.type).toEqual(SortTableType);
     expect(action.payload).toEqual({ column: 'test', order: 'desc' });
+  });
+
+  it('given an column and filter filterTable returns a FilterTableType with FilterTablePayload', () => {
+    const action = filterTable('test', 'filter text');
+    expect(action.type).toEqual(FilterTableType);
+    expect(action.payload).toEqual({ column: 'test', filter: 'filter text' });
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchInvestigations action', async () => {

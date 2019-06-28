@@ -2,10 +2,13 @@ import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
 export interface DGTableState {
-  sort: {
+  sort?: {
     column: string;
-    order: 'asc' | 'desc';
-  } | null;
+    order: Order;
+  };
+  filters?: {
+    [column: string]: Filter;
+  };
   data: Investigation[];
   loading: boolean;
   error: string | null;
@@ -35,11 +38,13 @@ export interface Investigation {
   [key: string]: string | number | { NAME: string };
 }
 
-// TODO: actually type this properly
-export interface Filter {
-  where?: string;
+// TODO: type this properly
+export type Filter = string;
+
+export type Order = 'asc' | 'desc';
+
+// TODO: type this properly
+export interface ApiFilter {
   order?: string;
-  limit?: string;
-  skip?: string;
-  include?: string;
+  where?: { [column: string]: Filter };
 }
