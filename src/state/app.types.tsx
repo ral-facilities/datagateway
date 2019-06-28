@@ -42,9 +42,3 @@ export interface Investigation {
 export type Filter = string;
 
 export type Order = 'asc' | 'desc';
-
-// TODO: type this properly
-export interface ApiFilter {
-  order?: string;
-  where?: { [column: string]: Filter };
-}

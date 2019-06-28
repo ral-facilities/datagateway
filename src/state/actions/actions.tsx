@@ -3,7 +3,6 @@ import {
   ThunkResult,
   Investigation,
   Filter,
-  ApiFilter,
   Order,
 } from '../app.types';
 import {
@@ -64,46 +63,25 @@ export const fetchInvestigationsRequest = (): Action => ({
   type: FetchInvestigationsRequestType,
 });
 
-const mergeFilters = (
-  currSort?: { column: string; order: Order },
-  currFilters?: { [column: string]: Filter },
-  newFilter?: ApiFilter
-): ApiFilter => {
-  const currOrder = currSort ? `${currSort.column} ${currSort.order}` : '';
-  console.log(currOrder);
-
-  let filter: {
-    order?: string;
-    where?: { [column: string]: Filter };
-  } = {};
-
-  if (newFilter && newFilter.order) {
-    filter.order = newFilter.order;
-  } else if (currOrder) {
-    filter.order = currOrder;
-  }
-
-  if (newFilter && newFilter.where) {
-    filter.where = {
-      ...currFilters,
-      ...newFilter.where,
-    };
-  } else if (currFilters) {
-    filter.where = currFilters;
-  }
-
-  return filter;
-};
-
-export const fetchInvestigations = (
-  newApiFilter?: ApiFilter
-): ThunkResult<Promise<void>> => {
+export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationsRequest());
-    const currSort = getState().dgtable.sort;
-    const currFilters = getState().dgtable.filters;
+    const sort = getState().dgtable.sort;
+    const filters = getState().dgtable.filters;
 
-    const filter = mergeFilters(currSort, currFilters, newApiFilter);
+    const order = sort ? `${sort.column} ${sort.order}` : '';
+
+    let filter: {
+      order?: string;
+      where?: { [column: string]: Filter };
+    } = {};
+
+    if (order) {
+      filter.order = order;
+    }
+    if (filters) {
+      filter.where = filters;
+    }
 
     let params = {};
     if (Object.keys(filter).length !== 0) {
@@ -125,25 +103,5 @@ export const fetchInvestigations = (
       .catch(error => {
         dispatch(fetchInvestigationsFailure(error.message));
       });
-  };
-};
-
-export const sortInvestigationsTable = (
-  column: string,
-  order: Order
-): ThunkResult<void> => {
-  return dispatch => {
-    dispatch(sortTable(column, order));
-    dispatch(fetchInvestigations({ order: `${column} ${order}` }));
-  };
-};
-
-export const filterInvestigationsTable = (
-  column: string,
-  filter: Filter
-): ThunkResult<void> => {
-  return dispatch => {
-    dispatch(filterTable(column, filter));
-    dispatch(fetchInvestigations({ where: { [column]: filter } }));
   };
 };

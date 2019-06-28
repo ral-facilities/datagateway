@@ -8,15 +8,13 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import { Investigation, StateType, Filter, Order } from '../state/app.types';
 import {
-  sortInvestigationsTable,
   fetchInvestigations,
-  filterInvestigationsTable,
   sortTable,
   filterTable,
 } from '../state/actions/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
+import { AnyAction, Action } from 'redux';
 import { TextField } from '@material-ui/core';
 
 interface HeadRow {
@@ -103,7 +101,7 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
 
   React.useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, sort, filters]);
 
   return (
     <Paper>
