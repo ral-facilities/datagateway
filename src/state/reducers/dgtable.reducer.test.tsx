@@ -5,6 +5,7 @@ import {
   fetchInvestigationsRequest,
   fetchInvestigationsSuccess,
   fetchInvestigationsFailure,
+  filterTable,
 } from '../actions/actions';
 
 describe('dgtable reducer', () => {
@@ -21,10 +22,22 @@ describe('dgtable reducer', () => {
   });
 
   it('should set the sort state when given a SortTable action', () => {
-    expect(state.sort).toBeNull();
+    expect(state.sort).toBeUndefined();
 
-    let updatedState = DGTableReducer(state, sortTable('test', 'ASC'));
-    expect(updatedState.sort).toEqual({ column: 'test', order: 'ASC' });
+    let updatedState = DGTableReducer(state, sortTable('test', 'asc'));
+    expect(updatedState.sort).toEqual({ column: 'test', order: 'asc' });
+  });
+
+  it('should set the filters state when given a FilterTable action', () => {
+    expect(state.filters).toBeUndefined();
+
+    let updatedState = DGTableReducer(
+      state,
+      filterTable('test column', 'test filter')
+    );
+    expect(updatedState.filters).toEqual({
+      'test column': 'test filter',
+    });
   });
 
   describe('FetchInvestigations actions', () => {

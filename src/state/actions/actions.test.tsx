@@ -86,6 +86,50 @@ describe('Actions', () => {
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
   });
 
+  it('fetchInvestigations action applies filters and sort state to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
+    const asyncAction = fetchInvestigations();
+    const actions: Action[] = [];
+    const dispatch = (action: Action): void | Promise<void> => {
+      if (typeof action === 'function') {
+        action(dispatch);
+        return Promise.resolve();
+      } else {
+        actions.push(action);
+      }
+    };
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        sort: { column: 'column1', order: 'desc' },
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest());
+
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess([]));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/investigations',
+      expect.objectContaining({
+        params: {
+          filter: {
+            order: 'column1 desc',
+            where: { column1: '1', column2: '2' },
+          },
+        },
+      })
+    );
+  });
+
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsFailure actions upon unsuccessful fetchInvestigations action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.reject({
@@ -110,40 +154,6 @@ describe('Actions', () => {
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
     expect(actions[1]).toEqual(
       fetchInvestigationsFailure('Test error message')
-    );
-  });
-
-  it('dispatches fetchInvestigations and sortTable actions upon sortInvestigationsTable action', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: [],
-      })
-    );
-    const asyncAction = sortInvestigationsTable('column1', 'asc');
-
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(sortTable('column1', 'asc'));
-    expect(actions[1]).toEqual(fetchInvestigationsRequest());
-    expect(actions[2]).toEqual(fetchInvestigationsSuccess([]));
-    expect(axios.get).toHaveBeenCalledWith(
-      '/investigations',
-      expect.objectContaining({
-        params: {
-          filter: { order: 'column1 asc' },
-        },
-      })
     );
   });
 });
