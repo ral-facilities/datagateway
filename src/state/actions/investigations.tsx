@@ -1,45 +1,14 @@
 import {
-  ActionType,
-  ThunkResult,
-  Investigation,
-  Filter,
-  Order,
-} from '../app.types';
-import {
-  SortTablePayload,
-  SortTableType,
-  FetchInvestigationsRequestType,
-  FetchInvestigationsSuccessPayload,
-  FetchInvestigationsFailurePayload,
   FetchInvestigationsSuccessType,
+  FetchInvestigationsSuccessPayload,
   FetchInvestigationsFailureType,
-  FilterTablePayload,
-  FilterTableType,
+  FetchInvestigationsFailurePayload,
+  FetchInvestigationsRequestType,
 } from './actions.types';
+import { Investigation, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
-
-export const sortTable = (
-  column: string,
-  order: Order
-): ActionType<SortTablePayload> => ({
-  type: SortTableType,
-  payload: {
-    column,
-    order,
-  },
-});
-
-export const filterTable = (
-  column: string,
-  filter: string
-): ActionType<FilterTablePayload> => ({
-  type: FilterTableType,
-  payload: {
-    column,
-    filter,
-  },
-});
+import { getApiFilter } from '.';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[]
@@ -66,22 +35,8 @@ export const fetchInvestigationsRequest = (): Action => ({
 export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationsRequest());
-    const sort = getState().dgtable.sort;
-    const filters = getState().dgtable.filters;
 
-    const order = sort ? `${sort.column} ${sort.order}` : '';
-
-    let filter: {
-      order?: string;
-      where?: { [column: string]: Filter };
-    } = {};
-
-    if (order) {
-      filter.order = order;
-    }
-    if (filters) {
-      filter.where = filters;
-    }
+    const filter = getApiFilter(getState);
 
     let params = {};
     if (Object.keys(filter).length !== 0) {

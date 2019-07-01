@@ -7,11 +7,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import { Investigation, StateType, Filter, Order } from '../state/app.types';
-import {
-  fetchInvestigations,
-  sortTable,
-  filterTable,
-} from '../state/actions/actions';
+import { fetchInvestigations, sortTable, filterTable } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction, Action } from 'redux';

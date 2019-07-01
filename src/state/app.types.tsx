@@ -9,7 +9,7 @@ export interface DGTableState {
   filters?: {
     [column: string]: Filter;
   };
-  data: Investigation[];
+  data: Entity[];
   loading: boolean;
   error: string | null;
 }
@@ -25,6 +25,7 @@ export interface ActionType<T> {
 
 export type ThunkResult<R> = ThunkAction<R, StateType, null, AnyAction>;
 
+// TODO: type entities properly
 export interface Investigation {
   ID: string;
   TITLE: string;
@@ -38,7 +39,28 @@ export interface Investigation {
   [key: string]: string | number | { NAME: string };
 }
 
+export interface Dataset {
+  ID: string;
+  NAME: string;
+  MOD_TIME: string;
+  CREATE_TIME: string;
+  INVESTIGATION_ID: number;
+  [key: string]: string | number;
+}
+
+export interface Datafile {
+  ID: string;
+  NAME: string;
+  LOCATION: string;
+  SIZE: number;
+  MOD_TIME: string;
+  DATASET_ID: number;
+  [key: string]: string | number;
+}
+
+export type Entity = Investigation | Dataset | Datafile;
+
 // TODO: type this properly
-export type Filter = string;
+export type Filter = string | number;
 
 export type Order = 'asc' | 'desc';
