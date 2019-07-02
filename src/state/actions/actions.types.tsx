@@ -22,6 +22,13 @@ export const FetchDatasetsFailureType =
 export const FetchDatasetsSuccessType =
   'datagateway_table:fetch_datasets_success';
 
+export const FetchDatasetCountRequestType =
+  'datagateway_table:fetch_dataset_count_request';
+export const FetchDatasetCountFailureType =
+  'datagateway_table:fetch_dataset_count_failure';
+export const FetchDatasetCountSuccessType =
+  'datagateway_table:fetch_dataset_count_success';
+
 export const FetchDatafilesRequestType =
   'datagateway_table:fetch_datafiles_request';
 export const FetchDatafilesFailureType =
@@ -53,6 +60,15 @@ export interface FetchDatasetsFailurePayload {
 
 export interface FetchDatasetsSuccessPayload {
   datasets: Dataset[];
+}
+
+export interface FetchDatasetCountFailurePayload {
+  error: string;
+}
+
+export interface FetchDatasetCountSuccessPayload {
+  investigationId: number;
+  count: number;
 }
 
 export interface FetchDatafilesFailurePayload {

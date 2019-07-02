@@ -9,8 +9,6 @@ import { StateType, Datafile } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import { Action } from 'redux';
 
-jest.mock('axios');
-
 describe('Datafile actions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -19,7 +17,7 @@ describe('Datafile actions', () => {
   it('dispatches fetchDatafilesRequest and fetchDatafilesSuccess actions upon successful fetchDatafiles action', async () => {
     const mockData: Datafile[] = [
       {
-        ID: '1',
+        ID: 1,
         NAME: 'Test 1',
         LOCATION: '/test1',
         SIZE: 1,
@@ -27,7 +25,7 @@ describe('Datafile actions', () => {
         DATASET_ID: 1,
       },
       {
-        ID: '2',
+        ID: 2,
         NAME: 'Test 2',
         LOCATION: '/test2',
         SIZE: 2,

@@ -12,6 +12,9 @@ import {
   fetchDatafilesRequest,
   fetchDatafilesSuccess,
   fetchDatafilesFailure,
+  fetchDatasetCountRequest,
+  fetchDatasetCountSuccess,
+  fetchDatasetCountFailure,
 } from '../actions';
 
 describe('dgtable reducer', () => {
@@ -58,7 +61,7 @@ describe('dgtable reducer', () => {
       state.loading = true;
       const mockData: Investigation[] = [
         {
-          ID: '1',
+          ID: 1,
           TITLE: 'Test 1',
           VISIT_ID: '1',
           RB_NUMBER: '1',
@@ -71,7 +74,7 @@ describe('dgtable reducer', () => {
           ENDDATE: '2019-06-11',
         },
         {
-          ID: '2',
+          ID: 2,
           TITLE: 'Test 2',
           VISIT_ID: '2',
           RB_NUMBER: '2',
@@ -119,14 +122,14 @@ describe('dgtable reducer', () => {
       state.loading = true;
       const mockData: Dataset[] = [
         {
-          ID: '1',
+          ID: 1,
           NAME: 'Test 1',
           MOD_TIME: '2019-06-10',
           CREATE_TIME: '2019-06-11',
           INVESTIGATION_ID: 1,
         },
         {
-          ID: '2',
+          ID: 2,
           NAME: 'Test 2',
           MOD_TIME: '2019-06-10',
           CREATE_TIME: '2019-06-12',
@@ -153,6 +156,67 @@ describe('dgtable reducer', () => {
     });
   });
 
+  describe('FetchDatasetCount actions', () => {
+    it('should set the loading state when given a FetchDatasetCountRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      let updatedState = DGTableReducer(state, fetchDatasetCountRequest());
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the data state and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
+      state.loading = true;
+      const mockData: Investigation[] = [
+        {
+          ID: 1,
+          TITLE: 'Test 1',
+          VISIT_ID: '1',
+          RB_NUMBER: '1',
+          DOI: 'doi 1',
+          SIZE: 1,
+          INSTRUMENT: {
+            NAME: 'LARMOR',
+          },
+          STARTDATE: '2019-06-10',
+          ENDDATE: '2019-06-11',
+        },
+        {
+          ID: 2,
+          TITLE: 'Test 2',
+          VISIT_ID: '2',
+          RB_NUMBER: '2',
+          DOI: 'doi 2',
+          SIZE: 10000,
+          INSTRUMENT: {
+            NAME: 'LARMOR',
+          },
+          STARTDATE: '2019-06-10',
+          ENDDATE: '2019-06-12',
+        },
+      ];
+
+      state.data = mockData;
+
+      const mockDataUpdated: Investigation[] = [
+        { ...mockData[0], DATASET_COUNT: 2 },
+        mockData[1],
+      ];
+
+      let updatedState = DGTableReducer(state, fetchDatasetCountSuccess(1, 2));
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchDatasetCountFailure action', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetCountFailure('Test error message')
+      );
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
   describe('FetchDatafiles actions', () => {
     it('should set the loading state when given a FetchDatafilesRequest action', () => {
       expect(state.loading).toBe(false);
@@ -165,7 +229,7 @@ describe('dgtable reducer', () => {
       state.loading = true;
       const mockData: Datafile[] = [
         {
-          ID: '1',
+          ID: 1,
           NAME: 'Test 1',
           LOCATION: '/test1',
           SIZE: 1,
@@ -173,7 +237,7 @@ describe('dgtable reducer', () => {
           DATASET_ID: 1,
         },
         {
-          ID: '2',
+          ID: 2,
           NAME: 'Test 2',
           LOCATION: '/test2',
           SIZE: 2,

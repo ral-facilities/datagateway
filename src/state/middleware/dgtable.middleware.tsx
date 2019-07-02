@@ -4,6 +4,10 @@ import {
   RegisterRouteType,
   RequestPluginRerenderType,
 } from '../actions/actions.types';
+import axios from 'axios';
+
+const CancelToken = axios.CancelToken;
+export let source = CancelToken.source();
 
 const microFrontendMessageId = 'daaas-frontend';
 
@@ -54,6 +58,10 @@ const DGTableMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
 ): AnyAction => {
   if (action.payload && action.payload.broadcast) {
     broadcastMessage(action);
+  }
+  if (action.type === '@@router/LOCATION_CHANGE') {
+    source.cancel('Operation cancelled by user navigation');
+    source = CancelToken.source();
   }
 
   return next(action);

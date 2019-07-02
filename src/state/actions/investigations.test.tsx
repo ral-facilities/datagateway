@@ -4,12 +4,10 @@ import {
   fetchInvestigationsSuccess,
   fetchInvestigationsFailure,
 } from '.';
-import axios from 'axios';
 import { StateType, Investigation } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import { Action } from 'redux';
-
-jest.mock('axios');
+import axios from 'axios';
 
 describe('Investigation actions', () => {
   afterEach(() => {
@@ -19,7 +17,7 @@ describe('Investigation actions', () => {
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchInvestigations action', async () => {
     const mockData: Investigation[] = [
       {
-        ID: '1',
+        ID: 1,
         TITLE: 'Test 1',
         VISIT_ID: '1',
         RB_NUMBER: '1',
@@ -32,7 +30,7 @@ describe('Investigation actions', () => {
         ENDDATE: '2019-06-11',
       },
       {
-        ID: '2',
+        ID: 2,
         TITLE: 'Test 2',
         VISIT_ID: '2',
         RB_NUMBER: '2',

@@ -49,7 +49,7 @@ export const sortTable = (
 
 export const filterTable = (
   column: string,
-  filter: string
+  filter: Filter
 ): ActionType<FilterTablePayload> => ({
   type: FilterTableType,
   payload: {

@@ -27,7 +27,7 @@ export type ThunkResult<R> = ThunkAction<R, StateType, null, AnyAction>;
 
 // TODO: type entities properly
 export interface Investigation {
-  ID: string;
+  ID: number;
   TITLE: string;
   VISIT_ID: string;
   RB_NUMBER: string;
@@ -36,11 +36,12 @@ export interface Investigation {
   INSTRUMENT: { NAME: string };
   STARTDATE: string;
   ENDDATE: string;
-  [key: string]: string | number | { NAME: string };
+  DATASET_COUNT?: number;
+  [key: string]: string | number | { NAME: string } | undefined;
 }
 
 export interface Dataset {
-  ID: string;
+  ID: number;
   NAME: string;
   MOD_TIME: string;
   CREATE_TIME: string;
@@ -49,7 +50,7 @@ export interface Dataset {
 }
 
 export interface Datafile {
-  ID: string;
+  ID: number;
   NAME: string;
   LOCATION: string;
   SIZE: number;

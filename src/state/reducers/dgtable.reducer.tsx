@@ -1,4 +1,4 @@
-import { DGTableState } from '../app.types';
+import { DGTableState, Investigation, Entity } from '../app.types';
 import createReducer from './createReducer';
 import {
   SortTablePayload,
@@ -20,6 +20,10 @@ import {
   FetchDatafilesRequestType,
   FetchDatafilesSuccessType,
   FetchDatafilesFailureType,
+  FetchDatasetCountSuccessPayload,
+  FetchDatasetCountRequestType,
+  FetchDatasetCountSuccessType,
+  FetchDatasetCountFailureType,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
@@ -118,6 +122,42 @@ export function handleFetchDatasetsFailure(
   };
 }
 
+export function handleFetchDatasetCountRequest(
+  state: DGTableState
+): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleFetchDatasetCountSuccess(
+  state: DGTableState,
+  payload: FetchDatasetCountSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    data: state.data.map((entity: Entity) => {
+      const investigation = entity as Investigation;
+      return investigation.ID === payload.investigationId
+        ? { ...investigation, DATASET_COUNT: payload.count }
+        : investigation;
+    }),
+    error: null,
+  };
+}
+
+export function handleFetchDatasetCountFailure(
+  state: DGTableState,
+  payload: FetchDatasetsFailurePayload
+): DGTableState {
+  return {
+    ...state,
+    error: payload.error,
+  };
+}
+
 export function handleFetchDatafilesRequest(state: DGTableState): DGTableState {
   return {
     ...state,
@@ -158,6 +198,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatasetsRequestType]: handleFetchDatasetsRequest,
   [FetchDatasetsSuccessType]: handleFetchDatasetsSuccess,
   [FetchDatasetsFailureType]: handleFetchDatasetsFailure,
+  [FetchDatasetCountRequestType]: handleFetchDatasetCountRequest,
+  [FetchDatasetCountSuccessType]: handleFetchDatasetCountSuccess,
+  [FetchDatasetCountFailureType]: handleFetchDatasetCountFailure,
   [FetchDatafilesRequestType]: handleFetchDatafilesRequest,
   [FetchDatafilesSuccessType]: handleFetchDatafilesSuccess,
   [FetchDatafilesFailureType]: handleFetchDatafilesFailure,

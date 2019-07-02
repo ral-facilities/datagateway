@@ -6,12 +6,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
-import { Investigation, StateType, Filter, Order } from '../state/app.types';
+import { StateType, Filter, Order, Entity } from '../state/app.types';
 import { fetchInvestigations, sortTable, filterTable } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction, Action } from 'redux';
-import { TextField } from '@material-ui/core';
+import { TextField, CircularProgress } from '@material-ui/core';
 
 interface HeadRow {
   id: string;
@@ -24,6 +24,7 @@ const headRows: HeadRow[] = [
     label: 'Title',
   },
   { id: 'VISIT_ID', label: 'Visit ID' },
+  { id: 'DATASET_COUNT', label: 'Dataset count' },
 ];
 
 interface TestTableHeadProps {
@@ -72,7 +73,7 @@ interface TestTableProps {
   filters?: {
     [column: string]: Filter;
   };
-  data: Investigation[];
+  data: Entity[];
   loading: boolean;
   error: string | null;
 }
@@ -118,6 +119,13 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
               <TableRow key={row.ID}>
                 <TableCell>{row.TITLE}</TableCell>
                 <TableCell>{row.VISIT_ID}</TableCell>
+                <TableCell>
+                  {row.DATASET_COUNT ? (
+                    row.DATASET_COUNT
+                  ) : (
+                    <CircularProgress disableShrink size={14} thickness={7} />
+                  )}
+                </TableCell>
               </TableRow>
             );
           })}
