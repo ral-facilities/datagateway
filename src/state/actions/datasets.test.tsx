@@ -14,6 +14,7 @@ import {
   fetchDatasetCountSuccess,
   fetchDatasetCountFailure,
 } from './datasets';
+import { fetchDatafileCountRequest } from './datafiles';
 
 describe('Dataset actions', () => {
   afterEach(() => {
@@ -60,6 +61,8 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchDatasetsRequest());
     expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
+    expect(actions[2]).toEqual(fetchDatafileCountRequest());
+    expect(actions[3]).toEqual(fetchDatafileCountRequest());
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets',
       expect.objectContaining({

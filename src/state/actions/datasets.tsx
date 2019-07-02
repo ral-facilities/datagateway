@@ -15,6 +15,7 @@ import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
+import { fetchDatafileCount } from './datafiles';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[]
@@ -63,6 +64,9 @@ export const fetchDatasets = (
       })
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data));
+        response.data.forEach((dataset: Dataset) => {
+          dispatch(fetchDatafileCount(dataset.ID));
+        });
       })
       .catch(error => {
         dispatch(fetchDatasetsFailure(error.message));

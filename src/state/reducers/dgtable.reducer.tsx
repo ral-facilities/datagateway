@@ -1,4 +1,4 @@
-import { DGTableState, Investigation, Entity } from '../app.types';
+import { DGTableState, Investigation, Entity, Dataset } from '../app.types';
 import createReducer from './createReducer';
 import {
   SortTablePayload,
@@ -24,6 +24,11 @@ import {
   FetchDatasetCountRequestType,
   FetchDatasetCountSuccessType,
   FetchDatasetCountFailureType,
+  FetchDatafileCountRequestType,
+  FetchDatafileCountSuccessType,
+  FetchDatafileCountFailureType,
+  FetchDatafileCountSuccessPayload,
+  FetchDatafileCountFailurePayload,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
@@ -127,7 +132,6 @@ export function handleFetchDatasetCountRequest(
 ): DGTableState {
   return {
     ...state,
-    loading: true,
   };
 }
 
@@ -189,6 +193,41 @@ export function handleFetchDatafilesFailure(
   };
 }
 
+export function handleFetchDatafileCountRequest(
+  state: DGTableState
+): DGTableState {
+  return {
+    ...state,
+  };
+}
+
+export function handleFetchDatafileCountSuccess(
+  state: DGTableState,
+  payload: FetchDatafileCountSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    data: state.data.map((entity: Entity) => {
+      const dataset = entity as Dataset;
+      return dataset.ID === payload.datasetId
+        ? { ...dataset, DATAFILE_COUNT: payload.count }
+        : dataset;
+    }),
+    error: null,
+  };
+}
+
+export function handleFetchDatafileCountFailure(
+  state: DGTableState,
+  payload: FetchDatafileCountFailurePayload
+): DGTableState {
+  return {
+    ...state,
+    error: payload.error,
+  };
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
@@ -204,6 +243,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatafilesRequestType]: handleFetchDatafilesRequest,
   [FetchDatafilesSuccessType]: handleFetchDatafilesSuccess,
   [FetchDatafilesFailureType]: handleFetchDatafilesFailure,
+  [FetchDatafileCountRequestType]: handleFetchDatafileCountRequest,
+  [FetchDatafileCountSuccessType]: handleFetchDatafileCountSuccess,
+  [FetchDatafileCountFailureType]: handleFetchDatafileCountFailure,
 });
 
 export default DGTableReducer;

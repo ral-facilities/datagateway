@@ -46,7 +46,8 @@ export interface Dataset {
   MOD_TIME: string;
   CREATE_TIME: string;
   INVESTIGATION_ID: number;
-  [key: string]: string | number;
+  DATAFILE_COUNT?: number;
+  [key: string]: string | number | undefined;
 }
 
 export interface Datafile {

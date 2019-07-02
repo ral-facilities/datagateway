@@ -15,6 +15,9 @@ import {
   fetchDatasetCountRequest,
   fetchDatasetCountSuccess,
   fetchDatasetCountFailure,
+  fetchDatafileCountRequest,
+  fetchDatafileCountSuccess,
+  fetchDatafileCountFailure,
 } from '../actions';
 
 describe('dgtable reducer', () => {
@@ -157,11 +160,9 @@ describe('dgtable reducer', () => {
   });
 
   describe('FetchDatasetCount actions', () => {
-    it('should set the loading state when given a FetchDatasetCountRequest action', () => {
-      expect(state.loading).toBe(false);
-
+    it('should not affect state when given a FetchDatasetCountRequest action', () => {
       let updatedState = DGTableReducer(state, fetchDatasetCountRequest());
-      expect(updatedState.loading).toBe(true);
+      expect(updatedState).toEqual(state);
     });
 
     it('should set the data state and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
@@ -261,6 +262,53 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchDatafileCount actions', () => {
+    it('should not affect state when given a FetchDatafileCountRequest action', () => {
+      let updatedState = DGTableReducer(state, fetchDatafileCountRequest());
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should set the data state and reset error and loading state when given a FetchDatafileCountSuccess action', () => {
+      state.loading = true;
+      const mockData: Dataset[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-11',
+          INVESTIGATION_ID: 1,
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-12',
+          INVESTIGATION_ID: 1,
+        },
+      ];
+
+      state.data = mockData;
+
+      const mockDataUpdated: Dataset[] = [
+        { ...mockData[0], DATAFILE_COUNT: 2 },
+        mockData[1],
+      ];
+
+      let updatedState = DGTableReducer(state, fetchDatafileCountSuccess(1, 2));
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchDatafileCountFailure action', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileCountFailure('Test error message')
+      );
       expect(updatedState.error).toEqual('Test error message');
     });
   });

@@ -8,6 +8,7 @@ import { StateType, Investigation } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import { Action } from 'redux';
 import axios from 'axios';
+import { fetchDatasetCountRequest } from './datasets';
 
 describe('Investigation actions', () => {
   afterEach(() => {
@@ -66,6 +67,8 @@ describe('Investigation actions', () => {
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
+    expect(actions[2]).toEqual(fetchDatasetCountRequest());
+    expect(actions[3]).toEqual(fetchDatasetCountRequest());
   });
 
   it('fetchInvestigations action applies filters and sort state to request params', async () => {

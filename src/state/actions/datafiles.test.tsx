@@ -8,6 +8,13 @@ import axios from 'axios';
 import { StateType, Datafile } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import { Action } from 'redux';
+import {
+  fetchDatafileCount,
+  fetchDatafileCountRequest,
+  fetchDatafileCountSuccess,
+  fetchDatafileCountFailure,
+} from './datafiles';
+import { fetchDatasetCountRequest, fetchDatasetCountSuccess } from './datasets';
 
 describe('Datafile actions', () => {
   afterEach(() => {
@@ -135,5 +142,65 @@ describe('Datafile actions', () => {
 
     expect(actions[0]).toEqual(fetchDatafilesRequest());
     expect(actions[1]).toEqual(fetchDatafilesFailure('Test error message'));
+  });
+
+  it('dispatches fetchDatafileCountRequest and fetchDatafileCountSuccess actions upon successful fetchDatafileCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 2,
+      })
+    );
+
+    const asyncAction = fetchDatafileCount(1);
+    const actions: Action[] = [];
+    const dispatch = (action: Action): void | Promise<void> => {
+      if (typeof action === 'function') {
+        action(dispatch);
+        return Promise.resolve();
+      } else {
+        actions.push(action);
+      }
+    };
+    const getState = (): Partial<StateType> => ({ dgtable: initialState });
+
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatafileCountRequest());
+    expect(actions[1]).toEqual(fetchDatafileCountSuccess(1, 2));
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datafiles/count',
+      expect.objectContaining({
+        params: {
+          filter: {
+            where: { DATASET_ID: 1 },
+          },
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchDatafileCountRequest and fetchDatafileCountFailure actions upon unsuccessful fetchDatafileCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchDatafileCount(1);
+    const actions: Action[] = [];
+    const dispatch = (action: Action): void | Promise<void> => {
+      if (typeof action === 'function') {
+        action(dispatch);
+        return Promise.resolve();
+      } else {
+        actions.push(action);
+      }
+    };
+    const getState = (): Partial<StateType> => ({ dgtable: initialState });
+
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatafileCountRequest());
+    expect(actions[1]).toEqual(fetchDatafileCountFailure('Test error message'));
   });
 });

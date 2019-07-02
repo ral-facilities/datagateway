@@ -36,6 +36,13 @@ export const FetchDatafilesFailureType =
 export const FetchDatafilesSuccessType =
   'datagateway_table:fetch_datafiles_success';
 
+export const FetchDatafileCountRequestType =
+  'datagateway_table:fetch_datafile_count_request';
+export const FetchDatafileCountFailureType =
+  'datagateway_table:fetch_datafile_count_failure';
+export const FetchDatafileCountSuccessType =
+  'datagateway_table:fetch_datafile_count_success';
+
 export interface SortTablePayload {
   column: string;
   order: Order;
@@ -77,4 +84,13 @@ export interface FetchDatafilesFailurePayload {
 
 export interface FetchDatafilesSuccessPayload {
   datafiles: Datafile[];
+}
+
+export interface FetchDatafileCountFailurePayload {
+  error: string;
+}
+
+export interface FetchDatafileCountSuccessPayload {
+  datasetId: number;
+  count: number;
 }

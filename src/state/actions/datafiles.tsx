@@ -4,11 +4,17 @@ import {
   FetchDatafilesFailureType,
   FetchDatafilesFailurePayload,
   FetchDatafilesRequestType,
+  FetchDatafileCountSuccessPayload,
+  FetchDatafileCountSuccessType,
+  FetchDatafileCountFailureType,
+  FetchDatafileCountRequestType,
+  FetchDatafileCountFailurePayload,
 } from './actions.types';
 import { Datafile, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
+import { source } from '../middleware/dgtable.middleware';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[]
@@ -33,7 +39,7 @@ export const fetchDatafilesRequest = (): Action => ({
 });
 
 export const fetchDatafiles = (
-  datasetId: number
+  datafileId: number
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDatafilesRequest());
@@ -41,7 +47,7 @@ export const fetchDatafiles = (
     let filter = getApiFilter(getState);
     filter.where = {
       ...filter.where,
-      DATASET_ID: datasetId,
+      DATASET_ID: datafileId,
     };
 
     const params = {
@@ -60,6 +66,61 @@ export const fetchDatafiles = (
       })
       .catch(error => {
         dispatch(fetchDatafilesFailure(error.message));
+      });
+  };
+};
+
+export const fetchDatafileCountSuccess = (
+  datasetId: number,
+  count: number
+): ActionType<FetchDatafileCountSuccessPayload> => ({
+  type: FetchDatafileCountSuccessType,
+  payload: {
+    datasetId,
+    count,
+  },
+});
+
+export const fetchDatafileCountFailure = (
+  error: string
+): ActionType<FetchDatafileCountFailurePayload> => ({
+  type: FetchDatafileCountFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatafileCountRequest = (): Action => ({
+  type: FetchDatafileCountRequestType,
+});
+
+export const fetchDatafileCount = (
+  datasetId: number
+): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    dispatch(fetchDatafileCountRequest());
+
+    const params = {
+      filter: {
+        where: {
+          DATASET_ID: datasetId,
+        },
+      },
+    };
+
+    await axios
+      .get('/datafiles/count', {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+        cancelToken: source.token,
+      })
+      .then(response => {
+        dispatch(fetchDatafileCountSuccess(datasetId, response.data));
+      })
+      .catch(error => {
+        dispatch(fetchDatafileCountFailure(error.message));
       });
   };
 };
