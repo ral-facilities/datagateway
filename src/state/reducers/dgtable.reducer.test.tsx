@@ -33,11 +33,20 @@ describe('dgtable reducer', () => {
     expect(updatedState).toBe(state);
   });
 
-  it('should set the sort state when given a SortTable action', () => {
+  it('should set the sort state when given a SortTable action with asc or desc order', () => {
     expect(state.sort).toBeUndefined();
 
     let updatedState = DGTableReducer(state, sortTable('test', 'asc'));
-    expect(updatedState.sort).toEqual({ column: 'test', order: 'asc' });
+    expect(updatedState.sort).toEqual({ test: 'asc' });
+  });
+
+  it('should remove column from sort state when given a SortTable action with null order', () => {
+    state.sort = {
+      test: 'asc',
+    };
+
+    let updatedState = DGTableReducer(state, sortTable('test', null));
+    expect(updatedState.sort).toEqual({});
   });
 
   it('should set the filters state when given a FilterTable action', () => {

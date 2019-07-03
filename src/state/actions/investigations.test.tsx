@@ -91,7 +91,7 @@ describe('Investigation actions', () => {
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
-        sort: { column: 'column1', order: 'desc' },
+        sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
       },
     });

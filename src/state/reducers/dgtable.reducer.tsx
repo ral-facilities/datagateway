@@ -41,13 +41,28 @@ export function handleSortTable(
   state: DGTableState,
   payload: SortTablePayload
 ): DGTableState {
-  return {
-    ...state,
-    sort: {
-      column: payload.column,
-      order: payload.order,
-    },
-  };
+  const { column, order } = payload;
+  if (order !== null) {
+    // if given an defined order (asc or desc), update the relevant column in the sort state
+    return {
+      ...state,
+      sort: {
+        ...state.sort,
+        [column]: order,
+      },
+    };
+  } else if (state.sort) {
+    // if order is null, user no longer wants to sort by column so remove column from sort state if it exists
+    const { [column]: order, ...rest } = state.sort;
+    return {
+      ...state,
+      sort: {
+        ...rest,
+      },
+    };
+  } else {
+    return state;
+  }
 }
 
 export function handleFilterTable(

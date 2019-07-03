@@ -29,12 +29,13 @@ const headRows: HeadRow[] = [
 
 interface TestTableHeadProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
-  order: Order;
-  orderBy: string;
+  sort: {
+    [column: string]: Order;
+  };
 }
 
 function TestTableHead(props: TestTableHeadProps): React.ReactElement {
-  const { order, orderBy, onRequestSort } = props;
+  const { sort, onRequestSort } = props;
   const createSortHandler = (
     property: string
   ): ((event: React.MouseEvent<unknown, MouseEvent>) => void) => (
@@ -49,11 +50,11 @@ function TestTableHead(props: TestTableHeadProps): React.ReactElement {
         {headRows.map(row => (
           <TableCell
             key={row.id}
-            sortDirection={orderBy === row.id ? order : false}
+            sortDirection={row.id in sort ? sort[row.id] : false}
           >
             <TableSortLabel
-              active={orderBy === row.id}
-              direction={order}
+              active={row.id in sort}
+              direction={sort[row.id]}
               onClick={createSortHandler(row.id)}
             >
               {row.label}
@@ -67,8 +68,7 @@ function TestTableHead(props: TestTableHeadProps): React.ReactElement {
 
 interface TestTableProps {
   sort?: {
-    column: string;
-    order: Order;
+    [column: string]: Order;
   };
   filters?: {
     [column: string]: Filter;
@@ -79,7 +79,7 @@ interface TestTableProps {
 }
 
 interface TestTableDispatchProps {
-  sortTable: (column: string, order: Order) => Action;
+  sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter) => Action;
   fetchData: () => Promise<void>;
 }
@@ -92,8 +92,21 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
     event: React.MouseEvent<unknown>,
     property: string
   ): void {
-    const isDesc = sort && sort.column === property && sort.order === 'desc';
-    sortTable(property, isDesc ? 'asc' : 'desc');
+    const currSortDirection = sort && sort[property] ? sort[property] : null;
+    let nextSortDirection: Order | null = null;
+    switch (currSortDirection) {
+      case 'asc':
+        nextSortDirection = 'desc';
+        break;
+      case 'desc':
+        nextSortDirection = null;
+        break;
+      case null:
+        nextSortDirection = 'asc';
+    }
+    console.log(currSortDirection);
+    console.log(nextSortDirection);
+    sortTable(property, nextSortDirection);
   }
 
   React.useEffect(() => {
@@ -108,11 +121,7 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
         onChange={event => filterTable('TITLE', event.target.value)}
       />
       <Table size={'small'}>
-        <TestTableHead
-          order={sort ? sort.order : 'asc'}
-          orderBy={sort ? sort.column : ''}
-          onRequestSort={handleRequestSort}
-        />
+        <TestTableHead sort={sort || {}} onRequestSort={handleRequestSort} />
         <TableBody>
           {data.map(row => {
             return (
@@ -120,11 +129,10 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
                 <TableCell>{row.TITLE}</TableCell>
                 <TableCell>{row.VISIT_ID}</TableCell>
                 <TableCell>
-                  {row.DATASET_COUNT ? (
-                    row.DATASET_COUNT
-                  ) : (
-                    <CircularProgress disableShrink size={14} thickness={7} />
-                  )}
+                  {row.DATASET_COUNT
+                    ? row.DATASET_COUNT
+                    : // <CircularProgress disableShrink size={14} thickness={7} />
+                      'Loading...'}
                 </TableCell>
               </TableRow>
             );
@@ -138,7 +146,7 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): TestTableDispatchProps => ({
-  sortTable: (column: string, order: Order) =>
+  sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter) =>
     dispatch(filterTable(column, filter)),

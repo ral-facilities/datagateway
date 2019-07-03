@@ -45,7 +45,7 @@ export const FetchDatafileCountSuccessType =
 
 export interface SortTablePayload {
   column: string;
-  order: Order;
+  order: Order | null;
 }
 
 export interface FilterTablePayload {

@@ -9,21 +9,30 @@ import {
 export const getApiFilter = (
   getState: () => StateType
 ): {
-  order?: string;
+  order?: string | string[];
   where?: { [column: string]: Filter };
 } => {
   const sort = getState().dgtable.sort;
   const filters = getState().dgtable.filters;
 
-  const order = sort ? `${sort.column} ${sort.order}` : '';
-
   let filter: {
-    order?: string;
+    order?: string | string[];
     where?: { [column: string]: Filter };
   } = {};
 
-  if (order) {
-    filter.order = order;
+  if (sort) {
+    let orderFilter: string | string[];
+    const sorts = Object.entries(sort);
+    if (sorts.length === 1) {
+      orderFilter = `${sorts[0][0]} ${sorts[0][1]}`;
+    } else {
+      orderFilter = [];
+      for (const [column, order] of sorts) {
+        orderFilter.push(`${column} ${order}`);
+      }
+    }
+
+    filter.order = orderFilter;
   }
   if (filters) {
     filter.where = filters;
@@ -38,7 +47,7 @@ export * from './datafiles';
 
 export const sortTable = (
   column: string,
-  order: Order
+  order: Order | null
 ): ActionType<SortTablePayload> => ({
   type: SortTableType,
   payload: {

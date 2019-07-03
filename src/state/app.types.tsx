@@ -3,8 +3,7 @@ import { AnyAction } from 'redux';
 
 export interface DGTableState {
   sort?: {
-    column: string;
-    order: Order;
+    [column: string]: Order;
   };
   filters?: {
     [column: string]: Filter;
