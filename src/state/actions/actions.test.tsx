@@ -5,6 +5,16 @@ import { initialState } from '../reducers/dgtable.reducer';
 
 describe('Actions', () => {
   describe('getApiFilter', () => {
+    it('given a empty sort anf filters it returns an empty object', () => {
+      const getState = (): StateType => ({
+        dgtable: {
+          ...initialState,
+        },
+      });
+      const filter = getApiFilter(getState);
+      expect(filter).toEqual({});
+    });
+
     it('given a single sort column in the sort state it returns an order string', () => {
       const getState = (): StateType => ({
         dgtable: {

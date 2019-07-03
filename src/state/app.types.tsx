@@ -2,10 +2,10 @@ import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
 export interface DGTableState {
-  sort?: {
+  sort: {
     [column: string]: Order;
   };
-  filters?: {
+  filters: {
     [column: string]: Filter;
   };
   data: Entity[];

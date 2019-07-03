@@ -80,7 +80,7 @@ interface TestTableProps {
 
 interface TestTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter) => Action;
+  filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: () => Promise<void>;
 }
 
@@ -118,7 +118,9 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
       <TextField
         placeholder="Title filter"
         value={filters && filters.TITLE ? filters.TITLE : ''}
-        onChange={event => filterTable('TITLE', event.target.value)}
+        onChange={event =>
+          filterTable('TITLE', event.target.value ? event.target.value : null)
+        }
       />
       <Table size={'small'}>
         <TestTableHead sort={sort || {}} onRequestSort={handleRequestSort} />
@@ -148,7 +150,7 @@ const mapDispatchToProps = (
 ): TestTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter) =>
+  filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: () => dispatch(fetchInvestigations()),
 });

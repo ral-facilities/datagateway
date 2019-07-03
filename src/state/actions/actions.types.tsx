@@ -50,7 +50,7 @@ export interface SortTablePayload {
 
 export interface FilterTablePayload {
   column: string;
-  filter: Filter;
+  filter: Filter | null;
 }
 
 export interface FetchInvestigationsFailurePayload {

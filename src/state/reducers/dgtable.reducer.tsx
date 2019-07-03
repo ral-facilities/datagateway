@@ -35,6 +35,8 @@ export const initialState: DGTableState = {
   data: [],
   loading: false,
   error: null,
+  sort: {},
+  filters: {},
 };
 
 export function handleSortTable(
@@ -51,8 +53,8 @@ export function handleSortTable(
         [column]: order,
       },
     };
-  } else if (state.sort) {
-    // if order is null, user no longer wants to sort by column so remove column from sort state if it exists
+  } else {
+    // if order is null, user no longer wants to sort by that column so remove column from sort state
     const { [column]: order, ...rest } = state.sort;
     return {
       ...state,
@@ -60,8 +62,6 @@ export function handleSortTable(
         ...rest,
       },
     };
-  } else {
-    return state;
   }
 }
 
@@ -69,13 +69,26 @@ export function handleFilterTable(
   state: DGTableState,
   payload: FilterTablePayload
 ): DGTableState {
-  return {
-    ...state,
-    filters: {
-      ...state.filters,
-      [payload.column]: payload.filter,
-    },
-  };
+  const { column, filter } = payload;
+  if (filter !== null) {
+    // if given an defined filter, update the relevant column in the sort state
+    return {
+      ...state,
+      filters: {
+        ...state.filters,
+        [column]: filter,
+      },
+    };
+  } else {
+    // if filter is null, user no longer wants to filter by that column so remove column from filter state
+    const { [column]: filter, ...rest } = state.filters;
+    return {
+      ...state,
+      filters: {
+        ...rest,
+      },
+    };
+  }
 }
 
 export function handleFetchInvestigationsRequest(

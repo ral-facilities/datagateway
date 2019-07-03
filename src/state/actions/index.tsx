@@ -20,9 +20,9 @@ export const getApiFilter = (
     where?: { [column: string]: Filter };
   } = {};
 
-  if (sort) {
+  const sorts = Object.entries(sort);
+  if (sorts.length !== 0) {
     let orderFilter: string | string[];
-    const sorts = Object.entries(sort);
     if (sorts.length === 1) {
       orderFilter = `${sorts[0][0]} ${sorts[0][1]}`;
     } else {
@@ -34,7 +34,7 @@ export const getApiFilter = (
 
     filter.order = orderFilter;
   }
-  if (filters) {
+  if (Object.keys(filters).length !== 0) {
     filter.where = filters;
   }
 
@@ -58,7 +58,7 @@ export const sortTable = (
 
 export const filterTable = (
   column: string,
-  filter: Filter
+  filter: Filter | null
 ): ActionType<FilterTablePayload> => ({
   type: FilterTableType,
   payload: {
