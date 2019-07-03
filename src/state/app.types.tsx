@@ -59,7 +59,12 @@ export interface Datafile {
   [key: string]: string | number;
 }
 
-export type Entity = Investigation | Dataset | Datafile;
+export interface Instrument {
+  ID: number;
+  NAME: string;
+}
+
+export type Entity = Investigation | Dataset | Datafile | Instrument;
 
 // TODO: type this properly
 export type Filter = string | number;

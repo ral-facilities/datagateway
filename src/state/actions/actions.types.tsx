@@ -1,4 +1,11 @@
-import { Investigation, Filter, Order, Dataset, Datafile } from '../app.types';
+import {
+  Investigation,
+  Filter,
+  Order,
+  Dataset,
+  Datafile,
+  Instrument,
+} from '../app.types';
 
 // parent app actions
 export const RegisterRouteType = 'daaas:api:register_route';
@@ -42,6 +49,13 @@ export const FetchDatafileCountFailureType =
   'datagateway_table:fetch_datafile_count_failure';
 export const FetchDatafileCountSuccessType =
   'datagateway_table:fetch_datafile_count_success';
+
+export const FetchInstrumentsRequestType =
+  'datagateway_table:fetch_instruments_request';
+export const FetchInstrumentsFailureType =
+  'datagateway_table:fetch_instruments_failure';
+export const FetchInstrumentsSuccessType =
+  'datagateway_table:fetch_instruments_success';
 
 export interface SortTablePayload {
   column: string;
@@ -93,4 +107,12 @@ export interface FetchDatafileCountFailurePayload {
 export interface FetchDatafileCountSuccessPayload {
   datasetId: number;
   count: number;
+}
+
+export interface FetchInstrumentsFailurePayload {
+  error: string;
+}
+
+export interface FetchInstrumentsSuccessPayload {
+  instruments: Instrument[];
 }

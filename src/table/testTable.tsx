@@ -6,7 +6,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
-import { StateType, Filter, Order, Entity } from '../state/app.types';
+import {
+  StateType,
+  Filter,
+  Order,
+  Entity,
+  Investigation,
+} from '../state/app.types';
 import { fetchInvestigations, sortTable, filterTable } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -104,8 +110,6 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
       case null:
         nextSortDirection = 'asc';
     }
-    console.log(currSortDirection);
-    console.log(nextSortDirection);
     sortTable(property, nextSortDirection);
   }
 
@@ -126,13 +130,14 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
         <TestTableHead sort={sort || {}} onRequestSort={handleRequestSort} />
         <TableBody>
           {data.map(row => {
+            const investigation = row as Investigation;
             return (
-              <TableRow key={row.ID}>
-                <TableCell>{row.TITLE}</TableCell>
-                <TableCell>{row.VISIT_ID}</TableCell>
+              <TableRow key={investigation.ID}>
+                <TableCell>{investigation.TITLE}</TableCell>
+                <TableCell>{investigation.VISIT_ID}</TableCell>
                 <TableCell>
-                  {row.DATASET_COUNT
-                    ? row.DATASET_COUNT
+                  {investigation.DATASET_COUNT
+                    ? investigation.DATASET_COUNT
                     : // <CircularProgress disableShrink size={14} thickness={7} />
                       'Loading...'}
                 </TableCell>

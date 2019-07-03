@@ -1,5 +1,11 @@
 import DGTableReducer, { initialState } from './dgtable.reducer';
-import { DGTableState, Investigation, Dataset, Datafile } from '../app.types';
+import {
+  DGTableState,
+  Investigation,
+  Dataset,
+  Datafile,
+  Instrument,
+} from '../app.types';
 import {
   sortTable,
   fetchInvestigationsRequest,
@@ -18,6 +24,9 @@ import {
   fetchDatafileCountRequest,
   fetchDatafileCountSuccess,
   fetchDatafileCountFailure,
+  fetchInstrumentsRequest,
+  fetchInstrumentsSuccess,
+  fetchInstrumentsFailure,
 } from '../actions';
 
 describe('dgtable reducer', () => {
@@ -327,6 +336,49 @@ describe('dgtable reducer', () => {
         state,
         fetchDatafileCountFailure('Test error message')
       );
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchInstruments actions', () => {
+    it('should set the loading state when given a FetchInstrumentsRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      let updatedState = DGTableReducer(state, fetchInstrumentsRequest());
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the data state and reset error and loading state when given a FetchInstrumentsSuccess action', () => {
+      state.loading = true;
+      const mockData: Instrument[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+        },
+      ];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentsSuccess(mockData)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockData);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state and reset loading and data state when given a FetchInstrumentsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentsFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual([]);
       expect(updatedState.error).toEqual('Test error message');
     });
   });

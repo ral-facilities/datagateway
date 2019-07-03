@@ -29,6 +29,11 @@ import {
   FetchDatafileCountFailureType,
   FetchDatafileCountSuccessPayload,
   FetchDatafileCountFailurePayload,
+  FetchInstrumentsFailurePayload,
+  FetchInstrumentsSuccessPayload,
+  FetchInstrumentsFailureType,
+  FetchInstrumentsSuccessType,
+  FetchInstrumentsRequestType,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
@@ -256,6 +261,39 @@ export function handleFetchDatafileCountFailure(
   };
 }
 
+export function handleFetchInstrumentsRequest(
+  state: DGTableState
+): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleFetchInstrumentsSuccess(
+  state: DGTableState,
+  payload: FetchInstrumentsSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    data: payload.instruments,
+    error: null,
+  };
+}
+
+export function handleFetchInstrumentsFailure(
+  state: DGTableState,
+  payload: FetchInstrumentsFailurePayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    data: [],
+    error: payload.error,
+  };
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
@@ -274,6 +312,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatafileCountRequestType]: handleFetchDatafileCountRequest,
   [FetchDatafileCountSuccessType]: handleFetchDatafileCountSuccess,
   [FetchDatafileCountFailureType]: handleFetchDatafileCountFailure,
+  [FetchInstrumentsRequestType]: handleFetchInstrumentsRequest,
+  [FetchInstrumentsSuccessType]: handleFetchInstrumentsSuccess,
+  [FetchInstrumentsFailureType]: handleFetchInstrumentsFailure,
 });
 
 export default DGTableReducer;

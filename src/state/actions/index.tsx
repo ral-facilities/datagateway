@@ -44,6 +44,7 @@ export const getApiFilter = (
 export * from './investigations';
 export * from './datasets';
 export * from './datafiles';
+export * from './instruments';
 
 export const sortTable = (
   column: string,
