@@ -45,6 +45,7 @@ export * from './investigations';
 export * from './datasets';
 export * from './datafiles';
 export * from './instruments';
+export * from './facilityCycles';
 
 export const sortTable = (
   column: string,

@@ -1,5 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { StringLiteral } from '@babel/types';
 
 export interface DGTableState {
   sort: {
@@ -64,7 +65,20 @@ export interface Instrument {
   NAME: string;
 }
 
-export type Entity = Investigation | Dataset | Datafile | Instrument;
+export interface FacilityCycle {
+  ID: number;
+  NAME: string;
+  DESCRIPTION: string;
+  STARTDATE: string;
+  ENDDATE: string;
+}
+
+export type Entity =
+  | Investigation
+  | Dataset
+  | Datafile
+  | Instrument
+  | FacilityCycle;
 
 // TODO: type this properly
 export type Filter = string | number;

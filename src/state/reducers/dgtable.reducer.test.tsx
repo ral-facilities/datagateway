@@ -5,6 +5,7 @@ import {
   Dataset,
   Datafile,
   Instrument,
+  FacilityCycle,
 } from '../app.types';
 import {
   sortTable,
@@ -28,6 +29,11 @@ import {
   fetchInstrumentsSuccess,
   fetchInstrumentsFailure,
 } from '../actions';
+import {
+  fetchFacilityCyclesRequest,
+  fetchFacilityCyclesSuccess,
+  fetchFacilityCyclesFailure,
+} from '../actions/facilityCycles';
 
 describe('dgtable reducer', () => {
   let state: DGTableState;
@@ -376,6 +382,55 @@ describe('dgtable reducer', () => {
       let updatedState = DGTableReducer(
         state,
         fetchInstrumentsFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchFacilityCycles actions', () => {
+    it('should set the loading state when given a FetchFacilityCyclesRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      let updatedState = DGTableReducer(state, fetchFacilityCyclesRequest());
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the data state and reset error and loading state when given a FetchFacilityCyclesSuccess action', () => {
+      state.loading = true;
+      const mockData: FacilityCycle[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+          DESCRIPTION: 'Test 1',
+          STARTDATE: '2019-07-03',
+          ENDDATE: '2019-07-04',
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+          DESCRIPTION: 'Test 2',
+          STARTDATE: '2019-07-03',
+          ENDDATE: '2019-07-04',
+        },
+      ];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchFacilityCyclesSuccess(mockData)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockData);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state and reset loading and data state when given a FetchFacilityCyclesFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchFacilityCyclesFailure('Test error message')
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);

@@ -5,6 +5,7 @@ import {
   Dataset,
   Datafile,
   Instrument,
+  FacilityCycle,
 } from '../app.types';
 
 // parent app actions
@@ -56,6 +57,13 @@ export const FetchInstrumentsFailureType =
   'datagateway_table:fetch_instruments_failure';
 export const FetchInstrumentsSuccessType =
   'datagateway_table:fetch_instruments_success';
+
+export const FetchFacilityCyclesRequestType =
+  'datagateway_table:fetch_facility_cycles_request';
+export const FetchFacilityCyclesFailureType =
+  'datagateway_table:fetch_facility_cycles_failure';
+export const FetchFacilityCyclesSuccessType =
+  'datagateway_table:fetch_facility_cycles_success';
 
 export interface SortTablePayload {
   column: string;
@@ -115,4 +123,12 @@ export interface FetchInstrumentsFailurePayload {
 
 export interface FetchInstrumentsSuccessPayload {
   instruments: Instrument[];
+}
+
+export interface FetchFacilityCyclesFailurePayload {
+  error: string;
+}
+
+export interface FetchFacilityCyclesSuccessPayload {
+  facilityCycles: FacilityCycle[];
 }

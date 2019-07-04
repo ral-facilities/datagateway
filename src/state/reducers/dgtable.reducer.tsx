@@ -34,6 +34,11 @@ import {
   FetchInstrumentsFailureType,
   FetchInstrumentsSuccessType,
   FetchInstrumentsRequestType,
+  FetchFacilityCyclesRequestType,
+  FetchFacilityCyclesSuccessType,
+  FetchFacilityCyclesFailureType,
+  FetchFacilityCyclesSuccessPayload,
+  FetchFacilityCyclesFailurePayload,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
@@ -294,6 +299,39 @@ export function handleFetchInstrumentsFailure(
   };
 }
 
+export function handleFetchFacilityCyclesRequest(
+  state: DGTableState
+): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleFetchFacilityCyclesSuccess(
+  state: DGTableState,
+  payload: FetchFacilityCyclesSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    data: payload.facilityCycles,
+    error: null,
+  };
+}
+
+export function handleFetchFacilityCyclesFailure(
+  state: DGTableState,
+  payload: FetchFacilityCyclesFailurePayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    data: [],
+    error: payload.error,
+  };
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
@@ -315,6 +353,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInstrumentsRequestType]: handleFetchInstrumentsRequest,
   [FetchInstrumentsSuccessType]: handleFetchInstrumentsSuccess,
   [FetchInstrumentsFailureType]: handleFetchInstrumentsFailure,
+  [FetchFacilityCyclesRequestType]: handleFetchFacilityCyclesRequest,
+  [FetchFacilityCyclesSuccessType]: handleFetchFacilityCyclesSuccess,
+  [FetchFacilityCyclesFailureType]: handleFetchFacilityCyclesFailure,
 });
 
 export default DGTableReducer;
