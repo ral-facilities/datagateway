@@ -1,6 +1,5 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { StringLiteral } from '@babel/types';
 
 export interface DGTableState {
   sort: {
@@ -11,6 +10,7 @@ export interface DGTableState {
   };
   data: Entity[];
   loading: boolean;
+  downloading: boolean;
   error: string | null;
 }
 

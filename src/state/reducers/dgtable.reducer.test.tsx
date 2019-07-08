@@ -28,6 +28,9 @@ import {
   fetchInstrumentsRequest,
   fetchInstrumentsSuccess,
   fetchInstrumentsFailure,
+  downloadDatafileRequest,
+  downloadDatafileSuccess,
+  downloadDatafileFailure,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -295,6 +298,33 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('DownloadDatafile actions', () => {
+    it('should set the downloading state to true when given a DownloadDatafileRequest action', () => {
+      expect(state.downloading).toBe(false);
+
+      let updatedState = DGTableReducer(state, downloadDatafileRequest());
+      expect(updatedState.downloading).toBe(true);
+    });
+
+    it('should set the downloading state to false when given a DownloadDatafileSuccess action', () => {
+      state.downloading = true;
+
+      let updatedState = DGTableReducer(state, downloadDatafileSuccess());
+      expect(updatedState.downloading).toBe(false);
+    });
+
+    it('should set the error state and the downloading state to false when given a DownloadDatafileFailure action', () => {
+      state.downloading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        downloadDatafileFailure('Test error message')
+      );
+      expect(updatedState.downloading).toBe(false);
       expect(updatedState.error).toEqual('Test error message');
     });
   });

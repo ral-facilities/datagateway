@@ -39,11 +39,16 @@ import {
   FetchFacilityCyclesFailureType,
   FetchFacilityCyclesSuccessPayload,
   FetchFacilityCyclesFailurePayload,
+  DownloadDatafileFailurePayload,
+  DownloadDatafileFailureType,
+  DownloadDatafileRequestType,
+  DownloadDatafileSuccessType,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
   data: [],
   loading: false,
+  downloading: false,
   error: null,
   sort: {},
   filters: {},
@@ -266,6 +271,35 @@ export function handleFetchDatafileCountFailure(
   };
 }
 
+export function handleDownloadDatafileRequest(
+  state: DGTableState
+): DGTableState {
+  return {
+    ...state,
+    downloading: true,
+  };
+}
+
+export function handleDownloadDatafileSuccess(
+  state: DGTableState
+): DGTableState {
+  return {
+    ...state,
+    downloading: false,
+  };
+}
+
+export function handleDownloadDatafileFailure(
+  state: DGTableState,
+  payload: DownloadDatafileFailurePayload
+): DGTableState {
+  return {
+    ...state,
+    downloading: false,
+    error: payload.error,
+  };
+}
+
 export function handleFetchInstrumentsRequest(
   state: DGTableState
 ): DGTableState {
@@ -350,6 +384,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatafileCountRequestType]: handleFetchDatafileCountRequest,
   [FetchDatafileCountSuccessType]: handleFetchDatafileCountSuccess,
   [FetchDatafileCountFailureType]: handleFetchDatafileCountFailure,
+  [DownloadDatafileRequestType]: handleDownloadDatafileRequest,
+  [DownloadDatafileSuccessType]: handleDownloadDatafileSuccess,
+  [DownloadDatafileFailureType]: handleDownloadDatafileFailure,
   [FetchInstrumentsRequestType]: handleFetchInstrumentsRequest,
   [FetchInstrumentsSuccessType]: handleFetchInstrumentsSuccess,
   [FetchInstrumentsFailureType]: handleFetchInstrumentsFailure,

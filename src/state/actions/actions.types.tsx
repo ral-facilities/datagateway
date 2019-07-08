@@ -51,6 +51,13 @@ export const FetchDatafileCountFailureType =
 export const FetchDatafileCountSuccessType =
   'datagateway_table:fetch_datafile_count_success';
 
+export const DownloadDatafileRequestType =
+  'datagateway_table:download_datafile_request';
+export const DownloadDatafileFailureType =
+  'datagateway_table:download_datafile_failure';
+export const DownloadDatafileSuccessType =
+  'datagateway_table:download_datafile_success';
+
 export const FetchInstrumentsRequestType =
   'datagateway_table:fetch_instruments_request';
 export const FetchInstrumentsFailureType =
@@ -115,6 +122,10 @@ export interface FetchDatafileCountFailurePayload {
 export interface FetchDatafileCountSuccessPayload {
   datasetId: number;
   count: number;
+}
+
+export interface DownloadDatafileFailurePayload {
+  error: string;
 }
 
 export interface FetchInstrumentsFailurePayload {

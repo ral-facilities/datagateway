@@ -1,23 +1,34 @@
 import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Paper from '@material-ui/core/Paper';
+import {
+  TextField,
+  CircularProgress,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Paper,
+} from '@material-ui/core';
 import {
   StateType,
   Filter,
   Order,
   Entity,
   Investigation,
+  Dataset,
 } from '../state/app.types';
-import { fetchInvestigations, sortTable, filterTable } from '../state/actions';
+import {
+  fetchInvestigations,
+  sortTable,
+  filterTable,
+  downloadDatafile,
+  fetchDatafiles,
+} from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction, Action } from 'redux';
-import { TextField, CircularProgress } from '@material-ui/core';
 
 interface HeadRow {
   id: string;
@@ -26,11 +37,10 @@ interface HeadRow {
 
 const headRows: HeadRow[] = [
   {
-    id: 'TITLE',
-    label: 'Title',
+    id: 'NAME',
+    label: 'Name',
   },
-  { id: 'VISIT_ID', label: 'Visit ID' },
-  { id: 'DATASET_COUNT', label: 'Dataset count' },
+  { id: 'LOCATION', label: 'Location' },
 ];
 
 interface TestTableHeadProps {
@@ -67,6 +77,7 @@ function TestTableHead(props: TestTableHeadProps): React.ReactElement {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell key="actions">Actions</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -88,12 +99,21 @@ interface TestTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: () => Promise<void>;
+  downloadData: (datafileId: number, filename: string) => Promise<void>;
 }
 
 type TestTableCombinedProps = TestTableProps & TestTableDispatchProps;
 
 export function TestTable(props: TestTableCombinedProps): React.ReactElement {
-  const { sort, sortTable, fetchData, data, filters, filterTable } = props;
+  const {
+    sort,
+    sortTable,
+    fetchData,
+    data,
+    filters,
+    filterTable,
+    downloadData,
+  } = props;
   function handleRequestSort(
     event: React.MouseEvent<unknown>,
     property: string
@@ -130,16 +150,25 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
         <TestTableHead sort={sort || {}} onRequestSort={handleRequestSort} />
         <TableBody>
           {data.map(row => {
-            const investigation = row as Investigation;
+            const dataset = row as Dataset;
             return (
-              <TableRow key={investigation.ID}>
-                <TableCell>{investigation.TITLE}</TableCell>
-                <TableCell>{investigation.VISIT_ID}</TableCell>
+              <TableRow key={dataset.ID}>
+                <TableCell>{dataset.NAME}</TableCell>
+                <TableCell>{dataset.LOCATION}</TableCell>
                 <TableCell>
-                  {investigation.DATASET_COUNT
-                    ? investigation.DATASET_COUNT
-                    : // <CircularProgress disableShrink size={14} thickness={7} />
-                      'Loading...'}
+                  {/* <a
+                    target="_blank"
+                    href="https://isisicatds.stfc.ac.uk/ids/getData?sessionId=6d86719f-b326-4f70-aa21-f31dfafdc763&datafileIds=84869522&compress=false&true&outfile=\\isis\inst$\NDXLARMOR\Instrument\data\cycle_15_1\LARMOR00004314_ICPevent.txt"
+                  >
+                    DOWNLOAD
+                  </a> */}
+                  <Button
+                    onClick={() =>
+                      downloadData(84869522, 'LARMOR00004314_ICPevent.txt')
+                    }
+                  >
+                    Download
+                  </Button>
                 </TableCell>
               </TableRow>
             );
@@ -157,7 +186,9 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: () => dispatch(fetchInvestigations()),
+  fetchData: () => dispatch(fetchDatafiles(2506)),
+  downloadData: (datafileId: number, filename: string) =>
+    dispatch(downloadDatafile(datafileId, filename)),
 });
 
 const mapStateToProps = (state: StateType): TestTableProps => {

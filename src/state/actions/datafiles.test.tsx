@@ -13,8 +13,9 @@ import {
   fetchDatafileCountRequest,
   fetchDatafileCountSuccess,
   fetchDatafileCountFailure,
+  downloadDatafile,
+  downloadDatafileRequest,
 } from './datafiles';
-import { fetchDatasetCountRequest, fetchDatasetCountSuccess } from './datasets';
 
 describe('Datafile actions', () => {
   afterEach(() => {
@@ -202,5 +203,77 @@ describe('Datafile actions', () => {
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest());
     expect(actions[1]).toEqual(fetchDatafileCountFailure('Test error message'));
+  });
+
+  it('dispatches downloadDatafileRequest and clicks on IDS link upon downloadDatafile action', async () => {
+    jest.spyOn(document, 'createElement');
+    jest.spyOn(document.body, 'appendChild');
+
+    const asyncAction = downloadDatafile(1, 'test.txt');
+    const actions: Action[] = [];
+    const dispatch = (action: Action): void | Promise<void> => {
+      if (typeof action === 'function') {
+        action(dispatch);
+        return Promise.resolve();
+      } else {
+        actions.push(action);
+      }
+    };
+    const getState = (): Partial<StateType> => ({ dgtable: initialState });
+
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(downloadDatafileRequest());
+
+    expect(document.createElement).toHaveBeenCalledWith('a');
+    let link = document.createElement('a');
+    link.href = `/getData?sessionId=${null}&datafileIds=${1}&compress=${false}&outname=${'test.txt'}`;
+    link.target = '_blank';
+    link.style.display = 'none';
+    expect(document.body.appendChild).toHaveBeenCalledWith(link);
+  });
+
+  it('fetchDatafiles action applies filters and sort state to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
+    const asyncAction = fetchDatafiles(1);
+    const actions: Action[] = [];
+    const dispatch = (action: Action): void | Promise<void> => {
+      if (typeof action === 'function') {
+        action(dispatch);
+        return Promise.resolve();
+      } else {
+        actions.push(action);
+      }
+    };
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        sort: { column1: 'desc' },
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatafilesRequest());
+
+    expect(actions[1]).toEqual(fetchDatafilesSuccess([]));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datafiles',
+      expect.objectContaining({
+        params: {
+          filter: {
+            order: 'column1 desc',
+            where: { column1: '1', column2: '2', DATASET_ID: 1 },
+          },
+        },
+      })
+    );
   });
 });
