@@ -9,6 +9,10 @@ import {
   FetchDatasetCountFailurePayload,
   FetchDatasetCountSuccessType,
   FetchDatasetCountSuccessPayload,
+  DownloadDatasetSuccessType,
+  DownloadDatasetFailureType,
+  DownloadDatasetRequestType,
+  DownloadDatasetFailurePayload,
 } from './actions.types';
 import { Dataset, ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
@@ -71,6 +75,55 @@ export const fetchDatasets = (
       .catch(error => {
         dispatch(fetchDatasetsFailure(error.message));
       });
+  };
+};
+
+export const downloadDatasetSuccess = (): Action => ({
+  type: DownloadDatasetSuccessType,
+});
+
+export const downloadDatasetFailure = (
+  error: string
+): ActionType<DownloadDatasetFailurePayload> => ({
+  type: DownloadDatasetFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const downloadDatasetRequest = (): Action => ({
+  type: DownloadDatasetRequestType,
+});
+
+export const downloadDataset = (
+  datasetId: number,
+  datasetName: string
+): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    dispatch(downloadDatasetRequest());
+
+    // TODO: get this from some sort of settings file
+    const idsUrl = '';
+
+    // TODO: get ICAT session id properly when auth is sorted
+    const params = {
+      sessionId: window.localStorage.getItem('icat:token'),
+      datasetIds: datasetId,
+      compress: false,
+      zip: true,
+      outname: datasetName,
+    };
+
+    const link = document.createElement('a');
+    link.href = `${idsUrl}/getData?${Object.entries(params)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')}`;
+
+    link.style.display = 'none';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 };
 

@@ -13,6 +13,8 @@ import {
   fetchDatasetCountRequest,
   fetchDatasetCountSuccess,
   fetchDatasetCountFailure,
+  downloadDataset,
+  downloadDatasetRequest,
 } from './datasets';
 import { fetchDatafileCountRequest } from './datafiles';
 
@@ -202,5 +204,33 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest());
     expect(actions[1]).toEqual(fetchDatasetCountFailure('Test error message'));
+  });
+
+  it('dispatches downloadDatasetRequest and clicks on IDS link upon downloadDataset action', async () => {
+    jest.spyOn(document, 'createElement');
+    jest.spyOn(document.body, 'appendChild');
+
+    const asyncAction = downloadDataset(1, 'test');
+    const actions: Action[] = [];
+    const dispatch = (action: Action): void | Promise<void> => {
+      if (typeof action === 'function') {
+        action(dispatch);
+        return Promise.resolve();
+      } else {
+        actions.push(action);
+      }
+    };
+    const getState = (): Partial<StateType> => ({ dgtable: initialState });
+
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(downloadDatasetRequest());
+
+    expect(document.createElement).toHaveBeenCalledWith('a');
+    let link = document.createElement('a');
+    link.href = `/getData?sessionId=${null}&datasetIds=${1}&compress=${false}&zip=${true}&outname=${'test'}`;
+    link.target = '_blank';
+    link.style.display = 'none';
+    expect(document.body.appendChild).toHaveBeenCalledWith(link);
   });
 });

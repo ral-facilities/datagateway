@@ -232,48 +232,4 @@ describe('Datafile actions', () => {
     link.style.display = 'none';
     expect(document.body.appendChild).toHaveBeenCalledWith(link);
   });
-
-  it('fetchDatafiles action applies filters and sort state to request params', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: [],
-      })
-    );
-
-    const asyncAction = fetchDatafiles(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({
-      dgtable: {
-        ...initialState,
-        sort: { column1: 'desc' },
-        filters: { column1: '1', column2: '2' },
-      },
-    });
-
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchDatafilesRequest());
-
-    expect(actions[1]).toEqual(fetchDatafilesSuccess([]));
-
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datafiles',
-      expect.objectContaining({
-        params: {
-          filter: {
-            order: 'column1 desc',
-            where: { column1: '1', column2: '2', DATASET_ID: 1 },
-          },
-        },
-      })
-    );
-  });
 });
