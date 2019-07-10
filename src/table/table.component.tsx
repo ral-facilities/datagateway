@@ -22,7 +22,7 @@ import {
   TableRowProps,
   TableCellProps,
 } from 'react-virtualized';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import memoize from 'memoize-one';
 import { EntityType } from '../data/types';
 import { IconButton } from '@material-ui/core';
@@ -163,7 +163,7 @@ class MuiVirtualizedTable extends React.PureComponent<
   private getRowClassName = ({ index }: { index: number }) => {
     const { classes, rowClassName, onRowClick } = this.props;
 
-    return classNames(classes.tableRow, classes.flexContainer, rowClassName, {
+    return clsx(classes.tableRow, classes.flexContainer, rowClassName, {
       [classes.tableRowHover]: index !== -1 && onRowClick != null,
     });
   };
@@ -209,8 +209,9 @@ class MuiVirtualizedTable extends React.PureComponent<
     return (
       <TableCell
         component="div"
-        className={classNames(classes.tableCell, classes.flexContainer)}
+        className={clsx(classes.tableCell, classes.flexContainer)}
         variant="body"
+        size="small"
         style={{ height: rowHeight }}
       >
         {cellValue}
@@ -245,12 +246,13 @@ class MuiVirtualizedTable extends React.PureComponent<
     return (
       <TableCell
         component="div"
-        className={classNames(
+        className={clsx(
           classes.tableCell,
           classes.flexContainer,
           classes.noClick
         )}
         variant="head"
+        size="small"
         style={{ height: headerHeight }}
         sortDirection={props.dataKey === props.sortBy ? direction : false}
       >
@@ -314,19 +316,20 @@ class MuiVirtualizedTable extends React.PureComponent<
                     headerRenderer={headerProps => (
                       <TableCell
                         component="div"
-                        className={classNames(
+                        className={clsx(
                           classes.tableCell,
                           classes.flexContainer,
                           classes.noClick
                         )}
                         variant="head"
+                        size="small"
                         style={{ height: this.props.headerHeight }}
                       ></TableCell>
                     )}
                     cellRenderer={props => (
                       <TableCell
                         component="div"
-                        className={classNames(
+                        className={clsx(
                           classes.tableCell,
                           classes.flexContainer
                         )}
@@ -388,7 +391,7 @@ class MuiVirtualizedTable extends React.PureComponent<
                           })
                         }
                         disableSort={disableSort}
-                        className={classNames(classes.flexContainer, className)}
+                        className={clsx(classes.flexContainer, className)}
                         cellRenderer={renderer}
                         dataKey={dataKey}
                         {...other}
@@ -404,23 +407,25 @@ class MuiVirtualizedTable extends React.PureComponent<
                     headerRenderer={headerProps => (
                       <TableCell
                         component="div"
-                        className={classNames(
+                        className={clsx(
                           classes.tableCell,
                           classes.flexContainer,
                           classes.noClick
                         )}
                         variant="head"
+                        size="small"
                         style={{ height: this.props.headerHeight }}
                       ></TableCell>
                     )}
                     cellRenderer={props => (
                       <TableCell
                         component="div"
-                        className={classNames(
+                        className={clsx(
                           classes.tableCell,
                           classes.flexContainer
                         )}
                         variant="body"
+                        size="small"
                         style={{ height: this.props.rowHeight }}
                       >
                         {this.props.actions !== undefined &&

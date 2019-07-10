@@ -46,7 +46,9 @@ class DatafileTable extends React.Component<
           `/datafiles?filter={"where": {"DATASET_ID": "${this.props.datasetId}"}}`,
           {
             headers: {
-              Authorization: window.localStorage.getItem('daaas:token'),
+              Authorization: `Bearer ${window.localStorage.getItem(
+                'daaas:token'
+              )}`,
             },
           }
         )

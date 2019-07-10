@@ -46,7 +46,9 @@ class DatasetTable extends React.Component<
           `/datasets?filter={"where": {"INVESTIGATION_ID": "${this.props.investigationId}"}}`,
           {
             headers: {
-              Authorization: window.localStorage.getItem('daaas:token'),
+              Authorization: `Bearer ${window.localStorage.getItem(
+                'daaas:token'
+              )}`,
             },
           }
         )
