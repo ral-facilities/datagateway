@@ -1,9 +1,9 @@
 import {
   FetchInstrumentsSuccessType,
-  FetchInstrumentsSuccessPayload,
   FetchInstrumentsFailureType,
-  FetchInstrumentsFailurePayload,
   FetchInstrumentsRequestType,
+  FetchDataSuccessPayload,
+  FailurePayload,
 } from './actions.types';
 import { Instrument, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -12,16 +12,16 @@ import { getApiFilter } from '.';
 
 export const fetchInstrumentsSuccess = (
   instruments: Instrument[]
-): ActionType<FetchInstrumentsSuccessPayload> => ({
+): ActionType<FetchDataSuccessPayload> => ({
   type: FetchInstrumentsSuccessType,
   payload: {
-    instruments,
+    data: instruments,
   },
 });
 
 export const fetchInstrumentsFailure = (
   error: string
-): ActionType<FetchInstrumentsFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: FetchInstrumentsFailureType,
   payload: {
     error,

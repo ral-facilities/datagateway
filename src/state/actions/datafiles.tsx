@@ -1,18 +1,16 @@
 import {
   FetchDatafilesSuccessType,
-  FetchDatafilesSuccessPayload,
   FetchDatafilesFailureType,
-  FetchDatafilesFailurePayload,
   FetchDatafilesRequestType,
-  FetchDatafileCountSuccessPayload,
   FetchDatafileCountSuccessType,
   FetchDatafileCountFailureType,
   FetchDatafileCountRequestType,
-  FetchDatafileCountFailurePayload,
   DownloadDatafileSuccessType,
-  DownloadDatafileFailurePayload,
   DownloadDatafileFailureType,
   DownloadDatafileRequestType,
+  FetchDataSuccessPayload,
+  FailurePayload,
+  FetchDataCountSuccessPayload,
 } from './actions.types';
 import { Datafile, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -22,16 +20,16 @@ import { source } from '../middleware/dgtable.middleware';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[]
-): ActionType<FetchDatafilesSuccessPayload> => ({
+): ActionType<FetchDataSuccessPayload> => ({
   type: FetchDatafilesSuccessType,
   payload: {
-    datafiles,
+    data: datafiles,
   },
 });
 
 export const fetchDatafilesFailure = (
   error: string
-): ActionType<FetchDatafilesFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: FetchDatafilesFailureType,
   payload: {
     error,
@@ -77,17 +75,17 @@ export const fetchDatafiles = (
 export const fetchDatafileCountSuccess = (
   datasetId: number,
   count: number
-): ActionType<FetchDatafileCountSuccessPayload> => ({
+): ActionType<FetchDataCountSuccessPayload> => ({
   type: FetchDatafileCountSuccessType,
   payload: {
-    datasetId,
+    id: datasetId,
     count,
   },
 });
 
 export const fetchDatafileCountFailure = (
   error: string
-): ActionType<FetchDatafileCountFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: FetchDatafileCountFailureType,
   payload: {
     error,
@@ -135,7 +133,7 @@ export const downloadDatafileSuccess = (): Action => ({
 
 export const downloadDatafileFailure = (
   error: string
-): ActionType<DownloadDatafileFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: DownloadDatafileFailureType,
   payload: {
     error,

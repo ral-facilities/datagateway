@@ -1,18 +1,16 @@
 import {
   FetchDatasetsSuccessType,
-  FetchDatasetsSuccessPayload,
   FetchDatasetsFailureType,
-  FetchDatasetsFailurePayload,
   FetchDatasetsRequestType,
   FetchDatasetCountRequestType,
   FetchDatasetCountFailureType,
-  FetchDatasetCountFailurePayload,
   FetchDatasetCountSuccessType,
-  FetchDatasetCountSuccessPayload,
   DownloadDatasetSuccessType,
   DownloadDatasetFailureType,
   DownloadDatasetRequestType,
-  DownloadDatasetFailurePayload,
+  FetchDataSuccessPayload,
+  FailurePayload,
+  FetchDataCountSuccessPayload,
 } from './actions.types';
 import { Dataset, ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
@@ -23,16 +21,16 @@ import { fetchDatafileCount } from './datafiles';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[]
-): ActionType<FetchDatasetsSuccessPayload> => ({
+): ActionType<FetchDataSuccessPayload> => ({
   type: FetchDatasetsSuccessType,
   payload: {
-    datasets,
+    data: datasets,
   },
 });
 
 export const fetchDatasetsFailure = (
   error: string
-): ActionType<FetchDatasetsFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: FetchDatasetsFailureType,
   payload: {
     error,
@@ -84,7 +82,7 @@ export const downloadDatasetSuccess = (): Action => ({
 
 export const downloadDatasetFailure = (
   error: string
-): ActionType<DownloadDatasetFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: DownloadDatasetFailureType,
   payload: {
     error,
@@ -130,17 +128,17 @@ export const downloadDataset = (
 export const fetchDatasetCountSuccess = (
   investigationId: number,
   count: number
-): ActionType<FetchDatasetCountSuccessPayload> => ({
+): ActionType<FetchDataCountSuccessPayload> => ({
   type: FetchDatasetCountSuccessType,
   payload: {
-    investigationId,
+    id: investigationId,
     count,
   },
 });
 
 export const fetchDatasetCountFailure = (
   error: string
-): ActionType<FetchDatasetCountFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: FetchDatasetCountFailureType,
   payload: {
     error,

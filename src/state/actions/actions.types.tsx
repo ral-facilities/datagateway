@@ -1,12 +1,4 @@
-import {
-  Investigation,
-  Filter,
-  Order,
-  Dataset,
-  Datafile,
-  Instrument,
-  FacilityCycle,
-} from '../app.types';
+import { Filter, Order, Entity } from '../app.types';
 
 // parent app actions
 export const RegisterRouteType = 'daaas:api:register_route';
@@ -89,68 +81,15 @@ export interface FilterTablePayload {
   filter: Filter | null;
 }
 
-export interface FetchInvestigationsFailurePayload {
+export interface FailurePayload {
   error: string;
 }
 
-export interface FetchInvestigationsSuccessPayload {
-  investigations: Investigation[];
+export interface FetchDataSuccessPayload {
+  data: Entity[];
 }
 
-export interface FetchDatasetsFailurePayload {
-  error: string;
-}
-
-export interface FetchDatasetsSuccessPayload {
-  datasets: Dataset[];
-}
-
-export interface DownloadDatasetFailurePayload {
-  error: string;
-}
-
-export interface FetchDatasetCountFailurePayload {
-  error: string;
-}
-
-export interface FetchDatasetCountSuccessPayload {
-  investigationId: number;
+export interface FetchDataCountSuccessPayload {
+  id: number;
   count: number;
-}
-
-export interface FetchDatafilesFailurePayload {
-  error: string;
-}
-
-export interface FetchDatafilesSuccessPayload {
-  datafiles: Datafile[];
-}
-
-export interface FetchDatafileCountFailurePayload {
-  error: string;
-}
-
-export interface FetchDatafileCountSuccessPayload {
-  datasetId: number;
-  count: number;
-}
-
-export interface DownloadDatafileFailurePayload {
-  error: string;
-}
-
-export interface FetchInstrumentsFailurePayload {
-  error: string;
-}
-
-export interface FetchInstrumentsSuccessPayload {
-  instruments: Instrument[];
-}
-
-export interface FetchFacilityCyclesFailurePayload {
-  error: string;
-}
-
-export interface FetchFacilityCyclesSuccessPayload {
-  facilityCycles: FacilityCycle[];
 }

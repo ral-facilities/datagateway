@@ -1,9 +1,9 @@
 import {
   FetchInvestigationsSuccessType,
-  FetchInvestigationsSuccessPayload,
   FetchInvestigationsFailureType,
-  FetchInvestigationsFailurePayload,
   FetchInvestigationsRequestType,
+  FetchDataSuccessPayload,
+  FailurePayload,
 } from './actions.types';
 import { Investigation, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -13,16 +13,16 @@ import { fetchDatasetCount } from './datasets';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[]
-): ActionType<FetchInvestigationsSuccessPayload> => ({
+): ActionType<FetchDataSuccessPayload> => ({
   type: FetchInvestigationsSuccessType,
   payload: {
-    investigations,
+    data: investigations,
   },
 });
 
 export const fetchInvestigationsFailure = (
   error: string
-): ActionType<FetchInvestigationsFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: FetchInvestigationsFailureType,
   payload: {
     error,

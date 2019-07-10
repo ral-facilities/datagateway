@@ -4,49 +4,37 @@ import {
   SortTablePayload,
   SortTableType,
   FetchInvestigationsRequestType,
-  FetchInvestigationsSuccessPayload,
-  FetchInvestigationsFailurePayload,
   FetchInvestigationsSuccessType,
   FetchInvestigationsFailureType,
   FilterTablePayload,
   FilterTableType,
-  FetchDatasetsSuccessPayload,
-  FetchDatasetsFailurePayload,
-  FetchDatafilesSuccessPayload,
-  FetchDatafilesFailurePayload,
   FetchDatasetsRequestType,
   FetchDatasetsSuccessType,
   FetchDatasetsFailureType,
   FetchDatafilesRequestType,
   FetchDatafilesSuccessType,
   FetchDatafilesFailureType,
-  FetchDatasetCountSuccessPayload,
   FetchDatasetCountRequestType,
   FetchDatasetCountSuccessType,
   FetchDatasetCountFailureType,
   FetchDatafileCountRequestType,
   FetchDatafileCountSuccessType,
   FetchDatafileCountFailureType,
-  FetchDatafileCountSuccessPayload,
-  FetchDatafileCountFailurePayload,
-  FetchInstrumentsFailurePayload,
-  FetchInstrumentsSuccessPayload,
   FetchInstrumentsFailureType,
   FetchInstrumentsSuccessType,
   FetchInstrumentsRequestType,
   FetchFacilityCyclesRequestType,
   FetchFacilityCyclesSuccessType,
   FetchFacilityCyclesFailureType,
-  FetchFacilityCyclesSuccessPayload,
-  FetchFacilityCyclesFailurePayload,
-  DownloadDatafileFailurePayload,
   DownloadDatafileFailureType,
   DownloadDatafileRequestType,
   DownloadDatafileSuccessType,
-  DownloadDatasetFailurePayload,
   DownloadDatasetRequestType,
   DownloadDatasetSuccessType,
   DownloadDatasetFailureType,
+  FetchDataSuccessPayload,
+  FailurePayload,
+  FetchDataCountSuccessPayload,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
@@ -110,30 +98,28 @@ export function handleFilterTable(
   }
 }
 
-export function handleFetchInvestigationsRequest(
-  state: DGTableState
-): DGTableState {
+export function handleFetchDataRequest(state: DGTableState): DGTableState {
   return {
     ...state,
     loading: true,
   };
 }
 
-export function handleFetchInvestigationsSuccess(
+export function handleFetchDataSuccess(
   state: DGTableState,
-  payload: FetchInvestigationsSuccessPayload
+  payload: FetchDataSuccessPayload
 ): DGTableState {
   return {
     ...state,
     loading: false,
-    data: payload.investigations,
+    data: payload.data,
     error: null,
   };
 }
 
-export function handleFetchInvestigationsFailure(
+export function handleFetchDataFailure(
   state: DGTableState,
-  payload: FetchInvestigationsFailurePayload
+  payload: FailurePayload
 ): DGTableState {
   return {
     ...state,
@@ -143,40 +129,7 @@ export function handleFetchInvestigationsFailure(
   };
 }
 
-export function handleFetchDatasetsRequest(state: DGTableState): DGTableState {
-  return {
-    ...state,
-    loading: true,
-  };
-}
-
-export function handleFetchDatasetsSuccess(
-  state: DGTableState,
-  payload: FetchDatasetsSuccessPayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: payload.datasets,
-    error: null,
-  };
-}
-
-export function handleFetchDatasetsFailure(
-  state: DGTableState,
-  payload: FetchDatasetsFailurePayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: [],
-    error: payload.error,
-  };
-}
-
-export function handleFetchDatasetCountRequest(
-  state: DGTableState
-): DGTableState {
+export function handleFetchDataCountRequest(state: DGTableState): DGTableState {
   return {
     ...state,
   };
@@ -184,14 +137,14 @@ export function handleFetchDatasetCountRequest(
 
 export function handleFetchDatasetCountSuccess(
   state: DGTableState,
-  payload: FetchDatasetCountSuccessPayload
+  payload: FetchDataCountSuccessPayload
 ): DGTableState {
   return {
     ...state,
     loading: false,
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
-      return investigation.ID === payload.investigationId
+      return investigation.ID === payload.id
         ? { ...investigation, DATASET_COUNT: payload.count }
         : investigation;
     }),
@@ -199,94 +152,41 @@ export function handleFetchDatasetCountSuccess(
   };
 }
 
-export function handleFetchDatasetCountFailure(
-  state: DGTableState,
-  payload: FetchDatasetsFailurePayload
-): DGTableState {
-  return {
-    ...state,
-    error: payload.error,
-  };
-}
-
-export function handleDownloadDatasetRequest(
-  state: DGTableState
-): DGTableState {
+export function handleDownloadDataRequest(state: DGTableState): DGTableState {
   return {
     ...state,
     downloading: true,
   };
 }
 
-export function handleDownloadDatasetSuccess(
-  state: DGTableState
-): DGTableState {
+export function handleDownloadDataSuccess(state: DGTableState): DGTableState {
   return {
     ...state,
     downloading: false,
   };
 }
 
-export function handleDownloadDatasetFailure(
+export function handleDownloadDataFailure(
   state: DGTableState,
-  payload: DownloadDatasetFailurePayload
+  payload: FailurePayload
 ): DGTableState {
   return {
     ...state,
     downloading: false,
     error: payload.error,
-  };
-}
-
-export function handleFetchDatafilesRequest(state: DGTableState): DGTableState {
-  return {
-    ...state,
-    loading: true,
-  };
-}
-
-export function handleFetchDatafilesSuccess(
-  state: DGTableState,
-  payload: FetchDatafilesSuccessPayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: payload.datafiles,
-    error: null,
-  };
-}
-
-export function handleFetchDatafilesFailure(
-  state: DGTableState,
-  payload: FetchDatafilesFailurePayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: [],
-    error: payload.error,
-  };
-}
-
-export function handleFetchDatafileCountRequest(
-  state: DGTableState
-): DGTableState {
-  return {
-    ...state,
   };
 }
 
 export function handleFetchDatafileCountSuccess(
   state: DGTableState,
-  payload: FetchDatafileCountSuccessPayload
+  payload: FetchDataCountSuccessPayload
 ): DGTableState {
   return {
     ...state,
     loading: false,
     data: state.data.map((entity: Entity) => {
       const dataset = entity as Dataset;
-      return dataset.ID === payload.datasetId
+      return dataset.ID === payload.id
         ? { ...dataset, DATAFILE_COUNT: payload.count }
         : dataset;
     }),
@@ -294,141 +194,36 @@ export function handleFetchDatafileCountSuccess(
   };
 }
 
-export function handleFetchDatafileCountFailure(
-  state: DGTableState,
-  payload: FetchDatafileCountFailurePayload
-): DGTableState {
-  return {
-    ...state,
-    error: payload.error,
-  };
-}
-
-export function handleDownloadDatafileRequest(
-  state: DGTableState
-): DGTableState {
-  return {
-    ...state,
-    downloading: true,
-  };
-}
-
-export function handleDownloadDatafileSuccess(
-  state: DGTableState
-): DGTableState {
-  return {
-    ...state,
-    downloading: false,
-  };
-}
-
-export function handleDownloadDatafileFailure(
-  state: DGTableState,
-  payload: DownloadDatafileFailurePayload
-): DGTableState {
-  return {
-    ...state,
-    downloading: false,
-    error: payload.error,
-  };
-}
-
-export function handleFetchInstrumentsRequest(
-  state: DGTableState
-): DGTableState {
-  return {
-    ...state,
-    loading: true,
-  };
-}
-
-export function handleFetchInstrumentsSuccess(
-  state: DGTableState,
-  payload: FetchInstrumentsSuccessPayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: payload.instruments,
-    error: null,
-  };
-}
-
-export function handleFetchInstrumentsFailure(
-  state: DGTableState,
-  payload: FetchInstrumentsFailurePayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: [],
-    error: payload.error,
-  };
-}
-
-export function handleFetchFacilityCyclesRequest(
-  state: DGTableState
-): DGTableState {
-  return {
-    ...state,
-    loading: true,
-  };
-}
-
-export function handleFetchFacilityCyclesSuccess(
-  state: DGTableState,
-  payload: FetchFacilityCyclesSuccessPayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: payload.facilityCycles,
-    error: null,
-  };
-}
-
-export function handleFetchFacilityCyclesFailure(
-  state: DGTableState,
-  payload: FetchFacilityCyclesFailurePayload
-): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: [],
-    error: payload.error,
-  };
-}
-
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
-  [FetchInvestigationsRequestType]: handleFetchInvestigationsRequest,
-  [FetchInvestigationsSuccessType]: handleFetchInvestigationsSuccess,
-  [FetchInvestigationsFailureType]: handleFetchInvestigationsFailure,
-  [FetchDatasetsRequestType]: handleFetchDatasetsRequest,
-  [FetchDatasetsSuccessType]: handleFetchDatasetsSuccess,
-  [FetchDatasetsFailureType]: handleFetchDatasetsFailure,
-  [FetchDatasetCountRequestType]: handleFetchDatasetCountRequest,
+  [FetchInvestigationsRequestType]: handleFetchDataRequest,
+  [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
+  [FetchInvestigationsFailureType]: handleFetchDataFailure,
+  [FetchDatasetsRequestType]: handleFetchDataRequest,
+  [FetchDatasetsSuccessType]: handleFetchDataSuccess,
+  [FetchDatasetsFailureType]: handleFetchDataFailure,
+  [FetchDatasetCountRequestType]: handleFetchDataCountRequest,
   [FetchDatasetCountSuccessType]: handleFetchDatasetCountSuccess,
-  [FetchDatasetCountFailureType]: handleFetchDatasetCountFailure,
-  [DownloadDatasetRequestType]: handleDownloadDatasetRequest,
-  [DownloadDatasetSuccessType]: handleDownloadDatasetSuccess,
-  [DownloadDatasetFailureType]: handleDownloadDatasetFailure,
-  [FetchDatafilesRequestType]: handleFetchDatafilesRequest,
-  [FetchDatafilesSuccessType]: handleFetchDatafilesSuccess,
-  [FetchDatafilesFailureType]: handleFetchDatafilesFailure,
-  [FetchDatafileCountRequestType]: handleFetchDatafileCountRequest,
+  [FetchDatasetCountFailureType]: handleFetchDataFailure,
+  [DownloadDatasetRequestType]: handleDownloadDataRequest,
+  [DownloadDatasetSuccessType]: handleDownloadDataSuccess,
+  [DownloadDatasetFailureType]: handleDownloadDataFailure,
+  [FetchDatafilesRequestType]: handleFetchDataRequest,
+  [FetchDatafilesSuccessType]: handleFetchDataSuccess,
+  [FetchDatafilesFailureType]: handleFetchDataFailure,
+  [FetchDatafileCountRequestType]: handleFetchDataCountRequest,
   [FetchDatafileCountSuccessType]: handleFetchDatafileCountSuccess,
-  [FetchDatafileCountFailureType]: handleFetchDatafileCountFailure,
-  [DownloadDatafileRequestType]: handleDownloadDatafileRequest,
-  [DownloadDatafileSuccessType]: handleDownloadDatafileSuccess,
-  [DownloadDatafileFailureType]: handleDownloadDatafileFailure,
-  [FetchInstrumentsRequestType]: handleFetchInstrumentsRequest,
-  [FetchInstrumentsSuccessType]: handleFetchInstrumentsSuccess,
-  [FetchInstrumentsFailureType]: handleFetchInstrumentsFailure,
-  [FetchFacilityCyclesRequestType]: handleFetchFacilityCyclesRequest,
-  [FetchFacilityCyclesSuccessType]: handleFetchFacilityCyclesSuccess,
-  [FetchFacilityCyclesFailureType]: handleFetchFacilityCyclesFailure,
+  [FetchDatafileCountFailureType]: handleFetchDataFailure,
+  [DownloadDatafileRequestType]: handleDownloadDataRequest,
+  [DownloadDatafileSuccessType]: handleDownloadDataSuccess,
+  [DownloadDatafileFailureType]: handleDownloadDataFailure,
+  [FetchInstrumentsRequestType]: handleFetchDataRequest,
+  [FetchInstrumentsSuccessType]: handleFetchDataSuccess,
+  [FetchInstrumentsFailureType]: handleFetchDataFailure,
+  [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
+  [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
+  [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
 });
 
 export default DGTableReducer;

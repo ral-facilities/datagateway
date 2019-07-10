@@ -1,9 +1,9 @@
 import {
   FetchFacilityCyclesSuccessType,
-  FetchFacilityCyclesSuccessPayload,
   FetchFacilityCyclesFailureType,
-  FetchFacilityCyclesFailurePayload,
   FetchFacilityCyclesRequestType,
+  FetchDataSuccessPayload,
+  FailurePayload,
 } from './actions.types';
 import { FacilityCycle, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -12,16 +12,16 @@ import { getApiFilter } from '.';
 
 export const fetchFacilityCyclesSuccess = (
   facilityCycles: FacilityCycle[]
-): ActionType<FetchFacilityCyclesSuccessPayload> => ({
+): ActionType<FetchDataSuccessPayload> => ({
   type: FetchFacilityCyclesSuccessType,
   payload: {
-    facilityCycles,
+    data: facilityCycles,
   },
 });
 
 export const fetchFacilityCyclesFailure = (
   error: string
-): ActionType<FetchFacilityCyclesFailurePayload> => ({
+): ActionType<FailurePayload> => ({
   type: FetchFacilityCyclesFailureType,
   payload: {
     error,
