@@ -6,12 +6,13 @@ import {
 } from '.';
 import { StateType, FacilityCycle } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
-import { Action } from 'redux';
 import axios from 'axios';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
 
 describe('FacilityCycle actions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    resetActions();
   });
 
   it('dispatches fetchFacilityCyclesRequest and fetchFacilityCyclesSuccess actions upon successful fetchFacilityCycles action', async () => {
@@ -39,17 +40,6 @@ describe('FacilityCycle actions', () => {
     );
 
     const asyncAction = fetchFacilityCycles();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
@@ -64,15 +54,6 @@ describe('FacilityCycle actions', () => {
     );
 
     const asyncAction = fetchFacilityCycles();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -80,7 +61,6 @@ describe('FacilityCycle actions', () => {
         filters: { column1: '1', column2: '2' },
       },
     });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
@@ -108,17 +88,6 @@ describe('FacilityCycle actions', () => {
     );
 
     const asyncAction = fetchFacilityCycles();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest());

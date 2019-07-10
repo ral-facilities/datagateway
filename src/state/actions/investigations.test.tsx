@@ -6,13 +6,14 @@ import {
 } from '.';
 import { StateType, Investigation } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
-import { Action } from 'redux';
 import axios from 'axios';
 import { fetchDatasetCountRequest } from './datasets';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
 
 describe('Investigation actions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    resetActions();
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchInvestigations action', async () => {
@@ -52,17 +53,6 @@ describe('Investigation actions', () => {
     );
 
     const asyncAction = fetchInvestigations();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
@@ -79,15 +69,6 @@ describe('Investigation actions', () => {
     );
 
     const asyncAction = fetchInvestigations();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -95,7 +76,6 @@ describe('Investigation actions', () => {
         filters: { column1: '1', column2: '2' },
       },
     });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
@@ -123,17 +103,6 @@ describe('Investigation actions', () => {
     );
 
     const asyncAction = fetchInvestigations();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());

@@ -6,12 +6,13 @@ import {
 } from '.';
 import { StateType, Instrument } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
-import { Action } from 'redux';
 import axios from 'axios';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
 
 describe('Instrument actions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    resetActions();
   });
 
   it('dispatches fetchInstrumentsRequest and fetchInstrumentsSuccess actions upon successful fetchInstruments action', async () => {
@@ -33,17 +34,6 @@ describe('Instrument actions', () => {
     );
 
     const asyncAction = fetchInstruments();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInstrumentsRequest());
@@ -58,15 +48,6 @@ describe('Instrument actions', () => {
     );
 
     const asyncAction = fetchInstruments();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -74,7 +55,6 @@ describe('Instrument actions', () => {
         filters: { column1: '1', column2: '2' },
       },
     });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInstrumentsRequest());
@@ -102,17 +82,6 @@ describe('Instrument actions', () => {
     );
 
     const asyncAction = fetchInstruments();
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInstrumentsRequest());

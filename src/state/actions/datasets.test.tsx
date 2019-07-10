@@ -6,7 +6,6 @@ import {
 } from '.';
 import { StateType, Dataset } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
-import { Action } from 'redux';
 import axios from 'axios';
 import {
   fetchDatasetCount,
@@ -17,10 +16,12 @@ import {
   downloadDatasetRequest,
 } from './datasets';
 import { fetchDatafileCountRequest } from './datafiles';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
 
 describe('Dataset actions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    resetActions();
   });
 
   it('dispatches fetchDatasetsRequest and fetchDatasetsSuccess actions upon successful fetchDatasets action', async () => {
@@ -48,17 +49,6 @@ describe('Dataset actions', () => {
     );
 
     const asyncAction = fetchDatasets(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest());
@@ -85,15 +75,6 @@ describe('Dataset actions', () => {
     );
 
     const asyncAction = fetchDatasets(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -101,7 +82,6 @@ describe('Dataset actions', () => {
         filters: { column1: '1', column2: '2' },
       },
     });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest());
@@ -129,17 +109,6 @@ describe('Dataset actions', () => {
     );
 
     const asyncAction = fetchDatasets(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest());
@@ -154,17 +123,6 @@ describe('Dataset actions', () => {
     );
 
     const asyncAction = fetchDatasetCount(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest());
@@ -189,17 +147,6 @@ describe('Dataset actions', () => {
     );
 
     const asyncAction = fetchDatasetCount(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest());
@@ -211,17 +158,6 @@ describe('Dataset actions', () => {
     jest.spyOn(document.body, 'appendChild');
 
     const asyncAction = downloadDataset(1, 'test');
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(downloadDatasetRequest());

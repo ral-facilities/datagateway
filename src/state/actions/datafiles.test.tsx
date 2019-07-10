@@ -7,7 +7,6 @@ import {
 import axios from 'axios';
 import { StateType, Datafile } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
-import { Action } from 'redux';
 import {
   fetchDatafileCount,
   fetchDatafileCountRequest,
@@ -16,10 +15,12 @@ import {
   downloadDatafile,
   downloadDatafileRequest,
 } from './datafiles';
+import { actions, resetActions, dispatch, getState } from '../../setupTests';
 
 describe('Datafile actions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    resetActions();
   });
 
   it('dispatches fetchDatafilesRequest and fetchDatafilesSuccess actions upon successful fetchDatafiles action', async () => {
@@ -49,17 +50,6 @@ describe('Datafile actions', () => {
     );
 
     const asyncAction = fetchDatafiles(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafilesRequest());
@@ -84,15 +74,6 @@ describe('Datafile actions', () => {
     );
 
     const asyncAction = fetchDatafiles(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -100,7 +81,6 @@ describe('Datafile actions', () => {
         filters: { column1: '1', column2: '2' },
       },
     });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafilesRequest());
@@ -128,17 +108,6 @@ describe('Datafile actions', () => {
     );
 
     const asyncAction = fetchDatafiles(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafilesRequest());
@@ -153,17 +122,6 @@ describe('Datafile actions', () => {
     );
 
     const asyncAction = fetchDatafileCount(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest());
@@ -188,17 +146,6 @@ describe('Datafile actions', () => {
     );
 
     const asyncAction = fetchDatafileCount(1);
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest());
@@ -210,17 +157,6 @@ describe('Datafile actions', () => {
     jest.spyOn(document.body, 'appendChild');
 
     const asyncAction = downloadDatafile(1, 'test.txt');
-    const actions: Action[] = [];
-    const dispatch = (action: Action): void | Promise<void> => {
-      if (typeof action === 'function') {
-        action(dispatch);
-        return Promise.resolve();
-      } else {
-        actions.push(action);
-      }
-    };
-    const getState = (): Partial<StateType> => ({ dgtable: initialState });
-
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(downloadDatafileRequest());
