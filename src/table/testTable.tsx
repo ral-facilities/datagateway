@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   TextField,
-  CircularProgress,
   Button,
   Table,
   TableBody,
@@ -11,16 +10,8 @@ import {
   TableSortLabel,
   Paper,
 } from '@material-ui/core';
+import { StateType, Filter, Order, Entity, Dataset } from '../state/app.types';
 import {
-  StateType,
-  Filter,
-  Order,
-  Entity,
-  Investigation,
-  Dataset,
-} from '../state/app.types';
-import {
-  fetchInvestigations,
   sortTable,
   filterTable,
   downloadDatafile,
@@ -156,12 +147,6 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
                 <TableCell>{dataset.NAME}</TableCell>
                 <TableCell>{dataset.LOCATION}</TableCell>
                 <TableCell>
-                  {/* <a
-                    target="_blank"
-                    href="https://isisicatds.stfc.ac.uk/ids/getData?sessionId=6d86719f-b326-4f70-aa21-f31dfafdc763&datafileIds=84869522&compress=false&true&outfile=\\isis\inst$\NDXLARMOR\Instrument\data\cycle_15_1\LARMOR00004314_ICPevent.txt"
-                  >
-                    DOWNLOAD
-                  </a> */}
                   <Button
                     onClick={() =>
                       downloadData(84869522, 'LARMOR00004314_ICPevent.txt')
