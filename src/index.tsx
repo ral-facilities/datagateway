@@ -1,9 +1,14 @@
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+import 'custom-event-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
+import { RequestPluginRerenderType } from './state/actions/actions.types';
+import axios from 'axios';
 
 const pluginName = 'datagateway-table';
 
@@ -17,6 +22,29 @@ const render = (): void => {
 if (process.env.NODE_ENV === `development`) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
+
+  axios
+    .post('/sessions', { username: 'user', password: 'password' })
+    .then(response => {
+      window.localStorage.setItem('daaas:token', response.data.sessionID);
+    });
+
+  // TODO: if it's still needed, get icatUrl from settings file
+  const icatUrl = '';
+
+  // TODO: get ICAT session ID from daaas:token
+  const icatCreds = {
+    plugin: 'simple',
+    credentials: [{ username: 'root' }, { password: 'pw' }],
+  };
+
+  axios
+    .post(icatUrl, `json=${JSON.stringify(icatCreds)}`, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+    .then(response => {
+      window.localStorage.setItem('icat:token', response.data.sessionId);
+    });
 } else {
   log.setDefaultLevel(log.levels.ERROR);
 }
@@ -39,25 +67,10 @@ window.addEventListener('single-spa:routing-event', () => {
 
 document.addEventListener('daaas-frontend', e => {
   const action = (e as CustomEvent).detail;
-  if (action.type === 'daaas:api:plugin_rerender') {
+  if (action.type === RequestPluginRerenderType) {
     render();
   }
 });
-
-const registerRouteAction = {
-  type: 'daaas:api:register_route',
-  payload: {
-    section: 'Data',
-    link: '/data',
-    plugin: 'datagateway-table',
-    displayName: 'DataGateway Table',
-    order: 0,
-  },
-};
-
-document.dispatchEvent(
-  new CustomEvent('daaas-frontend', { detail: registerRouteAction })
-);
 
 const reactLifecycles = singleSpaReact({
   React,
