@@ -18,6 +18,7 @@ import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatafileCount } from './datafiles';
+import * as log from 'loglevel';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[]
@@ -71,6 +72,7 @@ export const fetchDatasets = (
         });
       })
       .catch(error => {
+        log.error(error.message);
         dispatch(fetchDatasetsFailure(error.message));
       });
   };
@@ -175,6 +177,7 @@ export const fetchDatasetCount = (
         dispatch(fetchDatasetCountSuccess(investigationId, response.data));
       })
       .catch(error => {
+        log.error(error.message);
         dispatch(fetchDatasetCountFailure(error.message));
       });
   };

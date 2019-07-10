@@ -10,6 +10,7 @@ import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetCount } from './datasets';
+import * as log from 'loglevel';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[]
@@ -60,6 +61,7 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
         });
       })
       .catch(error => {
+        log.error(error.message);
         dispatch(fetchInvestigationsFailure(error.message));
       });
   };

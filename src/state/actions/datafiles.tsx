@@ -17,6 +17,7 @@ import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { source } from '../middleware/dgtable.middleware';
+import * as log from 'loglevel';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[]
@@ -67,6 +68,7 @@ export const fetchDatafiles = (
         dispatch(fetchDatafilesSuccess(response.data));
       })
       .catch(error => {
+        log.error(error.message);
         dispatch(fetchDatafilesFailure(error.message));
       });
   };
@@ -122,6 +124,7 @@ export const fetchDatafileCount = (
         dispatch(fetchDatafileCountSuccess(datasetId, response.data));
       })
       .catch(error => {
+        log.error(error.message);
         dispatch(fetchDatafileCountFailure(error.message));
       });
   };

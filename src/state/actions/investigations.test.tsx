@@ -9,6 +9,9 @@ import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { fetchDatasetCountRequest } from './datasets';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
+import * as log from 'loglevel';
+
+jest.mock('loglevel');
 
 describe('Investigation actions', () => {
   afterEach(() => {
@@ -109,5 +112,9 @@ describe('Investigation actions', () => {
     expect(actions[1]).toEqual(
       fetchInvestigationsFailure('Test error message')
     );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 });

@@ -9,6 +9,7 @@ import { Instrument, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
+import * as log from 'loglevel';
 
 export const fetchInstrumentsSuccess = (
   instruments: Instrument[]
@@ -56,6 +57,7 @@ export const fetchInstruments = (): ThunkResult<Promise<void>> => {
         dispatch(fetchInstrumentsSuccess(response.data));
       })
       .catch(error => {
+        log.error(error.message);
         dispatch(fetchInstrumentsFailure(error.message));
       });
   };

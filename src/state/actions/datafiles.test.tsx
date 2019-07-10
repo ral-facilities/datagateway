@@ -16,6 +16,9 @@ import {
   downloadDatafileRequest,
 } from './datafiles';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
+import * as log from 'loglevel';
+
+jest.mock('loglevel');
 
 describe('Datafile actions', () => {
   afterEach(() => {
@@ -112,6 +115,10 @@ describe('Datafile actions', () => {
 
     expect(actions[0]).toEqual(fetchDatafilesRequest());
     expect(actions[1]).toEqual(fetchDatafilesFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
   it('dispatches fetchDatafileCountRequest and fetchDatafileCountSuccess actions upon successful fetchDatafileCount action', async () => {
@@ -150,6 +157,10 @@ describe('Datafile actions', () => {
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest());
     expect(actions[1]).toEqual(fetchDatafileCountFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
   it('dispatches downloadDatafileRequest and clicks on IDS link upon downloadDatafile action', async () => {

@@ -17,6 +17,9 @@ import {
 } from './datasets';
 import { fetchDatafileCountRequest } from './datafiles';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
+import * as log from 'loglevel';
+
+jest.mock('loglevel');
 
 describe('Dataset actions', () => {
   afterEach(() => {
@@ -113,6 +116,10 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchDatasetsRequest());
     expect(actions[1]).toEqual(fetchDatasetsFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
   it('dispatches fetchDatasetCountRequest and fetchDatasetCountSuccess actions upon successful fetchDatasetCount action', async () => {
@@ -151,6 +158,10 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest());
     expect(actions[1]).toEqual(fetchDatasetCountFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
   it('dispatches downloadDatasetRequest and clicks on IDS link upon downloadDataset action', async () => {

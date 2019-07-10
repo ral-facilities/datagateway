@@ -9,6 +9,7 @@ import { FacilityCycle, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
+import * as log from 'loglevel';
 
 export const fetchFacilityCyclesSuccess = (
   facilityCycles: FacilityCycle[]
@@ -57,6 +58,7 @@ export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
         dispatch(fetchFacilityCyclesSuccess(response.data));
       })
       .catch(error => {
+        log.error(error.message);
         dispatch(fetchFacilityCyclesFailure(error.message));
       });
   };

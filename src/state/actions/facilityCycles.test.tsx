@@ -8,6 +8,9 @@ import { StateType, FacilityCycle } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
+import * as log from 'loglevel';
+
+jest.mock('loglevel');
 
 describe('FacilityCycle actions', () => {
   afterEach(() => {
@@ -94,5 +97,9 @@ describe('FacilityCycle actions', () => {
     expect(actions[1]).toEqual(
       fetchFacilityCyclesFailure('Test error message')
     );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 });
