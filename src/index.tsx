@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === `development`) {
   log.setDefaultLevel(log.levels.DEBUG);
   // set session ID for use with API
   axios
-    .post('/sessions', {}, { headers: { Authorization: 'user:password' } })
+    .post('/sessions', { username: 'user', password: 'password' })
     .then(response => {
       window.localStorage.setItem('daaas:token', response.data.sessionID);
     });

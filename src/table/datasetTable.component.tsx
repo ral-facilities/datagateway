@@ -51,7 +51,9 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         `/datasets?filter={"where": {"INVESTIGATION_ID": "${props.investigationId}"}}`,
         {
           headers: {
-            Authorization: window.localStorage.getItem('daaas:token'),
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
           },
         }
       )

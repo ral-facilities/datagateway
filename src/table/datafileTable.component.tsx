@@ -41,7 +41,9 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
         `/datafiles?filter={"where": {"DATASET_ID": "${props.datasetId}"}}`,
         {
           headers: {
-            Authorization: window.localStorage.getItem('daaas:token'),
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
           },
         }
       )

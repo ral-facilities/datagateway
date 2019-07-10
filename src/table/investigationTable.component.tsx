@@ -59,7 +59,7 @@ const InvestigationTable = (): React.ReactElement => {
     axios
       .get('/investigations', {
         headers: {
-          Authorization: window.localStorage.getItem('daaas:token'),
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
       })
       .then(response => {
