@@ -15,7 +15,7 @@ export const getApiFilter = (
   const sort = getState().dgtable.sort;
   const filters = getState().dgtable.filters;
 
-  let filter: {
+  let apiFilter: {
     order?: string | string[];
     where?: { [column: string]: Filter };
   } = {};
@@ -32,13 +32,13 @@ export const getApiFilter = (
       }
     }
 
-    filter.order = orderFilter;
+    apiFilter.order = orderFilter;
   }
   if (Object.keys(filters).length !== 0) {
-    filter.where = filters;
+    apiFilter.where = filters;
   }
 
-  return filter;
+  return apiFilter;
 };
 
 export * from './investigations';
