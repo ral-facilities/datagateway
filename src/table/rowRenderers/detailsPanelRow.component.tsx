@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableRowProps, defaultTableRowRenderer } from 'react-virtualized';
-import { Entity } from '../state/app.types';
+import { Entity } from '../../state/app.types';
 
 const ExpandableRow = (
   props: TableRowProps & {

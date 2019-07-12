@@ -21,7 +21,7 @@ import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
 import DataHeader from './headerRenderers/dataHeader.component';
-import DetailsPanelRow from './detailsPanelRow.component';
+import DetailsPanelRow from './rowRenderers/detailsPanelRow.component';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
