@@ -1,25 +1,17 @@
 import React from 'react';
 import { Order } from '../../state/app.types';
-import { TableHeaderProps, SortDirection } from 'react-virtualized';
+import { TableHeaderProps } from 'react-virtualized';
 import { TableCell, TableSortLabel } from '@material-ui/core';
 
 const DataHeader = (
   props: TableHeaderProps & {
-    headerHeight: number;
     className: string;
     filterComponent?: React.ReactElement;
     sort: { [column: string]: Order };
     onSort: (column: string, order: Order | null) => void;
   }
 ): React.ReactElement => {
-  const {
-    headerHeight,
-    className,
-    dataKey,
-    filterComponent,
-    sort,
-    onSort,
-  } = props;
+  const { className, dataKey, filterComponent, sort, onSort } = props;
 
   const currSortDirection = sort[dataKey] ? sort[dataKey] : null;
   let nextSortDirection: Order | null = null;
@@ -52,7 +44,6 @@ const DataHeader = (
       component="div"
       className={className}
       variant="head"
-      style={{ height: headerHeight }}
       sortDirection={sort[dataKey] ? sort[dataKey] : false}
     >
       {inner}

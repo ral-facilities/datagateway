@@ -4,22 +4,16 @@ import { TableCell, IconButton } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 
 type ExpandCellProps = TableCellProps & {
-  rowHeight: number;
   expandedIndex: number;
   setExpandedIndex: (expandedIndex: number) => void;
   className: string;
 };
 
 const ExpandCell = (props: ExpandCellProps): React.ReactElement => {
-  const { className, rowHeight, expandedIndex, setExpandedIndex } = props;
+  const { className, expandedIndex, setExpandedIndex } = props;
 
   return (
-    <TableCell
-      component="div"
-      className={className}
-      variant="body"
-      style={{ height: rowHeight }}
-    >
+    <TableCell component="div" className={className} variant="body">
       {props.rowIndex !== expandedIndex ? (
         <IconButton
           aria-label="Show details"

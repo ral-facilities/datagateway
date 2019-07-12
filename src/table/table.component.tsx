@@ -23,6 +23,9 @@ import ActionCell from './cellRenderers/actionCell.component';
 import DataHeader from './headerRenderers/dataHeader.component';
 import DetailsPanelRow from './rowRenderers/detailsPanelRow.component';
 
+const rowHeight = 30;
+const headerHeight = 100;
+
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     table: {
@@ -49,6 +52,10 @@ const styles = (theme: Theme): StyleRules =>
       flex: 1,
       textOverflow: 'ellipsis',
       overflow: 'hidden',
+      height: rowHeight,
+    },
+    headerTableCell: {
+      height: headerHeight,
     },
   });
 
@@ -75,9 +82,6 @@ interface VirtualizedTableProps {
 const VirtualizedTable = (
   props: VirtualizedTableProps & WithStyles<typeof styles>
 ): React.ReactElement => {
-  const rowHeight = 30;
-  const headerHeight = 100;
-
   const [expandedIndex, setExpandedIndex] = React.useState(-1);
   const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
 
@@ -148,18 +152,16 @@ const VirtualizedTable = (
                       <TableCell
                         component="div"
                         className={clsx(
-                          classes.tableCell,
+                          classes.headerTableCell,
                           classes.headerFlexContainer
                         )}
                         variant="head"
-                        style={{ height: headerHeight }}
                       />
                     )}
                     className={classes.flexContainer}
                     cellRenderer={props => (
                       <ExpandCell
                         {...props}
-                        rowHeight={rowHeight}
                         expandedIndex={expandedIndex}
                         setExpandedIndex={setExpandedIndex}
                         className={clsx(
@@ -190,10 +192,9 @@ const VirtualizedTable = (
                           <DataHeader
                             {...headerProps}
                             className={clsx(
-                              classes.tableCell,
+                              classes.headerTableCell,
                               classes.headerFlexContainer
                             )}
-                            headerHeight={headerHeight}
                             sort={sort}
                             onSort={onSort}
                             filterComponent={
@@ -214,7 +215,6 @@ const VirtualizedTable = (
                               classes.tableCell,
                               classes.flexContainer
                             )}
-                            rowHeight={rowHeight}
                           />
                         )}
                       />
@@ -231,11 +231,10 @@ const VirtualizedTable = (
                       <TableCell
                         component="div"
                         className={clsx(
-                          classes.tableCell,
+                          classes.headerTableCell,
                           classes.headerFlexContainer
                         )}
                         variant="head"
-                        style={{ height: headerHeight }}
                       >
                         Actions
                       </TableCell>
@@ -243,7 +242,6 @@ const VirtualizedTable = (
                     cellRenderer={props => (
                       <ActionCell
                         {...props}
-                        rowHeight={rowHeight}
                         actions={actions}
                         className={clsx(
                           classes.tableCell,

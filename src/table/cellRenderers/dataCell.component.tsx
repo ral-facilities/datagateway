@@ -3,12 +3,11 @@ import { TableCellProps } from 'react-virtualized';
 import { TableCell, Typography } from '@material-ui/core';
 
 type CellRendererProps = TableCellProps & {
-  rowHeight: number;
   className: string;
 };
 
 const DataCell = (props: CellRendererProps): React.ReactElement => {
-  const { className, rowHeight, dataKey, rowData, cellData } = props;
+  const { className, dataKey, rowData, cellData } = props;
 
   let cellValue;
   if (dataKey.indexOf('.') !== -1) {
@@ -20,14 +19,7 @@ const DataCell = (props: CellRendererProps): React.ReactElement => {
   }
 
   return (
-    <TableCell
-      component="div"
-      className={className}
-      variant="body"
-      style={{
-        height: rowHeight,
-      }}
-    >
+    <TableCell component="div" className={className} variant="body">
       <Typography variant="body2" noWrap>
         {cellValue}
       </Typography>

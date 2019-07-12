@@ -4,21 +4,15 @@ import { TableCell } from '@material-ui/core';
 import { Entity } from '../../state/app.types';
 
 type CellRendererProps = TableCellProps & {
-  rowHeight: number;
   className: string;
   actions: ((rowData: Entity) => React.ReactElement)[];
 };
 
 const ActionCell = (props: CellRendererProps): React.ReactElement => {
-  const { className, rowHeight, actions, rowData } = props;
+  const { className, actions, rowData } = props;
 
   return (
-    <TableCell
-      component="div"
-      className={className}
-      variant="body"
-      style={{ height: rowHeight }}
-    >
+    <TableCell component="div" className={className} variant="body">
       {actions !== undefined && actions.map(element => element(rowData))}
     </TableCell>
   );
