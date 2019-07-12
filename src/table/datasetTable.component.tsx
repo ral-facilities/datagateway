@@ -54,10 +54,10 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     fetchData(parseInt(investigationId));
   }, [fetchData, sort, filters, investigationId]);
 
-  const nameFilter = (
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
-      label="Name"
-      onChange={(value: string) => filterTable('NAME', value)}
+      label={label}
+      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
     />
   );
   // const sizeFilter = (
@@ -99,7 +99,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
                 </Link>
               );
             },
-            filterComponent: nameFilter,
+            filterComponent: textFilter,
           },
           {
             label: 'Size',

@@ -54,10 +54,10 @@ const DatafileTable = (
     fetchData(parseInt(datasetId));
   }, [fetchData, sort, filters, datasetId]);
 
-  const nameFilter = (
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
-      label="Name"
-      onChange={(value: string) => filterTable('NAME', value)}
+      label={label}
+      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
     />
   );
 
@@ -108,11 +108,12 @@ const DatafileTable = (
           {
             label: 'Name',
             dataKey: 'NAME',
-            filterComponent: nameFilter,
+            filterComponent: textFilter,
           },
           {
             label: 'Location',
             dataKey: 'LOCATION',
+            filterComponent: textFilter,
           },
           {
             label: 'Size',

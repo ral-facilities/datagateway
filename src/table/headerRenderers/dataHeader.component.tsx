@@ -39,6 +39,7 @@ const DataHeader = (
       active={props.dataKey in sort}
       direction={sort[dataKey]}
       onClick={() => onSort(dataKey, nextSortDirection)}
+      style={{ flexDirection: 'row' }}
     >
       {props.label}
     </TableSortLabel>

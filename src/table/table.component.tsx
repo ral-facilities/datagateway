@@ -33,6 +33,12 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
       boxSizing: 'border-box',
     },
+    headerFlexContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'left',
+      boxSizing: 'border-box',
+    },
     tableRow: {},
     tableRowHover: {
       '&:hover': {
@@ -52,7 +58,7 @@ export interface ColumnType {
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
-  filterComponent?: React.ReactElement;
+  filterComponent?: (label: string, dataKey: string) => React.ReactElement;
 }
 
 interface VirtualizedTableProps {
@@ -143,7 +149,7 @@ const VirtualizedTable = (
                         component="div"
                         className={clsx(
                           classes.tableCell,
-                          classes.flexContainer
+                          classes.headerFlexContainer
                         )}
                         variant="head"
                         style={{ height: headerHeight }}
@@ -165,32 +171,34 @@ const VirtualizedTable = (
                   />
                 )}
                 {columns.map(
-                  (
-                    {
-                      cellContentRenderer = null,
-                      className,
-                      dataKey,
-                      ...other
-                    },
-                    index
-                  ) => {
+                  ({
+                    cellContentRenderer = null,
+                    className,
+                    dataKey,
+                    label,
+                    filterComponent,
+                  }) => {
                     return (
                       <Column
                         width={columnWidth}
                         flexGrow={3}
                         flexShrink={1}
                         key={dataKey}
+                        dataKey={dataKey}
+                        label={label}
                         headerRenderer={headerProps => (
                           <DataHeader
                             {...headerProps}
                             className={clsx(
                               classes.tableCell,
-                              classes.flexContainer
+                              classes.headerFlexContainer
                             )}
                             headerHeight={headerHeight}
                             sort={sort}
                             onSort={onSort}
-                            filterComponent={columns[index].filterComponent}
+                            filterComponent={
+                              filterComponent && filterComponent(label, dataKey)
+                            }
                           />
                         )}
                         className={clsx(classes.flexContainer, className)}
@@ -209,8 +217,6 @@ const VirtualizedTable = (
                             rowHeight={rowHeight}
                           />
                         )}
-                        dataKey={dataKey}
-                        {...other}
                       />
                     );
                   }
@@ -226,7 +232,7 @@ const VirtualizedTable = (
                         component="div"
                         className={clsx(
                           classes.tableCell,
-                          classes.flexContainer
+                          classes.headerFlexContainer
                         )}
                         variant="head"
                         style={{ height: headerHeight }}

@@ -44,10 +44,10 @@ const InvestigationTable = (
 ): React.ReactElement => {
   const { data, fetchData, sort, sortTable, filters, filterTable } = props;
 
-  const titleFilter = (
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
-      label="Title"
-      onChange={(value: string) => filterTable('TITLE', value ? value : null)}
+      label={label}
+      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
     />
   );
 
@@ -60,7 +60,7 @@ const InvestigationTable = (
   // );
 
   return (
-    <Paper style={{ height: 400, width: '100%' }}>
+    <Paper style={{ height: window.innerHeight, width: '100%' }}>
       <Table
         data={data}
         sort={sort}
@@ -106,19 +106,22 @@ const InvestigationTable = (
                 </Link>
               );
             },
-            filterComponent: titleFilter,
+            filterComponent: textFilter,
           },
           {
             label: 'Visit ID',
             dataKey: 'VISIT_ID',
+            filterComponent: textFilter,
           },
           {
             label: 'RB Number',
             dataKey: 'RB_NUMBER',
+            filterComponent: textFilter,
           },
           {
             label: 'DOI',
             dataKey: 'DOI',
+            filterComponent: textFilter,
           },
           {
             label: 'Size',
@@ -130,6 +133,7 @@ const InvestigationTable = (
           {
             label: 'Instrument',
             dataKey: 'INSTRUMENT.NAME',
+            filterComponent: textFilter,
           },
           {
             label: 'Start Date',
