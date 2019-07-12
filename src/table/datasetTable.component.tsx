@@ -1,13 +1,20 @@
 import React from 'react';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
+import NumberColumnFilter from './columnFilters/dateColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import Table from './table.component';
 import { Link } from 'react-router-dom';
-import { formatBytes } from '../data/helpers';
+import { formatBytes, datasetLink } from './cellRenderers/cellContentRenderers';
 import { sortTable, filterTable, fetchDatasets } from '../state/actions';
 import { AnyAction } from 'redux';
-import { StateType, Filter, Order, Entity, Dataset } from '../state/app.types';
+import {
+  StateType,
+  Filter,
+  Order,
+  Entity,
+  Dataset,
+  Datafile,
+} from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
@@ -89,14 +96,12 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           {
             label: 'Name',
             dataKey: 'NAME',
-            cellContentRenderer: function datasetLink(props: TableCellProps) {
-              const datasetData = props.rowData as Dataset;
-              return (
-                <Link
-                  to={`/browse/investigation/${investigationId}/dataset/${datasetData.ID}/datafile`}
-                >
-                  {datasetData.NAME}
-                </Link>
+            cellContentRenderer: props => {
+              const datasetData = props.cellData as Dataset;
+              return datasetLink(
+                investigationId,
+                datasetData.ID,
+                datasetData.NAME
               );
             },
             filterComponent: textFilter,

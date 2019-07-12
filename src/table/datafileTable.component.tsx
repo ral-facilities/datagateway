@@ -1,9 +1,9 @@
 import React from 'react';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
+import NumberColumnFilter from './columnFilters/dateColumnFilter.component';
 import { Paper, Typography, IconButton } from '@material-ui/core';
 import Table from './table.component';
-import { formatBytes } from '../data/helpers';
+import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { GetApp } from '@material-ui/icons';
 import { fetchDatafiles, sortTable, filterTable } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';

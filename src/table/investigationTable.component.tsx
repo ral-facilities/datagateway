@@ -1,10 +1,13 @@
 import React from 'react';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
+import NumberColumnFilter from './columnFilters/dateColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import Table from './table.component';
 import { Link } from 'react-router-dom';
-import { formatBytes } from '../data/helpers';
+import {
+  formatBytes,
+  investigationLink,
+} from './cellRenderers/cellContentRenderers';
 import {
   Order,
   Filter,
@@ -94,16 +97,11 @@ const InvestigationTable = (
           {
             label: 'Title',
             dataKey: 'TITLE',
-            cellContentRenderer: function investigationLink(
-              props: TableCellProps
-            ) {
+            cellContentRenderer: (props: TableCellProps) => {
               const investigationData = props.rowData as Investigation;
-              return (
-                <Link
-                  to={`/browse/investigation/${investigationData.ID}/dataset`}
-                >
-                  {investigationData.TITLE}
-                </Link>
+              return investigationLink(
+                investigationData.ID,
+                investigationData.TITLE
               );
             },
             filterComponent: textFilter,
