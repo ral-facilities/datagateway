@@ -1,5 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { RouterState } from 'connected-react-router';
 
 export interface DGTableState {
   sort: {
@@ -16,6 +17,7 @@ export interface DGTableState {
 
 export interface StateType {
   dgtable: DGTableState;
+  router: RouterState;
 }
 
 export interface ActionType<T> {

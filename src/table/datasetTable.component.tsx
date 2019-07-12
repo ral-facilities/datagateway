@@ -1,222 +1,149 @@
 import React from 'react';
-import { DatasetData, EntityType } from '../data/types';
-import memoize, { EqualityFn } from 'memoize-one';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
-import { VirtualizedTable } from './table.component';
-import axios from 'axios';
+import Table from './table.component';
 import { Link } from 'react-router-dom';
 import { formatBytes } from '../data/helpers';
+import { sortTable, filterTable, fetchDatasets } from '../state/actions';
+import { AnyAction } from 'redux';
+import { StateType, Filter, Order, Entity, Dataset } from '../state/app.types';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { connect } from 'react-redux';
+import { TableCellProps } from 'react-virtualized';
 
 interface DatasetTableProps {
-  rows?: DatasetData[];
-  investigationId?: string;
+  investigationId: string;
 }
 
-interface DatasetTableState {
-  activeFilters: {
-    [column: string]: string | { lt: number | null; gt: number | null };
+interface DatasetTableStoreProps {
+  sort: {
+    [column: string]: Order;
   };
-  data: DatasetData[];
+  filters: {
+    [column: string]: Filter;
+  };
+  data: Entity[];
+  loading: boolean;
+  error: string | null;
 }
 
-class DatasetTable extends React.Component<
-  DatasetTableProps,
-  DatasetTableState
-> {
-  public constructor(props: DatasetTableProps) {
-    super(props);
-    let data: DatasetData[] = [];
-    if (props.rows) {
-      data = props.rows;
-    }
-    this.state = {
-      activeFilters: {},
-      data,
-    };
-    this.onNameChange = this.onNameChange.bind(this);
-    this.onSizeChange = this.onSizeChange.bind(this);
-  }
+interface DatasetTableDispatchProps {
+  sortTable: (column: string, order: Order | null) => Action;
+  filterTable: (column: string, filter: Filter | null) => Action;
+  fetchData: (investigationId: number) => Promise<void>;
+}
 
-  public componentDidMount(): void {
-    if (this.props.investigationId) {
-      axios
-        .get(
-          `/datasets?filter={"where": {"INVESTIGATION_ID": "${this.props.investigationId}"}}`,
+type DatasetTableCombinedProps = DatasetTableProps &
+  DatasetTableStoreProps &
+  DatasetTableDispatchProps;
+
+const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
+  const {
+    data,
+    fetchData,
+    sort,
+    sortTable,
+    filters,
+    filterTable,
+    investigationId,
+  } = props;
+
+  React.useEffect(() => {
+    fetchData(parseInt(investigationId));
+  }, [fetchData, sort, filters, investigationId]);
+
+  const nameFilter = (
+    <TextColumnFilter
+      label="Name"
+      onChange={(value: string) => filterTable('NAME', value)}
+    />
+  );
+  // const sizeFilter = (
+  //   <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
+  // );
+
+  return (
+    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+      <Table
+        data={data}
+        sort={sort}
+        onSort={sortTable}
+        filters={filters}
+        onFilter={filterTable}
+        detailsPanel={(rowData: Entity) => {
+          const datasetData = rowData as Dataset;
+          return (
+            <div>
+              <Typography>
+                <b>Name: </b> {datasetData.NAME}
+              </Typography>
+              <Typography>
+                <b>Description: </b> {datasetData.NAME}
+              </Typography>
+            </div>
+          );
+        }}
+        columns={[
           {
-            headers: {
-              Authorization: `Bearer ${window.localStorage.getItem(
-                'daaas:token'
-              )}`,
+            label: 'Name',
+            dataKey: 'NAME',
+            cellContentRenderer: function datasetLink(props: TableCellProps) {
+              const datasetData = props.rowData as Dataset;
+              return (
+                <Link
+                  to={`/browse/investigation/${investigationId}/dataset/${datasetData.ID}/datafile`}
+                >
+                  {datasetData.NAME}
+                </Link>
+              );
             },
-          }
-        )
-        .then(response => {
-          this.setState({ data: response.data });
-          this.memoizedFilter = memoize(this.filter, this.deepEqualityFn);
-        });
-    }
-  }
+            filterComponent: nameFilter,
+          },
+          {
+            label: 'Size',
+            dataKey: 'SIZE',
+            cellContentRenderer: props => {
+              return formatBytes(props.cellData);
+            },
+          },
+          {
+            label: 'Create Time',
+            dataKey: 'CREATE_TIME',
+          },
+          {
+            label: 'Modified Time',
+            dataKey: 'MOD_TIME',
+          },
+        ]}
+      />
+    </Paper>
+  );
+};
 
-  private deepEqualityFn: EqualityFn = (
-    newFilter: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    },
-    oldFilter: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    }
-  ): boolean => {
-    if (Object.keys(newFilter).length !== Object.keys(oldFilter).length) {
-      return false;
-    }
-    for (let column in newFilter) {
-      if (newFilter[column] !== oldFilter[column]) {
-        return false;
-      }
-    }
-    return true;
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): DatasetTableDispatchProps => ({
+  sortTable: (column: string, order: Order | null) =>
+    dispatch(sortTable(column, order)),
+  filterTable: (column: string, filter: Filter | null) =>
+    dispatch(filterTable(column, filter)),
+  fetchData: (investigationId: number) =>
+    dispatch(fetchDatasets(investigationId)),
+});
+
+const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
+  return {
+    sort: state.dgtable.sort,
+    filters: state.dgtable.filters,
+    data: state.dgtable.data,
+    loading: state.dgtable.loading,
+    error: state.dgtable.error,
   };
+};
 
-  private memoizedFilter = memoize(this.filter, this.deepEqualityFn);
-
-  public onNameChange(value: string): void {
-    this.setState({
-      activeFilters: {
-        ...this.state.activeFilters,
-        NAME: value,
-      },
-    });
-  }
-
-  public onSizeChange(value: { lt: number | null; gt: number | null }): void {
-    this.setState({
-      activeFilters: {
-        ...this.state.activeFilters,
-        SIZE: value,
-      },
-    });
-  }
-
-  private filter(
-    filters: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    },
-    data: DatasetData[]
-  ): DatasetData[] {
-    if (Object.keys(filters).length === 0) {
-      return data;
-    }
-    let filteredRows: DatasetData[] = [];
-    data.forEach(element => {
-      let satisfyFilters = true;
-      for (let column in filters) {
-        if (column === 'NAME') {
-          if (
-            element[column]
-              .toLowerCase()
-              .indexOf((filters[column] as string).toLowerCase()) === -1
-          ) {
-            satisfyFilters = false;
-          }
-        }
-        if (column === 'SIZE') {
-          let between = true;
-          const betweenFilter = filters[column] as {
-            lt: number | null;
-            gt: number | null;
-          };
-          if (betweenFilter.lt !== null) {
-            if (element[column] > betweenFilter.lt) {
-              between = false;
-            }
-          }
-          if (betweenFilter.gt !== null) {
-            if (element[column] < betweenFilter.gt) {
-              between = false;
-            }
-          }
-          if (!between) {
-            satisfyFilters = false;
-          }
-        }
-      }
-      if (satisfyFilters) {
-        filteredRows.push(element);
-      }
-    });
-    return filteredRows;
-  }
-
-  public render(): React.ReactElement {
-    const nameFilter = (
-      <TextColumnFilter label="Name" onChange={this.onNameChange} />
-    );
-    const sizeFilter = (
-      <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
-    );
-    const filteredRows = this.memoizedFilter(
-      this.state.activeFilters,
-      this.state.data
-    );
-
-    return (
-      <Paper style={{ height: 400, width: '100%' }}>
-        <VirtualizedTable
-          data={filteredRows}
-          headerHeight={100}
-          rowHeight={56}
-          rowCount={filteredRows.length}
-          detailsPanel={(rowData: EntityType) => {
-            const datasetData = rowData as DatasetData;
-            return (
-              <div>
-                <Typography>
-                  <b>Name: </b> {datasetData.NAME}
-                </Typography>
-                <Typography>
-                  <b>Description: </b> {datasetData.NAME}
-                </Typography>
-              </div>
-            );
-          }}
-          columns={[
-            {
-              label: 'Name',
-              dataKey: 'NAME',
-              cellContentRenderer: props => {
-                const datasetData = props.rowData as DatasetData;
-                return (
-                  <Link
-                    to={`/browse/investigation/${this.props.investigationId}/dataset/${datasetData.ID}/datafile`}
-                  >
-                    {datasetData.NAME}
-                  </Link>
-                );
-              },
-              filterComponent: nameFilter,
-            },
-            {
-              label: 'Size',
-              dataKey: 'SIZE',
-              filterComponent: sizeFilter,
-              cellContentRenderer: props => {
-                return formatBytes(props.cellData);
-              },
-            },
-            {
-              label: 'Create Time',
-              dataKey: 'CREATE_TIME',
-            },
-            {
-              label: 'Modified Time',
-              dataKey: 'MOD_TIME',
-            },
-          ]}
-        />
-      </Paper>
-    );
-  }
-}
-
-export default DatasetTable;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DatasetTable);

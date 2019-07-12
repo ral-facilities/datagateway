@@ -1,227 +1,158 @@
 import React from 'react';
-import { EntityType, DatafileData } from '../data/types';
-import memoize, { EqualityFn } from 'memoize-one';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography, IconButton } from '@material-ui/core';
-import { VirtualizedTable } from './table.component';
+import Table from './table.component';
 import { formatBytes } from '../data/helpers';
-import axios from 'axios';
 import { GetApp } from '@material-ui/icons';
+import { fetchDatafiles, sortTable, filterTable } from '../state/actions';
+import { ThunkDispatch } from 'redux-thunk';
+import { connect } from 'react-redux';
+import { Filter, Order, Entity, Datafile, StateType } from '../state/app.types';
+import { Action, AnyAction } from 'redux';
 
 interface DatafileTableProps {
-  rows?: DatafileData[];
-  datasetId?: string;
+  datasetId: string;
 }
 
-interface DatafileTableState {
-  activeFilters: {
-    [column: string]: string | { lt: number | null; gt: number | null };
+interface DatafileTableStoreProps {
+  sort: {
+    [column: string]: Order;
   };
-  data: DatafileData[];
+  filters: {
+    [column: string]: Filter;
+  };
+  data: Entity[];
+  loading: boolean;
+  error: string | null;
 }
 
-class DatafileTable extends React.Component<
-  DatafileTableProps,
-  DatafileTableState
-> {
-  public constructor(props: DatafileTableProps) {
-    super(props);
-    let data: DatafileData[] = [];
-    if (props.rows) {
-      data = props.rows;
-    }
-    this.state = {
-      activeFilters: {},
-      data,
-    };
-    this.onNameChange = this.onNameChange.bind(this);
-    this.onSizeChange = this.onSizeChange.bind(this);
-  }
+interface DatafileTableDispatchProps {
+  sortTable: (column: string, order: Order | null) => Action;
+  filterTable: (column: string, filter: Filter | null) => Action;
+  fetchData: (datasetId: number) => Promise<void>;
+}
 
-  public componentDidMount(): void {
-    if (this.props.datasetId) {
-      axios
-        .get(
-          `/datafiles?filter={"where": {"DATASET_ID": "${this.props.datasetId}"}}`,
-          {
-            headers: {
-              Authorization: `Bearer ${window.localStorage.getItem(
-                'daaas:token'
-              )}`,
-            },
-          }
-        )
-        .then(response => {
-          this.setState({ data: response.data });
-          memoize(this.filter, this.deepEqualityFn);
-        });
-    }
-  }
+type DatafileTableCombinedProps = DatafileTableProps &
+  DatafileTableStoreProps &
+  DatafileTableDispatchProps;
 
-  private deepEqualityFn: EqualityFn = (
-    newFilter: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    },
-    oldFilter: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    }
-  ): boolean => {
-    if (Object.keys(newFilter).length !== Object.keys(oldFilter).length) {
-      return false;
-    }
-    for (let column in newFilter) {
-      if (newFilter[column] !== oldFilter[column]) {
-        return false;
-      }
-    }
-    return true;
-  };
+const DatafileTable = (
+  props: DatafileTableCombinedProps
+): React.ReactElement => {
+  const {
+    data,
+    fetchData,
+    sort,
+    sortTable,
+    filters,
+    filterTable,
+    datasetId,
+  } = props;
 
-  private memoizedFilter = memoize(this.filter, this.deepEqualityFn);
+  React.useEffect(() => {
+    fetchData(parseInt(datasetId));
+  }, [fetchData, sort, filters, datasetId]);
 
-  public onNameChange(value: string): void {
-    this.setState({
-      activeFilters: {
-        ...this.state.activeFilters,
-        NAME: value,
-      },
-    });
-  }
+  const nameFilter = (
+    <TextColumnFilter
+      label="Name"
+      onChange={(value: string) => filterTable('NAME', value)}
+    />
+  );
 
-  public onSizeChange(value: { lt: number | null; gt: number | null }): void {
-    this.setState({
-      activeFilters: {
-        ...this.state.activeFilters,
-        SIZE: value,
-      },
-    });
-  }
+  // const sizeFilter = (
+  //   <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
+  // );
 
-  private filter(
-    filters: {
-      [column: string]: string | { lt: number | null; gt: number | null };
-    },
-    data: DatafileData[]
-  ): DatafileData[] {
-    if (Object.keys(filters).length === 0) {
-      return data;
-    }
-    let filteredRows: DatafileData[] = [];
-    data.forEach(element => {
-      let satisfyFilters = true;
-      for (let column in filters) {
-        if (column === 'NAME') {
-          if (
-            element[column]
-              .toLowerCase()
-              .indexOf((filters[column] as string).toLowerCase()) === -1
-          ) {
-            satisfyFilters = false;
-          }
-        }
-        if (column === 'SIZE') {
-          let between = true;
-          const betweenFilter = filters[column] as {
-            lt: number | null;
-            gt: number | null;
-          };
-          if (betweenFilter.lt !== null) {
-            if (element[column] > betweenFilter.lt) {
-              between = false;
-            }
-          }
-          if (betweenFilter.gt !== null) {
-            if (element[column] < betweenFilter.gt) {
-              between = false;
-            }
-          }
-          if (!between) {
-            satisfyFilters = false;
-          }
-        }
-      }
-      if (satisfyFilters) {
-        filteredRows.push(element);
-      }
-    });
-    return filteredRows;
-  }
-
-  public render(): React.ReactElement {
-    const nameFilter = (
-      <TextColumnFilter label="Name" onChange={this.onNameChange} />
-    );
-    const sizeFilter = (
-      <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
-    );
-    const filteredRows = this.memoizedFilter(
-      this.state.activeFilters,
-      this.state.data
-    );
-
-    return (
-      <Paper style={{ height: 400, width: '100%' }}>
-        <VirtualizedTable
-          data={filteredRows}
-          headerHeight={100}
-          rowHeight={56}
-          rowCount={filteredRows.length}
-          detailsPanel={(rowData: EntityType) => {
-            const datafileData = rowData as DatafileData;
+  return (
+    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+      <Table
+        data={data}
+        sort={sort}
+        onSort={sortTable}
+        filters={filters}
+        onFilter={filterTable}
+        detailsPanel={(rowData: Entity) => {
+          const datafileData = rowData as Datafile;
+          return (
+            <div>
+              <Typography>
+                <b>Name: </b> {datafileData.NAME}
+              </Typography>
+              <Typography>
+                <b>File Size: </b> {formatBytes(datafileData.SIZE)}
+              </Typography>
+              <Typography>
+                <b>Location: </b> {datafileData.LOCATION}
+              </Typography>
+            </div>
+          );
+        }}
+        actions={[
+          function downloadButton(rowData: Entity) {
+            const datafileData = rowData as Datafile;
             return (
-              <div>
-                <Typography>
-                  <b>Name: </b> {datafileData.NAME}
-                </Typography>
-                <Typography>
-                  <b>File Size: </b> {formatBytes(datafileData.SIZE)}
-                </Typography>
-                <Typography>
-                  <b>Location: </b> {datafileData.LOCATION}
-                </Typography>
-              </div>
-            );
-          }}
-          actions={[
-            rowData => (
               <IconButton
                 key="download"
                 onClick={() => {
-                  alert(`Downloading ${rowData.LOCATION}`);
+                  alert(`Downloading ${datafileData.LOCATION}`);
                 }}
               >
                 <GetApp />
               </IconButton>
-            ),
-          ]}
-          columns={[
-            {
-              label: 'Name',
-              dataKey: 'NAME',
-              filterComponent: nameFilter,
+            );
+          },
+        ]}
+        columns={[
+          {
+            label: 'Name',
+            dataKey: 'NAME',
+            filterComponent: nameFilter,
+          },
+          {
+            label: 'Location',
+            dataKey: 'LOCATION',
+          },
+          {
+            label: 'Size',
+            dataKey: 'SIZE',
+            cellContentRenderer: props => {
+              return formatBytes(props.cellData);
             },
-            {
-              label: 'Location',
-              dataKey: 'LOCATION',
-            },
-            {
-              label: 'Size',
-              dataKey: 'SIZE',
-              filterComponent: sizeFilter,
-              cellContentRenderer: props => {
-                return formatBytes(props.cellData);
-              },
-            },
-            {
-              label: 'Modified Time',
-              dataKey: 'MOD_TIME',
-            },
-          ]}
-        />
-      </Paper>
-    );
-  }
-}
+          },
+          {
+            label: 'Modified Time',
+            dataKey: 'MOD_TIME',
+          },
+        ]}
+      />
+    </Paper>
+  );
+};
 
-export default DatafileTable;
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): DatafileTableDispatchProps => ({
+  sortTable: (column: string, order: Order | null) =>
+    dispatch(sortTable(column, order)),
+  filterTable: (column: string, filter: Filter | null) =>
+    dispatch(filterTable(column, filter)),
+  fetchData: (investigationId: number) =>
+    dispatch(fetchDatafiles(investigationId)),
+});
+
+const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
+  return {
+    sort: state.dgtable.sort,
+    filters: state.dgtable.filters,
+    data: state.dgtable.data,
+    loading: state.dgtable.loading,
+    error: state.dgtable.error,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DatafileTable);

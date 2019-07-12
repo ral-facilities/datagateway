@@ -16,8 +16,6 @@ import { RegisterRouteType } from './state/actions/actions.types';
 import InvestigationTable from './table/investigationTable.component';
 import DatafileTable from './table/datafileTable.component';
 import DatasetTable from './table/datasetTable.component';
-import DessertTable from './table/dessertTable.component';
-import { foodDataDemoGenerator } from './data/demo';
 import { Link } from 'react-router-dom';
 
 const history = createBrowserHistory();
@@ -98,11 +96,6 @@ class App extends React.Component<{}, { hasError: boolean }> {
                       Browse investigations
                     </Link>
                   )}
-                />
-                <Route
-                  exact
-                  path="/desserts/"
-                  render={() => <DessertTable rows={foodDataDemoGenerator()} />}
                 />
                 <Route
                   exact

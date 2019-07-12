@@ -56,9 +56,9 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
       })
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data));
-        response.data.forEach((investigation: Investigation) => {
-          dispatch(fetchDatasetCount(investigation.ID));
-        });
+        // response.data.forEach((investigation: Investigation) => {
+        //   dispatch(fetchDatasetCount(investigation.ID));
+        // });
       })
       .catch(error => {
         log.error(error.message);
