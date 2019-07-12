@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Data cell component renders correctly 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-body"
+>
+  <WithStyles(ForwardRef(Typography))
+    noWrap={true}
+    variant="body2"
+  >
+    non nested property
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;
+
+exports[`Data cell component renders nested cell data correctly 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-body"
+>
+  <WithStyles(ForwardRef(Typography))
+    noWrap={true}
+    variant="body2"
+  >
+    nested property
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;
