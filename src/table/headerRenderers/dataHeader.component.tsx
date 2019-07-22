@@ -11,7 +11,15 @@ const DataHeader = (
     onSort: (column: string, order: Order | null) => void;
   }
 ): React.ReactElement => {
-  const { className, dataKey, filterComponent, sort, onSort } = props;
+  const {
+    className,
+    dataKey,
+    filterComponent,
+    sort,
+    onSort,
+    label,
+    disableSort,
+  } = props;
 
   const currSortDirection = sort[dataKey] ? sort[dataKey] : null;
   let nextSortDirection: Order | null = null;
@@ -26,17 +34,17 @@ const DataHeader = (
       nextSortDirection = 'asc';
   }
 
-  const inner = !props.disableSort ? (
+  const inner = !disableSort ? (
     <TableSortLabel
-      active={props.dataKey in sort}
+      active={dataKey in sort}
       direction={sort[dataKey]}
       onClick={() => onSort(dataKey, nextSortDirection)}
       style={{ flexDirection: 'row' }}
     >
-      {props.label}
+      {label}
     </TableSortLabel>
   ) : (
-    props.label
+    label
   );
 
   return (
