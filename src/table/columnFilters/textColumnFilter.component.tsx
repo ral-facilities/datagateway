@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Input } from '@material-ui/core';
+import { Input } from '@material-ui/core';
 
 export default class TextColumnFilter extends React.Component<
   { label: string; onChange: (value: string) => void },
@@ -31,8 +31,6 @@ export default class TextColumnFilter extends React.Component<
           placeholder="Contains..."
           value={this.state.value}
           onChange={this.handleChange}
-          onClick={(e: React.MouseEvent) => e.stopPropagation()}
-          onKeyDown={(e: React.KeyboardEvent) => e.stopPropagation()}
           aria-label={`Filter by ${this.props.label}`}
         />
       </div>
