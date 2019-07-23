@@ -25,6 +25,13 @@ describe('Data cell component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('renders provided cell data correctly', () => {
+    const wrapper = shallow(
+      <DataCell {...dataCellProps} cellData="provided test" />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('renders nested cell data correctly', () => {
     const wrapper = shallow(
       <DataCell {...dataCellProps} dataKey="nested.test" />

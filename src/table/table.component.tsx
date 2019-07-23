@@ -205,9 +205,7 @@ const VirtualizedTable = (
                           <DataCell
                             {...props}
                             cellData={
-                              cellContentRenderer
-                                ? cellContentRenderer(props)
-                                : props.cellData
+                              cellContentRenderer && cellContentRenderer(props)
                             }
                             className={clsx(
                               classes.tableCell,

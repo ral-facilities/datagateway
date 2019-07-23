@@ -7,12 +7,17 @@ type CellRendererProps = TableCellProps & {
 };
 
 const DataCell = (props: CellRendererProps): React.ReactElement => {
-  const { className, dataKey, rowData } = props;
+  const { className, dataKey, rowData, cellData } = props;
 
-  // use . in dataKey name to drill down into nested row data
-  const cellValue = dataKey.split('.').reduce(function(prev, curr) {
-    return prev ? prev[curr] : null;
-  }, rowData);
+  let cellValue = '';
+  if (cellData) {
+    cellValue = cellData;
+  } else {
+    // use . in dataKey name to drill down into nested row data
+    cellValue = dataKey.split('.').reduce(function(prev, curr) {
+      return prev ? prev[curr] : null;
+    }, rowData);
+  }
 
   return (
     <TableCell component="div" className={className} variant="body">

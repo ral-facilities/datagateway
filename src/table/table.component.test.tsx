@@ -59,6 +59,7 @@ describe('Table component', () => {
         .at(0)
         .children()
         .find('div')
+        .first()
         .text()
     ).toEqual('Test 1');
 
@@ -68,6 +69,7 @@ describe('Table component', () => {
         .at(1)
         .children()
         .find('div')
+        .first()
         .text()
     ).toEqual('Test 2');
 
