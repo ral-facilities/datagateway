@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dataset table component renders Dataset title as a link 1`] = `
+<Link
+  to="/browse/investigation/1/dataset/1/datafile"
+>
+  <a
+    href="/browse/investigation/1/dataset/1/datafile"
+    onClick={[Function]}
+  >
+    Test 1
+  </a>
+</Link>
+`;
+
+exports[`Dataset table component renders correctly 1`] = `
+<div
+  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
+  style={
+    Object {
+      "height": 768,
+      "width": "100%",
+    }
+  }
+>
+  <WithStyles(VirtualizedTable)
+    columns={
+      Array [
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "NAME",
+          "filterComponent": [Function],
+          "label": "Name",
+        },
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "SIZE",
+          "label": "Size",
+        },
+        Object {
+          "dataKey": "CREATE_TIME",
+          "label": "Create Time",
+        },
+        Object {
+          "dataKey": "MOD_TIME",
+          "label": "Modified Time",
+        },
+      ]
+    }
+    data={
+      Array [
+        Object {
+          "CREATE_TIME": "2019-07-23",
+          "ID": 1,
+          "INVESTIGATION_ID": 1,
+          "MOD_TIME": "2019-07-23",
+          "NAME": "Test 1",
+          "SIZE": 1,
+        },
+      ]
+    }
+    detailsPanel={[Function]}
+    onSort={[Function]}
+    sort={Object {}}
+  />
+</div>
+`;
+
+exports[`Dataset table component renders details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Name: 
+    </b>
+     
+    Test 1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Description: 
+    </b>
+     
+    Test 1
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;

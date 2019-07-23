@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Investigation table component renders correctly 1`] = `
+<div
+  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
+  style={
+    Object {
+      "height": 768,
+      "width": "100%",
+    }
+  }
+>
+  <WithStyles(VirtualizedTable)
+    columns={
+      Array [
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "TITLE",
+          "filterComponent": [Function],
+          "label": "Title",
+        },
+        Object {
+          "dataKey": "VISIT_ID",
+          "filterComponent": [Function],
+          "label": "Visit ID",
+        },
+        Object {
+          "dataKey": "RB_NUMBER",
+          "filterComponent": [Function],
+          "label": "RB Number",
+        },
+        Object {
+          "dataKey": "DOI",
+          "filterComponent": [Function],
+          "label": "DOI",
+        },
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "SIZE",
+          "label": "Size",
+        },
+        Object {
+          "dataKey": "INSTRUMENT.NAME",
+          "filterComponent": [Function],
+          "label": "Instrument",
+        },
+        Object {
+          "dataKey": "STARTDATE",
+          "label": "Start Date",
+        },
+        Object {
+          "dataKey": "ENDDATE",
+          "label": "End Date",
+        },
+      ]
+    }
+    data={
+      Array [
+        Object {
+          "DOI": "doi 1",
+          "ENDDATE": "2019-07-24",
+          "ID": 1,
+          "INSTRUMENT": Object {
+            "NAME": "LARMOR",
+          },
+          "RB_NUMBER": "1",
+          "SIZE": 1,
+          "STARTDATE": "2019-07-23",
+          "TITLE": "Test 1",
+          "VISIT_ID": "1",
+        },
+      ]
+    }
+    detailsPanel={[Function]}
+    onSort={[Function]}
+    sort={Object {}}
+  />
+</div>
+`;
+
+exports[`Investigation table component renders details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Proposal: 
+    </b>
+    1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Title: 
+    </b>
+    Test 1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Start Date: 
+    </b>
+    2019-07-23
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      End Date: 
+    </b>
+    2019-07-24
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;
+
+exports[`Investigation table component renders investigation title as a link 1`] = `
+<Link
+  to="/browse/investigation/1/dataset"
+>
+  <a
+    href="/browse/investigation/1/dataset"
+    onClick={[Function]}
+  >
+    Test 1
+  </a>
+</Link>
+`;
