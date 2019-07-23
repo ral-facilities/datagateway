@@ -67,8 +67,6 @@ const InvestigationTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
-        filters={filters}
-        onFilter={filterTable}
         detailsPanel={(rowData: Entity) => {
           const investigationData = rowData as Investigation;
           return (

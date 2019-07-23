@@ -71,8 +71,6 @@ const DatafileTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
-        filters={filters}
-        onFilter={filterTable}
         detailsPanel={(rowData: Entity) => {
           const datafileData = rowData as Datafile;
           return (
