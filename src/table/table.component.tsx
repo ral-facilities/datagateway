@@ -73,8 +73,6 @@ interface VirtualizedTableProps {
   columns: ColumnType[];
   sort: { [column: string]: Order };
   onSort: (column: string, order: Order | null) => void;
-  filters: { [column: string]: Filter };
-  onFilter: (column: string, filter: Order | null) => void;
   detailsPanel?: (rowData: Entity) => React.ReactElement;
   actions?: ((rowData: Entity) => React.ReactElement)[];
 }
@@ -104,7 +102,7 @@ const VirtualizedTable = (
       {({ height, width }) => {
         return (
           <ColumnSizer
-            width={width}
+            width={width || 800}
             columnCount={columns.length}
             columnMinWidth={100}
           >
@@ -112,8 +110,8 @@ const VirtualizedTable = (
               <Table
                 ref={tableRef}
                 className={classes.table}
-                height={height}
-                width={width}
+                height={height || 500}
+                width={width || 800}
                 rowCount={data.length}
                 headerHeight={headerHeight}
                 rowHeight={({ index }) =>
