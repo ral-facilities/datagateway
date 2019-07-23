@@ -99,6 +99,7 @@ const DatafileTable = (
             const datafileData = rowData as Datafile;
             return (
               <IconButton
+                aria-label="Download"
                 key="download"
                 onClick={() => {
                   downloadData(datafileData.ID, datafileData.LOCATION);
