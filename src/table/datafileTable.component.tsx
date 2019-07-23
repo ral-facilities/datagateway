@@ -5,7 +5,12 @@ import { Paper, Typography, IconButton } from '@material-ui/core';
 import Table from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { GetApp } from '@material-ui/icons';
-import { fetchDatafiles, sortTable, filterTable } from '../state/actions';
+import {
+  fetchDatafiles,
+  sortTable,
+  filterTable,
+  downloadDatafile,
+} from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { Filter, Order, Entity, Datafile, StateType } from '../state/app.types';
@@ -31,6 +36,7 @@ interface DatafileTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (datasetId: number) => Promise<void>;
+  downloadData: (datafileId: number, filename: string) => Promise<void>;
 }
 
 type DatafileTableCombinedProps = DatafileTableProps &
@@ -48,6 +54,7 @@ const DatafileTable = (
     filters,
     filterTable,
     datasetId,
+    downloadData,
   } = props;
 
   React.useEffect(() => {
@@ -94,7 +101,7 @@ const DatafileTable = (
               <IconButton
                 key="download"
                 onClick={() => {
-                  alert(`Downloading ${datafileData.LOCATION}`);
+                  downloadData(datafileData.ID, datafileData.LOCATION);
                 }}
               >
                 <GetApp />
@@ -137,8 +144,9 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (investigationId: number) =>
-    dispatch(fetchDatafiles(investigationId)),
+  fetchData: (datasetId: number) => dispatch(fetchDatafiles(datasetId)),
+  downloadData: (datafileId: number, filename: string) =>
+    dispatch(downloadDatafile(datafileId, filename)),
 });
 
 const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
