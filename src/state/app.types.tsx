@@ -1,5 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { RouterState } from 'connected-react-router';
+import { FeatureSwitches } from './actions/actions.types';
 
 export interface DGTableState {
   sort: {
@@ -12,10 +14,21 @@ export interface DGTableState {
   loading: boolean;
   downloading: boolean;
   error: string | null;
+  res?: ApplicationStrings;
+  features: FeatureSwitches;
+}
+
+export interface AppStrings {
+  [id: string]: string;
+}
+
+export interface ApplicationStrings {
+  [section: string]: AppStrings;
 }
 
 export interface StateType {
   dgtable: DGTableState;
+  router: RouterState;
 }
 
 export interface ActionType<T> {

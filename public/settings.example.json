@@ -1,0 +1,9 @@
+{
+  "features": {
+    "investigationGetSize": true,
+    "investigationGetCount": true,
+    "datasetGetSize": true,
+    "datasetGetCount": true
+  },
+  "ui-strings": "/res/default.json"
+}

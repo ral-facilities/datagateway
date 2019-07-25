@@ -1,10 +1,24 @@
-import { ActionType, Order, Filter, StateType } from '../app.types';
+import {
+  ActionType,
+  Order,
+  Filter,
+  StateType,
+  ThunkResult,
+  ApplicationStrings,
+} from '../app.types';
 import {
   SortTablePayload,
   SortTableType,
   FilterTablePayload,
   FilterTableType,
+  ConfigureStringsType,
+  ConfigureStringsPayload,
+  FeatureSwitches,
+  FeatureSwitchesPayload,
+  ConfigureFeatureSwitchesType,
 } from './actions.types';
+import axios from 'axios';
+import * as log from 'loglevel';
 
 export const getApiFilter = (
   getState: () => StateType
@@ -68,3 +82,61 @@ export const filterTable = (
     filter,
   },
 });
+
+export const configureStrings = (
+  appStrings: ApplicationStrings
+): ActionType<ConfigureStringsPayload> => ({
+  type: ConfigureStringsType,
+  payload: {
+    res: appStrings,
+  },
+});
+
+export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    await axios
+      .get(path)
+      .then(res => {
+        dispatch(configureStrings(res.data));
+      })
+      .catch(error =>
+        log.error(`Failed to read strings from ${path}: ${error}`)
+      );
+  };
+};
+
+export const loadFeatureSwitches = (
+  featureSwitches: FeatureSwitches
+): ActionType<FeatureSwitchesPayload> => ({
+  type: ConfigureFeatureSwitchesType,
+  payload: {
+    switches: featureSwitches,
+  },
+});
+
+export const configureApp = (): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    await axios
+      .get('/settings.json')
+      .then(res => {
+        const settings = res.data;
+
+        // invalid settings.json
+        if (typeof settings !== 'object') {
+          throw Error('Invalid format');
+        }
+
+        if (settings['features']) {
+          dispatch(loadFeatureSwitches(settings['features']));
+        }
+
+        const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
+          ? '/' + settings['ui-strings']
+          : settings['ui-strings'];
+        dispatch(loadStrings(uiStringResourcesPath));
+      })
+      .catch(error => {
+        log.error(`Error loading settings.json: ${error.message}`);
+      });
+  };
+};

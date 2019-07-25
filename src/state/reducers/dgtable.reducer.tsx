@@ -35,6 +35,10 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FeatureSwitchesPayload,
+  ConfigureStringsPayload,
+  ConfigureStringsType,
+  ConfigureFeatureSwitchesType,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
@@ -44,6 +48,12 @@ export const initialState: DGTableState = {
   error: null,
   sort: {},
   filters: {},
+  features: {
+    investigationGetSize: false,
+    investigationGetCount: false,
+    datasetGetSize: false,
+    datasetGetCount: false,
+  },
 };
 
 export function handleSortTable(
@@ -96,6 +106,26 @@ export function handleFilterTable(
       },
     };
   }
+}
+
+export function handleConfigureStrings(
+  state: DGTableState,
+  payload: ConfigureStringsPayload
+): DGTableState {
+  return {
+    ...state,
+    res: payload.res,
+  };
+}
+
+export function handleConfigureFeatureSwitches(
+  state: DGTableState,
+  payload: FeatureSwitchesPayload
+): DGTableState {
+  return {
+    ...state,
+    features: payload.switches,
+  };
 }
 
 export function handleFetchDataRequest(state: DGTableState): DGTableState {
@@ -197,6 +227,8 @@ export function handleFetchDatafileCountSuccess(
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
+  [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
