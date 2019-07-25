@@ -34,6 +34,8 @@ import {
   downloadDatasetRequest,
   downloadDatasetSuccess,
   downloadDatasetFailure,
+  loadFeatureSwitches,
+  configureStrings,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -89,6 +91,32 @@ describe('dgtable reducer', () => {
 
     let updatedState = DGTableReducer(state, filterTable('test', null));
     expect(updatedState.sort).toEqual({});
+  });
+
+  it('should set res property when configure strings action is sent', () => {
+    expect(state).not.toHaveProperty('res');
+
+    const updatedState = DGTableReducer(
+      state,
+      configureStrings({ testSection: { testId: 'test' } })
+    );
+
+    expect(updatedState).toHaveProperty('res');
+    expect(updatedState.res).toEqual({ testSection: { testId: 'test' } });
+  });
+
+  it('should set feature switches property when configure feature switches action is sent', () => {
+    expect(state.features.investigationGetSize).toBeFalsy();
+
+    const updatedState = DGTableReducer(
+      state,
+      loadFeatureSwitches({
+        ...state.features,
+        investigationGetSize: true,
+      })
+    );
+
+    expect(updatedState.features.investigationGetSize).toBeTruthy();
   });
 
   describe('FetchInvestigations actions', () => {
