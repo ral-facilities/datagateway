@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
-import thunk from 'redux-thunk';
-import { createStore, applyMiddleware, compose } from 'redux';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
@@ -14,6 +14,8 @@ import DGTableMiddleware, {
 } from './state/middleware/dgtable.middleware';
 import { RegisterRouteType } from './state/actions/actions.types';
 import TestTable from './table/testTable';
+import { configureApp } from './state/actions';
+import { StateType } from './state/app.types';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -35,6 +37,9 @@ const store = createStore(
 );
 
 listenToMessages(store.dispatch);
+
+const dispatch = store.dispatch as ThunkDispatch<StateType, null, AnyAction>;
+dispatch(configureApp());
 
 const registerRouteAction = {
   type: RegisterRouteType,

@@ -10,7 +10,14 @@ import {
   TableSortLabel,
   Paper,
 } from '@material-ui/core';
-import { StateType, Filter, Order, Entity, Dataset } from '../state/app.types';
+import {
+  StateType,
+  Filter,
+  Order,
+  Entity,
+  Dataset,
+  AppStrings,
+} from '../state/app.types';
 import {
   sortTable,
   filterTable,
@@ -20,25 +27,19 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction, Action } from 'redux';
+import { getAppStrings, getString } from '../state/strings';
 
 interface HeadRow {
   id: string;
   label: string;
 }
 
-const headRows: HeadRow[] = [
-  {
-    id: 'NAME',
-    label: 'Name',
-  },
-  { id: 'LOCATION', label: 'Location' },
-];
-
 interface TestTableHeadProps {
   onRequestSort: (event: React.MouseEvent<unknown>, property: string) => void;
   sort: {
     [column: string]: Order;
   };
+  res: AppStrings | undefined;
 }
 
 function TestTableHead(props: TestTableHeadProps): React.ReactElement {
@@ -50,6 +51,14 @@ function TestTableHead(props: TestTableHeadProps): React.ReactElement {
   ) => {
     onRequestSort(event, property);
   };
+
+  const headRows: HeadRow[] = [
+    {
+      id: 'NAME',
+      label: getString(props.res, 'name'),
+    },
+    { id: 'LOCATION', label: 'Location' },
+  ];
 
   return (
     <TableHead>
@@ -84,6 +93,7 @@ interface TestTableProps {
   data: Entity[];
   loading: boolean;
   error: string | null;
+  res: AppStrings | undefined;
 }
 
 interface TestTableDispatchProps {
@@ -128,17 +138,23 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
     fetchData();
   }, [fetchData, sort, filters]);
 
+  const nameString = getString(props.res, 'name');
+
   return (
     <Paper>
       <TextField
-        placeholder="Title filter"
-        value={filters && filters.TITLE ? filters.TITLE : ''}
+        placeholder={`${nameString} filter`}
+        value={filters && filters.NAME ? filters.NAME : ''}
         onChange={event =>
-          filterTable('TITLE', event.target.value ? event.target.value : null)
+          filterTable('NAME', event.target.value ? event.target.value : null)
         }
       />
       <Table size={'small'}>
-        <TestTableHead sort={sort || {}} onRequestSort={handleRequestSort} />
+        <TestTableHead
+          sort={sort || {}}
+          onRequestSort={handleRequestSort}
+          res={props.res}
+        />
         <TableBody>
           {data.map(row => {
             const dataset = row as Dataset;
@@ -183,6 +199,7 @@ const mapStateToProps = (state: StateType): TestTableProps => {
     data: state.dgtable.data,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    res: getAppStrings(state, 'datasets'),
   };
 };
 

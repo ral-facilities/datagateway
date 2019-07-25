@@ -39,6 +39,7 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
     dispatch(fetchInvestigationsRequest());
 
     const filter = getApiFilter(getState);
+    const { investigationGetCount } = getState().dgtable.features;
 
     let params = {};
     if (Object.keys(filter).length !== 0) {
@@ -56,9 +57,11 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
       })
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data));
-        response.data.forEach((investigation: Investigation) => {
-          dispatch(fetchDatasetCount(investigation.ID));
-        });
+        if (investigationGetCount) {
+          response.data.forEach((investigation: Investigation) => {
+            dispatch(fetchDatasetCount(investigation.ID));
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);

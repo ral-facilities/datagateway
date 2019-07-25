@@ -53,6 +53,7 @@ export const fetchDatasets = (
       ...filter.where,
       INVESTIGATION_ID: investigationId,
     };
+    const { datasetGetCount } = getState().dgtable.features;
 
     const params = {
       filter,
@@ -67,9 +68,11 @@ export const fetchDatasets = (
       })
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data));
-        response.data.forEach((dataset: Dataset) => {
-          dispatch(fetchDatafileCount(dataset.ID));
-        });
+        if (datasetGetCount) {
+          response.data.forEach((dataset: Dataset) => {
+            dispatch(fetchDatafileCount(dataset.ID));
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);
