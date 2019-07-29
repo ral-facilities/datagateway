@@ -39,6 +39,8 @@ import {
   ConfigureStringsPayload,
   ConfigureStringsType,
   ConfigureFeatureSwitchesType,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
@@ -53,6 +55,11 @@ export const initialState: DGTableState = {
     investigationGetCount: false,
     datasetGetSize: false,
     datasetGetCount: false,
+  },
+  urls: {
+    icatUrl: '',
+    idsUrl: '',
+    apiUrl: '',
   },
 };
 
@@ -125,6 +132,16 @@ export function handleConfigureFeatureSwitches(
   return {
     ...state,
     features: payload.switches,
+  };
+}
+
+export function handleConfigureUrls(
+  state: DGTableState,
+  payload: ConfigureUrlsPayload
+): DGTableState {
+  return {
+    ...state,
+    urls: payload.urls,
   };
 }
 
@@ -229,6 +246,7 @@ const DGTableReducer = createReducer(initialState, {
   [FilterTableType]: handleFilterTable,
   [ConfigureStringsType]: handleConfigureStrings,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
+  [ConfigureURLsType]: handleConfigureUrls,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

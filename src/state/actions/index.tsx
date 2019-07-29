@@ -16,6 +16,9 @@ import {
   FeatureSwitches,
   FeatureSwitchesPayload,
   ConfigureFeatureSwitchesType,
+  URLs,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
 } from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -114,6 +117,13 @@ export const loadFeatureSwitches = (
   },
 });
 
+export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
+  type: ConfigureURLsType,
+  payload: {
+    urls,
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async dispatch => {
     await axios
@@ -128,6 +138,52 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if (settings['features']) {
           dispatch(loadFeatureSwitches(settings['features']));
+        }
+
+        dispatch(
+          loadUrls({
+            icatUrl: settings['icatUrl'],
+            idsUrl: settings['idsUrl'],
+            apiUrl: settings['apiUrl'],
+          })
+        );
+
+        /* istanbul ignore if */
+        if (process.env.NODE_ENV === `development`) {
+          // TODO: get info from correct places when authorisation is sorted out in parent app
+          axios
+            .post(`${settings['apiUrl']}/sessions`, {
+              username: 'user',
+              password: 'password',
+            })
+            .then(response => {
+              window.localStorage.setItem(
+                'daaas:token',
+                response.data.sessionID
+              );
+            })
+            .catch(error => {
+              log.error(`Can't contact API: ${error.message}`);
+            });
+
+          const icatCreds = {
+            plugin: 'simple',
+            credentials: [{ username: 'root' }, { password: 'pw' }],
+          };
+
+          axios
+            .post(settings['icatUrl'], `json=${JSON.stringify(icatCreds)}`, {
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            })
+            .then(response => {
+              window.localStorage.setItem(
+                'icat:token',
+                response.data.sessionId
+              );
+            })
+            .catch(error => {
+              log.error(`Can't contact ICAT: ${error.message}`);
+            });
         }
 
         const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')

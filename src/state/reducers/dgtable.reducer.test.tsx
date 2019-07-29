@@ -36,6 +36,7 @@ import {
   downloadDatasetFailure,
   loadFeatureSwitches,
   configureStrings,
+  loadUrls,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -117,6 +118,20 @@ describe('dgtable reducer', () => {
     );
 
     expect(updatedState.features.investigationGetSize).toBeTruthy();
+  });
+
+  it('should set urls property when configure urls action is sent', () => {
+    expect(state.urls.apiUrl).toEqual('');
+
+    const updatedState = DGTableReducer(
+      state,
+      loadUrls({
+        ...state.urls,
+        apiUrl: 'test',
+      })
+    );
+
+    expect(updatedState.urls.apiUrl).toEqual('test');
   });
 
   describe('FetchInvestigations actions', () => {

@@ -10,6 +10,7 @@ export const FilterTableType = 'datagateway_table:filter_table';
 export const ConfigureStringsType = 'datagateway_table:configure_strings';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';
+export const ConfigureURLsType = 'datagateway_table:configure_urls';
 
 export const FetchInvestigationsRequestType =
   'datagateway_table:fetch_investigations_request';
@@ -97,6 +98,16 @@ export interface FeatureSwitches {
   investigationGetCount: boolean;
   datasetGetSize: boolean;
   datasetGetCount: boolean;
+}
+
+export interface ConfigureUrlsPayload {
+  urls: URLs;
+}
+
+export interface URLs {
+  icatUrl: string;
+  idsUrl: string;
+  apiUrl: string;
 }
 
 export interface FailurePayload {

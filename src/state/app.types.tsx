@@ -1,7 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { RouterState } from 'connected-react-router';
-import { FeatureSwitches } from './actions/actions.types';
+import { FeatureSwitches, URLs } from './actions/actions.types';
 
 export interface DGTableState {
   sort: {
@@ -16,6 +16,7 @@ export interface DGTableState {
   error: string | null;
   res?: ApplicationStrings;
   features: FeatureSwitches;
+  urls: URLs;
 }
 
 export interface AppStrings {

@@ -6,8 +6,15 @@ import {
   configureApp,
   configureStrings,
   loadFeatureSwitches,
+  loadUrls,
 } from '.';
-import { SortTableType, FilterTableType } from './actions.types';
+import {
+  SortTableType,
+  FilterTableType,
+  ConfigureStringsType,
+  ConfigureFeatureSwitchesType,
+  ConfigureURLsType,
+} from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import { RouterState } from 'connected-react-router';
@@ -124,7 +131,49 @@ describe('Actions', () => {
     expect(action.payload).toEqual({ column: 'test', filter: 'filter text' });
   });
 
-  it('settings are loaded and configureStrings and loadFeatureSwitches actions are sent', async () => {
+  it('given JSON configureStrings returns a ConfigureStringsType with ConfigureStringsPayload', () => {
+    const action = configureStrings({ testSection: { test: 'string' } });
+    expect(action.type).toEqual(ConfigureStringsType);
+    expect(action.payload).toEqual({
+      res: { testSection: { test: 'string' } },
+    });
+  });
+
+  it('given JSON loadFeatureSwitches returns a ConfigureFeatureSwitchesType with ConfigureFeatureSwitchesPayload', () => {
+    const action = loadFeatureSwitches({
+      investigationGetSize: true,
+      investigationGetCount: true,
+      datasetGetSize: true,
+      datasetGetCount: true,
+    });
+    expect(action.type).toEqual(ConfigureFeatureSwitchesType);
+    expect(action.payload).toEqual({
+      switches: {
+        investigationGetSize: true,
+        investigationGetCount: true,
+        datasetGetSize: true,
+        datasetGetCount: true,
+      },
+    });
+  });
+
+  it('given JSON loadUrls returns a ConfigureUrlsType with ConfigureUrlsPayload', () => {
+    const action = loadUrls({
+      icatUrl: 'icat',
+      idsUrl: 'ids',
+      apiUrl: 'api',
+    });
+    expect(action.type).toEqual(ConfigureURLsType);
+    expect(action.payload).toEqual({
+      urls: {
+        icatUrl: 'icat',
+        idsUrl: 'ids',
+        apiUrl: 'api',
+      },
+    });
+  });
+
+  it('settings are loaded and configureStrings, loadFeatureSwitches and loadUrls actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -136,6 +185,53 @@ describe('Actions', () => {
               datasetGetCount: true,
             },
             'ui-strings': '/res/default.json',
+            icatUrl: 'icat',
+            idsUrl: 'ids',
+            apiUrl: 'api',
+          },
+        })
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            testSection: { test: 'string' },
+          },
+        })
+      );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(actions.length).toEqual(3);
+    expect(actions).toContainEqual(
+      loadFeatureSwitches({
+        investigationGetSize: true,
+        investigationGetCount: true,
+        datasetGetSize: true,
+        datasetGetCount: true,
+      })
+    );
+    expect(actions).toContainEqual(
+      configureStrings({ testSection: { test: 'string' } })
+    );
+    expect(actions).toContainEqual(
+      loadUrls({
+        icatUrl: 'icat',
+        idsUrl: 'ids',
+        apiUrl: 'api',
+      })
+    );
+  });
+
+  it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
+    (axios.get as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            'ui-strings': 'res/default.json',
+            icatUrl: 'icat',
+            idsUrl: 'ids',
+            apiUrl: 'api',
           },
         })
       )
@@ -152,41 +248,14 @@ describe('Actions', () => {
 
     expect(actions.length).toEqual(2);
     expect(actions).toContainEqual(
-      loadFeatureSwitches({
-        investigationGetSize: true,
-        investigationGetCount: true,
-        datasetGetSize: true,
-        datasetGetCount: true,
+      configureStrings({ testSection: { test: 'string' } })
+    );
+    expect(actions).toContainEqual(
+      loadUrls({
+        icatUrl: 'icat',
+        idsUrl: 'ids',
+        apiUrl: 'api',
       })
-    );
-    expect(actions).toContainEqual(
-      configureStrings({ testSection: { test: 'string' } })
-    );
-  });
-
-  it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
-    (axios.get as jest.Mock)
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            'ui-strings': 'res/default.json',
-          },
-        })
-      )
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            testSection: { test: 'string' },
-          },
-        })
-      );
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-
-    expect(actions.length).toEqual(1);
-    expect(actions).toContainEqual(
-      configureStrings({ testSection: { test: 'string' } })
     );
   });
 

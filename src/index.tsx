@@ -8,7 +8,6 @@ import App from './App';
 import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
 import { RequestPluginRerenderType } from './state/actions/actions.types';
-import axios from 'axios';
 
 const pluginName = 'datagateway-table';
 
@@ -22,29 +21,6 @@ const render = (): void => {
 if (process.env.NODE_ENV === `development`) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
-
-  axios
-    .post('/sessions', { username: 'user', password: 'password' })
-    .then(response => {
-      window.localStorage.setItem('daaas:token', response.data.sessionID);
-    });
-
-  // TODO: if it's still needed, get icatUrl from settings file
-  const icatUrl = '';
-
-  // TODO: get ICAT session ID from daaas:token
-  const icatCreds = {
-    plugin: 'simple',
-    credentials: [{ username: 'root' }, { password: 'pw' }],
-  };
-
-  axios
-    .post(icatUrl, `json=${JSON.stringify(icatCreds)}`, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    })
-    .then(response => {
-      window.localStorage.setItem('icat:token', response.data.sessionId);
-    });
 } else {
   log.setDefaultLevel(log.levels.ERROR);
 }
