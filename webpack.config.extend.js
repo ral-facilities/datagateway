@@ -1,10 +1,10 @@
 module.exports = (webpackConfig, env, { paths }) => {
   webpackConfig.externals = {
     react: 'React', // Case matters here
-    'react-dom': 'ReactDOM' // Case matters here
+    'react-dom': 'ReactDOM', // Case matters here
   };
 
-  if (env == 'production') {
+  if (env === 'production' && !process.env.REACT_APP_E2E_TESTING) {
     webpackConfig.output.library = 'datagateway-table';
     webpackConfig.output.libraryTarget = 'window';
 

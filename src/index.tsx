@@ -19,7 +19,10 @@ const render = (): void => {
   }
 };
 
-if (process.env.NODE_ENV === `development`) {
+if (
+  process.env.NODE_ENV === `development` ||
+  process.env.REACT_APP_E2E_TESTING
+) {
   render();
   log.setDefaultLevel(log.levels.DEBUG);
   axios
