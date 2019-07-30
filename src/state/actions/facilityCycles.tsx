@@ -39,6 +39,7 @@ export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
     dispatch(fetchFacilityCyclesRequest());
 
     const filter = getApiFilter(getState);
+    const { apiUrl } = getState().dgtable.urls;
 
     let params = {};
     if (Object.keys(filter).length !== 0) {
@@ -48,7 +49,7 @@ export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
     }
 
     await axios
-      .get('/facilitycycles', {
+      .get(`${apiUrl}/facilitycycles`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

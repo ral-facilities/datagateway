@@ -18,12 +18,12 @@ export let actions: Action[] = [];
 export const resetActions = (): void => {
   actions = [];
 };
+export const getState = (): Partial<StateType> => ({ dgtable: initialState });
 export const dispatch = (action: Action): void | Promise<void> => {
   if (typeof action === 'function') {
-    action(dispatch);
+    action(dispatch, getState);
     return Promise.resolve();
   } else {
     actions.push(action);
   }
 };
-export const getState = (): Partial<StateType> => ({ dgtable: initialState });

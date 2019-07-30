@@ -54,13 +54,14 @@ export const fetchDatasets = (
       INVESTIGATION_ID: investigationId,
     };
     const { datasetGetCount } = getState().dgtable.features;
+    const { apiUrl } = getState().dgtable.urls;
 
     const params = {
       filter,
     };
 
     await axios
-      .get('/datasets', {
+      .get(`${apiUrl}/datasets`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
@@ -157,7 +158,7 @@ export const fetchDatasetCountRequest = (): Action => ({
 export const fetchDatasetCount = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(fetchDatasetCountRequest());
 
     const params = {
@@ -167,9 +168,10 @@ export const fetchDatasetCount = (
         },
       },
     };
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datasets/count', {
+      .get(`${apiUrl}/datasets/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

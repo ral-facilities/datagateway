@@ -52,13 +52,14 @@ export const fetchDatafiles = (
       ...filter.where,
       DATASET_ID: datafileId,
     };
+    const { apiUrl } = getState().dgtable.urls;
 
     const params = {
       filter,
     };
 
     await axios
-      .get('/datafiles', {
+      .get(`${apiUrl}/datafiles`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
@@ -101,7 +102,7 @@ export const fetchDatafileCountRequest = (): Action => ({
 export const fetchDatafileCount = (
   datasetId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(fetchDatafileCountRequest());
 
     const params = {
@@ -111,9 +112,10 @@ export const fetchDatafileCount = (
         },
       },
     };
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datafiles/count', {
+      .get(`${apiUrl}/datafiles/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

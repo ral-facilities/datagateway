@@ -40,6 +40,7 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
 
     const filter = getApiFilter(getState);
     const { investigationGetCount } = getState().dgtable.features;
+    const { apiUrl } = getState().dgtable.urls;
 
     let params = {};
     if (Object.keys(filter).length !== 0) {
@@ -49,7 +50,7 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
     }
 
     await axios
-      .get('/investigations', {
+      .get(`${apiUrl}/investigations`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
