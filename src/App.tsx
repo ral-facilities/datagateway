@@ -43,7 +43,7 @@ const registerRouteAction = {
   type: RegisterRouteType,
   payload: {
     section: 'Data',
-    link: '/data',
+    link: '/browse/investigation',
     plugin: 'datagateway-table',
     displayName: 'DataGateway Table',
     order: 0,
