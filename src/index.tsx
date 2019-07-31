@@ -19,11 +19,9 @@ const render = (): void => {
   }
 };
 
-if (
-  process.env.NODE_ENV === `development` ||
-  process.env.REACT_APP_E2E_TESTING
-) {
-  render();
+render();
+
+if (process.env.NODE_ENV === `development`) {
   log.setDefaultLevel(log.levels.DEBUG);
   axios
     .post('/sessions', { username: 'user', password: 'password' })
