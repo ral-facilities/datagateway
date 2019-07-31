@@ -23,3 +23,14 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('login', (username, password) => {
+  return cy
+    .request('POST', 'http://localhost:5000/sessions', {
+      username: username,
+      password: password,
+    })
+    .then(response => {
+      window.localStorage.setItem('daaas:token', response.body.sessionID);
+    });
+});
