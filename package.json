@@ -14,7 +14,6 @@
     "connected-react-router": "^6.5.0",
     "custom-event-polyfill": "^1.0.7",
     "loglevel": "^1.6.3",
-    "memoize-one": "^5.0.5",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
     "react-dom": "^16.8.6",
@@ -91,7 +90,6 @@
   "devDependencies": {
     "@types/enzyme": "^3.9.4",
     "@types/loglevel": "^1.6.3",
-    "@types/memoize-one": "^4.1.1",
     "@types/react-redux": "^7.1.1",
     "@types/react-router": "^5.0.2",
     "@types/react-router-dom": "^4.3.4",
