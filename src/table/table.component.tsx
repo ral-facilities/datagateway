@@ -16,7 +16,7 @@ import {
   defaultTableRowRenderer,
 } from 'react-virtualized';
 import clsx from 'clsx';
-import { Entity, Order, Filter } from '../state/app.types';
+import { Entity, Order } from '../state/app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
