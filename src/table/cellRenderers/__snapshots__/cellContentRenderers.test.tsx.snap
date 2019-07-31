@@ -1,17 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Cell content renderers datasetLink renders correctly 1`] = `
-<Link
+<WithStyles(ForwardRef(Link))
+  component={[Function]}
   to="/browse/investigation/1/dataset/2/datafile"
 >
   test
-</Link>
+</WithStyles(ForwardRef(Link))>
 `;
 
 exports[`Cell content renderers investigationLink renders correctly 1`] = `
-<Link
+<WithStyles(ForwardRef(Link))
+  component={[Function]}
   to="/browse/investigation/1/dataset"
 >
   test
-</Link>
+</WithStyles(ForwardRef(Link))>
 `;

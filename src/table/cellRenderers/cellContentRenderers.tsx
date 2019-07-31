@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import { Link } from '@material-ui/core';
 
 export function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B';
@@ -17,6 +18,7 @@ export function datasetLink(
 ): React.ReactElement {
   return (
     <Link
+      component={RouterLink}
       to={`/browse/investigation/${investigationId}/dataset/${datasetId}/datafile`}
     >
       {datasetName}
@@ -29,7 +31,10 @@ export function investigationLink(
   investigationTitle: string
 ): React.ReactElement {
   return (
-    <Link to={`/browse/investigation/${investigationId}/dataset`}>
+    <Link
+      component={RouterLink}
+      to={`/browse/investigation/${investigationId}/dataset`}
+    >
       {investigationTitle}
     </Link>
   );
