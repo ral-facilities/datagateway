@@ -83,13 +83,13 @@ const DatafileTable = (
           return (
             <div>
               <Typography>
-                <b>Name: </b> {datafileData.NAME}
+                <b>Name:</b> {datafileData.NAME}
               </Typography>
               <Typography>
-                <b>File Size: </b> {formatBytes(datafileData.SIZE)}
+                <b>File Size:</b> {formatBytes(datafileData.SIZE)}
               </Typography>
               <Typography>
-                <b>Location: </b> {datafileData.LOCATION}
+                <b>Location:</b> {datafileData.LOCATION}
               </Typography>
             </div>
           );

@@ -73,10 +73,10 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           return (
             <div>
               <Typography>
-                <b>Name: </b> {datasetData.NAME}
+                <b>Name:</b> {datasetData.NAME}
               </Typography>
               <Typography>
-                <b>Description: </b> {datasetData.NAME}
+                <b>Description:</b> {datasetData.NAME}
               </Typography>
             </div>
           );

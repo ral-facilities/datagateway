@@ -62,21 +62,21 @@ exports[`Datafile table component renders details panel correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Name: 
+      Name:
     </b>
      
     Test 1
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      File Size: 
+      File Size:
     </b>
      
     1 B
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Location: 
+      Location:
     </b>
      
     /test1

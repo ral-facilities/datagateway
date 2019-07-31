@@ -82,26 +82,30 @@ exports[`Investigation table component renders details panel correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Proposal: 
+      Proposal:
     </b>
+     
     1
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Title: 
+      Title:
     </b>
+     
     Test 1
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Start Date: 
+      Start Date:
     </b>
+     
     2019-07-23
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      End Date: 
+      End Date:
     </b>
+     
     2019-07-24
   </WithStyles(ForwardRef(Typography))>
 </div>

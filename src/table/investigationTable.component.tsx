@@ -72,20 +72,16 @@ const InvestigationTable = (
           return (
             <div>
               <Typography>
-                <b>Proposal: </b>
-                {investigationData.RB_NUMBER}
+                <b>Proposal:</b> {investigationData.RB_NUMBER}
               </Typography>
               <Typography>
-                <b>Title: </b>
-                {investigationData.TITLE}
+                <b>Title:</b> {investigationData.TITLE}
               </Typography>
               <Typography>
-                <b>Start Date: </b>
-                {investigationData.STARTDATE}
+                <b>Start Date:</b> {investigationData.STARTDATE}
               </Typography>
               <Typography>
-                <b>End Date: </b>
-                {investigationData.ENDDATE}
+                <b>End Date:</b> {investigationData.ENDDATE}
               </Typography>
             </div>
           );

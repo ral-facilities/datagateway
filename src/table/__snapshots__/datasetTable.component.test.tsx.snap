@@ -416,14 +416,14 @@ exports[`Dataset table component renders details panel correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Name: 
+      Name:
     </b>
      
     Test 1
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Description: 
+      Description:
     </b>
      
     Test 1
