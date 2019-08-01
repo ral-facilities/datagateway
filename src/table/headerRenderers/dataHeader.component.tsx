@@ -21,7 +21,7 @@ const DataHeader = (
     disableSort,
   } = props;
 
-  const currSortDirection = sort[dataKey] ? sort[dataKey] : null;
+  const currSortDirection = sort[dataKey];
   let nextSortDirection: Order | null = null;
   switch (currSortDirection) {
     case 'asc':
@@ -30,14 +30,14 @@ const DataHeader = (
     case 'desc':
       nextSortDirection = null;
       break;
-    case null:
+    case undefined:
       nextSortDirection = 'asc';
   }
 
   const inner = !disableSort ? (
     <TableSortLabel
       active={dataKey in sort}
-      direction={sort[dataKey]}
+      direction={currSortDirection}
       onClick={() => onSort(dataKey, nextSortDirection)}
       style={{ flexDirection: 'row' }}
     >
@@ -52,7 +52,7 @@ const DataHeader = (
       component="div"
       className={className}
       variant="head"
-      sortDirection={sort[dataKey] ? sort[dataKey] : false}
+      sortDirection={currSortDirection}
     >
       {inner}
       {filterComponent}
