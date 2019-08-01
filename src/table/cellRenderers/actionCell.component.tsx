@@ -13,7 +13,7 @@ const ActionCell = (props: CellRendererProps): React.ReactElement => {
 
   return (
     <TableCell component="div" className={className} variant="body">
-      {actions !== undefined && actions.map(element => element(rowData))}
+      {actions.map(element => element(rowData))}
     </TableCell>
   );
 };

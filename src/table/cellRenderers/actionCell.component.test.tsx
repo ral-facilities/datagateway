@@ -18,7 +18,7 @@ describe('Action cell component', () => {
   });
 
   it('renders no actions correctly', () => {
-    const wrapper = shallow(<ActionCell {...actionCellProps} />);
+    const wrapper = shallow(<ActionCell {...actionCellProps} actions={[]} />);
     expect(wrapper).toMatchSnapshot();
   });
 
