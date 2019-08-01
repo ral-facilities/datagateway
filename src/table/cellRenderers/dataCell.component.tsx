@@ -1,28 +1,24 @@
 import React from 'react';
-import { TableCellProps } from 'react-virtualized';
+import { TableCellProps, TableCellRenderer } from 'react-virtualized';
 import { TableCell, Typography } from '@material-ui/core';
 
 type CellRendererProps = TableCellProps & {
   className: string;
+  cellContentRenderer?: TableCellRenderer;
 };
 
 const DataCell = (props: CellRendererProps): React.ReactElement => {
-  const { className, dataKey, rowData, cellData } = props;
+  const { className, dataKey, rowData, cellContentRenderer } = props;
 
-  let cellValue = '';
-  if (cellData) {
-    cellValue = cellData;
-  } else {
-    // use . in dataKey name to drill down into nested row data
-    cellValue = dataKey.split('.').reduce(function(prev, curr) {
-      return prev ? prev[curr] : null;
-    }, rowData);
-  }
+  // use . in dataKey name to drill down into nested row data
+  const cellValue = dataKey.split('.').reduce(function(prev, curr) {
+    return prev ? prev[curr] : null;
+  }, rowData);
 
   return (
     <TableCell component="div" className={className} variant="body">
       <Typography variant="body2" noWrap>
-        {cellValue}
+        {cellContentRenderer ? cellContentRenderer(props) : cellValue}
       </Typography>
     </TableCell>
   );

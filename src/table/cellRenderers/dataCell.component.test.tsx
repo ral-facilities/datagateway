@@ -27,7 +27,10 @@ describe('Data cell component', () => {
 
   it('renders provided cell data correctly', () => {
     const wrapper = shallow(
-      <DataCell {...dataCellProps} cellData="provided test" />
+      <DataCell
+        {...dataCellProps}
+        cellContentRenderer={() => 'provided test'}
+      />
     );
     expect(wrapper).toMatchSnapshot();
   });

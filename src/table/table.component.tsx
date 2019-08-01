@@ -172,7 +172,7 @@ const VirtualizedTable = (
                 )}
                 {columns.map(
                   ({
-                    cellContentRenderer = null,
+                    cellContentRenderer,
                     className,
                     dataKey,
                     label,
@@ -204,9 +204,7 @@ const VirtualizedTable = (
                         cellRenderer={props => (
                           <DataCell
                             {...props}
-                            cellData={
-                              cellContentRenderer && cellContentRenderer(props)
-                            }
+                            cellContentRenderer={cellContentRenderer}
                             className={clsx(
                               classes.tableCell,
                               classes.flexContainer
