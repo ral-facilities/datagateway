@@ -1,6 +1,6 @@
 import React from 'react';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
+import DateColumnFilter from './columnFilters/dateColumnFilter.component';
 import { Paper, Typography, IconButton } from '@material-ui/core';
 import Table from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
@@ -68,9 +68,22 @@ const DatafileTable = (
     />
   );
 
-  // const sizeFilter = (
-  //   <NumberColumnFilter label="Size" onChange={this.onSizeChange} />
-  // );
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: Date; endDate?: Date }) =>
+        filterTable(
+          dataKey,
+          value.startDate || value.endDate
+            ? {
+                startDate: value.startDate,
+                endDate: value.endDate,
+              }
+            : null
+        )
+      }
+    />
+  );
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
@@ -132,6 +145,7 @@ const DatafileTable = (
           {
             label: 'Modified Time',
             dataKey: 'MOD_TIME',
+            filterComponent: dateFilter,
           },
         ]}
       />

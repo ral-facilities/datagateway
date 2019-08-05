@@ -1,6 +1,6 @@
 import React from 'react';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
-import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
+import DateColumnFilter from './columnFilters/dateColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import Table from './table.component';
 import {
@@ -50,6 +50,23 @@ const InvestigationTable = (
     <TextColumnFilter
       label={label}
       onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: Date; endDate?: Date }) =>
+        filterTable(
+          dataKey,
+          value.startDate || value.endDate
+            ? {
+                startDate: value.startDate,
+                endDate: value.endDate,
+              }
+            : null
+        )
+      }
     />
   );
 
@@ -129,10 +146,12 @@ const InvestigationTable = (
           {
             label: 'Start Date',
             dataKey: 'STARTDATE',
+            filterComponent: dateFilter,
           },
           {
             label: 'End Date',
             dataKey: 'ENDDATE',
+            filterComponent: dateFilter,
           },
         ]}
       />
