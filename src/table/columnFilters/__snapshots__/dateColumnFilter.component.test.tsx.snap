@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Text filter component renders correctly 1`] = `
+<form>
+  <MuiPickersUtilsProvider
+    utils={[Function]}
+  >
+    <WrappedKeyboardPicker
+      KeyboardButtonProps={
+        Object {
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      clearable={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "test date filter from",
+        }
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Date should not be after maximal date"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Date should not be before minimal date"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="From..."
+      value={null}
+      views={
+        Array [
+          "year",
+          "date",
+        ]
+      }
+    />
+    <WrappedKeyboardPicker
+      KeyboardButtonProps={
+        Object {
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      clearable={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "test date filter to",
+        }
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Date should not be after maximal date"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Date should not be before minimal date"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="To..."
+      value={null}
+      views={
+        Array [
+          "year",
+          "date",
+        ]
+      }
+    />
+  </MuiPickersUtilsProvider>
+</form>
+`;

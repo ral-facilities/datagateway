@@ -46,10 +46,12 @@ exports[`Investigation table component renders correctly 1`] = `
         },
         Object {
           "dataKey": "STARTDATE",
+          "filterComponent": [Function],
           "label": "Start Date",
         },
         Object {
           "dataKey": "ENDDATE",
+          "filterComponent": [Function],
           "label": "End Date",
         },
       ]
