@@ -1,6 +1,6 @@
 import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
-import format from 'date-fns/format';
+import { format, isValid } from 'date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -25,12 +25,21 @@ const DateColumnFilter = (props: {
           value={startDate}
           onChange={date => {
             setStartDate(date);
-            if (date === null && endDate === null) {
+            if (
+              (date === null && endDate === null) ||
+              (!isValid(date) && !isValid(endDate))
+            ) {
               props.onChange(null);
             } else {
               props.onChange({
-                startDate: date ? format(date, 'yyyy-MM-dd') : undefined,
-                endDate: endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
+                startDate:
+                  date && isValid(date)
+                    ? format(date, 'yyyy-MM-dd')
+                    : undefined,
+                endDate:
+                  endDate && isValid(endDate)
+                    ? format(endDate, 'yyyy-MM-dd')
+                    : undefined,
               });
             }
           }}
@@ -44,14 +53,21 @@ const DateColumnFilter = (props: {
           value={endDate}
           onChange={date => {
             setEndDate(date);
-            if (date === null && startDate === null) {
+            if (
+              (date === null && startDate === null) ||
+              (!isValid(date) && !isValid(startDate))
+            ) {
               props.onChange(null);
             } else {
               props.onChange({
-                startDate: startDate
-                  ? format(startDate, 'yyyy-MM-dd')
-                  : undefined,
-                endDate: date ? format(date, 'yyyy-MM-dd') : undefined,
+                startDate:
+                  startDate && isValid(startDate)
+                    ? format(startDate, 'yyyy-MM-dd')
+                    : undefined,
+                endDate:
+                  date && isValid(date)
+                    ? format(date, 'yyyy-MM-dd')
+                    : undefined,
               });
             }
           }}

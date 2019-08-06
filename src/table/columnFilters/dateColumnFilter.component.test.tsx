@@ -2,7 +2,7 @@ import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DateColumnFilter from './dateColumnFilter.component';
 
-describe('Text filter component', () => {
+describe('Date filter component', () => {
   let shallow;
   let mount;
 
@@ -94,5 +94,54 @@ describe('Text filter component', () => {
     startDateFilterInput.simulate('change');
 
     expect(onChange).toHaveBeenLastCalledWith(null);
+  });
+
+  it('handles invalid date values correctly', () => {
+    const onChange = jest.fn();
+
+    const wrapper = mount(
+      <DateColumnFilter label="test" onChange={onChange} />
+    );
+
+    const startDateFilterInput = wrapper.find('input').first();
+    startDateFilterInput.instance().value = 'not a date';
+    startDateFilterInput.simulate('change');
+
+    expect(onChange).toHaveBeenLastCalledWith(null);
+
+    const endDateFilterInput = wrapper.find('input').last();
+    endDateFilterInput.instance().value = '201';
+    endDateFilterInput.simulate('change');
+
+    expect(onChange).toHaveBeenLastCalledWith(null);
+
+    startDateFilterInput.instance().value = 'still not a date';
+    startDateFilterInput.simulate('change');
+
+    expect(onChange).toHaveBeenLastCalledWith(null);
+
+    startDateFilterInput.instance().value = '2019-08-06';
+    startDateFilterInput.simulate('change');
+
+    expect(onChange).toHaveBeenLastCalledWith({
+      startDate: '2019-08-06',
+    });
+
+    endDateFilterInput.instance().value = '2019-08-06';
+    endDateFilterInput.simulate('change');
+
+    expect(onChange).toHaveBeenLastCalledWith({
+      startDate: '2019-08-06',
+      endDate: '2019-08-06',
+    });
+
+    startDateFilterInput.instance().value = 'invalid';
+    startDateFilterInput.simulate('change');
+    endDateFilterInput.instance().value = '2019-08-07';
+    endDateFilterInput.simulate('change');
+
+    expect(onChange).toHaveBeenLastCalledWith({
+      endDate: '2019-08-07',
+    });
   });
 });
