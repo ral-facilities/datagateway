@@ -83,6 +83,6 @@ export type Entity =
   | FacilityCycle;
 
 // TODO: type this properly
-export type Filter = string | number | { startDate?: Date; endDate?: Date };
+export type Filter = string | number | { startDate?: string; endDate?: string };
 
 export type Order = 'asc' | 'desc';

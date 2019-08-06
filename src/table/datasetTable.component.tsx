@@ -62,16 +62,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
-      onChange={(value: { startDate?: Date; endDate?: Date }) =>
-        filterTable(
-          dataKey,
-          value.startDate || value.endDate
-            ? {
-                startDate: value.startDate,
-                endDate: value.endDate,
-              }
-            : null
-        )
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
       }
     />
   );

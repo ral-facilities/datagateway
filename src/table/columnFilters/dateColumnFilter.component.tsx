@@ -1,5 +1,6 @@
 import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
+import format from 'date-fns/format';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
@@ -7,7 +8,7 @@ import {
 
 const DateColumnFilter = (props: {
   label: string;
-  onChange: (value: { startDate?: Date; endDate?: Date }) => void;
+  onChange: (value: { startDate?: string; endDate?: string } | null) => void;
 }): React.ReactElement => {
   const [startDate, setStartDate] = React.useState<Date | null>(null);
   const [endDate, setEndDate] = React.useState<Date | null>(null);
@@ -24,10 +25,14 @@ const DateColumnFilter = (props: {
           value={startDate}
           onChange={date => {
             setStartDate(date);
-            props.onChange({
-              startDate: date ? date : undefined,
-              endDate: endDate ? endDate : undefined,
-            });
+            if (date === null && endDate === null) {
+              props.onChange(null);
+            } else {
+              props.onChange({
+                startDate: date ? format(date, 'yyyy-MM-dd') : undefined,
+                endDate: endDate ? format(endDate, 'yyyy-MM-dd') : undefined,
+              });
+            }
           }}
         />
         <KeyboardDatePicker
@@ -39,10 +44,16 @@ const DateColumnFilter = (props: {
           value={endDate}
           onChange={date => {
             setEndDate(date);
-            props.onChange({
-              startDate: startDate ? startDate : undefined,
-              endDate: date ? date : undefined,
-            });
+            if (date === null && startDate === null) {
+              props.onChange(null);
+            } else {
+              props.onChange({
+                startDate: startDate
+                  ? format(startDate, 'yyyy-MM-dd')
+                  : undefined,
+                endDate: date ? format(date, 'yyyy-MM-dd') : undefined,
+              });
+            }
           }}
         />
       </MuiPickersUtilsProvider>
