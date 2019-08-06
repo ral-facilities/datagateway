@@ -23,6 +23,7 @@ const DateColumnFilter = (props: {
           format="yyyy-MM-dd"
           placeholder="From..."
           value={startDate}
+          views={['year', 'month', 'date']}
           onChange={date => {
             setStartDate(date);
             if (
@@ -51,6 +52,7 @@ const DateColumnFilter = (props: {
           placeholder="To..."
           format="yyyy-MM-dd"
           value={endDate}
+          views={['year', 'month', 'date']}
           onChange={date => {
             setEndDate(date);
             if (
