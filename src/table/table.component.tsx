@@ -143,7 +143,7 @@ const VirtualizedTable = (
               >
                 {detailsPanel && (
                   <Column
-                    width={70}
+                    width={50}
                     key="Expand"
                     dataKey="expand"
                     headerRenderer={() => (
