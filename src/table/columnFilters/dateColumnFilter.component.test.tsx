@@ -144,4 +144,28 @@ describe('Date filter component', () => {
       endDate: '2019-08-07',
     });
   });
+
+  it('displays error for invalid date range', () => {
+    const onChange = jest.fn();
+
+    const wrapper = mount(
+      <DateColumnFilter label="test" onChange={onChange} />
+    );
+
+    const startDateFilterInput = wrapper.find('input').first();
+    startDateFilterInput.instance().value = '2019-08-09';
+    startDateFilterInput.simulate('change');
+
+    const endDateFilterInput = wrapper.find('input').last();
+    endDateFilterInput.instance().value = '2019-08-08';
+    endDateFilterInput.simulate('change');
+
+    expect(wrapper.find('p.Mui-error')).toHaveLength(2);
+    expect(
+      wrapper
+        .find('p.Mui-error')
+        .first()
+        .text()
+    ).toEqual('Invalid date range');
+  });
 });

@@ -24,6 +24,8 @@ const DateColumnFilter = (props: {
           placeholder="From..."
           value={startDate}
           views={['year', 'month', 'date']}
+          maxDate={endDate || new Date('2100-01-01')}
+          maxDateMessage="Invalid date range"
           onChange={date => {
             setStartDate(date);
             if (
@@ -53,6 +55,8 @@ const DateColumnFilter = (props: {
           format="yyyy-MM-dd"
           value={endDate}
           views={['year', 'month', 'date']}
+          minDate={startDate || new Date('1900-01-01')}
+          minDateMessage="Invalid date range"
           onChange={date => {
             setEndDate(date);
             if (
