@@ -129,10 +129,16 @@ const InvestigationTable = (
           {
             label: 'Start Date',
             dataKey: 'STARTDATE',
+            cellContentRenderer: (props: TableCellProps) => {
+              return props.cellData.toString().split(' ')[0];
+            },
           },
           {
             label: 'End Date',
             dataKey: 'ENDDATE',
+            cellContentRenderer: (props: TableCellProps) => {
+              return props.cellData.toString().split(' ')[0];
+            },
           },
         ]}
       />
