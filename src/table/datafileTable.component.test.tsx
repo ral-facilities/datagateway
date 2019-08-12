@@ -9,6 +9,7 @@ import {
   filterTable,
   sortTable,
   downloadDatafileRequest,
+  fetchDatafileCountRequest,
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -53,7 +54,7 @@ describe('Datafile table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchDatafiles action on load', () => {
+  it('sends fetchDatafileCount and fetchDatafiles action on load', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -62,6 +63,16 @@ describe('Datafile table component', () => {
         </MemoryRouter>
       </Provider>
     );
+
+    expect(testStore.getActions()[0]).toEqual(fetchDatafileCountRequest());
+    expect(testStore.getActions()[1]).toEqual(fetchDatafilesRequest());
+  });
+
+  it('sends fetchDatafiles action when loadMoreRows is called', () => {
+    const testStore = mockStore(state);
+    const wrapper = shallow(<DatafileTable store={testStore} />);
+
+    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest());
   });
@@ -80,12 +91,12 @@ describe('Datafile table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[3]).toEqual(filterTable('NAME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -103,7 +114,7 @@ describe('Datafile table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('NAME', 'asc'));
   });
 
   it('sends downloadData action on click of download button', () => {
@@ -118,7 +129,7 @@ describe('Datafile table component', () => {
 
     wrapper.find('button[aria-label="Download"]').simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest());
+    expect(testStore.getActions()[2]).toEqual(downloadDatafileRequest());
   });
 
   it('renders details panel correctly', () => {

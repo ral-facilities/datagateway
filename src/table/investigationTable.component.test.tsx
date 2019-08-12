@@ -8,6 +8,7 @@ import {
   fetchInvestigationsRequest,
   filterTable,
   sortTable,
+  fetchInvestigationCountRequest,
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -57,7 +58,7 @@ describe('Investigation table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchInvestigations action on load', () => {
+  it('sends fetchInvestigationCount and fetchInvestigations action on load', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -66,6 +67,16 @@ describe('Investigation table component', () => {
         </MemoryRouter>
       </Provider>
     );
+
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationCountRequest());
+    expect(testStore.getActions()[1]).toEqual(fetchInvestigationsRequest());
+  });
+
+  it('sends fetchInvestigations action when loadMoreRows is called', () => {
+    const testStore = mockStore(state);
+    const wrapper = shallow(<InvestigationTable store={testStore} />);
+
+    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest());
   });
@@ -84,12 +95,12 @@ describe('Investigation table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('TITLE', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', null));
+    expect(testStore.getActions()[3]).toEqual(filterTable('TITLE', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -107,7 +118,7 @@ describe('Investigation table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('TITLE', 'asc'));
   });
 
   it('renders details panel correctly', () => {

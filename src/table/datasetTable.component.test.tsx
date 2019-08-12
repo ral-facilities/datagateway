@@ -4,7 +4,12 @@ import DatasetTable from './DatasetTable.component';
 import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
-import { fetchDatasetsRequest, filterTable, sortTable } from '../state/actions';
+import {
+  fetchDatasetsRequest,
+  filterTable,
+  sortTable,
+  fetchDatasetCountRequest,
+} from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { TableSortLabel } from '@material-ui/core';
@@ -48,7 +53,7 @@ describe('Dataset table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchDatasets action on load', () => {
+  it('sends fetchDatasetCount and fetchDatasets action on load', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -57,6 +62,18 @@ describe('Dataset table component', () => {
         </MemoryRouter>
       </Provider>
     );
+
+    expect(testStore.getActions()[0]).toEqual(fetchDatasetCountRequest());
+    expect(testStore.getActions()[1]).toEqual(fetchDatasetsRequest());
+  });
+
+  it('sends fetchDatasets action when loadMoreRows is called', () => {
+    const testStore = mockStore(state);
+    const wrapper = shallow(
+      <DatasetTable investigationId="1" store={testStore} />
+    );
+
+    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest());
   });
@@ -75,12 +92,12 @@ describe('Dataset table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[3]).toEqual(filterTable('NAME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -98,7 +115,7 @@ describe('Dataset table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('NAME', 'asc'));
   });
 
   it('renders details panel correctly', () => {
