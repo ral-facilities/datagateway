@@ -10,11 +10,13 @@ import {
   sortTable,
   filterTable,
   downloadDatafile,
+  fetchDatafileCount,
 } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { Filter, Order, Entity, Datafile, StateType } from '../state/app.types';
 import { Action, AnyAction } from 'redux';
+import { IndexRange } from 'react-virtualized';
 
 interface DatafileTableProps {
   datasetId: string;
@@ -28,6 +30,7 @@ interface DatafileTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -35,7 +38,8 @@ interface DatafileTableStoreProps {
 interface DatafileTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (datasetId: number) => Promise<void>;
+  fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
 }
 
@@ -48,7 +52,9 @@ const DatafileTable = (
 ): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
     sort,
     sortTable,
     filters,
@@ -58,8 +64,9 @@ const DatafileTable = (
   } = props;
 
   React.useEffect(() => {
-    fetchData(parseInt(datasetId));
-  }, [fetchData, sort, filters, datasetId]);
+    fetchCount(parseInt(datasetId));
+    fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters, datasetId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -76,6 +83,8 @@ const DatafileTable = (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
       <Table
         data={data}
+        loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={(rowData: Entity) => {
@@ -146,7 +155,9 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (datasetId: number) => dispatch(fetchDatafiles(datasetId)),
+  fetchData: (datasetId: number, offsetParams: IndexRange) =>
+    dispatch(fetchDatafiles(datasetId, offsetParams)),
+  fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
   downloadData: (datafileId: number, filename: string) =>
     dispatch(downloadDatafile(datafileId, filename)),
 });
@@ -156,6 +167,7 @@ const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

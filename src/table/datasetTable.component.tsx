@@ -4,12 +4,18 @@ import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
 import Table from './table.component';
 import { formatBytes, datasetLink } from './cellRenderers/cellContentRenderers';
-import { sortTable, filterTable, fetchDatasets } from '../state/actions';
+import {
+  sortTable,
+  filterTable,
+  fetchDatasets,
+  fetchDatasetCount,
+} from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType, Filter, Order, Entity, Dataset } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -23,6 +29,7 @@ interface DatasetTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -30,7 +37,11 @@ interface DatasetTableStoreProps {
 interface DatasetTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (investigationId: number) => Promise<void>;
+  fetchData: (
+    investigationId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
 }
 
 type DatasetTableCombinedProps = DatasetTableProps &
@@ -40,7 +51,9 @@ type DatasetTableCombinedProps = DatasetTableProps &
 const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
     sort,
     sortTable,
     filters,
@@ -49,8 +62,9 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   } = props;
 
   React.useEffect(() => {
-    fetchData(parseInt(investigationId));
-  }, [fetchData, sort, filters, investigationId]);
+    fetchCount(parseInt(investigationId));
+    fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -66,6 +80,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
       <Table
         data={data}
+        loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={(rowData: Entity) => {
@@ -123,8 +139,10 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (investigationId: number) =>
-    dispatch(fetchDatasets(investigationId)),
+  fetchData: (investigationId: number, offsetParams: IndexRange) =>
+    dispatch(fetchDatasets(investigationId, offsetParams)),
+  fetchCount: (investigationId: number) =>
+    dispatch(fetchDatasetCount(investigationId)),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
@@ -132,6 +150,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };
