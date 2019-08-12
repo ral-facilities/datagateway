@@ -2,23 +2,28 @@ import {
   FetchDatasetsSuccessType,
   FetchDatasetsFailureType,
   FetchDatasetsRequestType,
-  FetchDatasetCountRequestType,
-  FetchDatasetCountFailureType,
-  FetchDatasetCountSuccessType,
+  FetchInvestigationDatasetsCountRequestType,
+  FetchInvestigationDatasetsCountFailureType,
+  FetchInvestigationDatasetsCountSuccessType,
   DownloadDatasetSuccessType,
   DownloadDatasetFailureType,
   DownloadDatasetRequestType,
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FetchCountSuccessPayload,
+  FetchDatasetCountSuccessType,
+  FetchDatasetCountFailureType,
+  FetchDatasetCountRequestType,
 } from './actions.types';
 import { Dataset, ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
-import { fetchDatafileCount } from './datafiles';
+import { fetchDatasetDatafilesCount } from './datafiles';
 import * as log from 'loglevel';
+import { IndexRange } from 'react-virtualized';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[]
@@ -43,7 +48,8 @@ export const fetchDatasetsRequest = (): Action => ({
 });
 
 export const fetchDatasets = (
-  investigationId: number
+  investigationId: number,
+  offsetParams?: IndexRange
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDatasetsRequest());
@@ -53,6 +59,10 @@ export const fetchDatasets = (
       ...filter.where,
       INVESTIGATION_ID: investigationId,
     };
+    if (offsetParams) {
+      filter.skip = offsetParams.startIndex;
+      filter.limit = offsetParams.stopIndex - offsetParams.startIndex + 1;
+    }
 
     const params = {
       filter,
@@ -68,12 +78,66 @@ export const fetchDatasets = (
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data));
         response.data.forEach((dataset: Dataset) => {
-          dispatch(fetchDatafileCount(dataset.ID));
+          dispatch(fetchDatasetDatafilesCount(dataset.ID));
         });
       })
       .catch(error => {
         log.error(error.message);
         dispatch(fetchDatasetsFailure(error.message));
+      });
+  };
+};
+
+export const fetchDatasetCountSuccess = (
+  count: number
+): ActionType<FetchCountSuccessPayload> => ({
+  type: FetchDatasetCountSuccessType,
+  payload: {
+    count,
+  },
+});
+
+export const fetchDatasetCountFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchDatasetCountFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatasetCountRequest = (): Action => ({
+  type: FetchDatasetCountRequestType,
+});
+
+export const fetchDatasetCount = (
+  investigationId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchDatasetCountRequest());
+
+    let filter = getApiFilter(getState);
+    filter.where = {
+      ...filter.where,
+      INVESTIGATION_ID: investigationId,
+    };
+    const params = {
+      filter,
+    };
+
+    await axios
+      .get('/datasets/count', {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchDatasetCountSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchDatasetCountFailure(error.message));
       });
   };
 };
@@ -127,35 +191,35 @@ export const downloadDataset = (
   };
 };
 
-export const fetchDatasetCountSuccess = (
+export const fetchInvestigationDatasetsCountSuccess = (
   investigationId: number,
   count: number
 ): ActionType<FetchDataCountSuccessPayload> => ({
-  type: FetchDatasetCountSuccessType,
+  type: FetchInvestigationDatasetsCountSuccessType,
   payload: {
     id: investigationId,
     count,
   },
 });
 
-export const fetchDatasetCountFailure = (
+export const fetchInvestigationDatasetsCountFailure = (
   error: string
 ): ActionType<FailurePayload> => ({
-  type: FetchDatasetCountFailureType,
+  type: FetchInvestigationDatasetsCountFailureType,
   payload: {
     error,
   },
 });
 
-export const fetchDatasetCountRequest = (): Action => ({
-  type: FetchDatasetCountRequestType,
+export const fetchInvestigationDatasetsCountRequest = (): Action => ({
+  type: FetchInvestigationDatasetsCountRequestType,
 });
 
-export const fetchDatasetCount = (
+export const fetchInvestigationDatasetsCount = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    dispatch(fetchDatasetCountRequest());
+    dispatch(fetchInvestigationDatasetsCountRequest());
 
     const params = {
       filter: {
@@ -174,11 +238,13 @@ export const fetchDatasetCount = (
         cancelToken: source.token,
       })
       .then(response => {
-        dispatch(fetchDatasetCountSuccess(investigationId, response.data));
+        dispatch(
+          fetchInvestigationDatasetsCountSuccess(investigationId, response.data)
+        );
       })
       .catch(error => {
         log.error(error.message);
-        dispatch(fetchDatasetCountFailure(error.message));
+        dispatch(fetchInvestigationDatasetsCountFailure(error.message));
       });
   };
 };

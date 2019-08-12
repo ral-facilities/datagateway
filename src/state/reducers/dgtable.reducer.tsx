@@ -14,12 +14,12 @@ import {
   FetchDatafilesRequestType,
   FetchDatafilesSuccessType,
   FetchDatafilesFailureType,
-  FetchDatasetCountRequestType,
-  FetchDatasetCountSuccessType,
-  FetchDatasetCountFailureType,
-  FetchDatafileCountRequestType,
-  FetchDatafileCountSuccessType,
-  FetchDatafileCountFailureType,
+  FetchInvestigationDatasetsCountRequestType,
+  FetchInvestigationDatasetsCountSuccessType,
+  FetchInvestigationDatasetsCountFailureType,
+  FetchDatasetDatafilesCountRequestType,
+  FetchDatasetDatafilesCountSuccessType,
+  FetchDatasetDatafilesCountFailureType,
   FetchInstrumentsFailureType,
   FetchInstrumentsSuccessType,
   FetchInstrumentsRequestType,
@@ -35,10 +35,27 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FetchCountSuccessPayload,
+  FetchInvestigationCountRequestType,
+  FetchInvestigationCountSuccessType,
+  FetchInvestigationCountFailureType,
+  FetchDatasetCountRequestType,
+  FetchDatasetCountSuccessType,
+  FetchDatasetCountFailureType,
+  FetchDatafileCountRequestType,
+  FetchDatafileCountSuccessType,
+  FetchDatafileCountFailureType,
+  FetchInstrumentCountSuccessType,
+  FetchInstrumentCountRequestType,
+  FetchInstrumentCountFailureType,
+  FetchFacilityCycleCountRequestType,
+  FetchFacilityCycleCountSuccessType,
+  FetchFacilityCycleCountFailureType,
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
   data: [],
+  totalDataCount: 0,
   loading: false,
   downloading: false,
   error: null,
@@ -59,6 +76,8 @@ export function handleSortTable(
         ...state.sort,
         [column]: order,
       },
+      data: [],
+      totalDataCount: 0,
     };
   } else {
     // if order is null, user no longer wants to sort by that column so remove column from sort state
@@ -68,6 +87,8 @@ export function handleSortTable(
       sort: {
         ...rest,
       },
+      data: [],
+      totalDataCount: 0,
     };
   }
 }
@@ -85,6 +106,8 @@ export function handleFilterTable(
         ...state.filters,
         [column]: filter,
       },
+      data: [],
+      totalDataCount: 0,
     };
   } else {
     // if filter is null, user no longer wants to filter by that column so remove column from filter state
@@ -94,6 +117,8 @@ export function handleFilterTable(
       filters: {
         ...rest,
       },
+      data: [],
+      totalDataCount: 0,
     };
   }
 }
@@ -112,7 +137,7 @@ export function handleFetchDataSuccess(
   return {
     ...state,
     loading: false,
-    data: payload.data,
+    data: state.data.concat(payload.data),
     error: null,
   };
 }
@@ -124,7 +149,36 @@ export function handleFetchDataFailure(
   return {
     ...state,
     loading: false,
-    data: [],
+    error: payload.error,
+  };
+}
+
+export function handleFetchCountRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleFetchCountSuccess(
+  state: DGTableState,
+  payload: FetchCountSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    totalDataCount: payload.count,
+    error: null,
+  };
+}
+
+export function handleFetchCountFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
     error: payload.error,
   };
 }
@@ -177,7 +231,7 @@ export function handleDownloadDataFailure(
   };
 }
 
-export function handleFetchDatafileCountSuccess(
+export function handleFetchDatasetDatafilesCountSuccess(
   state: DGTableState,
   payload: FetchDataCountSuccessPayload
 ): DGTableState {
@@ -200,30 +254,45 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
+  [FetchInvestigationCountRequestType]: handleFetchCountRequest,
+  [FetchInvestigationCountSuccessType]: handleFetchCountSuccess,
+  [FetchInvestigationCountFailureType]: handleFetchCountFailure,
   [FetchDatasetsRequestType]: handleFetchDataRequest,
   [FetchDatasetsSuccessType]: handleFetchDataSuccess,
   [FetchDatasetsFailureType]: handleFetchDataFailure,
-  [FetchDatasetCountRequestType]: handleFetchDataCountRequest,
-  [FetchDatasetCountSuccessType]: handleFetchDatasetCountSuccess,
-  [FetchDatasetCountFailureType]: handleFetchDataFailure,
+  [FetchDatasetCountRequestType]: handleFetchCountRequest,
+  [FetchDatasetCountSuccessType]: handleFetchCountSuccess,
+  [FetchDatasetCountFailureType]: handleFetchCountFailure,
+  [FetchInvestigationDatasetsCountRequestType]: handleFetchDataCountRequest,
+  [FetchInvestigationDatasetsCountSuccessType]: handleFetchDatasetCountSuccess,
+  [FetchInvestigationDatasetsCountFailureType]: handleFetchDataFailure,
   [DownloadDatasetRequestType]: handleDownloadDataRequest,
   [DownloadDatasetSuccessType]: handleDownloadDataSuccess,
   [DownloadDatasetFailureType]: handleDownloadDataFailure,
   [FetchDatafilesRequestType]: handleFetchDataRequest,
   [FetchDatafilesSuccessType]: handleFetchDataSuccess,
   [FetchDatafilesFailureType]: handleFetchDataFailure,
-  [FetchDatafileCountRequestType]: handleFetchDataCountRequest,
-  [FetchDatafileCountSuccessType]: handleFetchDatafileCountSuccess,
-  [FetchDatafileCountFailureType]: handleFetchDataFailure,
+  [FetchDatafileCountRequestType]: handleFetchCountRequest,
+  [FetchDatafileCountSuccessType]: handleFetchCountSuccess,
+  [FetchDatafileCountFailureType]: handleFetchCountFailure,
+  [FetchDatasetDatafilesCountRequestType]: handleFetchDataCountRequest,
+  [FetchDatasetDatafilesCountSuccessType]: handleFetchDatasetDatafilesCountSuccess,
+  [FetchDatasetDatafilesCountFailureType]: handleFetchDataFailure,
   [DownloadDatafileRequestType]: handleDownloadDataRequest,
   [DownloadDatafileSuccessType]: handleDownloadDataSuccess,
   [DownloadDatafileFailureType]: handleDownloadDataFailure,
   [FetchInstrumentsRequestType]: handleFetchDataRequest,
   [FetchInstrumentsSuccessType]: handleFetchDataSuccess,
   [FetchInstrumentsFailureType]: handleFetchDataFailure,
+  [FetchInstrumentCountRequestType]: handleFetchCountRequest,
+  [FetchInstrumentCountSuccessType]: handleFetchCountSuccess,
+  [FetchInstrumentCountFailureType]: handleFetchCountFailure,
   [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
   [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
   [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
+  [FetchFacilityCycleCountRequestType]: handleFetchCountRequest,
+  [FetchFacilityCycleCountSuccessType]: handleFetchCountSuccess,
+  [FetchFacilityCycleCountFailureType]: handleFetchCountFailure,
 });
 
 export default DGTableReducer;

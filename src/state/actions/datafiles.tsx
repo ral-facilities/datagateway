@@ -2,15 +2,19 @@ import {
   FetchDatafilesSuccessType,
   FetchDatafilesFailureType,
   FetchDatafilesRequestType,
-  FetchDatafileCountSuccessType,
-  FetchDatafileCountFailureType,
-  FetchDatafileCountRequestType,
+  FetchDatasetDatafilesCountSuccessType,
+  FetchDatasetDatafilesCountFailureType,
+  FetchDatasetDatafilesCountRequestType,
   DownloadDatafileSuccessType,
   DownloadDatafileFailureType,
   DownloadDatafileRequestType,
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FetchCountSuccessPayload,
+  FetchDatafileCountSuccessType,
+  FetchDatafileCountRequestType,
+  FetchDatafileCountFailureType,
 } from './actions.types';
 import { Datafile, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -18,6 +22,7 @@ import axios from 'axios';
 import { getApiFilter } from '.';
 import { source } from '../middleware/dgtable.middleware';
 import * as log from 'loglevel';
+import { IndexRange } from 'react-virtualized';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[]
@@ -42,7 +47,8 @@ export const fetchDatafilesRequest = (): Action => ({
 });
 
 export const fetchDatafiles = (
-  datafileId: number
+  datasetId: number,
+  offsetParams?: IndexRange
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDatafilesRequest());
@@ -50,8 +56,12 @@ export const fetchDatafiles = (
     let filter = getApiFilter(getState);
     filter.where = {
       ...filter.where,
-      DATASET_ID: datafileId,
+      DATASET_ID: datasetId,
     };
+    if (offsetParams) {
+      filter.skip = offsetParams.startIndex;
+      filter.limit = offsetParams.stopIndex - offsetParams.startIndex + 1;
+    }
 
     const params = {
       filter,
@@ -75,12 +85,10 @@ export const fetchDatafiles = (
 };
 
 export const fetchDatafileCountSuccess = (
-  datasetId: number,
   count: number
-): ActionType<FetchDataCountSuccessPayload> => ({
+): ActionType<FetchCountSuccessPayload> => ({
   type: FetchDatafileCountSuccessType,
   payload: {
-    id: datasetId,
     count,
   },
 });
@@ -101,8 +109,64 @@ export const fetchDatafileCountRequest = (): Action => ({
 export const fetchDatafileCount = (
   datasetId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(fetchDatafileCountRequest());
+
+    let filter = getApiFilter(getState);
+    filter.where = {
+      ...filter.where,
+      DATASET_ID: datasetId,
+    };
+    const params = {
+      filter,
+    };
+
+    await axios
+      .get('/datafiles/count', {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchDatafileCountSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchDatafileCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchDatasetDatafilesCountSuccess = (
+  datasetId: number,
+  count: number
+): ActionType<FetchDataCountSuccessPayload> => ({
+  type: FetchDatasetDatafilesCountSuccessType,
+  payload: {
+    id: datasetId,
+    count,
+  },
+});
+
+export const fetchDatasetDatafilesCountFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchDatasetDatafilesCountFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatasetDatafilesCountRequest = (): Action => ({
+  type: FetchDatasetDatafilesCountRequestType,
+});
+
+export const fetchDatasetDatafilesCount = (
+  datasetId: number
+): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    dispatch(fetchDatasetDatafilesCountRequest());
 
     const params = {
       filter: {
@@ -121,11 +185,11 @@ export const fetchDatafileCount = (
         cancelToken: source.token,
       })
       .then(response => {
-        dispatch(fetchDatafileCountSuccess(datasetId, response.data));
+        dispatch(fetchDatasetDatafilesCountSuccess(datasetId, response.data));
       })
       .catch(error => {
         log.error(error.message);
-        dispatch(fetchDatafileCountFailure(error.message));
+        dispatch(fetchDatasetDatafilesCountFailure(error.message));
       });
   };
 };

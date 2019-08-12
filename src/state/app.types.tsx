@@ -10,6 +10,7 @@ export interface DGTableState {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   downloading: boolean;
   error: string | null;

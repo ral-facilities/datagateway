@@ -9,6 +9,12 @@ import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
+import {
+  fetchFacilityCycleCount,
+  fetchFacilityCycleCountRequest,
+  fetchFacilityCycleCountSuccess,
+  fetchFacilityCycleCountFailure,
+} from './facilityCycles';
 
 jest.mock('loglevel');
 
@@ -96,6 +102,72 @@ describe('FacilityCycle actions', () => {
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
     expect(actions[1]).toEqual(
       fetchFacilityCyclesFailure('Test error message')
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchFacilityCycleCountRequest and fetchFacilityCycleCountSuccess actions upon successful fetchFacilityCycleCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 2,
+      })
+    );
+
+    const asyncAction = fetchFacilityCycleCount();
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest());
+    expect(actions[1]).toEqual(fetchFacilityCycleCountSuccess(2));
+  });
+
+  it('fetchFacilityCycleCount action applies filters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 1,
+      })
+    );
+
+    const asyncAction = fetchFacilityCycleCount();
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest());
+
+    expect(actions[1]).toEqual(fetchFacilityCycleCountSuccess(1));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/facilitycycles/count',
+      expect.objectContaining({
+        params: {
+          filter: {
+            where: { column1: '1', column2: '2' },
+          },
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchFacilityCycleCountRequest and fetchFacilityCycleCountFailure actions upon unsuccessful fetchFacilityCycleCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchFacilityCycleCount();
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest());
+    expect(actions[1]).toEqual(
+      fetchFacilityCycleCountFailure('Test error message')
     );
 
     expect(log.error).toHaveBeenCalled();

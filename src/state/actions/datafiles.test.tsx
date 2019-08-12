@@ -8,12 +8,16 @@ import axios from 'axios';
 import { StateType, Datafile } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import {
+  fetchDatasetDatafilesCount,
+  fetchDatasetDatafilesCountRequest,
+  fetchDatasetDatafilesCountSuccess,
+  fetchDatasetDatafilesCountFailure,
+  downloadDatafile,
+  downloadDatafileRequest,
   fetchDatafileCount,
   fetchDatafileCountRequest,
   fetchDatafileCountSuccess,
   fetchDatafileCountFailure,
-  downloadDatafile,
-  downloadDatafileRequest,
 } from './datafiles';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
 import * as log from 'loglevel';
@@ -124,7 +128,7 @@ describe('Datafile actions', () => {
   it('dispatches fetchDatafileCountRequest and fetchDatafileCountSuccess actions upon successful fetchDatafileCount action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: 2,
+        data: 5,
       })
     );
 
@@ -132,13 +136,45 @@ describe('Datafile actions', () => {
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest());
-    expect(actions[1]).toEqual(fetchDatafileCountSuccess(1, 2));
+    expect(actions[1]).toEqual(fetchDatafileCountSuccess(5));
     expect(axios.get).toHaveBeenCalledWith(
       '/datafiles/count',
       expect.objectContaining({
         params: {
           filter: {
             where: { DATASET_ID: 1 },
+          },
+        },
+      })
+    );
+  });
+
+  it('fetchDatafileCount action applies filters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 3,
+      })
+    );
+
+    const asyncAction = fetchDatafileCount(1);
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatafileCountRequest());
+
+    expect(actions[1]).toEqual(fetchDatafileCountSuccess(3));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datafiles/count',
+      expect.objectContaining({
+        params: {
+          filter: {
+            where: { column1: '1', column2: '2', DATASET_ID: 1 },
           },
         },
       })
@@ -157,6 +193,50 @@ describe('Datafile actions', () => {
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest());
     expect(actions[1]).toEqual(fetchDatafileCountFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountSuccess actions upon successful fetchDatasetDatafilesCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 2,
+      })
+    );
+
+    const asyncAction = fetchDatasetDatafilesCount(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDatafilesCountRequest());
+    expect(actions[1]).toEqual(fetchDatasetDatafilesCountSuccess(1, 2));
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datafiles/count',
+      expect.objectContaining({
+        params: {
+          filter: {
+            where: { DATASET_ID: 1 },
+          },
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountFailure actions upon unsuccessful fetchDatasetDatafilesCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchDatasetDatafilesCount(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDatafilesCountRequest());
+    expect(actions[1]).toEqual(
+      fetchDatasetDatafilesCountFailure('Test error message')
+    );
 
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;

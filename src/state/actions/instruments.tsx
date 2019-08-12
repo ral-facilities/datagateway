@@ -4,6 +4,10 @@ import {
   FetchInstrumentsRequestType,
   FetchDataSuccessPayload,
   FailurePayload,
+  FetchCountSuccessPayload,
+  FetchInstrumentCountSuccessType,
+  FetchInstrumentCountFailureType,
+  FetchInstrumentCountRequestType,
 } from './actions.types';
 import { Instrument, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -59,6 +63,57 @@ export const fetchInstruments = (): ThunkResult<Promise<void>> => {
       .catch(error => {
         log.error(error.message);
         dispatch(fetchInstrumentsFailure(error.message));
+      });
+  };
+};
+
+export const fetchInstrumentCountSuccess = (
+  count: number
+): ActionType<FetchCountSuccessPayload> => ({
+  type: FetchInstrumentCountSuccessType,
+  payload: {
+    count,
+  },
+});
+
+export const fetchInstrumentCountFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchInstrumentCountFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchInstrumentCountRequest = (): Action => ({
+  type: FetchInstrumentCountRequestType,
+});
+
+export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchInstrumentCountRequest());
+
+    let filter = getApiFilter(getState);
+    filter.where = {
+      ...filter.where,
+    };
+    const params = {
+      filter,
+    };
+
+    await axios
+      .get('/instruments/count', {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchInstrumentCountSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInstrumentCountFailure(error.message));
       });
   };
 };

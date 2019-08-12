@@ -4,6 +4,10 @@ import {
   FetchFacilityCyclesRequestType,
   FetchDataSuccessPayload,
   FailurePayload,
+  FetchCountSuccessPayload,
+  FetchFacilityCycleCountSuccessType,
+  FetchFacilityCycleCountFailureType,
+  FetchFacilityCycleCountRequestType,
 } from './actions.types';
 import { FacilityCycle, ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -60,6 +64,54 @@ export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
       .catch(error => {
         log.error(error.message);
         dispatch(fetchFacilityCyclesFailure(error.message));
+      });
+  };
+};
+
+export const fetchFacilityCycleCountSuccess = (
+  count: number
+): ActionType<FetchCountSuccessPayload> => ({
+  type: FetchFacilityCycleCountSuccessType,
+  payload: {
+    count,
+  },
+});
+
+export const fetchFacilityCycleCountFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchFacilityCycleCountFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchFacilityCycleCountRequest = (): Action => ({
+  type: FetchFacilityCycleCountRequestType,
+});
+
+export const fetchFacilityCycleCount = (): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchFacilityCycleCountRequest());
+
+    let filter = getApiFilter(getState);
+    const params = {
+      filter,
+    };
+
+    await axios
+      .get('/facilitycycles/count', {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchFacilityCycleCountSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchFacilityCycleCountFailure(error.message));
       });
   };
 };

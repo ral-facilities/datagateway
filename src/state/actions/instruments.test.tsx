@@ -9,6 +9,12 @@ import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
+import {
+  fetchInstrumentCount,
+  fetchInstrumentCountRequest,
+  fetchInstrumentCountSuccess,
+  fetchInstrumentCountFailure,
+} from './instruments';
 
 jest.mock('loglevel');
 
@@ -89,6 +95,72 @@ describe('Instrument actions', () => {
 
     expect(actions[0]).toEqual(fetchInstrumentsRequest());
     expect(actions[1]).toEqual(fetchInstrumentsFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchInstrumentsRequest and fetchInstrumentCountSuccess actions upon successful fetchInstrumentCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 6,
+      })
+    );
+
+    const asyncAction = fetchInstrumentCount();
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInstrumentCountRequest());
+    expect(actions[1]).toEqual(fetchInstrumentCountSuccess(6));
+  });
+
+  it('fetchInstrumentCount action applies filters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 9,
+      })
+    );
+
+    const asyncAction = fetchInstrumentCount();
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInstrumentCountRequest());
+
+    expect(actions[1]).toEqual(fetchInstrumentCountSuccess(9));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/instruments/count',
+      expect.objectContaining({
+        params: {
+          filter: {
+            where: { column1: '1', column2: '2' },
+          },
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchInstrumentCountRequest and fetchInstrumentCountFailure actions upon unsuccessful fetchInstrumentCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchInstrumentCount();
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInstrumentCountRequest());
+    expect(actions[1]).toEqual(
+      fetchInstrumentCountFailure('Test error message')
+    );
 
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;

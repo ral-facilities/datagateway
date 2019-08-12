@@ -11,6 +11,8 @@ export const getApiFilter = (
 ): {
   order?: string | string[];
   where?: { [column: string]: Filter };
+  limit?: number;
+  skip?: number;
 } => {
   const sort = getState().dgtable.sort;
   const filters = getState().dgtable.filters;
