@@ -7,6 +7,9 @@
 
 # testing
 /coverage
+junit.xml
+e2e_results.xml
+
 
 # production
 /build
