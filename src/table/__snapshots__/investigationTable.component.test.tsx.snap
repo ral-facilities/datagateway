@@ -45,10 +45,12 @@ exports[`Investigation table component renders correctly 1`] = `
           "label": "Instrument",
         },
         Object {
+          "cellContentRenderer": [Function],
           "dataKey": "STARTDATE",
           "label": "Start Date",
         },
         Object {
+          "cellContentRenderer": [Function],
           "dataKey": "ENDDATE",
           "label": "End Date",
         },

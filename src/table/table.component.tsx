@@ -52,9 +52,14 @@ const styles = (theme: Theme): StyleRules =>
     },
     tableCell: {
       flex: 1,
-      textOverflow: 'ellipsis',
       overflow: 'hidden',
       height: rowHeight,
+      '&:hover': {
+        overflow: 'visible',
+        zIndex: 10000,
+        position: 'absolute',
+        backgroundColor: theme.palette.grey[200],
+      },
     },
     headerTableCell: {
       height: headerHeight,
@@ -168,7 +173,7 @@ const VirtualizedTable = (
                   >
                     {detailsPanel && (
                       <Column
-                        width={70}
+                        width={50}
                         key="Expand"
                         dataKey="expand"
                         headerRenderer={() => (

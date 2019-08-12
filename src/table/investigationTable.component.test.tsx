@@ -166,4 +166,28 @@ describe('Investigation table component', () => {
         .text()
     ).toEqual('1 B');
   });
+
+  it('renders date objects as just the date', () => {
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <InvestigationTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper
+        .find('[aria-colindex=8]')
+        .find('p')
+        .text()
+    ).toEqual('2019-07-23');
+
+    expect(
+      wrapper
+        .find('[aria-colindex=9]')
+        .find('p')
+        .text()
+    ).toEqual('2019-07-24');
+  });
 });
