@@ -11,7 +11,7 @@ const DataHeader = (
     filterComponent?: React.ReactElement;
     sort: { [column: string]: Order };
     onSort: (column: string, order: Order | null) => void;
-    resizeColumn: (props: { dataKey: string; deltaX: number }) => void;
+    resizeColumn: (deltaX: number) => void;
   }
 ): React.ReactElement => {
   const {
@@ -66,12 +66,7 @@ const DataHeader = (
         {inner}
         <Draggable
           axis="none"
-          onDrag={(event, { deltaX }) =>
-            resizeColumn({
-              dataKey,
-              deltaX,
-            })
-          }
+          onDrag={(event, { deltaX }) => resizeColumn(deltaX)}
         >
           <DragIndicator
             fontSize="small"

@@ -111,7 +111,8 @@ const VirtualizedTable = (
   return (
     <AutoSizer>
       {({ height, width }) => {
-        const dataColumnsWidth = width - 50 - 70;
+        const dataColumnsWidth =
+          (width || 800) - (detailsPanel ? 50 : 0) - (actions ? 70 : 0);
         return (
           <Table
             ref={tableRef}
@@ -202,13 +203,7 @@ const VirtualizedTable = (
                         filterComponent={
                           filterComponent && filterComponent(label, dataKey)
                         }
-                        resizeColumn={({
-                          dataKey,
-                          deltaX,
-                        }: {
-                          dataKey: string;
-                          deltaX: number;
-                        }) => {
+                        resizeColumn={deltaX => {
                           const columnDataKeys = Object.keys(widths);
                           const percentDelta = deltaX / dataColumnsWidth;
                           const dividedPercentDelta =
