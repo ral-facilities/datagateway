@@ -4,6 +4,7 @@ import Table from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
+import ReactTestUtils from 'react-dom/test-utils';
 
 describe('Table component', () => {
   let mount;
@@ -90,6 +91,132 @@ describe('Table component', () => {
         .find('p')
         .text()
     ).toEqual('2 B');
+  });
+
+  it('resizes all data columns correctly when a column is resized', () => {
+    const wrapper = mount(<Table {...tableProps} />);
+
+    wrapper.update();
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(0)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('400px'),
+      })
+    );
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(1)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('400px'),
+      })
+    );
+
+    ReactTestUtils.act(() => {
+      wrapper
+        .find('DataHeader')
+        .at(0)
+        .prop('resizeColumn')(50);
+    });
+
+    wrapper.update();
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(0)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('450px'),
+      })
+    );
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(1)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('350px'),
+      })
+    );
+  });
+
+  it('resizes all data columns correctly when a column is resized and there are expand and action columns', () => {
+    const wrapper = mount(
+      <Table
+        {...tableProps}
+        detailsPanel={function detailsPanel() {
+          return <div>Details panel</div>;
+        }}
+        actions={[]}
+      />
+    );
+
+    wrapper.update();
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(1)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('340px'),
+      })
+    );
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(2)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('340px'),
+      })
+    );
+
+    ReactTestUtils.act(() => {
+      wrapper
+        .find('DataHeader')
+        .at(0)
+        .prop('resizeColumn')(50);
+    });
+
+    wrapper.update();
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(1)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('390px'),
+      })
+    );
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(2)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('290px'),
+      })
+    );
   });
 
   it('renders details column correctly', () => {
