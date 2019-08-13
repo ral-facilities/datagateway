@@ -2,6 +2,8 @@ import React from 'react';
 import { Order } from '../../state/app.types';
 import { TableHeaderProps } from 'react-virtualized';
 import { TableCell, TableSortLabel } from '@material-ui/core';
+import { DragIndicator } from '@material-ui/icons';
+import Draggable from 'react-draggable';
 
 const DataHeader = (
   props: TableHeaderProps & {
@@ -9,6 +11,7 @@ const DataHeader = (
     filterComponent?: React.ReactElement;
     sort: { [column: string]: Order };
     onSort: (column: string, order: Order | null) => void;
+    resizeColumn: (props: { dataKey: string; deltaX: number }) => void;
   }
 ): React.ReactElement => {
   const {
@@ -19,6 +22,7 @@ const DataHeader = (
     onSort,
     label,
     disableSort,
+    resizeColumn,
   } = props;
 
   const currSortDirection = sort[dataKey];
@@ -39,7 +43,7 @@ const DataHeader = (
       active={dataKey in sort}
       direction={currSortDirection}
       onClick={() => onSort(dataKey, nextSortDirection)}
-      style={{ flexDirection: 'row' }}
+      style={{ flex: 'auto' }}
     >
       {label}
     </TableSortLabel>
@@ -54,7 +58,29 @@ const DataHeader = (
       variant="head"
       sortDirection={currSortDirection}
     >
-      {inner}
+      <div
+        style={{
+          display: 'flex',
+        }}
+      >
+        {inner}
+        <Draggable
+          axis="none"
+          onDrag={(event, { deltaX }) =>
+            resizeColumn({
+              dataKey,
+              deltaX,
+            })
+          }
+        >
+          <DragIndicator
+            fontSize="small"
+            style={{
+              cursor: 'col-resize',
+            }}
+          />
+        </Draggable>
+      </div>
       {filterComponent}
     </TableCell>
   );
