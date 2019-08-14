@@ -70,15 +70,15 @@ describe('FacilityCycle actions', () => {
 
     expect(actions[1]).toEqual(fetchFacilityCyclesSuccess([]));
 
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('column1 desc'));
+    params.append('where', JSON.stringify({ column1: '1' }));
+    params.append('where', JSON.stringify({ column2: '2' }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/facilitycycles',
       expect.objectContaining({
-        params: {
-          filter: {
-            order: 'column1 desc',
-            where: { column1: '1', column2: '2' },
-          },
-        },
+        params,
       })
     );
   });

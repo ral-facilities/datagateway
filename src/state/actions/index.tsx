@@ -6,39 +6,21 @@ import {
   FilterTableType,
 } from './actions.types';
 
-export const getApiFilter = (
-  getState: () => StateType
-): {
-  order?: string | string[];
-  where?: { [column: string]: Filter };
-} => {
+export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgtable.sort;
   const filters = getState().dgtable.filters;
 
-  let apiFilter: {
-    order?: string | string[];
-    where?: { [column: string]: Filter };
-  } = {};
+  let searchParams = new URLSearchParams();
 
-  const sorts = Object.entries(sort);
-  if (sorts.length !== 0) {
-    let orderFilter: string | string[];
-    if (sorts.length === 1) {
-      orderFilter = `${sorts[0][0]} ${sorts[0][1]}`;
-    } else {
-      orderFilter = [];
-      for (const [column, order] of sorts) {
-        orderFilter.push(`${column} ${order}`);
-      }
-    }
-
-    apiFilter.order = orderFilter;
-  }
-  if (Object.keys(filters).length !== 0) {
-    apiFilter.where = filters;
+  for (let [key, value] of Object.entries(sort)) {
+    searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
-  return apiFilter;
+  for (let [key, value] of Object.entries(filters)) {
+    searchParams.append('where', JSON.stringify({ [key]: value }));
+  }
+
+  return searchParams;
 };
 
 export * from './investigations';

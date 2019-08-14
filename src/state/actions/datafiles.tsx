@@ -42,20 +42,13 @@ export const fetchDatafilesRequest = (): Action => ({
 });
 
 export const fetchDatafiles = (
-  datafileId: number
+  datasetId: number
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDatafilesRequest());
 
-    let filter = getApiFilter(getState);
-    filter.where = {
-      ...filter.where,
-      DATASET_ID: datafileId,
-    };
-
-    const params = {
-      filter,
-    };
+    let params = getApiFilter(getState);
+    params.append('where', JSON.stringify({ DATASET_ID: datasetId }));
 
     await axios
       .get('/datafiles', {
@@ -105,10 +98,8 @@ export const fetchDatafileCount = (
     dispatch(fetchDatafileCountRequest());
 
     const params = {
-      filter: {
-        where: {
-          DATASET_ID: datasetId,
-        },
+      where: {
+        DATASET_ID: datasetId,
       },
     };
 

@@ -57,14 +57,14 @@ describe('Datafile actions', () => {
 
     expect(actions[0]).toEqual(fetchDatafilesRequest());
     expect(actions[1]).toEqual(fetchDatafilesSuccess(mockData));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ DATASET_ID: 1 }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datafiles',
       expect.objectContaining({
-        params: {
-          filter: {
-            where: { DATASET_ID: 1 },
-          },
-        },
+        params,
       })
     );
   });
@@ -90,15 +90,15 @@ describe('Datafile actions', () => {
 
     expect(actions[1]).toEqual(fetchDatafilesSuccess([]));
 
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('column1 desc'));
+    params.append('where', JSON.stringify({ column1: '1' }));
+    params.append('where', JSON.stringify({ column2: '2' }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datafiles',
       expect.objectContaining({
-        params: {
-          filter: {
-            order: 'column1 desc',
-            where: { column1: '1', column2: '2', DATASET_ID: 1 },
-          },
-        },
+        params,
       })
     );
   });
@@ -137,9 +137,7 @@ describe('Datafile actions', () => {
       '/datafiles/count',
       expect.objectContaining({
         params: {
-          filter: {
-            where: { DATASET_ID: 1 },
-          },
+          where: { DATASET_ID: 1 },
         },
       })
     );
