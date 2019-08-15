@@ -48,7 +48,7 @@ export const fetchDatafiles = (
     dispatch(fetchDatafilesRequest());
 
     let params = getApiFilter(getState);
-    params.append('where', JSON.stringify({ DATASET_ID: datasetId }));
+    params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
 
     await axios
       .get('/datafiles', {
@@ -99,7 +99,7 @@ export const fetchDatafileCount = (
 
     const params = {
       where: {
-        DATASET_ID: datasetId,
+        DATASET_ID: { eq: datasetId },
       },
     };
 

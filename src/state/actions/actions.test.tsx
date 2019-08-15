@@ -5,7 +5,7 @@ import { initialState } from '../reducers/dgtable.reducer';
 
 describe('Actions', () => {
   describe('getApiFilter', () => {
-    it('given a empty sort anf filters it returns an empty object', () => {
+    it('given a empty sort and filters it returns an empty object', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
@@ -56,8 +56,8 @@ describe('Actions', () => {
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
-      params.append('where', JSON.stringify({ column1: 'test' }));
-      params.append('where', JSON.stringify({ column2: 'test2' }));
+      params.append('where', JSON.stringify({ column1: { like: 'test' } }));
+      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
 
       expect(filter).toEqual(params);
     });
@@ -75,8 +75,8 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
-      params.append('where', JSON.stringify({ column1: 'test' }));
-      params.append('where', JSON.stringify({ column2: 'test2' }));
+      params.append('where', JSON.stringify({ column1: { like: 'test' } }));
+      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
 
       expect(filter).toEqual(params);
     });

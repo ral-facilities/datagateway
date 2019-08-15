@@ -87,8 +87,8 @@ describe('Investigation actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('where', JSON.stringify({ column1: '1' }));
-    params.append('where', JSON.stringify({ column2: '2' }));
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/investigations',

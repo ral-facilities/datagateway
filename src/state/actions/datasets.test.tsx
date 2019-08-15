@@ -60,7 +60,7 @@ describe('Dataset actions', () => {
     expect(actions[3]).toEqual(fetchDatafileCountRequest());
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: 1 }));
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets',
@@ -93,8 +93,8 @@ describe('Dataset actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('where', JSON.stringify({ column1: '1' }));
-    params.append('where', JSON.stringify({ column2: '2' }));
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets',
@@ -138,7 +138,7 @@ describe('Dataset actions', () => {
       '/datasets/count',
       expect.objectContaining({
         params: {
-          where: { INVESTIGATION_ID: 1 },
+          where: { INVESTIGATION_ID: { eq: 1 } },
         },
       })
     );

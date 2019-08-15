@@ -5,6 +5,7 @@ import {
   FilterTablePayload,
   FilterTableType,
 } from './actions.types';
+import * as log from 'loglevel';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgtable.sort;
@@ -17,7 +18,7 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   }
 
   for (let [key, value] of Object.entries(filters)) {
-    searchParams.append('where', JSON.stringify({ [key]: value }));
+    searchParams.append('where', JSON.stringify({ [key]: { like: value } }));
   }
 
   return searchParams;

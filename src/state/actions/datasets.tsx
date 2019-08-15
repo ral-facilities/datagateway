@@ -51,7 +51,7 @@ export const fetchDatasets = (
     let params = getApiFilter(getState);
     params.append(
       'where',
-      JSON.stringify({ INVESTIGATION_ID: investigationId })
+      JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
     );
 
     await axios
@@ -155,7 +155,7 @@ export const fetchDatasetCount = (
 
     const params = {
       where: {
-        INVESTIGATION_ID: investigationId,
+        INVESTIGATION_ID: { eq: investigationId },
       },
     };
 
