@@ -5,7 +5,6 @@
     "datasetGetSize": true,
     "datasetGetCount": true
   },
-  "icatUrl": "example.icat.url",
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "ui-strings": "/res/default.json"
