@@ -18,6 +18,7 @@ import axios from 'axios';
 import { getApiFilter } from '.';
 import { source } from '../middleware/dgtable.middleware';
 import * as log from 'loglevel';
+import { getState } from '../../setupTests';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[]
@@ -153,11 +154,10 @@ export const downloadDatafile = (
   datafileId: number,
   filename: string
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(downloadDatafileRequest());
 
-    // TODO: get this from some sort of settings file
-    const idsUrl = '';
+    const { idsUrl } = getState().dgtable.urls;
 
     // TODO: get ICAT session id properly when auth is sorted
     const params = {
