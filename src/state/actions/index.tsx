@@ -142,7 +142,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         dispatch(
           loadUrls({
-            icatUrl: settings['icatUrl'],
             idsUrl: settings['idsUrl'],
             apiUrl: settings['apiUrl'],
           })
@@ -164,25 +163,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             })
             .catch(error => {
               log.error(`Can't contact API: ${error.message}`);
-            });
-
-          const icatCreds = {
-            plugin: 'simple',
-            credentials: [{ username: 'root' }, { password: 'pw' }],
-          };
-
-          axios
-            .post(settings['icatUrl'], `json=${JSON.stringify(icatCreds)}`, {
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            })
-            .then(response => {
-              window.localStorage.setItem(
-                'icat:token',
-                response.data.sessionId
-              );
-            })
-            .catch(error => {
-              log.error(`Can't contact ICAT: ${error.message}`);
             });
         }
 

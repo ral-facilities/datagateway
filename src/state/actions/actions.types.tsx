@@ -105,7 +105,6 @@ export interface ConfigureUrlsPayload {
 }
 
 export interface URLs {
-  icatUrl: string;
   idsUrl: string;
   apiUrl: string;
 }

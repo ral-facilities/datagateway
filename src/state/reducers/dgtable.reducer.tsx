@@ -57,7 +57,6 @@ export const initialState: DGTableState = {
     datasetGetCount: false,
   },
   urls: {
-    icatUrl: '',
     idsUrl: '',
     apiUrl: '',
   },

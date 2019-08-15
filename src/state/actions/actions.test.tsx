@@ -159,14 +159,12 @@ describe('Actions', () => {
 
   it('given JSON loadUrls returns a ConfigureUrlsType with ConfigureUrlsPayload', () => {
     const action = loadUrls({
-      icatUrl: 'icat',
       idsUrl: 'ids',
       apiUrl: 'api',
     });
     expect(action.type).toEqual(ConfigureURLsType);
     expect(action.payload).toEqual({
       urls: {
-        icatUrl: 'icat',
         idsUrl: 'ids',
         apiUrl: 'api',
       },
@@ -185,7 +183,6 @@ describe('Actions', () => {
               datasetGetCount: true,
             },
             'ui-strings': '/res/default.json',
-            icatUrl: 'icat',
             idsUrl: 'ids',
             apiUrl: 'api',
           },
@@ -216,7 +213,6 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(
       loadUrls({
-        icatUrl: 'icat',
         idsUrl: 'ids',
         apiUrl: 'api',
       })
@@ -229,7 +225,6 @@ describe('Actions', () => {
         Promise.resolve({
           data: {
             'ui-strings': 'res/default.json',
-            icatUrl: 'icat',
             idsUrl: 'ids',
             apiUrl: 'api',
           },
@@ -252,7 +247,6 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(
       loadUrls({
-        icatUrl: 'icat',
         idsUrl: 'ids',
         apiUrl: 'api',
       })
