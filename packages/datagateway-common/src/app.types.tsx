@@ -2,15 +2,19 @@
 export interface Investigation {
   ID: number;
   TITLE: string;
+  NAME: string;
   VISIT_ID: string;
   RB_NUMBER: string;
   DOI: string;
   SIZE: number;
-  INSTRUMENT: { NAME: string };
+  INVESTIGATIONINSTRUMENT: InvestigationInstrument[];
   STARTDATE: string;
   ENDDATE: string;
+  DESCRIPTION: string;
   DATASET_COUNT?: number;
-  [key: string]: string | number | { NAME: string } | undefined;
+  INVESTIGATIONUSER?: InvestigationUser[];
+  INVESTIGATIONSAMPLE?: InvestigationSample[];
+  PUBLICATION?: Publication[];
 }
 
 export interface Dataset {
@@ -20,7 +24,6 @@ export interface Dataset {
   CREATE_TIME: string;
   INVESTIGATION_ID: number;
   DATAFILE_COUNT?: number;
-  [key: string]: string | number | undefined;
 }
 
 export interface Datafile {
@@ -30,12 +33,52 @@ export interface Datafile {
   SIZE: number;
   MOD_TIME: string;
   DATASET_ID: number;
-  [key: string]: string | number;
+}
+
+export interface InvestigationInstrument {
+  ID: number;
+  INSTRUMENT_ID: number;
+  INVESTIGATION_ID: number;
+  INSTRUMENT?: Instrument;
+  INVESTIGATION?: Investigation;
 }
 
 export interface Instrument {
   ID: number;
   NAME: string;
+}
+
+export interface InvestigationUser {
+  ID: number;
+  USER_ID: number;
+  INVESTIGATION_ID: number;
+  ROLE: string;
+  USER_?: User;
+  INVESTIGATION?: Investigation;
+}
+
+export interface User {
+  ID: number;
+  NAME: string;
+  FULL_NAME: string;
+}
+
+export interface InvestigationSample {
+  ID: number;
+  SAMPLE_ID: number;
+  INVESTIGATION_ID: number;
+  SAMPLE?: Sample;
+  INVESTIGATION?: Investigation;
+}
+
+export interface Sample {
+  ID: number;
+  NAME: string;
+}
+
+export interface Publication {
+  ID: number;
+  FULL_REFERENCE: string;
 }
 
 export interface FacilityCycle {

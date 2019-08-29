@@ -41,6 +41,9 @@ import {
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  FetchInvestigationDetailsRequestType,
+  FetchInvestigationDetailsSuccessType,
+  FetchInvestigationDetailsFailureType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -176,6 +179,41 @@ export function handleFetchDataFailure(
   };
 }
 
+export function handleFetchDataDetailsRequest(
+  state: DGTableState
+): DGTableState {
+  return {
+    ...state,
+  };
+}
+
+export function handleFetchDataDetailsFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    error: payload.error,
+  };
+}
+
+export function handleFetchInvestigationDetailsSuccess(
+  state: DGTableState,
+  payload: FetchDataSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    data: state.data.map((entity: Entity) => {
+      const investigation = entity as Investigation;
+      return investigation.ID === payload.data[0].ID
+        ? { ...payload.data[0], ...investigation }
+        : investigation;
+    }),
+    error: null,
+  };
+}
+
 export function handleFetchDataCountRequest(state: DGTableState): DGTableState {
   return {
     ...state,
@@ -260,6 +298,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
+  [FetchInvestigationDetailsRequestType]: handleFetchDataDetailsRequest,
+  [FetchInvestigationDetailsSuccessType]: handleFetchInvestigationDetailsSuccess,
+  [FetchInvestigationDetailsFailureType]: handleFetchDataDetailsFailure,
   [FetchDatasetsRequestType]: handleFetchDataRequest,
   [FetchDatasetsSuccessType]: handleFetchDataSuccess,
   [FetchDatasetsFailureType]: handleFetchDataFailure,

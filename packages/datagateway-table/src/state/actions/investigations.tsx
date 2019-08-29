@@ -4,6 +4,9 @@ import {
   FetchInvestigationsRequestType,
   FetchDataSuccessPayload,
   FailurePayload,
+  FetchInvestigationDetailsSuccessType,
+  FetchInvestigationDetailsFailureType,
+  FetchInvestigationDetailsRequestType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -11,7 +14,7 @@ import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetCount } from './datasets';
 import * as log from 'loglevel';
-import { Investigation } from 'datagateway-common';
+import { Investigation, Filter } from 'datagateway-common';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[]
@@ -35,13 +38,26 @@ export const fetchInvestigationsRequest = (): Action => ({
   type: FetchInvestigationsRequestType,
 });
 
-export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
+export const fetchInvestigations = (filters?: {
+  [column: string]: Filter;
+}): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationsRequest());
 
     let params = getApiFilter(getState);
     const { investigationGetCount } = getState().dgtable.features;
     const { apiUrl } = getState().dgtable.urls;
+
+    if (filters) {
+      for (let [key, value] of Object.entries(filters)) {
+        params.append('where', JSON.stringify({ [key]: { like: value } }));
+      }
+    }
+
+    params.append(
+      'include',
+      JSON.stringify({ INVESTIGATIONINSTRUMENT: 'INSTRUMENT' })
+    );
 
     await axios
       .get(`${apiUrl}/investigations`, {
@@ -61,6 +77,56 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
       .catch(error => {
         log.error(error.message);
         dispatch(fetchInvestigationsFailure(error.message));
+      });
+  };
+};
+
+export const fetchInvestigationDetailsSuccess = (
+  investigations: Investigation[]
+): ActionType<FetchDataSuccessPayload> => ({
+  type: FetchInvestigationDetailsSuccessType,
+  payload: {
+    data: investigations,
+  },
+});
+
+export const fetchInvestigationDetailsFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchInvestigationDetailsFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchInvestigationDetailsRequest = (): Action => ({
+  type: FetchInvestigationDetailsRequestType,
+});
+
+export const fetchInvestigationDetails = (
+  investigationId: number
+): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    dispatch(fetchInvestigationDetailsRequest());
+
+    let params = new URLSearchParams();
+
+    params.append('where', JSON.stringify({ ID: { eq: investigationId } }));
+    params.append('include', JSON.stringify({ INVESTIGATIONUSER: 'USER_' }));
+
+    await axios
+      .get(`/investigations`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchInvestigationDetailsSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationDetailsFailure(error.message));
       });
   };
 };

@@ -19,6 +19,7 @@ describe('Investigation actions', () => {
     {
       ID: 1,
       TITLE: 'Test 1',
+      NAME: 'Test 1',
       VISIT_ID: '1',
       RB_NUMBER: '1',
       DOI: 'doi 1',
@@ -32,6 +33,7 @@ describe('Investigation actions', () => {
     {
       ID: 2,
       TITLE: 'Test 2',
+      NAME: 'Test 2',
       VISIT_ID: '2',
       RB_NUMBER: '2',
       DOI: 'doi 2',

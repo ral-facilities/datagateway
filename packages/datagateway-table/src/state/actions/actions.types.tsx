@@ -20,6 +20,13 @@ export const FetchInvestigationsFailureType =
 export const FetchInvestigationsSuccessType =
   'datagateway_table:fetch_investigations_success';
 
+export const FetchInvestigationDetailsRequestType =
+  'datagateway_table:fetch_investigation_details_request';
+export const FetchInvestigationDetailsFailureType =
+  'datagateway_table:fetch_investigation_details_failure';
+export const FetchInvestigationDetailsSuccessType =
+  'datagateway_table:fetch_investigation_details_success';
+
 export const FetchDatasetsRequestType =
   'datagateway_table:fetch_datasets_request';
 export const FetchDatasetsFailureType =

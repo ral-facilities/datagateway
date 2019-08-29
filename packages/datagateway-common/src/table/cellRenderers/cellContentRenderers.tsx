@@ -39,3 +39,14 @@ export function investigationLink(
     </Link>
   );
 }
+
+export function tableLink(
+  linkUrl: string,
+  linkText: string
+): React.ReactElement {
+  return (
+    <Link component={RouterLink} to={linkUrl}>
+      {linkText}
+    </Link>
+  );
+}
