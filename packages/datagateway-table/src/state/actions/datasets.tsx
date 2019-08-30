@@ -11,6 +11,9 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FetchDatasetDetailsSuccessType,
+  FetchDatasetDetailsFailureType,
+  FetchDatasetDetailsRequestType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
@@ -178,6 +181,56 @@ export const fetchDatasetCount = (
       .catch(error => {
         log.error(error.message);
         dispatch(fetchDatasetCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchDatasetDetailsSuccess = (
+  datasets: Dataset[]
+): ActionType<FetchDataSuccessPayload> => ({
+  type: FetchDatasetDetailsSuccessType,
+  payload: {
+    data: datasets,
+  },
+});
+
+export const fetchDatasetDetailsFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchDatasetDetailsFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatasetDetailsRequest = (): Action => ({
+  type: FetchDatasetDetailsRequestType,
+});
+
+export const fetchDatasetDetails = (
+  datasetId: number
+): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    dispatch(fetchDatasetDetailsRequest());
+
+    let params = new URLSearchParams();
+
+    params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
+    params.append('include', JSON.stringify('DATASETTYPE'));
+
+    await axios
+      .get(`/datasets`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchDatasetDetailsSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchDatasetDetailsFailure(error.message));
       });
   };
 };

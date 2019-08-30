@@ -194,6 +194,7 @@ const VirtualizedTable = (
                     dataKey,
                     label,
                     filterComponent,
+                    disableSort,
                   }) => {
                     return (
                       <Column
@@ -203,6 +204,7 @@ const VirtualizedTable = (
                         key={dataKey}
                         dataKey={dataKey}
                         label={label}
+                        disableSort={disableSort}
                         headerRenderer={headerProps => (
                           <DataHeader
                             {...headerProps}

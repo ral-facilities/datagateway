@@ -14,6 +14,10 @@ import {
   fetchDatasetCountFailure,
   downloadDataset,
   downloadDatasetRequest,
+  fetchDatasetDetails,
+  fetchDatasetDetailsRequest,
+  fetchDatasetDetailsSuccess,
+  fetchDatasetDetailsFailure,
 } from './datasets';
 import { fetchDatafileCountRequest } from './datafiles';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
@@ -190,6 +194,59 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest());
     expect(actions[1]).toEqual(fetchDatasetCountFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsSuccess actions upon successful fetchDatasetDetails action', async () => {
+    const mockData: Dataset[] = [
+      {
+        ID: 1,
+        NAME: 'Test 1',
+        MOD_TIME: '2019-06-10',
+        CREATE_TIME: '2019-06-11',
+        INVESTIGATION_ID: 1,
+      },
+    ];
+
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+
+    const asyncAction = fetchDatasetDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDetailsRequest());
+    expect(actions[1]).toEqual(fetchDatasetDetailsSuccess(mockData));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
+    params.append('include', JSON.stringify('DATASETTYPE'));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets',
+      expect.objectContaining({ params })
+    );
+  });
+
+  it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsFailure actions upon unsuccessful fetchDatasetDetails action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchDatasetDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDetailsRequest());
+    expect(actions[1]).toEqual(
+      fetchDatasetDetailsFailure('Test error message')
+    );
 
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;

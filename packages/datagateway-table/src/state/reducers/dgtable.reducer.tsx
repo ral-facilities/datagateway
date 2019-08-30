@@ -44,6 +44,9 @@ import {
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
   FetchInvestigationDetailsFailureType,
+  FetchDatasetDetailsRequestType,
+  FetchDatasetDetailsSuccessType,
+  FetchDatasetDetailsFailureType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -197,17 +200,16 @@ export function handleFetchDataDetailsFailure(
   };
 }
 
-export function handleFetchInvestigationDetailsSuccess(
+export function handleFetchDataDetailsSuccess(
   state: DGTableState,
   payload: FetchDataSuccessPayload
 ): DGTableState {
   return {
     ...state,
     data: state.data.map((entity: Entity) => {
-      const investigation = entity as Investigation;
-      return investigation.ID === payload.data[0].ID
-        ? { ...payload.data[0], ...investigation }
-        : investigation;
+      return entity.ID === payload.data[0].ID
+        ? { ...payload.data[0], ...entity }
+        : entity;
     }),
     error: null,
   };
@@ -298,7 +300,7 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
   [FetchInvestigationDetailsRequestType]: handleFetchDataDetailsRequest,
-  [FetchInvestigationDetailsSuccessType]: handleFetchInvestigationDetailsSuccess,
+  [FetchInvestigationDetailsSuccessType]: handleFetchDataDetailsSuccess,
   [FetchInvestigationDetailsFailureType]: handleFetchDataDetailsFailure,
   [FetchDatasetsRequestType]: handleFetchDataRequest,
   [FetchDatasetsSuccessType]: handleFetchDataSuccess,
@@ -306,6 +308,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatasetCountRequestType]: handleFetchDataCountRequest,
   [FetchDatasetCountSuccessType]: handleFetchDatasetCountSuccess,
   [FetchDatasetCountFailureType]: handleFetchDataCountFailure,
+  [FetchDatasetDetailsRequestType]: handleFetchDataDetailsRequest,
+  [FetchDatasetDetailsSuccessType]: handleFetchDataDetailsSuccess,
+  [FetchDatasetDetailsFailureType]: handleFetchDataDetailsFailure,
   [DownloadDatasetRequestType]: handleDownloadDataRequest,
   [DownloadDatasetSuccessType]: handleDownloadDataSuccess,
   [DownloadDatasetFailureType]: handleDownloadDataFailure,

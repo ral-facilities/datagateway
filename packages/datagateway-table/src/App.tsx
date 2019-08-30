@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import DLSVisitsTable from './dls/tables/dlsVisitsTable.component';
+import DLSDatasetsTable from './dls/tables/dlsDatasetsTable.component';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -110,6 +111,21 @@ class App extends React.Component<{}, { hasError: boolean }> {
                     match,
                   }: RouteComponentProps<{ proposalName: string }>) => (
                     <DLSVisitsTable proposalName={match.params.proposalName} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/browse/proposal/:proposalName/investigation/:investigationId/dataset"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{
+                    proposalName: string;
+                    investigationId: string;
+                  }>) => (
+                    <DLSDatasetsTable
+                      proposalName={match.params.proposalName}
+                      investigationId={match.params.investigationId}
+                    />
                   )}
                 />
                 <Route

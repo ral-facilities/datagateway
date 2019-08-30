@@ -34,6 +34,13 @@ export const FetchDatasetsFailureType =
 export const FetchDatasetsSuccessType =
   'datagateway_table:fetch_datasets_success';
 
+export const FetchDatasetDetailsRequestType =
+  'datagateway_table:fetch_dataset_details_request';
+export const FetchDatasetDetailsFailureType =
+  'datagateway_table:fetch_dataset_details_failure';
+export const FetchDatasetDetailsSuccessType =
+  'datagateway_table:fetch_dataset_details_success';
+
 export const DownloadDatasetRequestType =
   'datagateway_table:download_dataset_request';
 export const DownloadDatasetFailureType =

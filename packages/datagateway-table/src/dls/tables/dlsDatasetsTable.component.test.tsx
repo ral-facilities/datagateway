@@ -1,14 +1,14 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DLSVisitsTable from './dlsVisitsTable.component';
+import DLSDatasetsTable from './dlsDatasetsTable.component';
 import { initialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
-  fetchInvestigationsRequest,
+  fetchDatasetsRequest,
   filterTable,
   sortTable,
-  fetchInvestigationDetailsRequest,
+  fetchDatasetDetailsRequest,
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -17,7 +17,7 @@ import Table from '../../table/table.component';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
-describe('DLS Visits table component', () => {
+describe('DLS Dataset table component', () => {
   let shallow;
   let mount;
   let mockStore;
@@ -35,26 +35,11 @@ describe('DLS Visits table component', () => {
     state.dgtable.data = [
       {
         ID: 1,
-        TITLE: 'Test 1',
         NAME: 'Test 1',
-        SUMMARY: 'foo bar',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
         SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
-          {
-            ID: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 3,
-              NAME: 'LARMOR',
-            },
-          },
-        ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
+        MOD_TIME: '2019-07-23',
+        CREATE_TIME: '2019-07-23',
+        INVESTIGATION_ID: 1,
       },
     ];
   });
@@ -64,21 +49,21 @@ describe('DLS Visits table component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DLSVisitsTable store={mockStore(state)} />);
+    const wrapper = shallow(<DLSDatasetsTable store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchInvestigations action on load', () => {
+  it('sends fetchDatasets action on load', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DLSVisitsTable proposalName="Test 1" />
+          <DLSDatasetsTable investigationId="1" />
         </MemoryRouter>
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest());
   });
 
   it('sends filterTable action on filter', () => {
@@ -86,7 +71,7 @@ describe('DLS Visits table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DLSVisitsTable proposalName="Test 1" />
+          <DLSDatasetsTable investigationId="1" />
         </MemoryRouter>
       </Provider>
     );
@@ -95,12 +80,12 @@ describe('DLS Visits table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('VISIT_ID', 'test'));
+    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('VISIT_ID', null));
+    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -108,7 +93,7 @@ describe('DLS Visits table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DLSVisitsTable proposalName="Test 1" />
+          <DLSDatasetsTable investigationId="1" proposalName="Proposal 1" />
         </MemoryRouter>
       </Provider>
     );
@@ -118,15 +103,19 @@ describe('DLS Visits table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('VISIT_ID', 'asc'));
+    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
   });
 
-  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
+  it('renders details panel correctly and it sends off an FetchDatasetDetails action', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DLSVisitsTable proposalName="Test 1" />
+          <DLSDatasetsTable
+            store={testStore}
+            investigationId="1"
+            proposalName="Proposal 1"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -140,16 +129,14 @@ describe('DLS Visits table component', () => {
       wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0], jest.fn())
     );
 
-    expect(testStore.getActions()[1]).toEqual(
-      fetchInvestigationDetailsRequest()
-    );
+    expect(testStore.getActions()[1]).toEqual(fetchDatasetDetailsRequest());
   });
 
-  it('renders visit ID as a links', () => {
+  it('renders Dataset title as a link', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <DLSVisitsTable proposalName="Test 1" />
+          <DLSDatasetsTable investigationId="1" proposalName="Proposal 1" />
         </MemoryRouter>
       </Provider>
     );
@@ -160,32 +147,5 @@ describe('DLS Visits table component', () => {
         .find('p')
         .children()
     ).toMatchSnapshot();
-  });
-
-  it('gracefully handles missing Instrument from InvestigationInstrument object', () => {
-    state.dgtable.data[0] = {
-      ...state.dgtable.data[0],
-      INVESTIGATIONINSTRUMENT: [
-        {
-          ID: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
-        },
-      ],
-    };
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DLSVisitsTable proposalName="Test 1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(
-      wrapper
-        .find('[aria-colindex=4]')
-        .find('p')
-        .text()
-    ).toEqual('');
   });
 });

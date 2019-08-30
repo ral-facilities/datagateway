@@ -23,7 +23,12 @@ export interface Dataset {
   MOD_TIME: string;
   CREATE_TIME: string;
   INVESTIGATION_ID: number;
+  DESCRIPTION?: string;
+  STARTDATE?: string;
+  ENDDATE?: string;
+  SIZE?: number;
   DATAFILE_COUNT?: number;
+  DATASETTYPE?: DatasetType;
 }
 
 export interface Datafile {
@@ -81,6 +86,12 @@ export interface FacilityCycle {
   DESCRIPTION?: string;
   STARTDATE?: string;
   ENDDATE?: string;
+}
+
+export interface DatasetType {
+  ID: number;
+  NAME: string;
+  DESCRIPTION?: string;
 }
 
 export type Entity =

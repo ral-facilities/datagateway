@@ -33,6 +33,9 @@ import {
   fetchInvestigationDetailsRequest,
   fetchInvestigationDetailsSuccess,
   fetchInvestigationDetailsFailure,
+  fetchDatasetDetailsRequest,
+  fetchDatasetDetailsSuccess,
+  fetchDatasetDetailsFailure,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -311,6 +314,62 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchDatasetDetails actions', () => {
+    it('should not update state when given a FetchDatasetDetailsRequest action', () => {
+      let updatedState = DGTableReducer(state, fetchDatasetDetailsRequest());
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should update the data state and reset error state when given a FetchDatasetDetailsSuccess action', () => {
+      state.loading = true;
+      const mockData: Dataset[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-11',
+          INVESTIGATION_ID: 1,
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-12',
+          INVESTIGATION_ID: 1,
+        },
+      ];
+
+      state.data = mockData;
+
+      const datasetDetails = {
+        ...mockData[0],
+        DATASETTYPE: {
+          ID: 3,
+          NAME: 'Test type',
+        },
+      };
+
+      const mockDataUpdated: Dataset[] = [datasetDetails, mockData[1]];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetDetailsSuccess([datasetDetails])
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchDatasetDetailsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetDetailsFailure('Test error message')
+      );
       expect(updatedState.error).toEqual('Test error message');
     });
   });
