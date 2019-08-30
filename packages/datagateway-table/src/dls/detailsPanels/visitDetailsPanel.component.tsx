@@ -22,7 +22,7 @@ const VisitDetailsPanel = (
     if (
       !(
         investigationData.INVESTIGATIONUSER ||
-        investigationData.INVESTIGATIONSAMPLE ||
+        investigationData.SAMPLE ||
         investigationData.PUBLICATION
       )
     ) {
@@ -55,7 +55,7 @@ const VisitDetailsPanel = (
             value="users"
           />
         )}
-        {investigationData.INVESTIGATIONSAMPLE && (
+        {investigationData.SAMPLE && (
           <Tab
             id="visit-samples-tab"
             aria-controls="visit-samples-panel"
@@ -136,23 +136,19 @@ const VisitDetailsPanel = (
           })}
         </div>
       )}
-      {investigationData.INVESTIGATIONSAMPLE && (
+      {investigationData.SAMPLE && (
         <div
           id="visit-samples-panel"
           aria-labelledby="visit-samples-tab"
           role="tabpanel"
           hidden={value !== 'samples'}
         >
-          {investigationData.INVESTIGATIONSAMPLE.map(investigationSample => {
-            if (investigationSample.SAMPLE) {
-              return (
-                <Typography key={investigationSample.SAMPLE_ID} variant="body2">
-                  <b>Sample:</b> {investigationSample.SAMPLE.NAME}
-                </Typography>
-              );
-            } else {
-              return null;
-            }
+          {investigationData.SAMPLE.map(sample => {
+            return (
+              <Typography key={sample.ID} variant="body2">
+                <b>Sample:</b> {sample.NAME}
+              </Typography>
+            );
           })}
         </div>
       )}

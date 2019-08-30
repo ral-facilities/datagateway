@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Visit details panel component gracefully handles InvestigationSamples without Samples and InvestigationUsers without Users 1`] = `
+exports[`Visit details panel component gracefully handles InvestigationUsers without Users 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
     aria-label="visit-details-tabs"
@@ -18,12 +18,6 @@ exports[`Visit details panel component gracefully handles InvestigationSamples w
       id="visit-users-tab"
       label="Visit Users"
       value="users"
-    />
-    <WithStyles(ForwardRef(Tab))
-      aria-controls="visit-samples-panel"
-      id="visit-samples-tab"
-      label="Visit Samples"
-      value="samples"
     />
   </WithStyles(ForwardRef(Tabs))>
   <div
@@ -100,12 +94,6 @@ exports[`Visit details panel component gracefully handles InvestigationSamples w
     aria-labelledby="visit-users-tab"
     hidden={true}
     id="visit-users-panel"
-    role="tabpanel"
-  />
-  <div
-    aria-labelledby="visit-samples-tab"
-    hidden={true}
-    id="visit-samples-panel"
     role="tabpanel"
   />
 </div>

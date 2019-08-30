@@ -205,7 +205,10 @@ describe('Investigation actions', () => {
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ ID: { eq: 1 } }));
-    params.append('include', JSON.stringify({ INVESTIGATIONUSER: 'USER_' }));
+    params.append(
+      'include',
+      JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
+    );
 
     expect(axios.get).toHaveBeenCalledWith(
       '/investigations',

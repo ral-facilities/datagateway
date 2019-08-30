@@ -80,15 +80,11 @@ describe('Visit details panel component', () => {
       },
     ];
 
-    rowData.INVESTIGATIONSAMPLE = [
+    rowData.SAMPLE = [
       {
-        ID: 6,
+        ID: 7,
         INVESTIGATION_ID: 1,
-        SAMPLE_ID: 7,
-        SAMPLE: {
-          ID: 7,
-          NAME: 'Test sample',
-        },
+        NAME: 'Test sample',
       },
     ];
 
@@ -178,21 +174,13 @@ describe('Visit details panel component', () => {
     expect(fetchDetails).toHaveBeenCalledWith(1);
   });
 
-  it('gracefully handles InvestigationSamples without Samples and InvestigationUsers without Users', () => {
+  it('gracefully handles InvestigationUsers without Users', () => {
     rowData.INVESTIGATIONUSER = [
       {
         ID: 4,
         INVESTIGATION_ID: 1,
         USER_ID: 5,
         ROLE: 'Investigator',
-      },
-    ];
-
-    rowData.INVESTIGATIONSAMPLE = [
-      {
-        ID: 6,
-        INVESTIGATION_ID: 1,
-        SAMPLE_ID: 7,
       },
     ];
 

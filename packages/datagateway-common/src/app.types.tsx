@@ -13,7 +13,7 @@ export interface Investigation {
   SIZE?: number;
   DATASET_COUNT?: number;
   INVESTIGATIONUSER?: InvestigationUser[];
-  INVESTIGATIONSAMPLE?: InvestigationSample[];
+  SAMPLE?: Sample[];
   PUBLICATION?: Publication[];
 }
 
@@ -64,17 +64,10 @@ export interface User {
   FULL_NAME?: string;
 }
 
-export interface InvestigationSample {
-  ID: number;
-  SAMPLE_ID: number;
-  INVESTIGATION_ID: number;
-  SAMPLE?: Sample;
-  INVESTIGATION?: Investigation;
-}
-
 export interface Sample {
   ID: number;
   NAME: string;
+  INVESTIGATION_ID: number;
 }
 
 export interface Publication {

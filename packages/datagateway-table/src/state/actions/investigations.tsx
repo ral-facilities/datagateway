@@ -112,7 +112,10 @@ export const fetchInvestigationDetails = (
     let params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: investigationId } }));
-    params.append('include', JSON.stringify({ INVESTIGATIONUSER: 'USER_' }));
+    params.append(
+      'include',
+      JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
+    );
 
     await axios
       .get(`/investigations`, {
