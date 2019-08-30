@@ -189,6 +189,16 @@ export function handleFetchDataCountRequest(state: DGTableState): DGTableState {
   };
 }
 
+export function handleFetchDataCountFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    error: payload.error,
+  };
+}
+
 export function handleFetchDatasetCountSuccess(
   state: DGTableState,
   payload: FetchDataCountSuccessPayload
@@ -265,7 +275,7 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatasetCountFailureType]: handleFetchCountFailure,
   [FetchInvestigationDatasetsCountRequestType]: handleFetchDataCountRequest,
   [FetchInvestigationDatasetsCountSuccessType]: handleFetchDatasetCountSuccess,
-  [FetchInvestigationDatasetsCountFailureType]: handleFetchDataFailure,
+  [FetchInvestigationDatasetsCountFailureType]: handleFetchDataCountFailure,
   [DownloadDatasetRequestType]: handleDownloadDataRequest,
   [DownloadDatasetSuccessType]: handleDownloadDataSuccess,
   [DownloadDatasetFailureType]: handleDownloadDataFailure,
@@ -277,7 +287,10 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatafileCountFailureType]: handleFetchCountFailure,
   [FetchDatasetDatafilesCountRequestType]: handleFetchDataCountRequest,
   [FetchDatasetDatafilesCountSuccessType]: handleFetchDatasetDatafilesCountSuccess,
-  [FetchDatasetDatafilesCountFailureType]: handleFetchDataFailure,
+  [FetchDatasetDatafilesCountFailureType]: handleFetchDataCountFailure,
+  [FetchDatafileCountRequestType]: handleFetchDataCountRequest,
+  [FetchDatafileCountSuccessType]: handleFetchDatafileCountSuccess,
+  [FetchDatafileCountFailureType]: handleFetchDataCountFailure,
   [DownloadDatafileRequestType]: handleDownloadDataRequest,
   [DownloadDatafileSuccessType]: handleDownloadDataSuccess,
   [DownloadDatafileFailureType]: handleDownloadDataFailure,
