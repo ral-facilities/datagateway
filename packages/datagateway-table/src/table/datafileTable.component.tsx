@@ -88,7 +88,7 @@ const DatafileTable = (
                 <b>Name:</b> {datafileData.NAME}
               </Typography>
               <Typography>
-                <b>File Size:</b> {formatBytes(datafileData.SIZE)}
+                <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
               </Typography>
               <Typography>
                 <b>Location:</b> {datafileData.LOCATION}
@@ -99,18 +99,23 @@ const DatafileTable = (
         actions={[
           function downloadButton({ rowData }: TableActionProps) {
             const datafileData = rowData as Datafile;
-            return (
-              <IconButton
-                aria-label="Download"
-                key="download"
-                size="small"
-                onClick={() => {
-                  downloadData(datafileData.ID, datafileData.LOCATION);
-                }}
-              >
-                <GetApp />
-              </IconButton>
-            );
+            if (datafileData.LOCATION) {
+              return (
+                <IconButton
+                  aria-label="Download"
+                  key="download"
+                  size="small"
+                  onClick={() => {
+                    // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
+                    downloadData(datafileData.ID, datafileData.LOCATION);
+                  }}
+                >
+                  <GetApp />
+                </IconButton>
+              );
+            } else {
+              return null;
+            }
           },
         ]}
         columns={[
@@ -126,7 +131,7 @@ const DatafileTable = (
           },
           {
             label: 'Size',
-            dataKey: 'SIZE',
+            dataKey: 'FILESIZE',
             cellContentRenderer: props => {
               return formatBytes(props.cellData);
             },

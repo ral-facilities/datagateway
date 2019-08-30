@@ -4,13 +4,13 @@ export interface Investigation {
   TITLE: string;
   NAME: string;
   VISIT_ID: string;
-  RB_NUMBER: string;
-  DOI: string;
-  SIZE: number;
-  INVESTIGATIONINSTRUMENT: InvestigationInstrument[];
-  STARTDATE: string;
-  ENDDATE: string;
-  DESCRIPTION: string;
+  RB_NUMBER?: string;
+  DOI?: string;
+  STARTDATE?: string;
+  ENDDATE?: string;
+  SUMMARY?: string;
+  INVESTIGATIONINSTRUMENT?: InvestigationInstrument[];
+  SIZE?: number;
   DATASET_COUNT?: number;
   INVESTIGATIONUSER?: InvestigationUser[];
   INVESTIGATIONSAMPLE?: InvestigationSample[];
@@ -29,10 +29,11 @@ export interface Dataset {
 export interface Datafile {
   ID: number;
   NAME: string;
-  LOCATION: string;
-  SIZE: number;
   MOD_TIME: string;
+  CREATE_TIME: string;
   DATASET_ID: number;
+  FILESIZE?: number;
+  LOCATION?: string;
 }
 
 export interface InvestigationInstrument {
@@ -60,7 +61,7 @@ export interface InvestigationUser {
 export interface User {
   ID: number;
   NAME: string;
-  FULL_NAME: string;
+  FULL_NAME?: string;
 }
 
 export interface InvestigationSample {
@@ -84,9 +85,9 @@ export interface Publication {
 export interface FacilityCycle {
   ID: number;
   NAME: string;
-  DESCRIPTION: string;
-  STARTDATE: string;
-  ENDDATE: string;
+  DESCRIPTION?: string;
+  STARTDATE?: string;
+  ENDDATE?: string;
 }
 
 export type Entity =

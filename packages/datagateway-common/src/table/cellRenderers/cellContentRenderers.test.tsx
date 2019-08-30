@@ -23,6 +23,14 @@ describe('Cell content renderers', () => {
     it('handles 0 correctly', () => {
       expect(formatBytes(0)).toEqual('0 B');
     });
+
+    it('handles negative numbers correctly', () => {
+      expect(formatBytes(-7)).toEqual('Unknown');
+    });
+
+    it('handles undefined correctly', () => {
+      expect(formatBytes(undefined)).toEqual('Unknown');
+    });
   });
 
   describe('datasetLink', () => {

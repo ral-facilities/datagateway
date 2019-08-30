@@ -203,7 +203,6 @@ export function handleFetchInvestigationDetailsSuccess(
 ): DGTableState {
   return {
     ...state,
-    loading: false,
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
       return investigation.ID === payload.data[0].ID

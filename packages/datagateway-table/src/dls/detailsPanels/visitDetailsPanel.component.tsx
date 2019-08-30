@@ -19,7 +19,13 @@ const VisitDetailsPanel = (
   const investigationData = rowData as Investigation;
 
   React.useEffect(() => {
-    if (!investigationData.INVESTIGATIONUSER) {
+    if (
+      !(
+        investigationData.INVESTIGATIONUSER ||
+        investigationData.INVESTIGATIONSAMPLE ||
+        investigationData.PUBLICATION
+      )
+    ) {
       fetchDetails(investigationData.ID);
     }
   }, [investigationData, fetchDetails]);
@@ -82,7 +88,7 @@ const VisitDetailsPanel = (
           <b>Title:</b> {investigationData.TITLE}
         </Typography>
         <Typography variant="body2">
-          <b>Description:</b> {investigationData.DESCRIPTION}
+          <b>Summary:</b> {investigationData.SUMMARY}
         </Typography>
         <Typography variant="body2">
           <b>Start Date:</b> {investigationData.STARTDATE}

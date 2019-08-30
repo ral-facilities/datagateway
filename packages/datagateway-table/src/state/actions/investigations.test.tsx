@@ -3,6 +3,10 @@ import {
   fetchInvestigationsRequest,
   fetchInvestigationsSuccess,
   fetchInvestigationsFailure,
+  fetchInvestigationDetailsRequest,
+  fetchInvestigationDetailsSuccess,
+  fetchInvestigationDetailsFailure,
+  fetchInvestigationDetails,
 } from '.';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -24,9 +28,17 @@ describe('Investigation actions', () => {
       RB_NUMBER: '1',
       DOI: 'doi 1',
       SIZE: 1,
-      INSTRUMENT: {
-        NAME: 'LARMOR',
-      },
+      INVESTIGATIONINSTRUMENT: [
+        {
+          ID: 3,
+          INVESTIGATION_ID: 1,
+          INSTRUMENT_ID: 4,
+          INSTRUMENT: {
+            ID: 4,
+            NAME: 'LARMOR',
+          },
+        },
+      ],
       STARTDATE: '2019-06-10',
       ENDDATE: '2019-06-11',
     },
@@ -38,9 +50,17 @@ describe('Investigation actions', () => {
       RB_NUMBER: '2',
       DOI: 'doi 2',
       SIZE: 10000,
-      INSTRUMENT: {
-        NAME: 'LARMOR',
-      },
+      INVESTIGATIONINSTRUMENT: [
+        {
+          ID: 5,
+          INVESTIGATION_ID: 2,
+          INSTRUMENT_ID: 3,
+          INSTRUMENT: {
+            ID: 4,
+            NAME: 'LARMOR',
+          },
+        },
+      ],
       STARTDATE: '2019-06-10',
       ENDDATE: '2019-06-12',
     },
@@ -137,6 +157,75 @@ describe('Investigation actions', () => {
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
     expect(actions[1]).toEqual(
       fetchInvestigationsFailure('Test error message')
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchInvestigationDetailsRequest and fetchInvestigationDetailsSuccess actions upon successful fetchInvestigationDetails action', async () => {
+    const mockData: Investigation[] = [
+      {
+        ID: 1,
+        TITLE: 'Test 1',
+        NAME: 'Test 1',
+        VISIT_ID: '1',
+        RB_NUMBER: '1',
+        DOI: 'doi 1',
+        SIZE: 1,
+        STARTDATE: '2019-06-10',
+        ENDDATE: '2019-06-11',
+        INVESTIGATIONUSER: [
+          {
+            ID: 2,
+            INVESTIGATION_ID: 1,
+            USER_ID: 3,
+            ROLE: 'Investigator',
+            USER_: {
+              ID: 3,
+              NAME: 'Louise',
+            },
+          },
+        ],
+      },
+    ];
+
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+
+    const asyncAction = fetchInvestigationDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationDetailsRequest());
+    expect(actions[1]).toEqual(fetchInvestigationDetailsSuccess(mockData));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
+    params.append('include', JSON.stringify({ INVESTIGATIONUSER: 'USER_' }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/investigations',
+      expect.objectContaining({ params })
+    );
+  });
+
+  it('dispatches fetchInvestigationDetailsRequest and fetchInvestigationDetailsFailure actions upon unsuccessful fetchInvestigationDetails action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchInvestigationDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationDetailsRequest());
+    expect(actions[1]).toEqual(
+      fetchInvestigationDetailsFailure('Test error message')
     );
 
     expect(log.error).toHaveBeenCalled();

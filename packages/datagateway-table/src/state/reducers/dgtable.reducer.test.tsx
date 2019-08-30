@@ -30,6 +30,9 @@ import {
   loadFeatureSwitches,
   configureStrings,
   loadUrls,
+  fetchInvestigationDetailsRequest,
+  fetchInvestigationDetailsSuccess,
+  fetchInvestigationDetailsFailure,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -148,26 +151,22 @@ describe('dgtable reducer', () => {
         {
           ID: 1,
           TITLE: 'Test 1',
+          NAME: 'Test 1',
           VISIT_ID: '1',
           RB_NUMBER: '1',
           DOI: 'doi 1',
           SIZE: 1,
-          INSTRUMENT: {
-            NAME: 'LARMOR',
-          },
           STARTDATE: '2019-06-10',
           ENDDATE: '2019-06-11',
         },
         {
           ID: 2,
           TITLE: 'Test 2',
+          NAME: 'Test 1',
           VISIT_ID: '2',
           RB_NUMBER: '2',
           DOI: 'doi 2',
           SIZE: 10000,
-          INSTRUMENT: {
-            NAME: 'LARMOR',
-          },
           STARTDATE: '2019-06-10',
           ENDDATE: '2019-06-12',
         },
@@ -191,6 +190,81 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchInvestigationDetails actions', () => {
+    it('should not update state when given a FetchInvestigationDetailsRequest action', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationDetailsRequest()
+      );
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should update the data state and reset error state when given a FetchInvestigationDetailsSuccess action', () => {
+      state.loading = true;
+      const mockData: Investigation[] = [
+        {
+          ID: 1,
+          TITLE: 'Test 1',
+          NAME: 'Test 1',
+          VISIT_ID: '1',
+          RB_NUMBER: '1',
+          DOI: 'doi 1',
+          SIZE: 1,
+          STARTDATE: '2019-06-10',
+          ENDDATE: '2019-06-11',
+        },
+        {
+          ID: 2,
+          TITLE: 'Test 2',
+          NAME: 'Test 1',
+          VISIT_ID: '2',
+          RB_NUMBER: '2',
+          DOI: 'doi 2',
+          SIZE: 10000,
+          STARTDATE: '2019-06-10',
+          ENDDATE: '2019-06-12',
+        },
+      ];
+
+      state.data = mockData;
+
+      const investigationDetails = {
+        ...mockData[0],
+        INVESTIGATIONUSER: [
+          {
+            ID: 3,
+            INVESTIGATION_ID: 1,
+            USER_ID: 4,
+            ROLE: 'Investigator',
+            USER_: { ID: 4, NAME: 'Louise' },
+          },
+        ],
+      };
+
+      const mockDataUpdated: Investigation[] = [
+        investigationDetails,
+        mockData[1],
+      ];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationDetailsSuccess([investigationDetails])
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchInvestigationDetailsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationDetailsFailure('Test error message')
+      );
       expect(updatedState.error).toEqual('Test error message');
     });
   });
@@ -280,26 +354,22 @@ describe('dgtable reducer', () => {
         {
           ID: 1,
           TITLE: 'Test 1',
+          NAME: 'Test 1',
           VISIT_ID: '1',
           RB_NUMBER: '1',
           DOI: 'doi 1',
           SIZE: 1,
-          INSTRUMENT: {
-            NAME: 'LARMOR',
-          },
           STARTDATE: '2019-06-10',
           ENDDATE: '2019-06-11',
         },
         {
           ID: 2,
           TITLE: 'Test 2',
+          NAME: 'Test 2',
           VISIT_ID: '2',
           RB_NUMBER: '2',
           DOI: 'doi 2',
           SIZE: 10000,
-          INSTRUMENT: {
-            NAME: 'LARMOR',
-          },
           STARTDATE: '2019-06-10',
           ENDDATE: '2019-06-12',
         },
@@ -342,16 +412,18 @@ describe('dgtable reducer', () => {
           ID: 1,
           NAME: 'Test 1',
           LOCATION: '/test1',
-          SIZE: 1,
+          FILESIZE: 1,
           MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-10',
           DATASET_ID: 1,
         },
         {
           ID: 2,
           NAME: 'Test 2',
           LOCATION: '/test2',
-          SIZE: 2,
+          FILESIZE: 2,
           MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-10',
           DATASET_ID: 1,
         },
       ];
