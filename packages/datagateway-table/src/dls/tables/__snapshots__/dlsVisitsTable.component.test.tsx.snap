@@ -165,7 +165,7 @@ exports[`DLS Visits table component renders details panel correctly and it sends
 exports[`DLS Visits table component renders visit ID as a links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={[Function]}
-  to="/browse/proposal/Test 1/investigation/1"
+  to="/browse/proposal/Test 1/investigation/1/dataset"
 >
   <ForwardRef(Link)
     classes={
@@ -179,7 +179,7 @@ exports[`DLS Visits table component renders visit ID as a links 1`] = `
       }
     }
     component={[Function]}
-    to="/browse/proposal/Test 1/investigation/1"
+    to="/browse/proposal/Test 1/investigation/1/dataset"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
@@ -187,7 +187,7 @@ exports[`DLS Visits table component renders visit ID as a links 1`] = `
       component={[Function]}
       onBlur={[Function]}
       onFocus={[Function]}
-      to="/browse/proposal/Test 1/investigation/1"
+      to="/browse/proposal/Test 1/investigation/1/dataset"
       variant="inherit"
     >
       <ForwardRef(Typography)
@@ -496,18 +496,18 @@ exports[`DLS Visits table component renders visit ID as a links 1`] = `
             },
           }
         }
-        to="/browse/proposal/Test 1/investigation/1"
+        to="/browse/proposal/Test 1/investigation/1/dataset"
         variant="inherit"
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
           onBlur={[Function]}
           onFocus={[Function]}
-          to="/browse/proposal/Test 1/investigation/1"
+          to="/browse/proposal/Test 1/investigation/1/dataset"
         >
           <a
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-            href="/browse/proposal/Test 1/investigation/1"
+            href="/browse/proposal/Test 1/investigation/1/dataset"
             onBlur={[Function]}
             onClick={[Function]}
             onFocus={[Function]}

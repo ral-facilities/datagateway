@@ -103,7 +103,7 @@ const DLSVisitsTable = (
             cellContentRenderer: (props: TableCellProps) => {
               const investigationData = props.rowData as Investigation;
               return tableLink(
-                `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}`,
+                `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}/dataset`,
                 investigationData.VISIT_ID
               );
             },
