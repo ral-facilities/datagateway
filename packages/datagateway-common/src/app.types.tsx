@@ -39,6 +39,7 @@ export interface Datafile {
   DATASET_ID: number;
   FILESIZE?: number;
   LOCATION?: string;
+  DESCRIPTION?: string;
 }
 
 export interface InvestigationInstrument {

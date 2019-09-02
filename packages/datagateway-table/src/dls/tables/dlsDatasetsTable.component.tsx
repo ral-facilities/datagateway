@@ -1,8 +1,13 @@
 import React from 'react';
-import TextColumnFilter from '../../table/columnFilters/textColumnFilter.component';
+import {
+  TextColumnFilter,
+  Table,
+  tableLink,
+  Filter,
+  Order,
+  Entity,
+} from 'datagateway-common';
 import { Paper } from '@material-ui/core';
-import Table from '../../table/table.component';
-import { tableLink } from '../../table/cellRenderers/cellContentRenderers';
 import {
   sortTable,
   filterTable,
@@ -10,7 +15,7 @@ import {
   fetchDatasetDetails,
 } from '../../state/actions';
 import { AnyAction } from 'redux';
-import { StateType, Filter, Order, Entity } from '../../state/app.types';
+import { StateType } from '../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
