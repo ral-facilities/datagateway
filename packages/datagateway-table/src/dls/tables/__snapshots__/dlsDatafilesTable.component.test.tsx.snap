@@ -11,11 +11,6 @@ exports[`DLS datafiles table component renders correctly 1`] = `
   }
 >
   <WithStyles(VirtualizedTable)
-    actions={
-      Array [
-        [Function],
-      ]
-    }
     columns={
       Array [
         Object {
@@ -31,6 +26,7 @@ exports[`DLS datafiles table component renders correctly 1`] = `
         Object {
           "cellContentRenderer": [Function],
           "dataKey": "FILESIZE",
+          "filterComponent": [Function],
           "label": "Size",
         },
         Object {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DLSDatafilesTable from './DLSDatafilesTable.component';
+import DLSDatafilesTable from './dlsDatafilesTable.component';
 import { initialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType, Datafile } from '../../state/app.types';
@@ -104,38 +104,6 @@ describe('DLS datafiles table component', () => {
       .simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
-  });
-
-  it('sends downloadData action on click of download button', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper.find('button[aria-label="Download"]').simulate('click');
-
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest());
-  });
-
-  it("doesn't display download button for datafiles with no location", () => {
-    const datafile = state.dgtable.data[0] as Datafile;
-    const { LOCATION, ...datafileWithoutLocation } = datafile;
-    state.dgtable.data = [datafileWithoutLocation];
-
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(wrapper.find('button[aria-label="Download"]')).toHaveLength(0);
   });
 
   it('renders details panel correctly', () => {

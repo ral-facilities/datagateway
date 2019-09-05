@@ -106,28 +106,6 @@ const DLSDatafilesTable = (
             </div>
           );
         }}
-        actions={[
-          function downloadButton(rowData: Entity) {
-            const datafileData = rowData as Datafile;
-            if (datafileData.LOCATION) {
-              return (
-                <IconButton
-                  aria-label="Download"
-                  key="download"
-                  size="small"
-                  onClick={() => {
-                    // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
-                    downloadData(datafileData.ID, datafileData.LOCATION);
-                  }}
-                >
-                  <GetApp />
-                </IconButton>
-              );
-            } else {
-              return null;
-            }
-          },
-        ]}
         columns={[
           {
             label: 'Name',
