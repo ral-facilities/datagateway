@@ -34,8 +34,9 @@ export const fetchFacilityCyclesRequest = (): Action => ({
   type: FetchFacilityCyclesRequestType,
 });
 
-// TODO: make this fetch based on instrumentId
-export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
+export const fetchFacilityCycles = (
+  instrumentId: string
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchFacilityCyclesRequest());
 
@@ -43,7 +44,7 @@ export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
     const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get(`${apiUrl}/facilitycycles`, {
+      .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

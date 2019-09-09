@@ -24,6 +24,7 @@ import DLSVisitsTable from './dls/tables/dlsVisitsTable.component';
 import DLSDatasetsTable from './dls/tables/dlsDatasetsTable.component';
 import DLSDatafilesTable from './dls/tables/dlsDatafilesTable.component';
 import ISISInstrumentsTable from './isis/tables/isisInstrumentsTable.component';
+import ISISFacilityCyclesTable from './isis/tables/isisFacilityCyclesTable.component';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -153,6 +154,17 @@ class App extends React.Component<{}, { hasError: boolean }> {
                   exact
                   path="/browse/instrument/"
                   component={ISISInstrumentsTable}
+                />
+                <Route
+                  exact
+                  path="/browse/instrument/:instrumentId/facilityCycle"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{ instrumentId: string }>) => (
+                    <ISISFacilityCyclesTable
+                      instrumentId={match.params.instrumentId}
+                    /> // TODO: change to facility cycle table
+                  )}
                 />
                 <Route
                   exact

@@ -43,7 +43,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycles();
+    const asyncAction = fetchFacilityCycles(1);
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
@@ -57,7 +57,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycles();
+    const asyncAction = fetchFacilityCycles(1);
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -77,7 +77,7 @@ describe('FacilityCycle actions', () => {
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
     expect(axios.get).toHaveBeenCalledWith(
-      '/facilitycycles',
+      '/instruments/1/facilitycycles',
       expect.objectContaining({
         params,
       })
@@ -91,7 +91,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycles();
+    const asyncAction = fetchFacilityCycles(1);
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
