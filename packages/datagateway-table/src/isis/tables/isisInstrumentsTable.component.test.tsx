@@ -36,6 +36,12 @@ describe('ISIS Instruments table component', () => {
       {
         ID: 1,
         NAME: 'Test 1',
+        FULLNAME: 'Test instrument 1',
+        DESCRIPTION: 'foo bar',
+      },
+      {
+        ID: 2,
+        NAME: 'Test 2',
         DESCRIPTION: 'foo bar',
       },
     ];
@@ -125,7 +131,7 @@ describe('ISIS Instruments table component', () => {
     expect(testStore.getActions()[1]).toEqual(fetchInstrumentDetailsRequest());
   });
 
-  it('renders name as a link', () => {
+  it('renders names as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>

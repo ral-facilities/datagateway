@@ -84,8 +84,8 @@ const ISISInstrumentsTable = (
             cellContentRenderer: (props: TableCellProps) => {
               const instrumentData = props.rowData as Instrument;
               return tableLink(
-                `/browse/instrument/${instrumentData.ID}`,
-                instrumentData.FULLNAME || ''
+                `/browse/instrument/${instrumentData.ID}/facilityCycle`,
+                instrumentData.FULLNAME || instrumentData.NAME
               );
             },
             filterComponent: textFilter,
