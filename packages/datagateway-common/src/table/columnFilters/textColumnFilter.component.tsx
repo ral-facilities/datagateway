@@ -32,6 +32,7 @@ export default class TextColumnFilter extends React.Component<
           value={this.state.value}
           onChange={this.handleChange}
           aria-label={`Filter by ${this.props.label}`}
+          fullWidth={true}
         />
       </div>
     );

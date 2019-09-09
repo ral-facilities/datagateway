@@ -83,6 +83,13 @@ export const FetchInstrumentsFailureType =
 export const FetchInstrumentsSuccessType =
   'datagateway_table:fetch_instruments_success';
 
+export const FetchInstrumentDetailsRequestType =
+  'datagateway_table:fetch_instrument_details_request';
+export const FetchInstrumentDetailsFailureType =
+  'datagateway_table:fetch_instrument_details_failure';
+export const FetchInstrumentDetailsSuccessType =
+  'datagateway_table:fetch_instrument_details_success';
+
 export const FetchFacilityCyclesRequestType =
   'datagateway_table:fetch_facility_cycles_request';
 export const FetchFacilityCyclesFailureType =

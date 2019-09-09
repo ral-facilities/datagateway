@@ -23,6 +23,7 @@ import DLSProposalsTable from './dls/tables/dlsProposalsTable.component';
 import DLSVisitsTable from './dls/tables/dlsVisitsTable.component';
 import DLSDatasetsTable from './dls/tables/dlsDatasetsTable.component';
 import DLSDatafilesTable from './dls/tables/dlsDatafilesTable.component';
+import ISISInstrumentsTable from './isis/tables/isisInstrumentsTable.component';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -147,6 +148,11 @@ class App extends React.Component<{}, { hasError: boolean }> {
                   }>) => (
                     <DLSDatafilesTable datasetId={match.params.datasetId} />
                   )}
+                />
+                <Route
+                  exact
+                  path="/browse/instrument/"
+                  component={ISISInstrumentsTable}
                 />
                 <Route
                   exact

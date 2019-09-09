@@ -36,6 +36,9 @@ import {
   fetchDatasetDetailsRequest,
   fetchDatasetDetailsSuccess,
   fetchDatasetDetailsFailure,
+  fetchInstrumentDetailsRequest,
+  fetchInstrumentDetailsSuccess,
+  fetchInstrumentDetailsFailure,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -613,6 +616,60 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchInstrumentDetails actions', () => {
+    it('should not update state when given a FetchInstrumentDetailsRequest action', () => {
+      let updatedState = DGTableReducer(state, fetchInstrumentDetailsRequest());
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should update the data state and reset error state when given a FetchInstrumentDetailsSuccess action', () => {
+      state.loading = true;
+      const mockData: Instrument[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+        },
+      ];
+
+      state.data = mockData;
+
+      const instrumentDetails: Instrument = {
+        ...mockData[0],
+        INSTRUMENTSCIENTIST: [
+          {
+            ID: 3,
+            INSTRUMENT_ID: 1,
+            USER_ID: 4,
+            USER_: { ID: 4, NAME: 'Louise' },
+          },
+        ],
+      };
+
+      const mockDataUpdated: Instrument[] = [instrumentDetails, mockData[1]];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentDetailsSuccess([instrumentDetails])
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchInstrumentDetailsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentDetailsFailure('Test error message')
+      );
       expect(updatedState.error).toEqual('Test error message');
     });
   });

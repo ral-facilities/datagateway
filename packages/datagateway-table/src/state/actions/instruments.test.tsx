@@ -3,6 +3,10 @@ import {
   fetchInstrumentsRequest,
   fetchInstrumentsSuccess,
   fetchInstrumentsFailure,
+  fetchInstrumentDetails,
+  fetchInstrumentDetailsRequest,
+  fetchInstrumentDetailsSuccess,
+  fetchInstrumentDetailsFailure,
 } from '.';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -90,6 +94,67 @@ describe('Instrument actions', () => {
 
     expect(actions[0]).toEqual(fetchInstrumentsRequest());
     expect(actions[1]).toEqual(fetchInstrumentsFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchInstrumentDetailsRequest and fetchInstrumentDetailsSuccess actions upon successful fetchInstrumentDetails action', async () => {
+    const mockData: Instrument[] = [
+      {
+        ID: 1,
+        NAME: 'Test 1',
+        INSTRUMENTSCIENTIST: [
+          {
+            ID: 2,
+            INSTRUMENT_ID: 1,
+            USER_ID: 3,
+            USER_: {
+              ID: 3,
+              NAME: 'Louise',
+            },
+          },
+        ],
+      },
+    ];
+
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+
+    const asyncAction = fetchInstrumentDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInstrumentDetailsRequest());
+    expect(actions[1]).toEqual(fetchInstrumentDetailsSuccess(mockData));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
+    params.append('include', JSON.stringify({ INSTRUMENTUSER: 'USER_' }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/instruments',
+      expect.objectContaining({ params })
+    );
+  });
+
+  it('dispatches fetchInstrumentDetailsRequest and fetchInstrumentDetailsFailure actions upon unsuccessful fetchInstrumentDetails action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchInstrumentDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInstrumentDetailsRequest());
+    expect(actions[1]).toEqual(
+      fetchInstrumentDetailsFailure('Test error message')
+    );
 
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
