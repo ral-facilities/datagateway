@@ -89,15 +89,6 @@ exports[`ISIS Instruments table component renders details panel correctly and it
       </b>
        
     </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        URL:
-      </b>
-       
-      <WithStyles(ForwardRef(Link)) />
-    </WithStyles(ForwardRef(Typography))>
   </div>
 </div>
 `;

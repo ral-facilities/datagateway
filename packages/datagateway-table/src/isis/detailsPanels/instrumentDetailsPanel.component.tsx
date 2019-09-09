@@ -63,10 +63,12 @@ const InstrumentDetailsPanel = (
         <Typography variant="body2">
           <b>Type:</b> {instrumentData.TYPE}
         </Typography>
-        <Typography variant="body2">
-          <b>URL:</b>{' '}
-          <Link href={instrumentData.URL}>{instrumentData.URL}</Link>
-        </Typography>
+        {instrumentData.URL && (
+          <Typography variant="body2">
+            <b>URL:</b>{' '}
+            <Link href={instrumentData.URL}>{instrumentData.URL}</Link>
+          </Typography>
+        )}
       </div>
       {instrumentData.INSTRUMENTSCIENTIST && (
         <div
