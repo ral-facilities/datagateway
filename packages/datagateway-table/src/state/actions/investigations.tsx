@@ -84,6 +84,57 @@ export const fetchInvestigations = (
   };
 };
 
+export const fetchISISInvestigations = (
+  instrumentId: string,
+  facilityCycleId: string
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchInvestigationsRequest());
+
+    // TODO: replace this with getApiFilters again when API filter change merges in
+    const sort = getState().dgtable.sort;
+    const filter = getState().dgtable.filters;
+
+    let params = new URLSearchParams();
+    for (let [key, value] of Object.entries(sort)) {
+      params.append('order', JSON.stringify(`${key} ${value}`));
+    }
+
+    for (let [key, value] of Object.entries(filter)) {
+      params.append('where', JSON.stringify({ [key]: { like: value } }));
+    }
+
+    params.append(
+      'include',
+      JSON.stringify([
+        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+        { STUDYINVESTIGATION: 'STUDY' },
+      ])
+    );
+
+    await axios
+      .get(
+        `/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+        }
+      )
+      .then(response => {
+        dispatch(fetchInvestigationsSuccess(response.data));
+        // TODO: dispatch getSize requests
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationsFailure(error.message));
+      });
+  };
+};
+
 export const fetchInvestigationDetailsSuccess = (
   investigations: Investigation[]
 ): ActionType<FetchDataSuccessPayload> => ({

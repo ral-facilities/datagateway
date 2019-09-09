@@ -1,0 +1,243 @@
+import React from 'react';
+import { createShallow, createMount } from '@material-ui/core/test-utils';
+import ISISInvestigationsTable from './isisInvestigationsTable.component';
+import { initialState } from '../../state/reducers/dgtable.reducer';
+import configureStore from 'redux-mock-store';
+import { StateType } from '../../state/app.types';
+import {
+  fetchInvestigationsRequest,
+  filterTable,
+  sortTable,
+  fetchInvestigationDetailsRequest,
+} from '../../state/actions';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import { TableSortLabel } from '@material-ui/core';
+import { Table } from 'datagateway-common';
+import { MemoryRouter } from 'react-router';
+import axios from 'axios';
+
+describe('ISIS Investigations table component', () => {
+  let shallow;
+  let mount;
+  let mockStore;
+  let state: StateType;
+  (axios.get as jest.Mock).mockImplementation(() =>
+    Promise.resolve({ data: [] })
+  );
+
+  beforeEach(() => {
+    shallow = createShallow({ untilSelector: 'div' });
+    mount = createMount();
+
+    mockStore = configureStore([thunk]);
+    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
+    state.dgtable.data = [
+      {
+        ID: 1,
+        TITLE: 'Test 1',
+        NAME: 'Test 1',
+        SUMMARY: 'foo bar',
+        VISIT_ID: '1',
+        RB_NUMBER: '1',
+        DOI: 'doi 1',
+        SIZE: 1,
+        INVESTIGATIONINSTRUMENT: [
+          {
+            ID: 1,
+            INVESTIGATION_ID: 1,
+            INSTRUMENT_ID: 3,
+            INSTRUMENT: {
+              ID: 3,
+              NAME: 'LARMOR',
+            },
+          },
+        ],
+        STUDYINVESTIGATION: [
+          {
+            ID: 6,
+            STUDY_ID: 7,
+            INVESTIGATION_ID: 1,
+            STUDY: {
+              ID: 7,
+              PID: 'study pid',
+            },
+          },
+        ],
+        STARTDATE: '2019-06-10',
+        ENDDATE: '2019-06-11',
+      },
+    ];
+  });
+
+  afterEach(() => {
+    mount.cleanUp();
+  });
+
+  it('renders correctly', () => {
+    const wrapper = shallow(
+      <ISISInvestigationsTable
+        store={mockStore(state)}
+        instrumentId="4"
+        facilityCycleId="5"
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('sends fetchInvestigations action on load', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest());
+  });
+
+  it('sends filterTable action on filter', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const filterInput = wrapper.find('input').first();
+    filterInput.instance().value = 'test';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[1]).toEqual(filterTable('TITLE', 'test'));
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', null));
+  });
+
+  it('sends sortTable action on sort', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find(TableSortLabel)
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(sortTable('TITLE', 'asc'));
+  });
+
+  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const detailsPanelWrapper = shallow(
+      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0])
+    );
+    expect(detailsPanelWrapper).toMatchSnapshot();
+
+    mount(
+      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0], jest.fn())
+    );
+
+    expect(testStore.getActions()[1]).toEqual(
+      fetchInvestigationDetailsRequest()
+    );
+  });
+
+  it('renders title, visit ID, RB number and DOI as links', () => {
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper
+        .find('[aria-colindex=2]')
+        .find('p')
+        .children()
+    ).toMatchSnapshot();
+
+    expect(
+      wrapper
+        .find('[aria-colindex=3]')
+        .find('p')
+        .children()
+    ).toMatchSnapshot();
+
+    expect(
+      wrapper
+        .find('[aria-colindex=4]')
+        .find('p')
+        .children()
+    ).toMatchSnapshot();
+
+    expect(
+      wrapper
+        .find('[aria-colindex=5]')
+        .find('p')
+        .children()
+    ).toMatchSnapshot();
+  });
+
+  it('gracefully handles missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
+    state.dgtable.data[0] = {
+      ...state.dgtable.data[0],
+      INVESTIGATIONINSTRUMENT: [
+        {
+          ID: 1,
+          INVESTIGATION_ID: 1,
+          INSTRUMENT_ID: 3,
+        },
+      ],
+      STUDYINVESTIGATION: [
+        {
+          ID: 6,
+          STUDY_ID: 7,
+          INVESTIGATION_ID: 1,
+        },
+      ],
+    };
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper
+        .find('[aria-colindex=5]')
+        .find('p')
+        .text()
+    ).toEqual('');
+
+    expect(
+      wrapper
+        .find('[aria-colindex=7]')
+        .find('p')
+        .text()
+    ).toEqual('');
+  });
+});

@@ -7,6 +7,7 @@ import {
   fetchInvestigationDetailsSuccess,
   fetchInvestigationDetailsFailure,
   fetchInvestigationDetails,
+  fetchISISInvestigations,
 } from '.';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -139,6 +140,61 @@ describe('Investigation actions', () => {
     );
 
     const asyncAction = fetchInvestigations();
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest());
+    expect(actions[1]).toEqual(
+      fetchInvestigationsFailure('Test error message')
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchISISInvestigations action', async () => {
+    const asyncAction = fetchISISInvestigations('1', '2');
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest());
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
+  });
+
+  it('fetchISISInvestigations action applies filters and sort state to request params', async () => {
+    const asyncAction = fetchISISInvestigations('1', '2');
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        sort: { column1: 'desc' },
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest());
+
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('column1 desc'));
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/instruments/1/facilitycycles/2/investigations',
+      expect.objectContaining({
+        params,
+      })
+    );
+  });
+
+  it('dispatches fetchInvestigationsRequest and fetchInvestigationsFailure actions upon unsuccessful fetchISISInvestigations action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchISISInvestigations('1', '2');
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
