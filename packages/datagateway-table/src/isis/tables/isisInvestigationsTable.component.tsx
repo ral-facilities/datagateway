@@ -162,6 +162,7 @@ const ISISInvestigationsTable = (
           {
             label: 'Size',
             dataKey: 'SIZE',
+            disableSort: true,
           },
           {
             label: 'Instrument',

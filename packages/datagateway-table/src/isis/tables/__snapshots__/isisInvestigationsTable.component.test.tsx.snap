@@ -39,6 +39,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
         },
         Object {
           "dataKey": "SIZE",
+          "disableSort": true,
           "label": "Size",
         },
         Object {
