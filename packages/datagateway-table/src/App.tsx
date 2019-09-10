@@ -26,6 +26,7 @@ import DLSDatafilesTable from './dls/tables/dlsDatafilesTable.component';
 import ISISInstrumentsTable from './isis/tables/isisInstrumentsTable.component';
 import ISISFacilityCyclesTable from './isis/tables/isisFacilityCyclesTable.component';
 import ISISInvestigationsTable from './isis/tables/isisInvestigationsTable.component';
+import ISISDatasetsTable from './isis/tables/isisDatasetsTable.component';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -179,6 +180,23 @@ class App extends React.Component<{}, { hasError: boolean }> {
                     <ISISInvestigationsTable
                       instrumentId={match.params.instrumentId}
                       facilityCycleId={match.params.facilityCycleId}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{
+                    instrumentId: string;
+                    facilityCycleId: string;
+                    investigationId: string;
+                  }>) => (
+                    <ISISDatasetsTable
+                      instrumentId={match.params.instrumentId}
+                      facilityCycleId={match.params.facilityCycleId}
+                      investigationId={match.params.investigationId}
                     />
                   )}
                 />
