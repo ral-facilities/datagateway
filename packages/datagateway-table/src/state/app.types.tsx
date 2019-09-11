@@ -1,5 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { Order, Filter, Entity } from 'datagateway-common';
 
 export interface DGTableState {
   sort: {

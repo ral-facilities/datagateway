@@ -5,7 +5,6 @@ import configureStore, {
   MockStoreCreator,
 } from 'redux-mock-store';
 import log from 'loglevel';
-import ReactDOM from 'react-dom';
 import {
   RequestPluginRerenderType,
   RegisterRouteType,

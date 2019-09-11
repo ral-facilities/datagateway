@@ -1,7 +1,7 @@
 module.exports = (webpackConfig, env, { paths }) => {
   webpackConfig.externals = {
     react: 'React', // Case matters here
-    'react-dom': 'ReactDOM' // Case matters here
+    'react-dom': 'ReactDOM', // Case matters here
   };
 
   if (env == 'production') {

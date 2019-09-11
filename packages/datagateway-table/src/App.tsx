@@ -14,6 +14,8 @@ import DGTableMiddleware, {
 } from './state/middleware/dgtable.middleware';
 import { RegisterRouteType } from './state/actions/actions.types';
 import TestTable from './table/testTable';
+// @ts-ignore
+import Test from 'datagateway-common/lib/test.component';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -84,6 +86,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
         <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
+              <Test />
               <Switch>
                 <Route exact path="/data" component={TestTable} />
               </Switch>
