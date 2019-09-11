@@ -21,7 +21,7 @@ const DatasetDetailsPanel = (
     if (!datasetData.DATASETTYPE) {
       fetchDetails(datasetData.ID);
     }
-  }, [datasetData, fetchDetails]);
+  }, [datasetData.DATASETTYPE, datasetData.ID, fetchDetails]);
 
   React.useLayoutEffect(() => {
     detailsPanelResize();
