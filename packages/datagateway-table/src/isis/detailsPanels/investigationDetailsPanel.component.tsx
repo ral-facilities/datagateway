@@ -28,7 +28,13 @@ const InvestigationDetailsPanel = (
     ) {
       fetchDetails(investigationData.ID);
     }
-  }, [investigationData, fetchDetails]);
+  }, [
+    investigationData.INVESTIGATIONUSER,
+    investigationData.SAMPLE,
+    investigationData.PUBLICATION,
+    investigationData.ID,
+    fetchDetails,
+  ]);
 
   React.useLayoutEffect(() => {
     detailsPanelResize();

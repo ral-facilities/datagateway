@@ -20,7 +20,7 @@ const InstrumentDetailsPanel = (
     if (!instrumentData.INSTRUMENTSCIENTIST) {
       fetchDetails(instrumentData.ID);
     }
-  }, [instrumentData, fetchDetails]);
+  }, [instrumentData.INSTRUMENTSCIENTIST, instrumentData.ID, fetchDetails]);
 
   React.useLayoutEffect(() => {
     detailsPanelResize();

@@ -20,7 +20,7 @@ const DatafileDetailsPanel = (
     if (!datafileData.DATAFILEPARAMETER) {
       fetchDetails(datafileData.ID);
     }
-  }, [datafileData, fetchDetails]);
+  }, [datafileData.DATAFILEPARAMETER, datafileData.ID, fetchDetails]);
 
   React.useLayoutEffect(() => {
     detailsPanelResize();
