@@ -14,7 +14,7 @@ import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetCount } from './datasets';
 import * as log from 'loglevel';
-import { Investigation, Filter } from 'datagateway-common';
+import { Investigation } from 'datagateway-common';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[]
@@ -38,9 +38,12 @@ export const fetchInvestigationsRequest = (): Action => ({
   type: FetchInvestigationsRequestType,
 });
 
-export const fetchInvestigations = (filters?: {
-  [column: string]: Filter;
-}): ThunkResult<Promise<void>> => {
+export const fetchInvestigations = (
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[]
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationsRequest());
 
@@ -48,16 +51,16 @@ export const fetchInvestigations = (filters?: {
     const { investigationGetCount } = getState().dgtable.features;
     const { apiUrl } = getState().dgtable.urls;
 
-    if (filters) {
-      for (let [key, value] of Object.entries(filters)) {
-        params.append('where', JSON.stringify({ [key]: { like: value } }));
-      }
-    }
-
     params.append(
       'include',
       JSON.stringify({ INVESTIGATIONINSTRUMENT: 'INSTRUMENT' })
     );
+
+    if (additionalFilters) {
+      additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
 
     await axios
       .get(`${apiUrl}/investigations`, {

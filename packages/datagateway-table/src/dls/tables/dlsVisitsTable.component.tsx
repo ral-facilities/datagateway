@@ -154,7 +154,14 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (proposalName: string) =>
-    dispatch(fetchInvestigations({ NAME: proposalName })),
+    dispatch(
+      fetchInvestigations([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ NAME: { eq: proposalName } }),
+        },
+      ])
+    ),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
 });

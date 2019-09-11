@@ -144,6 +144,42 @@ describe('Investigation actions', () => {
     );
   });
 
+  it('fetchInvestigations action applies additionalFilters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
+    const asyncAction = fetchInvestigations([
+      { filterType: 'order', filterValue: 'column1 desc' },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ column1: { like: '1' } }),
+      },
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ column2: { like: '2' } }),
+      },
+    ]);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest());
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess([]));
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('column1 desc'));
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/investigations',
+      expect.objectContaining({
+        params,
+      })
+    );
+  });
+
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsFailure actions upon unsuccessful fetchInvestigations action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.reject({
