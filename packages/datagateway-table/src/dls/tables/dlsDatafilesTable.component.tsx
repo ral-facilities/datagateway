@@ -41,7 +41,6 @@ interface DLSDatafilesTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (datasetId: number) => Promise<void>;
-  downloadData: (datafileId: number, filename: string) => Promise<void>;
 }
 
 type DLSDatafilesTableCombinedProps = DLSDatafilesTableProps &
@@ -144,8 +143,6 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (datasetId: number) => dispatch(fetchDatafiles(datasetId)),
-  downloadData: (datafileId: number, filename: string) =>
-    dispatch(downloadDatafile(datafileId, filename)),
 });
 
 const mapStateToProps = (state: StateType): DLSDatafilesTableStoreProps => {
