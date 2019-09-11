@@ -1,44 +1,55 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# DataGateway
+
+TODO: project description
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+### `npm install`
 
-Runs the app in the development mode.<br>
+This will install all the top level project dependencies and then call `lerna bootstrap`,
+which calls `npm install` for each package. This means that running `npm install` at the top
+level intialises all the packages, and you will be ready to start development in any of them!
+
+### `npx lerna add {package}`
+
+Adds new packages. Use this instead of `npm install` in subfolders, as this will keep versions across
+subrepos in sync. If you only want a dependency in one package, use the `--scope` flag.
+
+```
+npx lerna add my-package --scope=datagateway-table
+```
+
+Additionally, use the `--dev` flag to install as a devDependency
+
+```
+npx lerna add my-package --scope=datagateway-table --dev
+```
+
+See [https://github.com/lerna/lerna/tree/master/commands/add#readme](https://github.com/lerna/lerna/tree/master/commands/add#readme)
+
+### `npm run datagateway-table`
+
+Runs the `datagateway-table` `start` script, which runs the app in development mode
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs both unit tests and e2e tests for all packages
 
-### `npm run build`
+### `npm run test:unit`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Runs unit tests for all packages
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### `npm run test:e2e`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Runs e2e tests for all packages
 
-### `npm run eject`
+### `npm run lint`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Lints all packages
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### `npm run tsc`
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Runs `tsc` on all packages - currently this will re-build `datagateway-common`
