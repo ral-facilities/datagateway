@@ -4,7 +4,7 @@ import {
   fetchDatasetsSuccess,
   fetchDatasetsFailure,
 } from '.';
-import { StateType, Dataset } from '../app.types';
+import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import {
@@ -18,6 +18,7 @@ import {
 import { fetchDatafileCountRequest } from './datafiles';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
+import { Dataset } from 'datagateway-common';
 
 jest.mock('loglevel');
 

@@ -1,4 +1,4 @@
-import { Filter, Order, Entity } from '../app.types';
+import { Filter, Order, Entity } from 'datagateway-common';
 
 // parent app actions
 export const RegisterRouteType = 'daaas:api:register_route';

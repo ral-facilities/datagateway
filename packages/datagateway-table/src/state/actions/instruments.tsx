@@ -5,11 +5,12 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
 } from './actions.types';
-import { Instrument, ActionType, ThunkResult } from '../app.types';
+import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import * as log from 'loglevel';
+import { Instrument } from 'datagateway-common';
 
 export const fetchInstrumentsSuccess = (
   instruments: Instrument[]

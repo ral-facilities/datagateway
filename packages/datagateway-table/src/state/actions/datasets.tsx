@@ -12,13 +12,14 @@ import {
   FailurePayload,
   FetchDataCountSuccessPayload,
 } from './actions.types';
-import { Dataset, ActionType, ThunkResult } from '../app.types';
+import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatafileCount } from './datafiles';
 import * as log from 'loglevel';
+import { Dataset } from 'datagateway-common';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[]

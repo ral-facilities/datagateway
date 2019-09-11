@@ -4,11 +4,12 @@ import {
   fetchInstrumentsSuccess,
   fetchInstrumentsFailure,
 } from '.';
-import { StateType, Instrument } from '../app.types';
+import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
+import { Instrument } from 'datagateway-common';
 
 jest.mock('loglevel');
 

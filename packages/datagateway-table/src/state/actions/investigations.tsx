@@ -5,12 +5,13 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
 } from './actions.types';
-import { Investigation, ActionType, ThunkResult } from '../app.types';
+import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetCount } from './datasets';
 import * as log from 'loglevel';
+import { Investigation } from 'datagateway-common';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[]

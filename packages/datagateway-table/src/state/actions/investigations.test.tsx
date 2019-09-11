@@ -4,12 +4,13 @@ import {
   fetchInvestigationsSuccess,
   fetchInvestigationsFailure,
 } from '.';
-import { StateType, Investigation } from '../app.types';
+import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { fetchDatasetCountRequest } from './datasets';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
+import { Investigation } from 'datagateway-common';
 
 jest.mock('loglevel');
 

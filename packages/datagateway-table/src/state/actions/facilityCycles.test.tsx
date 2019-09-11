@@ -4,11 +4,12 @@ import {
   fetchFacilityCyclesSuccess,
   fetchFacilityCyclesFailure,
 } from '.';
-import { StateType, FacilityCycle } from '../app.types';
+import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
+import { FacilityCycle } from 'datagateway-common';
 
 jest.mock('loglevel');
 

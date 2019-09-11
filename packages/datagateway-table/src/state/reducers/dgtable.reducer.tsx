@@ -1,4 +1,4 @@
-import { DGTableState, Investigation, Entity, Dataset } from '../app.types';
+import { DGTableState } from '../app.types';
 import createReducer from './createReducer';
 import {
   SortTablePayload,
@@ -36,6 +36,7 @@ import {
   FailurePayload,
   FetchDataCountSuccessPayload,
 } from '../actions/actions.types';
+import { Entity, Investigation, Dataset } from 'datagateway-common';
 
 export const initialState: DGTableState = {
   data: [],

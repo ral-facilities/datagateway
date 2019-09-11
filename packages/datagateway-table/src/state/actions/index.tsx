@@ -1,10 +1,11 @@
-import { ActionType, Order, Filter, StateType } from '../app.types';
+import { ActionType, StateType } from '../app.types';
 import {
   SortTablePayload,
   SortTableType,
   FilterTablePayload,
   FilterTableType,
 } from './actions.types';
+import { Filter, Order } from 'datagateway-common';
 
 export const getApiFilter = (
   getState: () => StateType

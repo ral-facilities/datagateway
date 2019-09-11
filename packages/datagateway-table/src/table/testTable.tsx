@@ -10,7 +10,7 @@ import {
   TableSortLabel,
   Paper,
 } from '@material-ui/core';
-import { StateType, Filter, Order, Entity, Dataset } from '../state/app.types';
+import { StateType } from '../state/app.types';
 import {
   sortTable,
   filterTable,
@@ -20,6 +20,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { AnyAction, Action } from 'redux';
+import { Filter, Order, Entity, Dataset } from 'datagateway-common';
 
 interface HeadRow {
   id: string;

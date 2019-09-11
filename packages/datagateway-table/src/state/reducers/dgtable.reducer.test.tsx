@@ -1,12 +1,5 @@
 import DGTableReducer, { initialState } from './dgtable.reducer';
-import {
-  DGTableState,
-  Investigation,
-  Dataset,
-  Datafile,
-  Instrument,
-  FacilityCycle,
-} from '../app.types';
+import { DGTableState } from '../app.types';
 import {
   sortTable,
   fetchInvestigationsRequest,
@@ -40,6 +33,13 @@ import {
   fetchFacilityCyclesSuccess,
   fetchFacilityCyclesFailure,
 } from '../actions/facilityCycles';
+import {
+  Investigation,
+  Dataset,
+  Datafile,
+  Instrument,
+  FacilityCycle,
+} from 'datagateway-common';
 
 describe('dgtable reducer', () => {
   let state: DGTableState;
