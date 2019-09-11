@@ -76,7 +76,7 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
       "render": [Function],
     }
   }
-  to="/browse/instrument/1/facilityCycle/2/investigation3/dataset/1/datafile"
+  to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
 >
   <ForwardRef(Link)
     classes={
@@ -103,7 +103,7 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
         "render": [Function],
       }
     }
-    to="/browse/instrument/1/facilityCycle/2/investigation3/dataset/1/datafile"
+    to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
@@ -124,7 +124,7 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
       }
       onBlur={[Function]}
       onFocus={[Function]}
-      to="/browse/instrument/1/facilityCycle/2/investigation3/dataset/1/datafile"
+      to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
       variant="inherit"
     >
       <ForwardRef(Typography)
@@ -180,25 +180,25 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
         }
         onBlur={[Function]}
         onFocus={[Function]}
-        to="/browse/instrument/1/facilityCycle/2/investigation3/dataset/1/datafile"
+        to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
         variant="inherit"
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
           onBlur={[Function]}
           onFocus={[Function]}
-          to="/browse/instrument/1/facilityCycle/2/investigation3/dataset/1/datafile"
+          to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-            href="/browse/instrument/1/facilityCycle/2/investigation3/dataset/1/datafile"
+            href="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
             navigate={[Function]}
             onBlur={[Function]}
             onFocus={[Function]}
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-              href="/browse/instrument/1/facilityCycle/2/investigation3/dataset/1/datafile"
+              href="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}

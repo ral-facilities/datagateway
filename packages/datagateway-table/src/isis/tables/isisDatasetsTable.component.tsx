@@ -129,7 +129,7 @@ const ISISDatasetsTable = (
             dataKey: 'NAME',
             cellContentRenderer: (props: TableCellProps) =>
               tableLink(
-                `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation${investigationId}/dataset/${props.rowData.ID}/datafile`,
+                `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
                 props.rowData.NAME
               ),
             filterComponent: textFilter,
