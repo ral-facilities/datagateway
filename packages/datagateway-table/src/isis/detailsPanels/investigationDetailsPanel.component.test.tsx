@@ -102,7 +102,7 @@ describe('Investigation details panel component', () => {
     rowData.PUBLICATION = [
       {
         ID: 8,
-        FULL_REFERENCE: 'Test publication',
+        FULLREFERENCE: 'Test publication',
       },
     ];
 
@@ -120,7 +120,7 @@ describe('Investigation details panel component', () => {
     rowData.PUBLICATION = [
       {
         ID: 8,
-        FULL_REFERENCE: 'Test publication',
+        FULLREFERENCE: 'Test publication',
       },
     ];
 
