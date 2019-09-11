@@ -78,7 +78,7 @@ export interface Sample {
 
 export interface Publication {
   ID: number;
-  FULL_REFERENCE: string;
+  FULLREFERENCE: string;
 }
 
 export interface FacilityCycle {

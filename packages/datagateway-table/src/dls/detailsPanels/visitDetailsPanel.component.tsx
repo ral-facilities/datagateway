@@ -162,7 +162,7 @@ const VisitDetailsPanel = (
           {investigationData.PUBLICATION.map(publication => {
             return (
               <Typography key={publication.ID} variant="body2">
-                <b>Reference:</b> {publication.FULL_REFERENCE}
+                <b>Reference:</b> {publication.FULLREFERENCE}
               </Typography>
             );
           })}
