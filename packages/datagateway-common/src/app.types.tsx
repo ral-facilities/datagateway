@@ -41,6 +41,7 @@ export interface Datafile {
   FILESIZE?: number;
   LOCATION?: string;
   DESCRIPTION?: string;
+  DATAFILEPARAMETER?: DatafileParameter[];
 }
 
 export interface InvestigationInstrument {
@@ -120,6 +121,26 @@ interface InstrumentScientist {
   USER_ID: number;
   INSTRUMENT?: Instrument;
   USER_?: User;
+}
+
+interface DatafileParameter {
+  ID: number;
+  STRING_VALUE?: string;
+  NUMERIC_VALUE?: number;
+  DATETIME_VALUE?: string;
+  RANGEBOTTOM?: number;
+  RANGETOP?: number;
+  DATAFILE_ID: number;
+  PARAMETER_TYPE_ID: number;
+  DATAFILE?: Datafile;
+  PARAMETERTYPE: ParameterType;
+}
+
+interface ParameterType {
+  ID: number;
+  NAME: string;
+  UNITS: string;
+  VALUETYPE: string;
 }
 
 export type Entity =

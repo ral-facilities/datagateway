@@ -11,6 +11,9 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FetchDatafileDetailsSuccessType,
+  FetchDatafileDetailsFailureType,
+  FetchDatafileDetailsRequestType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -120,6 +123,59 @@ export const fetchDatafileCount = (
       .catch(error => {
         log.error(error.message);
         dispatch(fetchDatafileCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchDatafileDetailsSuccess = (
+  datafiles: Datafile[]
+): ActionType<FetchDataSuccessPayload> => ({
+  type: FetchDatafileDetailsSuccessType,
+  payload: {
+    data: datafiles,
+  },
+});
+
+export const fetchDatafileDetailsFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchDatafileDetailsFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatafileDetailsRequest = (): Action => ({
+  type: FetchDatafileDetailsRequestType,
+});
+
+export const fetchDatafileDetails = (
+  datasetId: number
+): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    dispatch(fetchDatafileDetailsRequest());
+
+    let params = new URLSearchParams();
+
+    params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
+    params.append(
+      'include',
+      JSON.stringify({ DATAFILEPARAMETER: 'PARAMETERTYPE' })
+    );
+
+    await axios
+      .get(`/datafiles`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchDatafileDetailsSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchDatafileDetailsFailure(error.message));
       });
   };
 };

@@ -62,6 +62,13 @@ export const FetchDatafilesFailureType =
 export const FetchDatafilesSuccessType =
   'datagateway_table:fetch_datafiles_success';
 
+export const FetchDatafileDetailsRequestType =
+  'datagateway_table:fetch_datafile_details_request';
+export const FetchDatafileDetailsFailureType =
+  'datagateway_table:fetch_datafile_details_failure';
+export const FetchDatafileDetailsSuccessType =
+  'datagateway_table:fetch_datafile_details_success';
+
 export const FetchDatafileCountRequestType =
   'datagateway_table:fetch_datafile_count_request';
 export const FetchDatafileCountFailureType =

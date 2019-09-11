@@ -39,6 +39,9 @@ import {
   fetchInstrumentDetailsRequest,
   fetchInstrumentDetailsSuccess,
   fetchInstrumentDetailsFailure,
+  fetchDatafileDetailsRequest,
+  fetchDatafileDetailsSuccess,
+  fetchDatafileDetailsFailure,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -499,6 +502,75 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchDatafileDetails actions', () => {
+    it('should not update state when given a FetchDatafileDetailsRequest action', () => {
+      let updatedState = DGTableReducer(state, fetchDatafileDetailsRequest());
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should update the data state and reset error state when given a FetchDatafileDetailsSuccess action', () => {
+      state.loading = true;
+      const mockData: Datafile[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+          LOCATION: '/test1',
+          FILESIZE: 1,
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-10',
+          DATASET_ID: 1,
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+          LOCATION: '/test2',
+          FILESIZE: 2,
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-10',
+          DATASET_ID: 1,
+        },
+      ];
+
+      state.data = mockData;
+
+      const datafileDetails: Datafile = {
+        ...mockData[0],
+        DATAFILEPARAMETER: [
+          {
+            ID: 3,
+            DATAFILE_ID: 1,
+            PARAMETER_TYPE_ID: 4,
+            PARAMETERTYPE: {
+              ID: 4,
+              NAME: 'Test parameter type',
+              UNITS: 'Test unit',
+              VALUE_TYPE: 'STRING',
+            },
+          },
+        ],
+      };
+
+      const mockDataUpdated: Datafile[] = [datafileDetails, mockData[1]];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileDetailsSuccess([datafileDetails])
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchDatafileDetailsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileDetailsFailure('Test error message')
+      );
       expect(updatedState.error).toEqual('Test error message');
     });
   });

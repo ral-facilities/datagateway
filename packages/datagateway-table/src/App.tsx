@@ -27,6 +27,7 @@ import ISISInstrumentsTable from './isis/tables/isisInstrumentsTable.component';
 import ISISFacilityCyclesTable from './isis/tables/isisFacilityCyclesTable.component';
 import ISISInvestigationsTable from './isis/tables/isisInvestigationsTable.component';
 import ISISDatasetsTable from './isis/tables/isisDatasetsTable.component';
+import ISISDatafilesTable from './isis/tables/isisDatafilesTable.component';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -199,6 +200,20 @@ class App extends React.Component<{}, { hasError: boolean }> {
                       investigationId={match.params.investigationId}
                     />
                   )}
+                />
+                <Route
+                  exact
+                  path="/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId/datafile"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{
+                    datasetId: string;
+                  }>) => {
+                    console.log('datafiles!');
+                    return (
+                      <ISISDatafilesTable datasetId={match.params.datasetId} />
+                    );
+                  }}
                 />
                 <Route
                   exact
