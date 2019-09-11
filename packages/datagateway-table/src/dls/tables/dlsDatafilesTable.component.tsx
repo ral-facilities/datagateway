@@ -58,7 +58,6 @@ const DLSDatafilesTable = (
     filters,
     filterTable,
     datasetId,
-    downloadData,
   } = props;
 
   React.useEffect(() => {
