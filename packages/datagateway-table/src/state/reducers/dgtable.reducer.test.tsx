@@ -113,17 +113,11 @@ describe('dgtable reducer', () => {
   });
 
   it('should set feature switches property when configure feature switches action is sent', () => {
-    expect(state.features.investigationGetSize).toBeFalsy();
+    expect(state.features).toBe({});
 
-    const updatedState = DGTableReducer(
-      state,
-      loadFeatureSwitches({
-        ...state.features,
-        investigationGetSize: true,
-      })
-    );
+    const updatedState = DGTableReducer(state, loadFeatureSwitches({}));
 
-    expect(updatedState.features.investigationGetSize).toBeTruthy();
+    expect(updatedState.features).toBe({});
   });
 
   it('should set urls property when configure urls action is sent', () => {

@@ -52,31 +52,7 @@ describe('Dataset actions', () => {
   it('dispatches fetchDatasetsRequest and fetchDatasetsSuccess actions upon successful fetchDatasets action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: mockData,
-      })
-    );
-
-    const asyncAction = fetchDatasets(1);
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
-    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
-
-    const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
-
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets',
-      expect.objectContaining({
-        params,
-      })
-    );
-  });
-
-  it('dispatches fetchDatafileCountRequests upon successful fetchDatasets action if datasetGetCount feature switch is set', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: mockData,
+        data: [],
       })
     );
 
@@ -93,13 +69,7 @@ describe('Dataset actions', () => {
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest());
-    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
-    expect(actions[2]).toEqual(fetchDatafileCountRequest());
-    expect(actions[3]).toEqual(fetchDatafileCountRequest());
-
-    const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
-
+    expect(actions[1]).toEqual(fetchDatasetsSuccess([]));
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets',
       expect.objectContaining({
@@ -138,6 +108,49 @@ describe('Dataset actions', () => {
       '/datasets',
       expect.objectContaining({
         params,
+      })
+    );
+  });
+
+  it('fetchDatasets action sends fetchDatafileCount actions when specified via optional parameters', async () => {
+    const mockData: Dataset[] = [
+      {
+        ID: 1,
+        NAME: 'Test 1',
+        MOD_TIME: '2019-06-10',
+        CREATE_TIME: '2019-06-11',
+        INVESTIGATION_ID: 1,
+      },
+      {
+        ID: 2,
+        NAME: 'Test 2',
+        MOD_TIME: '2019-06-10',
+        CREATE_TIME: '2019-06-12',
+        INVESTIGATION_ID: 1,
+      },
+    ];
+
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+
+    const asyncAction = fetchDatasets(1, { getDatafileCount: true });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetsRequest());
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
+    expect(actions[2]).toEqual(fetchDatafileCountRequest());
+    expect(actions[3]).toEqual(fetchDatafileCountRequest());
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets',
+      expect.objectContaining({
+        params: {
+          filter: {
+            where: { INVESTIGATION_ID: 1 },
+          },
+        },
       })
     );
   });

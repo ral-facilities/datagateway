@@ -108,12 +108,8 @@ export interface FeatureSwitchesPayload {
   switches: FeatureSwitches;
 }
 
-export interface FeatureSwitches {
-  investigationGetSize: boolean;
-  investigationGetCount: boolean;
-  datasetGetSize: boolean;
-  datasetGetCount: boolean;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface FeatureSwitches {}
 
 export interface ConfigureUrlsPayload {
   urls: URLs;

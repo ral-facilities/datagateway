@@ -146,20 +146,10 @@ describe('Actions', () => {
   });
 
   it('given JSON loadFeatureSwitches returns a ConfigureFeatureSwitchesType with ConfigureFeatureSwitchesPayload', () => {
-    const action = loadFeatureSwitches({
-      investigationGetSize: true,
-      investigationGetCount: true,
-      datasetGetSize: true,
-      datasetGetCount: true,
-    });
+    const action = loadFeatureSwitches({});
     expect(action.type).toEqual(ConfigureFeatureSwitchesType);
     expect(action.payload).toEqual({
-      switches: {
-        investigationGetSize: true,
-        investigationGetCount: true,
-        datasetGetSize: true,
-        datasetGetCount: true,
-      },
+      switches: {},
     });
   });
 
@@ -182,12 +172,7 @@ describe('Actions', () => {
       .mockImplementationOnce(() =>
         Promise.resolve({
           data: {
-            features: {
-              investigationGetSize: true,
-              investigationGetCount: true,
-              datasetGetSize: true,
-              datasetGetCount: true,
-            },
+            features: {},
             'ui-strings': '/res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
@@ -206,14 +191,7 @@ describe('Actions', () => {
     await asyncAction(dispatch, getState);
 
     expect(actions.length).toEqual(3);
-    expect(actions).toContainEqual(
-      loadFeatureSwitches({
-        investigationGetSize: true,
-        investigationGetCount: true,
-        datasetGetSize: true,
-        datasetGetCount: true,
-      })
-    );
+    expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );

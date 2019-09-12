@@ -38,11 +38,17 @@ export const fetchInvestigationsRequest = (): Action => ({
   type: FetchInvestigationsRequestType,
 });
 
-export const fetchInvestigations = (
+interface FetchInvestigationsParams {
   additionalFilters?: {
     filterType: string;
     filterValue: string;
-  }[]
+  }[];
+  getDatasetCount?: boolean;
+  getSize?: boolean;
+}
+
+export const fetchInvestigations = (
+  optionalParams?: FetchInvestigationsParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationsRequest());
@@ -56,8 +62,8 @@ export const fetchInvestigations = (
       JSON.stringify({ INVESTIGATIONINSTRUMENT: 'INSTRUMENT' })
     );
 
-    if (additionalFilters) {
-      additionalFilters.forEach(filter => {
+    if (optionalParams && optionalParams.additionalFilters) {
+      optionalParams.additionalFilters.forEach(filter => {
         params.append(filter.filterType, filter.filterValue);
       });
     }
@@ -71,7 +77,7 @@ export const fetchInvestigations = (
       })
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data));
-        if (investigationGetCount) {
+        if (optionalParams && optionalParams.getDatasetCount) {
           response.data.forEach((investigation: Investigation) => {
             dispatch(fetchDatasetCount(investigation.ID));
           });

@@ -46,8 +46,14 @@ export const fetchDatasetsRequest = (): Action => ({
   type: FetchDatasetsRequestType,
 });
 
+interface FetchDatasetsParams {
+  getDatafileCount?: boolean;
+  getSize?: boolean;
+}
+
 export const fetchDatasets = (
-  investigationId: number
+  investigationId: number,
+  optionalParams?: FetchDatasetsParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDatasetsRequest());
@@ -69,7 +75,7 @@ export const fetchDatasets = (
       })
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data));
-        if (datasetGetCount) {
+        if (optionalParams && optionalParams.getDatafileCount) {
           response.data.forEach((dataset: Dataset) => {
             dispatch(fetchDatafileCount(dataset.ID));
           });
