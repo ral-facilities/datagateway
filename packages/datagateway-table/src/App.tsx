@@ -19,6 +19,7 @@ import DatasetTable from './table/datasetTable.component';
 import { Link } from 'react-router-dom';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
+import DLSProposalsTable from './dls/tables/dlsProposalsTable.component';
 import DLSVisitsTable from './dls/tables/dlsVisitsTable.component';
 import DLSDatasetsTable from './dls/tables/dlsDatasetsTable.component';
 import DLSDatafilesTable from './dls/tables/dlsDatafilesTable.component';
@@ -104,6 +105,11 @@ class App extends React.Component<{}, { hasError: boolean }> {
                       Browse investigations
                     </Link>
                   )}
+                />
+                <Route
+                  exact
+                  path="/browse/proposal/"
+                  component={DLSProposalsTable}
                 />
                 <Route
                   exact
