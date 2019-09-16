@@ -131,10 +131,10 @@ export function TestTable(props: TestTableCombinedProps): React.ReactElement {
   return (
     <Paper>
       <TextField
-        placeholder="Title filter"
-        value={filters && filters.TITLE ? filters.TITLE : ''}
+        placeholder="Name filter"
+        value={filters && filters.NAME ? filters.NAME : ''}
         onChange={event =>
-          filterTable('TITLE', event.target.value ? event.target.value : null)
+          filterTable('NAME', event.target.value ? event.target.value : null)
         }
       />
       <Table size={'small'}>
