@@ -1,5 +1,5 @@
 import React from 'react';
-import { Order } from 'datagateway-common';
+import { Order } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
 import { TableCell, TableSortLabel } from '@material-ui/core';
 

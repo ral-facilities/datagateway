@@ -1,15 +1,21 @@
 import React from 'react';
-import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
-import Table from './table.component';
-import { formatBytes, datasetLink } from './cellRenderers/cellContentRenderers';
+import {
+  Table,
+  TextColumnFilter,
+  formatBytes,
+  datasetLink,
+  Order,
+  Filter,
+  Dataset,
+  Entity,
+} from 'datagateway-common';
 import { sortTable, filterTable, fetchDatasets } from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
-import { Order, Filter, Dataset, Entity } from 'datagateway-common';
 
 interface DatasetTableProps {
   investigationId: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatasetTable from './DatasetTable.component';
+import DatasetTable from './datasetTable.component';
 import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
@@ -8,7 +8,7 @@ import { fetchDatasetsRequest, filterTable, sortTable } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { TableSortLabel } from '@material-ui/core';
-import Table from './table.component';
+import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 

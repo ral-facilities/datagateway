@@ -1,18 +1,21 @@
 import React from 'react';
-import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import { Paper, Typography } from '@material-ui/core';
-import Table from './table.component';
 import {
+  Table,
+  TextColumnFilter,
   formatBytes,
   investigationLink,
-} from './cellRenderers/cellContentRenderers';
+  Order,
+  Filter,
+  Investigation,
+  Entity,
+} from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { sortTable, filterTable, fetchInvestigations } from '../state/actions';
-import { Order, Filter, Investigation, Entity } from 'datagateway-common';
 
 interface InvestigationTableProps {
   sort: {

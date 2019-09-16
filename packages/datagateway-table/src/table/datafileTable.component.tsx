@@ -1,8 +1,15 @@
 import React from 'react';
-import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import { Paper, Typography, IconButton } from '@material-ui/core';
-import Table, { TableActionProps } from './table.component';
-import { formatBytes } from './cellRenderers/cellContentRenderers';
+import {
+  Table,
+  TableActionProps,
+  formatBytes,
+  TextColumnFilter,
+  Order,
+  Filter,
+  Datafile,
+  Entity,
+} from 'datagateway-common';
 import { GetApp } from '@material-ui/icons';
 import {
   fetchDatafiles,
@@ -14,7 +21,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction } from 'redux';
-import { Order, Filter, Datafile, Entity } from 'datagateway-common';
 
 interface DatafileTableProps {
   datasetId: string;
