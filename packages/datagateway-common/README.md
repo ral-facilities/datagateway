@@ -5,30 +5,52 @@ It is a dependency of other packages in the repo and other apps can import code 
 like normal.
 
 When adding new components/functions/definitions/constants etc., you must export the item
-in `index.tsx` so that it will be importable from other applications.
+in `index.tsx` so that it will be importable from other applications from `datagateway-common`.
 
 e.g.
 
-In `some_file.tsx`
+In `some-file.tsx`
 
 ```
-export const my_const = 1;
+export const myConst = 1;
 ```
 
 In `index.tsx`
 
 ```
-export { my_const } from 'some_file.tsx'
-export { my_const };
+export { myConst } from 'some-file.tsx';
 ```
 
-If you export a lot of items in `some_file.tsx` and want to export all of them to be exposed to other packages
+If you export a lot of items in `some-file.tsx` and want to export all of them to be exposed to other packages
 then the following syntax can be used instead
 
 `index.tsx`
 
 ```
-export * from 'some_file.tsx'
+export * from 'some-file.tsx';
+```
+
+If wou have something as a default export, you can export it in `index.tsx` like so:
+
+`myComponent.tsx`
+
+```
+const MyComponent: React.FC = () => <div>My component!</div>;
+export default MyComponent;
+```
+
+`index.tsx`
+
+```
+export { default as myComponent } from `./myComponent.tsx`
+```
+
+If you like, you could also just export from the file it lives in and reference the path directly
+when importing. This way would mean you wouldn't have to export again in `index.tsx`, but you probably
+should in case someone tries to import from `datagateway-common` instead of the full path.
+
+```
+import { myConst } from 'datagateway-common/lib/some-file';
 ```
 
 ## Available Scripts
