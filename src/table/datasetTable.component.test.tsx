@@ -108,7 +108,9 @@ describe('Dataset table component', () => {
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0])
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+      })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
   });

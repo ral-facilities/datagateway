@@ -1,11 +1,11 @@
 import React from 'react';
 import { TableCellProps } from 'react-virtualized';
 import { TableCell } from '@material-ui/core';
-import { Entity } from '../../state/app.types';
+import { TableActionProps } from '../table.component';
 
 type CellRendererProps = TableCellProps & {
   className: string;
-  actions: ((rowData: Entity) => React.ReactElement)[];
+  actions: React.ComponentType<TableActionProps>[];
 };
 
 const ActionCell = (props: CellRendererProps): React.ReactElement => {
@@ -13,7 +13,9 @@ const ActionCell = (props: CellRendererProps): React.ReactElement => {
 
   return (
     <TableCell component="div" className={className} variant="body">
-      {actions.map(element => element(rowData))}
+      {actions.map((TableAction, index) => (
+        <TableAction key={index} rowData={rowData} />
+      ))}
     </TableCell>
   );
 };

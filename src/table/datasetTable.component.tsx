@@ -68,7 +68,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         data={data}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={(rowData: Entity) => {
+        detailsPanel={({ rowData }) => {
           const datasetData = rowData as Dataset;
           return (
             <div>

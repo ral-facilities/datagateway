@@ -73,13 +73,21 @@ export interface ColumnType {
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
 }
 
+export interface DetailsPanelProps {
+  rowData: Entity;
+}
+
+export interface TableActionProps {
+  rowData: Entity;
+}
+
 interface VirtualizedTableProps {
   data: Entity[];
   columns: ColumnType[];
   sort: { [column: string]: Order };
   onSort: (column: string, order: Order | null) => void;
-  detailsPanel?: (rowData: Entity) => React.ReactElement;
-  actions?: ((rowData: Entity) => React.ReactElement)[];
+  detailsPanel?: React.ComponentType<DetailsPanelProps>;
+  actions?: React.ComponentType<TableActionProps>[];
 }
 
 const VirtualizedTable = (

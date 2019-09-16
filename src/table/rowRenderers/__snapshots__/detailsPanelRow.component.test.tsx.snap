@@ -32,9 +32,9 @@ exports[`Details panel row component renders correctly 1`] = `
       }
     }
   >
-    <div>
-      Details panel using test
-    </div>
+    <detailsPanel
+      rowData="test"
+    />
   </div>
 </div>
 `;

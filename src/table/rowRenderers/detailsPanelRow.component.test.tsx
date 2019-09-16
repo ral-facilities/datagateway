@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow } from '@material-ui/core/test-utils';
 import DetailsPanelRow from './detailsPanelRow.component';
-import { Entity } from '../../state/app.types';
+import { DetailsPanelProps } from '../table.component';
 
 describe('Details panel row component', () => {
   let shallow;
@@ -16,10 +16,10 @@ describe('Details panel row component', () => {
     },
     className: 'test-class',
     rowData: 'test',
-    detailsPanel: function detailsPanel(rowData: Entity) {
+    detailsPanel: function detailsPanel({ rowData }: DetailsPanelProps) {
       return <div>{`Details panel using ${rowData}`}</div>;
     },
-    detailPanelRef: React.createRef(),
+    detailPanelRef: React.createRef<HTMLDivElement>(),
   };
 
   beforeEach(() => {

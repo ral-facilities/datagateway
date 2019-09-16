@@ -2,7 +2,7 @@ import React from 'react';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
 import NumberColumnFilter from './columnFilters/numberColumnFilter.component';
 import { Paper, Typography, IconButton } from '@material-ui/core';
-import Table from './table.component';
+import Table, { TableActionProps } from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { GetApp } from '@material-ui/icons';
 import {
@@ -78,7 +78,7 @@ const DatafileTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={(rowData: Entity) => {
+        detailsPanel={({ rowData }) => {
           const datafileData = rowData as Datafile;
           return (
             <div>
@@ -95,7 +95,7 @@ const DatafileTable = (
           );
         }}
         actions={[
-          function downloadButton(rowData: Entity) {
+          function downloadButton({ rowData }: TableActionProps) {
             const datafileData = rowData as Datafile;
             return (
               <IconButton

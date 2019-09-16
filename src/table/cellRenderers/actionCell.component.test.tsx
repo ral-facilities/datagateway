@@ -1,6 +1,7 @@
 import React from 'react';
 import { createShallow } from '@material-ui/core/test-utils';
 import ActionCell from './actionCell.component';
+import { TableActionProps } from '../table.component';
 
 describe('Action cell component', () => {
   let shallow;
@@ -27,8 +28,8 @@ describe('Action cell component', () => {
       <ActionCell
         {...actionCellProps}
         actions={[
-          function testAction(props) {
-            return <p key="test">Rendered an action!</p>;
+          function testAction({ rowData }: TableActionProps) {
+            return <p>Rendered an action using {rowData}!</p>;
           },
         ]}
       />

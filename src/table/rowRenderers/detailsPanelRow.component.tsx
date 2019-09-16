@@ -1,10 +1,10 @@
 import React from 'react';
 import { TableRowProps, defaultTableRowRenderer } from 'react-virtualized';
-import { Entity } from '../../state/app.types';
+import { DetailsPanelProps } from '../table.component';
 
 const ExpandableRow = (
   props: TableRowProps & {
-    detailsPanel: (rowData: Entity) => React.ReactElement;
+    detailsPanel: React.ComponentType<DetailsPanelProps>;
     detailPanelRef: React.RefObject<HTMLDivElement>;
   }
 ): React.ReactElement => {
@@ -32,7 +32,7 @@ const ExpandableRow = (
           marginLeft: 10,
         }}
       >
-        {props.detailsPanel(props.rowData)}
+        <props.detailsPanel rowData={props.rowData} />
       </div>
     </div>
   );
