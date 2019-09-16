@@ -2,6 +2,16 @@
 
 TODO: project description
 
+The project is structured as a monorepo. This means that the actual code packages are located under `/packages` - below is a description of each package:
+
+- `datagateway-common` - This package contains common code and said code can be imported by the other packages. Code/components should go in here if
+  the code/component is both reusable and expected to be used by more than one package. An example of this is the `Table` component, which is needed by
+  multiple packages to implement their specific configuration of tables. Another example is the type definitions of ICAT entities, as these are not
+  specific to any one plugin and are used by all for typing. An example of something that _can't_ go into `datagateway-common` are Redux connected
+  components as Redux state is (currently) unique to each app.
+- `datagateway-table` - This package contains all the functionality of the TopCAT Browse and My Data views. It displays configured tables for the facilities
+  and provides the data to the tables via API calls.
+
 ## Available Scripts
 
 In the project directory, you can run:
