@@ -104,7 +104,7 @@ describe('Date filter component', () => {
     );
 
     const startDateFilterInput = wrapper.find('input').first();
-    startDateFilterInput.instance().value = 'not a date';
+    startDateFilterInput.instance().value = '2';
     startDateFilterInput.simulate('change');
 
     expect(onChange).toHaveBeenLastCalledWith(null);
@@ -115,7 +115,7 @@ describe('Date filter component', () => {
 
     expect(onChange).toHaveBeenLastCalledWith(null);
 
-    startDateFilterInput.instance().value = 'still not a date';
+    startDateFilterInput.instance().value = '201';
     startDateFilterInput.simulate('change');
 
     expect(onChange).toHaveBeenLastCalledWith(null);
@@ -135,7 +135,7 @@ describe('Date filter component', () => {
       endDate: '2019-08-06',
     });
 
-    startDateFilterInput.instance().value = 'invalid';
+    startDateFilterInput.instance().value = '2';
     startDateFilterInput.simulate('change');
     endDateFilterInput.instance().value = '2019-08-07';
     endDateFilterInput.simulate('change');
@@ -167,5 +167,49 @@ describe('Date filter component', () => {
         .first()
         .text()
     ).toEqual('Invalid date range');
+  });
+
+  it('displays tooltips when user hovers over text inputs', () => {
+    const wrapper = mount(
+      <DateColumnFilter label="test" onChange={() => {}} />
+    );
+
+    interface Global extends NodeJS.Global {
+      document: Document;
+      window: Window;
+    }
+
+    (global as Global).document.createRange = () => ({
+      setStart: () => {},
+      setEnd: () => {},
+      // @ts-ignore
+      commonAncestorContainer: {
+        nodeName: 'BODY',
+        ownerDocument: document,
+      },
+    });
+
+    wrapper
+      .find('input')
+      .first()
+      .simulate('mouseOver');
+
+    expect(wrapper.find('[role="tooltip"]').exists()).toBe(true);
+    expect(wrapper.find('[role="tooltip"] div').text()).toEqual(
+      'Filter from a date in yyyy-MM-dd format'
+    );
+
+    wrapper
+      .find('input')
+      .last()
+      .simulate('mouseOver');
+
+    expect(wrapper.find('[role="tooltip"]')).toHaveLength(2);
+    expect(
+      wrapper
+        .find('[role="tooltip"] div')
+        .at(1)
+        .text()
+    ).toEqual('Filter to a date in yyyy-MM-dd format');
   });
 });

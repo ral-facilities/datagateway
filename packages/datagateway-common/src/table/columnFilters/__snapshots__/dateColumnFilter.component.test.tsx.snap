@@ -5,78 +5,70 @@ exports[`Date filter component renders correctly 1`] = `
   <MuiPickersUtilsProvider
     utils={[Function]}
   >
-    <WithStyles(Tooltip)
-      placement="bottom"
-      title="Filter from a date in yyyy-MM-dd format"
-    >
-      <WrappedKeyboardPicker
-        KeyboardButtonProps={
-          Object {
-            "size": "small",
-          }
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "size": "small",
         }
-        allowKeyboardControl={true}
-        clearable={true}
-        format="yyyy-MM-dd"
-        inputProps={
-          Object {
-            "aria-label": "test date filter from",
-          }
+      }
+      TextFieldComponent={[Function]}
+      allowKeyboardControl={true}
+      clearable={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "test date filter from",
         }
-        invalidDateMessage="Invalid Date Format"
-        maxDate={2100-01-01T00:00:00.000Z}
-        maxDateMessage="Invalid date range"
-        minDate={1900-01-01T00:00:00.000Z}
-        minDateMessage="Date should not be before minimal date"
-        onChange={[Function]}
-        openTo="date"
-        placeholder="From..."
-        value={null}
-        views={
-          Array [
-            "year",
-            "month",
-            "date",
-          ]
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Invalid date range"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Date should not be before minimal date"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="From..."
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "size": "small",
         }
-      />
-    </WithStyles(Tooltip)>
-    <WithStyles(Tooltip)
-      placement="bottom"
-      title="Filter to a date in yyyy-MM-dd format"
-    >
-      <WrappedKeyboardPicker
-        KeyboardButtonProps={
-          Object {
-            "size": "small",
-          }
+      }
+      TextFieldComponent={[Function]}
+      allowKeyboardControl={true}
+      clearable={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "test date filter to",
         }
-        allowKeyboardControl={true}
-        clearable={true}
-        format="yyyy-MM-dd"
-        inputProps={
-          Object {
-            "aria-label": "test date filter to",
-          }
-        }
-        invalidDateMessage="Invalid Date Format"
-        maxDate={2100-01-01T00:00:00.000Z}
-        maxDateMessage="Date should not be after maximal date"
-        minDate={1900-01-01T00:00:00.000Z}
-        minDateMessage="Invalid date range"
-        onChange={[Function]}
-        openTo="date"
-        placeholder="To..."
-        value={null}
-        views={
-          Array [
-            "year",
-            "month",
-            "date",
-          ]
-        }
-      />
-    </WithStyles(Tooltip)>
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Date should not be after maximal date"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Invalid date range"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="To..."
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
   </MuiPickersUtilsProvider>
 </form>
 `;
