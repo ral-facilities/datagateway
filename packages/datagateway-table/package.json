@@ -27,7 +27,8 @@
     "redux-mock-store": "^1.5.3",
     "redux-thunk": "^2.3.0",
     "single-spa-react": "^2.10.2",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "url-search-params-polyfill": "^7.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

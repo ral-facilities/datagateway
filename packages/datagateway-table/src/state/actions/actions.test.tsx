@@ -5,14 +5,14 @@ import { initialState } from '../reducers/dgtable.reducer';
 
 describe('Actions', () => {
   describe('getApiFilter', () => {
-    it('given a empty sort anf filters it returns an empty object', () => {
+    it('given a empty sort and filters it returns an empty object', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
         },
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual({});
+      expect(filter).toEqual(new URLSearchParams());
     });
 
     it('given a single sort column in the sort state it returns an order string', () => {
@@ -23,9 +23,11 @@ describe('Actions', () => {
         },
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual({
-        order: 'column1 asc',
-      });
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('column1 asc'));
+
+      expect(filter).toEqual(params);
     });
 
     it('given multiple sort column in the sort state it returns a list', () => {
@@ -36,9 +38,12 @@ describe('Actions', () => {
         },
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual({
-        order: ['column1 asc', 'column2 desc'],
-      });
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('column1 asc'));
+      params.append('order', JSON.stringify('column2 desc'));
+
+      expect(filter).toEqual(params);
     });
 
     it('given filter state it returns a filter', () => {
@@ -49,12 +54,12 @@ describe('Actions', () => {
         },
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual({
-        where: {
-          column1: 'test',
-          column2: 'test2',
-        },
-      });
+
+      const params = new URLSearchParams();
+      params.append('where', JSON.stringify({ column1: { like: 'test' } }));
+      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+
+      expect(filter).toEqual(params);
     });
 
     it('given both sort and filter state it returns both an order and where filter', () => {
@@ -66,13 +71,14 @@ describe('Actions', () => {
         },
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual({
-        order: ['column1 asc', 'column2 desc'],
-        where: {
-          column1: 'test',
-          column2: 'test2',
-        },
-      });
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('column1 asc'));
+      params.append('order', JSON.stringify('column2 desc'));
+      params.append('where', JSON.stringify({ column1: { like: 'test' } }));
+      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+
+      expect(filter).toEqual(params);
     });
   });
 

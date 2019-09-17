@@ -39,14 +39,7 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationsRequest());
 
-    const filter = getApiFilter(getState);
-
-    let params = {};
-    if (Object.keys(filter).length !== 0) {
-      params = {
-        filter,
-      };
-    }
+    let params = getApiFilter(getState);
 
     await axios
       .get('/investigations', {

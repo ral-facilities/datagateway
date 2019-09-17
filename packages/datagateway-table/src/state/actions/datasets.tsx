@@ -49,15 +49,11 @@ export const fetchDatasets = (
   return async (dispatch, getState) => {
     dispatch(fetchDatasetsRequest());
 
-    let filter = getApiFilter(getState);
-    filter.where = {
-      ...filter.where,
-      INVESTIGATION_ID: investigationId,
-    };
-
-    const params = {
-      filter,
-    };
+    let params = getApiFilter(getState);
+    params.append(
+      'where',
+      JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
+    );
 
     await axios
       .get('/datasets', {
@@ -159,10 +155,8 @@ export const fetchDatasetCount = (
     dispatch(fetchDatasetCountRequest());
 
     const params = {
-      filter: {
-        where: {
-          INVESTIGATION_ID: investigationId,
-        },
+      where: {
+        INVESTIGATION_ID: { eq: investigationId },
       },
     };
 
