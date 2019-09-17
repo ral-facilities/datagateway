@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Text filter component renders correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Input))
+    aria-label="Filter by test"
+    id="test filter"
+    onChange={[Function]}
+    placeholder="Contains..."
+    value=""
+  />
+</div>
+`;

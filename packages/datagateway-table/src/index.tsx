@@ -19,10 +19,10 @@ const render = (): void => {
   }
 };
 
-if (process.env.NODE_ENV === `development`) {
-  render();
-  log.setDefaultLevel(log.levels.DEBUG);
+render();
 
+if (process.env.NODE_ENV === `development`) {
+  log.setDefaultLevel(log.levels.DEBUG);
   axios
     .post('/sessions', { username: 'user', password: 'password' })
     .then(response => {

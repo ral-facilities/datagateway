@@ -8,14 +8,15 @@ import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
-import { Switch, Route } from 'react-router';
+import { Switch, Route, RouteComponentProps } from 'react-router';
 import DGTableMiddleware, {
   listenToMessages,
 } from './state/middleware/dgtable.middleware';
 import { RegisterRouteType } from './state/actions/actions.types';
-import TestTable from './table/testTable';
-// @ts-ignore
-import Test from 'datagateway-common/lib/test.component';
+import InvestigationTable from './table/investigationTable.component';
+import DatafileTable from './table/datafileTable.component';
+import DatasetTable from './table/datasetTable.component';
+import { Link } from 'react-router-dom';
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -42,7 +43,7 @@ const registerRouteAction = {
   type: RegisterRouteType,
   payload: {
     section: 'Data',
-    link: '/data',
+    link: '/browse/investigation',
     plugin: 'datagateway-table',
     displayName: 'DataGateway Table',
     order: 0,
@@ -86,9 +87,41 @@ class App extends React.Component<{}, { hasError: boolean }> {
         <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
-              <Test />
               <Switch>
-                <Route exact path="/data" component={TestTable} />
+                <Route
+                  exact
+                  path="/"
+                  render={() => (
+                    <Link to="/browse/investigation">
+                      Browse investigations
+                    </Link>
+                  )}
+                />
+                <Route
+                  exact
+                  path="/browse/investigation/"
+                  component={InvestigationTable}
+                />
+                <Route
+                  exact
+                  path="/browse/investigation/:investigationId/dataset"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{ investigationId: string }>) => (
+                    <DatasetTable
+                      investigationId={match.params.investigationId}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{ datasetId: string }>) => (
+                    <DatafileTable datasetId={match.params.datasetId} />
+                  )}
+                />
               </Switch>
             </ConnectedRouter>
           </Provider>
