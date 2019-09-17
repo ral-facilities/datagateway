@@ -1,0 +1,207 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Investigation table component renders correctly 1`] = `
+<div
+  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
+  style={
+    Object {
+      "height": 768,
+      "width": "100%",
+    }
+  }
+>
+  <WithStyles(VirtualizedTable)
+    columns={
+      Array [
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "TITLE",
+          "filterComponent": [Function],
+          "label": "Title",
+        },
+        Object {
+          "dataKey": "VISIT_ID",
+          "filterComponent": [Function],
+          "label": "Visit ID",
+        },
+        Object {
+          "dataKey": "RB_NUMBER",
+          "filterComponent": [Function],
+          "label": "RB Number",
+        },
+        Object {
+          "dataKey": "DOI",
+          "filterComponent": [Function],
+          "label": "DOI",
+        },
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "SIZE",
+          "label": "Size",
+        },
+        Object {
+          "dataKey": "INSTRUMENT.NAME",
+          "filterComponent": [Function],
+          "label": "Instrument",
+        },
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "STARTDATE",
+          "label": "Start Date",
+        },
+        Object {
+          "cellContentRenderer": [Function],
+          "dataKey": "ENDDATE",
+          "label": "End Date",
+        },
+      ]
+    }
+    data={
+      Array [
+        Object {
+          "DOI": "doi 1",
+          "ENDDATE": "2019-07-24",
+          "ID": 1,
+          "INSTRUMENT": Object {
+            "NAME": "LARMOR",
+          },
+          "RB_NUMBER": "1",
+          "SIZE": 1,
+          "STARTDATE": "2019-07-23",
+          "TITLE": "Test 1",
+          "VISIT_ID": "1",
+        },
+      ]
+    }
+    detailsPanel={[Function]}
+    onSort={[Function]}
+    sort={Object {}}
+  />
+</div>
+`;
+
+exports[`Investigation table component renders details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Proposal:
+    </b>
+     
+    1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Title:
+    </b>
+     
+    Test 1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Start Date:
+    </b>
+     
+    2019-07-23
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      End Date:
+    </b>
+     
+    2019-07-24
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;
+
+exports[`Investigation table component renders investigation title as a link 1`] = `
+<WithStyles(ForwardRef(Link))
+  component={[Function]}
+  to="/browse/investigation/1/dataset"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    component={[Function]}
+    to="/browse/investigation/1/dataset"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component={[Function]}
+      onBlur={[Function]}
+      onFocus={[Function]}
+      to="/browse/investigation/1/dataset"
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component={[Function]}
+        onBlur={[Function]}
+        onFocus={[Function]}
+        to="/browse/investigation/1/dataset"
+        variant="inherit"
+      >
+        <Link
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          to="/browse/investigation/1/dataset"
+        >
+          <a
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            href="/browse/investigation/1/dataset"
+            onBlur={[Function]}
+            onClick={[Function]}
+            onFocus={[Function]}
+          >
+            Test 1
+          </a>
+        </Link>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;
