@@ -5,7 +5,6 @@ import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
-import { Tooltip, TextField } from '@material-ui/core';
 
 const DateColumnFilter = (props: {
   label: string;
@@ -19,18 +18,10 @@ const DateColumnFilter = (props: {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <KeyboardDatePicker
           clearable
-          TextFieldComponent={props => (
-            <Tooltip
-              title="Filter from a date in yyyy-MM-dd format"
-              placement="bottom"
-            >
-              <TextField {...props} />
-            </Tooltip>
-          )}
           inputProps={{ 'aria-label': `${props.label} date filter from` }}
           KeyboardButtonProps={{ size: 'small' }}
           format="yyyy-MM-dd"
-          placeholder="From..."
+          placeholder="From... (yyyy-MM-dd)"
           value={startDate}
           views={['year', 'month', 'date']}
           maxDate={endDate || new Date('2100-01-01')}
@@ -58,17 +49,9 @@ const DateColumnFilter = (props: {
         />
         <KeyboardDatePicker
           clearable
-          TextFieldComponent={props => (
-            <Tooltip
-              title="Filter to a date in yyyy-MM-dd format"
-              placement="bottom"
-            >
-              <TextField {...props} />
-            </Tooltip>
-          )}
           inputProps={{ 'aria-label': `${props.label} date filter to` }}
           KeyboardButtonProps={{ size: 'small' }}
-          placeholder="To..."
+          placeholder="To...     (yyyy-MM-dd)"
           format="yyyy-MM-dd"
           value={endDate}
           views={['year', 'month', 'date']}

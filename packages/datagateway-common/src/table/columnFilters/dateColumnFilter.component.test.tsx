@@ -168,48 +168,4 @@ describe('Date filter component', () => {
         .text()
     ).toEqual('Invalid date range');
   });
-
-  it('displays tooltips when user hovers over text inputs', () => {
-    const wrapper = mount(
-      <DateColumnFilter label="test" onChange={() => {}} />
-    );
-
-    interface Global extends NodeJS.Global {
-      document: Document;
-      window: Window;
-    }
-
-    (global as Global).document.createRange = () => ({
-      setStart: () => {},
-      setEnd: () => {},
-      // @ts-ignore
-      commonAncestorContainer: {
-        nodeName: 'BODY',
-        ownerDocument: document,
-      },
-    });
-
-    wrapper
-      .find('input')
-      .first()
-      .simulate('mouseOver');
-
-    expect(wrapper.find('[role="tooltip"]').exists()).toBe(true);
-    expect(wrapper.find('[role="tooltip"] div').text()).toEqual(
-      'Filter from a date in yyyy-MM-dd format'
-    );
-
-    wrapper
-      .find('input')
-      .last()
-      .simulate('mouseOver');
-
-    expect(wrapper.find('[role="tooltip"]')).toHaveLength(2);
-    expect(
-      wrapper
-        .find('[role="tooltip"] div')
-        .at(1)
-        .text()
-    ).toEqual('Filter to a date in yyyy-MM-dd format');
-  });
 });
