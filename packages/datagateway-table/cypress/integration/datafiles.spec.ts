@@ -23,11 +23,9 @@ describe('Datafiles Table', () => {
       cy.contains('Location').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
-      );
+      cy.get('.MuiTableSortLabel-iconDirectionDesc')
+        .eq(1)
+        .should('not.have.css', 'opacity', '0');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'voluptatibus/odio/dolor'
       );
@@ -56,7 +54,7 @@ describe('Datafiles Table', () => {
       cy.contains('Name').click();
       cy.contains('Name').click();
 
-      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains('Datafile 29');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('Datafile 29');
     });
   });
 
@@ -64,11 +62,11 @@ describe('Datafiles Table', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
-        .type('Datafile 1');
+        .type('Datafile 13');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'quidem/omnis/iure'
+        'id/error/nulla'
       );
     });
 
