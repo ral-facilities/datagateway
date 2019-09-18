@@ -1,17 +1,67 @@
 import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
-import { format, isValid } from 'date-fns';
+import { format, isValid, isEqual } from 'date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
+  MaterialUiPickersDate,
 } from '@material-ui/pickers';
+
+export function datesEqual(
+  date1: MaterialUiPickersDate,
+  date2: MaterialUiPickersDate
+): boolean {
+  if (date1 === date2) {
+    return true;
+  } else if (!isValid(date1) && !isValid(date2)) {
+    return true;
+  } else if (date1 !== null && date2 !== null && isEqual(date1, date2)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+interface UpdateFilterParams {
+  date: MaterialUiPickersDate;
+  prevDate: MaterialUiPickersDate;
+  otherDate: MaterialUiPickersDate;
+  startDateOrEndDateChanged: 'startDate' | 'endDate';
+  onChange: (value: { startDate?: string; endDate?: string } | null) => void;
+}
+
+export function updateFilter({
+  date,
+  prevDate,
+  otherDate,
+  startDateOrEndDateChanged,
+  onChange,
+}: UpdateFilterParams): void {
+  if (!datesEqual(date, prevDate)) {
+    if (
+      (date === null || !isValid(date)) &&
+      (otherDate === null || !isValid(otherDate))
+    ) {
+      onChange(null);
+    } else {
+      onChange({
+        [startDateOrEndDateChanged]:
+          date && isValid(date) ? format(date, 'yyyy-MM-dd') : undefined,
+        [startDateOrEndDateChanged === 'startDate' ? 'endDate' : 'startDate']:
+          otherDate && isValid(otherDate)
+            ? format(otherDate, 'yyyy-MM-dd')
+            : undefined,
+      });
+    }
+  }
+}
 
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
 }): React.ReactElement => {
-  const [startDate, setStartDate] = React.useState<Date | null>(null);
-  const [endDate, setEndDate] = React.useState<Date | null>(null);
+  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(null);
+  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(null);
 
   return (
     <form>
@@ -27,24 +77,14 @@ const DateColumnFilter = (props: {
           maxDate={endDate || new Date('2100-01-01')}
           maxDateMessage="Invalid date range"
           onChange={date => {
+            updateFilter({
+              date,
+              prevDate: startDate,
+              otherDate: endDate,
+              startDateOrEndDateChanged: 'startDate',
+              onChange: props.onChange,
+            });
             setStartDate(date);
-            if (
-              (date === null && endDate === null) ||
-              (!isValid(date) && !isValid(endDate))
-            ) {
-              props.onChange(null);
-            } else {
-              props.onChange({
-                startDate:
-                  date && isValid(date)
-                    ? format(date, 'yyyy-MM-dd')
-                    : undefined,
-                endDate:
-                  endDate && isValid(endDate)
-                    ? format(endDate, 'yyyy-MM-dd')
-                    : undefined,
-              });
-            }
           }}
         />
         <KeyboardDatePicker
@@ -58,24 +98,14 @@ const DateColumnFilter = (props: {
           minDate={startDate || new Date('1900-01-01')}
           minDateMessage="Invalid date range"
           onChange={date => {
+            updateFilter({
+              date,
+              prevDate: endDate,
+              otherDate: startDate,
+              startDateOrEndDateChanged: 'endDate',
+              onChange: props.onChange,
+            });
             setEndDate(date);
-            if (
-              (date === null && startDate === null) ||
-              (!isValid(date) && !isValid(startDate))
-            ) {
-              props.onChange(null);
-            } else {
-              props.onChange({
-                startDate:
-                  startDate && isValid(startDate)
-                    ? format(startDate, 'yyyy-MM-dd')
-                    : undefined,
-                endDate:
-                  date && isValid(date)
-                    ? format(date, 'yyyy-MM-dd')
-                    : undefined,
-              });
-            }
           }}
         />
       </MuiPickersUtilsProvider>
