@@ -87,13 +87,7 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchInstrumentCountRequest());
 
-    let filter = getApiFilter(getState);
-    filter.where = {
-      ...filter.where,
-    };
-    const params = {
-      filter,
-    };
+    let params = getApiFilter(getState);
 
     await axios
       .get('/instruments/count', {

@@ -142,14 +142,14 @@ describe('FacilityCycle actions', () => {
 
     expect(actions[1]).toEqual(fetchFacilityCycleCountSuccess(1));
 
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/facilitycycles/count',
       expect.objectContaining({
-        params: {
-          filter: {
-            where: { column1: '1', column2: '2' },
-          },
-        },
+        params,
       })
     );
   });

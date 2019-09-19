@@ -137,12 +137,14 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest());
     expect(actions[1]).toEqual(fetchDatasetCountSuccess(7));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets/count',
       expect.objectContaining({
-        params: {
-          where: { INVESTIGATION_ID: { eq: 1 } },
-        },
+        params,
       })
     );
   });
@@ -167,14 +169,15 @@ describe('Dataset actions', () => {
 
     expect(actions[1]).toEqual(fetchDatasetCountSuccess(8));
 
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets/count',
       expect.objectContaining({
-        params: {
-          filter: {
-            where: { column1: '1', column2: '2', INVESTIGATION_ID: 1 },
-          },
-        },
+        params,
       })
     );
   });
@@ -213,9 +216,7 @@ describe('Dataset actions', () => {
       '/datasets/count',
       expect.objectContaining({
         params: {
-          filter: {
-            where: { INVESTIGATION_ID: 1 },
-          },
+          where: { INVESTIGATION_ID: { eq: 1 } },
         },
       })
     );

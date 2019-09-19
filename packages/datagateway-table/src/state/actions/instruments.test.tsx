@@ -134,14 +134,14 @@ describe('Instrument actions', () => {
 
     expect(actions[1]).toEqual(fetchInstrumentCountSuccess(9));
 
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/count',
       expect.objectContaining({
-        params: {
-          filter: {
-            where: { column1: '1', column2: '2' },
-          },
-        },
+        params,
       })
     );
   });

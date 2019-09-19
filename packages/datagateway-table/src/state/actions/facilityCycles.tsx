@@ -88,10 +88,7 @@ export const fetchFacilityCycleCount = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchFacilityCycleCountRequest());
 
-    let filter = getApiFilter(getState);
-    const params = {
-      filter,
-    };
+    let params = getApiFilter(getState);
 
     await axios
       .get('/facilitycycles/count', {
