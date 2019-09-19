@@ -28,6 +28,8 @@ describe('Datafile table component', () => {
     Promise.resolve({ data: [] })
   );
 
+  global.Date.now = jest.fn(() => 1);
+
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
@@ -86,8 +88,8 @@ describe('Datafile table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest());
-    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest());
+    expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
   });
 
   it('sends fetchDatafiles action when loadMoreRows is called', () => {
@@ -96,7 +98,7 @@ describe('Datafile table component', () => {
 
     wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });
 
   it('sends filterTable action on filter', () => {
@@ -151,7 +153,7 @@ describe('Datafile table component', () => {
 
     wrapper.find('button[aria-label="Download"]').simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest());
+    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
   });
 
   it('renders details panel correctly', () => {

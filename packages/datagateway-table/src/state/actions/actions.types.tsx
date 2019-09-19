@@ -117,19 +117,26 @@ export interface FilterTablePayload {
   filter: Filter | null;
 }
 
+export interface RequestPayload {
+  timestamp: number;
+}
+
 export interface FailurePayload {
   error: string;
 }
 
 export interface FetchDataSuccessPayload {
   data: Entity[];
+  timestamp: number;
 }
 
 export interface FetchCountSuccessPayload {
   count: number;
+  timestamp: number;
 }
 
 export interface FetchDataCountSuccessPayload {
   id: number;
   count: number;
+  timestamp: number;
 }

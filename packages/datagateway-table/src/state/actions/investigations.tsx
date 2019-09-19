@@ -8,9 +8,9 @@ import {
   FetchInvestigationCountSuccessType,
   FetchInvestigationCountFailureType,
   FetchInvestigationCountRequestType,
+  RequestPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
-import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchInvestigationDatasetsCount } from './datasets';
@@ -19,11 +19,13 @@ import { Investigation } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 
 export const fetchInvestigationsSuccess = (
-  investigations: Investigation[]
+  investigations: Investigation[],
+  timestamp: number
 ): ActionType<FetchDataSuccessPayload> => ({
   type: FetchInvestigationsSuccessType,
   payload: {
     data: investigations,
+    timestamp,
   },
 });
 
@@ -36,15 +38,21 @@ export const fetchInvestigationsFailure = (
   },
 });
 
-export const fetchInvestigationsRequest = (): Action => ({
+export const fetchInvestigationsRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchInvestigationsRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchInvestigations = (
   offsetParams?: IndexRange
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchInvestigationsRequest());
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationsRequest(timestamp));
 
     let params = getApiFilter(getState);
     if (offsetParams) {
@@ -63,7 +71,7 @@ export const fetchInvestigations = (
         },
       })
       .then(response => {
-        dispatch(fetchInvestigationsSuccess(response.data));
+        dispatch(fetchInvestigationsSuccess(response.data, timestamp));
         response.data.forEach((investigation: Investigation) => {
           dispatch(fetchInvestigationDatasetsCount(investigation.ID));
         });
@@ -76,11 +84,13 @@ export const fetchInvestigations = (
 };
 
 export const fetchInvestigationCountSuccess = (
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchCountSuccessPayload> => ({
   type: FetchInvestigationCountSuccessType,
   payload: {
     count,
+    timestamp,
   },
 });
 
@@ -93,13 +103,19 @@ export const fetchInvestigationCountFailure = (
   },
 });
 
-export const fetchInvestigationCountRequest = (): Action => ({
+export const fetchInvestigationCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchInvestigationCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchInvestigationCount = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchInvestigationCountRequest());
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
 
@@ -111,7 +127,7 @@ export const fetchInvestigationCount = (): ThunkResult<Promise<void>> => {
         },
       })
       .then(response => {
-        dispatch(fetchInvestigationCountSuccess(response.data));
+        dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);

@@ -26,6 +26,7 @@ describe('Dataset table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -85,8 +86,8 @@ describe('Dataset table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatasetCountRequest());
-    expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest());
+    expect(testStore.getActions()[1]).toEqual(fetchDatasetCountRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest(1));
   });
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {
@@ -97,7 +98,7 @@ describe('Dataset table component', () => {
 
     wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
   });
 
   it('sends filterTable action on filter', () => {

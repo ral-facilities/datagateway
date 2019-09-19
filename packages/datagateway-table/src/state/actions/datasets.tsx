@@ -15,6 +15,7 @@ import {
   FetchDatasetCountSuccessType,
   FetchDatasetCountFailureType,
   FetchDatasetCountRequestType,
+  RequestPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
@@ -27,11 +28,13 @@ import { IndexRange } from 'react-virtualized';
 import { Dataset } from 'datagateway-common';
 
 export const fetchDatasetsSuccess = (
-  datasets: Dataset[]
+  datasets: Dataset[],
+  timestamp: number
 ): ActionType<FetchDataSuccessPayload> => ({
   type: FetchDatasetsSuccessType,
   payload: {
     data: datasets,
+    timestamp,
   },
 });
 
@@ -44,8 +47,13 @@ export const fetchDatasetsFailure = (
   },
 });
 
-export const fetchDatasetsRequest = (): Action => ({
+export const fetchDatasetsRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchDatasetsRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchDatasets = (
@@ -53,7 +61,8 @@ export const fetchDatasets = (
   offsetParams?: IndexRange
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchDatasetsRequest());
+    const timestamp = Date.now();
+    dispatch(fetchDatasetsRequest(timestamp));
 
     let params = getApiFilter(getState);
     params.append(
@@ -76,7 +85,7 @@ export const fetchDatasets = (
         },
       })
       .then(response => {
-        dispatch(fetchDatasetsSuccess(response.data));
+        dispatch(fetchDatasetsSuccess(response.data, timestamp));
         response.data.forEach((dataset: Dataset) => {
           dispatch(fetchDatasetDatafilesCount(dataset.ID));
         });
@@ -89,11 +98,13 @@ export const fetchDatasets = (
 };
 
 export const fetchDatasetCountSuccess = (
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchCountSuccessPayload> => ({
   type: FetchDatasetCountSuccessType,
   payload: {
     count,
+    timestamp,
   },
 });
 
@@ -106,15 +117,21 @@ export const fetchDatasetCountFailure = (
   },
 });
 
-export const fetchDatasetCountRequest = (): Action => ({
+export const fetchDatasetCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchDatasetCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchDatasetCount = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchDatasetCountRequest());
+    const timestamp = Date.now();
+    dispatch(fetchDatasetCountRequest(timestamp));
 
     let params = getApiFilter(getState);
     params.append(
@@ -130,7 +147,7 @@ export const fetchDatasetCount = (
         },
       })
       .then(response => {
-        dispatch(fetchDatasetCountSuccess(response.data));
+        dispatch(fetchDatasetCountSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);
@@ -152,8 +169,13 @@ export const downloadDatasetFailure = (
   },
 });
 
-export const downloadDatasetRequest = (): Action => ({
+export const downloadDatasetRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: DownloadDatasetRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const downloadDataset = (
@@ -161,7 +183,8 @@ export const downloadDataset = (
   datasetName: string
 ): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    dispatch(downloadDatasetRequest());
+    const timestamp = Date.now();
+    dispatch(downloadDatasetRequest(timestamp));
 
     // TODO: get this from some sort of settings file
     const idsUrl = '';
@@ -190,12 +213,14 @@ export const downloadDataset = (
 
 export const fetchInvestigationDatasetsCountSuccess = (
   investigationId: number,
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchDataCountSuccessPayload> => ({
   type: FetchInvestigationDatasetsCountSuccessType,
   payload: {
     id: investigationId,
     count,
+    timestamp,
   },
 });
 
@@ -208,15 +233,21 @@ export const fetchInvestigationDatasetsCountFailure = (
   },
 });
 
-export const fetchInvestigationDatasetsCountRequest = (): Action => ({
+export const fetchInvestigationDatasetsCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchInvestigationDatasetsCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchInvestigationDatasetsCount = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    dispatch(fetchInvestigationDatasetsCountRequest());
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationDatasetsCountRequest(timestamp));
 
     const params = {
       where: {
@@ -234,7 +265,11 @@ export const fetchInvestigationDatasetsCount = (
       })
       .then(response => {
         dispatch(
-          fetchInvestigationDatasetsCountSuccess(investigationId, response.data)
+          fetchInvestigationDatasetsCountSuccess(
+            investigationId,
+            response.data,
+            timestamp
+          )
         );
       })
       .catch(error => {

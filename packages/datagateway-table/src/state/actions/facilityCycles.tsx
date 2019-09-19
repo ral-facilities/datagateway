@@ -8,20 +8,22 @@ import {
   FetchFacilityCycleCountSuccessType,
   FetchFacilityCycleCountFailureType,
   FetchFacilityCycleCountRequestType,
+  RequestPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
-import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import * as log from 'loglevel';
 import { FacilityCycle } from 'datagateway-common';
 
 export const fetchFacilityCyclesSuccess = (
-  facilityCycles: FacilityCycle[]
+  facilityCycles: FacilityCycle[],
+  timestamp: number
 ): ActionType<FetchDataSuccessPayload> => ({
   type: FetchFacilityCyclesSuccessType,
   payload: {
     data: facilityCycles,
+    timestamp,
   },
 });
 
@@ -34,14 +36,20 @@ export const fetchFacilityCyclesFailure = (
   },
 });
 
-export const fetchFacilityCyclesRequest = (): Action => ({
+export const fetchFacilityCyclesRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchFacilityCyclesRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 // TODO: make this fetch based on instrumentId
 export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchFacilityCyclesRequest());
+    const timestamp = Date.now();
+    dispatch(fetchFacilityCyclesRequest(timestamp));
 
     let params = getApiFilter(getState);
 
@@ -53,7 +61,7 @@ export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
         },
       })
       .then(response => {
-        dispatch(fetchFacilityCyclesSuccess(response.data));
+        dispatch(fetchFacilityCyclesSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);
@@ -63,11 +71,13 @@ export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
 };
 
 export const fetchFacilityCycleCountSuccess = (
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchCountSuccessPayload> => ({
   type: FetchFacilityCycleCountSuccessType,
   payload: {
     count,
+    timestamp,
   },
 });
 
@@ -80,13 +90,19 @@ export const fetchFacilityCycleCountFailure = (
   },
 });
 
-export const fetchFacilityCycleCountRequest = (): Action => ({
+export const fetchFacilityCycleCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchFacilityCycleCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchFacilityCycleCount = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchFacilityCycleCountRequest());
+    const timestamp = Date.now();
+    dispatch(fetchFacilityCycleCountRequest(timestamp));
 
     let params = getApiFilter(getState);
 
@@ -98,7 +114,7 @@ export const fetchFacilityCycleCount = (): ThunkResult<Promise<void>> => {
         },
       })
       .then(response => {
-        dispatch(fetchFacilityCycleCountSuccess(response.data));
+        dispatch(fetchFacilityCycleCountSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);

@@ -52,6 +52,7 @@ import {
   FetchFacilityCycleCountSuccessType,
   FetchFacilityCycleCountFailureType,
   ClearTableType,
+  RequestPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -63,6 +64,8 @@ export const initialState: DGTableState = {
   error: null,
   sort: {},
   filters: {},
+  dataTimestamp: Date.now(),
+  countTimestamp: Date.now(),
 };
 
 export function handleSortTable(
@@ -138,23 +141,36 @@ export function handleClearTable(state: DGTableState): DGTableState {
   };
 }
 
-export function handleFetchDataRequest(state: DGTableState): DGTableState {
-  return {
-    ...state,
-    loading: true,
-  };
+export function handleFetchDataRequest(
+  state: DGTableState,
+  payload: RequestPayload
+): DGTableState {
+  if (payload.timestamp >= state.dataTimestamp) {
+    return {
+      ...state,
+      dataTimestamp: payload.timestamp,
+      loading: true,
+    };
+  } else {
+    return state;
+  }
 }
 
 export function handleFetchDataSuccess(
   state: DGTableState,
   payload: FetchDataSuccessPayload
 ): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    data: state.data.concat(payload.data),
-    error: null,
-  };
+  if (payload.timestamp >= state.dataTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      data: state.data.concat(payload.data),
+      dataTimestamp: payload.timestamp,
+      error: null,
+    };
+  } else {
+    return state;
+  }
 }
 
 export function handleFetchDataFailure(
@@ -168,23 +184,36 @@ export function handleFetchDataFailure(
   };
 }
 
-export function handleFetchCountRequest(state: DGTableState): DGTableState {
-  return {
-    ...state,
-    loading: true,
-  };
+export function handleFetchCountRequest(
+  state: DGTableState,
+  payload: RequestPayload
+): DGTableState {
+  if (payload.timestamp >= state.countTimestamp) {
+    return {
+      ...state,
+      countTimestamp: payload.timestamp,
+      loading: true,
+    };
+  } else {
+    return state;
+  }
 }
 
 export function handleFetchCountSuccess(
   state: DGTableState,
   payload: FetchCountSuccessPayload
 ): DGTableState {
-  return {
-    ...state,
-    loading: false,
-    totalDataCount: payload.count,
-    error: null,
-  };
+  if (payload.timestamp >= state.countTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      totalDataCount: payload.count,
+      countTimestamp: payload.timestamp,
+      error: null,
+    };
+  } else {
+    return state;
+  }
 }
 
 export function handleFetchCountFailure(

@@ -15,6 +15,7 @@ import {
   FetchDatafileCountSuccessType,
   FetchDatafileCountRequestType,
   FetchDatafileCountFailureType,
+  RequestPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -26,11 +27,13 @@ import { Datafile } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 
 export const fetchDatafilesSuccess = (
-  datafiles: Datafile[]
+  datafiles: Datafile[],
+  timestamp: number
 ): ActionType<FetchDataSuccessPayload> => ({
   type: FetchDatafilesSuccessType,
   payload: {
     data: datafiles,
+    timestamp,
   },
 });
 
@@ -43,8 +46,13 @@ export const fetchDatafilesFailure = (
   },
 });
 
-export const fetchDatafilesRequest = (): Action => ({
+export const fetchDatafilesRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchDatafilesRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchDatafiles = (
@@ -52,7 +60,8 @@ export const fetchDatafiles = (
   offsetParams?: IndexRange
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchDatafilesRequest());
+    const timestamp = Date.now();
+    dispatch(fetchDatafilesRequest(timestamp));
 
     let params = getApiFilter(getState);
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
@@ -73,7 +82,7 @@ export const fetchDatafiles = (
         },
       })
       .then(response => {
-        dispatch(fetchDatafilesSuccess(response.data));
+        dispatch(fetchDatafilesSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);
@@ -83,11 +92,13 @@ export const fetchDatafiles = (
 };
 
 export const fetchDatafileCountSuccess = (
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchCountSuccessPayload> => ({
   type: FetchDatafileCountSuccessType,
   payload: {
     count,
+    timestamp,
   },
 });
 
@@ -100,15 +111,21 @@ export const fetchDatafileCountFailure = (
   },
 });
 
-export const fetchDatafileCountRequest = (): Action => ({
+export const fetchDatafileCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchDatafileCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchDatafileCount = (
   datasetId: number
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchDatafileCountRequest());
+    const timestamp = Date.now();
+    dispatch(fetchDatafileCountRequest(timestamp));
 
     let params = getApiFilter(getState);
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
@@ -121,7 +138,7 @@ export const fetchDatafileCount = (
         },
       })
       .then(response => {
-        dispatch(fetchDatafileCountSuccess(response.data));
+        dispatch(fetchDatafileCountSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);
@@ -132,12 +149,14 @@ export const fetchDatafileCount = (
 
 export const fetchDatasetDatafilesCountSuccess = (
   datasetId: number,
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchDataCountSuccessPayload> => ({
   type: FetchDatasetDatafilesCountSuccessType,
   payload: {
     id: datasetId,
     count,
+    timestamp,
   },
 });
 
@@ -150,15 +169,21 @@ export const fetchDatasetDatafilesCountFailure = (
   },
 });
 
-export const fetchDatasetDatafilesCountRequest = (): Action => ({
+export const fetchDatasetDatafilesCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchDatasetDatafilesCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchDatasetDatafilesCount = (
   datasetId: number
 ): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    dispatch(fetchDatasetDatafilesCountRequest());
+    const timestamp = Date.now();
+    dispatch(fetchDatasetDatafilesCountRequest(timestamp));
 
     const params = {
       where: {
@@ -175,7 +200,9 @@ export const fetchDatasetDatafilesCount = (
         cancelToken: source.token,
       })
       .then(response => {
-        dispatch(fetchDatasetDatafilesCountSuccess(datasetId, response.data));
+        dispatch(
+          fetchDatasetDatafilesCountSuccess(datasetId, response.data, timestamp)
+        );
       })
       .catch(error => {
         log.error(error.message);
@@ -197,8 +224,13 @@ export const downloadDatafileFailure = (
   },
 });
 
-export const downloadDatafileRequest = (): Action => ({
+export const downloadDatafileRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: DownloadDatafileRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const downloadDatafile = (
@@ -206,7 +238,8 @@ export const downloadDatafile = (
   filename: string
 ): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    dispatch(downloadDatafileRequest());
+    const timestamp = Date.now();
+    dispatch(downloadDatafileRequest(timestamp));
 
     // TODO: get this from some sort of settings file
     const idsUrl = '';

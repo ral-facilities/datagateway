@@ -18,6 +18,8 @@ import { Instrument } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Instrument actions', () => {
+  Date.now = jest.fn().mockImplementation(() => 1);
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
@@ -44,8 +46,8 @@ describe('Instrument actions', () => {
     const asyncAction = fetchInstruments();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInstrumentsRequest());
-    expect(actions[1]).toEqual(fetchInstrumentsSuccess(mockData));
+    expect(actions[0]).toEqual(fetchInstrumentsRequest(1));
+    expect(actions[1]).toEqual(fetchInstrumentsSuccess(mockData, 1));
   });
 
   it('fetchInstruments action applies filters and sort state to request params', async () => {
@@ -65,9 +67,9 @@ describe('Instrument actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInstrumentsRequest());
+    expect(actions[0]).toEqual(fetchInstrumentsRequest(1));
 
-    expect(actions[1]).toEqual(fetchInstrumentsSuccess([]));
+    expect(actions[1]).toEqual(fetchInstrumentsSuccess([], 1));
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
@@ -92,7 +94,7 @@ describe('Instrument actions', () => {
     const asyncAction = fetchInstruments();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInstrumentsRequest());
+    expect(actions[0]).toEqual(fetchInstrumentsRequest(1));
     expect(actions[1]).toEqual(fetchInstrumentsFailure('Test error message'));
 
     expect(log.error).toHaveBeenCalled();
@@ -110,8 +112,8 @@ describe('Instrument actions', () => {
     const asyncAction = fetchInstrumentCount();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInstrumentCountRequest());
-    expect(actions[1]).toEqual(fetchInstrumentCountSuccess(6));
+    expect(actions[0]).toEqual(fetchInstrumentCountRequest(1));
+    expect(actions[1]).toEqual(fetchInstrumentCountSuccess(6, 1));
   });
 
   it('fetchInstrumentCount action applies filters to request params', async () => {
@@ -130,9 +132,9 @@ describe('Instrument actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInstrumentCountRequest());
+    expect(actions[0]).toEqual(fetchInstrumentCountRequest(1));
 
-    expect(actions[1]).toEqual(fetchInstrumentCountSuccess(9));
+    expect(actions[1]).toEqual(fetchInstrumentCountSuccess(9, 1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
@@ -156,7 +158,7 @@ describe('Instrument actions', () => {
     const asyncAction = fetchInstrumentCount();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInstrumentCountRequest());
+    expect(actions[0]).toEqual(fetchInstrumentCountRequest(1));
     expect(actions[1]).toEqual(
       fetchInstrumentCountFailure('Test error message')
     );

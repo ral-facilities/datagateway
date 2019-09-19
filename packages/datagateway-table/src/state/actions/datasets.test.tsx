@@ -25,6 +25,8 @@ import { Dataset } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Dataset actions', () => {
+  Date.now = jest.fn().mockImplementation(() => 1);
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
@@ -57,10 +59,10 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasets(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
-    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
-    expect(actions[2]).toEqual(fetchDatasetDatafilesCountRequest());
-    expect(actions[3]).toEqual(fetchDatasetDatafilesCountRequest());
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
+    expect(actions[2]).toEqual(fetchDatasetDatafilesCountRequest(1));
+    expect(actions[3]).toEqual(fetchDatasetDatafilesCountRequest(1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
@@ -90,9 +92,9 @@ describe('Dataset actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
 
-    expect(actions[1]).toEqual(fetchDatasetsSuccess([]));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess([], 1));
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
@@ -117,7 +119,7 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasets(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
     expect(actions[1]).toEqual(fetchDatasetsFailure('Test error message'));
 
     expect(log.error).toHaveBeenCalled();
@@ -135,8 +137,8 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasetCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetCountRequest());
-    expect(actions[1]).toEqual(fetchDatasetCountSuccess(7));
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetCountSuccess(7, 1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
@@ -165,9 +167,9 @@ describe('Dataset actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetCountRequest());
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
 
-    expect(actions[1]).toEqual(fetchDatasetCountSuccess(8));
+    expect(actions[1]).toEqual(fetchDatasetCountSuccess(8, 1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
@@ -192,7 +194,7 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasetCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetCountRequest());
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
     expect(actions[1]).toEqual(fetchDatasetCountFailure('Test error message'));
 
     expect(log.error).toHaveBeenCalled();
@@ -210,8 +212,8 @@ describe('Dataset actions', () => {
     const asyncAction = fetchInvestigationDatasetsCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest());
-    expect(actions[1]).toEqual(fetchInvestigationDatasetsCountSuccess(1, 2));
+    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
+    expect(actions[1]).toEqual(fetchInvestigationDatasetsCountSuccess(1, 2, 1));
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets/count',
       expect.objectContaining({
@@ -232,7 +234,7 @@ describe('Dataset actions', () => {
     const asyncAction = fetchInvestigationDatasetsCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest());
+    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
     expect(actions[1]).toEqual(
       fetchInvestigationDatasetsCountFailure('Test error message')
     );
@@ -249,7 +251,7 @@ describe('Dataset actions', () => {
     const asyncAction = downloadDataset(1, 'test');
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(downloadDatasetRequest());
+    expect(actions[0]).toEqual(downloadDatasetRequest(1));
 
     expect(document.createElement).toHaveBeenCalledWith('a');
     let link = document.createElement('a');

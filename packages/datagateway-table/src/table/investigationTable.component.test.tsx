@@ -26,6 +26,7 @@ describe('Investigation table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -90,8 +91,10 @@ describe('Investigation table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchInvestigationCountRequest());
-    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest());
+    expect(testStore.getActions()[1]).toEqual(
+      fetchInvestigationCountRequest(1)
+    );
+    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {
@@ -100,7 +103,7 @@ describe('Investigation table component', () => {
 
     wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends filterTable action on filter', () => {

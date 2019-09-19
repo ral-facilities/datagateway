@@ -8,20 +8,22 @@ import {
   FetchInstrumentCountSuccessType,
   FetchInstrumentCountFailureType,
   FetchInstrumentCountRequestType,
+  RequestPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
-import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import * as log from 'loglevel';
 import { Instrument } from 'datagateway-common';
 
 export const fetchInstrumentsSuccess = (
-  instruments: Instrument[]
+  instruments: Instrument[],
+  timestamp: number
 ): ActionType<FetchDataSuccessPayload> => ({
   type: FetchInstrumentsSuccessType,
   payload: {
     data: instruments,
+    timestamp,
   },
 });
 
@@ -34,13 +36,19 @@ export const fetchInstrumentsFailure = (
   },
 });
 
-export const fetchInstrumentsRequest = (): Action => ({
+export const fetchInstrumentsRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchInstrumentsRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchInstruments = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchInstrumentsRequest());
+    const timestamp = Date.now();
+    dispatch(fetchInstrumentsRequest(timestamp));
 
     let params = getApiFilter(getState);
 
@@ -52,7 +60,7 @@ export const fetchInstruments = (): ThunkResult<Promise<void>> => {
         },
       })
       .then(response => {
-        dispatch(fetchInstrumentsSuccess(response.data));
+        dispatch(fetchInstrumentsSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);
@@ -62,11 +70,13 @@ export const fetchInstruments = (): ThunkResult<Promise<void>> => {
 };
 
 export const fetchInstrumentCountSuccess = (
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchCountSuccessPayload> => ({
   type: FetchInstrumentCountSuccessType,
   payload: {
     count,
+    timestamp,
   },
 });
 
@@ -79,13 +89,19 @@ export const fetchInstrumentCountFailure = (
   },
 });
 
-export const fetchInstrumentCountRequest = (): Action => ({
+export const fetchInstrumentCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchInstrumentCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchInstrumentCountRequest());
+    const timestamp = Date.now();
+    dispatch(fetchInstrumentCountRequest(timestamp));
 
     let params = getApiFilter(getState);
 
@@ -97,7 +113,7 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
         },
       })
       .then(response => {
-        dispatch(fetchInstrumentCountSuccess(response.data));
+        dispatch(fetchInstrumentCountSuccess(response.data, timestamp));
       })
       .catch(error => {
         log.error(error.message);

@@ -18,6 +18,8 @@ import { FacilityCycle } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('FacilityCycle actions', () => {
+  Date.now = jest.fn().mockImplementation(() => 1);
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
@@ -50,8 +52,8 @@ describe('FacilityCycle actions', () => {
     const asyncAction = fetchFacilityCycles();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
-    expect(actions[1]).toEqual(fetchFacilityCyclesSuccess(mockData));
+    expect(actions[0]).toEqual(fetchFacilityCyclesRequest(1));
+    expect(actions[1]).toEqual(fetchFacilityCyclesSuccess(mockData, 1));
   });
 
   it('fetchFacilityCycles action applies filters and sort state to request params', async () => {
@@ -71,9 +73,9 @@ describe('FacilityCycle actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
+    expect(actions[0]).toEqual(fetchFacilityCyclesRequest(1));
 
-    expect(actions[1]).toEqual(fetchFacilityCyclesSuccess([]));
+    expect(actions[1]).toEqual(fetchFacilityCyclesSuccess([], 1));
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
@@ -98,7 +100,7 @@ describe('FacilityCycle actions', () => {
     const asyncAction = fetchFacilityCycles();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchFacilityCyclesRequest());
+    expect(actions[0]).toEqual(fetchFacilityCyclesRequest(1));
     expect(actions[1]).toEqual(
       fetchFacilityCyclesFailure('Test error message')
     );
@@ -118,8 +120,8 @@ describe('FacilityCycle actions', () => {
     const asyncAction = fetchFacilityCycleCount();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest());
-    expect(actions[1]).toEqual(fetchFacilityCycleCountSuccess(2));
+    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest(1));
+    expect(actions[1]).toEqual(fetchFacilityCycleCountSuccess(2, 1));
   });
 
   it('fetchFacilityCycleCount action applies filters to request params', async () => {
@@ -138,9 +140,9 @@ describe('FacilityCycle actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest());
+    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest(1));
 
-    expect(actions[1]).toEqual(fetchFacilityCycleCountSuccess(1));
+    expect(actions[1]).toEqual(fetchFacilityCycleCountSuccess(1, 1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
@@ -164,7 +166,7 @@ describe('FacilityCycle actions', () => {
     const asyncAction = fetchFacilityCycleCount();
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest());
+    expect(actions[0]).toEqual(fetchFacilityCycleCountRequest(1));
     expect(actions[1]).toEqual(
       fetchFacilityCycleCountFailure('Test error message')
     );

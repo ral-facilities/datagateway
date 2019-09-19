@@ -14,6 +14,8 @@ export interface DGTableState {
   loading: boolean;
   downloading: boolean;
   error: string | null;
+  dataTimestamp: number;
+  countTimestamp: number;
 }
 
 export interface StateType {

@@ -59,9 +59,12 @@ import {
 
 describe('dgtable reducer', () => {
   let state: DGTableState;
+  const invalidTimestamp = 0;
+  let validTimestamp = 0;
 
   beforeEach(() => {
     state = { ...initialState };
+    validTimestamp = Date.now() + 1000;
   });
 
   it('should return state for actions it does not care about', () => {
@@ -109,6 +112,7 @@ describe('dgtable reducer', () => {
 
   it('should clear the table state when given a ClearTable action', () => {
     state = {
+      ...initialState,
       data: [{ ID: 1, NAME: 'test' }],
       totalDataCount: 1,
       loading: true,
@@ -120,6 +124,7 @@ describe('dgtable reducer', () => {
 
     let updatedState = DGTableReducer(state, clearTable());
     expect(updatedState).toEqual({
+      ...initialState,
       data: [],
       totalDataCount: 0,
       loading: false,
@@ -130,11 +135,80 @@ describe('dgtable reducer', () => {
     });
   });
 
+  describe('timestamps', () => {
+    it('should ignore data requests with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationsRequest(invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
+    it('should ignore data successes with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetsSuccess([], invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
+    it('should ignore count requests with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileCountRequest(invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
+    it('should ignore count successes with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentCountSuccess(1, invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
+    it('should update dataTimestamp when given a valid fetchDataRequest', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafilesRequest(validTimestamp)
+      );
+      expect(updatedState.dataTimestamp).toBe(validTimestamp);
+    });
+
+    it('should update dataTimestamp when given a valid fetchDataSuccess', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchFacilityCyclesSuccess([], validTimestamp)
+      );
+      expect(updatedState.dataTimestamp).toBe(validTimestamp);
+    });
+
+    it('should update countTimestamp when given a valid fetchCountRequest', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetCountRequest(validTimestamp)
+      );
+      expect(updatedState.countTimestamp).toBe(validTimestamp);
+    });
+
+    it('should update countTimestamp when given a valid fetchCountSuccess', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationCountSuccess(1, validTimestamp)
+      );
+      expect(updatedState.countTimestamp).toBe(validTimestamp);
+    });
+  });
+
   describe('FetchInvestigations actions', () => {
     it('should set the loading state when given a FetchInvestigationsRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchInvestigationsRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationsRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
@@ -171,7 +245,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchInvestigationsSuccess(mockData)
+        fetchInvestigationsSuccess(mockData, validTimestamp)
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual(mockData);
@@ -197,7 +271,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchInvestigationCountRequest()
+        fetchInvestigationCountRequest(validTimestamp)
       );
       expect(updatedState.loading).toBe(true);
     });
@@ -207,7 +281,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchInvestigationCountSuccess(11)
+        fetchInvestigationCountSuccess(11, validTimestamp)
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(11);
@@ -231,7 +305,10 @@ describe('dgtable reducer', () => {
     it('should set the loading state when given a FetchDatasetsRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchDatasetsRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetsRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
@@ -254,7 +331,10 @@ describe('dgtable reducer', () => {
         },
       ];
 
-      let updatedState = DGTableReducer(state, fetchDatasetsSuccess(mockData));
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetsSuccess(mockData, validTimestamp)
+      );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual(mockData);
       expect(updatedState.error).toBeNull();
@@ -277,14 +357,20 @@ describe('dgtable reducer', () => {
     it('should set the loading state when given a FetchDatasetCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchDatasetCountRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetCountRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
     it('should set the totalDataCount state and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGTableReducer(state, fetchDatasetCountSuccess(12));
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetCountSuccess(12, validTimestamp)
+      );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(12);
       expect(updatedState.error).toBeNull();
@@ -307,7 +393,10 @@ describe('dgtable reducer', () => {
     it('should set the downloading state to true when given a DownloadDatasetRequest action', () => {
       expect(state.downloading).toBe(false);
 
-      let updatedState = DGTableReducer(state, downloadDatasetRequest());
+      let updatedState = DGTableReducer(
+        state,
+        downloadDatasetRequest(validTimestamp)
+      );
       expect(updatedState.downloading).toBe(true);
     });
 
@@ -334,7 +423,7 @@ describe('dgtable reducer', () => {
     it('should not affect state when given a FetchInvestigationDatasetsCountRequest action', () => {
       let updatedState = DGTableReducer(
         state,
-        fetchInvestigationDatasetsCountRequest()
+        fetchInvestigationDatasetsCountRequest(validTimestamp)
       );
       expect(updatedState).toEqual(state);
     });
@@ -379,7 +468,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchInvestigationDatasetsCountSuccess(1, 2)
+        fetchInvestigationDatasetsCountSuccess(1, 2, validTimestamp)
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual(mockDataUpdated);
@@ -399,7 +488,10 @@ describe('dgtable reducer', () => {
     it('should set the loading state when given a FetchDatafilesRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchDatafilesRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafilesRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
@@ -424,7 +516,10 @@ describe('dgtable reducer', () => {
         },
       ];
 
-      let updatedState = DGTableReducer(state, fetchDatafilesSuccess(mockData));
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafilesSuccess(mockData, validTimestamp)
+      );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual(mockData);
       expect(updatedState.error).toBeNull();
@@ -447,14 +542,20 @@ describe('dgtable reducer', () => {
     it('should set the loading state when given a FetchDatafileCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchDatafileCountRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileCountRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
     it('should set the totalDataCount state and reset error and loading state when given a FetchDatafileCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGTableReducer(state, fetchDatafileCountSuccess(13));
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileCountSuccess(13, validTimestamp)
+      );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(13);
       expect(updatedState.error).toBeNull();
@@ -477,7 +578,10 @@ describe('dgtable reducer', () => {
     it('should set the downloading state to true when given a DownloadDatafileRequest action', () => {
       expect(state.downloading).toBe(false);
 
-      let updatedState = DGTableReducer(state, downloadDatafileRequest());
+      let updatedState = DGTableReducer(
+        state,
+        downloadDatafileRequest(validTimestamp)
+      );
       expect(updatedState.downloading).toBe(true);
     });
 
@@ -504,7 +608,7 @@ describe('dgtable reducer', () => {
     it('should not affect state when given a FetchDatasetDatafilesCountRequest action', () => {
       let updatedState = DGTableReducer(
         state,
-        fetchDatasetDatafilesCountRequest()
+        fetchDatasetDatafilesCountRequest(validTimestamp)
       );
       expect(updatedState).toEqual(state);
     });
@@ -537,7 +641,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchDatasetDatafilesCountSuccess(1, 2)
+        fetchDatasetDatafilesCountSuccess(1, 2, validTimestamp)
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual(mockDataUpdated);
@@ -557,7 +661,10 @@ describe('dgtable reducer', () => {
     it('should set the loading state when given a FetchInstrumentsRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchInstrumentsRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentsRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
@@ -576,7 +683,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchInstrumentsSuccess(mockData)
+        fetchInstrumentsSuccess(mockData, validTimestamp)
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual(mockData);
@@ -600,14 +707,20 @@ describe('dgtable reducer', () => {
     it('should set the loading state when given a FetchInstrumentCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchInstrumentCountRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentCountRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
     it('should set the totalDataCount state and reset error and loading state when given a FetchInstrumentCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGTableReducer(state, fetchInstrumentCountSuccess(14));
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentCountSuccess(14, validTimestamp)
+      );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(14);
       expect(updatedState.error).toBeNull();
@@ -630,7 +743,10 @@ describe('dgtable reducer', () => {
     it('should set the loading state when given a FetchFacilityCyclesRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGTableReducer(state, fetchFacilityCyclesRequest());
+      let updatedState = DGTableReducer(
+        state,
+        fetchFacilityCyclesRequest(validTimestamp)
+      );
       expect(updatedState.loading).toBe(true);
     });
 
@@ -655,7 +771,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchFacilityCyclesSuccess(mockData)
+        fetchFacilityCyclesSuccess(mockData, validTimestamp)
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual(mockData);
@@ -681,7 +797,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchFacilityCycleCountRequest()
+        fetchFacilityCycleCountRequest(validTimestamp)
       );
       expect(updatedState.loading).toBe(true);
     });
@@ -691,7 +807,7 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(
         state,
-        fetchFacilityCycleCountSuccess(15)
+        fetchFacilityCycleCountSuccess(15, validTimestamp)
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(15);
