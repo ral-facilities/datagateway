@@ -39,6 +39,7 @@ import {
   fetchInstrumentCountRequest,
   fetchInstrumentCountSuccess,
   fetchInstrumentCountFailure,
+  clearTable,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -104,6 +105,29 @@ describe('dgtable reducer', () => {
 
     let updatedState = DGTableReducer(state, filterTable('test', null));
     expect(updatedState.sort).toEqual({});
+  });
+
+  it('should clear the table state when given a ClearTable action', () => {
+    state = {
+      data: [{ ID: 1, NAME: 'test' }],
+      totalDataCount: 1,
+      loading: true,
+      downloading: true,
+      error: 'test error',
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
+    };
+
+    let updatedState = DGTableReducer(state, clearTable());
+    expect(updatedState).toEqual({
+      data: [],
+      totalDataCount: 0,
+      loading: false,
+      downloading: false,
+      error: null,
+      sort: {},
+      filters: {},
+    });
   });
 
   describe('FetchInvestigations actions', () => {

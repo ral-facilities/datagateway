@@ -15,6 +15,7 @@ import {
   filterTable,
   fetchDatasets,
   fetchDatasetCount,
+  clearTable,
 } from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
@@ -22,6 +23,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
+import useAfterMountEffect from '../utils';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -48,6 +50,7 @@ interface DatasetTableDispatchProps {
     offsetParams: IndexRange
   ) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
+  clearTable: () => Action;
 }
 
 type DatasetTableCombinedProps = DatasetTableProps &
@@ -65,9 +68,14 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     filters,
     filterTable,
     investigationId,
+    clearTable,
   } = props;
 
   React.useEffect(() => {
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, sort, filters, investigationId]);
@@ -146,6 +154,7 @@ const mapDispatchToProps = (
     dispatch(fetchDatasets(investigationId, offsetParams)),
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
+  clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {

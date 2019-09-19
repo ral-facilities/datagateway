@@ -7,6 +7,7 @@ export const RequestPluginRerenderType = 'daaas:api:plugin_rerender';
 // internal actions
 export const SortTableType = 'datagateway_table:sort_table';
 export const FilterTableType = 'datagateway_table:filter_table';
+export const ClearTableType = 'datagateway_table:clear_table';
 
 export const FetchInvestigationsRequestType =
   'datagateway_table:fetch_investigations_request';

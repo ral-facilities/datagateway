@@ -20,7 +20,9 @@ import {
   filterTable,
   fetchInvestigations,
   fetchInvestigationCount,
+  clearTable,
 } from '../state/actions';
+import useAfterMountEffect from '../utils';
 
 interface InvestigationTableProps {
   sort: {
@@ -40,6 +42,7 @@ interface InvestigationTableDispatchProps {
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
+  clearTable: () => Action;
 }
 
 type InvestigationTableCombinedProps = InvestigationTableProps &
@@ -57,6 +60,7 @@ const InvestigationTable = (
     sortTable,
     filters,
     filterTable,
+    clearTable,
   } = props;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -67,6 +71,10 @@ const InvestigationTable = (
   );
 
   React.useEffect(() => {
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
     fetchCount();
     fetchData({ startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, sort, filters]);
@@ -168,6 +176,7 @@ const mapDispatchToProps = (
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInvestigations(offsetParams)),
   fetchCount: () => dispatch(fetchInvestigationCount()),
+  clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {

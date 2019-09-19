@@ -1,5 +1,9 @@
-import { sortTable, filterTable, getApiFilter } from '.';
-import { SortTableType, FilterTableType } from './actions.types';
+import { sortTable, filterTable, getApiFilter, clearTable } from '.';
+import {
+  SortTableType,
+  FilterTableType,
+  ClearTableType,
+} from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 
@@ -92,5 +96,10 @@ describe('Actions', () => {
     const action = filterTable('test', 'filter text');
     expect(action.type).toEqual(FilterTableType);
     expect(action.payload).toEqual({ column: 'test', filter: 'filter text' });
+  });
+
+  it('clearTable returns a ClearTableType', () => {
+    const action = clearTable();
+    expect(action.type).toEqual(ClearTableType);
   });
 });

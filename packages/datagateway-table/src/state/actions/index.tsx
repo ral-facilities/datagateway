@@ -4,8 +4,10 @@ import {
   SortTableType,
   FilterTablePayload,
   FilterTableType,
+  ClearTableType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
+import { Action } from 'redux';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgtable.sort;
@@ -50,4 +52,8 @@ export const filterTable = (
     column,
     filter,
   },
+});
+
+export const clearTable = (): Action => ({
+  type: ClearTableType,
 });

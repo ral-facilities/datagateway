@@ -17,12 +17,14 @@ import {
   filterTable,
   downloadDatafile,
   fetchDatafileCount,
+  clearTable,
 } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { Action, AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
+import useAfterMountEffect from '../utils';
 
 interface DatafileTableProps {
   datasetId: string;
@@ -47,6 +49,7 @@ interface DatafileTableDispatchProps {
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
+  clearTable: () => Action;
 }
 
 type DatafileTableCombinedProps = DatafileTableProps &
@@ -67,9 +70,14 @@ const DatafileTable = (
     filterTable,
     datasetId,
     downloadData,
+    clearTable,
   } = props;
 
   React.useEffect(() => {
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, sort, filters, datasetId]);
@@ -162,6 +170,7 @@ const mapDispatchToProps = (
   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
   downloadData: (datafileId: number, filename: string) =>
     dispatch(downloadDatafile(datafileId, filename)),
+  clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (state: StateType): DatafileTableStoreProps => {

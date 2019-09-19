@@ -51,6 +51,7 @@ import {
   FetchFacilityCycleCountRequestType,
   FetchFacilityCycleCountSuccessType,
   FetchFacilityCycleCountFailureType,
+  ClearTableType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -122,6 +123,19 @@ export function handleFilterTable(
       totalDataCount: 0,
     };
   }
+}
+
+export function handleClearTable(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    data: [],
+    totalDataCount: 0,
+    loading: false,
+    downloading: false,
+    error: null,
+    sort: {},
+    filters: {},
+  };
 }
 
 export function handleFetchDataRequest(state: DGTableState): DGTableState {
@@ -262,6 +276,7 @@ export function handleFetchDatasetDatafilesCountSuccess(
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
+  [ClearTableType]: handleClearTable,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
