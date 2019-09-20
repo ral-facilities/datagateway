@@ -12,6 +12,9 @@
     "lint": "lerna run lint:js",
     "tsc": "lerna run tsc",
     "test": "npm run test:unit && npm run test:e2e",
+    "test:ci": "npm run test:unit:ci && npm run test:e2e:ci",
+    "test:unit:ci": "lerna run test:ci --stream",
+    "test:e2e:ci": "lerna run e2e:ci --stream",
     "test:unit": "lerna run test --stream",
     "test:e2e": "lerna run e2e --stream",
     "datagateway-table": "cd packages/datagateway-table && npm start"
