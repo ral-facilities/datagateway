@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Data column header component renders correctly with filter but no sort 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-head"
+>
+  Test
+  <TextColumnFilter
+    label="test"
+    onChange={[Function]}
+  />
+</div>
+`;
+
+exports[`Data column header component renders correctly with sort and filter 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-head"
+>
+  <WithStyles(ForwardRef(TableSortLabel))
+    active={false}
+    onClick={[Function]}
+    style={
+      Object {
+        "flexDirection": "row",
+      }
+    }
+  >
+    Test
+  </WithStyles(ForwardRef(TableSortLabel))>
+  <TextColumnFilter
+    label="test"
+    onChange={[Function]}
+  />
+</div>
+`;
+
+exports[`Data column header component renders correctly with sort but no filter 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-head"
+>
+  <WithStyles(ForwardRef(TableSortLabel))
+    active={false}
+    onClick={[Function]}
+    style={
+      Object {
+        "flexDirection": "row",
+      }
+    }
+  >
+    Test
+  </WithStyles(ForwardRef(TableSortLabel))>
+</div>
+`;
+
+exports[`Data column header component renders correctly without sort or filter 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-head"
+>
+  Test
+</div>
+`;
