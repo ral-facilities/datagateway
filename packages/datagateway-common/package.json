@@ -92,5 +92,10 @@
       "!src/serviceWorker.ts",
       "!src/setupTests.js"
     ]
+  },
+  "jest-junit": {
+    "suiteName": "datagateway-table unit tests",
+    "suiteNameTemplate": "datagateway-table.{title}",
+    "classNameTemplate": "datagateway-table.{classname}.{title}"
   }
 }

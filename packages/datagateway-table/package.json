@@ -45,7 +45,7 @@
     "e2e:ci": "start-server-and-test e2e:serve http://localhost:3000 cy:run:ci",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:run:ci": "cypress run --reporter junit --reporter-options \"mochaFile=e2e_results.xml,toConsole=true\"",
+    "cy:run:ci": "cypress run --reporter junit --reporter-options \"mochaFile=e2e_results.xml,toConsole=true,rootSuiteTitle=datagateway-table e2e tests,jenkinsMode=true\"",
     "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src",
     "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
@@ -72,6 +72,11 @@
       "!src/serviceWorker.ts",
       "!src/setupTests.js"
     ]
+  },
+  "jest-junit": {
+    "suiteName": "datagateway-common unit tests",
+    "suiteNameTemplate": "datagateway-common.{title}",
+    "classNameTemplate": "datagateway-common.{classname}.{title}"
   },
   "lint-staged": {
     "src/**/*.{tsx,ts,js,jsx,json}": [
