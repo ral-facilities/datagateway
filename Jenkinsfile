@@ -10,21 +10,21 @@ pipeline {
         }
         stage('Unit Tests') {
             steps {
-                sh 'npm run test:ci'
+                sh 'npm run test:unit:ci'
             }
             post {
                 always {
-                    junit 'junit.xml'
+                    junit '**/junit.xml'
                 }
             }
         }
         stage('E2E Tests') {
             steps {
-                sh 'npm run e2e:ci'
+                sh 'npm run test:e2e:ci'
             }
             post {
                 always {
-                    junit 'e2e_results.xml'
+                    junit '**/e2e_results.xml'
                 }
             }
         }
