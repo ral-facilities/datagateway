@@ -1,0 +1,94 @@
+{
+  "name": "datagateway-common",
+  "version": "0.1.0",
+  "private": true,
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/index.js",
+  "dependencies": {
+    "react-virtualized": "^9.21.1"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8.0 < 17",
+    "react-dom": ">= 16.8.0 < 17",
+    "react-router-dom": ">= 5.0.0 < 6",
+    "@material-ui/core": ">=  4.0.0 < 5",
+    "@material-ui/icons": ">=  4.0.0 < 5"
+  },
+  "devDependencies": {
+    "@material-ui/core": "^4.3.0",
+    "@material-ui/icons": "^4.2.1",
+    "@types/enzyme": "^3.10.3",
+    "@types/jest": "^24.0.16",
+    "@types/node": "^12.6.8",
+    "@types/react": "^16.8.23",
+    "@types/react-router-dom": "^4.3.4",
+    "@types/react-virtualized": "^9.21.2",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.3.5",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-cypress": "^2.6.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "lint-staged": "^9.2.1",
+    "prettier": "^1.18.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "typescript": "^3.5.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom --coverage --watchAll=false",
+    "prepare": "npm run tsc",
+    "test:watch": "react-scripts test --env=jsdom --watch",
+    "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src",
+    "tsc": "tsc -p tsconfig.lib.json",
+    "eject": "react-scripts eject",
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.{tsx,ts,js,jsx,json}": [
+      "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx  --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "cypress/**/*.{tsx,ts,js,jsx,json}": [
+      "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ]
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{tsx,js,jsx}",
+      "!src/index.tsx",
+      "!src/serviceWorker.ts",
+      "!src/setupTests.js"
+    ]
+  }
+}

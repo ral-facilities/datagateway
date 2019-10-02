@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cell content renderers datasetLink renders correctly 1`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browse/investigation/1/dataset/2/datafile"
+>
+  test
+</WithStyles(ForwardRef(Link))>
+`;
+
+exports[`Cell content renderers investigationLink renders correctly 1`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browse/investigation/1/dataset"
+>
+  test
+</WithStyles(ForwardRef(Link))>
+`;
