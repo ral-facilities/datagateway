@@ -2,7 +2,20 @@
 
 exports[`Dataset table component renders Dataset title as a link 1`] = `
 <WithStyles(ForwardRef(Link))
-  component={[Function]}
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
   to="/browse/investigation/1/dataset/1/datafile"
 >
   <ForwardRef(Link)
@@ -16,13 +29,39 @@ exports[`Dataset table component renders Dataset title as a link 1`] = `
         "underlineNone": "MuiLink-underlineNone",
       }
     }
-    component={[Function]}
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
     to="/browse/investigation/1/dataset/1/datafile"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
       color="primary"
-      component={[Function]}
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/investigation/1/dataset/1/datafile"
@@ -65,7 +104,20 @@ exports[`Dataset table component renders Dataset title as a link 1`] = `
           }
         }
         color="primary"
-        component={[Function]}
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
         onBlur={[Function]}
         onFocus={[Function]}
         to="/browse/investigation/1/dataset/1/datafile"
@@ -77,15 +129,23 @@ exports[`Dataset table component renders Dataset title as a link 1`] = `
           onFocus={[Function]}
           to="/browse/investigation/1/dataset/1/datafile"
         >
-          <a
+          <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
             href="/browse/investigation/1/dataset/1/datafile"
+            navigate={[Function]}
             onBlur={[Function]}
-            onClick={[Function]}
             onFocus={[Function]}
           >
-            Test 1
-          </a>
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browse/investigation/1/dataset/1/datafile"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              Test 1
+            </a>
+          </LinkAnchor>
         </Link>
       </ForwardRef(Typography)>
     </WithStyles(ForwardRef(Typography))>

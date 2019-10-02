@@ -35,6 +35,12 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FeatureSwitchesPayload,
+  ConfigureStringsPayload,
+  ConfigureStringsType,
+  ConfigureFeatureSwitchesType,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -45,6 +51,16 @@ export const initialState: DGTableState = {
   error: null,
   sort: {},
   filters: {},
+  features: {
+    investigationGetSize: false,
+    investigationGetCount: false,
+    datasetGetSize: false,
+    datasetGetCount: false,
+  },
+  urls: {
+    idsUrl: '',
+    apiUrl: '',
+  },
 };
 
 export function handleSortTable(
@@ -97,6 +113,36 @@ export function handleFilterTable(
       },
     };
   }
+}
+
+export function handleConfigureStrings(
+  state: DGTableState,
+  payload: ConfigureStringsPayload
+): DGTableState {
+  return {
+    ...state,
+    res: payload.res,
+  };
+}
+
+export function handleConfigureFeatureSwitches(
+  state: DGTableState,
+  payload: FeatureSwitchesPayload
+): DGTableState {
+  return {
+    ...state,
+    features: payload.switches,
+  };
+}
+
+export function handleConfigureUrls(
+  state: DGTableState,
+  payload: ConfigureUrlsPayload
+): DGTableState {
+  return {
+    ...state,
+    urls: payload.urls,
+  };
 }
 
 export function handleFetchDataRequest(state: DGTableState): DGTableState {
@@ -208,6 +254,9 @@ export function handleFetchDatafileCountSuccess(
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
+  [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
+  [ConfigureURLsType]: handleConfigureUrls,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

@@ -15,41 +15,41 @@ import { Investigation } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Investigation actions', () => {
+  const mockData: Investigation[] = [
+    {
+      ID: 1,
+      TITLE: 'Test 1',
+      VISIT_ID: '1',
+      RB_NUMBER: '1',
+      DOI: 'doi 1',
+      SIZE: 1,
+      INSTRUMENT: {
+        NAME: 'LARMOR',
+      },
+      STARTDATE: '2019-06-10',
+      ENDDATE: '2019-06-11',
+    },
+    {
+      ID: 2,
+      TITLE: 'Test 2',
+      VISIT_ID: '2',
+      RB_NUMBER: '2',
+      DOI: 'doi 2',
+      SIZE: 10000,
+      INSTRUMENT: {
+        NAME: 'LARMOR',
+      },
+      STARTDATE: '2019-06-10',
+      ENDDATE: '2019-06-12',
+    },
+  ];
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchInvestigations action', async () => {
-    const mockData: Investigation[] = [
-      {
-        ID: 1,
-        TITLE: 'Test 1',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INSTRUMENT: {
-          NAME: 'LARMOR',
-        },
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
-      },
-      {
-        ID: 2,
-        TITLE: 'Test 2',
-        VISIT_ID: '2',
-        RB_NUMBER: '2',
-        DOI: 'doi 2',
-        SIZE: 10000,
-        INSTRUMENT: {
-          NAME: 'LARMOR',
-        },
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-12',
-      },
-    ];
-
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: mockData,
@@ -57,6 +57,29 @@ describe('Investigation actions', () => {
     );
 
     const asyncAction = fetchInvestigations();
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest());
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
+  });
+
+  it('dispatches fetchDatasetCountRequests upon successful fetchInvestigations action if investigationGetCount feature switch is set', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+
+    const asyncAction = fetchInvestigations();
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        features: {
+          ...initialState.features,
+          investigationGetCount: true,
+        },
+      },
+    });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());

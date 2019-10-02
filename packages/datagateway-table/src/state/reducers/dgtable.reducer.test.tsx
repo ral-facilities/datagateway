@@ -27,6 +27,9 @@ import {
   downloadDatasetRequest,
   downloadDatasetSuccess,
   downloadDatasetFailure,
+  loadFeatureSwitches,
+  configureStrings,
+  loadUrls,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -89,6 +92,46 @@ describe('dgtable reducer', () => {
 
     let updatedState = DGTableReducer(state, filterTable('test', null));
     expect(updatedState.sort).toEqual({});
+  });
+
+  it('should set res property when configure strings action is sent', () => {
+    expect(state).not.toHaveProperty('res');
+
+    const updatedState = DGTableReducer(
+      state,
+      configureStrings({ testSection: { testId: 'test' } })
+    );
+
+    expect(updatedState).toHaveProperty('res');
+    expect(updatedState.res).toEqual({ testSection: { testId: 'test' } });
+  });
+
+  it('should set feature switches property when configure feature switches action is sent', () => {
+    expect(state.features.investigationGetSize).toBeFalsy();
+
+    const updatedState = DGTableReducer(
+      state,
+      loadFeatureSwitches({
+        ...state.features,
+        investigationGetSize: true,
+      })
+    );
+
+    expect(updatedState.features.investigationGetSize).toBeTruthy();
+  });
+
+  it('should set urls property when configure urls action is sent', () => {
+    expect(state.urls.apiUrl).toEqual('');
+
+    const updatedState = DGTableReducer(
+      state,
+      loadUrls({
+        ...state.urls,
+        apiUrl: 'test',
+      })
+    );
+
+    expect(updatedState.urls.apiUrl).toEqual('test');
   });
 
   describe('FetchInvestigations actions', () => {

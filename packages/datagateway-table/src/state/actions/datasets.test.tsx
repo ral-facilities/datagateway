@@ -23,29 +23,29 @@ import { Dataset } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Dataset actions', () => {
+  const mockData: Dataset[] = [
+    {
+      ID: 1,
+      NAME: 'Test 1',
+      MOD_TIME: '2019-06-10',
+      CREATE_TIME: '2019-06-11',
+      INVESTIGATION_ID: 1,
+    },
+    {
+      ID: 2,
+      NAME: 'Test 2',
+      MOD_TIME: '2019-06-10',
+      CREATE_TIME: '2019-06-12',
+      INVESTIGATION_ID: 1,
+    },
+  ];
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
   });
 
   it('dispatches fetchDatasetsRequest and fetchDatasetsSuccess actions upon successful fetchDatasets action', async () => {
-    const mockData: Dataset[] = [
-      {
-        ID: 1,
-        NAME: 'Test 1',
-        MOD_TIME: '2019-06-10',
-        CREATE_TIME: '2019-06-11',
-        INVESTIGATION_ID: 1,
-      },
-      {
-        ID: 2,
-        NAME: 'Test 2',
-        MOD_TIME: '2019-06-10',
-        CREATE_TIME: '2019-06-12',
-        INVESTIGATION_ID: 1,
-      },
-    ];
-
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: mockData,
@@ -53,6 +53,39 @@ describe('Dataset actions', () => {
     );
 
     const asyncAction = fetchDatasets(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetsRequest());
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets',
+      expect.objectContaining({
+        params,
+      })
+    );
+  });
+
+  it('dispatches fetchDatafileCountRequests upon successful fetchDatasets action if datasetGetCount feature switch is set', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+
+    const asyncAction = fetchDatasets(1);
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        features: {
+          ...initialState.features,
+          datasetGetCount: true,
+        },
+      },
+    });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest());
