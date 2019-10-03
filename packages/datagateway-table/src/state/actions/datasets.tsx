@@ -63,7 +63,6 @@ export const fetchDatasets = (
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
     );
-    const { datasetGetCount } = getState().dgtable.features;
     const { apiUrl } = getState().dgtable.urls;
 
     await axios

@@ -13,7 +13,7 @@ import {
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { TableSortLabel } from '@material-ui/core';
-import Table from '../../table/table.component';
+import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
@@ -70,7 +70,7 @@ describe('DLS Visits table component', () => {
 
   it('sends fetchInvestigations action on load', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
+    mount(
       <Provider store={testStore}>
         <MemoryRouter>
           <DLSVisitsTable proposalName="Test 1" />
@@ -132,12 +132,17 @@ describe('DLS Visits table component', () => {
     );
 
     const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0])
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+      })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
-      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0], jest.fn())
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+        detailsPanelResize: jest.fn(),
+      })
     );
 
     expect(testStore.getActions()[1]).toEqual(

@@ -54,13 +54,7 @@ export const fetchInvestigations = (
     dispatch(fetchInvestigationsRequest());
 
     let params = getApiFilter(getState);
-    const { investigationGetCount } = getState().dgtable.features;
     const { apiUrl } = getState().dgtable.urls;
-
-    params.append(
-      'include',
-      JSON.stringify({ INVESTIGATIONINSTRUMENT: 'INSTRUMENT' })
-    );
 
     if (optionalParams && optionalParams.additionalFilters) {
       optionalParams.additionalFilters.forEach(filter => {

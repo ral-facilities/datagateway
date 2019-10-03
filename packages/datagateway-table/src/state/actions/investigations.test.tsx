@@ -66,32 +66,26 @@ describe('Investigation actions', () => {
     },
   ];
 
+  (axios.get as jest.Mock).mockImplementation(() =>
+    Promise.resolve({
+      data: mockData,
+    })
+  );
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchInvestigations action', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: [],
-      })
-    );
-
     const asyncAction = fetchInvestigations();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
-    expect(actions[1]).toEqual(fetchInvestigationsSuccess([]));
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
   });
 
   it('fetchInvestigations action applies filters and sort state to request params, as well as applying optional additional filters', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: [],
-      })
-    );
-
     const asyncAction = fetchInvestigations({
       additionalFilters: [
         {
@@ -111,83 +105,23 @@ describe('Investigation actions', () => {
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest());
 
-    expect(actions[1]).toEqual(fetchInvestigationsSuccess([]));
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('column1 desc'));
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ column3: { eq: 3 } }));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/investigations',
       expect.objectContaining({
-        params: {
-          filter: {
-            order: 'column1 desc',
-            where: { column1: '1', column2: '2', column3: '3' },
-          },
-        },
+        params,
       })
     );
   });
 
   it('fetchInvestigations action sends fetchDatasetCount actions when specified via optional parameters', async () => {
-    const mockData: Investigation[] = [
-      {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
-          {
-            ID: 3,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 4,
-            INSTRUMENT: {
-              ID: 4,
-              NAME: 'LARMOR',
-            },
-          },
-        ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
-      },
-      {
-        ID: 2,
-        TITLE: 'Test 2',
-        NAME: 'Test 2',
-        VISIT_ID: '2',
-        RB_NUMBER: '2',
-        DOI: 'doi 2',
-        SIZE: 10000,
-        INVESTIGATIONINSTRUMENT: [
-          {
-            ID: 5,
-            INVESTIGATION_ID: 2,
-            INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 4,
-              NAME: 'LARMOR',
-            },
-          },
-        ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-12',
-      },
-    ];
-
-    const asyncAction = fetchInvestigations();
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchInvestigationsRequest());
-    expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData));
-  });
-
-  it('dispatches fetchDatasetCountRequests upon successful fetchInvestigations action if investigationGetCount feature switch is set', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: mockData,
-      })
-    );
-
     const asyncAction = fetchInvestigations({ getDatasetCount: true });
     await asyncAction(dispatch, getState, null);
 
@@ -218,7 +152,7 @@ describe('Investigation actions', () => {
   });
 
   it('dispatches fetchInvestigationDetailsRequest and fetchInvestigationDetailsSuccess actions upon successful fetchInvestigationDetails action', async () => {
-    const mockData: Investigation[] = [
+    const mockDetailsData: Investigation[] = [
       {
         ID: 1,
         TITLE: 'Test 1',
@@ -246,7 +180,7 @@ describe('Investigation actions', () => {
 
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: mockData,
+        data: mockDetailsData,
       })
     );
 
@@ -254,7 +188,9 @@ describe('Investigation actions', () => {
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationDetailsRequest());
-    expect(actions[1]).toEqual(fetchInvestigationDetailsSuccess(mockData));
+    expect(actions[1]).toEqual(
+      fetchInvestigationDetailsSuccess(mockDetailsData)
+    );
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ ID: { eq: 1 } }));

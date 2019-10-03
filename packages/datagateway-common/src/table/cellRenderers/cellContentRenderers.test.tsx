@@ -6,6 +6,7 @@ import {
   formatBytes,
   datasetLink,
   investigationLink,
+  tableLink,
 } from './cellContentRenderers';
 
 describe('Cell content renderers', () => {
@@ -46,6 +47,15 @@ describe('Cell content renderers', () => {
     it('renders correctly', () => {
       const wrapper = shallow(
         <MemoryRouter>{investigationLink(1, 'test')}</MemoryRouter>
+      );
+      expect(wrapper.find(Link)).toMatchSnapshot();
+    });
+  });
+
+  describe('tableLink', () => {
+    it('renders correctly', () => {
+      const wrapper = shallow(
+        <MemoryRouter>{tableLink('/test/url', 'test text')}</MemoryRouter>
       );
       expect(wrapper.find(Link)).toMatchSnapshot();
     });

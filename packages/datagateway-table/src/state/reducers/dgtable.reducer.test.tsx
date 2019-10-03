@@ -113,11 +113,11 @@ describe('dgtable reducer', () => {
   });
 
   it('should set feature switches property when configure feature switches action is sent', () => {
-    expect(state.features).toBe({});
+    expect(state.features).toEqual({});
 
     const updatedState = DGTableReducer(state, loadFeatureSwitches({}));
 
-    expect(updatedState.features).toBe({});
+    expect(updatedState.features).toEqual({});
   });
 
   it('should set urls property when configure urls action is sent', () => {

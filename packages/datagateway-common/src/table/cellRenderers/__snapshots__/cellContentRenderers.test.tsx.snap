@@ -43,3 +43,25 @@ exports[`Cell content renderers investigationLink renders correctly 1`] = `
   test
 </WithStyles(ForwardRef(Link))>
 `;
+
+exports[`Cell content renderers tableLink renders correctly 1`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/test/url"
+>
+  test text
+</WithStyles(ForwardRef(Link))>
+`;

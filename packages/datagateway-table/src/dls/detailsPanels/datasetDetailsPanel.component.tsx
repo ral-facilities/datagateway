@@ -1,7 +1,6 @@
 import React from 'react';
-import { Entity, Dataset } from '../../state/app.types';
+import { Entity, Dataset, formatBytes } from 'datagateway-common';
 import { Typography, Tabs, Tab, Button } from '@material-ui/core';
-import { formatBytes } from '../../table/cellRenderers/cellContentRenderers';
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;

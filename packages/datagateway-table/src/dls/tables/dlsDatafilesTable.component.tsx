@@ -8,14 +8,8 @@ import {
   Entity,
   Datafile,
 } from 'datagateway-common';
-import { Paper, Typography, IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
-import {
-  fetchDatafiles,
-  sortTable,
-  filterTable,
-  downloadDatafile,
-} from '../../state/actions';
+import { Paper, Typography } from '@material-ui/core';
+import { fetchDatafiles, sortTable, filterTable } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
@@ -85,7 +79,7 @@ const DLSDatafilesTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={(rowData: Entity) => {
+        detailsPanel={({ rowData }) => {
           const datafileData = rowData as Datafile;
           return (
             <div>

@@ -57,12 +57,7 @@ export const initialState: DGTableState = {
   error: null,
   sort: {},
   filters: {},
-  features: {
-    investigationGetSize: false,
-    investigationGetCount: false,
-    datasetGetSize: false,
-    datasetGetCount: false,
-  },
+  features: {},
   urls: {
     idsUrl: '',
     apiUrl: '',

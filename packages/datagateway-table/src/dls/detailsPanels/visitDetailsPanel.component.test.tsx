@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import VisitsDetailsPanel from './visitDetailsPanel.component';
-import { Investigation } from '../../state/app.types';
+import { Investigation } from 'datagateway-common';
 
 describe('Visit details panel component', () => {
   let shallow;
@@ -162,7 +162,7 @@ describe('Visit details panel component', () => {
   });
 
   it('calls fetchDetails on load', () => {
-    const wrapper = mount(
+    mount(
       <VisitsDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
