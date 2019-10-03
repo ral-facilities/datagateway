@@ -6,6 +6,7 @@ import {
   Order,
   Filter,
   Entity,
+  TableActionProps,
 } from 'datagateway-common';
 import { Paper, IconButton } from '@material-ui/core';
 import {
@@ -108,7 +109,7 @@ const ISISDatasetsTable = (
           );
         }}
         actions={[
-          function downloadButton(rowData: Entity) {
+          function downloadButton({ rowData }: TableActionProps) {
             return (
               <IconButton
                 aria-label="Download"
