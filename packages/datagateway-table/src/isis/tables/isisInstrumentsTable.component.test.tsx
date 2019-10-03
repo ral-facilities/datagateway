@@ -58,7 +58,7 @@ describe('ISIS Instruments table component', () => {
 
   it('sends fetchInstruments action on load', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
+    mount(
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISInstrumentsTable />
@@ -120,12 +120,17 @@ describe('ISIS Instruments table component', () => {
     );
 
     const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0])
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+      })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
-      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0], jest.fn())
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+        detailsPanelResize: jest.fn(),
+      })
     );
 
     expect(testStore.getActions()[1]).toEqual(fetchInstrumentDetailsRequest());

@@ -94,7 +94,7 @@ const ISISInvestigationsTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={(rowData, detailsPanelResize) => {
+        detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
             <InvestigationDetailsPanel
               rowData={rowData}

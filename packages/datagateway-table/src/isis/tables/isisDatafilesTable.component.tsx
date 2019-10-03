@@ -95,7 +95,7 @@ const ISISDatafilesTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={(rowData, detailsPanelResize) => {
+        detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
             <DatafileDetailsPanel
               rowData={rowData}

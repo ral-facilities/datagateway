@@ -98,7 +98,7 @@ const ISISDatasetsTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={(rowData, detailsPanelResize) => {
+        detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
             <DatasetDetailsPanel
               rowData={rowData}

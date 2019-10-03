@@ -58,7 +58,7 @@ describe('ISIS datafiles table component', () => {
 
   it('sends fetchDatafiles action on load', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
+    mount(
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatafilesTable datasetId="1" />
@@ -152,12 +152,17 @@ describe('ISIS datafiles table component', () => {
     );
 
     const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0])
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+      })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
-      wrapper.find(Table).prop('detailsPanel')(state.dgtable.data[0], jest.fn())
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+        detailsPanelResize: jest.fn(),
+      })
     );
 
     expect(testStore.getActions()[1]).toEqual(fetchDatafileDetailsRequest());
