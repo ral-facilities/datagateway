@@ -110,6 +110,7 @@ exports[`Datafile details panel component renders parameters tab when present in
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Typography))
+      key="2"
       variant="body2"
     >
       <b>
@@ -120,6 +121,7 @@ exports[`Datafile details panel component renders parameters tab when present in
       String test
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Typography))
+      key="4"
       variant="body2"
     >
       <b>
@@ -130,6 +132,7 @@ exports[`Datafile details panel component renders parameters tab when present in
       1337
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Typography))
+      key="6"
       variant="body2"
     >
       <b>

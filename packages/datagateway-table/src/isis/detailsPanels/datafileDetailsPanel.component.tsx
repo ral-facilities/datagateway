@@ -72,26 +72,25 @@ const DatafileDetailsPanel = (
           hidden={value !== 'parameters'}
         >
           {datafileData.DATAFILEPARAMETER.map(parameter => {
-            console.log('parameter!');
             if (parameter.PARAMETERTYPE) {
               switch (parameter.PARAMETERTYPE.VALUETYPE) {
                 case 'STRING':
                   return (
-                    <Typography variant="body2">
+                    <Typography key={parameter.ID} variant="body2">
                       <b>{parameter.PARAMETERTYPE.NAME}:</b>{' '}
                       {parameter.STRING_VALUE}
                     </Typography>
                   );
                 case 'NUMERIC':
                   return (
-                    <Typography variant="body2">
+                    <Typography key={parameter.ID} variant="body2">
                       <b>{parameter.PARAMETERTYPE.NAME}:</b>{' '}
                       {parameter.NUMERIC_VALUE}
                     </Typography>
                   );
                 case 'DATE_AND_TIME':
                   return (
-                    <Typography variant="body2">
+                    <Typography key={parameter.ID} variant="body2">
                       <b>{parameter.PARAMETERTYPE.NAME}:</b>{' '}
                       {parameter.DATETIME_VALUE &&
                         parameter.DATETIME_VALUE.split(' ')[0]}
