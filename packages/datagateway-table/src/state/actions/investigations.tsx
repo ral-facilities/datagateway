@@ -62,9 +62,11 @@ export const fetchInvestigations = (
         JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
       );
     }
+    const { investigationGetCount } = getState().dgtable.features;
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/investigations', {
+      .get(`${apiUrl}/investigations`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
@@ -72,9 +74,11 @@ export const fetchInvestigations = (
       })
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
-        response.data.forEach((investigation: Investigation) => {
-          dispatch(fetchInvestigationDatasetsCount(investigation.ID));
-        });
+        if (investigationGetCount) {
+          response.data.forEach((investigation: Investigation) => {
+            dispatch(fetchInvestigationDatasetsCount(investigation.ID));
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);

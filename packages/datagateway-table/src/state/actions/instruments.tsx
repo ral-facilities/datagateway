@@ -51,9 +51,10 @@ export const fetchInstruments = (): ThunkResult<Promise<void>> => {
     dispatch(fetchInstrumentsRequest(timestamp));
 
     let params = getApiFilter(getState);
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/instruments', {
+      .get(`${apiUrl}/instruments`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

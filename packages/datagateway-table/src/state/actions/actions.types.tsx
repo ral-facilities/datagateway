@@ -1,4 +1,5 @@
 import { Filter, Order, Entity } from 'datagateway-common';
+import { ApplicationStrings } from '../app.types';
 
 // parent app actions
 export const RegisterRouteType = 'daaas:api:register_route';
@@ -8,6 +9,10 @@ export const RequestPluginRerenderType = 'daaas:api:plugin_rerender';
 export const SortTableType = 'datagateway_table:sort_table';
 export const FilterTableType = 'datagateway_table:filter_table';
 export const ClearTableType = 'datagateway_table:clear_table';
+export const ConfigureStringsType = 'datagateway_table:configure_strings';
+export const ConfigureFeatureSwitchesType =
+  'datagateway_table:configure_feature_switches';
+export const ConfigureURLsType = 'datagateway_table:configure_urls';
 
 export const FetchInvestigationsRequestType =
   'datagateway_table:fetch_investigations_request';
@@ -115,6 +120,30 @@ export interface SortTablePayload {
 export interface FilterTablePayload {
   column: string;
   filter: Filter | null;
+}
+
+export interface ConfigureStringsPayload {
+  res: ApplicationStrings;
+}
+
+export interface FeatureSwitchesPayload {
+  switches: FeatureSwitches;
+}
+
+export interface FeatureSwitches {
+  investigationGetSize: boolean;
+  investigationGetCount: boolean;
+  datasetGetSize: boolean;
+  datasetGetCount: boolean;
+}
+
+export interface ConfigureUrlsPayload {
+  urls: URLs;
+}
+
+export interface URLs {
+  idsUrl: string;
+  apiUrl: string;
 }
 
 export interface RequestPayload {

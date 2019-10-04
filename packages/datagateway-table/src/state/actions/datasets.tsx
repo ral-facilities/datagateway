@@ -76,9 +76,11 @@ export const fetchDatasets = (
         JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
       );
     }
+    const { datasetGetCount } = getState().dgtable.features;
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datasets', {
+      .get(`${apiUrl}/datasets`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
@@ -86,9 +88,11 @@ export const fetchDatasets = (
       })
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data, timestamp));
-        response.data.forEach((dataset: Dataset) => {
-          dispatch(fetchDatasetDatafilesCount(dataset.ID));
-        });
+        if (datasetGetCount) {
+          response.data.forEach((dataset: Dataset) => {
+            dispatch(fetchDatasetDatafilesCount(dataset.ID));
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);
@@ -182,12 +186,11 @@ export const downloadDataset = (
   datasetId: number,
   datasetName: string
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(downloadDatasetRequest(timestamp));
 
-    // TODO: get this from some sort of settings file
-    const idsUrl = '';
+    const { idsUrl } = getState().dgtable.urls;
 
     // TODO: get ICAT session id properly when auth is sorted
     const params = {
@@ -245,7 +248,7 @@ export const fetchInvestigationDatasetsCountRequest = (
 export const fetchInvestigationDatasetsCount = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchInvestigationDatasetsCountRequest(timestamp));
 
@@ -254,9 +257,10 @@ export const fetchInvestigationDatasetsCount = (
         INVESTIGATION_ID: { eq: investigationId },
       },
     };
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datasets/count', {
+      .get(`${apiUrl}/datasets/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

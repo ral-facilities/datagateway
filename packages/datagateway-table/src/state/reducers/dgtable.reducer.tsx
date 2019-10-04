@@ -53,6 +53,12 @@ import {
   FetchFacilityCycleCountFailureType,
   ClearTableType,
   RequestPayload,
+  FeatureSwitchesPayload,
+  ConfigureStringsPayload,
+  ConfigureStringsType,
+  ConfigureFeatureSwitchesType,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -66,6 +72,16 @@ export const initialState: DGTableState = {
   filters: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
+  features: {
+    investigationGetSize: false,
+    investigationGetCount: false,
+    datasetGetSize: false,
+    datasetGetCount: false,
+  },
+  urls: {
+    idsUrl: '',
+    apiUrl: '',
+  },
 };
 
 export function handleSortTable(
@@ -126,6 +142,36 @@ export function handleFilterTable(
       totalDataCount: 0,
     };
   }
+}
+
+export function handleConfigureStrings(
+  state: DGTableState,
+  payload: ConfigureStringsPayload
+): DGTableState {
+  return {
+    ...state,
+    res: payload.res,
+  };
+}
+
+export function handleConfigureFeatureSwitches(
+  state: DGTableState,
+  payload: FeatureSwitchesPayload
+): DGTableState {
+  return {
+    ...state,
+    features: payload.switches,
+  };
+}
+
+export function handleConfigureUrls(
+  state: DGTableState,
+  payload: ConfigureUrlsPayload
+): DGTableState {
+  return {
+    ...state,
+    urls: payload.urls,
+  };
 }
 
 export function handleClearTable(state: DGTableState): DGTableState {
@@ -306,6 +352,9 @@ const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
+  [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
+  [ConfigureURLsType]: handleConfigureUrls,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
