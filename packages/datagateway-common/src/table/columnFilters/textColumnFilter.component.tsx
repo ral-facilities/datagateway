@@ -6,7 +6,6 @@ export default class TextColumnFilter extends React.Component<
   { label: string; onChange: (value: string) => void },
   { value: string }
 > {
-  updateValue: any;
   public constructor(props: {
     label: string;
     onChange: (value: string) => void;
@@ -16,13 +15,14 @@ export default class TextColumnFilter extends React.Component<
       value: '',
     };
     this.handleChange = this.handleChange.bind(this);
-
-    // Debounce the updating of the column filter by 250 milliseconds.
-    this.updateValue = debounce((value: string) => {
-      this.props.onChange(value);
-      console.log('onChange called for: ', value);
-    }, 250);
+    this.updateValue = this.updateValue.bind(this);
   }
+
+  // Debounce the updating of the column filter by 250 milliseconds.
+  private updateValue = debounce((value: string) => {
+    this.props.onChange(value);
+    console.log('onChange called for: ', value);
+  }, 250);
 
   private handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
     console.log('handleChange called for: ', event.target.value);
