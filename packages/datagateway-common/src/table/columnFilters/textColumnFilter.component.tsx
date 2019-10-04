@@ -21,11 +21,9 @@ export default class TextColumnFilter extends React.Component<
   // Debounce the updating of the column filter by 250 milliseconds.
   private updateValue = debounce((value: string) => {
     this.props.onChange(value);
-    console.log('onChange called for: ', value);
   }, 250);
 
   private handleChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    console.log('handleChange called for: ', event.target.value);
     this.updateValue(event.target.value);
     this.setState({
       value: event.target.value,
