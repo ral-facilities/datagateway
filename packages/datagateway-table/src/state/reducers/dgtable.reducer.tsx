@@ -46,6 +46,8 @@ import { Entity, Investigation, Dataset } from 'datagateway-common';
 
 export const initialState: DGTableState = {
   data: [],
+  investigationCache: {},
+  datasetCache: {},
   loading: false,
   downloading: false,
   error: null,
@@ -201,6 +203,13 @@ export function handleFetchDatasetCountSuccess(
     loading: false,
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
+
+      // Cache dataset count in the data cache for this particular investigation.
+      state.investigationCache[investigation.ID] = {
+        ...state.investigationCache[investigation.ID],
+        datasetCount: payload.count,
+      };
+
       return investigation.ID === payload.id
         ? { ...investigation, DATASET_COUNT: payload.count }
         : investigation;
@@ -243,6 +252,12 @@ export function handleFetchDatafileCountSuccess(
     loading: false,
     data: state.data.map((entity: Entity) => {
       const dataset = entity as Dataset;
+
+      // Cache dataset count in the data cache for this particular investigation.
+      state.datasetCache[payload.id] = {
+        datafileCount: payload.count,
+      };
+
       return dataset.ID === payload.id
         ? { ...dataset, DATAFILE_COUNT: payload.count }
         : dataset;

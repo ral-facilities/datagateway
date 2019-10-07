@@ -11,6 +11,16 @@ export interface DGTableState {
     [column: string]: Filter;
   };
   data: Entity[];
+  investigationCache: {
+    [investigationId: number]: {
+      datasetCount: number;
+    };
+  };
+  datasetCache: {
+    [datasetId: number]: {
+      datafileCount: number;
+    };
+  };
   loading: boolean;
   downloading: boolean;
   error: string | null;
