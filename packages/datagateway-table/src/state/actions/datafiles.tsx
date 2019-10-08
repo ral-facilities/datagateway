@@ -106,21 +106,39 @@ export const fetchDatafileCount = (
     };
     const { apiUrl } = getState().dgtable.urls;
 
-    await axios
-      .get(`${apiUrl}/datafiles/count`, {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(fetchDatafileCountSuccess(datasetId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatafileCountFailure(error.message));
-      });
+    const { datasetCache } = getState().dgtable;
+    const datafileCount = datasetCache[datasetId];
+    if (datafileCount) {
+      console.log(
+        'Cached datafile count value exists for investigation ID: ' +
+          datasetId +
+          ': ' +
+          datafileCount
+      );
+    } else {
+      console.log(
+        'Cached datafile count value does not exist for dataset ID (fetch from API): ' +
+          datasetId
+      );
+
+      await axios
+        .get(`${apiUrl}/datafiles/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(fetchDatafileCountSuccess(datasetId, response.data));
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatafileCountFailure(error.message));
+        });
+    }
   };
 };
 

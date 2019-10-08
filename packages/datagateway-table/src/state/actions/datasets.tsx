@@ -164,20 +164,42 @@ export const fetchDatasetCount = (
     };
     const { apiUrl } = getState().dgtable.urls;
 
-    await axios
-      .get(`${apiUrl}/datasets/count`, {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(fetchDatasetCountSuccess(investigationId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatasetCountFailure(error.message));
-      });
+    // Check to see if a cached value exists already.
+    const { investigationCache } = getState().dgtable;
+    const datasetCount = investigationCache[investigationId];
+    if (datasetCount) {
+      console.log(
+        'Cached dataset count value exists for investigation ID: ' +
+          investigationId +
+          ': ' +
+          datasetCount
+      );
+
+      // Update dataset count with cached value
+      // DGTableState.data.DATASET_COUNT = datasetCount
+    } else {
+      console.log(
+        'Cached dataset count value does not exist for investigation ID (fetch from API): ' +
+          investigationId
+      );
+
+      await axios
+        .get(`${apiUrl}/datasets/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(fetchDatasetCountSuccess(investigationId, response.data));
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatasetCountFailure(error.message));
+        });
+    }
   };
 };

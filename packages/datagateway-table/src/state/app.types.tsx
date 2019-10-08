@@ -12,14 +12,10 @@ export interface DGTableState {
   };
   data: Entity[];
   investigationCache: {
-    [investigationId: number]: {
-      datasetCount: number;
-    };
+    [investigationId: number]: number | null;
   };
   datasetCache: {
-    [datasetId: number]: {
-      datafileCount: number;
-    };
+    [datasetId: number]: number | null;
   };
   loading: boolean;
   downloading: boolean;
