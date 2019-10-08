@@ -11,18 +11,22 @@ export interface DGTableState {
     [column: string]: Filter;
   };
   data: Entity[];
-  investigationCache: {
-    [investigationId: number]: number | null;
-  };
-  datasetCache: {
-    [datasetId: number]: number | null;
-  };
+  investigationCache: InvestigationCache;
+  datasetCache: DatasetCache;
   loading: boolean;
   downloading: boolean;
   error: string | null;
   res?: ApplicationStrings;
   features: FeatureSwitches;
   urls: URLs;
+}
+
+export interface InvestigationCache {
+  [investigationId: number]: number | null;
+}
+
+export interface DatasetCache {
+  [datasetId: number]: number | null;
 }
 
 export interface AppStrings {
