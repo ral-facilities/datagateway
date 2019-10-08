@@ -15,6 +15,7 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
+import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatafileCount } from './datafiles';
@@ -67,8 +68,10 @@ export const fetchDatasets = (
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data));
         if (datasetGetCount) {
-          response.data.forEach((dataset: Dataset) => {
-            dispatch(fetchDatafileCount(dataset.ID));
+          batch(() => {
+            response.data.forEach((dataset: Dataset) => {
+              dispatch(fetchDatafileCount(dataset.ID));
+            });
           });
         }
       })

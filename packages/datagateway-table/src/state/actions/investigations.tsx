@@ -7,6 +7,7 @@ import {
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
+import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetCount } from './datasets';
@@ -53,8 +54,10 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data));
         if (investigationGetCount) {
-          response.data.forEach((investigation: Investigation) => {
-            dispatch(fetchDatasetCount(investigation.ID));
+          batch(() => {
+            response.data.forEach((investigation: Investigation) => {
+              dispatch(fetchDatasetCount(investigation.ID));
+            });
           });
         }
       })
