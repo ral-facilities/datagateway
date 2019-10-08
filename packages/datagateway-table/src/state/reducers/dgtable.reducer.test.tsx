@@ -1,5 +1,5 @@
 import DGTableReducer, { initialState } from './dgtable.reducer';
-import { DGTableState, InvestigationCache } from '../app.types';
+import { DGTableState, CountCache } from '../app.types';
 import {
   sortTable,
   fetchInvestigationsRequest,
@@ -348,7 +348,7 @@ describe('dgtable reducer', () => {
         { ...mockData[0], DATASET_COUNT: 4 },
       ];
 
-      const mockInvestigationCacheUpdated: InvestigationCache = {
+      const mockInvestigationCacheUpdated: CountCache = {
         1: 3,
         2: 5,
         3: 4,
@@ -482,6 +482,66 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(state, fetchDatafileCountSuccess(1, 2));
       expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the data state with cached datafile count and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
+      state.loading = true;
+
+      state.datasetCache = {
+        1: 100,
+        2: 100,
+      };
+
+      const mockData: Dataset[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+          MOD_TIME: '2019-10-08',
+          CREATE_TIME: '2019-10-08',
+          INVESTIGATION_ID: 1,
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+          MOD_TIME: '2019-10-08',
+          CREATE_TIME: '2019-10-08',
+          INVESTIGATION_ID: 1,
+        },
+        {
+          ID: 3,
+          NAME: 'Test 3',
+          MOD_TIME: '2019-10-08',
+          CREATE_TIME: '2019-10-08',
+          INVESTIGATION_ID: 1,
+        },
+      ];
+
+      state.data = mockData;
+
+      const mockDataUpdated: Dataset[] = [
+        mockData[0],
+        mockData[1],
+        { ...mockData[2], DATAFILE_COUNT: 99 },
+      ];
+
+      const mockDatasetCacheUpdated: CountCache = {
+        1: 100,
+        2: 100,
+        3: 99,
+      };
+
+      // We give the investigation ID of 3 and the new datafile count (we would cache) as 99.
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileCountSuccess(3, 99)
+      );
+      expect(updatedState.loading).toBe(false);
+      console.log(updatedState.datasetCache);
+      console.log(mockDatasetCacheUpdated);
+      expect(updatedState.datasetCache).toEqual(mockDatasetCacheUpdated);
+
       expect(updatedState.data).toEqual(mockDataUpdated);
       expect(updatedState.error).toBeNull();
     });

@@ -11,8 +11,8 @@ export interface DGTableState {
     [column: string]: Filter;
   };
   data: Entity[];
-  investigationCache: InvestigationCache;
-  datasetCache: DatasetCache;
+  investigationCache: CountCache;
+  datasetCache: CountCache;
   loading: boolean;
   downloading: boolean;
   error: string | null;
@@ -21,12 +21,8 @@ export interface DGTableState {
   urls: URLs;
 }
 
-export interface InvestigationCache {
+export interface CountCache {
   [investigationId: number]: number | null;
-}
-
-export interface DatasetCache {
-  [datasetId: number]: number | null;
 }
 
 export interface AppStrings {
