@@ -115,6 +115,15 @@ export const fetchDatafileCount = (
           ': ' +
           datafileCount
       );
+
+      // Dispatch success with the cached datafile count.
+      dispatch(fetchDatafileCountSuccess(datasetId, datafileCount));
+      console.log(
+        'Updated datafile count for dataset ID: ' +
+          datasetId +
+          ' using cached value: ' +
+          datafileCount
+      );
     } else {
       console.log(
         'Cached datafile count value does not exist for dataset ID (fetch from API): ' +

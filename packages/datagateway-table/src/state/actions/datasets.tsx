@@ -175,8 +175,14 @@ export const fetchDatasetCount = (
           datasetCount
       );
 
-      // Update dataset count with cached value
-      // DGTableState.data.DATASET_COUNT = datasetCount
+      // Dispatch success with the cached dataset count.
+      dispatch(fetchDatasetCountSuccess(investigationId, datasetCount));
+      console.log(
+        'Updated dataset count for investigation ID: ' +
+          investigationId +
+          ' using cached value: ' +
+          datasetCount
+      );
     } else {
       console.log(
         'Cached dataset count value does not exist for investigation ID (fetch from API): ' +
