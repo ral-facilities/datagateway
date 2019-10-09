@@ -5,7 +5,7 @@ import {
   fetchDatafilesFailure,
 } from '.';
 import axios from 'axios';
-import { StateType } from '../app.types';
+import { StateType, CountCache } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import {
   fetchDatafileCount,
@@ -22,31 +22,34 @@ import { Datafile } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Datafile actions', () => {
+  const mockData: Datafile[] = [
+    {
+      ID: 1,
+      NAME: 'Test 1',
+      LOCATION: '/test1',
+      SIZE: 1,
+      MOD_TIME: '2019-06-10',
+      DATASET_ID: 1,
+    },
+    {
+      ID: 2,
+      NAME: 'Test 2',
+      LOCATION: '/test2',
+      SIZE: 2,
+      MOD_TIME: '2019-06-10',
+      DATASET_ID: 1,
+    },
+  ];
+
+  // Dataset cache for dataset ID 1 which has 2 datafiles.
+  const mockDatasetCache: CountCache = { 1: 2 };
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
   });
 
   it('dispatches fetchDatafilesRequest and fetchDatafilesSuccess actions upon successful fetchDatafiles action', async () => {
-    const mockData: Datafile[] = [
-      {
-        ID: 1,
-        NAME: 'Test 1',
-        LOCATION: '/test1',
-        SIZE: 1,
-        MOD_TIME: '2019-06-10',
-        DATASET_ID: 1,
-      },
-      {
-        ID: 2,
-        NAME: 'Test 2',
-        LOCATION: '/test2',
-        SIZE: 2,
-        MOD_TIME: '2019-06-10',
-        DATASET_ID: 1,
-      },
-    ];
-
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: mockData,
@@ -142,6 +145,26 @@ describe('Datafile actions', () => {
         },
       })
     );
+  });
+
+  it('dispatches fetchDatafileCountRequest and fetchDatafileCountSuccess actions upon existing datasetCache and successful fetchDatafileCount action', async () => {
+    const asyncAction = fetchDatafileCount(1);
+
+    // Set up state to be used within fetchDatafileCountSuccess with the dataset cache.
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        datasetCache: mockDatasetCache,
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    // We expect two actions to be dispatched; fetchDatafileCountRequest and fetchDatafileCountSuccess.
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchDatafileCountRequest());
+    expect(actions[1]).toEqual(fetchDatafileCountSuccess(1, 2));
   });
 
   it('dispatches fetchDatafileCountRequest and fetchDatafileCountFailure actions upon unsuccessful fetchDatafileCount action', async () => {
