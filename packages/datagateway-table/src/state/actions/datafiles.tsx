@@ -109,27 +109,9 @@ export const fetchDatafileCount = (
     const { datasetCache } = getState().dgtable;
     const datafileCount = datasetCache[datasetId];
     if (datafileCount) {
-      console.log(
-        'Cached datafile count value exists for investigation ID: ' +
-          datasetId +
-          ': ' +
-          datafileCount
-      );
-
       // Dispatch success with the cached datafile count.
       dispatch(fetchDatafileCountSuccess(datasetId, datafileCount));
-      console.log(
-        'Updated datafile count for dataset ID: ' +
-          datasetId +
-          ' using cached value: ' +
-          datafileCount
-      );
     } else {
-      console.log(
-        'Cached datafile count value does not exist for dataset ID (fetch from API): ' +
-          datasetId
-      );
-
       await axios
         .get(`${apiUrl}/datafiles/count`, {
           params,
