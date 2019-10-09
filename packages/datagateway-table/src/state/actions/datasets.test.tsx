@@ -4,7 +4,7 @@ import {
   fetchDatasetsSuccess,
   fetchDatasetsFailure,
 } from '.';
-import { StateType } from '../app.types';
+import { StateType, CountCache } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import {
@@ -39,6 +39,9 @@ describe('Dataset actions', () => {
       INVESTIGATION_ID: 1,
     },
   ];
+
+  // Investigation cache for investigation ID 1 which has 2 datasets.
+  const mockInvestigationCache: CountCache = { 1: 2 };
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -176,6 +179,27 @@ describe('Dataset actions', () => {
         },
       })
     );
+  });
+
+  it('dispatches fetchDatasetCountRequest and fetchDatasetCountSuccess actions upon existing investigation cache and successful fetchDatasetCount action', async () => {
+    const asyncAction = fetchDatasetCount(1);
+
+    // Set up the state for calling fetchDatasetCountSuccess with investigation cache.
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        investigationCache: mockInvestigationCache,
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    // Expect only two actions; fetchDatasetCountRequest and the fetchDatasetCountSucess
+    // (given Investigation ID 1 and the dataset count to be 2).
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchDatasetCountRequest());
+    expect(actions[1]).toEqual(fetchDatasetCountSuccess(1, 2));
   });
 
   it('dispatches fetchDatasetCountRequest and fetchDatasetCountFailure actions upon unsuccessful fetchDatasetCount action', async () => {

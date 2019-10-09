@@ -4,6 +4,7 @@ import {
   Table,
   TextColumnFilter,
   investigationLink,
+  formatBytes,
   Order,
   Filter,
   Investigation,
@@ -107,9 +108,16 @@ const InvestigationTable = (
             filterComponent: textFilter,
           },
           {
-            label: 'Dataset Count',
-            dataKey: 'DATASET_COUNT',
+            label: 'Size',
+            dataKey: 'SIZE',
+            cellContentRenderer: (props: TableCellProps) => {
+              return formatBytes(props.cellData);
+            },
           },
+          // {
+          //   label: 'Dataset Count',
+          //   dataKey: 'DATASET_COUNT',
+          // },
           {
             label: 'Instrument',
             dataKey: 'INSTRUMENT.NAME',
