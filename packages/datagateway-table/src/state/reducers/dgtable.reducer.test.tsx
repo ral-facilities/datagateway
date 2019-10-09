@@ -538,8 +538,6 @@ describe('dgtable reducer', () => {
         fetchDatafileCountSuccess(3, 99)
       );
       expect(updatedState.loading).toBe(false);
-      console.log(updatedState.datasetCache);
-      console.log(mockDatasetCacheUpdated);
       expect(updatedState.datasetCache).toEqual(mockDatasetCacheUpdated);
 
       expect(updatedState.data).toEqual(mockDataUpdated);
