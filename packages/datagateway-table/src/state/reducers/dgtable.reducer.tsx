@@ -204,14 +204,14 @@ export function handleFetchDatasetCountSuccess(
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
 
-      // Cache dataset count in the data cache for this particular investigation.
-      if (investigation.ID === payload.id)
-        state.investigationCache[investigation.ID] = payload.count;
-
       return investigation.ID === payload.id
         ? { ...investigation, DATASET_COUNT: payload.count }
         : investigation;
     }),
+    investigationCache: {
+      ...state.investigationCache,
+      [payload.id]: payload.count,
+    },
     error: null,
   };
 }
@@ -251,14 +251,14 @@ export function handleFetchDatafileCountSuccess(
     data: state.data.map((entity: Entity) => {
       const dataset = entity as Dataset;
 
-      // Cache dataset count in the data cache for this particular investigation.
-      if (dataset.ID === payload.id)
-        state.datasetCache[dataset.ID] = payload.count;
-
       return dataset.ID === payload.id
         ? { ...dataset, DATAFILE_COUNT: payload.count }
         : dataset;
     }),
+    datasetCache: {
+      ...state.datasetCache,
+      [payload.id]: payload.count,
+    },
     error: null,
   };
 }

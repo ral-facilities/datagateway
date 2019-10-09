@@ -22,7 +22,7 @@ export interface DGTableState {
 }
 
 export interface CountCache {
-  [investigationId: number]: number | null;
+  [id: number]: number | null;
 }
 
 export interface AppStrings {

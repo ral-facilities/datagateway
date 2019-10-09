@@ -3,7 +3,6 @@ import { Paper, Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
-  formatBytes,
   investigationLink,
   Order,
   Filter,
@@ -108,11 +107,8 @@ const InvestigationTable = (
             filterComponent: textFilter,
           },
           {
-            label: 'Size',
-            dataKey: 'SIZE',
-            cellContentRenderer: (props: TableCellProps) => {
-              return formatBytes(props.cellData);
-            },
+            label: 'Dataset Count',
+            dataKey: 'DATASET_COUNT',
           },
           {
             label: 'Instrument',
