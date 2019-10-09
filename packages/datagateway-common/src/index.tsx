@@ -27,4 +27,6 @@ export {
 } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
 
+export { default as Preloader } from './preloader/preloader.component';
+
 // ReactDOM.render(<App />, document.getElementById('root'));

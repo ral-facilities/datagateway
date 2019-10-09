@@ -12,6 +12,7 @@ export const ConfigureStringsType = 'datagateway_table:configure_strings';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';
 export const ConfigureURLsType = 'datagateway_table:configure_urls';
+export const SettingsLoadedType = 'datagateway_table:settings_loaded';
 
 export const FetchInvestigationsRequestType =
   'datagateway_table:fetch_investigations_request';
