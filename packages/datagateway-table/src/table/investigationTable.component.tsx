@@ -114,10 +114,6 @@ const InvestigationTable = (
               return formatBytes(props.cellData);
             },
           },
-          // {
-          //   label: 'Dataset Count',
-          //   dataKey: 'DATASET_COUNT',
-          // },
           {
             label: 'Instrument',
             dataKey: 'INSTRUMENT.NAME',
