@@ -166,13 +166,15 @@ export const fetchDatasetCount = (
       },
     };
     const { apiUrl } = getState().dgtable.urls;
-
-    // Check to see if a cached value exists already.
     const { investigationCache } = getState().dgtable;
-    const datasetCount = investigationCache[investigationId];
-    if (datasetCount) {
+
+    if (investigationCache[investigationId]) {
+      // Check to see if a cached value exists already in the cache's child entity count.
+      const datasetCount = investigationCache[investigationId].childEntityCount;
+
       // Dispatch success with the cached dataset count.
-      dispatch(fetchDatasetCountSuccess(investigationId, datasetCount));
+      if (datasetCount)
+        dispatch(fetchDatasetCountSuccess(investigationId, datasetCount));
     } else {
       await axios
         .get(`${apiUrl}/datasets/count`, {

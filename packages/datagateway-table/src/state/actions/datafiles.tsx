@@ -105,12 +105,15 @@ export const fetchDatafileCount = (
       },
     };
     const { apiUrl } = getState().dgtable.urls;
-
     const { datasetCache } = getState().dgtable;
-    const datafileCount = datasetCache[datasetId];
-    if (datafileCount) {
+
+    if (datasetCache[datasetId]) {
+      // Check if the cached value exists already in the cache's child entity count.
+      const datafileCount = datasetCache[datasetId].childEntityCount;
+
       // Dispatch success with the cached datafile count.
-      dispatch(fetchDatafileCountSuccess(datasetId, datafileCount));
+      if (datafileCount)
+        dispatch(fetchDatafileCountSuccess(datasetId, datafileCount));
     } else {
       await axios
         .get(`${apiUrl}/datafiles/count`, {

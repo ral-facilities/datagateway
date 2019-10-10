@@ -210,7 +210,9 @@ export function handleFetchDatasetCountSuccess(
     }),
     investigationCache: {
       ...state.investigationCache,
-      [payload.id]: payload.count,
+      [payload.id]: {
+        childEntityCount: payload.count,
+      },
     },
     error: null,
   };
@@ -257,7 +259,9 @@ export function handleFetchDatafileCountSuccess(
     }),
     datasetCache: {
       ...state.datasetCache,
-      [payload.id]: payload.count,
+      [payload.id]: {
+        childEntityCount: payload.count,
+      },
     },
     error: null,
   };
