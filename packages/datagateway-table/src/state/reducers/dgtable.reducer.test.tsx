@@ -1,5 +1,5 @@
 import DGTableReducer, { initialState } from './dgtable.reducer';
-import { DGTableState, CountCache } from '../app.types';
+import { DGTableState, EntityCache } from '../app.types';
 import {
   sortTable,
   fetchInvestigationsRequest,
@@ -322,8 +322,12 @@ describe('dgtable reducer', () => {
       state.loading = true;
 
       state.investigationCache = {
-        1: 3,
-        2: 5,
+        1: {
+          childEntityCount: 3,
+        },
+        2: {
+          childEntityCount: 5,
+        },
       };
 
       const mockData: Investigation[] = [
@@ -348,10 +352,16 @@ describe('dgtable reducer', () => {
         { ...mockData[0], DATASET_COUNT: 4 },
       ];
 
-      const mockInvestigationCacheUpdated: CountCache = {
-        1: 3,
-        2: 5,
-        3: 4,
+      const mockInvestigationCacheUpdated: EntityCache = {
+        1: {
+          childEntityCount: 3,
+        },
+        2: {
+          childEntityCount: 5,
+        },
+        3: {
+          childEntityCount: 4,
+        },
       };
 
       // We give the investigation ID of 3 and the new dataset count (we would cache) as 4.
@@ -490,8 +500,12 @@ describe('dgtable reducer', () => {
       state.loading = true;
 
       state.datasetCache = {
-        1: 100,
-        2: 100,
+        1: {
+          childEntityCount: 100,
+        },
+        2: {
+          childEntityCount: 100,
+        },
       };
 
       const mockData: Dataset[] = [
@@ -526,10 +540,16 @@ describe('dgtable reducer', () => {
         { ...mockData[2], DATAFILE_COUNT: 99 },
       ];
 
-      const mockDatasetCacheUpdated: CountCache = {
-        1: 100,
-        2: 100,
-        3: 99,
+      const mockDatasetCacheUpdated: EntityCache = {
+        1: {
+          childEntityCount: 100,
+        },
+        2: {
+          childEntityCount: 100,
+        },
+        3: {
+          childEntityCount: 99,
+        },
       };
 
       // We give the investigation ID of 3 and the new datafile count (we would cache) as 99.

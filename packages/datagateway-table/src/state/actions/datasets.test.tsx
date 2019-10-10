@@ -4,7 +4,7 @@ import {
   fetchDatasetsSuccess,
   fetchDatasetsFailure,
 } from '.';
-import { StateType, CountCache } from '../app.types';
+import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import {
@@ -41,7 +41,11 @@ describe('Dataset actions', () => {
   ];
 
   // Investigation cache for investigation ID 1 which has 2 datasets.
-  const mockInvestigationCache: CountCache = { 1: 2 };
+  const mockInvestigationCache: EntityCache = {
+    1: {
+      childEntityCount: 2,
+    },
+  };
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();

@@ -5,7 +5,7 @@ import {
   fetchDatafilesFailure,
 } from '.';
 import axios from 'axios';
-import { StateType, CountCache } from '../app.types';
+import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import {
   fetchDatafileCount,
@@ -42,7 +42,11 @@ describe('Datafile actions', () => {
   ];
 
   // Dataset cache for dataset ID 1 which has 2 datafiles.
-  const mockDatasetCache: CountCache = { 1: 2 };
+  const mockDatasetCache: EntityCache = {
+    1: {
+      childEntityCount: 2,
+    },
+  };
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -162,9 +166,11 @@ describe('Datafile actions', () => {
     await asyncAction(dispatch, getState, null);
 
     // We expect two actions to be dispatched; fetchDatafileCountRequest and fetchDatafileCountSuccess.
+    // We do not want axio.get to have been called during the action as well.
     expect(actions).toHaveLength(2);
     expect(actions[0]).toEqual(fetchDatafileCountRequest());
     expect(actions[1]).toEqual(fetchDatafileCountSuccess(1, 2));
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('dispatches fetchDatafileCountRequest and fetchDatafileCountFailure actions upon unsuccessful fetchDatafileCount action', async () => {
