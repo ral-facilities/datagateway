@@ -197,9 +197,11 @@ describe('Dataset actions', () => {
 
     // Expect only two actions; fetchDatasetCountRequest and the fetchDatasetCountSucess
     // (given Investigation ID 1 and the dataset count to be 2).
+    // We do not expect an GET request from axios to have been called.
     expect(actions).toHaveLength(2);
     expect(actions[0]).toEqual(fetchDatasetCountRequest());
     expect(actions[1]).toEqual(fetchDatasetCountSuccess(1, 2));
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('dispatches fetchDatasetCountRequest and fetchDatasetCountFailure actions upon unsuccessful fetchDatasetCount action', async () => {
