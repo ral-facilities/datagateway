@@ -34,6 +34,9 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
+  // sort by ID first to guarantee order
+  searchParams.append('order', JSON.stringify(`ID asc`));
+
   for (let [key, value] of Object.entries(filters)) {
     searchParams.append('where', JSON.stringify({ [key]: { like: value } }));
   }

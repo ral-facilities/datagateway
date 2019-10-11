@@ -45,7 +45,7 @@ describe('Actions', () => {
       },
     };
 
-    it('given a empty sort and filters it returns an empty object', () => {
+    it('given a empty sort and filters it returns just sorting by ID', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
@@ -53,7 +53,11 @@ describe('Actions', () => {
         router: routerState,
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual(new URLSearchParams());
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
+
+      expect(filter).toEqual(params);
     });
 
     it('given a single sort column in the sort state it returns an order string', () => {
@@ -68,6 +72,7 @@ describe('Actions', () => {
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
+      params.append('order', JSON.stringify('ID asc'));
 
       expect(filter).toEqual(params);
     });
@@ -85,6 +90,7 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
+      params.append('order', JSON.stringify('ID asc'));
 
       expect(filter).toEqual(params);
     });
@@ -100,6 +106,7 @@ describe('Actions', () => {
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
       params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
 
@@ -120,6 +127,7 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
       params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
 

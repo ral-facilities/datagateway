@@ -138,6 +138,7 @@ export const fetchDatasetCount = (
     dispatch(fetchDatasetCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    params.delete('order');
     params.append(
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })

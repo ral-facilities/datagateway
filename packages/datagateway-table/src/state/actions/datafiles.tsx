@@ -129,6 +129,7 @@ export const fetchDatafileCount = (
     dispatch(fetchDatafileCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    params.delete('order');
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
     const { apiUrl } = getState().dgtable.urls;
 

@@ -106,6 +106,7 @@ export const fetchFacilityCycleCount = (): ThunkResult<Promise<void>> => {
     dispatch(fetchFacilityCycleCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    params.delete('order');
     const { apiUrl } = getState().dgtable.urls;
 
     await axios

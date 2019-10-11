@@ -122,6 +122,7 @@ export const fetchInvestigationCount = (): ThunkResult<Promise<void>> => {
     dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    params.delete('order');
     const { apiUrl } = getState().dgtable.urls;
 
     await axios
