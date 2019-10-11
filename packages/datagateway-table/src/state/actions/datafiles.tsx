@@ -130,9 +130,10 @@ export const fetchDatafileCount = (
 
     let params = getApiFilter(getState);
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datafiles/count', {
+      .get(`${apiUrl}/datafiles/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

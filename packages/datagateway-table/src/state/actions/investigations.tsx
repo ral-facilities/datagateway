@@ -122,9 +122,10 @@ export const fetchInvestigationCount = (): ThunkResult<Promise<void>> => {
     dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/investigations/count', {
+      .get(`${apiUrl}/investigations/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

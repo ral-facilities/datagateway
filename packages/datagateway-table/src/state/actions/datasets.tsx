@@ -142,9 +142,10 @@ export const fetchDatasetCount = (
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
     );
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datasets/count', {
+      .get(`${apiUrl}/datasets/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

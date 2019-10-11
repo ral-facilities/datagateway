@@ -106,9 +106,10 @@ export const fetchFacilityCycleCount = (): ThunkResult<Promise<void>> => {
     dispatch(fetchFacilityCycleCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/facilitycycles/count', {
+      .get(`${apiUrl}/facilitycycles/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

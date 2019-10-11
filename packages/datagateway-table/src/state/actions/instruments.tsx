@@ -105,9 +105,10 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
     dispatch(fetchInstrumentCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/instruments/count', {
+      .get(`${apiUrl}/instruments/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
