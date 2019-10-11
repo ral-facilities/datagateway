@@ -211,6 +211,7 @@ export function handleFetchDatasetCountSuccess(
     investigationCache: {
       ...state.investigationCache,
       [payload.id]: {
+        ...state.investigationCache[payload.id],
         childEntityCount: payload.count,
       },
     },
@@ -260,6 +261,7 @@ export function handleFetchDatafileCountSuccess(
     datasetCache: {
       ...state.datasetCache,
       [payload.id]: {
+        ...state.datasetCache[payload.id],
         childEntityCount: payload.count,
       },
     },
