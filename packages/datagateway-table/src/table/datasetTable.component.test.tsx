@@ -131,21 +131,4 @@ describe('Dataset table component', () => {
         .children()
     ).toMatchSnapshot();
   });
-
-  it('renders file size as bytes', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DatasetTable investigationId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .text()
-    ).toEqual('1 B');
-  });
 });

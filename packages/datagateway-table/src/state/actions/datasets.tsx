@@ -15,6 +15,7 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
+import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatafileCount } from './datafiles';
@@ -67,8 +68,10 @@ export const fetchDatasets = (
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data));
         if (datasetGetCount) {
-          response.data.forEach((dataset: Dataset) => {
-            dispatch(fetchDatafileCount(dataset.ID));
+          batch(() => {
+            response.data.forEach((dataset: Dataset) => {
+              dispatch(fetchDatafileCount(dataset.ID));
+            });
           });
         }
       })
@@ -163,21 +166,32 @@ export const fetchDatasetCount = (
       },
     };
     const { apiUrl } = getState().dgtable.urls;
+    const currentCache = getState().dgtable.investigationCache[investigationId];
 
-    await axios
-      .get(`${apiUrl}/datasets/count`, {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(fetchDatasetCountSuccess(investigationId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatasetCountFailure(error.message));
-      });
+    // Check to see if a cached value exists already in the cache's child entity count.
+    if (currentCache && currentCache.childEntityCount) {
+      // Dispatch success with the cached dataset count.
+      dispatch(
+        fetchDatasetCountSuccess(investigationId, currentCache.childEntityCount)
+      );
+    } else {
+      await axios
+        .get(`${apiUrl}/datasets/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(fetchDatasetCountSuccess(investigationId, response.data));
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatasetCountFailure(error.message));
+        });
+    }
   };
 };

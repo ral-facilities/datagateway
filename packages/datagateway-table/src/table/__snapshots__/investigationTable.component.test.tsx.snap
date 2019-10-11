@@ -35,9 +35,8 @@ exports[`Investigation table component renders correctly 1`] = `
           "label": "DOI",
         },
         Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "SIZE",
-          "label": "Size",
+          "dataKey": "DATASET_COUNT",
+          "label": "Dataset Count",
         },
         Object {
           "dataKey": "INSTRUMENT.NAME",

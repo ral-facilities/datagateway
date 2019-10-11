@@ -3,7 +3,6 @@ import { Paper, Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
-  formatBytes,
   datasetLink,
   Order,
   Filter,
@@ -99,11 +98,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
             filterComponent: textFilter,
           },
           {
-            label: 'Size',
-            dataKey: 'SIZE',
-            cellContentRenderer: props => {
-              return formatBytes(props.cellData);
-            },
+            label: 'Datafile Count',
+            dataKey: 'DATAFILE_COUNT',
           },
           {
             label: 'Create Time',

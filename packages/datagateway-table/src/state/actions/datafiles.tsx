@@ -105,22 +105,33 @@ export const fetchDatafileCount = (
       },
     };
     const { apiUrl } = getState().dgtable.urls;
+    const currentCache = getState().dgtable.datasetCache[datasetId];
 
-    await axios
-      .get(`${apiUrl}/datafiles/count`, {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(fetchDatafileCountSuccess(datasetId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatafileCountFailure(error.message));
-      });
+    // Check if the cached value exists already in the cache's child entity count.
+    if (currentCache && currentCache.childEntityCount) {
+      // Dispatch success with the cached datafile count.
+      dispatch(
+        fetchDatafileCountSuccess(datasetId, currentCache.childEntityCount)
+      );
+    } else {
+      await axios
+        .get(`${apiUrl}/datafiles/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(fetchDatafileCountSuccess(datasetId, response.data));
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatafileCountFailure(error.message));
+        });
+    }
   };
 };
 
