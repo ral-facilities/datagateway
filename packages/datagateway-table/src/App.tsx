@@ -21,6 +21,15 @@ import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Preloader } from 'datagateway-common';
 
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'dgwt',
+});
+
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
 
@@ -101,44 +110,46 @@ class App extends React.Component<{}, { hasError: boolean }> {
         <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
-              <ConnectedPreloader>
-                <Switch>
-                  <Route
-                    exact
-                    path="/"
-                    render={() => (
-                      <Link to="/browse/investigation">
-                        Browse investigations
-                      </Link>
-                    )}
-                  />
-                  <Route
-                    exact
-                    path="/browse/investigation/"
-                    component={InvestigationTable}
-                  />
-                  <Route
-                    exact
-                    path="/browse/investigation/:investigationId/dataset"
-                    render={({
-                      match,
-                    }: RouteComponentProps<{ investigationId: string }>) => (
-                      <DatasetTable
-                        investigationId={match.params.investigationId}
-                      />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
-                    render={({
-                      match,
-                    }: RouteComponentProps<{ datasetId: string }>) => (
-                      <DatafileTable datasetId={match.params.datasetId} />
-                    )}
-                  />
-                </Switch>
-              </ConnectedPreloader>
+              <StylesProvider generateClassName={generateClassName}>
+                <ConnectedPreloader>
+                  <Switch>
+                    <Route
+                      exact
+                      path="/"
+                      render={() => (
+                        <Link to="/browse/investigation">
+                          Browse investigations
+                        </Link>
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/investigation/"
+                      component={InvestigationTable}
+                    />
+                    <Route
+                      exact
+                      path="/browse/investigation/:investigationId/dataset"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{ investigationId: string }>) => (
+                        <DatasetTable
+                          investigationId={match.params.investigationId}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{ datasetId: string }>) => (
+                        <DatafileTable datasetId={match.params.datasetId} />
+                      )}
+                    />
+                  </Switch>
+                </ConnectedPreloader>
+              </StylesProvider>
             </ConnectedRouter>
           </Provider>
         </div>
