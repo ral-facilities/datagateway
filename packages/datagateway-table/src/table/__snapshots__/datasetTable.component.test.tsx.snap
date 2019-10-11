@@ -173,9 +173,8 @@ exports[`Dataset table component renders correctly 1`] = `
           "label": "Name",
         },
         Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "SIZE",
-          "label": "Size",
+          "dataKey": "DATAFILE_COUNT",
+          "label": "Datafile Count",
         },
         Object {
           "dataKey": "CREATE_TIME",
