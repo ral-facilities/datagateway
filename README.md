@@ -1,6 +1,13 @@
 # DataGateway
 
-TODO: project description
+DataGateway is a [ReactJs](https://reactjs.org/)-based web application that provides ways of discovering and accessing data produced at large-scale science facilities. DataGateway is 
+a [micro-frontend](https://micro-frontends.org/) that can be integrated with the parent web application [SciGateway](https://github.com/ral-facilities/scigateway). 
+
+The SciGateway application offers features such authentication and authorisation functionality, notifications, cookies management. In this way, DataGateway relies on SciGateway for these overarching features, and can focus on providing data discoverability and downloads.
+
+For more details about the architecture, development guidelines and installation procedures, visit the [SciGateway documentation](https://github.com/ral-facilities/scigateway/wiki). 
+
+## Code structure
 
 The project is structured as a monorepo. This means that the actual code packages are located under `/packages` - below is a description of each package:
 
@@ -12,7 +19,7 @@ The project is structured as a monorepo. This means that the actual code package
 - `datagateway-table` - This package contains all the functionality of the TopCAT Browse and My Data views. It displays configured tables for the facilities
   and provides the data to the tables via API calls.
 
-## Available Scripts
+### Available Scripts
 
 In the project directory, you can run:
 
