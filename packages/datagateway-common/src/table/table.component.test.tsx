@@ -92,6 +92,20 @@ describe('Table component', () => {
     ).toEqual('2 B');
   });
 
+  it('renders select column correctly', () => {
+    const wrapper = mount(
+      <Table
+        {...tableProps}
+        selectedRows={[]}
+        onCheck={jest.fn()}
+        onUncheck={jest.fn()}
+      />
+    );
+
+    expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(true);
+  });
+
   it('renders details column correctly', () => {
     const wrapper = mount(
       <Table
