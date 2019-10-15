@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Select column header component renders correctly when checked 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-head"
+>
+  <WithStyles(ForwardRef(Checkbox))
+    checked={true}
+    checkedIcon={
+      <Memo(CheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    icon={
+      <Memo(CheckBoxOutlineBlankIcon)
+        fontSize="small"
+      />
+    }
+    indeterminate={false}
+    indeterminateIcon={
+      <Memo(IndeterminateCheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    inputProps={
+      Object {
+        "aria-label": "select all rows",
+      }
+    }
+    onClick={[Function]}
+    size="small"
+  />
+</div>
+`;
+
+exports[`Select column header component renders correctly when indeterminate 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-head"
+>
+  <WithStyles(ForwardRef(Checkbox))
+    checked={false}
+    checkedIcon={
+      <Memo(CheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    icon={
+      <Memo(CheckBoxOutlineBlankIcon)
+        fontSize="small"
+      />
+    }
+    indeterminate={true}
+    indeterminateIcon={
+      <Memo(IndeterminateCheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    inputProps={
+      Object {
+        "aria-label": "select all rows",
+      }
+    }
+    onClick={[Function]}
+    size="small"
+  />
+</div>
+`;
+
+exports[`Select column header component renders correctly when unchecked 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-head"
+>
+  <WithStyles(ForwardRef(Checkbox))
+    checked={false}
+    checkedIcon={
+      <Memo(CheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    icon={
+      <Memo(CheckBoxOutlineBlankIcon)
+        fontSize="small"
+      />
+    }
+    indeterminate={false}
+    indeterminateIcon={
+      <Memo(IndeterminateCheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    inputProps={
+      Object {
+        "aria-label": "select all rows",
+      }
+    }
+    onClick={[Function]}
+    size="small"
+  />
+</div>
+`;

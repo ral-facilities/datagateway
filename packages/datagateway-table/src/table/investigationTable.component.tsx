@@ -41,6 +41,7 @@ const InvestigationTable = (
   props: InvestigationTableCombinedProps
 ): React.ReactElement => {
   const { data, fetchData, sort, sortTable, filters, filterTable } = props;
+  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -53,12 +54,26 @@ const InvestigationTable = (
     fetchData();
   }, [fetchData, sort, filters]);
 
+  React.useEffect(() => {
+    console.log(`selectedRows: ${selectedRows}`);
+  }, [selectedRows]);
+
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
         data={data}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        onCheck={(selectedIds: number[]) => {
+          setSelectedRows([
+            ...selectedRows,
+            ...selectedIds.filter(x => !selectedRows.includes(x)),
+          ]);
+        }}
+        onUncheck={(selectedIds: number[]) => {
+          setSelectedRows(selectedRows.filter(x => !selectedIds.includes(x)));
+        }}
         detailsPanel={({ rowData }) => {
           const investigationData = rowData as Investigation;
           return (

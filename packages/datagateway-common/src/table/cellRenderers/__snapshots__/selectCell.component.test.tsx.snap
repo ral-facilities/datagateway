@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Select cell component renders correctly when checked 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-body"
+>
+  <WithStyles(ForwardRef(Checkbox))
+    checked={true}
+    checkedIcon={
+      <Memo(CheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    icon={
+      <Memo(CheckBoxOutlineBlankIcon)
+        fontSize="small"
+      />
+    }
+    inputProps={
+      Object {
+        "aria-label": "select row 2",
+      }
+    }
+    onClick={[Function]}
+    size="small"
+  />
+</div>
+`;
+
+exports[`Select cell component renders correctly when unchecked 1`] = `
+<div
+  aria-sort={null}
+  className="MuiTableCell-root test-class MuiTableCell-body"
+>
+  <WithStyles(ForwardRef(Checkbox))
+    checked={false}
+    checkedIcon={
+      <Memo(CheckBoxIcon)
+        fontSize="small"
+      />
+    }
+    icon={
+      <Memo(CheckBoxOutlineBlankIcon)
+        fontSize="small"
+      />
+    }
+    inputProps={
+      Object {
+        "aria-label": "select row 2",
+      }
+    }
+    onClick={[Function]}
+    size="small"
+  />
+</div>
+`;

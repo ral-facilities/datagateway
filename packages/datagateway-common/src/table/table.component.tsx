@@ -22,6 +22,8 @@ import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
 import DataHeader from './headerRenderers/dataHeader.component';
 import DetailsPanelRow from './rowRenderers/detailsPanelRow.component';
+import SelectCell from './cellRenderers/selectCell.component';
+import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
 const headerHeight = 100;
@@ -88,6 +90,9 @@ interface VirtualizedTableProps {
   onSort: (column: string, order: Order | null) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
+  selectedRows?: number[];
+  onCheck?: (selectedIds: number[]) => void;
+  onUncheck?: (selectedIds: number[]) => void;
 }
 
 const VirtualizedTable = (
@@ -95,11 +100,23 @@ const VirtualizedTable = (
 ): React.ReactElement => {
   const [expandedIndex, setExpandedIndex] = React.useState(-1);
   const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
+  const [lastChecked, setLastChecked] = React.useState(-1);
 
   const tableRef = React.useRef<Table>(null);
   const detailPanelRef = React.useRef<HTMLDivElement>(null);
 
-  const { actions, classes, columns, data, detailsPanel, sort, onSort } = props;
+  const {
+    actions,
+    classes,
+    columns,
+    data,
+    detailsPanel,
+    sort,
+    onSort,
+    selectedRows,
+    onCheck,
+    onUncheck,
+  } = props;
 
   React.useEffect(() => {
     if (tableRef && tableRef.current) {
@@ -154,6 +171,42 @@ const VirtualizedTable = (
                   }
                 }}
               >
+                {selectedRows && onCheck && onUncheck && (
+                  <Column
+                    width={50}
+                    key="Select"
+                    dataKey="Select"
+                    headerRenderer={props => (
+                      <SelectHeader
+                        {...props}
+                        className={clsx(
+                          classes.headerTableCell,
+                          classes.headerFlexContainer
+                        )}
+                        selectedRows={selectedRows}
+                        data={data}
+                        onCheck={onCheck}
+                        onUncheck={onUncheck}
+                      />
+                    )}
+                    className={classes.flexContainer}
+                    cellRenderer={props => (
+                      <SelectCell
+                        {...props}
+                        selectedRows={selectedRows}
+                        data={data}
+                        className={clsx(
+                          classes.tableCell,
+                          classes.flexContainer
+                        )}
+                        onCheck={onCheck}
+                        onUncheck={onUncheck}
+                        lastChecked={lastChecked}
+                        setLastChecked={setLastChecked}
+                      />
+                    )}
+                  />
+                )}
                 {detailsPanel && (
                   <Column
                     width={50}
