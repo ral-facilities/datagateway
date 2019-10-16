@@ -24,6 +24,7 @@ import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
+import PageBreadcrumbs from './breadcrumbs.component';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
@@ -96,12 +97,13 @@ class App extends React.Component<{}, { hasError: boolean }> {
           </div>
         </div>
       );
-    } else
+    } else {
       return (
         <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
+                <PageBreadcrumbs currentPage="None" />
                 <Switch>
                   <Route
                     exact
@@ -143,6 +145,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
           </Provider>
         </div>
       );
+    }
   }
 }
 
