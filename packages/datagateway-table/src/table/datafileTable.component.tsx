@@ -9,6 +9,7 @@ import {
   Filter,
   Datafile,
   Entity,
+  DownloadCartItem,
 } from 'datagateway-common';
 import { GetApp } from '@material-ui/icons';
 import {
@@ -16,6 +17,8 @@ import {
   sortTable,
   filterTable,
   downloadDatafile,
+  addToCart,
+  removeFromCart,
 } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -36,6 +39,7 @@ interface DatafileTableStoreProps {
   data: Entity[];
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
 }
 
 interface DatafileTableDispatchProps {
@@ -43,6 +47,8 @@ interface DatafileTableDispatchProps {
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (datasetId: number) => Promise<void>;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
 }
 
 type DatafileTableCombinedProps = DatafileTableProps &
@@ -61,7 +67,22 @@ const DatafileTable = (
     filterTable,
     datasetId,
     downloadData,
+    cartItems,
+    addToCart,
+    removeFromCart,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'datafile' &&
+            data.some(entity => entity.ID === cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, data]
+  );
 
   React.useEffect(() => {
     fetchData(parseInt(datasetId));
@@ -80,6 +101,9 @@ const DatafileTable = (
         data={data}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
           const datafileData = rowData as Datafile;
           return (
@@ -151,6 +175,10 @@ const mapDispatchToProps = (
   fetchData: (datasetId: number) => dispatch(fetchDatafiles(datasetId)),
   downloadData: (datafileId: number, filename: string) =>
     dispatch(downloadDatafile(datafileId, filename)),
+  addToCart: (entityIds: number[]) =>
+    dispatch(addToCart('datafile', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('datafile', entityIds)),
 });
 
 const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
@@ -160,6 +188,7 @@ const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
     data: state.dgtable.data,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
   };
 };
 

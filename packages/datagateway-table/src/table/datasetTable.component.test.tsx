@@ -4,7 +4,13 @@ import DatasetTable from './datasetTable.component';
 import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
-import { fetchDatasetsRequest, filterTable, sortTable } from '../state/actions';
+import {
+  fetchDatasetsRequest,
+  filterTable,
+  sortTable,
+  addToCartRequest,
+  removeFromCartRequest,
+} from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { TableSortLabel } from '@material-ui/core';
@@ -71,7 +77,9 @@ describe('Dataset table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').first();
+    const filterInput = wrapper
+      .find('[aria-label="Filter by Name"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -101,6 +109,87 @@ describe('Dataset table component', () => {
     expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
   });
 
+  it('sends addToCart action on unchecked checkbox click', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetTable investigationId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+  });
+
+  it('sends removeFromCart action on checked checkbox click', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetTable investigationId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+  });
+
+  it('selected rows only considers relevant cart items', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetTable investigationId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const selectAllCheckbox = wrapper
+      .find('[aria-label="select all rows"]')
+      .first();
+
+    expect(selectAllCheckbox.prop('checked')).toEqual(false);
+    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
@@ -126,7 +215,7 @@ describe('Dataset table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=2]')
+        .find('[aria-colindex=3]')
         .find('p')
         .children()
     ).toMatchSnapshot();

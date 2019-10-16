@@ -8,8 +8,15 @@ import {
   Filter,
   Dataset,
   Entity,
+  DownloadCartItem,
 } from 'datagateway-common';
-import { sortTable, filterTable, fetchDatasets } from '../state/actions';
+import {
+  sortTable,
+  filterTable,
+  fetchDatasets,
+  addToCart,
+  removeFromCart,
+} from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -30,12 +37,15 @@ interface DatasetTableStoreProps {
   data: Entity[];
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
 }
 
 interface DatasetTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (investigationId: number) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
 }
 
 type DatasetTableCombinedProps = DatasetTableProps &
@@ -51,7 +61,22 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     filters,
     filterTable,
     investigationId,
+    cartItems,
+    addToCart,
+    removeFromCart,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'dataset' &&
+            data.some(entity => entity.ID === cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, data]
+  );
 
   React.useEffect(() => {
     fetchData(parseInt(investigationId));
@@ -70,6 +95,9 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         data={data}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
           const datasetData = rowData as Dataset;
           return (
@@ -124,6 +152,9 @@ const mapDispatchToProps = (
     dispatch(filterTable(column, filter)),
   fetchData: (investigationId: number) =>
     dispatch(fetchDatasets(investigationId)),
+  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('dataset', entityIds)),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
@@ -133,6 +164,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     data: state.dgtable.data,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
   };
 };
 
