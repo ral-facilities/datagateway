@@ -21,6 +21,7 @@ import {
 import { Filter, Order } from 'datagateway-common';
 import axios from 'axios';
 import * as log from 'loglevel';
+import { fetchDownloadCart } from './cart';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgtable.sort;
@@ -44,6 +45,7 @@ export * from './datasets';
 export * from './datafiles';
 export * from './instruments';
 export * from './facilityCycles';
+export * from './cart';
 
 export const sortTable = (
   column: string,
@@ -125,6 +127,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           loadUrls({
             idsUrl: settings['idsUrl'],
             apiUrl: settings['apiUrl'],
+            downloadApiUrl: settings['downloadApiUrl'],
           })
         );
 
@@ -151,6 +154,9 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           ? '/' + settings['ui-strings']
           : settings['ui-strings'];
         dispatch(loadStrings(uiStringResourcesPath));
+
+        // fetch initial download cart
+        dispatch(fetchDownloadCart());
       })
       .catch(error => {
         log.error(`Error loading settings.json: ${error.message}`);

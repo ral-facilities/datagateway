@@ -8,6 +8,8 @@ import {
   fetchInvestigationsRequest,
   filterTable,
   sortTable,
+  addToCartRequest,
+  removeFromCartRequest,
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -80,7 +82,9 @@ describe('Investigation table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').first();
+    const filterInput = wrapper
+      .find('[aria-label="Filter by Title"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -110,6 +114,87 @@ describe('Investigation table component', () => {
     expect(testStore.getActions()[1]).toEqual(sortTable('TITLE', 'asc'));
   });
 
+  it('sends addToCart action on unchecked checkbox click', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+  });
+
+  it('sends removeFromCart action on checked checkbox click', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+  });
+
+  it('selected rows only considers relevant cart items', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 2,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const selectAllCheckbox = wrapper
+      .find('[aria-label="select all rows"]')
+      .first();
+
+    expect(selectAllCheckbox.prop('checked')).toEqual(false);
+    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
+  });
+
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
@@ -135,7 +220,7 @@ describe('Investigation table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=2]')
+        .find('[aria-colindex=3]')
         .find('p')
         .children()
     ).toMatchSnapshot();
@@ -152,14 +237,14 @@ describe('Investigation table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=8]')
+        .find('[aria-colindex=9]')
         .find('p')
         .text()
     ).toEqual('2019-07-23');
 
     expect(
       wrapper
-        .find('[aria-colindex=9]')
+        .find('[aria-colindex=10]')
         .find('p')
         .text()
     ).toEqual('2019-07-24');

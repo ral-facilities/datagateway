@@ -8,13 +8,20 @@ import {
   Filter,
   Investigation,
   Entity,
+  DownloadCartItem,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import { sortTable, filterTable, fetchInvestigations } from '../state/actions';
+import {
+  sortTable,
+  filterTable,
+  fetchInvestigations,
+  addToCart,
+  removeFromCart,
+} from '../state/actions';
 
 interface InvestigationTableProps {
   sort: {
@@ -26,12 +33,15 @@ interface InvestigationTableProps {
   data: Entity[];
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
 }
 
 interface InvestigationTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: () => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
 }
 
 type InvestigationTableCombinedProps = InvestigationTableProps &
@@ -40,8 +50,29 @@ type InvestigationTableCombinedProps = InvestigationTableProps &
 const InvestigationTable = (
   props: InvestigationTableCombinedProps
 ): React.ReactElement => {
-  const { data, fetchData, sort, sortTable, filters, filterTable } = props;
-  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
+  const {
+    data,
+    fetchData,
+    sort,
+    sortTable,
+    filters,
+    filterTable,
+    cartItems,
+    addToCart,
+    removeFromCart,
+  } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'investigation' &&
+            data.some(entity => entity.ID === cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, data]
+  );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -54,10 +85,6 @@ const InvestigationTable = (
     fetchData();
   }, [fetchData, sort, filters]);
 
-  React.useEffect(() => {
-    console.log(`selectedRows: ${selectedRows}`);
-  }, [selectedRows]);
-
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
@@ -65,15 +92,8 @@ const InvestigationTable = (
         sort={sort}
         onSort={sortTable}
         selectedRows={selectedRows}
-        onCheck={(selectedIds: number[]) => {
-          setSelectedRows([
-            ...selectedRows,
-            ...selectedIds.filter(x => !selectedRows.includes(x)),
-          ]);
-        }}
-        onUncheck={(selectedIds: number[]) => {
-          setSelectedRows(selectedRows.filter(x => !selectedIds.includes(x)));
-        }}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
           const investigationData = rowData as Investigation;
           return (
@@ -158,6 +178,10 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: () => dispatch(fetchInvestigations()),
+  addToCart: (entityIds: number[]) =>
+    dispatch(addToCart('investigation', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('investigation', entityIds)),
 });
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
@@ -167,6 +191,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     data: state.dgtable.data,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
   };
 };
 

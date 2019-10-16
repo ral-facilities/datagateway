@@ -73,7 +73,10 @@ exports[`Investigation table component renders correctly 1`] = `
       ]
     }
     detailsPanel={[Function]}
+    onCheck={[Function]}
     onSort={[Function]}
+    onUncheck={[Function]}
+    selectedRows={Array []}
     sort={Object {}}
   />
 </div>

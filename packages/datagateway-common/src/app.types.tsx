@@ -57,3 +57,20 @@ export type Entity =
 export type Filter = string | number;
 
 export type Order = 'asc' | 'desc';
+
+export interface DownloadCartItem {
+  entityId: number;
+  entityType: 'investigation' | 'dataset' | 'datafile';
+  id: number;
+  name: string;
+  parentEntities: DownloadCartItem[];
+}
+
+export interface DownloadCart {
+  cartItems: DownloadCartItem[];
+  createdAt: string;
+  facilityName: string;
+  id: number;
+  updatedAt: string;
+  userName: string;
+}

@@ -21,6 +21,9 @@ import {
   fetchInstrumentsRequest,
   fetchInstrumentsSuccess,
   fetchInstrumentsFailure,
+  fetchFacilityCyclesRequest,
+  fetchFacilityCyclesSuccess,
+  fetchFacilityCyclesFailure,
   downloadDatafileRequest,
   downloadDatafileSuccess,
   downloadDatafileFailure,
@@ -30,18 +33,23 @@ import {
   loadFeatureSwitches,
   configureStrings,
   loadUrls,
+  fetchDownloadCartRequest,
+  fetchDownloadCartSuccess,
+  fetchDownloadCartFailure,
+  addToCartRequest,
+  addToCartSuccess,
+  addToCartFailure,
+  removeFromCartRequest,
+  removeFromCartSuccess,
+  removeFromCartFailure,
 } from '../actions';
-import {
-  fetchFacilityCyclesRequest,
-  fetchFacilityCyclesSuccess,
-  fetchFacilityCyclesFailure,
-} from '../actions/facilityCycles';
 import {
   Investigation,
   Dataset,
   Datafile,
   Instrument,
   FacilityCycle,
+  DownloadCart,
 } from 'datagateway-common';
 
 describe('dgtable reducer', () => {
@@ -662,6 +670,115 @@ describe('dgtable reducer', () => {
       expect(updatedState.loading).toBe(false);
       expect(updatedState.data).toEqual([]);
       expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('Cart actions', () => {
+    const mockData: DownloadCart = {
+      cartItems: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'DATASET 1',
+          parentEntities: [],
+        },
+      ],
+      createdAt: '2019-10-15T14:11:43+01:00',
+      facilityName: 'TEST',
+      id: 1,
+      updatedAt: '2019-10-15T14:11:43+01:00',
+      userName: 'test',
+    };
+
+    describe('FetchDownloadCart actions', () => {
+      it('should set the loading state when given a FetchDownloadCartRequest action', () => {
+        expect(state.loading).toBe(false);
+
+        let updatedState = DGTableReducer(state, fetchDownloadCartRequest());
+        expect(updatedState.loading).toBe(true);
+      });
+
+      it('should set the downloadCart state and reset loading state when given a FetchDownloadCartSuccess action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          fetchDownloadCartSuccess(mockData)
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.cartItems).toEqual(mockData.cartItems);
+      });
+
+      it('should set the error state and reset loading state when given a FetchDownloadCartFailure action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          fetchDownloadCartFailure('Test error message')
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.error).toEqual('Test error message');
+      });
+    });
+
+    describe('AddToCart actions', () => {
+      it('should set the loading state when given a AddToCartRequest action', () => {
+        expect(state.loading).toBe(false);
+
+        let updatedState = DGTableReducer(state, addToCartRequest());
+        expect(updatedState.loading).toBe(true);
+      });
+
+      it('should set the downloadCart state and reset loading state when given a AddToCartSuccess action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(state, addToCartSuccess(mockData));
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.cartItems).toEqual(mockData.cartItems);
+      });
+
+      it('should set the error state and reset loading state when given a AddToCartFailure action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          addToCartFailure('Test error message')
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.error).toEqual('Test error message');
+      });
+    });
+
+    describe('RemoveFromCart actions', () => {
+      it('should set the loading state when given a RemoveFromCartRequest action', () => {
+        expect(state.loading).toBe(false);
+
+        let updatedState = DGTableReducer(state, removeFromCartRequest());
+        expect(updatedState.loading).toBe(true);
+      });
+
+      it('should set the downloadCart state and reset loading state when given a RemoveFromCartSuccess action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          removeFromCartSuccess(mockData)
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.cartItems).toEqual(mockData.cartItems);
+      });
+
+      it('should set the error state and reset loading state when given a RemoveFromCartFailure action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          removeFromCartFailure('Test error message')
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.error).toEqual('Test error message');
+      });
     });
   });
 });

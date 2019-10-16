@@ -41,6 +41,16 @@ import {
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  DownloadCartPayload,
+  FetchDownloadCartRequestType,
+  FetchDownloadCartSuccessType,
+  FetchDownloadCartFailureType,
+  AddToCartRequestType,
+  AddToCartFailureType,
+  AddToCartSuccessType,
+  RemoveFromCartRequestType,
+  RemoveFromCartSuccessType,
+  RemoveFromCartFailureType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -62,7 +72,9 @@ export const initialState: DGTableState = {
   urls: {
     idsUrl: '',
     apiUrl: '',
+    downloadApiUrl: '',
   },
+  cartItems: [],
 };
 
 export function handleSortTable(
@@ -269,6 +281,39 @@ export function handleFetchDatafileCountSuccess(
   };
 }
 
+export function handleDownloadCartRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleDownloadCartSuccess(
+  state: DGTableState,
+  payload: DownloadCartPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    cartItems: payload.downloadCart.cartItems,
+    // cartItems: payload.downloadCart.cartItems.map(cartItem => ({
+    //   entityId: cartItem.entityId,
+    //   entityType: cartItem.entityType,
+    // })),
+  };
+}
+
+export function handleDownloadCartFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    error: payload.error,
+  };
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
@@ -302,6 +347,15 @@ const DGTableReducer = createReducer(initialState, {
   [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
   [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
   [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
+  [FetchDownloadCartRequestType]: handleDownloadCartRequest,
+  [FetchDownloadCartSuccessType]: handleDownloadCartSuccess,
+  [FetchDownloadCartFailureType]: handleDownloadCartFailure,
+  [AddToCartRequestType]: handleDownloadCartRequest,
+  [AddToCartSuccessType]: handleDownloadCartSuccess,
+  [AddToCartFailureType]: handleDownloadCartFailure,
+  [RemoveFromCartRequestType]: handleDownloadCartRequest,
+  [RemoveFromCartSuccessType]: handleDownloadCartSuccess,
+  [RemoveFromCartFailureType]: handleDownloadCartFailure,
 });
 
 export default DGTableReducer;
