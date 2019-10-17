@@ -5,6 +5,7 @@ import {
   TableActionProps,
   formatBytes,
   TextColumnFilter,
+  DateColumnFilter,
   Order,
   Filter,
   Datafile,
@@ -74,6 +75,15 @@ const DatafileTable = (
     />
   );
 
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
+      }
+    />
+  );
+
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
@@ -134,6 +144,7 @@ const DatafileTable = (
           {
             label: 'Modified Time',
             dataKey: 'MOD_TIME',
+            filterComponent: dateFilter,
           },
         ]}
       />

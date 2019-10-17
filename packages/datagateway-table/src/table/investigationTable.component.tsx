@@ -3,6 +3,7 @@ import { Paper, Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
+  DateColumnFilter,
   investigationLink,
   Order,
   Filter,
@@ -46,6 +47,15 @@ const InvestigationTable = (
     <TextColumnFilter
       label={label}
       onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
+      }
     />
   );
 
@@ -118,15 +128,19 @@ const InvestigationTable = (
           {
             label: 'Start Date',
             dataKey: 'STARTDATE',
+            filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
           {
             label: 'End Date',
             dataKey: 'ENDDATE',
+            filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
         ]}
