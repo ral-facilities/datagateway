@@ -188,4 +188,25 @@ describe('Investigation table component', () => {
         .text()
     ).toEqual('2019-07-24');
   });
+
+  it('renders fine with incomplete data', () => {
+    // this can happen when navigating between tables and the previous table's state still exists
+    state.dgtable.data = [
+      {
+        ID: 1,
+        NAME: 'test',
+        TITLE: 'test',
+      },
+    ];
+
+    expect(() =>
+      mount(
+        <Provider store={mockStore(state)}>
+          <MemoryRouter>
+            <InvestigationTable />
+          </MemoryRouter>
+        </Provider>
+      )
+    ).not.toThrowError();
+  });
 });

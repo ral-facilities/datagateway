@@ -130,7 +130,8 @@ const InvestigationTable = (
             dataKey: 'STARTDATE',
             filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
           {
@@ -138,7 +139,8 @@ const InvestigationTable = (
             dataKey: 'ENDDATE',
             filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
         ]}
