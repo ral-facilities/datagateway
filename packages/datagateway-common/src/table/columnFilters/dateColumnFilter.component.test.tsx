@@ -158,7 +158,7 @@ describe('Date filter component', () => {
 
       updateFilter({
         date: new Date(''),
-        prevDate,
+        prevDate: new Date('2019-09-18'),
         otherDate: new Date('2019-09-18'),
         startDateOrEndDateChanged: 'startDate',
         onChange,
@@ -169,7 +169,7 @@ describe('Date filter component', () => {
 
       updateFilter({
         date: new Date(''),
-        prevDate,
+        prevDate: new Date('2019-09-18'),
         otherDate: new Date('2019-09-18'),
         startDateOrEndDateChanged: 'endDate',
         onChange,
@@ -179,15 +179,15 @@ describe('Date filter component', () => {
       });
 
       updateFilter({
-        date: new Date('2019-09-18'),
+        date: new Date('2019-09-19'),
         prevDate,
-        otherDate: new Date('2019-09-19'),
+        otherDate: new Date('2019-09-18'),
         startDateOrEndDateChanged: 'endDate',
         onChange,
       });
       expect(onChange).toHaveBeenLastCalledWith({
-        satrtDate: '2019-09-18',
-        endDate: '2019-09-18',
+        startDate: '2019-09-18',
+        endDate: '2019-09-19',
       });
     });
   });
