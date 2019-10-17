@@ -165,23 +165,6 @@ describe('Investigation table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders file size as bytes', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <InvestigationTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(
-      wrapper
-        .find('[aria-colindex=6]')
-        .find('p')
-        .text()
-    ).toEqual('1 B');
-  });
-
   it('renders date objects as just the date', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>

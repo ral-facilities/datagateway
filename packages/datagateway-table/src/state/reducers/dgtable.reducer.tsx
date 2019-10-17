@@ -35,16 +35,34 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FeatureSwitchesPayload,
+  ConfigureStringsPayload,
+  ConfigureStringsType,
+  ConfigureFeatureSwitchesType,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
 export const initialState: DGTableState = {
   data: [],
+  investigationCache: {},
+  datasetCache: {},
   loading: false,
   downloading: false,
   error: null,
   sort: {},
   filters: {},
+  features: {
+    investigationGetSize: false,
+    investigationGetCount: false,
+    datasetGetSize: false,
+    datasetGetCount: false,
+  },
+  urls: {
+    idsUrl: '',
+    apiUrl: '',
+  },
 };
 
 export function handleSortTable(
@@ -97,6 +115,36 @@ export function handleFilterTable(
       },
     };
   }
+}
+
+export function handleConfigureStrings(
+  state: DGTableState,
+  payload: ConfigureStringsPayload
+): DGTableState {
+  return {
+    ...state,
+    res: payload.res,
+  };
+}
+
+export function handleConfigureFeatureSwitches(
+  state: DGTableState,
+  payload: FeatureSwitchesPayload
+): DGTableState {
+  return {
+    ...state,
+    features: payload.switches,
+  };
+}
+
+export function handleConfigureUrls(
+  state: DGTableState,
+  payload: ConfigureUrlsPayload
+): DGTableState {
+  return {
+    ...state,
+    urls: payload.urls,
+  };
 }
 
 export function handleFetchDataRequest(state: DGTableState): DGTableState {
@@ -155,10 +203,18 @@ export function handleFetchDatasetCountSuccess(
     loading: false,
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
+
       return investigation.ID === payload.id
         ? { ...investigation, DATASET_COUNT: payload.count }
         : investigation;
     }),
+    investigationCache: {
+      ...state.investigationCache,
+      [payload.id]: {
+        ...state.investigationCache[payload.id],
+        childEntityCount: payload.count,
+      },
+    },
     error: null,
   };
 }
@@ -197,10 +253,18 @@ export function handleFetchDatafileCountSuccess(
     loading: false,
     data: state.data.map((entity: Entity) => {
       const dataset = entity as Dataset;
+
       return dataset.ID === payload.id
         ? { ...dataset, DATAFILE_COUNT: payload.count }
         : dataset;
     }),
+    datasetCache: {
+      ...state.datasetCache,
+      [payload.id]: {
+        ...state.datasetCache[payload.id],
+        childEntityCount: payload.count,
+      },
+    },
     error: null,
   };
 }
@@ -208,6 +272,9 @@ export function handleFetchDatafileCountSuccess(
 const DGTableReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
+  [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
+  [ConfigureURLsType]: handleConfigureUrls,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

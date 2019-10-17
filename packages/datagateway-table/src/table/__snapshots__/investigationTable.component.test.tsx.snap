@@ -5,7 +5,7 @@ exports[`Investigation table component renders correctly 1`] = `
   className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
   style={
     Object {
-      "height": 768,
+      "height": "calc(100vh - 64px)",
       "width": "100%",
     }
   }
@@ -35,9 +35,8 @@ exports[`Investigation table component renders correctly 1`] = `
           "label": "DOI",
         },
         Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "SIZE",
-          "label": "Size",
+          "dataKey": "DATASET_COUNT",
+          "label": "Dataset Count",
         },
         Object {
           "dataKey": "INSTRUMENT.NAME",
@@ -117,7 +116,20 @@ exports[`Investigation table component renders details panel correctly 1`] = `
 
 exports[`Investigation table component renders investigation title as a link 1`] = `
 <WithStyles(ForwardRef(Link))
-  component={[Function]}
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
   to="/browse/investigation/1/dataset"
 >
   <ForwardRef(Link)
@@ -131,13 +143,39 @@ exports[`Investigation table component renders investigation title as a link 1`]
         "underlineNone": "MuiLink-underlineNone",
       }
     }
-    component={[Function]}
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
     to="/browse/investigation/1/dataset"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
       color="primary"
-      component={[Function]}
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
       onBlur={[Function]}
       onFocus={[Function]}
       to="/browse/investigation/1/dataset"
@@ -180,7 +218,20 @@ exports[`Investigation table component renders investigation title as a link 1`]
           }
         }
         color="primary"
-        component={[Function]}
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
         onBlur={[Function]}
         onFocus={[Function]}
         theme={
@@ -458,15 +509,23 @@ exports[`Investigation table component renders investigation title as a link 1`]
           onFocus={[Function]}
           to="/browse/investigation/1/dataset"
         >
-          <a
+          <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
             href="/browse/investigation/1/dataset"
+            navigate={[Function]}
             onBlur={[Function]}
-            onClick={[Function]}
             onFocus={[Function]}
           >
-            Test 1
-          </a>
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browse/investigation/1/dataset"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              Test 1
+            </a>
+          </LinkAnchor>
         </Link>
       </ForwardRef(Typography)>
     </WithStyles(ForwardRef(Typography))>

@@ -15,6 +15,7 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
+import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatafileCount } from './datafiles';
@@ -54,9 +55,11 @@ export const fetchDatasets = (
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
     );
+    const { datasetGetCount } = getState().dgtable.features;
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datasets', {
+      .get(`${apiUrl}/datasets`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
@@ -64,9 +67,13 @@ export const fetchDatasets = (
       })
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data));
-        response.data.forEach((dataset: Dataset) => {
-          dispatch(fetchDatafileCount(dataset.ID));
-        });
+        if (datasetGetCount) {
+          batch(() => {
+            response.data.forEach((dataset: Dataset) => {
+              dispatch(fetchDatafileCount(dataset.ID));
+            });
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);
@@ -96,11 +103,10 @@ export const downloadDataset = (
   datasetId: number,
   datasetName: string
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(downloadDatasetRequest());
 
-    // TODO: get this from some sort of settings file
-    const idsUrl = '';
+    const { idsUrl } = getState().dgtable.urls;
 
     // TODO: get ICAT session id properly when auth is sorted
     const params = {
@@ -151,7 +157,7 @@ export const fetchDatasetCountRequest = (): Action => ({
 export const fetchDatasetCount = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(fetchDatasetCountRequest());
 
     const params = {
@@ -159,21 +165,33 @@ export const fetchDatasetCount = (
         INVESTIGATION_ID: { eq: investigationId },
       },
     };
+    const { apiUrl } = getState().dgtable.urls;
+    const currentCache = getState().dgtable.investigationCache[investigationId];
 
-    await axios
-      .get('/datasets/count', {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(fetchDatasetCountSuccess(investigationId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatasetCountFailure(error.message));
-      });
+    // Check to see if a cached value exists already in the cache's child entity count.
+    if (currentCache && currentCache.childEntityCount) {
+      // Dispatch success with the cached dataset count.
+      dispatch(
+        fetchDatasetCountSuccess(investigationId, currentCache.childEntityCount)
+      );
+    } else {
+      await axios
+        .get(`${apiUrl}/datasets/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(fetchDatasetCountSuccess(investigationId, response.data));
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatasetCountFailure(error.message));
+        });
+    }
   };
 };

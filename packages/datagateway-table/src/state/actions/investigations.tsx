@@ -7,6 +7,7 @@ import {
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
+import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetCount } from './datasets';
@@ -40,9 +41,11 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
     dispatch(fetchInvestigationsRequest());
 
     let params = getApiFilter(getState);
+    const { investigationGetCount } = getState().dgtable.features;
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/investigations', {
+      .get(`${apiUrl}/investigations`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
@@ -50,9 +53,13 @@ export const fetchInvestigations = (): ThunkResult<Promise<void>> => {
       })
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data));
-        response.data.forEach((investigation: Investigation) => {
-          dispatch(fetchDatasetCount(investigation.ID));
-        });
+        if (investigationGetCount) {
+          batch(() => {
+            response.data.forEach((investigation: Investigation) => {
+              dispatch(fetchDatasetCount(investigation.ID));
+            });
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);

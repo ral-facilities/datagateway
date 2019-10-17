@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
-import thunk from 'redux-thunk';
-import { createStore, applyMiddleware, compose } from 'redux';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
@@ -17,6 +17,17 @@ import InvestigationTable from './table/investigationTable.component';
 import DatafileTable from './table/datafileTable.component';
 import DatasetTable from './table/datasetTable.component';
 import { Link } from 'react-router-dom';
+import { configureApp } from './state/actions';
+import { StateType } from './state/app.types';
+
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'dgwt',
+});
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -38,6 +49,9 @@ const store = createStore(
 );
 
 listenToMessages(store.dispatch);
+
+const dispatch = store.dispatch as ThunkDispatch<StateType, null, AnyAction>;
+dispatch(configureApp());
 
 const registerRouteAction = {
   type: RegisterRouteType,
@@ -87,42 +101,44 @@ class App extends React.Component<{}, { hasError: boolean }> {
         <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  render={() => (
-                    <Link to="/browse/investigation">
-                      Browse investigations
-                    </Link>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/browse/investigation/"
-                  component={InvestigationTable}
-                />
-                <Route
-                  exact
-                  path="/browse/investigation/:investigationId/dataset"
-                  render={({
-                    match,
-                  }: RouteComponentProps<{ investigationId: string }>) => (
-                    <DatasetTable
-                      investigationId={match.params.investigationId}
-                    />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
-                  render={({
-                    match,
-                  }: RouteComponentProps<{ datasetId: string }>) => (
-                    <DatafileTable datasetId={match.params.datasetId} />
-                  )}
-                />
-              </Switch>
+              <StylesProvider generateClassName={generateClassName}>
+                <Switch>
+                  <Route
+                    exact
+                    path="/"
+                    render={() => (
+                      <Link to="/browse/investigation">
+                        Browse investigations
+                      </Link>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/browse/investigation/"
+                    component={InvestigationTable}
+                  />
+                  <Route
+                    exact
+                    path="/browse/investigation/:investigationId/dataset"
+                    render={({
+                      match,
+                    }: RouteComponentProps<{ investigationId: string }>) => (
+                      <DatasetTable
+                        investigationId={match.params.investigationId}
+                      />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+                    render={({
+                      match,
+                    }: RouteComponentProps<{ datasetId: string }>) => (
+                      <DatafileTable datasetId={match.params.datasetId} />
+                    )}
+                  />
+                </Switch>
+              </StylesProvider>
             </ConnectedRouter>
           </Provider>
         </div>

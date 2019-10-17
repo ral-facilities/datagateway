@@ -4,7 +4,6 @@ import {
   Table,
   TextColumnFilter,
   DateColumnFilter,
-  formatBytes,
   investigationLink,
   Order,
   Filter,
@@ -65,7 +64,7 @@ const InvestigationTable = (
   }, [fetchData, sort, filters]);
 
   return (
-    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
         data={data}
         sort={sort}
@@ -118,11 +117,8 @@ const InvestigationTable = (
             filterComponent: textFilter,
           },
           {
-            label: 'Size',
-            dataKey: 'SIZE',
-            cellContentRenderer: (props: TableCellProps) => {
-              return formatBytes(props.cellData);
-            },
+            label: 'Dataset Count',
+            dataKey: 'DATASET_COUNT',
           },
           {
             label: 'Instrument',
