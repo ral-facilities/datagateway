@@ -148,6 +148,34 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             .catch(error => {
               log.error(`Can't contact API: ${error.message}`);
             });
+
+          // TODO: replace with getting from daaas:token when supported
+          const splitUrl = settings.downloadApiUrl.split('/');
+          const icatUrl = `${splitUrl
+            .slice(0, splitUrl.length - 1)
+            .join('/')}/icat`;
+          axios
+            .post(
+              `${icatUrl}/session`,
+              {
+                json: {
+                  plugin: 'simple',
+                  credentials: [{ username: 'root' }, { password: 'pw' }],
+                },
+              },
+              {
+                headers: {
+                  contentType: 'application/x-www-form-urlencoded',
+                },
+              }
+            )
+            .then(response => {
+              console.log(response.data.sessionId);
+              window.localStorage.setItem(
+                'icat:token',
+                response.data.sessionId
+              );
+            });
         }
 
         const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
