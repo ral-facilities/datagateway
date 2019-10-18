@@ -23,6 +23,25 @@ const reactLifecycles = singleSpaReact({
     domElementGetter,
 });
 
+const render = () => {
+    let el = document.getElementById('datagateway-download');
+    if (el) {
+      ReactDOM.render(<App />, document.getElementById('datagateway-download'));
+    }
+};
+  
+window.addEventListener('single-spa:routing-event', () => {
+    // attempt to re-render the plugin if the corresponding div is present
+    render();
+});
+
+document.addEventListener('daaas-frontend', e => {
+    // attempt to re-render the plugin if the corresponding div is present
+    const action = (e as CustomEvent).detail;
+    if (action.type === 'daaas:api:plugin_rerender') {
+      render();
+    }
+});
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Single-SPA bootstrap methods have no idea what type of inputs may be
@@ -56,7 +75,7 @@ document.dispatchEvent(
             type: 'daaas:api:register_route',
             payload: {
                 section: 'Test',
-                link: '/browse',
+                link: '/download',
                 plugin: 'datagateway-download',
                 displayName: 'DataGateway Download',
                 order: 0,
