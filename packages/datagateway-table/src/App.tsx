@@ -98,13 +98,30 @@ class App extends React.Component<{}, { hasError: boolean }> {
         </div>
       );
     } else {
+
+      let breadcrumbsState = {
+        1: {
+          displayName: "Investigation",
+          url: "/browse/investigation"
+        },
+        2: {
+          displayName: "Dataset",
+          url: "/browse/investigation/1/dataset"
+        },
+        3: {
+          displayName: "Datafile",
+          url: "/browse/investigation/1/dataset/1/datafile"
+        }
+      }
+
       return (
         <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <PageBreadcrumbs currentPage="None" />
-                <Switch>
+                {/* <PageBreadcrumbs breadcrumbs="None" /> */}
+                <PageBreadcrumbs breadcrumbs=""/>
+                <Switch>         
                   <Route
                     exact
                     path="/"
