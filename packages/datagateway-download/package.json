@@ -18,6 +18,8 @@
     "@craco/craco": "^5.5.0",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
+    "cross-env": "^6.0.3",
+    "cypress": "^3.4.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
     "enzyme-to-json": "^3.4.2",
@@ -29,16 +31,23 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
     "prettier": "^1.18.2",
-    "serve": "^11.2.0"
+    "serve": "^11.2.0",
+    "start-server-and-test": "^1.10.6"
   },
   "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
     "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src",
     "serve:build": "npm run build & serve -l 5001 build",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test --env=jsdom --coverage",
     "test:watch": "craco test --env=jsdom --watch",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false react-scripts build",
+    "e2e:serve": "npm run build:e2e && node ./server/e2e-test-server.js",
+    "e2e:interactive": "start-server-and-test e2e:serve http://localhost:3000 cy:open",
+    "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run"
   },
   "browserslist": {
     "production": [
