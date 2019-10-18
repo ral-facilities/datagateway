@@ -49,3 +49,19 @@ if (process.env.NODE_ENV === `development`) {
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+document.dispatchEvent(
+    new CustomEvent('daaas-frontend', {
+        detail: {
+            type: 'daaas:api:register_route',
+            payload: {
+                section: 'Test',
+                link: '/browse',
+                plugin: 'datagateway-download',
+                displayName: 'DataGateway Download',
+                order: 0,
+                helpText: 'TODO: Write help text for user tour',
+            }
+        }
+    })
+);

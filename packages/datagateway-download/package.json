@@ -15,9 +15,11 @@
     "typescript": "^3.5.3"
   },
   "devDependencies": {
-    "@craco/craco": "^5.5.0"
+    "@craco/craco": "^5.5.0",
+    "serve": "^11.2.0"
   },
   "scripts": {
+    "serve:build": "npm run build & serve -l 5001 build",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
