@@ -16,17 +16,25 @@
   },
   "devDependencies": {
     "@craco/craco": "^5.5.0",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-cypress": "^2.7.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
+    "prettier": "^1.18.2",
     "serve": "^11.2.0"
   },
   "scripts": {
+    "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src",
     "serve:build": "npm run build & serve -l 5001 build",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -38,6 +46,18 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{tsx,js,jsx,json}": [
+      "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "cypress/**/*.{tsx,js,jsx}": [
+      "eslint --max-warnings=0 --fix",
+      "prettier --write",
+      "git add"
     ]
   }
 }

@@ -4,12 +4,10 @@ import './App.css';
 
 import * as log from 'loglevel';
 
-
 class App extends Component<{}, { hasError: boolean }> {
-
   public constructor(props: {}) {
     super(props);
-    this.state = { hasError: false};
+    this.state = { hasError: false };
   }
 
   public componentDidCatch(error: Error | null): void {
