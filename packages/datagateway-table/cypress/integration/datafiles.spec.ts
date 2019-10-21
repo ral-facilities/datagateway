@@ -1,7 +1,8 @@
 describe('Datafiles Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1407/dataset/2506/datafile');
+    cy.clearDownloadCart();
+    cy.visit('/browse/investigation/1/dataset/1/datafile');
   });
 
   it('should load correctly', () => {
@@ -120,6 +121,214 @@ describe('Datafiles Table', () => {
 
       cy.contains('Name: Datafile 1').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
+    });
+  });
+
+  describe.only('should be able to select items', () => {
+    it('individually', () => {
+      //TODO remove when preloader exists
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'true');
+    });
+
+    it('and unselect them individually', () => {
+      //TODO remove when preloader exists
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('[aria-label="select row 0"]').uncheck();
+      cy.get('[aria-label="select row 0"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('by all items', () => {
+      //TODO remove when preloader exists
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get(
+        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+      ).should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('by all items in a filtered table', () => {
+      cy.get('[aria-label="Filter by Location"]')
+        .find('input')
+        .type('.png');
+
+      cy.server();
+      cy.route('**/datafiles**').as('getDatafiles');
+      cy.wait('@getDatafiles');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get(
+        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+      ).should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+
+      cy.get('[aria-label="Filter by Location"]')
+        .find('input')
+        .clear();
+
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'true');
+
+      cy.get('[aria-label="select row 0"]').should('not.be.checked');
+      cy.get('[aria-label="select row 1"]').should('be.checked');
+      cy.get('[aria-label="select row 2"]').should('not.be.checked');
+      cy.get('[aria-label="select row 3"]').should('be.checked');
+    });
+
+    it('and unselect all items', () => {
+      //TODO remove when preloader exists
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+
+      cy.get('[aria-label="select all rows"]').uncheck();
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get(
+        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+      ).should('not.be.checked');
+    });
+
+    it('by shift clicking', () => {
+      //TODO remove when preloader exists
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+
+      cy.get('[aria-label="select row 0"]').click();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('body')
+        .type('{shift}', { release: false })
+        .get('[aria-label="select row 5"]')
+        .click();
+      cy.get('[aria-label="select row 5"]').should('be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('top');
+      cy.get('[aria-label="select row 4"]').should('be.checked');
+      cy.get('[aria-label="select row 3"]').should('be.checked');
+      cy.get('[aria-label="select row 2"]').should('be.checked');
+      cy.get('[aria-label="select row 1"]').should('be.checked');
+    });
+
+    it('and unselect by shift clicking', () => {
+      //TODO remove when preloader exists
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+      cy.contains('Location').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+
+      cy.get('[aria-label="select row 0"]').click();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('body')
+        .type('{shift}', { release: false })
+        .get('[aria-label="select row 5"]')
+        .click();
+      cy.get('[aria-label="select row 5"]').should('be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('top');
+      cy.get('body')
+        .type('{shift}', { release: false })
+        .get('[aria-label="select row 2"]')
+        .click();
+      cy.get('[aria-label="select row 2"]').should('not.be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('top');
+      cy.get('[aria-label="select row 5"]').should('not.be.checked');
+      cy.get('[aria-label="select row 4"]').should('not.be.checked');
+      cy.get('[aria-label="select row 3"]').should('not.be.checked');
+      cy.get('[aria-label="select row 2"]').should('not.be.checked');
+
+      cy.get('[aria-label="select row 1"]').should('be.checked');
+      cy.get('[aria-label="select row 0"]').should('be.checked');
     });
   });
 });

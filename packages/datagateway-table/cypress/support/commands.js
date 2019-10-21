@@ -34,3 +34,17 @@ Cypress.Commands.add('login', (username, password) => {
       window.localStorage.setItem('daaas:token', response.body.sessionID);
     });
 });
+
+Cypress.Commands.add('clearDownloadCart', () => {
+  return cy.readFile('server/e2e-settings.json').then(settings => {
+    // TODO: find facility from somewhere...
+    cy.request({
+      method: 'DELETE',
+      url: `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
+      qs: {
+        sessionId: window.localStorage.getItem('icat:token'),
+        items: '*',
+      },
+    });
+  });
+});
