@@ -1,5 +1,5 @@
 import DGTableReducer, { initialState } from './dgtable.reducer';
-import { DGTableState } from '../app.types';
+import { DGTableState, EntityCache } from '../app.types';
 import {
   sortTable,
   fetchInvestigationsRequest,
@@ -327,6 +327,62 @@ describe('dgtable reducer', () => {
       expect(updatedState.error).toBeNull();
     });
 
+    it('should set the data state with cached dataset count and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
+      state.loading = true;
+
+      state.investigationCache = {
+        1: {
+          childEntityCount: 3,
+        },
+        2: {
+          childEntityCount: 5,
+        },
+      };
+
+      const mockData: Investigation[] = [
+        {
+          ID: 3,
+          TITLE: 'Test 3',
+          VISIT_ID: '3',
+          RB_NUMBER: '3',
+          DOI: 'doi 3',
+          SIZE: 1,
+          INSTRUMENT: {
+            NAME: 'LARMOR',
+          },
+          STARTDATE: '2019-10-08',
+          ENDDATE: '2019-10-08',
+        },
+      ];
+
+      state.data = mockData;
+
+      const mockDataUpdated: Investigation[] = [
+        { ...mockData[0], DATASET_COUNT: 4 },
+      ];
+
+      const mockInvestigationCacheUpdated: EntityCache = {
+        1: {
+          childEntityCount: 3,
+        },
+        2: {
+          childEntityCount: 5,
+        },
+        3: {
+          childEntityCount: 4,
+        },
+      };
+
+      // We give the investigation ID of 3 and the new dataset count (we would cache) as 4.
+      let updatedState = DGTableReducer(state, fetchDatasetCountSuccess(3, 4));
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.investigationCache).toEqual(
+        mockInvestigationCacheUpdated
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
     it('should set the error state when given a FetchDatasetCountFailure action', () => {
       let updatedState = DGTableReducer(
         state,
@@ -445,6 +501,74 @@ describe('dgtable reducer', () => {
 
       let updatedState = DGTableReducer(state, fetchDatafileCountSuccess(1, 2));
       expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the data state with cached datafile count and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
+      state.loading = true;
+
+      state.datasetCache = {
+        1: {
+          childEntityCount: 100,
+        },
+        2: {
+          childEntityCount: 100,
+        },
+      };
+
+      const mockData: Dataset[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+          MOD_TIME: '2019-10-08',
+          CREATE_TIME: '2019-10-08',
+          INVESTIGATION_ID: 1,
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+          MOD_TIME: '2019-10-08',
+          CREATE_TIME: '2019-10-08',
+          INVESTIGATION_ID: 1,
+        },
+        {
+          ID: 3,
+          NAME: 'Test 3',
+          MOD_TIME: '2019-10-08',
+          CREATE_TIME: '2019-10-08',
+          INVESTIGATION_ID: 1,
+        },
+      ];
+
+      state.data = mockData;
+
+      const mockDataUpdated: Dataset[] = [
+        mockData[0],
+        mockData[1],
+        { ...mockData[2], DATAFILE_COUNT: 99 },
+      ];
+
+      const mockDatasetCacheUpdated: EntityCache = {
+        1: {
+          childEntityCount: 100,
+        },
+        2: {
+          childEntityCount: 100,
+        },
+        3: {
+          childEntityCount: 99,
+        },
+      };
+
+      // We give the investigation ID of 3 and the new datafile count (we would cache) as 99.
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileCountSuccess(3, 99)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.datasetCache).toEqual(mockDatasetCacheUpdated);
+
       expect(updatedState.data).toEqual(mockDataUpdated);
       expect(updatedState.error).toBeNull();
     });

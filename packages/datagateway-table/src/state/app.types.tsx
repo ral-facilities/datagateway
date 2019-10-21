@@ -11,6 +11,8 @@ export interface DGTableState {
     [column: string]: Filter;
   };
   data: Entity[];
+  investigationCache: EntityCache;
+  datasetCache: EntityCache;
   loading: boolean;
   downloading: boolean;
   error: string | null;
@@ -18,6 +20,12 @@ export interface DGTableState {
   features: FeatureSwitches;
   urls: URLs;
   settingsLoaded: boolean;
+}
+
+export interface EntityCache {
+  [id: number]: {
+    childEntityCount: number | null;
+  };
 }
 
 export interface AppStrings {

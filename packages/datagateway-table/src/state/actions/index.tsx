@@ -34,8 +34,26 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
-  for (let [key, value] of Object.entries(filters)) {
-    searchParams.append('where', JSON.stringify({ [key]: { like: value } }));
+  for (let [column, filter] of Object.entries(filters)) {
+    if (typeof filter === 'object') {
+      if ('startDate' in filter && filter.startDate) {
+        searchParams.append(
+          'where',
+          JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
+        );
+      }
+      if ('endDate' in filter && filter.endDate) {
+        searchParams.append(
+          'where',
+          JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
+        );
+      }
+    } else {
+      searchParams.append(
+        'where',
+        JSON.stringify({ [column]: { like: filter } })
+      );
+    }
   }
 
   return searchParams;

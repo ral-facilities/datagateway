@@ -66,7 +66,7 @@ describe('Datafile table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest());
   });
 
-  it('sends filterTable action on filter', () => {
+  it('sends filterTable action on text filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -86,6 +86,30 @@ describe('Datafile table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+  });
+
+  it('sends filterTable action on date filter', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatafileTable datasetId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const filterInput = wrapper.find('input').last();
+    filterInput.instance().value = '2019-08-06';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[1]).toEqual(
+      filterTable('MOD_TIME', { endDate: '2019-08-06' })
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[2]).toEqual(filterTable('MOD_TIME', null));
   });
 
   it('sends sortTable action on sort', () => {
