@@ -38,15 +38,14 @@ const apiRoutes: { [entity: string]: string } = {
 
 
 const PageBreadcrumbs = (): React.ReactElement => {
+  // Get the API url in use.
   const { apiUrl } = useSelector((state: StateType) => state.dgtable.urls);
+  console.log("API Url: ", apiUrl);
 
   // Store the current breadcrumb state; use the IDs
   // of the investigation/dataset
-  const currentBreadcrumb = {
-
-  }
-
-  console.log("API Url: ", apiUrl);
+  // const currentBreadcrumb = {
+  // }
   
     // return (
     //   <div>
@@ -71,7 +70,11 @@ const PageBreadcrumbs = (): React.ReactElement => {
       let entityResponse = '';
 
       // Make a GET request to the specified URL.
-      axios.get(apiUrl + requestEntityUrl)
+      axios.get(`${apiUrl}${requestEntityUrl}`, {
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
         .then(response => {
           console.log('Response: ', response);
         })
@@ -88,7 +91,7 @@ const PageBreadcrumbs = (): React.ReactElement => {
           <Route>
             {({ location }) => {
               const pathnames = location.pathname.split('/').filter(x => x);
-              console.log('Path names: ', pathnames);
+              console.log(`Path names: ${pathnames}`);
 
               return (
                 <Breadcrumbs 
@@ -103,15 +106,15 @@ const PageBreadcrumbs = (): React.ReactElement => {
                   {pathnames.map((value: string, index: number) => {
                     let entityName = 'N/A';
 
-                    console.log('Current value: ', value);
-                    console.log('Current index: ', index);
+                    console.log(`Current value: ${value}`);
+                    console.log(`Current index: ${index}`);
 
                     // const last = index === pathnames.length - 1;
                     // const to = `/${pathnames.slice(0, index + 1).join('/')}`;
                     
                     // Check for the specific routes and request the names from the API.
                     if (value in apiRoutes)
-                      entityName = getEntityName(apiRoutes[value] + index);
+                      entityName = getEntityName(`${apiRoutes[value]}${index}`);
 
                     // return last ? (
                     //  <Typography color="textPrimary" key={to}>
