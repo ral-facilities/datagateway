@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.3.0",
+    "@material-ui/icons": "^4.2.1",
     "@types/jest": "^24.0.16",
     "@types/node": "^12.6.8",
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.5",
     "@types/single-spa-react": "^2.8.3",
+    "datagateway-common": "0.1.0",
+    "loglevel": "^1.6.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
@@ -21,18 +25,19 @@
     "cross-env": "^6.0.3",
     "cypress": "^3.4.1",
     "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.15.1",
-    "enzyme-to-json": "^3.4.2",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.3.5",
     "eslint": "^5.16.0",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-cypress": "^2.7.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-cypress": "^2.6.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "lint-staged": "^9.2.1",
     "prettier": "^1.18.2",
-    "serve": "^11.2.0",
-    "start-server-and-test": "^1.10.6"
+    "serve": "^11.1.0",
+    "start-server-and-test": "^1.9.1"
   },
   "scripts": {
     "cy:open": "cypress open",
@@ -47,7 +52,8 @@
     "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false react-scripts build",
     "e2e:serve": "npm run build:e2e && node ./server/e2e-test-server.js",
     "e2e:interactive": "start-server-and-test e2e:serve http://localhost:3000 cy:open",
-    "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run"
+    "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
+    "pre-commit": "lint-staged"
   },
   "browserslist": {
     "production": [
