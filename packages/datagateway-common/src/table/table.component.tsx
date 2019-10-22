@@ -26,7 +26,7 @@ import SelectCell from './cellRenderers/selectCell.component';
 import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
-const headerHeight = 100;
+const headerHeight = 120;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

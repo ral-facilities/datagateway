@@ -84,7 +84,30 @@ describe('Investigations Table', () => {
       );
     });
 
-    it('date between');
+    it('date between', () => {
+      cy.get('[aria-label="Start Date date filter from"]').type('2017-01-01');
+
+      cy.get('[aria-label="Start Date date filter to"]')
+        .parent()
+        .find('button')
+        .click();
+
+      cy.get('.MuiPickersDay-day[tabindex="0"]')
+        .first()
+        .click();
+
+      cy.contains('OK').click();
+
+      let date = new Date();
+      date.setDate(1);
+
+      cy.get('[aria-label="Start Date date filter to"]').should(
+        'have.value',
+        date.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="100"]').should('exist');
+    });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Title"]')

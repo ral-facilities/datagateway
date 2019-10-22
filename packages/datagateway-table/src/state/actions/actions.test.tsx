@@ -7,6 +7,7 @@ import {
   configureStrings,
   loadFeatureSwitches,
   loadUrls,
+  settingsLoaded,
 } from '.';
 import {
   SortTableType,
@@ -14,6 +15,7 @@ import {
   ConfigureStringsType,
   ConfigureFeatureSwitchesType,
   ConfigureURLsType,
+  SettingsLoadedType,
 } from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -92,7 +94,10 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
-          filters: { column1: 'test', column2: 'test2' },
+          filters: {
+            column1: 'test',
+            column2: { endDate: '2019-09-18' },
+          },
         },
         router: routerState,
       });
@@ -100,7 +105,10 @@ describe('Actions', () => {
 
       const params = new URLSearchParams();
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { lte: '2019-09-18 23:59:59' } })
+      );
 
       expect(filter).toEqual(params);
     });
@@ -110,7 +118,7 @@ describe('Actions', () => {
         dgtable: {
           ...initialState,
           sort: { column1: 'asc', column2: 'desc' },
-          filters: { column1: 'test', column2: 'test2' },
+          filters: { column1: 'test', column2: { startDate: '2019-09-17' } },
         },
         router: routerState,
       });
@@ -120,7 +128,10 @@ describe('Actions', () => {
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { gte: '2019-09-17 00:00:00' } })
+      );
 
       expect(filter).toEqual(params);
     });
@@ -136,6 +147,11 @@ describe('Actions', () => {
     const action = filterTable('test', 'filter text');
     expect(action.type).toEqual(FilterTableType);
     expect(action.payload).toEqual({ column: 'test', filter: 'filter text' });
+  });
+
+  it('settingsLoaded returns an action with SettingsLoadedType', () => {
+    const action = settingsLoaded();
+    expect(action.type).toEqual(SettingsLoadedType);
   });
 
   it('given JSON configureStrings returns a ConfigureStringsType with ConfigureStringsPayload', () => {
@@ -180,7 +196,7 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls and fetchDownloadCart actions are sent', async () => {
+  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls, fetchDownloadCart and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -209,7 +225,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(5);
+    expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(
       loadFeatureSwitches({
         investigationGetSize: true,
@@ -230,6 +246,7 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(fetchDownloadCartRequest());
     expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
+    expect(actions).toContainEqual(settingsLoaded());
   });
 
   it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
@@ -255,7 +272,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -268,6 +285,7 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(fetchDownloadCartRequest());
     expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
+    expect(actions).toContainEqual(settingsLoaded());
   });
 
   it('logs an error if settings.json fails to be loaded', async () => {

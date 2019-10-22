@@ -178,10 +178,12 @@ exports[`Dataset table component renders correctly 1`] = `
         },
         Object {
           "dataKey": "CREATE_TIME",
+          "filterComponent": [Function],
           "label": "Create Time",
         },
         Object {
           "dataKey": "MOD_TIME",
+          "filterComponent": [Function],
           "label": "Modified Time",
         },
       ]

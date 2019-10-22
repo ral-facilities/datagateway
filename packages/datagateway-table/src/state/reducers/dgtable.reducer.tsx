@@ -41,6 +41,7 @@ import {
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  SettingsLoadedType,
   DownloadCartPayload,
   FetchDownloadCartRequestType,
   FetchDownloadCartSuccessType,
@@ -75,7 +76,15 @@ export const initialState: DGTableState = {
     downloadApiUrl: '',
   },
   cartItems: [],
+  settingsLoaded: false,
 };
+
+export function handleSettingsLoaded(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    settingsLoaded: true,
+  };
+}
 
 export function handleSortTable(
   state: DGTableState,
@@ -315,6 +324,7 @@ export function handleDownloadCartFailure(
 }
 
 const DGTableReducer = createReducer(initialState, {
+  [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ConfigureStringsType]: handleConfigureStrings,

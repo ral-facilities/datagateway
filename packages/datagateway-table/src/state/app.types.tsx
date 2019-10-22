@@ -20,6 +20,7 @@ export interface DGTableState {
   res?: ApplicationStrings;
   features: FeatureSwitches;
   urls: URLs;
+  settingsLoaded: boolean;
 }
 
 export interface EntityCache {

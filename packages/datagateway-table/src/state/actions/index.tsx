@@ -17,10 +17,12 @@ import {
   URLs,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  SettingsLoadedType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
 import axios from 'axios';
 import * as log from 'loglevel';
+import { Action } from 'redux';
 import { fetchDownloadCart } from './cart';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
@@ -33,8 +35,26 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
-  for (let [key, value] of Object.entries(filters)) {
-    searchParams.append('where', JSON.stringify({ [key]: { like: value } }));
+  for (let [column, filter] of Object.entries(filters)) {
+    if (typeof filter === 'object') {
+      if ('startDate' in filter && filter.startDate) {
+        searchParams.append(
+          'where',
+          JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
+        );
+      }
+      if ('endDate' in filter && filter.endDate) {
+        searchParams.append(
+          'where',
+          JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
+        );
+      }
+    } else {
+      searchParams.append(
+        'where',
+        JSON.stringify({ [column]: { like: filter } })
+      );
+    }
   }
 
   return searchParams;
@@ -67,6 +87,10 @@ export const filterTable = (
     column,
     filter,
   },
+});
+
+export const settingsLoaded = (): Action => ({
+  type: SettingsLoadedType,
 });
 
 export const configureStrings = (
@@ -185,6 +209,8 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         // fetch initial download cart
         dispatch(fetchDownloadCart());
+
+        dispatch(settingsLoaded());
       })
       .catch(error => {
         log.error(`Error loading settings.json: ${error.message}`);

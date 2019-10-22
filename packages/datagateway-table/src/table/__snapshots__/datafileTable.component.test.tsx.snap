@@ -35,6 +35,7 @@ exports[`Datafile table component renders correctly 1`] = `
         },
         Object {
           "dataKey": "MOD_TIME",
+          "filterComponent": [Function],
           "label": "Modified Time",
         },
       ]
