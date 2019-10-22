@@ -101,7 +101,9 @@ describe('Dataset table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').last();
+    const filterInput = wrapper.find(
+      '[aria-label="Modified Time date filter to"]'
+    );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
