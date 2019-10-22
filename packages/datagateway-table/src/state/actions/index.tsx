@@ -18,6 +18,7 @@ import {
   URLs,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  SettingsLoadedType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
 import { Action } from 'redux';
@@ -92,6 +93,10 @@ export const filterTable = (
 
 export const clearTable = (): Action => ({
   type: ClearTableType,
+});
+
+export const settingsLoaded = (): Action => ({
+  type: SettingsLoadedType,
 });
 
 export const configureStrings = (
@@ -178,6 +183,8 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           ? '/' + settings['ui-strings']
           : settings['ui-strings'];
         dispatch(loadStrings(uiStringResourcesPath));
+
+        dispatch(settingsLoaded());
       })
       .catch(error => {
         log.error(`Error loading settings.json: ${error.message}`);

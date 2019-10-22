@@ -59,6 +59,7 @@ import {
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  SettingsLoadedType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -84,7 +85,15 @@ export const initialState: DGTableState = {
     idsUrl: '',
     apiUrl: '',
   },
+  settingsLoaded: false,
 };
+
+export function handleSettingsLoaded(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    settingsLoaded: true,
+  };
+}
 
 export function handleSortTable(
   state: DGTableState,
@@ -367,6 +376,7 @@ export function handleFetchDatasetDatafilesCountSuccess(
 }
 
 const DGTableReducer = createReducer(initialState, {
+  [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
