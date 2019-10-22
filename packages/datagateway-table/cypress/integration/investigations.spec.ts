@@ -162,22 +162,8 @@ describe('Investigations Table', () => {
     });
   });
 
-  describe.only('should be able to select items', () => {
+  describe('should be able to select items', () => {
     it('individually', () => {
-      //TODO remove when preloader exists
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
       cy.get('[aria-label="select all rows"]')
@@ -186,20 +172,6 @@ describe('Investigations Table', () => {
     });
 
     it('and unselect them individually', () => {
-      //TODO remove when preloader exists
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -211,20 +183,6 @@ describe('Investigations Table', () => {
     });
 
     it('by all items', () => {
-      //TODO remove when preloader exists
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get(
@@ -270,20 +228,6 @@ describe('Investigations Table', () => {
     });
 
     it('and unselect all items', () => {
-      //TODO remove when preloader exists
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
 
@@ -298,20 +242,6 @@ describe('Investigations Table', () => {
     });
 
     it('by shift clicking', () => {
-      //TODO remove when preloader exists
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-
       cy.get('[aria-label="select row 0"]').click();
       cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -329,20 +259,6 @@ describe('Investigations Table', () => {
     });
 
     it('and unselect by shift clicking', () => {
-      //TODO remove when preloader exists
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-
-      cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'have.css',
-        'opacity',
-        '0'
-      );
-
       cy.get('[aria-label="select row 0"]').click();
       cy.get('[aria-label="select row 0"]').should('be.checked');
 
