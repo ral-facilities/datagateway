@@ -82,7 +82,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
   }
 
   public render(): React.ReactNode {
-    if (this.state.hasError) {
+    if (this.state.hasError)
       return (
         <div className="error">
           <div
@@ -97,72 +97,55 @@ class App extends React.Component<{}, { hasError: boolean }> {
           </div>
         </div>
       );
-    } else {
 
-      let breadcrumbsState = {
-        1: {
-          displayName: "Investigation",
-          url: "/browse/investigation"
-        },
-        2: {
-          displayName: "Dataset",
-          url: "/browse/investigation/1/dataset"
-        },
-        3: {
-          displayName: "Datafile",
-          url: "/browse/investigation/1/dataset/1/datafile"
-        }
-      }
-
-      return (
-        <div className="App">
-          <Provider store={store}>
-            <ConnectedRouter history={history}>
-              <StylesProvider generateClassName={generateClassName}>
-                {/* <PageBreadcrumbs breadcrumbs="None" /> */}
-                <PageBreadcrumbs breadcrumbs=""/>
-                <Switch>         
-                  <Route
-                    exact
-                    path="/"
-                    render={() => (
-                      <Link to="/browse/investigation">
-                        Browse investigations
-                      </Link>
-                    )}
-                  />
-                  <Route
-                    exact
-                    path="/browse/investigation/"
-                    component={InvestigationTable}
-                  />
-                  <Route
-                    exact
-                    path="/browse/investigation/:investigationId/dataset"
-                    render={({
-                      match,
-                    }: RouteComponentProps<{ investigationId: string }>) => (
-                      <DatasetTable
-                        investigationId={match.params.investigationId}
-                      />
-                    )}
-                  />
-                  <Route
-                    exact
-                    path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
-                    render={({
-                      match,
-                    }: RouteComponentProps<{ datasetId: string }>) => (
-                      <DatafileTable datasetId={match.params.datasetId} />
-                    )}
-                  />
-                </Switch>
-              </StylesProvider>
-            </ConnectedRouter>
-          </Provider>
-        </div>
-      );
-    }
+    return (
+      <div className="App">
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <StylesProvider generateClassName={generateClassName}>
+              {/* TODO: Handle breadcrumbs for the page. */}
+              <PageBreadcrumbs />
+              <Switch>         
+                <Route
+                  exact
+                  path="/"
+                  render={() => (
+                    <Link to="/browse/investigation">
+                      Browse investigations
+                    </Link>
+                  )}
+                />
+                <Route
+                  exact
+                  path="/browse/investigation/"
+                  component={InvestigationTable}
+                />
+                <Route
+                  exact
+                  path="/browse/investigation/:investigationId/dataset"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{ investigationId: string }>) => (
+                    <DatasetTable
+                      investigationId={match.params.investigationId}
+                    />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+                  render={({
+                    match,
+                  }: RouteComponentProps<{ datasetId: string }>) => (
+                    <DatafileTable datasetId={match.params.datasetId} />
+                  )}
+                />
+              </Switch>
+            </StylesProvider>
+          </ConnectedRouter>
+        </Provider>
+      </div>
+    );
   }
 }
 

@@ -1,4 +1,8 @@
 import React from 'react';
+
+import { StateType } from './state/app.types';
+import { useSelector } from 'react-redux';
+
 import { Route } from 'react-router';
 import {
   Paper,
@@ -9,14 +13,27 @@ import {
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 
-export default class PageBreadcrumbs extends React.Component<{
-  breadcrumbs: string;
-}> {
-  public constructor(props: { breadcrumbs: string }) {
-    super(props);
-  }
 
-  public render(): React.ReactElement {
+// TODO: Maintain internal component state.
+// let breadcrumbsState = {
+//   1: {
+//     displayName: "Investigations",
+//     url: "/browse/investigation"
+//   },
+//   2: {
+//     displayName: "quas accusantium omnis",
+//     url: "/browse/investigation/1/dataset"
+//   },
+//   3: {
+//     displayName: "Dataset 1",
+//     url: "/browse/investigation/1/dataset/1/datafile"
+//   }
+// }
+
+const PageBreadcrumbs = (): React.ReactElement => {
+  const { apiUrl } = useSelector((state: StateType) => state.dgtable.urls);
+  console.log("API Url: ", apiUrl);
+  
     // return (
     //   <div>
     //     <Paper elevation={0}>
@@ -24,11 +41,9 @@ export default class PageBreadcrumbs extends React.Component<{
     //         separator={<NavigateNextIcon fontSize="small" />}
     //         aria-label="breadcrumb"
     //       >
-    //         {
-    //           Breadcrumbs.map}
-    //         <MaterialLink color="inherit">
-    //           {/* {this.props.currentPage} */}
-    //         </MaterialLink>
+    //         <Link color="inherit">
+    //           Home
+    //         </Link>
     //         {/* <MaterialLink color="inherit">
     //                         Test2
     //                     </MaterialLink> */}
@@ -38,31 +53,50 @@ export default class PageBreadcrumbs extends React.Component<{
     //   </div>
     // );
 
+
+
     return (
       <div>
-      <Paper elevation={0}>
-        <Route>
-          {({ location }) => {
-            const pathnames = location.pathname.split('/').filter(x => x);
-            return (
-              <Breadcrumbs aria-label="Breadcrumb">
-                <Link color="inherit" href="/">
-                  Home
-                </Link>
+        <Paper elevation={0}>
+          <Route>
+            {({ location }) => {
+              const pathnames = location.pathname.split('/').filter(x => x);
+              console.log('Path names: ', pathnames);
 
-                {pathnames.map((value, index) => {
-                  const last = index === pathnames.length - 1;
-                  const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+              return (
+                <Breadcrumbs 
+                  separator={<NavigateNextIcon fontSize="small" />}
+                  aria-label="Breadcrumb"
+                >
+                  <Link color="inherit" href="/">
+                    Browse
+                  </Link>
 
-                  return last ? (
-                    <Typography color="textPrimary" key={to}>
-                      {value}
-                    </Typography>
-                  ) : (
-                    <Link color="inherit" href={to} key={to}>
-                      {value}
-                    </Link>
-                  );
+                  {/* For each of the names in the path, request the entity names from the API. */}
+                  {pathnames.map((value, index) => {
+                    // const last = index === pathnames.length - 1;
+                    // const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+                    let entityName;
+
+                    console.log("Current value: ", value);
+                    
+                    // Check for the specific routes and request the names from the API.
+                    if (value === "investigation") {
+
+                    }
+
+                    // return last ? (
+                    //  <Typography color="textPrimary" key={to}>
+                    //    {value}
+                    //  </Typography>
+                    // ) : (
+
+                    // return (
+                      // <Link color="inherit" href={to} key={to}>
+                      //   {value}
+                      // </Link>
+                    // );
+                    // );
                   })}
                 </Breadcrumbs>
               );
@@ -71,5 +105,6 @@ export default class PageBreadcrumbs extends React.Component<{
         </Paper>
       </div>
     );
-  }
 }
+
+export default PageBreadcrumbs;
