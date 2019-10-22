@@ -182,10 +182,10 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
 }
 
 
-const mapStateToProps = ((state: StateType, location: Location): BreadcrumbProps => {
+const mapStateToProps = ((state: StateType, ownProps: { location: Location }): BreadcrumbProps => {
   return {
     apiUrl: state.dgtable.urls.apiUrl,
-    location: location,
+    location: ownProps.location,
   }
 });
 
