@@ -3,6 +3,7 @@ import React from 'react';
 import { StateType } from './state/app.types';
 import { useSelector } from 'react-redux';
 
+import axios from 'axios';
 import { Route } from 'react-router';
 import {
   Paper,
@@ -11,8 +12,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-
-
 
 // TODO: Maintain internal component state.
 // let breadcrumbsState = {
@@ -30,8 +29,23 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 //   }
 // }
 
+const apiRoutes: { [entity: string]: string } = {
+  "proposal": "/investigations/",
+  "investigation": "/investigations/",
+  "dataset": "/datasets/",
+  "datafiles": "/datafiles/",
+};
+
+
 const PageBreadcrumbs = (): React.ReactElement => {
   const { apiUrl } = useSelector((state: StateType) => state.dgtable.urls);
+
+  // Store the current breadcrumb state; use the IDs
+  // of the investigation/dataset
+  const currentBreadcrumb = {
+
+  }
+
   console.log("API Url: ", apiUrl);
   
     // return (
@@ -53,7 +67,20 @@ const PageBreadcrumbs = (): React.ReactElement => {
     //   </div>
     // );
 
+    const getEntityName = (requestEntityUrl: string): string => {
+      let entityResponse = '';
 
+      // Make a GET request to the specified URL.
+      axios.get(apiUrl + requestEntityUrl)
+        .then(response => {
+          console.log('Response: ', response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+      return entityResponse;
+    }
 
     return (
       <div>
@@ -73,17 +100,18 @@ const PageBreadcrumbs = (): React.ReactElement => {
                   </Link>
 
                   {/* For each of the names in the path, request the entity names from the API. */}
-                  {pathnames.map((value, index) => {
+                  {pathnames.map((value: string, index: number) => {
+                    let entityName = 'N/A';
+
+                    console.log('Current value: ', value);
+                    console.log('Current index: ', index);
+
                     // const last = index === pathnames.length - 1;
                     // const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-                    let entityName;
-
-                    console.log("Current value: ", value);
                     
                     // Check for the specific routes and request the names from the API.
-                    if (value === "investigation") {
-
-                    }
+                    if (value in apiRoutes)
+                      entityName = getEntityName(apiRoutes[value] + index);
 
                     // return last ? (
                     //  <Typography color="textPrimary" key={to}>
