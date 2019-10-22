@@ -3,7 +3,7 @@ import { Paper, Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
-  formatBytes,
+  DateColumnFilter,
   datasetLink,
   Order,
   Filter,
@@ -87,8 +87,17 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     />
   );
 
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
+      }
+    />
+  );
+
   return (
-    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
         data={data}
         loadMoreRows={params => fetchData(parseInt(investigationId), params)}
@@ -123,19 +132,18 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
             filterComponent: textFilter,
           },
           {
-            label: 'Size',
-            dataKey: 'SIZE',
-            cellContentRenderer: props => {
-              return formatBytes(props.cellData);
-            },
+            label: 'Datafile Count',
+            dataKey: 'DATAFILE_COUNT',
           },
           {
             label: 'Create Time',
             dataKey: 'CREATE_TIME',
+            filterComponent: dateFilter,
           },
           {
             label: 'Modified Time',
             dataKey: 'MOD_TIME',
+            filterComponent: dateFilter,
           },
         ]}
       />

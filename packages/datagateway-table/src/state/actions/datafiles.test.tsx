@@ -15,7 +15,7 @@ import {
   fetchDatafileCountFailure,
 } from '.';
 import axios from 'axios';
-import { StateType } from '../app.types';
+import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
 import * as log from 'loglevel';
@@ -25,6 +25,31 @@ jest.mock('loglevel');
 
 describe('Datafile actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
+  const mockData: Datafile[] = [
+    {
+      ID: 1,
+      NAME: 'Test 1',
+      LOCATION: '/test1',
+      SIZE: 1,
+      MOD_TIME: '2019-06-10',
+      DATASET_ID: 1,
+    },
+    {
+      ID: 2,
+      NAME: 'Test 2',
+      LOCATION: '/test2',
+      SIZE: 2,
+      MOD_TIME: '2019-06-10',
+      DATASET_ID: 1,
+    },
+  ];
+
+  // Dataset cache for dataset ID 1 which has 2 datafiles.
+  const mockDatasetCache: EntityCache = {
+    1: {
+      childEntityCount: 2,
+    },
+  };
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -32,25 +57,6 @@ describe('Datafile actions', () => {
   });
 
   it('dispatches fetchDatafilesRequest and fetchDatafilesSuccess actions upon successful fetchDatafiles action', async () => {
-    const mockData: Datafile[] = [
-      {
-        ID: 1,
-        NAME: 'Test 1',
-        LOCATION: '/test1',
-        SIZE: 1,
-        MOD_TIME: '2019-06-10',
-        DATASET_ID: 1,
-      },
-      {
-        ID: 2,
-        NAME: 'Test 2',
-        LOCATION: '/test2',
-        SIZE: 2,
-        MOD_TIME: '2019-06-10',
-        DATASET_ID: 1,
-      },
-    ];
-
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: mockData,
@@ -224,6 +230,28 @@ describe('Datafile actions', () => {
         },
       })
     );
+  });
+
+  it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountSuccess actions upon existing datasetCache and successful fetchDatasetDatafilesCount action', async () => {
+    const asyncAction = fetchDatasetDatafilesCount(1);
+
+    // Set up state to be used within fetchDatasetDatafilesCountSuccess with the dataset cache.
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        datasetCache: mockDatasetCache,
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    // We expect two actions to be dispatched; fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountSuccess.
+    // We do not want axio.get to have been called during the action as well.
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchDatasetDatafilesCountRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetDatafilesCountSuccess(1, 2, 1));
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountFailure actions upon unsuccessful fetchDatasetDatafilesCount action', async () => {

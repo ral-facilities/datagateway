@@ -12,6 +12,8 @@ export interface DGTableState {
   };
   data: Entity[];
   totalDataCount: number;
+  investigationCache: EntityCache;
+  datasetCache: EntityCache;
   loading: boolean;
   downloading: boolean;
   error: string | null;
@@ -20,6 +22,12 @@ export interface DGTableState {
   res?: ApplicationStrings;
   features: FeatureSwitches;
   urls: URLs;
+}
+
+export interface EntityCache {
+  [id: number]: {
+    childEntityCount: number | null;
+  };
 }
 
 export interface AppStrings {

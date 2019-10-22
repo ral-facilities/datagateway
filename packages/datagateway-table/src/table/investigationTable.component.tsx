@@ -3,7 +3,7 @@ import { Paper, Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
-  formatBytes,
+  DateColumnFilter,
   investigationLink,
   Order,
   Filter,
@@ -70,6 +70,15 @@ const InvestigationTable = (
     />
   );
 
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
+      }
+    />
+  );
+
   React.useEffect(() => {
     clearTable();
   }, [clearTable]);
@@ -80,7 +89,7 @@ const InvestigationTable = (
   }, [fetchCount, fetchData, sort, filters]);
 
   return (
-    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
         data={data}
         loadMoreRows={fetchData}
@@ -135,11 +144,8 @@ const InvestigationTable = (
             filterComponent: textFilter,
           },
           {
-            label: 'Size',
-            dataKey: 'SIZE',
-            cellContentRenderer: (props: TableCellProps) => {
-              return formatBytes(props.cellData);
-            },
+            label: 'Dataset Count',
+            dataKey: 'DATASET_COUNT',
           },
           {
             label: 'Instrument',
@@ -149,15 +155,19 @@ const InvestigationTable = (
           {
             label: 'Start Date',
             dataKey: 'STARTDATE',
+            filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
           {
             label: 'End Date',
             dataKey: 'ENDDATE',
+            filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
         ]}

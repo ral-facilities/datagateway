@@ -20,6 +20,7 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
+import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetDatafilesCount } from './datafiles';
@@ -89,8 +90,10 @@ export const fetchDatasets = (
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data, timestamp));
         if (datasetGetCount) {
-          response.data.forEach((dataset: Dataset) => {
-            dispatch(fetchDatasetDatafilesCount(dataset.ID));
+          batch(() => {
+            response.data.forEach((dataset: Dataset) => {
+              dispatch(fetchDatasetDatafilesCount(dataset.ID));
+            });
           });
         }
       })
@@ -261,26 +264,42 @@ export const fetchInvestigationDatasetsCount = (
     };
     const { apiUrl } = getState().dgtable.urls;
 
-    await axios
-      .get(`${apiUrl}/datasets/count`, {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(
-          fetchInvestigationDatasetsCountSuccess(
-            investigationId,
-            response.data,
-            timestamp
-          )
-        );
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchInvestigationDatasetsCountFailure(error.message));
-      });
+    const currentCache = getState().dgtable.investigationCache[investigationId];
+
+    // Check to see if a cached value exists already in the cache's child entity count.
+    if (currentCache && currentCache.childEntityCount) {
+      // Dispatch success with the cached dataset count.
+      dispatch(
+        fetchInvestigationDatasetsCountSuccess(
+          investigationId,
+          currentCache.childEntityCount,
+          timestamp
+        )
+      );
+    } else {
+      await axios
+        .get(`${apiUrl}/datasets/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(
+            fetchInvestigationDatasetsCountSuccess(
+              investigationId,
+              response.data,
+              timestamp
+            )
+          );
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchInvestigationDatasetsCountFailure(error.message));
+        });
+    }
   };
 };

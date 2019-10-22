@@ -106,7 +106,7 @@ describe('Investigation table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
-  it('sends filterTable action on filter', () => {
+  it('sends filterTable action on text filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -126,6 +126,30 @@ describe('Investigation table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', null));
+  });
+
+  it('sends filterTable action on date filter', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const filterInput = wrapper.find('input').last();
+    filterInput.instance().value = '2019-08-06';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[1]).toEqual(
+      filterTable('ENDDATE', { endDate: '2019-08-06' })
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[2]).toEqual(filterTable('ENDDATE', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -177,23 +201,6 @@ describe('Investigation table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders file size as bytes', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <InvestigationTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(
-      wrapper
-        .find('[aria-colindex=6]')
-        .find('p')
-        .text()
-    ).toEqual('1 B');
-  });
-
   it('renders date objects as just the date', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -216,5 +223,26 @@ describe('Investigation table component', () => {
         .find('p')
         .text()
     ).toEqual('2019-07-24');
+  });
+
+  it('renders fine with incomplete data', () => {
+    // this can happen when navigating between tables and the previous table's state still exists
+    state.dgtable.data = [
+      {
+        ID: 1,
+        NAME: 'test',
+        TITLE: 'test',
+      },
+    ];
+
+    expect(() =>
+      mount(
+        <Provider store={mockStore(state)}>
+          <MemoryRouter>
+            <InvestigationTable />
+          </MemoryRouter>
+        </Provider>
+      )
+    ).not.toThrowError();
   });
 });

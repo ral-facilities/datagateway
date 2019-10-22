@@ -195,23 +195,43 @@ export const fetchDatasetDatafilesCount = (
     };
     const { apiUrl } = getState().dgtable.urls;
 
-    await axios
-      .get(`${apiUrl}/datafiles/count`, {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(
-          fetchDatasetDatafilesCountSuccess(datasetId, response.data, timestamp)
-        );
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatasetDatafilesCountFailure(error.message));
-      });
+    const currentCache = getState().dgtable.datasetCache[datasetId];
+
+    // Check if the cached value exists already in the cache's child entity count.
+    if (currentCache && currentCache.childEntityCount) {
+      // Dispatch success with the cached datafile count.
+      dispatch(
+        fetchDatasetDatafilesCountSuccess(
+          datasetId,
+          currentCache.childEntityCount,
+          timestamp
+        )
+      );
+    } else {
+      await axios
+        .get(`${apiUrl}/datafiles/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(
+            fetchDatasetDatafilesCountSuccess(
+              datasetId,
+              response.data,
+              timestamp
+            )
+          );
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatasetDatafilesCountFailure(error.message));
+        });
+    }
   };
 };
 

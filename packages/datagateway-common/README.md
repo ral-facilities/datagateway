@@ -1,6 +1,6 @@
 # datagateway-common
 
-A library containint common code and components for the DataGateway project.
+A library containing common code and components for the DataGateway project.
 It is a dependency of other packages in the repo and other apps can import code from it
 like normal.
 

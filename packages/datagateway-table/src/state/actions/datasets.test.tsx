@@ -15,7 +15,7 @@ import {
   fetchDatasetCountFailure,
   fetchDatasetDatafilesCountRequest,
 } from '.';
-import { StateType } from '../app.types';
+import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
@@ -43,6 +43,13 @@ describe('Dataset actions', () => {
       INVESTIGATION_ID: 1,
     },
   ];
+
+  // Investigation cache for investigation ID 1 which has 2 datasets.
+  const mockInvestigationCache: EntityCache = {
+    1: {
+      childEntityCount: 2,
+    },
+  };
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -255,6 +262,29 @@ describe('Dataset actions', () => {
         },
       })
     );
+  });
+
+  it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon existing investigation cache and successful fetchInvestigationDatasetsCount action', async () => {
+    const asyncAction = fetchInvestigationDatasetsCount(1);
+
+    // Set up the state for calling fetchInvestigationDatasetsCountSuccess with investigation cache.
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        investigationCache: mockInvestigationCache,
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    // Expect only two actions; fetchInvestigationDatasetsCountRequest and the fetchInvestigationDatasetsCountSucess
+    // (given Investigation ID 1 and the dataset count to be 2).
+    // We do not expect an GET request from axios to have been called.
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
+    expect(actions[1]).toEqual(fetchInvestigationDatasetsCountSuccess(1, 2, 1));
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountFailure actions upon unsuccessful fetchInvestigationDatasetsCount action', async () => {

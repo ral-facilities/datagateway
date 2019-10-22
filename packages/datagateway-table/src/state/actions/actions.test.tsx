@@ -99,7 +99,10 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
-          filters: { column1: 'test', column2: 'test2' },
+          filters: {
+            column1: 'test',
+            column2: { endDate: '2019-09-18' },
+          },
         },
         router: routerState,
       });
@@ -108,7 +111,10 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { lte: '2019-09-18 23:59:59' } })
+      );
 
       expect(filter).toEqual(params);
     });
@@ -118,7 +124,7 @@ describe('Actions', () => {
         dgtable: {
           ...initialState,
           sort: { column1: 'asc', column2: 'desc' },
-          filters: { column1: 'test', column2: 'test2' },
+          filters: { column1: 'test', column2: { startDate: '2019-09-17' } },
         },
         router: routerState,
       });
@@ -129,7 +135,10 @@ describe('Actions', () => {
       params.append('order', JSON.stringify('column2 desc'));
       params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { gte: '2019-09-17 00:00:00' } })
+      );
 
       expect(filter).toEqual(params);
     });
