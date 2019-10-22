@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { StateType } from './state/app.types';
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import axios from 'axios';
 import { Route } from 'react-router';
@@ -37,7 +37,7 @@ const apiRoutes: { [entity: string]: string } = {
 };
 
 
-const PageBreadcrumbs = (): React.ReactElement => {
+const PageBreadcrumbs = (props: { location: Location }): React.ReactElement => {
   // Get the API url in use.
   const { apiUrl } = useSelector((state: StateType) => state.dgtable.urls);
   console.log("API Url: ", apiUrl);
@@ -66,23 +66,35 @@ const PageBreadcrumbs = (): React.ReactElement => {
     //   </div>
     // );
 
-    const getEntityName = (requestEntityUrl: string): string => {
-      let entityResponse = '';
+    React.useEffect(() => {
+      console.log("Location: ", props.location);
 
+
+
+    }, [props.location]);
+
+    const getEntityName = async (requestEntityUrl: string): Promise<string> => {
+      let entityName = '';
+      
       // Make a GET request to the specified URL.
-      axios.get(`${apiUrl}${requestEntityUrl}`, {
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-      })
-        .then(response => {
-          console.log('Response: ', response);
+      entityName = await axios.get(`${apiUrl}${requestEntityUrl}`, {
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          },
         })
-        .catch(error => {
-          console.log(error);
-        });
+          .then(response => {
+            console.log(`${requestEntityUrl} - Response Data:`, response.data);
 
-      return entityResponse;
+            // Return the NAME property in the data received.
+            console.log(`${requestEntityUrl} - Entity Name: ${response.data.NAME}`);
+            return response.data.NAME;
+          })
+          .catch(error => {
+            console.log(error);
+            return '';
+          });
+
+      return entityName;
     }
 
     return (
@@ -104,18 +116,39 @@ const PageBreadcrumbs = (): React.ReactElement => {
 
                   {/* For each of the names in the path, request the entity names from the API. */}
                   {pathnames.map((value: string, index: number) => {
-                    let entityName = 'N/A';
-
                     console.log(`Current value: ${value}`);
                     console.log(`Current index: ${index}`);
 
                     // const last = index === pathnames.length - 1;
-                    // const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+                    const to = `/${pathnames.slice(0, index + 1).join('/')}`;
                     
                     // Check for the specific routes and request the names from the API.
-                    if (value in apiRoutes)
-                      entityName = getEntityName(`${apiRoutes[value]}${index}`);
+                    // if not last and value is in apiRoutes
+                    if (value in apiRoutes) {
+                      let requestEntityUrl = `${apiRoutes[value]}${index}`;
+                      
+                      getEntityName(requestEntityUrl)
+                        .then(entityName => {
+                          if (entityName) {
+                            console.log(`${value} - Retrieved entity name: ${entityName}`);
 
+                            // Return the Link with the entity name.
+                            return (
+                              // Include key?
+                              <Link color="inherit" href={to}>
+                                {entityName}
+                              </Link>
+                            );
+                          }
+                        });
+                    }
+                    
+                    return (
+                      <Link>
+                        N/A
+                      </Link>
+                    )
+                    
                     // return last ? (
                     //  <Typography color="textPrimary" key={to}>
                     //    {value}
@@ -138,4 +171,9 @@ const PageBreadcrumbs = (): React.ReactElement => {
     );
 }
 
-export default PageBreadcrumbs;
+
+const mapStateToProps = (location: Location): Location => location;
+
+export default connect(
+  mapStateToProps,
+)(PageBreadcrumbs);
