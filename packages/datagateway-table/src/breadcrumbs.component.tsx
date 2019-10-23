@@ -4,9 +4,9 @@ import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
-import { Route, RouteComponentProps } from 'react-router';
-import { withRouter } from 'react-router-dom';
-import { Paper, Breadcrumbs, Link, Typography } from '@material-ui/core';
+import { Route } from 'react-router';
+
+import { Paper, Breadcrumbs, Link } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 // TODO: Maintain internal component state.
@@ -32,8 +32,9 @@ const apiEntityRoutes: { [entity: string]: string } = {
   datafiles: '/datafiles/',
 };
 
-interface BreadcrumbProps extends RouteComponentProps {
+interface BreadcrumbProps {
   apiUrl: string;
+  location: string;
 }
 
 class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
@@ -66,8 +67,7 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
   // );
 
   public componentDidMount(): void {
-    // const { location } = this.props;
-    // console.log("Location Pathname: ", this.props.location.pathname);
+    console.log('Pathname: ', this.props.location);
   }
 
   private getEntityName = async (requestEntityUrl: string): Promise<string> => {
@@ -168,11 +168,9 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
   }
 }
 
-const mapStateToProps = (state: StateType): { apiUrl: string } => {
-  console.log('apiUrl prop: ', state.dgtable.urls.apiUrl);
-  return {
-    apiUrl: state.dgtable.urls.apiUrl,
-  };
-};
+const mapStateToProps = (state: StateType): BreadcrumbProps => ({
+  apiUrl: state.dgtable.urls.apiUrl,
+  location: state.router.location.pathname,
+});
 
-export default withRouter(connect(mapStateToProps)(PageBreadcrumbs));
+export default connect(mapStateToProps)(PageBreadcrumbs);

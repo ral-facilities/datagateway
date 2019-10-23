@@ -2,6 +2,7 @@ import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { Order, Filter, Entity } from 'datagateway-common';
 import { FeatureSwitches, URLs } from './actions/actions.types';
+import { RouterState } from 'connected-react-router';
 
 export interface DGTableState {
   sort: {
@@ -36,6 +37,7 @@ export interface ApplicationStrings {
 
 export interface StateType {
   dgtable: DGTableState;
+  router: RouterState;
 }
 
 export interface ActionType<T> {
