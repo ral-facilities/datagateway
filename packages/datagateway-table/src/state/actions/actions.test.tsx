@@ -7,6 +7,7 @@ import {
   configureStrings,
   loadFeatureSwitches,
   loadUrls,
+  settingsLoaded,
 } from '.';
 import {
   SortTableType,
@@ -14,6 +15,7 @@ import {
   ConfigureStringsType,
   ConfigureFeatureSwitchesType,
   ConfigureURLsType,
+  SettingsLoadedType,
 } from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -146,6 +148,11 @@ describe('Actions', () => {
     expect(action.payload).toEqual({ column: 'test', filter: 'filter text' });
   });
 
+  it('settingsLoaded returns an action with SettingsLoadedType', () => {
+    const action = settingsLoaded();
+    expect(action.type).toEqual(SettingsLoadedType);
+  });
+
   it('given JSON configureStrings returns a ConfigureStringsType with ConfigureStringsPayload', () => {
     const action = configureStrings({ testSection: { test: 'string' } });
     expect(action.type).toEqual(ConfigureStringsType);
@@ -186,7 +193,7 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and configureStrings, loadFeatureSwitches and loadUrls actions are sent', async () => {
+  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -214,7 +221,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(
       loadFeatureSwitches({
         investigationGetSize: true,
@@ -232,6 +239,7 @@ describe('Actions', () => {
         apiUrl: 'api',
       })
     );
+    expect(actions).toContainEqual(settingsLoaded());
   });
 
   it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
@@ -256,7 +264,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(2);
+    expect(actions.length).toEqual(3);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -266,6 +274,7 @@ describe('Actions', () => {
         apiUrl: 'api',
       })
     );
+    expect(actions).toContainEqual(settingsLoaded());
   });
 
   it('logs an error if settings.json fails to be loaded', async () => {

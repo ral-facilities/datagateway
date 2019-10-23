@@ -30,6 +30,7 @@ import {
   loadFeatureSwitches,
   configureStrings,
   loadUrls,
+  settingsLoaded,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -92,6 +93,14 @@ describe('dgtable reducer', () => {
 
     let updatedState = DGTableReducer(state, filterTable('test', null));
     expect(updatedState.sort).toEqual({});
+  });
+
+  it('should set settingsLoaded to true when SettingsLoaded action is sent', () => {
+    expect(state.settingsLoaded).toBe(false);
+
+    const updatedState = DGTableReducer(state, settingsLoaded());
+
+    expect(updatedState.settingsLoaded).toBe(true);
   });
 
   it('should set res property when configure strings action is sent', () => {
