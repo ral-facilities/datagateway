@@ -12,7 +12,7 @@ describe('Datafiles Table', () => {
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="75"]').should('exist');
+    cy.get('[aria-rowcount="56"]').should('exist');
   });
 
   describe('should be able to sort by', () => {
@@ -135,7 +135,7 @@ describe('Datafiles Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Datafile 10083').should('be.visible');
+      cy.contains('Name: Datafile 24').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -148,8 +148,8 @@ describe('Datafiles Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Datafile 10083').should('be.visible');
-      cy.contains('Name: Datafile 10562').should('not.be.visible');
+      cy.contains('Name: Datafile 24').should('be.visible');
+      cy.contains('Name: Datafile 3377').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -162,7 +162,7 @@ describe('Datafiles Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Datafile 10083').should('not.be.visible');
+      cy.contains('Name: Datafile 24').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

@@ -19,7 +19,7 @@ describe('Datasets Table', () => {
     );
   });
 
-  // current example data only has 3 datasets per investigation, so can't test lazy loading
+  // current example data only has 2 datasets per investigation, so can't test lazy loading
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
