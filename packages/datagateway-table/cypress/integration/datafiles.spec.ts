@@ -1,7 +1,7 @@
 describe('Datafiles Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1407/dataset/2506/datafile');
+    cy.visit('/browse/investigation/1/dataset/25/datafile');
   });
 
   it('should load correctly', () => {
@@ -15,7 +15,9 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('ab/odio/eos');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        '/act/friend/general.jpeg'
+      );
     });
 
     it('descending order', () => {
@@ -27,7 +29,7 @@ describe('Datafiles Table', () => {
         .eq(1)
         .should('not.have.css', 'opacity', '0');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'voluptatibus/odio/dolor'
+        '/yes/glass/them.jpg'
       );
     });
 
@@ -45,7 +47,7 @@ describe('Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'quidem/omnis/iure'
+        '/close/message/son.bmp'
       );
     });
 
@@ -54,19 +56,21 @@ describe('Datafiles Table', () => {
       cy.contains('Name').click();
       cy.contains('Name').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('Datafile 29');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Datafile 15831'
+      );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
+      cy.get('[aria-label="Filter by Location"]')
         .find('input')
-        .type('Datafile 13');
+        .type('ok');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'id/error/nulla'
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Datafile 13915'
       );
     });
 
@@ -94,29 +98,38 @@ describe('Datafiles Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="100"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Datafile 1940'
+      );
+      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
+        'Datafile 6730'
+      );
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
-        .type('1');
+        .type('5');
 
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
-        .type('est');
+        .type('.png');
 
-      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Datafile 15352'
+      );
     });
   });
 
-  describe('should be able to view details', () => {
+  describe.only('should be able to view details', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]')
         .first()
         .click();
 
-      cy.contains('Name: Datafile 1').should('be.visible');
+      cy.contains('Name: Datafile 10083').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -129,8 +142,8 @@ describe('Datafiles Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Datafile 1').should('be.visible');
-      cy.contains('Name: Datafile 2').should('not.be.visible');
+      cy.contains('Name: Datafile 10083').should('be.visible');
+      cy.contains('Name: Datafile 10562').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -143,7 +156,7 @@ describe('Datafiles Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Datafile 1').should('not.be.visible');
+      cy.contains('Name: Datafile 10083').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
