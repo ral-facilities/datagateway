@@ -6,7 +6,7 @@ import {
   Order,
   TableActionProps,
 } from 'datagateway-common';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Grid, Paper, Typography, Button } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
 
 export interface DownloadCartTableItem {
@@ -22,6 +22,12 @@ const DownloadCart: React.FC = () => {
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
     {}
   );
+
+  // TODO: work these out via API calls
+  const [fileCount, setFileCount] = React.useState<number>(-1);
+  const [fileCountMax, setFileCountMax] = React.useState<number>(-1);
+  const [totalSize, setTotalSize] = React.useState<number>(-1);
+  const [totalSizeMax, setTotalSizeMax] = React.useState<number>(-1);
 
   // TODO: get from API
   const data: DownloadCartTableItem[] = [
@@ -98,55 +104,108 @@ const DownloadCart: React.FC = () => {
     return filteredData.sort(sortCartItems);
   }, [data, sort, filters]);
 
+  React.useEffect(() => {
+    setFileCount(3);
+    setFileCountMax(3);
+    setTotalSize(2048 + 1024 + 1);
+    setTotalSizeMax(5000);
+  }, [setFileCount, setFileCountMax, setTotalSize, setTotalSizeMax]);
+
   return (
-    <Table
-      columns={[
-        {
-          label: 'Name',
-          dataKey: 'NAME',
-          filterComponent: textFilter,
-        },
-        {
-          label: 'Type',
-          dataKey: 'ENTITY_TYPE',
-          filterComponent: textFilter,
-        },
-        {
-          label: 'Size',
-          dataKey: 'SIZE',
-          cellContentRenderer: props => {
-            return formatBytes(props.cellData);
-          },
-          disableSort: true,
-        },
-      ]}
-      sort={sort}
-      onSort={(column: string, order: 'desc' | 'asc' | null) => {
-        if (order) {
-          setSort({ ...sort, [column]: order });
-        } else {
-          const { [column]: order, ...restOfSort } = sort;
-          setSort(restOfSort);
-        }
-      }}
-      data={sortedAndFilteredData}
-      actions={[
-        function removeButton({ rowData }: TableActionProps) {
-          return (
-            <IconButton
-              aria-label={`Remove ${rowData.NAME} from cart`}
-              key="remove"
-              size="small"
-              onClick={() => {
-                console.log('remove item!');
-              }}
-            >
-              <RemoveCircle />
-            </IconButton>
-          );
-        },
-      ]}
-    />
+    <Grid container direction="column">
+      <Grid item>
+        <Paper style={{ height: 'calc(100vh - 150px)' }}>
+          <Table
+            columns={[
+              {
+                label: 'Name',
+                dataKey: 'NAME',
+                filterComponent: textFilter,
+              },
+              {
+                label: 'Type',
+                dataKey: 'ENTITY_TYPE',
+                filterComponent: textFilter,
+              },
+              {
+                label: 'Size',
+                dataKey: 'SIZE',
+                cellContentRenderer: props => {
+                  return formatBytes(props.cellData);
+                },
+                disableSort: true,
+              },
+            ]}
+            sort={sort}
+            onSort={(column: string, order: 'desc' | 'asc' | null) => {
+              if (order) {
+                setSort({ ...sort, [column]: order });
+              } else {
+                const { [column]: order, ...restOfSort } = sort;
+                setSort(restOfSort);
+              }
+            }}
+            data={sortedAndFilteredData}
+            actions={[
+              function removeButton({ rowData }: TableActionProps) {
+                return (
+                  <IconButton
+                    aria-label={`Remove ${rowData.NAME} from cart`}
+                    key="remove"
+                    size="small"
+                    onClick={() => {
+                      console.log('remove item!');
+                    }}
+                  >
+                    <RemoveCircle />
+                  </IconButton>
+                );
+              },
+            ]}
+          />
+        </Paper>
+      </Grid>
+      <Grid
+        container
+        item
+        direction="column"
+        alignItems="flex-end"
+        justify="space-between"
+      >
+        <Grid container item direction="column" xs={3}>
+          <Typography>
+            Number of files: {fileCount !== -1 ? fileCount : 'Calculating...'}
+            {fileCountMax !== -1 && ` / ${fileCountMax}`}
+          </Typography>
+          <Typography>
+            Total size:{' '}
+            {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
+            {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
+          </Typography>
+        </Grid>
+        <Grid container item alignItems="center" justify="space-around" xs={3}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => console.log('remove all items!')}
+          >
+            Remove All
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => console.log('download the cart!')}
+            disabled={
+              fileCountMax !== -1 &&
+              totalSizeMax !== -1 &&
+              (fileCount > fileCountMax || totalSize > totalSizeMax)
+            }
+          >
+            Download Cart
+          </Button>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 
