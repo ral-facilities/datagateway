@@ -38,6 +38,19 @@ interface BreadcrumbProps {
 }
 
 class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
+  private initialState = {
+    breadcrumbs: {
+      investigation: {
+        displayName: 'N/A',
+        url: '',
+      },
+      dataset: {
+        displayName: 'N/A',
+        url: '',
+      },
+    },
+  };
+
   public constructor(props: BreadcrumbProps) {
     super(props);
   }
@@ -67,8 +80,50 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
   // );
 
   public componentDidMount(): void {
-    console.log('Pathname: ', this.props.location);
+    console.log('Location: ', this.props.location);
+
+    const pathnames = this.props.location.split('/').filter(x => x);
+    console.log(`Path names: ${pathnames}`);
+
+    console.log('Initial State: ', this.state);
+
+    //
+    pathnames.forEach((value: string, index: number) => {
+      console.log(`Current value: ${value}`);
+      console.log(`Current index: ${index}`);
+
+      const link = `/${pathnames.slice(0, index + 1).join('/')}`;
+      console.log(`Breadcrumb URL: ${link}`);
+
+      // Check for the specific routes and request the names from the API.
+      // if not last and value is in apiRoutes
+      if (value in apiEntityRoutes) {
+        let requestEntityUrl = `${apiEntityRoutes[value]}${index}`;
+
+        this.getEntityName(requestEntityUrl).then(entityName => {
+          if (entityName) {
+            console.log(`${value} - Retrieved entity name: ${entityName}`);
+
+            // Update the state with the entity information.
+            let updatedState = {
+              ...this.state,
+              value: {
+                displayName: entityName,
+                url: link,
+              },
+            };
+            this.setState(updatedState, () =>
+              console.log('Updated state: ', this.state)
+            );
+          }
+        });
+      }
+    });
   }
+
+  // private updateBreadcrumbState = () => {
+
+  // };
 
   private getEntityName = async (requestEntityUrl: string): Promise<string> => {
     let entityName = '';
@@ -96,13 +151,14 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
   };
 
   public render(): React.ReactElement {
+    console.log();
     return (
       <div>
         <Paper elevation={0}>
           <Route>
             {({ location }) => {
               const pathnames = location.pathname.split('/').filter(x => x);
-              console.log(`Path names: ${pathnames}`);
+              // console.log(`Path names: ${pathnames}`);
 
               return (
                 <Breadcrumbs
@@ -115,8 +171,8 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
 
                   {/* For each of the names in the path, request the entity names from the API. */}
                   {pathnames.map((value: string, index: number) => {
-                    console.log(`Current value: ${value}`);
-                    console.log(`Current index: ${index}`);
+                    // console.log(`Current value: ${value}`);
+                    // console.log(`Current index: ${index}`);
 
                     // const last = index === pathnames.length - 1;
                     const to = `/${pathnames.slice(0, index + 1).join('/')}`;
@@ -128,9 +184,9 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
 
                       this.getEntityName(requestEntityUrl).then(entityName => {
                         if (entityName) {
-                          console.log(
-                            `${value} - Retrieved entity name: ${entityName}`
-                          );
+                          // console.log(
+                          // `${value} - Retrieved entity name: ${entityName}`
+                          // );
 
                           // Return the Link with the entity name.
                           return (
