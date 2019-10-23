@@ -13,11 +13,6 @@ app.use(
   serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
 );
 
-// TODO: remove when preloader exists
-app.get(/\/investigations|datasets|datafiles/, function(req, res) {
-  res.json([]);
-});
-
 app.get('/*', function(req, res) {
   res.sendFile(path.resolve('./build/index.html'));
 });
