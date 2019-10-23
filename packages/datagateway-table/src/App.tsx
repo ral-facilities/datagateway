@@ -104,8 +104,8 @@ class App extends React.Component<{}, { hasError: boolean }> {
           <ConnectedRouter history={history}>
             <StylesProvider generateClassName={generateClassName}>
               {/* TODO: Handle breadcrumbs for the page. */}
-              <PageBreadcrumbs location={window.location} />
-              <Switch>         
+              <PageBreadcrumbs />
+              <Switch>
                 <Route
                   exact
                   path="/"
