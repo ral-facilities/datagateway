@@ -53,7 +53,7 @@ describe('Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        '/close/message/son.bmp'
+        '/year/how/structure.tiff'
       );
     });
 
@@ -129,7 +129,7 @@ describe('Datafiles Table', () => {
     });
   });
 
-  describe.only('should be able to view details', () => {
+  describe('should be able to view details', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]')
         .first()
