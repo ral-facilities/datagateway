@@ -14,6 +14,8 @@ import {
   filterTable,
   fetchDatasets,
   fetchDatasetDetails,
+  fetchDatasetCount,
+  clearTable,
 } from '../../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
@@ -22,6 +24,8 @@ import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { TableCellProps } from 'react-virtualized';
 import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component';
+import { IndexRange } from 'react-virtualized';
+import useAfterMountEffect from '../../utils';
 
 interface DLSDatasetsTableProps {
   proposalName: string;
@@ -36,6 +40,7 @@ interface DLSDatasetsTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -43,7 +48,12 @@ interface DLSDatasetsTableStoreProps {
 interface DLSDatasetsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (investigationId: number) => Promise<void>;
+  fetchData: (
+    investigationId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
+  clearTable: () => Action;
   fetchDetails: (datasetId: number) => Promise<void>;
 }
 
@@ -56,7 +66,10 @@ const DLSDatasetsTable = (
 ): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
@@ -66,8 +79,13 @@ const DLSDatasetsTable = (
   } = props;
 
   React.useEffect(() => {
-    fetchData(parseInt(investigationId));
-  }, [fetchData, sort, filters, investigationId]);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount(parseInt(investigationId));
+    fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -87,9 +105,10 @@ const DLSDatasetsTable = (
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
-      // @ts-ignore
       <Table
         data={data}
+        loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData, detailsPanelResize }) => {
@@ -140,13 +159,17 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (investigationId: number) =>
+  fetchData: (investigationId: number, offsetParams: IndexRange) =>
     dispatch(
       fetchDatasets({
         investigationId,
+        offsetParams,
         optionalParams: { getDatafileCount: true },
       })
     ),
+  fetchCount: (investigationId: number) =>
+    dispatch(fetchDatasetCount(investigationId)),
+  clearTable: () => dispatch(clearTable()),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
 });
 
@@ -155,6 +178,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

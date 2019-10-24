@@ -201,13 +201,24 @@ export const fetchInvestigationCountRequest = (
   },
 });
 
-export const fetchInvestigationCount = (): ThunkResult<Promise<void>> => {
+export const fetchInvestigationCount = (
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[]
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    if (additionalFilters) {
+      additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
     params.delete('order');
+
     const { apiUrl } = getState().dgtable.urls;
 
     await axios

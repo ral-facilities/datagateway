@@ -245,14 +245,20 @@ describe('Investigation actions', () => {
     expect(actions[1]).toEqual(fetchInvestigationCountSuccess(4, 1));
   });
 
-  it('fetchInvestigationCount action applies filters to request params', async () => {
+  it('fetchInvestigationCount action applies filters to request params, as well as applying optional additional filters', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: 7,
       })
     );
 
-    const asyncAction = fetchInvestigationCount();
+    const asyncAction = fetchInvestigationCount([
+      {
+        filterType: 'distinct',
+        filterValue: JSON.stringify(['NAME']),
+      },
+    ]);
+
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -268,6 +274,7 @@ describe('Investigation actions', () => {
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('distinct', JSON.stringify(['NAME']));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/investigations/count',

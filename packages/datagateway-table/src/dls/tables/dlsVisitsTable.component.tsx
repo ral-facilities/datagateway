@@ -13,15 +13,18 @@ import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import {
   sortTable,
   filterTable,
   fetchInvestigations,
   fetchInvestigationDetails,
+  fetchInvestigationCount,
+  clearTable,
 } from '../../state/actions';
 import VisitDetailsPanel from '../detailsPanels/visitDetailsPanel.component';
+import useAfterMountEffect from '../../utils';
 
 interface DLSVisitsTableProps {
   proposalName: string;
@@ -35,6 +38,7 @@ interface DLSVisitsTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -42,7 +46,9 @@ interface DLSVisitsTableStoreProps {
 interface DLSVisitsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (proposalName: string) => Promise<void>;
+  fetchData: (proposalName: string, offsetParams: IndexRange) => Promise<void>;
+  fetchCount: (proposalName: string) => Promise<void>;
+  clearTable: () => Action;
   fetchDetails: (investigationId: number) => Promise<void>;
 }
 
@@ -55,7 +61,10 @@ const DLSVisitsTable = (
 ): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
@@ -80,14 +89,20 @@ const DLSVisitsTable = (
   );
 
   React.useEffect(() => {
-    fetchData(proposalName);
-  }, [fetchData, proposalName, sort, filters]);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount(proposalName);
+    fetchData(proposalName, { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters, proposalName]);
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
-      // @ts-ignore
       <Table
         data={data}
+        loadMoreRows={params => fetchData(proposalName, params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData, detailsPanelResize }) => {
@@ -156,9 +171,10 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (proposalName: string) =>
+  fetchData: (proposalName: string, offsetParams: IndexRange) =>
     dispatch(
       fetchInvestigations({
+        offsetParams,
         additionalFilters: [
           {
             filterType: 'where',
@@ -174,6 +190,16 @@ const mapDispatchToProps = (
         getDatasetCount: true,
       })
     ),
+  fetchCount: (proposalName: string) =>
+    dispatch(
+      fetchInvestigationCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ NAME: { eq: proposalName } }),
+        },
+      ])
+    ),
+  clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
 });
@@ -183,6 +209,7 @@ const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };
