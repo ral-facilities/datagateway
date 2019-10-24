@@ -158,7 +158,7 @@ exports[`DLS Dataset table component renders correctly 1`] = `
   className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
   style={
     Object {
-      "height": 768,
+      "height": "calc(100vh - 64px)",
       "width": "100%",
     }
   }

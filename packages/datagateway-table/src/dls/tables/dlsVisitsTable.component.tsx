@@ -98,7 +98,7 @@ const DLSVisitsTable = (
   }, [fetchCount, fetchData, sort, filters, proposalName]);
 
   return (
-    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
         data={data}
         loadMoreRows={params => fetchData(proposalName, params)}
