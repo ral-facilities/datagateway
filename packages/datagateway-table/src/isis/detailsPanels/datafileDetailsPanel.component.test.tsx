@@ -90,6 +90,12 @@ describe('Datafile details panel component', () => {
           VALUETYPE: '',
         },
       },
+      {
+        ID: 10,
+        STRING_VALUE: 'Missing PARAMETERTYPE',
+        DATAFILE_ID: 1,
+        PARAMETER_TYPE_ID: 11,
+      },
     ];
 
     const wrapper = shallow(
@@ -137,7 +143,7 @@ describe('Datafile details panel component', () => {
   });
 
   it('calls fetchDetails on load', () => {
-    const wrapper = mount(
+    mount(
       <DatafilesDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
