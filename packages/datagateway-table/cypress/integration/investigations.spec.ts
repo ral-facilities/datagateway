@@ -13,7 +13,13 @@ describe('Investigations Table', () => {
     cy.get('a')
       .first()
       .click({ force: true });
-    cy.location('pathname').should('eq', '/browse/investigation/1407/dataset');
+    cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
+  });
+
+  it('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="75"]').should('exist');
   });
 
   it('should be able to scroll down and load more rows', () => {
@@ -29,7 +35,7 @@ describe('Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'accusamus molestias qui'
+        'A nothing almost arrive I. Product middle design never. Cup camera then product father sort vote.'
       );
     });
 
@@ -44,7 +50,7 @@ describe('Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'voluptates fuga harum'
+        'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
       );
     });
 
@@ -62,17 +68,16 @@ describe('Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'quas accusantium omnis'
+        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
       );
     });
 
     it('multiple columns', () => {
       cy.contains('Start Date').click();
       cy.contains('Title').click();
-      cy.contains('Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'voluptates fuga harum'
+        'Color knowledge economy return determine tell. Professor able catch cut nice anyone. Can line benefit home.'
       );
     });
   });
@@ -81,16 +86,14 @@ describe('Investigations Table', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
-        .type('eos est et');
+        .type('dog');
 
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Proposal 11 - 3'
-      );
+      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('1');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2017-01-01');
+      cy.get('[aria-label="Start Date date filter from"]').type('2019-01-01');
 
       cy.get('[aria-label="Start Date date filter to"]')
         .parent()
@@ -111,17 +114,20 @@ describe('Investigations Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="100"]').should('exist');
+      cy.get('[aria-rowcount="12"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Happy near day assume draw again. Lead pattern nothing approach spring standard.'
+      );
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
-        .type('et');
+        .type('dog');
 
       cy.get('[aria-label="Filter by Visit ID"]')
         .find('input')
-        .type('14');
+        .type('9');
 
       cy.get('[aria-rowcount="2"]').should('exist');
     });
@@ -133,23 +139,27 @@ describe('Investigations Table', () => {
         .first()
         .click();
 
-      cy.contains('Title: quas accusantium omnis').should('be.visible');
+      cy.contains(
+        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+      ).should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
     it('when another other row is showing details', () => {
       cy.get('[aria-label="Show details"]')
-        .eq(1)
+        .eq(2)
         .click();
 
       cy.get('[aria-label="Show details"]')
         .first()
         .click();
 
-      cy.contains('Title: quas accusantium omnis').should('be.visible');
-      cy.contains('Title: voluptatem corrupti dolorem').should(
-        'not.be.visible'
-      );
+      cy.contains(
+        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+      ).should('be.visible');
+      cy.contains(
+        'Title: Dog want single resource major. Necessary bit always available term small stock game.'
+      ).should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -162,7 +172,9 @@ describe('Investigations Table', () => {
         .first()
         .click();
 
-      cy.contains('Title: quas accusantium omnis').should('not.be.visible');
+      cy.contains(
+        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+      ).should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
