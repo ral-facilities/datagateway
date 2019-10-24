@@ -26,6 +26,7 @@ describe('ISIS datafiles table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -66,7 +67,7 @@ describe('ISIS datafiles table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });
 
   it('sends filterTable action on filter', () => {
@@ -121,7 +122,7 @@ describe('ISIS datafiles table component', () => {
 
     wrapper.find('button[aria-label="Download"]').simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest());
+    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
   });
 
   it("doesn't display download button for datafiles with no location", () => {

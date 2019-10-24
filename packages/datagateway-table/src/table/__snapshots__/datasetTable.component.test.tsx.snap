@@ -158,7 +158,7 @@ exports[`Dataset table component renders correctly 1`] = `
   className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
   style={
     Object {
-      "height": 768,
+      "height": "calc(100vh - 64px)",
       "width": "100%",
     }
   }
@@ -173,16 +173,17 @@ exports[`Dataset table component renders correctly 1`] = `
           "label": "Name",
         },
         Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "SIZE",
-          "label": "Size",
+          "dataKey": "DATAFILE_COUNT",
+          "label": "Datafile Count",
         },
         Object {
           "dataKey": "CREATE_TIME",
+          "filterComponent": [Function],
           "label": "Create Time",
         },
         Object {
           "dataKey": "MOD_TIME",
+          "filterComponent": [Function],
           "label": "Modified Time",
         },
       ]
@@ -200,8 +201,10 @@ exports[`Dataset table component renders correctly 1`] = `
       ]
     }
     detailsPanel={[Function]}
+    loadMoreRows={[Function]}
     onSort={[Function]}
     sort={Object {}}
+    totalRowCount={0}
   />
 </div>
 `;

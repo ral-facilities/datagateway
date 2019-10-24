@@ -26,6 +26,7 @@ describe('ISIS Dataset table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -75,7 +76,7 @@ describe('ISIS Dataset table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
   });
 
   it('sends filterTable action on filter', () => {
@@ -195,6 +196,6 @@ describe('ISIS Dataset table component', () => {
 
     wrapper.find('button[aria-label="Download"]').simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(downloadDatasetRequest());
+    expect(testStore.getActions()[1]).toEqual(downloadDatasetRequest(1));
   });
 });

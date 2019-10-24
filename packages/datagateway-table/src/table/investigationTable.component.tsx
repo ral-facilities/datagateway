@@ -3,7 +3,7 @@ import { Paper, Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
-  formatBytes,
+  DateColumnFilter,
   investigationLink,
   Order,
   Filter,
@@ -13,9 +13,16 @@ import {
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import { sortTable, filterTable, fetchInvestigations } from '../state/actions';
+import {
+  sortTable,
+  filterTable,
+  fetchInvestigations,
+  fetchInvestigationCount,
+  clearTable,
+} from '../state/actions';
+import useAfterMountEffect from '../utils';
 
 interface InvestigationTableProps {
   sort: {
@@ -25,6 +32,7 @@ interface InvestigationTableProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -32,7 +40,9 @@ interface InvestigationTableProps {
 interface InvestigationTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: () => Promise<void>;
+  fetchData: (offsetParams: IndexRange) => Promise<void>;
+  fetchCount: () => Promise<void>;
+  clearTable: () => Action;
 }
 
 type InvestigationTableCombinedProps = InvestigationTableProps &
@@ -41,7 +51,17 @@ type InvestigationTableCombinedProps = InvestigationTableProps &
 const InvestigationTable = (
   props: InvestigationTableCombinedProps
 ): React.ReactElement => {
-  const { data, fetchData, sort, sortTable, filters, filterTable } = props;
+  const {
+    data,
+    totalDataCount,
+    fetchData,
+    fetchCount,
+    sort,
+    sortTable,
+    filters,
+    filterTable,
+    clearTable,
+  } = props;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -50,14 +70,30 @@ const InvestigationTable = (
     />
   );
 
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
+      }
+    />
+  );
+
   React.useEffect(() => {
-    fetchData();
-  }, [fetchData, sort, filters]);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount();
+    fetchData({ startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters]);
 
   return (
-    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
         data={data}
+        loadMoreRows={fetchData}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData }) => {
@@ -108,11 +144,8 @@ const InvestigationTable = (
             filterComponent: textFilter,
           },
           {
-            label: 'Size',
-            dataKey: 'SIZE',
-            cellContentRenderer: (props: TableCellProps) => {
-              return formatBytes(props.cellData);
-            },
+            label: 'Dataset Count',
+            dataKey: 'DATASET_COUNT',
           },
           {
             label: 'Instrument',
@@ -122,15 +155,19 @@ const InvestigationTable = (
           {
             label: 'Start Date',
             dataKey: 'STARTDATE',
+            filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
           {
             label: 'End Date',
             dataKey: 'ENDDATE',
+            filterComponent: dateFilter,
             cellContentRenderer: (props: TableCellProps) => {
-              return props.cellData.toString().split(' ')[0];
+              if (props.cellData)
+                return props.cellData.toString().split(' ')[0];
             },
           },
         ]}
@@ -146,7 +183,10 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: () => dispatch(fetchInvestigations()),
+  fetchData: (offsetParams: IndexRange) =>
+    dispatch(fetchInvestigations({ offsetParams })),
+  fetchCount: () => dispatch(fetchInvestigationCount()),
+  clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
@@ -154,6 +194,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

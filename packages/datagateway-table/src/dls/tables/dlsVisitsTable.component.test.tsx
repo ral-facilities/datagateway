@@ -9,6 +9,8 @@ import {
   filterTable,
   sortTable,
   fetchInvestigationDetailsRequest,
+  clearTable,
+  fetchInvestigationCountRequest,
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -25,6 +27,7 @@ describe('DLS Visits table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -68,7 +71,7 @@ describe('DLS Visits table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchInvestigations action on load', () => {
+  it('sends clearTable action on load', () => {
     const testStore = mockStore(state);
     mount(
       <Provider store={testStore}>
@@ -78,10 +81,45 @@ describe('DLS Visits table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest());
+    expect(testStore.getActions().length).toEqual(1);
+    expect(testStore.getActions()[0]).toEqual(clearTable());
   });
 
-  it('sends filterTable action on filter', () => {
+  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
+    let testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DLSVisitsTable proposalName="Test 1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    // simulate clearTable action
+    testStore = mockStore({
+      ...state,
+      dgtable: { ...state.dgtable, sort: {}, filters: {} },
+    });
+    wrapper.setProps({ store: testStore });
+
+    expect(testStore.getActions()[1]).toEqual(
+      fetchInvestigationCountRequest(1)
+    );
+    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
+  });
+
+  it('sends fetchInvestigations action when loadMoreRows is called', () => {
+    const testStore = mockStore(state);
+    const wrapper = shallow(
+      <DLSVisitsTable proposalName="Test 1" store={testStore} />
+    );
+
+    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
+  });
+
+  it('sends filterTable action on text filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -91,7 +129,7 @@ describe('DLS Visits table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').first();
+    const filterInput = wrapper.find('[aria-label="Filter by Visit Id"] input');
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -101,6 +139,30 @@ describe('DLS Visits table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(filterTable('VISIT_ID', null));
+  });
+
+  it('sends filterTable action on date filter', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DLSVisitsTable proposalName="Test 1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const filterInput = wrapper.find('[aria-label="End Date date filter to"]');
+    filterInput.instance().value = '2019-08-06';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[1]).toEqual(
+      filterTable('ENDDATE', { endDate: '2019-08-06' })
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[2]).toEqual(filterTable('ENDDATE', null));
   });
 
   it('sends sortTable action on sort', () => {

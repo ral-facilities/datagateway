@@ -23,6 +23,7 @@ describe('ISIS FacilityCycles table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -54,7 +55,7 @@ describe('ISIS FacilityCycles table component', () => {
 
   it('sends fetchFacilityCycles action on load', () => {
     const testStore = mockStore(state);
-    const wrapper = mount(
+    mount(
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISFacilityCyclesTable instrumentId="1" />
@@ -62,7 +63,7 @@ describe('ISIS FacilityCycles table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchFacilityCyclesRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchFacilityCyclesRequest(1));
   });
 
   it('sends filterTable action on filter', () => {

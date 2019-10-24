@@ -3,23 +3,25 @@ import {
   fetchDatasetsRequest,
   fetchDatasetsSuccess,
   fetchDatasetsFailure,
-} from '.';
-import { StateType } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
-import axios from 'axios';
-import {
-  fetchDatasetCount,
-  fetchDatasetCountRequest,
-  fetchDatasetCountSuccess,
-  fetchDatasetCountFailure,
+  fetchInvestigationDatasetsCount,
+  fetchInvestigationDatasetsCountRequest,
+  fetchInvestigationDatasetsCountSuccess,
+  fetchInvestigationDatasetsCountFailure,
   downloadDataset,
   downloadDatasetRequest,
+  fetchDatasetCountRequest,
+  fetchDatasetCountSuccess,
+  fetchDatasetCount,
+  fetchDatasetCountFailure,
   fetchDatasetDetails,
   fetchDatasetDetailsRequest,
   fetchDatasetDetailsSuccess,
   fetchDatasetDetailsFailure,
-} from './datasets';
-import { fetchDatafileCountRequest } from './datafiles';
+  fetchDatasetDatafilesCountRequest,
+} from '.';
+import { StateType, EntityCache } from '../app.types';
+import { initialState } from '../reducers/dgtable.reducer';
+import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
 import { Dataset } from 'datagateway-common';
@@ -27,6 +29,8 @@ import { Dataset } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Dataset actions', () => {
+  Date.now = jest.fn().mockImplementation(() => 1);
+
   const mockData: Dataset[] = [
     {
       ID: 1,
@@ -50,17 +54,24 @@ describe('Dataset actions', () => {
     })
   );
 
+  // Investigation cache for investigation ID 1 which has 2 datasets.
+  const mockInvestigationCache: EntityCache = {
+    1: {
+      childEntityCount: 2,
+    },
+  };
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
   });
 
   it('dispatches fetchDatasetsRequest and fetchDatasetsSuccess actions upon successful fetchDatasets action', async () => {
-    const asyncAction = fetchDatasets(1);
+    const asyncAction = fetchDatasets({ investigationId: 1 });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
-    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
@@ -74,7 +85,7 @@ describe('Dataset actions', () => {
   });
 
   it('fetchDatasets action applies filters and sort state to request params', async () => {
-    const asyncAction = fetchDatasets(1);
+    const asyncAction = fetchDatasets({ investigationId: 1 });
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -84,9 +95,9 @@ describe('Dataset actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
 
-    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
@@ -103,13 +114,16 @@ describe('Dataset actions', () => {
   });
 
   it('fetchDatasets action sends fetchDatafileCount actions when specified via optional parameters', async () => {
-    const asyncAction = fetchDatasets(1, { getDatafileCount: true });
+    const asyncAction = fetchDatasets({
+      investigationId: 1,
+      optionalParams: { getDatafileCount: true },
+    });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
-    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData));
-    expect(actions[2]).toEqual(fetchDatafileCountRequest());
-    expect(actions[3]).toEqual(fetchDatafileCountRequest());
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
+    expect(actions[2]).toEqual(fetchDatasetDatafilesCountRequest(1));
+    expect(actions[3]).toEqual(fetchDatasetDatafilesCountRequest(1));
   });
 
   it('dispatches fetchDatasetsRequest and fetchDatasetsFailure actions upon unsuccessful fetchDatasets action', async () => {
@@ -119,10 +133,10 @@ describe('Dataset actions', () => {
       })
     );
 
-    const asyncAction = fetchDatasets(1);
+    const asyncAction = fetchDatasets({ investigationId: 1 });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetsRequest());
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
     expect(actions[1]).toEqual(fetchDatasetsFailure('Test error message'));
 
     expect(log.error).toHaveBeenCalled();
@@ -133,21 +147,56 @@ describe('Dataset actions', () => {
   it('dispatches fetchDatasetCountRequest and fetchDatasetCountSuccess actions upon successful fetchDatasetCount action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: 2,
+        data: 7,
       })
     );
 
     const asyncAction = fetchDatasetCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetCountRequest());
-    expect(actions[1]).toEqual(fetchDatasetCountSuccess(1, 2));
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetCountSuccess(7, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets/count',
       expect.objectContaining({
-        params: {
-          where: { INVESTIGATION_ID: { eq: 1 } },
-        },
+        params,
+      })
+    );
+  });
+
+  it('fetchDatasetCount action applies filters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 8,
+      })
+    );
+
+    const asyncAction = fetchDatasetCount(1);
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
+
+    expect(actions[1]).toEqual(fetchDatasetCountSuccess(8, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets/count',
+      expect.objectContaining({
+        params,
       })
     );
   });
@@ -162,7 +211,7 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasetCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatasetCountRequest());
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
     expect(actions[1]).toEqual(fetchDatasetCountFailure('Test error message'));
 
     expect(log.error).toHaveBeenCalled();
@@ -227,6 +276,71 @@ describe('Dataset actions', () => {
     expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
+  it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon successful fetchInvestigationDatasetsCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 2,
+      })
+    );
+
+    const asyncAction = fetchInvestigationDatasetsCount(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
+    expect(actions[1]).toEqual(fetchInvestigationDatasetsCountSuccess(1, 2, 1));
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets/count',
+      expect.objectContaining({
+        params: {
+          where: { INVESTIGATION_ID: { eq: 1 } },
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon existing investigation cache and successful fetchInvestigationDatasetsCount action', async () => {
+    const asyncAction = fetchInvestigationDatasetsCount(1);
+
+    // Set up the state for calling fetchInvestigationDatasetsCountSuccess with investigation cache.
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        investigationCache: mockInvestigationCache,
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    // Expect only two actions; fetchInvestigationDatasetsCountRequest and the fetchInvestigationDatasetsCountSucess
+    // (given Investigation ID 1 and the dataset count to be 2).
+    // We do not expect an GET request from axios to have been called.
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
+    expect(actions[1]).toEqual(fetchInvestigationDatasetsCountSuccess(1, 2, 1));
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountFailure actions upon unsuccessful fetchInvestigationDatasetsCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchInvestigationDatasetsCount(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
+    expect(actions[1]).toEqual(
+      fetchInvestigationDatasetsCountFailure('Test error message')
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
   it('dispatches downloadDatasetRequest and clicks on IDS link upon downloadDataset action', async () => {
     jest.spyOn(document, 'createElement');
     jest.spyOn(document.body, 'appendChild');
@@ -234,7 +348,7 @@ describe('Dataset actions', () => {
     const asyncAction = downloadDataset(1, 'test');
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(downloadDatasetRequest());
+    expect(actions[0]).toEqual(downloadDatasetRequest(1));
 
     expect(document.createElement).toHaveBeenCalledWith('a');
     let link = document.createElement('a');
