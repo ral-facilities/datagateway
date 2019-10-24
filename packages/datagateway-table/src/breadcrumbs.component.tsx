@@ -4,10 +4,10 @@ import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
-// import { Route } from 'react-router';
+import { Route } from 'react-router';
 
-import { Link } from '@material-ui/core';
-// import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Link, Paper, Breadcrumbs } from '@material-ui/core';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 // TODO: Maintain internal component state.
 // let breadcrumbsState = {
@@ -250,56 +250,93 @@ class PageBreadcrumbs extends React.Component<
   };
 
   public render(): React.ReactElement {
-    // const {  } = this.state;
+    const breadcrumbState = this.state;
+    const pathnames = this.props.location.split('/').filter(x => x);
+    const last = pathnames[pathnames.length - 1];
+    console.log('Last entry: ', last);
 
-    return <Link key="">N/A</Link>;
+    return (
+      <div>
+        <Paper elevation={0}>
+          <Route>
+            {() => {
+              return (
+                <Breadcrumbs
+                  separator={<NavigateNextIcon fontSize="small" />}
+                  aria-label="Breadcrumb"
+                >
+                  <Link color="inherit" href="/">
+                    Browse
+                  </Link>
+
+                  {Object.keys(breadcrumbState).map(
+                    (value: string, index: number) => {
+                      let valueData = breadcrumbState[value];
+                      console.log(`Creating breadcrumb for ${value}`);
+
+                      // Return the Link with the entity name.
+                      return (
+                        <Link
+                          color="inherit"
+                          href={valueData.url}
+                          key={`${value}-${valueData.id}`}
+                        >
+                          {valueData.displayName}
+                        </Link>
+                      );
+                    }
+                  )}
+                </Breadcrumbs>
+              );
+            }}
+          </Route>
+        </Paper>
+      </div>
+    );
+
+    // return (
+    //   <div>
+    //     <Paper elevation={0}>
+    //       <Route>
+    //         {
+    //           return (
+    //             <Breadcrumbs
+    //             separator={<NavigateNextIcon fontSize="small" />}
+    //             aria-label="Breadcrumb"
+    //           >
+    //             <Link color="inherit" href="/">
+    //               Browse
+    //             </Link>
+
+    //             {
+    //               Object.keys(breadcrumbState).map((value: string, index: number) => {
+    //                 let valueData = breadcrumbState[value];
+    //                 console.log(`Creating breadcrumb for ${value}`);
+
+    //                 // Return the Link with the entity name.
+    //                 return  (
+    //                   <Link color="inherit" href={valueData.url} key={`${value}-${valueData.id}`}>
+    //                     {valueData.displayName}
+    //                   </Link>
+    //                 );
+
+    //                  {/* // return (
+    //                   //  <Typography color="textPrimary" key={to}>
+    //                   //    {value}
+    //                   //  </Typography>
+    //                   // ) : ( */}
+    //                 {/* // return <Link key="">N/A</Link>; */}
+    //               })
+    //             }
+    //           </Breadcrumbs>
+    //         )
+    //       }
+    //     </Route>
+    //   </Paper>
+    //   </div>
+    // );
   }
 }
-
-// return (
-//   <div>
-//     <Paper elevation={0}>
-//       <Route>
-//         {
-//           return (
-//             <Breadcrumbs
-//               separator={<NavigateNextIcon fontSize="small" />}
-//               aria-label="Breadcrumb"
-//             >
-//               <Link color="inherit" href="/">
-//                 Browse
-//               </Link>
-
-//               {/* For each of the names in the path, request the entity names from the API. */}
-//               {Object.keys(breadcrumbs).map((value: string, index: number) => {
-//                 console.log(`Creating breadcrumb for ${value}`);
-
-//                 // Access the value/object information and create breadcrumb.
-
-//                 // Return the Link with the entity name.
-//                 //return (
-//                   // Include key?
-//                   // <Link color="inherit" href={to}>
-//                     // {entityName}
-//                   // </Link>
-//                 // );
-//               }};
-
-//               return <Link key="">N/A</Link>;
-
-//               // return last ? (
-//               //  <Typography color="textPrimary" key={to}>
-//               //    {value}
-//               //  </Typography>
-//               // ) : (
-
-//               // return (
-//               // <Link color="inherit" href={to} key={to}>
-//               //   {value}
-//               // </Link>
-//               // );
-//               // );
-//             </Breadcrumbs>
 
 const mapStateToProps = (state: StateType): BreadcrumbProps => ({
   apiUrl: state.dgtable.urls.apiUrl,
