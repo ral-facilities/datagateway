@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Route } from 'react-router';
 
-import { Link, Paper, Breadcrumbs } from '@material-ui/core';
+import { Link, Paper, Breadcrumbs, Typography } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 // TODO: Maintain internal component state.
@@ -252,7 +252,11 @@ class PageBreadcrumbs extends React.Component<
   public render(): React.ReactElement {
     const breadcrumbState = this.state;
     const pathnames = this.props.location.split('/').filter(x => x);
+
+    // TODO: Set as Typography if last is at root.
     const last = pathnames[pathnames.length - 1];
+
+    console.log('Breadcrumb state: ', breadcrumbState);
     console.log('Last entry: ', last);
 
     return (
@@ -269,13 +273,25 @@ class PageBreadcrumbs extends React.Component<
                     Browse
                   </Link>
 
-                  {Object.keys(breadcrumbState).map(
-                    (value: string, index: number) => {
+                  {Object.keys(breadcrumbState)
+                    .filter((value: string) => {
+                      return breadcrumbState[value].displayName !== 'N/A';
+                    })
+                    .map((value: string, index: number) => {
                       let valueData = breadcrumbState[value];
-                      console.log(`Creating breadcrumb for ${value}`);
+                      console.log(
+                        `Creating breadcrumb for ${value}: ${valueData.url}, ${valueData.displayName}`
+                      );
 
                       // Return the Link with the entity name.
-                      return (
+                      return last === value ? (
+                        <Typography
+                          color="textPrimary"
+                          key={`${value}-${valueData.id}`}
+                        >
+                          {valueData.displayName}
+                        </Typography>
+                      ) : (
                         <Link
                           color="inherit"
                           href={valueData.url}
@@ -284,8 +300,7 @@ class PageBreadcrumbs extends React.Component<
                           {valueData.displayName}
                         </Link>
                       );
-                    }
-                  )}
+                    })}
                 </Breadcrumbs>
               );
             }}
