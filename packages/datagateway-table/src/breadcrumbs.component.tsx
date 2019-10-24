@@ -29,7 +29,7 @@ const apiEntityRoutes: { [entity: string]: string } = {
   proposal: '/investigations/',
   investigation: '/investigations/',
   dataset: '/datasets/',
-  datafiles: '/datafiles/',
+  datafile: '/datafiles/',
 };
 
 interface BreadcrumbProps {
@@ -38,6 +38,7 @@ interface BreadcrumbProps {
 }
 
 interface BreadcrumbState {
+  stateUpdated: boolean;
   investigation: {
     id: string;
     displayName: string;
@@ -63,6 +64,7 @@ class PageBreadcrumbs extends React.Component<
     super(props);
 
     this.state = {
+      stateUpdated: false,
       investigation: {
         id: '',
         displayName: 'N/A',
@@ -105,16 +107,26 @@ class PageBreadcrumbs extends React.Component<
   //   </div>
   // );
 
-  public componentDidMount(): void {
+  protected componentDidMount(): void {
+    console.log('Called componentDidMount');
     console.log('Initial State: ', this.state);
-    this.updateBreadcrumbState();
+    this.updateBreadcrumbState(1);
   }
 
-  public componentDidUpdate(): void {
-    this.updateBreadcrumbState();
+  protected componentDidUpdate(
+    prevProps: BreadcrumbProps,
+    prevState: BreadcrumbState
+  ): void {
+    console.log('Called componentDidUpdate');
+    if (!this.state.stateUpdated) {
+      console.log('Need to update.');
+      this.updateBreadcrumbState(2);
+    } else {
+      console.log('No need to update.');
+    }
   }
 
-  private updateBreadcrumbState = () => {
+  private updateBreadcrumbState = async (num: number) => {
     let updatedState = this.state;
     console.log('Current state: ', updatedState);
 
@@ -125,7 +137,9 @@ class PageBreadcrumbs extends React.Component<
     // Loop through each entry in the path name before the last.
     // We check these against defined API routes.
     let pathLength = pathnames.length;
-    pathnames.forEach(async (value: string, index: number) => {
+    for (let index = 0; index < pathnames.length; index++) {
+      let value = pathnames[index];
+
       console.log(`Current value: ${value}`);
       console.log(`Current index: ${index}`);
 
@@ -152,15 +166,14 @@ class PageBreadcrumbs extends React.Component<
               url: link,
             },
           };
-          console.log('Updated state: ', updatedState);
+          console.log(`Updated state for ${value}:`, updatedState);
         }
       } else if (value in apiEntityRoutes && index === pathLength - 1) {
         console.log(`Processing last item in path: ${value}`);
 
         // Update the state to say that e.g. if path is /browse/investigation/,
         // then display name would be just Browse > Investigations and similarly
-        // Browse > Proposal 1 > Datasets
-        // ...
+        // Browse > Proposal 1 > Datasets etc.
 
         updatedState = {
           ...updatedState,
@@ -170,11 +183,15 @@ class PageBreadcrumbs extends React.Component<
             url: link,
           },
         };
+        console.log(`Updated state for ${value}:`, updatedState);
       }
-    });
+    }
 
-    console.log('Updated state: ', updatedState);
-    // this.setState(updatedState, () => console.log('Updated state: ', this.state));
+    // Update the state.
+    updatedState = { ...updatedState, stateUpdated: true };
+    this.setState(updatedState, () =>
+      console.log(`Final state (${num}): `, this.state)
+    );
   };
 
   private getEntityName = async (requestEntityUrl: string): Promise<string> => {
@@ -203,7 +220,7 @@ class PageBreadcrumbs extends React.Component<
   };
 
   public render(): React.ReactElement {
-    // const { breadcrumbs } = this.state;
+    // const { stateUpdated } = this.state;
 
     return <Link key="">N/A</Link>;
   }
