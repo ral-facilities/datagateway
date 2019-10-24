@@ -59,6 +59,7 @@ const DLSProposalsTable = (
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
+      // @ts-ignore
       <Table
         data={data}
         sort={sort}

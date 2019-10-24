@@ -7,6 +7,7 @@ import {
   Filter,
   Investigation,
   Entity,
+  DateColumnFilter,
 } from 'datagateway-common';
 import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
@@ -69,11 +70,12 @@ const DLSVisitsTable = (
     />
   );
 
-  // TODO: replace with date filter
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
+    <DateColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
+      }
     />
   );
 
@@ -83,6 +85,7 @@ const DLSVisitsTable = (
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
+      // @ts-ignore
       <Table
         data={data}
         sort={sort}
