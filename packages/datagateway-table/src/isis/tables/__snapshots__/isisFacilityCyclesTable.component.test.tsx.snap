@@ -47,8 +47,10 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
         },
       ]
     }
+    loadMoreRows={[Function]}
     onSort={[Function]}
     sort={Object {}}
+    totalRowCount={0}
   />
 </div>
 `;

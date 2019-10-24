@@ -54,8 +54,10 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
       ]
     }
     detailsPanel={[Function]}
+    loadMoreRows={[Function]}
     onSort={[Function]}
     sort={Object {}}
+    totalRowCount={0}
   />
 </div>
 `;

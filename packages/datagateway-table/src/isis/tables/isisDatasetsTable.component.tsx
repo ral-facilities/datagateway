@@ -14,6 +14,8 @@ import {
   sortTable,
   filterTable,
   fetchDatasets,
+  fetchDatasetCount,
+  clearTable,
   fetchDatasetDetails,
   downloadDataset,
 } from '../../state/actions';
@@ -22,9 +24,10 @@ import { StateType } from '../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
-import { TableCellProps } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component';
 import { GetApp } from '@material-ui/icons';
+import useAfterMountEffect from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatasetsTableProps {
@@ -42,6 +45,7 @@ interface ISISDatasetsTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -50,7 +54,12 @@ interface ISISDatasetsTableStoreProps {
 interface ISISDatasetsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (investigationId: number) => Promise<void>;
+  fetchData: (
+    investigationId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
+  clearTable: () => Action;
   fetchDetails: (datasetId: number) => Promise<void>;
   downloadData: (datasetId: number, name: string) => Promise<void>;
 }
@@ -64,7 +73,10 @@ const ISISDatasetsTable = (
 ): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
@@ -76,8 +88,13 @@ const ISISDatasetsTable = (
   } = props;
 
   React.useEffect(() => {
-    fetchData(parseInt(investigationId));
-  }, [fetchData, sort, filters, investigationId]);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount(parseInt(investigationId));
+    fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -97,9 +114,10 @@ const ISISDatasetsTable = (
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
-      // @ts-ignore
       <Table
         data={data}
+        loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData, detailsPanelResize }) => {
@@ -166,8 +184,17 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (investigationId: number) =>
-    dispatch(fetchDatasets({ investigationId })),
+  fetchData: (investigationId: number, offsetParams: IndexRange) =>
+    dispatch(
+      fetchDatasets({
+        investigationId,
+        offsetParams,
+        optionalParams: { getSize: true },
+      })
+    ),
+  fetchCount: (investigationId: number) =>
+    dispatch(fetchDatasetCount(investigationId)),
+  clearTable: () => dispatch(clearTable()),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
   downloadData: (datasetId: number, name: string) =>
     dispatch(downloadDataset(datasetId, name)),
@@ -178,6 +205,7 @@ const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

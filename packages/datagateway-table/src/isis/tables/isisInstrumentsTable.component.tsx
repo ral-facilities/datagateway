@@ -12,15 +12,18 @@ import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import {
   sortTable,
   filterTable,
   fetchInstruments,
   fetchInstrumentDetails,
+  fetchInstrumentCount,
+  clearTable,
 } from '../../state/actions';
 import InstrumentDetailsPanel from '../detailsPanels/instrumentDetailsPanel.component';
+import useAfterMountEffect from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInstrumentsTableStoreProps {
@@ -31,6 +34,7 @@ interface ISISInstrumentsTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -39,7 +43,9 @@ interface ISISInstrumentsTableStoreProps {
 interface ISISInstrumentsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: () => Promise<void>;
+  fetchData: (offsetParams: IndexRange) => Promise<void>;
+  fetchCount: () => Promise<void>;
+  clearTable: () => Action;
   fetchDetails: (instrumentId: number) => Promise<void>;
 }
 
@@ -49,7 +55,17 @@ type ISISInstrumentsTableCombinedProps = ISISInstrumentsTableStoreProps &
 const ISISInstrumentsTable = (
   props: ISISInstrumentsTableCombinedProps
 ): React.ReactElement => {
-  const { data, fetchData, sort, sortTable, filters, filterTable } = props;
+  const {
+    data,
+    totalDataCount,
+    fetchData,
+    fetchCount,
+    clearTable,
+    sort,
+    sortTable,
+    filters,
+    filterTable,
+  } = props;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -59,14 +75,20 @@ const ISISInstrumentsTable = (
   );
 
   React.useEffect(() => {
-    fetchData();
-  }, [fetchData, sort, filters]);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount();
+    fetchData({ startIndex: 0, stopIndex: 49 });
+  }, [fetchData, fetchCount, sort, filters]);
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
-      // @ts-ignore
       <Table
         data={data}
+        loadMoreRows={fetchData}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData, detailsPanelResize }) => {
@@ -104,7 +126,10 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: () => dispatch(fetchInstruments()),
+  fetchData: (offsetParams: IndexRange) =>
+    dispatch(fetchInstruments(offsetParams)),
+  fetchCount: () => dispatch(fetchInstrumentCount()),
+  clearTable: () => dispatch(clearTable()),
   fetchDetails: (instrumentId: number) =>
     dispatch(fetchInstrumentDetails(instrumentId)),
 });
@@ -114,6 +139,7 @@ const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

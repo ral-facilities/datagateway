@@ -118,8 +118,9 @@ export const fetchInvestigations = (
 };
 
 export const fetchISISInvestigations = (
-  instrumentId: string,
-  facilityCycleId: string
+  instrumentId: number,
+  facilityCycleId: number,
+  offsetParams?: IndexRange
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
@@ -145,6 +146,14 @@ export const fetchISISInvestigations = (
         { STUDYINVESTIGATION: 'STUDY' },
       ])
     );
+
+    if (offsetParams) {
+      params.append('skip', JSON.stringify(offsetParams.startIndex));
+      params.append(
+        'limit',
+        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+      );
+    }
 
     const { apiUrl } = getState().dgtable.urls;
 
@@ -266,11 +275,6 @@ export const fetchInvestigationCount = (
     dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
-    if (additionalFilters) {
-      additionalFilters.forEach(filter => {
-        params.append(filter.filterType, filter.filterValue);
-      });
-    }
     params.delete('order');
 
     const { apiUrl } = getState().dgtable.urls;
@@ -282,6 +286,41 @@ export const fetchInvestigationCount = (
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
       })
+      .then(response => {
+        dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchISISInvestigationCount = (
+  instrumentId: number,
+  facilityCycleId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationCountRequest(timestamp));
+
+    let params = getApiFilter(getState);
+    params.delete('order');
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(
+        `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/count`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+        }
+      )
       .then(response => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })

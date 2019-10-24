@@ -20,6 +20,7 @@ import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
 import { Investigation } from 'datagateway-common';
+import { fetchISISInvestigationCount } from './investigations';
 
 jest.mock('loglevel');
 
@@ -159,7 +160,7 @@ describe('Investigation actions', () => {
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchISISInvestigations action', async () => {
-    const asyncAction = fetchISISInvestigations('1', '2');
+    const asyncAction = fetchISISInvestigations(1, 2);
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
@@ -167,7 +168,7 @@ describe('Investigation actions', () => {
   });
 
   it('fetchISISInvestigations action applies filters and sort state to request params', async () => {
-    const asyncAction = fetchISISInvestigations('1', '2');
+    const asyncAction = fetchISISInvestigations(1, 2);
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -200,7 +201,7 @@ describe('Investigation actions', () => {
       })
     );
 
-    const asyncAction = fetchISISInvestigations('1', '2');
+    const asyncAction = fetchISISInvestigations(1, 2);
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
@@ -348,6 +349,73 @@ describe('Investigation actions', () => {
     );
 
     const asyncAction = fetchInvestigationCount();
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationCountRequest(1));
+    expect(actions[1]).toEqual(
+      fetchInvestigationCountFailure('Test error message')
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchInvestigationCountRequest and fetchInvestigationCountSuccess actions upon successful fetchISISInvestigationCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 4,
+      })
+    );
+
+    const asyncAction = fetchISISInvestigationCount(1, 2);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationCountRequest(1));
+    expect(actions[1]).toEqual(fetchInvestigationCountSuccess(4, 1));
+  });
+
+  it('fetchISISInvestigationCount action applies filters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 7,
+      })
+    );
+
+    const asyncAction = fetchISISInvestigationCount(1, 2);
+
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationCountRequest(1));
+
+    expect(actions[1]).toEqual(fetchInvestigationCountSuccess(7, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/instruments/1/facilitycycles/2/investigations/count',
+      expect.objectContaining({
+        params,
+      })
+    );
+  });
+
+  it('dispatches fetchInvestigationCountRequest and fetchInvestigationCountFailure actions upon unsuccessful fetchISISInvestigationCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchISISInvestigationCount(1, 2);
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationCountRequest(1));

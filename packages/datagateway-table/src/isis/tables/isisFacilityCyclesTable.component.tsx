@@ -12,13 +12,16 @@ import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import {
   sortTable,
   filterTable,
   fetchFacilityCycles,
+  fetchFacilityCycleCount,
+  clearTable,
 } from '../../state/actions';
+import useAfterMountEffect from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISFacilityCyclesTableProps {
@@ -34,6 +37,7 @@ interface ISISFacilityCyclesTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -42,7 +46,9 @@ interface ISISFacilityCyclesTableStoreProps {
 interface ISISFacilityCyclesTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (instrumentId: string) => Promise<void>;
+  fetchData: (instrumentId: number, offsetParams: IndexRange) => Promise<void>;
+  fetchCount: (instrumentId: number) => Promise<void>;
+  clearTable: () => Action;
 }
 
 type ISISFacilityCyclesTableCombinedProps = ISISFacilityCyclesTableProps &
@@ -54,7 +60,10 @@ const ISISFacilityCyclesTable = (
 ): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
@@ -79,14 +88,20 @@ const ISISFacilityCyclesTable = (
   );
 
   React.useEffect(() => {
-    fetchData(instrumentId);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount(parseInt(instrumentId));
+    fetchData(parseInt(instrumentId), { startIndex: 0, stopIndex: 49 });
   }, [fetchData, instrumentId, sort, filters]);
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
-      // @ts-ignore
       <Table
         data={data}
+        loadMoreRows={params => fetchData(parseInt(instrumentId), params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         columns={[
@@ -128,8 +143,11 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (instrumentId: string) =>
-    dispatch(fetchFacilityCycles(instrumentId)),
+  fetchData: (instrumentId: number, offsetParams: IndexRange) =>
+    dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
+  fetchCount: (instrumentId: number) =>
+    dispatch(fetchFacilityCycleCount(instrumentId)),
+  clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (
@@ -139,6 +157,7 @@ const mapStateToProps = (
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

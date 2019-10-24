@@ -18,12 +18,16 @@ import {
   filterTable,
   downloadDatafile,
   fetchDatafileDetails,
+  fetchDatafileCount,
+  clearTable,
 } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
 import { Action, AnyAction } from 'redux';
 import DatafileDetailsPanel from '../detailsPanels/datafileDetailsPanel.component';
+import { IndexRange } from 'react-virtualized';
+import useAfterMountEffect from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatafilesTableProps {
@@ -39,6 +43,7 @@ interface ISISDatafilesTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -47,7 +52,9 @@ interface ISISDatafilesTableStoreProps {
 interface ISISDatafilesTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (datasetId: number) => Promise<void>;
+  fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
+  clearTable: () => Action;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   fetchDetails: (datasetId: number) => Promise<void>;
 }
@@ -61,7 +68,10 @@ const ISISDatafilesTable = (
 ): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
@@ -72,8 +82,13 @@ const ISISDatafilesTable = (
   } = props;
 
   React.useEffect(() => {
-    fetchData(parseInt(datasetId));
-  }, [fetchData, sort, filters, datasetId]);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount(parseInt(datasetId));
+    fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters, datasetId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -93,9 +108,10 @@ const ISISDatafilesTable = (
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
-      // @ts-ignore
       <Table
         data={data}
+        loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData, detailsPanelResize }) => {
@@ -166,7 +182,10 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (datasetId: number) => dispatch(fetchDatafiles(datasetId)),
+  fetchData: (datasetId: number, offsetParams: IndexRange) =>
+    dispatch(fetchDatafiles(datasetId, offsetParams)),
+  fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
+  clearTable: () => dispatch(clearTable()),
   fetchDetails: (datafileId: number) =>
     dispatch(fetchDatafileDetails(datafileId)),
   downloadData: (datafileId: number, filename: string) =>
@@ -178,6 +197,7 @@ const mapStateToProps = (state: StateType): ISISDatafilesTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

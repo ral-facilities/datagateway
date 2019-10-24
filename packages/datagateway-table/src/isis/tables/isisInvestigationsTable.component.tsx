@@ -13,15 +13,18 @@ import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps } from 'react-virtualized';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import {
   sortTable,
   filterTable,
   fetchInvestigationDetails,
   fetchISISInvestigations,
+  fetchISISInvestigationCount,
+  clearTable,
 } from '../../state/actions';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
+import useAfterMountEffect from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsTableProps {
@@ -38,6 +41,7 @@ interface ISISInvestigationsTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -46,7 +50,13 @@ interface ISISInvestigationsTableStoreProps {
 interface ISISInvestigationsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (instrumentId: string, facilityCycleId: string) => Promise<void>;
+  fetchData: (
+    instrumentId: number,
+    facilityCycleId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (instrumentId: number, facilityCycleId: number) => Promise<void>;
+  clearTable: () => Action;
   fetchDetails: (investigationId: number) => Promise<void>;
 }
 
@@ -59,7 +69,10 @@ const ISISInvestigationsTable = (
 ): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
@@ -85,16 +98,27 @@ const ISISInvestigationsTable = (
   );
 
   React.useEffect(() => {
-    fetchData(instrumentId, facilityCycleId);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount(parseInt(instrumentId), parseInt(facilityCycleId));
+    fetchData(parseInt(instrumentId), parseInt(facilityCycleId), {
+      startIndex: 0,
+      stopIndex: 49,
+    });
   }, [fetchData, instrumentId, facilityCycleId, sort, filters]);
 
   const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation`;
 
   return (
     <Paper style={{ height: window.innerHeight, width: '100%' }}>
-      // @ts-ignore
       <Table
         data={data}
+        loadMoreRows={params =>
+          fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
+        }
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData, detailsPanelResize }) => {
@@ -207,8 +231,17 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (instrumentId: string, facilityCycleId: string) =>
-    dispatch(fetchISISInvestigations(instrumentId, facilityCycleId)),
+  fetchData: (
+    instrumentId: number,
+    facilityCycleId: number,
+    offsetParams: IndexRange
+  ) =>
+    dispatch(
+      fetchISISInvestigations(instrumentId, facilityCycleId, offsetParams)
+    ),
+  fetchCount: (instrumentId: number, facilityCycleId: number) =>
+    dispatch(fetchISISInvestigationCount(instrumentId, facilityCycleId)),
+  clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
 });
@@ -220,6 +253,7 @@ const mapStateToProps = (
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };

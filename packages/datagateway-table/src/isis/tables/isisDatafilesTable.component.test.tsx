@@ -10,6 +10,8 @@ import {
   sortTable,
   downloadDatafileRequest,
   fetchDatafileDetailsRequest,
+  clearTable,
+  fetchDatafileCountRequest,
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -57,7 +59,7 @@ describe('ISIS datafiles table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchDatafiles action on load', () => {
+  it('sends clearTable action on load', () => {
     const testStore = mockStore(state);
     mount(
       <Provider store={testStore}>
@@ -66,6 +68,39 @@ describe('ISIS datafiles table component', () => {
         </MemoryRouter>
       </Provider>
     );
+
+    expect(testStore.getActions().length).toEqual(1);
+    expect(testStore.getActions()[0]).toEqual(clearTable());
+  });
+
+  it('sends fetchDatafileCount and fetchDatafiles actions when watched store values change', () => {
+    let testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISDatafilesTable datasetId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    // simulate clearTable action
+    testStore = mockStore({
+      ...state,
+      dgtable: { ...state.dgtable, sort: {}, filters: {} },
+    });
+    wrapper.setProps({ store: testStore });
+
+    expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+  });
+
+  it('sends fetchDatafiles action when loadMoreRows is called', () => {
+    const testStore = mockStore(state);
+    const wrapper = shallow(
+      <ISISDatafilesTable datasetId="1" store={testStore} />
+    );
+
+    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });

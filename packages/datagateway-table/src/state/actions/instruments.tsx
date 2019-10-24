@@ -20,6 +20,7 @@ import { getApiFilter } from '.';
 import * as log from 'loglevel';
 import { Instrument } from 'datagateway-common';
 import { Action } from 'redux';
+import { IndexRange } from 'react-virtualized';
 
 export const fetchInstrumentsSuccess = (
   instruments: Instrument[],
@@ -50,13 +51,23 @@ export const fetchInstrumentsRequest = (
   },
 });
 
-export const fetchInstruments = (): ThunkResult<Promise<void>> => {
+export const fetchInstruments = (
+  offsetParams?: IndexRange
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchInstrumentsRequest(timestamp));
 
     let params = getApiFilter(getState);
     const { apiUrl } = getState().dgtable.urls;
+
+    if (offsetParams) {
+      params.append('skip', JSON.stringify(offsetParams.startIndex));
+      params.append(
+        'limit',
+        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+      );
+    }
 
     await axios
       .get(`${apiUrl}/instruments`, {
