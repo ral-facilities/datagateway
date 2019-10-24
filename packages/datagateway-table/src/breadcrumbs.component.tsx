@@ -53,6 +53,11 @@ interface BreadcrumbState {
     displayName: string;
     url: string;
   };
+  [key: string]: {
+    id: string;
+    displayName: string;
+    url: string;
+  };
 }
 
 class PageBreadcrumbs extends React.Component<
@@ -113,11 +118,16 @@ class PageBreadcrumbs extends React.Component<
     this.updateBreadcrumbState(1);
   }
 
-  public componentDidUpdate(
-    prevProps: BreadcrumbProps,
-    prevState: BreadcrumbState
-  ): void {
+  public componentDidUpdate(prevProps: BreadcrumbProps): void {
     console.log('Called componentDidUpdate');
+
+    if (prevProps.location !== this.props.location) {
+      console.log(
+        `At new location, ${prevProps.location} -> ${this.props.location}`
+      );
+      this.isBreadcrumbUpdated = false;
+    }
+
     if (!this.isBreadcrumbUpdated) {
       console.log('Need to update.');
       this.updateBreadcrumbState(2);
@@ -126,10 +136,10 @@ class PageBreadcrumbs extends React.Component<
     }
   }
 
-  public componentWillUnmount(): void {
-    console.log('Component unmounting, setting stateUpdated to false.');
-    this.isBreadcrumbUpdated = false;
-  }
+  // public componentWillUnmount(): void {
+  //   console.log('Component unmounting, setting stateUpdated to false.');
+  //   this.isBreadcrumbUpdated = false;
+  // }
 
   private updateBreadcrumbState = async (num: number) => {
     let updatedState = this.state;
@@ -144,6 +154,7 @@ class PageBreadcrumbs extends React.Component<
     let pathLength = pathnames.length;
     for (let index = 0; index < pathnames.length; index++) {
       let value = pathnames[index];
+      const valueData = this.state[value];
 
       console.log(`Current value: ${value}`);
       console.log(`Current index: ${index}`);
@@ -153,25 +164,38 @@ class PageBreadcrumbs extends React.Component<
 
       // Check for the specific routes and request the names from the API.
       if (value in apiEntityRoutes && index < pathLength - 1) {
-        const requestID = pathnames[index + 1];
-        console.log(`Entity ID: ${requestID}`);
+        const entityId = pathnames[index + 1];
+        console.log(`Entity ID: ${entityId}`);
 
-        let requestEntityUrl = `${apiEntityRoutes[value]}${requestID}`;
-        console.log(`Contructed request URL: ${requestEntityUrl}`);
+        // Check if value is already updated by seeing if the id is already set or not.
+        if (
+          valueData.id.length === 0 ||
+          valueData.id !== pathnames[index + 1]
+        ) {
+          let requestEntityUrl = `${apiEntityRoutes[value]}${entityId}`;
+          console.log(`Contructed request URL: ${requestEntityUrl}`);
 
-        const entityName = await this.getEntityName(requestEntityUrl);
-        if (entityName) {
-          console.log(`${value} - Retrieved entity name: ${entityName}`);
-          // Update the state with the entity information.
-          updatedState = {
-            ...updatedState,
-            [value]: {
-              id: requestID,
-              displayName: entityName,
-              url: link,
-            },
-          };
-          console.log(`Updated state for ${value}:`, updatedState);
+          const entityName = await this.getEntityName(requestEntityUrl);
+          if (entityName) {
+            console.log(`${value} - Retrieved entity name: ${entityName}`);
+
+            // Update the state with the entity information.
+            updatedState = {
+              ...updatedState,
+              [value]: {
+                id: entityId,
+                displayName: entityName,
+                url: link,
+              },
+            };
+            console.log(`Updated state for ${value}:`, updatedState);
+          } else {
+            console.log('Did not get entity name: ', entityName);
+          }
+        } else {
+          console.log(
+            `${value} is same as before with ID ${entityId}, no need request.`
+          );
         }
       } else if (value in apiEntityRoutes && index === pathLength - 1) {
         console.log(`Processing last item in path: ${value}`);
@@ -183,6 +207,7 @@ class PageBreadcrumbs extends React.Component<
         updatedState = {
           ...updatedState,
           [value]: {
+            id: '',
             displayName:
               `${value}`.charAt(0).toUpperCase() + `${value}s`.slice(1),
             url: link,
@@ -225,7 +250,7 @@ class PageBreadcrumbs extends React.Component<
   };
 
   public render(): React.ReactElement {
-    // const { stateUpdated } = this.state;
+    // const {  } = this.state;
 
     return <Link key="">N/A</Link>;
   }
