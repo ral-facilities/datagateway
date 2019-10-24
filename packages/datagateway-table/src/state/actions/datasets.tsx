@@ -342,7 +342,7 @@ export const fetchDatasetDetailsRequest = (): Action => ({
 export const fetchDatasetDetails = (
   datasetId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(fetchDatasetDetailsRequest());
 
     let params = new URLSearchParams();
@@ -350,8 +350,10 @@ export const fetchDatasetDetails = (
     params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
     params.append('include', JSON.stringify('DATASETTYPE'));
 
+    const { apiUrl } = getState().dgtable.urls;
+
     await axios
-      .get(`/datasets`, {
+      .get(`${apiUrl}/datasets`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

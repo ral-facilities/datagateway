@@ -162,7 +162,7 @@ export const fetchInvestigationDetailsRequest = (): Action => ({
 export const fetchInvestigationDetails = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(fetchInvestigationDetailsRequest());
 
     let params = new URLSearchParams();
@@ -173,8 +173,10 @@ export const fetchInvestigationDetails = (
       JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
     );
 
+    const { apiUrl } = getState().dgtable.urls;
+
     await axios
-      .get(`/investigations`, {
+      .get(`${apiUrl}/investigations`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
