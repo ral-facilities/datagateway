@@ -4,7 +4,7 @@ import * as log from 'loglevel';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
@@ -19,10 +19,20 @@ import DatasetTable from './table/datasetTable.component';
 import { Link } from 'react-router-dom';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
+import { Preloader } from 'datagateway-common';
 import DLSProposalsTable from './dls/tables/dlsProposalsTable.component';
 import DLSVisitsTable from './dls/tables/dlsVisitsTable.component';
 import DLSDatasetsTable from './dls/tables/dlsDatasetsTable.component';
 import DLSDatafilesTable from './dls/tables/dlsDatafilesTable.component';
+
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'dgwt',
+});
 
 const history = createBrowserHistory();
 const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
@@ -64,6 +74,14 @@ document.dispatchEvent(
   new CustomEvent('daaas-frontend', { detail: registerRouteAction })
 );
 
+function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
+  return {
+    loading: !state.dgtable.settingsLoaded,
+  };
+}
+
+export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
+
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
     super(props);
@@ -96,84 +114,90 @@ class App extends React.Component<{}, { hasError: boolean }> {
         <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  render={() => (
-                    <Link to="/browse/investigation">
-                      Browse investigations
-                    </Link>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/browse/proposal/"
-                  component={DLSProposalsTable}
-                />
-                <Route
-                  exact
-                  path="/browse/proposal/:proposalName/investigation"
-                  render={({
-                    match,
-                  }: RouteComponentProps<{ proposalName: string }>) => (
-                    <DLSVisitsTable proposalName={match.params.proposalName} />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/browse/proposal/:proposalName/investigation/:investigationId/dataset"
-                  render={({
-                    match,
-                  }: RouteComponentProps<{
-                    proposalName: string;
-                    investigationId: string;
-                  }>) => (
-                    <DLSDatasetsTable
-                      proposalName={match.params.proposalName}
-                      investigationId={match.params.investigationId}
+              <StylesProvider generateClassName={generateClassName}>
+                <ConnectedPreloader>
+                  <Switch>
+                    <Route
+                      exact
+                      path="/"
+                      render={() => (
+                        <Link to="/browse/investigation">
+                          Browse investigations
+                        </Link>
+                      )}
                     />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile"
-                  render={({
-                    match,
-                  }: RouteComponentProps<{
-                    proposalName: string;
-                    investigationId: string;
-                    datasetId: string;
-                  }>) => (
-                    <DLSDatafilesTable datasetId={match.params.datasetId} />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/browse/investigation/"
-                  component={InvestigationTable}
-                />
-                <Route
-                  exact
-                  path="/browse/investigation/:investigationId/dataset"
-                  render={({
-                    match,
-                  }: RouteComponentProps<{ investigationId: string }>) => (
-                    <DatasetTable
-                      investigationId={match.params.investigationId}
+                    <Route
+                      exact
+                      path="/browse/proposal/"
+                      component={DLSProposalsTable}
                     />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
-                  render={({
-                    match,
-                  }: RouteComponentProps<{ datasetId: string }>) => (
-                    <DatafileTable datasetId={match.params.datasetId} />
-                  )}
-                />
-              </Switch>
+                    <Route
+                      exact
+                      path="/browse/proposal/:proposalName/investigation"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{ proposalName: string }>) => (
+                        <DLSVisitsTable
+                          proposalName={match.params.proposalName}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/proposal/:proposalName/investigation/:investigationId/dataset"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{
+                        proposalName: string;
+                        investigationId: string;
+                      }>) => (
+                        <DLSDatasetsTable
+                          proposalName={match.params.proposalName}
+                          investigationId={match.params.investigationId}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{
+                        proposalName: string;
+                        investigationId: string;
+                        datasetId: string;
+                      }>) => (
+                        <DLSDatafilesTable datasetId={match.params.datasetId} />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/investigation/"
+                      component={InvestigationTable}
+                    />
+                    <Route
+                      exact
+                      path="/browse/investigation/:investigationId/dataset"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{ investigationId: string }>) => (
+                        <DatasetTable
+                          investigationId={match.params.investigationId}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{ datasetId: string }>) => (
+                        <DatafileTable datasetId={match.params.datasetId} />
+                      )}
+                    />
+                  </Switch>
+                </ConnectedPreloader>
+              </StylesProvider>
             </ConnectedRouter>
           </Provider>
         </div>

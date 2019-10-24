@@ -24,6 +24,7 @@ describe('DLS datafiles table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -62,7 +63,7 @@ describe('DLS datafiles table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });
 
   it('sends filterTable action on filter', () => {

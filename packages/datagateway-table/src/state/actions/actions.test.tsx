@@ -2,18 +2,22 @@ import {
   sortTable,
   filterTable,
   getApiFilter,
-  loadStrings,
-  configureApp,
+  clearTable,
   configureStrings,
   loadFeatureSwitches,
   loadUrls,
+  configureApp,
+  loadStrings,
+  settingsLoaded,
 } from '.';
 import {
   SortTableType,
   FilterTableType,
+  ClearTableType,
   ConfigureStringsType,
   ConfigureFeatureSwitchesType,
   ConfigureURLsType,
+  SettingsLoadedType,
 } from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -43,7 +47,7 @@ describe('Actions', () => {
       },
     };
 
-    it('given a empty sort and filters it returns an empty object', () => {
+    it('given a empty sort and filters it returns just sorting by ID', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
@@ -51,7 +55,11 @@ describe('Actions', () => {
         router: routerState,
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual(new URLSearchParams());
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
+
+      expect(filter).toEqual(params);
     });
 
     it('given a single sort column in the sort state it returns an order string', () => {
@@ -66,6 +74,7 @@ describe('Actions', () => {
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
+      params.append('order', JSON.stringify('ID asc'));
 
       expect(filter).toEqual(params);
     });
@@ -83,6 +92,7 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
+      params.append('order', JSON.stringify('ID asc'));
 
       expect(filter).toEqual(params);
     });
@@ -91,15 +101,22 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
-          filters: { column1: 'test', column2: 'test2' },
+          filters: {
+            column1: 'test',
+            column2: { endDate: '2019-09-18' },
+          },
         },
         router: routerState,
       });
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { lte: '2019-09-18 23:59:59' } })
+      );
 
       expect(filter).toEqual(params);
     });
@@ -109,7 +126,7 @@ describe('Actions', () => {
         dgtable: {
           ...initialState,
           sort: { column1: 'asc', column2: 'desc' },
-          filters: { column1: 'test', column2: 'test2' },
+          filters: { column1: 'test', column2: { startDate: '2019-09-17' } },
         },
         router: routerState,
       });
@@ -118,8 +135,12 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { gte: '2019-09-17 00:00:00' } })
+      );
 
       expect(filter).toEqual(params);
     });
@@ -135,6 +156,16 @@ describe('Actions', () => {
     const action = filterTable('test', 'filter text');
     expect(action.type).toEqual(FilterTableType);
     expect(action.payload).toEqual({ column: 'test', filter: 'filter text' });
+  });
+
+  it('clearTable returns a ClearTableType', () => {
+    const action = clearTable();
+    expect(action.type).toEqual(ClearTableType);
+  });
+
+  it('settingsLoaded returns an action with SettingsLoadedType', () => {
+    const action = settingsLoaded();
+    expect(action.type).toEqual(SettingsLoadedType);
   });
 
   it('given JSON configureStrings returns a ConfigureStringsType with ConfigureStringsPayload', () => {
@@ -167,7 +198,7 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and configureStrings, loadFeatureSwitches and loadUrls actions are sent', async () => {
+  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -190,7 +221,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
@@ -201,6 +232,7 @@ describe('Actions', () => {
         apiUrl: 'api',
       })
     );
+    expect(actions).toContainEqual(settingsLoaded());
   });
 
   it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
@@ -225,7 +257,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(2);
+    expect(actions.length).toEqual(3);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -235,6 +267,7 @@ describe('Actions', () => {
         apiUrl: 'api',
       })
     );
+    expect(actions).toContainEqual(settingsLoaded());
   });
 
   it('logs an error if settings.json fails to be loaded', async () => {

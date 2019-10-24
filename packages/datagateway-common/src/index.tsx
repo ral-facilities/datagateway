@@ -17,6 +17,9 @@ export {
   default as TextColumnFilter,
 } from './table/columnFilters/textColumnFilter.component';
 export {
+  default as DateColumnFilter,
+} from './table/columnFilters/dateColumnFilter.component';
+export {
   default as ActionCellComponent,
 } from './table/cellRenderers/actionCell.component';
 export {
@@ -26,5 +29,7 @@ export {
   default as ExpandCellComponent,
 } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
+
+export { default as Preloader } from './preloader/preloader.component';
 
 // ReactDOM.render(<App />, document.getElementById('root'));

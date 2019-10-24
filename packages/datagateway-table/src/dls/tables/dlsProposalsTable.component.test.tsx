@@ -23,6 +23,7 @@ describe('DLS Proposals table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -76,7 +77,7 @@ describe('DLS Proposals table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest());
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends filterTable action on filter', () => {

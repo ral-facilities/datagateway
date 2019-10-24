@@ -17,6 +17,8 @@ describe('Table component', () => {
         TEST2: 2,
       },
     ],
+    loadMoreRows: jest.fn(),
+    totalRowCount: 50,
     sort: {},
     onSort,
     columns: [

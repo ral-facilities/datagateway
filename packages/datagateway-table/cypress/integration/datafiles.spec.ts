@@ -9,6 +9,12 @@ describe('Datafiles Table', () => {
     cy.get('#datagateway-table').should('be.visible');
   });
 
+  it('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="75"]').should('exist');
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
       cy.contains('Location').click();
@@ -70,7 +76,32 @@ describe('Datafiles Table', () => {
       );
     });
 
-    it('date between');
+    it('date between', () => {
+      cy.get('[aria-label="Modified Time date filter from"]').type(
+        '2019-01-01'
+      );
+
+      cy.get('[aria-label="Modified Time date filter to"]')
+        .parent()
+        .find('button')
+        .click();
+
+      cy.get('.MuiPickersDay-day[tabindex="0"]')
+        .first()
+        .click();
+
+      cy.contains('OK').click();
+
+      let date = new Date();
+      date.setDate(1);
+
+      cy.get('[aria-label="Modified Time date filter to"]').should(
+        'have.value',
+        date.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="100"]').should('exist');
+    });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')

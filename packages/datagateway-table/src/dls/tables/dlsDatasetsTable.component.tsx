@@ -138,7 +138,12 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (investigationId: number) =>
-    dispatch(fetchDatasets(investigationId, { getDatafileCount: true })),
+    dispatch(
+      fetchDatasets({
+        investigationId,
+        optionalParams: { getDatafileCount: true },
+      })
+    ),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
 });
 
