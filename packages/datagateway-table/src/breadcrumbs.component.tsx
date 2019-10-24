@@ -38,7 +38,6 @@ interface BreadcrumbProps {
 }
 
 interface BreadcrumbState {
-  stateUpdated: boolean;
   investigation: {
     id: string;
     displayName: string;
@@ -60,11 +59,12 @@ class PageBreadcrumbs extends React.Component<
   BreadcrumbProps,
   BreadcrumbState
 > {
+  private isBreadcrumbUpdated: boolean = false;
+
   public constructor(props: BreadcrumbProps) {
     super(props);
 
     this.state = {
-      stateUpdated: false,
       investigation: {
         id: '',
         displayName: 'N/A',
@@ -107,23 +107,28 @@ class PageBreadcrumbs extends React.Component<
   //   </div>
   // );
 
-  protected componentDidMount(): void {
+  public componentDidMount(): void {
     console.log('Called componentDidMount');
     console.log('Initial State: ', this.state);
     this.updateBreadcrumbState(1);
   }
 
-  protected componentDidUpdate(
+  public componentDidUpdate(
     prevProps: BreadcrumbProps,
     prevState: BreadcrumbState
   ): void {
     console.log('Called componentDidUpdate');
-    if (!this.state.stateUpdated) {
+    if (!this.isBreadcrumbUpdated) {
       console.log('Need to update.');
       this.updateBreadcrumbState(2);
     } else {
       console.log('No need to update.');
     }
+  }
+
+  public componentWillUnmount(): void {
+    console.log('Component unmounting, setting stateUpdated to false.');
+    this.isBreadcrumbUpdated = false;
   }
 
   private updateBreadcrumbState = async (num: number) => {
@@ -187,11 +192,11 @@ class PageBreadcrumbs extends React.Component<
       }
     }
 
-    // Update the state.
-    updatedState = { ...updatedState, stateUpdated: true };
+    // Update the final state.
     this.setState(updatedState, () =>
       console.log(`Final state (${num}): `, this.state)
     );
+    this.isBreadcrumbUpdated = true;
   };
 
   private getEntityName = async (requestEntityUrl: string): Promise<string> => {
