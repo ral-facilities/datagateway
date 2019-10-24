@@ -4,10 +4,10 @@ import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
-import { Route } from 'react-router';
+// import { Route } from 'react-router';
 
-import { Paper, Breadcrumbs, Link } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Link } from '@material-ui/core';
+// import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 // TODO: Maintain internal component state.
 // let breadcrumbsState = {
@@ -37,22 +37,48 @@ interface BreadcrumbProps {
   location: string;
 }
 
-class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
-  private initialState = {
-    breadcrumbs: {
+interface BreadcrumbState {
+  investigation: {
+    id: string;
+    displayName: string;
+    url: string;
+  };
+  dataset: {
+    id: string;
+    displayName: string;
+    url: string;
+  };
+  datafile: {
+    id: string;
+    displayName: string;
+    url: string;
+  };
+}
+
+class PageBreadcrumbs extends React.Component<
+  BreadcrumbProps,
+  BreadcrumbState
+> {
+  public constructor(props: BreadcrumbProps) {
+    super(props);
+
+    this.state = {
       investigation: {
+        id: '',
         displayName: 'N/A',
         url: '',
       },
       dataset: {
+        id: '',
         displayName: 'N/A',
         url: '',
       },
-    },
-  };
-
-  public constructor(props: BreadcrumbProps) {
-    super(props);
+      datafile: {
+        id: '',
+        displayName: 'N/A',
+        url: '',
+      },
+    };
   }
 
   // Store the current breadcrumb state; use the IDs
@@ -80,15 +106,26 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
   // );
 
   public componentDidMount(): void {
-    console.log('Location: ', this.props.location);
+    console.log('Initial State: ', this.state);
+    this.updateBreadcrumbState();
+  }
 
+  public componentDidUpdate(): void {
+    this.updateBreadcrumbState();
+  }
+
+  private updateBreadcrumbState = () => {
+    let updatedState = this.state;
+    console.log('Current state: ', updatedState);
+
+    console.log('Location: ', this.props.location);
     const pathnames = this.props.location.split('/').filter(x => x);
     console.log(`Path names: ${pathnames}`);
 
-    console.log('Initial State: ', this.state);
-
-    //
-    pathnames.forEach((value: string, index: number) => {
+    // Loop through each entry in the path name before the last.
+    // We check these against defined API routes.
+    let pathLength = pathnames.length;
+    pathnames.forEach(async (value: string, index: number) => {
       console.log(`Current value: ${value}`);
       console.log(`Current index: ${index}`);
 
@@ -96,34 +133,49 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
       console.log(`Breadcrumb URL: ${link}`);
 
       // Check for the specific routes and request the names from the API.
-      // if not last and value is in apiRoutes
-      if (value in apiEntityRoutes) {
-        let requestEntityUrl = `${apiEntityRoutes[value]}${index}`;
+      if (value in apiEntityRoutes && index < pathLength - 1) {
+        const requestID = pathnames[index + 1];
+        console.log(`Entity ID: ${requestID}`);
 
-        this.getEntityName(requestEntityUrl).then(entityName => {
-          if (entityName) {
-            console.log(`${value} - Retrieved entity name: ${entityName}`);
+        let requestEntityUrl = `${apiEntityRoutes[value]}${requestID}`;
+        console.log(`Contructed request URL: ${requestEntityUrl}`);
 
-            // Update the state with the entity information.
-            let updatedState = {
-              ...this.state,
-              value: {
-                displayName: entityName,
-                url: link,
-              },
-            };
-            this.setState(updatedState, () =>
-              console.log('Updated state: ', this.state)
-            );
-          }
-        });
+        const entityName = await this.getEntityName(requestEntityUrl);
+        if (entityName) {
+          console.log(`${value} - Retrieved entity name: ${entityName}`);
+          // Update the state with the entity information.
+          updatedState = {
+            ...updatedState,
+            [value]: {
+              id: requestID,
+              displayName: entityName,
+              url: link,
+            },
+          };
+          console.log('Updated state: ', updatedState);
+        }
+      } else if (value in apiEntityRoutes && index === pathLength - 1) {
+        console.log(`Processing last item in path: ${value}`);
+
+        // Update the state to say that e.g. if path is /browse/investigation/,
+        // then display name would be just Browse > Investigations and similarly
+        // Browse > Proposal 1 > Datasets
+        // ...
+
+        updatedState = {
+          ...updatedState,
+          [value]: {
+            displayName:
+              `${value}`.charAt(0).toUpperCase() + `${value}s`.slice(1),
+            url: link,
+          },
+        };
       }
     });
-  }
 
-  // private updateBreadcrumbState = () => {
-
-  // };
+    console.log('Updated state: ', updatedState);
+    // this.setState(updatedState, () => console.log('Updated state: ', this.state));
+  };
 
   private getEntityName = async (requestEntityUrl: string): Promise<string> => {
     let entityName = '';
@@ -151,78 +203,56 @@ class PageBreadcrumbs extends React.Component<BreadcrumbProps> {
   };
 
   public render(): React.ReactElement {
-    console.log();
-    return (
-      <div>
-        <Paper elevation={0}>
-          <Route>
-            {({ location }) => {
-              const pathnames = location.pathname.split('/').filter(x => x);
-              // console.log(`Path names: ${pathnames}`);
+    // const { breadcrumbs } = this.state;
 
-              return (
-                <Breadcrumbs
-                  separator={<NavigateNextIcon fontSize="small" />}
-                  aria-label="Breadcrumb"
-                >
-                  <Link color="inherit" href="/">
-                    Browse
-                  </Link>
-
-                  {/* For each of the names in the path, request the entity names from the API. */}
-                  {pathnames.map((value: string, index: number) => {
-                    // console.log(`Current value: ${value}`);
-                    // console.log(`Current index: ${index}`);
-
-                    // const last = index === pathnames.length - 1;
-                    const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-
-                    // Check for the specific routes and request the names from the API.
-                    // if not last and value is in apiRoutes
-                    if (value in apiEntityRoutes) {
-                      let requestEntityUrl = `${apiEntityRoutes[value]}${index}`;
-
-                      this.getEntityName(requestEntityUrl).then(entityName => {
-                        if (entityName) {
-                          // console.log(
-                          // `${value} - Retrieved entity name: ${entityName}`
-                          // );
-
-                          // Return the Link with the entity name.
-                          return (
-                            // Include key?
-                            <Link color="inherit" href={to}>
-                              {entityName}
-                            </Link>
-                          );
-                        }
-                      });
-                    }
-
-                    return <Link key="">N/A</Link>;
-
-                    // return last ? (
-                    //  <Typography color="textPrimary" key={to}>
-                    //    {value}
-                    //  </Typography>
-                    // ) : (
-
-                    // return (
-                    // <Link color="inherit" href={to} key={to}>
-                    //   {value}
-                    // </Link>
-                    // );
-                    // );
-                  })}
-                </Breadcrumbs>
-              );
-            }}
-          </Route>
-        </Paper>
-      </div>
-    );
+    return <Link key="">N/A</Link>;
   }
 }
+
+// return (
+//   <div>
+//     <Paper elevation={0}>
+//       <Route>
+//         {
+//           return (
+//             <Breadcrumbs
+//               separator={<NavigateNextIcon fontSize="small" />}
+//               aria-label="Breadcrumb"
+//             >
+//               <Link color="inherit" href="/">
+//                 Browse
+//               </Link>
+
+//               {/* For each of the names in the path, request the entity names from the API. */}
+//               {Object.keys(breadcrumbs).map((value: string, index: number) => {
+//                 console.log(`Creating breadcrumb for ${value}`);
+
+//                 // Access the value/object information and create breadcrumb.
+
+//                 // Return the Link with the entity name.
+//                 //return (
+//                   // Include key?
+//                   // <Link color="inherit" href={to}>
+//                     // {entityName}
+//                   // </Link>
+//                 // );
+//               }};
+
+//               return <Link key="">N/A</Link>;
+
+//               // return last ? (
+//               //  <Typography color="textPrimary" key={to}>
+//               //    {value}
+//               //  </Typography>
+//               // ) : (
+
+//               // return (
+//               // <Link color="inherit" href={to} key={to}>
+//               //   {value}
+//               // </Link>
+//               // );
+//               // );
+//             </Breadcrumbs>
 
 const mapStateToProps = (state: StateType): BreadcrumbProps => ({
   apiUrl: state.dgtable.urls.apiUrl,
