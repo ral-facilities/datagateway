@@ -122,7 +122,8 @@ export const fetchISISInvestigations = (
   facilityCycleId: string
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchInvestigationsRequest());
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationsRequest(timestamp));
 
     // TODO: replace this with getApiFilters again when API filter change merges in
     const sort = getState().dgtable.sort;
@@ -145,9 +146,11 @@ export const fetchISISInvestigations = (
       ])
     );
 
+    const { apiUrl } = getState().dgtable.urls;
+
     await axios
       .get(
-        `/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
+        `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
         {
           params,
           headers: {
@@ -158,7 +161,7 @@ export const fetchISISInvestigations = (
         }
       )
       .then(response => {
-        dispatch(fetchInvestigationsSuccess(response.data));
+        dispatch(fetchInvestigationsSuccess(response.data, timestamp));
         // TODO: dispatch getSize requests
       })
       .catch(error => {

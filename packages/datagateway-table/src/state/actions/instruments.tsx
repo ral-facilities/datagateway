@@ -155,7 +155,7 @@ export const fetchInstrumentDetailsRequest = (): Action => ({
 export const fetchInstrumentDetails = (
   instrumentId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     dispatch(fetchInstrumentDetailsRequest());
 
     let params = new URLSearchParams();
@@ -163,8 +163,10 @@ export const fetchInstrumentDetails = (
     params.append('where', JSON.stringify({ ID: { eq: instrumentId } }));
     params.append('include', JSON.stringify({ INSTRUMENTSCIENTIST: 'USER_' }));
 
+    const { apiUrl } = getState().dgtable.urls;
+
     await axios
-      .get(`/instruments`, {
+      .get(`${apiUrl}/instruments`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
