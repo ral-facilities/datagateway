@@ -24,7 +24,7 @@ import DataHeader from './headerRenderers/dataHeader.component';
 import DetailsPanelRow from './rowRenderers/detailsPanelRow.component';
 
 const rowHeight = 30;
-const headerHeight = 100;
+const headerHeight = 120;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

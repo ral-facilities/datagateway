@@ -17,6 +17,9 @@ export {
   default as TextColumnFilter,
 } from './table/columnFilters/textColumnFilter.component';
 export {
+  default as DateColumnFilter,
+} from './table/columnFilters/dateColumnFilter.component';
+export {
   default as ActionCellComponent,
 } from './table/cellRenderers/actionCell.component';
 export {
