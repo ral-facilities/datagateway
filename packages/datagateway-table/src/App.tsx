@@ -103,7 +103,6 @@ class App extends React.Component<{}, { hasError: boolean }> {
         <Provider store={store}>
           <ConnectedRouter history={history}>
             <StylesProvider generateClassName={generateClassName}>
-              {/* TODO: Handle breadcrumbs for the page. */}
               <PageBreadcrumbs />
               <Switch>
                 <Route

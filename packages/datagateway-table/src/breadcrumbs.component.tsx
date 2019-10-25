@@ -6,10 +6,15 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Route } from 'react-router';
 
-import { Link, Paper, Breadcrumbs, Typography } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import {
+  Link as MaterialLink,
+  Paper,
+  Breadcrumbs,
+  Typography,
+} from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
-// TODO: Maintain internal component state.
 // let breadcrumbsState = {
 //   1: {
 //     displayName: "Investigations",
@@ -26,10 +31,10 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 // }
 
 const apiEntityRoutes: { [entity: string]: string } = {
-  proposal: '/investigations/',
-  investigation: '/investigations/',
-  dataset: '/datasets/',
-  datafile: '/datafiles/',
+  proposal: '/investigations',
+  investigation: '/investigations',
+  dataset: '/datasets',
+  datafile: '/datafiles',
 };
 
 interface BreadcrumbProps {
@@ -172,7 +177,7 @@ class PageBreadcrumbs extends React.Component<
           valueData.id.length === 0 ||
           valueData.id !== pathnames[index + 1]
         ) {
-          let requestEntityUrl = `${apiEntityRoutes[value]}${entityId}`;
+          let requestEntityUrl = `${apiEntityRoutes[value]}/${entityId}`;
           console.log(`Contructed request URL: ${requestEntityUrl}`);
 
           const entityName = await this.getEntityName(requestEntityUrl);
@@ -269,9 +274,9 @@ class PageBreadcrumbs extends React.Component<
                   separator={<NavigateNextIcon fontSize="small" />}
                   aria-label="Breadcrumb"
                 >
-                  <Link color="inherit" href="/">
+                  <MaterialLink component={Link} to="/" color="inherit">
                     Browse
-                  </Link>
+                  </MaterialLink>
 
                   {Object.keys(breadcrumbState)
                     .filter((value: string) => {
@@ -292,13 +297,13 @@ class PageBreadcrumbs extends React.Component<
                           {valueData.displayName}
                         </Typography>
                       ) : (
-                        <Link
-                          color="inherit"
-                          href={valueData.url}
+                        <MaterialLink
+                          component={Link}
+                          to={valueData.url}
                           key={`${value}-${valueData.id}`}
                         >
                           {valueData.displayName}
-                        </Link>
+                        </MaterialLink>
                       );
                     })}
                 </Breadcrumbs>
