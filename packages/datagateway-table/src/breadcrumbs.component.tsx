@@ -55,10 +55,14 @@ class PageBreadcrumbs extends React.Component<
   BreadcrumbProps,
   BreadcrumbState
 > {
-  private isBreadcrumbUpdated: boolean = false;
+  private currentPathnames: string[];
+  private isBreadcrumbUpdated: boolean;
 
   public constructor(props: BreadcrumbProps) {
     super(props);
+
+    this.currentPathnames = [];
+    this.isBreadcrumbUpdated = false;
 
     this.state = {
       investigation: {
@@ -81,12 +85,19 @@ class PageBreadcrumbs extends React.Component<
 
   public componentDidMount(): void {
     console.log('Called componentDidMount');
+
+    this.currentPathnames = this.props.location.split('/').filter(x => x);
+    console.log('Saved current pathnames: ', this.currentPathnames);
+
     console.log('Initial State: ', this.state);
     this.updateBreadcrumbState(1);
   }
 
   public componentDidUpdate(prevProps: BreadcrumbProps): void {
     console.log('Called componentDidUpdate');
+
+    this.currentPathnames = this.props.location.split('/').filter(x => x);
+    console.log('Saved current pathnames: ', this.currentPathnames);
 
     if (prevProps.location !== this.props.location) {
       console.log(
@@ -103,6 +114,8 @@ class PageBreadcrumbs extends React.Component<
     }
   }
 
+  private cleanBreadcrumbState = () => {};
+
   private updateBreadcrumbState = async (num: number) => {
     let updatedState = this.state;
     console.log('Current state: ', updatedState);
@@ -115,6 +128,8 @@ class PageBreadcrumbs extends React.Component<
     // We check these against defined API routes.
     let pathLength = pathnames.length;
     for (let index = 0; index < pathnames.length; index++) {
+      // TODO: Rename value to entity.
+      // Get the entity and the data stored on the entity.
       let value = pathnames[index];
       const valueData = this.state[value];
 
@@ -178,6 +193,39 @@ class PageBreadcrumbs extends React.Component<
         console.log(`Updated state for ${value}:`, updatedState);
       }
     }
+
+    // Clean up the state and remove any old references
+    // (in the event the user moved back using the breadcrumb).
+    // Loop through the current state and the pathname.
+    Object.keys(updatedState).forEach((entity: string) => {
+      if (
+        this.state[entity].displayName !== 'N/A' &&
+        !this.currentPathnames.includes(entity)
+      ) {
+        updatedState = {
+          ...updatedState,
+          [entity]: {
+            id: '',
+            displayName: 'N/A',
+            url: '',
+          },
+        };
+      }
+    });
+
+    // Remove an old reference present for this entity.
+    // if (value in apiEntityRoutes && !pathnames.includes(value))
+    // {
+    //   updatedState = {
+    //     ...updatedState,
+    //     [value]: {
+    //       id: '',
+    //       displayName: 'N/A',
+    //       url: '',
+    //     },
+    //   };
+    //   console.log(`Reset information for ${value} as it is no longer in path.`);
+    // }
 
     // Update the final state.
     this.setState(updatedState, () =>
