@@ -15,21 +15,6 @@ import {
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
-// let breadcrumbsState = {
-//   1: {
-//     displayName: "Investigations",
-//     url: "/browse/investigation"
-//   },
-//   2: {
-//     displayName: "quas accusantium omnis",
-//     url: "/browse/investigation/1/dataset"
-//   },
-//   3: {
-//     displayName: "Dataset 1",
-//     url: "/browse/investigation/1/dataset/1/datafile"
-//   }
-// }
-
 const apiEntityRoutes: { [entity: string]: string } = {
   proposal: '/investigations',
   investigation: '/investigations',
@@ -42,6 +27,7 @@ interface BreadcrumbProps {
   location: string;
 }
 
+// TODO: Manage state to hold changes to a particular element/hold root level.
 interface BreadcrumbState {
   investigation: {
     id: string;
@@ -93,30 +79,6 @@ class PageBreadcrumbs extends React.Component<
     };
   }
 
-  // Store the current breadcrumb state; use the IDs
-  // of the investigation/dataset
-  // const currentBreadcrumb = {
-  // }
-
-  // return (
-  //   <div>
-  //     <Paper elevation={0}>
-  //       <Breadcrumbs
-  //         separator={<NavigateNextIcon fontSize="small" />}
-  //         aria-label="breadcrumb"
-  //       >
-  //         <Link color="inherit">
-  //           Home
-  //         </Link>
-  //         {/* <MaterialLink color="inherit">
-  //                         Test2
-  //                     </MaterialLink> */}
-  //         <Typography color="textPrimary">breadcrumb</Typography>
-  //       </Breadcrumbs>
-  //     </Paper>
-  //   </div>
-  // );
-
   public componentDidMount(): void {
     console.log('Called componentDidMount');
     console.log('Initial State: ', this.state);
@@ -140,11 +102,6 @@ class PageBreadcrumbs extends React.Component<
       console.log('No need to update.');
     }
   }
-
-  // public componentWillUnmount(): void {
-  //   console.log('Component unmounting, setting stateUpdated to false.');
-  //   this.isBreadcrumbUpdated = false;
-  // }
 
   private updateBreadcrumbState = async (num: number) => {
     let updatedState = this.state;
