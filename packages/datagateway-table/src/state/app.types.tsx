@@ -11,12 +11,15 @@ export interface DGTableState {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   investigationCache: EntityCache;
   datasetCache: EntityCache;
   cartItems: DownloadCartItem[];
   loading: boolean;
   downloading: boolean;
   error: string | null;
+  dataTimestamp: number;
+  countTimestamp: number;
   res?: ApplicationStrings;
   features: FeatureSwitches;
   urls: URLs;

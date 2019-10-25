@@ -25,14 +25,14 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (username, password) => {
-  return cy
-    .request('POST', 'http://localhost:5000/sessions', {
+  return cy.readFile('server/e2e-settings.json').then(settings => {
+    cy.request('POST', `${settings.apiUrl}/sessions`, {
       username: username,
       password: password,
-    })
-    .then(response => {
+    }).then(response => {
       window.localStorage.setItem('daaas:token', response.body.sessionID);
     });
+  });
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {

@@ -11,6 +11,8 @@ import {
   downloadDatafileRequest,
   addToCartRequest,
   removeFromCartRequest,
+  fetchDatafileCountRequest,
+  clearTable,
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -27,6 +29,8 @@ describe('Datafile table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -55,7 +59,7 @@ describe('Datafile table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchDatafiles action on load', () => {
+  it('sends clearTable action on load', () => {
     const testStore = mockStore(state);
     mount(
       <Provider store={testStore}>
@@ -65,7 +69,38 @@ describe('Datafile table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest());
+    expect(testStore.getActions().length).toEqual(1);
+    expect(testStore.getActions()[0]).toEqual(clearTable());
+  });
+
+  it('sends fetchDatafileCount and fetchDatafiles actions when watched store values change', () => {
+    let testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatafileTable datasetId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    // simulate clearTable action
+    testStore = mockStore({
+      ...state,
+      dgtable: { ...state.dgtable, sort: {}, filters: {} },
+    });
+    wrapper.setProps({ store: testStore });
+
+    expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+  });
+
+  it('sends fetchDatafiles action when loadMoreRows is called', () => {
+    const testStore = mockStore(state);
+    const wrapper = shallow(<DatafileTable store={testStore} />);
+
+    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+
+    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });
 
   it('sends filterTable action on text filter', () => {
@@ -229,7 +264,7 @@ describe('Datafile table component', () => {
 
     wrapper.find('button[aria-label="Download"]').simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest());
+    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
   });
 
   it('renders details panel correctly', () => {
