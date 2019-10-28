@@ -49,6 +49,7 @@ interface BreadcrumbState {
     entityName: string;
     displayName: string;
     url: string;
+    isLast: boolean;
   };
   currentHierarchy: {
     [level: number]: {
@@ -58,6 +59,11 @@ interface BreadcrumbState {
       displayName: string;
       url: string;
     };
+  };
+  last: {
+    // TODO: No need for url in last?
+    displayName: string;
+    //url: string;
   };
 }
 
@@ -97,8 +103,13 @@ class PageBreadcrumbs extends React.Component<
         entityName: '',
         displayName: 'N/A',
         url: '',
+        isLast: false,
       },
       currentHierarchy: {},
+      last: {
+        displayName: 'N/A',
+        //url: '',
+      },
     };
   }
 
@@ -144,6 +155,8 @@ class PageBreadcrumbs extends React.Component<
       updatedState = {
         ...updatedState,
         base: {
+          ...updatedState.base,
+
           entityName: baseEntityName,
           displayName:
             `${baseEntityName}`.charAt(0).toUpperCase() +
@@ -166,28 +179,29 @@ class PageBreadcrumbs extends React.Component<
       const link = `/${this.currentPathnames.slice(0, index + 3).join('/')}`;
       console.log(`Breadcrumb URL: ${link}`);
 
-      // If the index does not already exist,
-      // create the entry for the index.
-      if (!(index in updatedState)) {
-        updatedState = {
-          ...updatedState,
-          currentHierarchy: {
-            ...updatedState.currentHierarchy,
-            [index]: {
-              id: '',
-
-              displayName: 'N/A',
-              url: link,
-            },
-          },
-        };
-      }
-
-      // Get the information held in the state for the current path name.
-      const entityInfo = updatedState.currentHierarchy[index];
-
       // Check we are not the end of the pathnames array.
       if (index < pathLength - 1) {
+        // TODO: Do we need to create a field already?
+        // If the index does not already exist,
+        // create the entry for the index.
+        if (!(index in updatedState)) {
+          updatedState = {
+            ...updatedState,
+            currentHierarchy: {
+              ...updatedState.currentHierarchy,
+
+              [index]: {
+                id: '',
+
+                displayName: 'N/A',
+                url: link,
+              },
+            },
+          };
+        }
+        // Get the information held in the state for the current path name.
+        const entityInfo = updatedState.currentHierarchy[index];
+
         const entityId = this.currentPathnames[index + 1];
         console.log(`Entity ID: ${entityId}`);
 
@@ -211,6 +225,7 @@ class PageBreadcrumbs extends React.Component<
 
                   id: entityId,
                   displayName: entityName,
+                  url: link,
                 },
               },
             };
@@ -223,26 +238,35 @@ class PageBreadcrumbs extends React.Component<
             `${entity} is same as before with ID ${entityId}, no need to request again.`
           );
         }
+        // Ensure that we store the last path in a separate field and that it is not the entity name.
       } else if (index === pathLength - 1) {
-        console.log(`Processing last item in path: ${entity}`);
+        if (entity !== updatedState.base.entityName) {
+          console.log(`Processing last item in path: ${entity}`);
 
-        // Update the state to say that e.g. if path is /browse/investigation/,
-        // then display name would be just Browse > *Investigations*.
-        // e.g. Browse > Investigations > *Proposal 1* (Datasets) etc.
-        updatedState = {
-          ...updatedState,
-          currentHierarchy: {
-            ...updatedState.currentHierarchy,
-            [index]: {
-              ...updatedState.currentHierarchy[index],
-
-              id: '',
+          // Update the state to say that e.g. if path is /browse/investigation/,
+          // then display name would be just Browse > *Investigations*.
+          // e.g. Browse > Investigations > *Proposal 1* (Datasets) etc.
+          updatedState = {
+            ...updatedState,
+            last: {
               displayName:
                 `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
+              //url: link,
             },
-          },
-        };
-        console.log(`Updated state for ${entity}:`, updatedState);
+          };
+          console.log(`Updated state for ${entity}:`, updatedState);
+        } else {
+          // If the base is the current top directory, then update the last field.
+          updatedState = {
+            ...updatedState,
+            base: {
+              ...updatedState.base,
+
+              isLast: true,
+            },
+          };
+          console.log('Updated the base as being last in the path.');
+        }
       }
     }
 
