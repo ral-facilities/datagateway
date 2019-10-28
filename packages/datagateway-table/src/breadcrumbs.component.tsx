@@ -52,7 +52,7 @@ interface BreadcrumbState {
     isLast: boolean;
   };
   currentHierarchy: {
-    [level: number]: {
+    [entity: string]: {
       // TODO: Should we store the id, do we use for anything other than requesting entity name?
       id: string;
 
@@ -168,7 +168,8 @@ class PageBreadcrumbs extends React.Component<
 
     // Loop through each entry in the path name before the last.
     // We always skip 2 go ahead in steps of 2 as the we expect the format to be /{entity}/{entityId}.
-    let pathLength = this.currentPathnames.length;
+    const pathLength = this.currentPathnames.length;
+    let heirarchyLength = 0;
     for (let index = 1; index < pathLength; index += 2) {
       console.log(`Current index: ${index}`);
 
@@ -184,13 +185,14 @@ class PageBreadcrumbs extends React.Component<
         // TODO: Do we need to create a field already?
         // If the index does not already exist,
         // create the entry for the index.
-        if (!(index in updatedState)) {
+        if (!(entity in updatedState)) {
+          heirarchyLength++;
           updatedState = {
             ...updatedState,
             currentHierarchy: {
               ...updatedState.currentHierarchy,
 
-              [index]: {
+              [heirarchyLength]: {
                 id: '',
 
                 displayName: 'N/A',
@@ -199,8 +201,11 @@ class PageBreadcrumbs extends React.Component<
             },
           };
         }
+
         // Get the information held in the state for the current path name.
-        const entityInfo = updatedState.currentHierarchy[index];
+        console.log('Current state: ', updatedState);
+        const entityInfo = updatedState.currentHierarchy[heirarchyLength];
+        console.log('Entity Info: ', entityInfo);
 
         const entityId = this.currentPathnames[index + 1];
         console.log(`Entity ID: ${entityId}`);
@@ -220,8 +225,8 @@ class PageBreadcrumbs extends React.Component<
               ...updatedState,
               currentHierarchy: {
                 ...updatedState.currentHierarchy,
-                [index]: {
-                  ...updatedState.currentHierarchy[index],
+                [heirarchyLength]: {
+                  ...updatedState.currentHierarchy[heirarchyLength],
 
                   id: entityId,
                   displayName: entityName,
