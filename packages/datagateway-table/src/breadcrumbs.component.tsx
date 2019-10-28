@@ -44,12 +44,13 @@ interface BreadcrumbProps {
 //   };
 // }
 
-// interface Breadcrumb {
-//   id: string;
+interface Breadcrumb {
+  id: string; // TODO: Should we store the id, do we use for anything other than requesting entity name?
 
-//   pathName: string;
-//   displayName: string:
-// }
+  pathName: string;
+  displayName: string;
+  url: string;
+}
 
 interface BreadcrumbState {
   base: {
@@ -58,16 +59,7 @@ interface BreadcrumbState {
     url: string;
     isLast: boolean;
   };
-  currentHierarchy: {
-    [level: number]: {
-      // TODO: Should we store the id, do we use for anything other than requesting entity name?
-      id: string;
-
-      pathName: string;
-      displayName: string;
-      url: string;
-    };
-  };
+  currentHierarchy: Breadcrumb[];
   last: {
     displayName: string;
   };
@@ -111,7 +103,7 @@ class PageBreadcrumbs extends React.Component<
         url: '',
         isLast: false,
       },
-      currentHierarchy: {},
+      currentHierarchy: [],
       last: {
         displayName: 'N/A',
         //url: '',
@@ -185,8 +177,9 @@ class PageBreadcrumbs extends React.Component<
 
     // Loop through each entry in the path name before the last.
     // We always skip 2 go ahead in steps of 2 as the we expect the format to be /{entity}/{entityId}.
+    let hierarchyCount = 0;
+
     const pathLength = this.currentPathnames.length;
-    let heirarchyLength = 0;
     for (let index = 1; index < pathLength; index += 2) {
       console.log(`Current index: ${index}`);
 
@@ -202,28 +195,40 @@ class PageBreadcrumbs extends React.Component<
         // TODO: Do we need to create a field already?
         // If the index does not already exist,
         // create the entry for the index.
-        if (!(entity in updatedState)) {
-          heirarchyLength++;
-          updatedState = {
-            ...updatedState,
-            currentHierarchy: {
-              ...updatedState.currentHierarchy,
+        if (!updatedState.currentHierarchy[hierarchyCount]) {
+          // hierarchyLength++;
+          //   updatedState = {
+          //     ...updatedState,
+          //     currentHierarchy: {
+          //       ...updatedState.currentHierarchy,
 
-              [heirarchyLength]: {
-                id: '',
+          //       [heirarchyLength]: {
+          //         id: '',
 
-                pathName: entity,
-                displayName: 'N/A',
-                url: link,
-              },
-            },
-          };
+          //         pathName: entity,
+          //         displayName: 'N/A',
+          //         url: link,
+          //       },
+          //     },
+          //   };
+          // }
+
+          // Insert the new breadcrumb information into the array.
+          updatedState.currentHierarchy.splice(hierarchyCount, 1, {
+            id: '',
+            pathName: entity,
+            displayName: 'N/A',
+            url: link,
+          });
         }
 
         // Get the information held in the state for the current path name.
         console.log('Current state: ', updatedState);
-        const entityInfo = updatedState.currentHierarchy[heirarchyLength];
-        console.log('Entity Info: ', entityInfo);
+        const entityInfo = updatedState.currentHierarchy[hierarchyCount];
+        console.log(
+          `Entity Info with hierarchyCount (${hierarchyCount}): `,
+          entityInfo
+        );
 
         const entityId = this.currentPathnames[index + 1];
         console.log(`Entity ID: ${entityId}`);
@@ -243,8 +248,8 @@ class PageBreadcrumbs extends React.Component<
               ...updatedState,
               currentHierarchy: {
                 ...updatedState.currentHierarchy,
-                [heirarchyLength]: {
-                  ...updatedState.currentHierarchy[heirarchyLength],
+                [hierarchyCount]: {
+                  ...updatedState.currentHierarchy[hierarchyCount],
 
                   id: entityId,
                   displayName: entityName,
@@ -290,6 +295,7 @@ class PageBreadcrumbs extends React.Component<
           console.log('Updated the base as being last in the path.');
         }
       }
+      hierarchyCount++;
     }
 
     // Clean up the state and remove any old references
