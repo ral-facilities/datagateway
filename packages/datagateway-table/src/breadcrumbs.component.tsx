@@ -46,14 +46,13 @@ interface BreadcrumbProps {
 
 interface BreadcrumbState {
   base: {
-    pathName: string;
+    entityName: string;
     displayName: string;
     url: string;
   };
   currentHierarchy: {
     [level: number]: {
-      // TODO: Should we store the pathname and id, do we use for anything other than requesting entity name?
-      pathName: string;
+      // TODO: Should we store the id, do we use for anything other than requesting entity name?
       id: string;
 
       displayName: string;
@@ -61,13 +60,6 @@ interface BreadcrumbState {
     };
   };
 }
-
-// const apiEntityRoutes: { [entity: string]: string } = {
-//   proposal: '/investigations',
-//   investigation: '/investigations',
-//   dataset: '/datasets',
-//   datafile: '/datafiles',
-// };
 
 class PageBreadcrumbs extends React.Component<
   BreadcrumbProps,
@@ -102,7 +94,7 @@ class PageBreadcrumbs extends React.Component<
 
     this.state = {
       base: {
-        pathName: '',
+        entityName: '',
         displayName: 'N/A',
         url: '',
       },
@@ -147,32 +139,31 @@ class PageBreadcrumbs extends React.Component<
     console.log(`Updating with path names: ${this.currentPathnames}`);
 
     // Update the base address if it has changed.
-    const currentBase = this.currentPathnames[1];
-    if (!(updatedState.base.pathName === currentBase)) {
+    const baseEntityName = this.currentPathnames[1];
+    if (!(updatedState.base.entityName === baseEntityName)) {
       updatedState = {
         ...updatedState,
         base: {
-          pathName: currentBase,
+          entityName: baseEntityName,
           displayName:
-            `${currentBase}`.charAt(0).toUpperCase() +
-            `${currentBase}s`.slice(1),
+            `${baseEntityName}`.charAt(0).toUpperCase() +
+            `${baseEntityName}s`.slice(1),
           url: `/${this.currentPathnames.slice(0, 2).join('/')}`,
         },
       };
     }
 
     // Loop through each entry in the path name before the last.
-    // We check these against defined API routes.
+    // We always skip 2 go ahead in steps of 2 as the we expect the format to be /{entity}/{entityId}.
     let pathLength = this.currentPathnames.length;
-    let link;
-    for (let index = 1; index < pathLength; index++) {
+    for (let index = 1; index < pathLength; index += 2) {
       console.log(`Current index: ${index}`);
 
       // Get the entity and the data stored on the entity.
       let entity = this.currentPathnames[index];
       console.log(`Current value: ${entity}`);
 
-      link = `/${this.currentPathnames.slice(0, index + 1).join('/')}`;
+      const link = `/${this.currentPathnames.slice(0, index + 3).join('/')}`;
       console.log(`Breadcrumb URL: ${link}`);
 
       // If the index does not already exist,
@@ -183,7 +174,6 @@ class PageBreadcrumbs extends React.Component<
           currentHierarchy: {
             ...updatedState.currentHierarchy,
             [index]: {
-              pathName: entity,
               id: '',
 
               displayName: 'N/A',
@@ -196,16 +186,13 @@ class PageBreadcrumbs extends React.Component<
       // Get the information held in the state for the current path name.
       const entityInfo = updatedState.currentHierarchy[index];
 
-      // Check we are not at the base and we are not the end of the pathnames array.
-      if (index !== 0 && index < pathLength - 1) {
+      // Check we are not the end of the pathnames array.
+      if (index < pathLength - 1) {
         const entityId = this.currentPathnames[index + 1];
         console.log(`Entity ID: ${entityId}`);
 
         // Check if an entity id is present or if the id has changed since the last update to the state.
-        if (
-          entityInfo.id.length === 0 ||
-          entityInfo.id !== this.currentPathnames[index + 1]
-        ) {
+        if (entityInfo.id.length === 0 || entityInfo.id !== entityId) {
           // Create the entity url to request the name, this is pluralised.
           let requestEntityUrl = `${entity}s/${entityId}`;
           console.log(`Contructed request URL: ${requestEntityUrl}`);
@@ -218,6 +205,7 @@ class PageBreadcrumbs extends React.Component<
             updatedState = {
               ...updatedState,
               currentHierarchy: {
+                ...updatedState.currentHierarchy,
                 [index]: {
                   ...updatedState.currentHierarchy[index],
 
@@ -232,7 +220,7 @@ class PageBreadcrumbs extends React.Component<
           }
         } else {
           console.log(
-            `${entity} is same as before with ID ${entityId}, no need request.`
+            `${entity} is same as before with ID ${entityId}, no need to request again.`
           );
         }
       } else if (index === pathLength - 1) {
@@ -244,6 +232,7 @@ class PageBreadcrumbs extends React.Component<
         updatedState = {
           ...updatedState,
           currentHierarchy: {
+            ...updatedState.currentHierarchy,
             [index]: {
               ...updatedState.currentHierarchy[index],
 
@@ -286,9 +275,13 @@ class PageBreadcrumbs extends React.Component<
   private getEntityName = async (requestEntityUrl: string): Promise<string> => {
     let entityName = '';
 
+    console.log('API Url: ', this.props.apiUrl);
+    const requestUrl = `${this.props.apiUrl}/${requestEntityUrl}`;
+    console.log('Final request url: ', requestUrl);
+
     // Make a GET request to the specified URL.
     entityName = await axios
-      .get(`${this.props.apiUrl}${requestEntityUrl}`, {
+      .get(requestUrl, {
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
