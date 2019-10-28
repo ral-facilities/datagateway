@@ -25,9 +25,9 @@ export default function CheckboxesGroup(): JSX.Element {
     Datafile: false,
   });
 
-  const handleChange: string = (name: string) => (
+  const handleChange (name: string) => (
     event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  ): void => {
     setState({ ...state, [name]: event.target.checked });
   };
 
