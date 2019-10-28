@@ -11,7 +11,7 @@ import {
   Link as MaterialLink,
   Paper,
   Breadcrumbs,
-  // Typography,
+  Typography,
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
@@ -155,16 +155,17 @@ class PageBreadcrumbs extends React.Component<
       updatedState = {
         ...updatedState,
         base: {
-          ...updatedState.base,
-
           entityName: baseEntityName,
           displayName:
             `${baseEntityName}`.charAt(0).toUpperCase() +
             `${baseEntityName}s`.slice(1),
           url: `/${this.currentPathnames.slice(0, 2).join('/')}`,
+          isLast: false,
         },
       };
     }
+    // TODO: Set the base isLast to false unless it is proven otherwise later.
+    updatedState.base.isLast = false;
 
     // Loop through each entry in the path name before the last.
     // We always skip 2 go ahead in steps of 2 as the we expect the format to be /{entity}/{entityId}.
@@ -332,29 +333,37 @@ class PageBreadcrumbs extends React.Component<
 
   public render(): React.ReactElement {
     const breadcrumbState = this.state;
-    const pathnames = this.props.location.split('/').filter(x => x);
-
-    // TODO: Set as Typography if last is at root.
-    const last = pathnames[pathnames.length - 1];
-
-    console.log('Breadcrumb state: ', breadcrumbState);
-    console.log('Last entry: ', last);
+    console.log('Rendering Breadcrumb state: ', breadcrumbState);
 
     return (
       <div>
         <Paper elevation={0}>
           <Route>
-            {() => {
-              return (
-                <Breadcrumbs
-                  separator={<NavigateNextIcon fontSize="small" />}
-                  aria-label="Breadcrumb"
-                >
-                  <MaterialLink component={Link} to="/" color="inherit">
-                    Browse
+            {this.currentPathnames.length > 0 ? (
+              <Breadcrumbs
+                separator={<NavigateNextIcon fontSize="small" />}
+                aria-label="Breadcrumb"
+              >
+                {/* // Return the base entity as a link. 
+                  // TODO: Remove check for current pathnames length. Needs something concrete. */}
+                {breadcrumbState.base.isLast ? (
+                  <Typography
+                    color="textPrimary"
+                    key={`base-${breadcrumbState.base.entityName}`}
+                  >
+                    {breadcrumbState.base.displayName}
+                  </Typography>
+                ) : (
+                  <MaterialLink
+                    component={Link}
+                    to={breadcrumbState.base.url}
+                    key={`base-${breadcrumbState.base.entityName}`}
+                  >
+                    {breadcrumbState.base.displayName}
                   </MaterialLink>
+                )}
 
-                  {/* {Object.keys(breadcrumbState)
+                {/* {Object.keys(breadcrumbState)
                     .filter((value: string) => {
                       return breadcrumbState[value].displayName !== 'N/A';
                     })
@@ -382,9 +391,10 @@ class PageBreadcrumbs extends React.Component<
                         </MaterialLink>
                       );
                     })} */}
-                </Breadcrumbs>
-              );
-            }}
+              </Breadcrumbs>
+            ) : (
+              <div>Unable to render breadcrumb; no path information.</div>
+            )}
           </Route>
         </Paper>
       </div>
