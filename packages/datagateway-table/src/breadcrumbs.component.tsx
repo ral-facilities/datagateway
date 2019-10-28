@@ -45,13 +45,20 @@ interface BreadcrumbProps {
 // }
 
 interface BreadcrumbState {
-  [level: number]: {
-    // TODO: Should we store the pathname and id, do we use for anything other than requesting entity name?
-    pathname: string;
-    id: string;
-
+  base: {
+    pathName: string;
     displayName: string;
     url: string;
+  };
+  currentHierarchy: {
+    [level: number]: {
+      // TODO: Should we store the pathname and id, do we use for anything other than requesting entity name?
+      pathName: string;
+      id: string;
+
+      displayName: string;
+      url: string;
+    };
   };
 }
 
@@ -92,7 +99,15 @@ class PageBreadcrumbs extends React.Component<
     //     url: '',
     //   },
     // };
-    this.state = {};
+
+    this.state = {
+      base: {
+        pathName: '',
+        displayName: 'N/A',
+        url: '',
+      },
+      currentHierarchy: {},
+    };
   }
 
   public componentDidMount(): void {
@@ -102,7 +117,6 @@ class PageBreadcrumbs extends React.Component<
     this.currentPathnames = this.props.location.split('/').filter(x => x);
     console.log('Saved current pathnames: ', this.currentPathnames);
 
-    //console.log('Initial State: ', this.state);
     this.updateBreadcrumbState(1);
   }
 
@@ -130,14 +144,27 @@ class PageBreadcrumbs extends React.Component<
   private updateBreadcrumbState = async (num: number) => {
     let updatedState = this.state;
     console.log('Current state: ', updatedState);
-
-    // console.log('Location: ', this.props.location);
-    // const pathnames = this.props.location.split('/').filter(x => x);
     console.log(`Updating with path names: ${this.currentPathnames}`);
+
+    // Update the base address if it has changed.
+    const currentBase = this.currentPathnames[1];
+    if (!(updatedState.base.pathName === currentBase)) {
+      updatedState = {
+        ...updatedState,
+        base: {
+          pathName: currentBase,
+          displayName:
+            `${currentBase}`.charAt(0).toUpperCase() +
+            `${currentBase}s`.slice(1),
+          url: `/${this.currentPathnames.slice(0, 2).join('/')}`,
+        },
+      };
+    }
 
     // Loop through each entry in the path name before the last.
     // We check these against defined API routes.
     let pathLength = this.currentPathnames.length;
+    let link;
     for (let index = 1; index < pathLength; index++) {
       console.log(`Current index: ${index}`);
 
@@ -145,7 +172,7 @@ class PageBreadcrumbs extends React.Component<
       let entity = this.currentPathnames[index];
       console.log(`Current value: ${entity}`);
 
-      const link = `/${this.currentPathnames.slice(0, index + 1).join('/')}`;
+      link = `/${this.currentPathnames.slice(0, index + 1).join('/')}`;
       console.log(`Breadcrumb URL: ${link}`);
 
       // If the index does not already exist,
@@ -153,18 +180,21 @@ class PageBreadcrumbs extends React.Component<
       if (!(index in updatedState)) {
         updatedState = {
           ...updatedState,
-          [index]: {
-            pathname: entity,
-            id: '',
+          currentHierarchy: {
+            ...updatedState.currentHierarchy,
+            [index]: {
+              pathName: entity,
+              id: '',
 
-            displayName: 'N/A',
-            url: link,
+              displayName: 'N/A',
+              url: link,
+            },
           },
         };
       }
 
       // Get the information held in the state for the current path name.
-      const entityInfo = updatedState[index];
+      const entityInfo = updatedState.currentHierarchy[index];
 
       // Check we are not at the base and we are not the end of the pathnames array.
       if (index !== 0 && index < pathLength - 1) {
@@ -187,11 +217,13 @@ class PageBreadcrumbs extends React.Component<
             // Update the state with the new entity information.
             updatedState = {
               ...updatedState,
-              [index]: {
-                ...updatedState[index],
+              currentHierarchy: {
+                [index]: {
+                  ...updatedState.currentHierarchy[index],
 
-                id: entityId,
-                displayName: entityName,
+                  id: entityId,
+                  displayName: entityName,
+                },
               },
             };
             console.log(`Updated state for ${entity}:`, updatedState);
@@ -207,17 +239,18 @@ class PageBreadcrumbs extends React.Component<
         console.log(`Processing last item in path: ${entity}`);
 
         // Update the state to say that e.g. if path is /browse/investigation/,
-        // then display name would be just Browse > Investigations and similarly
-        // Browse > Proposal 1 > Datasets etc.
-
+        // then display name would be just Browse > *Investigations*.
+        // e.g. Browse > Investigations > *Proposal 1* (Datasets) etc.
         updatedState = {
           ...updatedState,
-          [index]: {
-            ...updatedState[index],
+          currentHierarchy: {
+            [index]: {
+              ...updatedState.currentHierarchy[index],
 
-            id: '',
-            displayName:
-              `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
+              id: '',
+              displayName:
+                `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
+            },
           },
         };
         console.log(`Updated state for ${entity}:`, updatedState);
