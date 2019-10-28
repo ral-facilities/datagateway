@@ -26,7 +26,7 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         '/act/friend/general.jpeg'
       );
     });
@@ -39,7 +39,7 @@ describe('Datafiles Table', () => {
       cy.get('.MuiTableSortLabel-iconDirectionDesc')
         .eq(1)
         .should('not.have.css', 'opacity', '0');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         '/yes/glass/them.jpg'
       );
     });
@@ -57,7 +57,7 @@ describe('Datafiles Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         '/year/how/structure.tiff'
       );
     });
@@ -67,7 +67,7 @@ describe('Datafiles Table', () => {
       cy.contains('Name').click();
       cy.contains('Name').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 15831'
       );
     });
@@ -80,7 +80,7 @@ describe('Datafiles Table', () => {
         .type('ok');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 13915'
       );
     });
@@ -110,10 +110,10 @@ describe('Datafiles Table', () => {
       );
 
       cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 1940'
       );
-      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
         'Datafile 6730'
       );
     });
@@ -128,7 +128,7 @@ describe('Datafiles Table', () => {
         .type('.png');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 15352'
       );
     });

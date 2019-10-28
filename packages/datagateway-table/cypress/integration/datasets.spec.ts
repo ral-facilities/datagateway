@@ -33,7 +33,7 @@ describe('Datasets Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('descending order', () => {
@@ -46,7 +46,7 @@ describe('Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
 
     it('no order', () => {
@@ -62,7 +62,7 @@ describe('Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('multiple columns', () => {
@@ -71,7 +71,7 @@ describe('Datasets Table', () => {
       cy.contains('Name').click();
       cy.contains('Name').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
   });
 
@@ -82,7 +82,7 @@ describe('Datasets Table', () => {
         .type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
         '2002-11-27 06:20:36'
       );
     });
@@ -110,7 +110,7 @@ describe('Datasets Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('multiple columns', () => {
@@ -121,7 +121,7 @@ describe('Datasets Table', () => {
       cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
   });
 

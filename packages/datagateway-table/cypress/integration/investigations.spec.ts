@@ -33,7 +33,7 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'A nothing almost arrive I. Product middle design never. Cup camera then product father sort vote.'
       );
     });
@@ -48,7 +48,7 @@ describe('Investigations Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
       );
     });
@@ -66,7 +66,7 @@ describe('Investigations Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
       );
     });
@@ -75,7 +75,7 @@ describe('Investigations Table', () => {
       cy.contains('Start Date').click();
       cy.contains('Title').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Color knowledge economy return determine tell. Professor able catch cut nice anyone. Can line benefit home.'
       );
     });
@@ -88,7 +88,7 @@ describe('Investigations Table', () => {
         .type('dog');
 
       cy.get('[aria-rowcount="4"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
     });
 
     it('date between', () => {
@@ -114,7 +114,7 @@ describe('Investigations Table', () => {
       );
 
       cy.get('[aria-rowcount="12"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Happy near day assume draw again. Lead pattern nothing approach spring standard.'
       );
     });
