@@ -335,6 +335,10 @@ class PageBreadcrumbs extends React.Component<
     const breadcrumbState = this.state;
     console.log('Rendering Breadcrumb state: ', breadcrumbState);
 
+    const hierarchyKeys = Object.keys(breadcrumbState.currentHierarchy);
+    console.log('Rendering hierarchy keys: ', hierarchyKeys);
+    console.log('Keys length: ', hierarchyKeys.length);
+
     return (
       <div>
         <Paper elevation={0}>
@@ -363,34 +367,39 @@ class PageBreadcrumbs extends React.Component<
                   </MaterialLink>
                 )}
 
-                {/* {Object.keys(breadcrumbState)
-                    .filter((value: string) => {
-                      return breadcrumbState[value].displayName !== 'N/A';
-                    })
-                    .map((value: string, index: number) => {
-                      let valueData = breadcrumbState[value];
-                      console.log(
-                        `Creating breadcrumb for ${value}: ${valueData.url}, ${valueData.displayName}`
-                      );
+                {/* // Add in the hierarchy breadcrumbs. */}
+                {hierarchyKeys.map((level: string, index: number) => {
+                  const breadcrumbInfo =
+                    breadcrumbState.currentHierarchy[level];
+                  console.log(
+                    `Creating breadcrumb for ${level}: ${breadcrumbInfo.url}, ${breadcrumbInfo.displayName}, ${breadcrumbInfo.id}`
+                  );
 
-                      // Return the Link with the entity name.
-                      return last === value ? (
-                        <Typography
-                          color="textPrimary"
-                          key={`${value}-${valueData.id}`}
-                        >
-                          {valueData.displayName}
-                        </Typography>
-                      ) : (
-                        <MaterialLink
-                          component={Link}
-                          to={valueData.url}
-                          key={`${value}-${valueData.id}`}
-                        >
-                          {valueData.displayName}
-                        </MaterialLink>
-                      );
-                    })} */}
+                  // Return the Link with the entity name.
+                  return index + 1 === hierarchyKeys.length ? (
+                    <Typography
+                      color="textPrimary"
+                      key={`${breadcrumbInfo.id}`}
+                    >
+                      {breadcrumbInfo.displayName}
+                    </Typography>
+                  ) : (
+                    <MaterialLink
+                      component={Link}
+                      to={breadcrumbInfo.url}
+                      key={`${breadcrumbInfo.id}`}
+                    >
+                      {breadcrumbInfo.displayName}
+                    </MaterialLink>
+                  );
+                })}
+
+                {/* // Render the last breadcrumb information; this is the current table view. */}
+                {breadcrumbState.last.displayName !== 'N/A' ? (
+                  <Typography color="textPrimary">
+                    <i>{breadcrumbState.last.displayName}</i>
+                  </Typography>
+                ) : null}
               </Breadcrumbs>
             ) : (
               <div>Unable to render breadcrumb; no path information.</div>
