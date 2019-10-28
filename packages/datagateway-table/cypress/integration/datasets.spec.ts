@@ -169,8 +169,8 @@ describe('Datasets Table', () => {
       cy.get('[aria-label="select row 0"]').should('be.checked');
       cy.get('[aria-label="select all rows"]')
         .should('have.attr', 'data-indeterminate')
-        .and('eq', 'false');
-      cy.get('[aria-label="select all rows"]').should('be.checked');
+        .and('eq', 'true');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
     });
 
     it('and unselect them individually', () => {
