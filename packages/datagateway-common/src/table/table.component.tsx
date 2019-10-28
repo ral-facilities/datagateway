@@ -86,6 +86,7 @@ export interface TableActionProps {
 }
 
 interface VirtualizedTableProps {
+  loading: boolean;
   data: Entity[];
   columns: ColumnType[];
   loadMoreRows: (offsetParams: IndexRange) => Promise<void>;
@@ -97,6 +98,7 @@ interface VirtualizedTableProps {
   selectedRows?: number[];
   onCheck?: (selectedIds: number[]) => void;
   onUncheck?: (selectedIds: number[]) => void;
+  allIds?: number[];
 }
 
 const VirtualizedTable = (
@@ -115,9 +117,11 @@ const VirtualizedTable = (
     columns,
     data,
     selectedRows,
+    allIds,
     onCheck,
     onUncheck,
     loadMoreRows,
+    loading,
     totalRowCount,
     detailsPanel,
     sort,
@@ -201,7 +205,9 @@ const VirtualizedTable = (
                               classes.headerFlexContainer
                             )}
                             selectedRows={selectedRows}
-                            data={data}
+                            totalRowCount={totalRowCount}
+                            allIds={allIds || data.map(d => d.ID)}
+                            loading={loading}
                             onCheck={onCheck}
                             onUncheck={onUncheck}
                           />
@@ -220,6 +226,7 @@ const VirtualizedTable = (
                             onUncheck={onUncheck}
                             lastChecked={lastChecked}
                             setLastChecked={setLastChecked}
+                            loading={loading}
                           />
                         )}
                       />

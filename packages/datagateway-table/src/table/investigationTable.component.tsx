@@ -24,6 +24,7 @@ import {
   removeFromCart,
   fetchInvestigationCount,
   clearTable,
+  fetchAllIds,
 } from '../state/actions';
 import useAfterMountEffect from '../utils';
 
@@ -39,6 +40,7 @@ interface InvestigationTableProps {
   loading: boolean;
   error: string | null;
   cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 interface InvestigationTableDispatchProps {
@@ -48,6 +50,7 @@ interface InvestigationTableDispatchProps {
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
+  fetchAllIds: () => Promise<void>;
   clearTable: () => Action;
 }
 
@@ -70,6 +73,9 @@ const InvestigationTable = (
     cartItems,
     addToCart,
     removeFromCart,
+    allIds,
+    fetchAllIds,
+    loading,
   } = props;
 
   const selectedRows = React.useMemo(
@@ -78,10 +84,10 @@ const InvestigationTable = (
         .filter(
           cartItem =>
             cartItem.entityType === 'investigation' &&
-            data.some(entity => entity.ID === cartItem.entityId)
+            allIds.includes(cartItem.entityId)
         )
         .map(cartItem => cartItem.entityId),
-    [cartItems, data]
+    [cartItems, allIds]
   );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -107,17 +113,20 @@ const InvestigationTable = (
   useAfterMountEffect(() => {
     fetchCount();
     fetchData({ startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters]);
 
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={fetchData}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         selectedRows={selectedRows}
+        allIds={allIds}
         onCheck={addToCart}
         onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
@@ -215,6 +224,7 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
+  fetchAllIds: () => dispatch(fetchAllIds('investigation')),
 });
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
@@ -226,6 +236,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     loading: state.dgtable.loading,
     error: state.dgtable.error,
     cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

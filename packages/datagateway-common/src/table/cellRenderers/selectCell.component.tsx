@@ -15,6 +15,7 @@ type SelectCellProps = TableCellProps & {
   onUncheck: (selectedIndexes: number[]) => void;
   lastChecked: number;
   setLastChecked: (newLastChecked: number) => void;
+  loading: boolean;
 };
 
 const SelectCell = (props: SelectCellProps): React.ReactElement => {
@@ -28,6 +29,7 @@ const SelectCell = (props: SelectCellProps): React.ReactElement => {
     setLastChecked,
     rowData,
     rowIndex,
+    loading,
   } = props;
 
   return (
@@ -37,6 +39,7 @@ const SelectCell = (props: SelectCellProps): React.ReactElement => {
         inputProps={{
           'aria-label': `select row ${rowIndex}`,
         }}
+        disabled={loading}
         icon={<CheckBoxOutlineBlank fontSize="small" />}
         checkedIcon={<CheckBoxIcon fontSize="small" />}
         size="small"

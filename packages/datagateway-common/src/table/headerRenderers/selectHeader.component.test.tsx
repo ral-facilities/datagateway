@@ -7,27 +7,14 @@ describe('Select column header component', () => {
   const setLastChecked = jest.fn();
   const onCheck = jest.fn();
   const onUncheck = jest.fn();
-  const data = [
-    {
-      ID: 1,
-      NAME: 'test 1',
-    },
-    {
-      ID: 2,
-      NAME: 'test 2',
-    },
-    {
-      ID: 3,
-      NAME: 'test 3',
-    },
-  ];
   const selectHeaderProps = {
     dataKey: 'test',
     className: 'test-class',
     selectedRows: [],
-    data,
+    totalRowCount: 3,
     onCheck,
     onUncheck,
+    allIds: [1, 2, 3],
   };
 
   beforeEach(() => {

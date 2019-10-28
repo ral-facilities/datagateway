@@ -10,12 +10,18 @@ import {
   RemoveFromCartSuccessType,
   RemoveFromCartFailureType,
   RemoveFromCartRequestType,
+  FetchAllIdsSuccessPayload,
+  FetchAllIdsSuccessType,
+  FetchAllIdsFailureType,
+  RequestPayload,
+  FetchAllIdsRequestType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
 import { DownloadCart } from 'datagateway-common';
+import { getApiFilter } from '.';
 
 export const fetchDownloadCartSuccess = (
   downloadCart: DownloadCart
@@ -161,6 +167,86 @@ export const removeFromCart = (
       .catch(error => {
         log.error(error.message);
         dispatch(removeFromCartFailure(error.message));
+      });
+  };
+};
+
+export const fetchAllIdsSuccess = (
+  allIds: number[],
+  timestamp: number
+): ActionType<FetchAllIdsSuccessPayload> => ({
+  type: FetchAllIdsSuccessType,
+  payload: {
+    data: allIds,
+    timestamp,
+  },
+});
+
+export const fetchAllIdsFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchAllIdsFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchAllIdsRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
+  type: FetchAllIdsRequestType,
+  payload: {
+    timestamp,
+  },
+});
+
+export const fetchAllIds = (
+  entityType: 'investigation' | 'dataset' | 'datafile',
+  additionalFilters?: {
+    filterType: 'where' | 'distinct';
+    filterValue: string;
+  }[]
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchAllIdsRequest(timestamp));
+
+    let params = getApiFilter(getState);
+    if (additionalFilters) {
+      additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
+    const distinctFilterString = params.get('distinct');
+    if (distinctFilterString) {
+      const distinctFilter: string | string[] = JSON.parse(
+        distinctFilterString
+      );
+      if (typeof distinctFilter === 'string') {
+        params.set('distinct', JSON.stringify([distinctFilter, 'ID']));
+      } else {
+        params.set('distinct', JSON.stringify([...distinctFilter, 'ID']));
+      }
+    } else {
+      params.set('distinct', JSON.stringify('ID'));
+    }
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get<{ ID: number }[]>(`${apiUrl}/${entityType}s`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchAllIdsSuccess(response.data.map(x => x.ID), timestamp));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchAllIdsFailure(error.message));
       });
   };
 };

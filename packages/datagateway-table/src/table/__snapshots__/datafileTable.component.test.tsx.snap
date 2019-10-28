@@ -16,6 +16,11 @@ exports[`Datafile table component renders correctly 1`] = `
         [Function],
       ]
     }
+    allIds={
+      Array [
+        1,
+      ]
+    }
     columns={
       Array [
         Object {
@@ -54,6 +59,7 @@ exports[`Datafile table component renders correctly 1`] = `
     }
     detailsPanel={[Function]}
     loadMoreRows={[Function]}
+    loading={false}
     onCheck={[Function]}
     onSort={[Function]}
     onUncheck={[Function]}

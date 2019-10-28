@@ -22,6 +22,7 @@ import {
   removeFromCart,
   fetchDatafileCount,
   clearTable,
+  fetchAllIds,
 } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -46,6 +47,7 @@ interface DatafileTableStoreProps {
   loading: boolean;
   error: string | null;
   cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 interface DatafileTableDispatchProps {
@@ -56,6 +58,7 @@ interface DatafileTableDispatchProps {
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
   clearTable: () => Action;
 }
 
@@ -81,6 +84,9 @@ const DatafileTable = (
     addToCart,
     removeFromCart,
     clearTable,
+    allIds,
+    fetchAllIds,
+    loading,
   } = props;
 
   const selectedRows = React.useMemo(
@@ -89,10 +95,10 @@ const DatafileTable = (
         .filter(
           cartItem =>
             cartItem.entityType === 'datafile' &&
-            data.some(entity => entity.ID === cartItem.entityId)
+            allIds.includes(cartItem.entityId)
         )
         .map(cartItem => cartItem.entityId),
-    [cartItems, data]
+    [cartItems, allIds]
   );
 
   React.useEffect(() => {
@@ -102,7 +108,8 @@ const DatafileTable = (
   useAfterMountEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, datasetId]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, datasetId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -123,12 +130,14 @@ const DatafileTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(datasetId), params)}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         selectedRows={selectedRows}
+        allIds={allIds}
         onCheck={addToCart}
         onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
@@ -194,7 +203,8 @@ const DatafileTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: DatafileTableProps
 ): DatafileTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -209,10 +219,24 @@ const mapDispatchToProps = (
     dispatch(addToCart('datafile', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('datafile', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllIds('datafile', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            DATASET_ID: { eq: parseInt(ownProps.datasetId) },
+          }),
+        },
+      ])
+    ),
   clearTable: () => dispatch(clearTable()),
 });
 
-const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
+const mapStateToProps = (
+  state: StateType,
+  ownProps: DatafileTableProps
+): DatafileTableStoreProps => {
   return {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
@@ -221,6 +245,7 @@ const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
     loading: state.dgtable.loading,
     error: state.dgtable.error,
     cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

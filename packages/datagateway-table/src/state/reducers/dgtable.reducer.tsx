@@ -70,6 +70,10 @@ import {
   RemoveFromCartRequestType,
   RemoveFromCartSuccessType,
   RemoveFromCartFailureType,
+  FetchAllIdsFailureType,
+  FetchAllIdsRequestType,
+  FetchAllIdsSuccessType,
+  FetchAllIdsSuccessPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -85,6 +89,7 @@ export const initialState: DGTableState = {
   filters: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
+  allIdsTimestamp: Date.now(),
   features: {
     investigationGetSize: false,
     investigationGetCount: false,
@@ -97,6 +102,7 @@ export const initialState: DGTableState = {
     downloadApiUrl: '',
   },
   cartItems: [],
+  allIds: [],
   settingsLoaded: false,
 };
 
@@ -420,6 +426,37 @@ export function handleDownloadCartFailure(
   };
 }
 
+export function handleFetchAllIdsRequest(
+  state: DGTableState,
+  payload: RequestPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      allIdsTimestamp: payload.timestamp,
+      loading: true,
+    };
+  } else {
+    return state;
+  }
+}
+
+export function handleFetchAllIdsSuccess(
+  state: DGTableState,
+  payload: FetchAllIdsSuccessPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      allIds: payload.data,
+      allIdsTimestamp: payload.timestamp,
+    };
+  } else {
+    return state;
+  }
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
@@ -479,6 +516,9 @@ const DGTableReducer = createReducer(initialState, {
   [RemoveFromCartRequestType]: handleDownloadCartRequest,
   [RemoveFromCartSuccessType]: handleDownloadCartSuccess,
   [RemoveFromCartFailureType]: handleDownloadCartFailure,
+  [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
+  [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
+  [FetchAllIdsFailureType]: handleFetchDataFailure,
 });
 
 export default DGTableReducer;

@@ -131,6 +131,10 @@ export const RemoveFromCartFailureType =
 export const RemoveFromCartSuccessType =
   'datagateway_table:remove_from_cart_success';
 
+export const FetchAllIdsRequestType = 'datagateway_table:fetch_all_ids_request';
+export const FetchAllIdsFailureType = 'datagateway_table:fetch_all_ids_failure';
+export const FetchAllIdsSuccessType = 'datagateway_table:fetch_all_ids_success';
+
 export interface SortTablePayload {
   column: string;
   order: Order | null;
@@ -176,6 +180,11 @@ export interface FailurePayload {
 
 export interface FetchDataSuccessPayload {
   data: Entity[];
+  timestamp: number;
+}
+
+export interface FetchAllIdsSuccessPayload {
+  data: number[];
   timestamp: number;
 }
 

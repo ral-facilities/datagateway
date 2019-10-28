@@ -3,6 +3,10 @@ describe('Datafiles Table', () => {
     cy.login('user', 'password');
     cy.clearDownloadCart();
     cy.visit('/browse/investigation/1/dataset/25/datafile');
+    cy.server();
+    cy.route('**/datafiles*').as('getDatafiles');
+    cy.route('**/datafiles/count*').as('getDatafileCount');
+    cy.route('**/datafiles*&distinct="ID"').as('getAllIds');
   });
 
   it('should load correctly', () => {
@@ -168,7 +172,7 @@ describe('Datafiles Table', () => {
     });
   });
 
-  describe.only('should be able to select items', () => {
+  describe('should be able to select items', () => {
     it('individually', () => {
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
@@ -189,33 +193,42 @@ describe('Datafiles Table', () => {
     });
 
     it('by all items', () => {
+      cy.wait('@getDatafiles');
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
       cy.get(
         `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
       ).should('be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.get(`[aria-label="select row 55"]`).should('be.checked');
+      cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]')
         .should('have.attr', 'data-indeterminate')
         .and('eq', 'false');
     });
 
     it('by all items in a filtered table', () => {
+      cy.wait('@getDatafiles');
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
-        .type('.png');
+        .type('e');
 
-      cy.server();
-      cy.route('**/datafiles**').as('getDatafiles');
       cy.wait('@getDatafiles');
 
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
-      cy.get(
-        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
-      ).should('be.checked');
       cy.get('[aria-label="select all rows"]')
         .should('have.attr', 'data-indeterminate')
         .and('eq', 'false');
+      cy.get(
+        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+      ).should('be.checked');
 
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
@@ -227,16 +240,29 @@ describe('Datafiles Table', () => {
         .should('have.attr', 'data-indeterminate')
         .and('eq', 'true');
 
-      cy.get('[aria-label="select row 0"]').should('not.be.checked');
+      cy.get('[aria-label="select row 0"]').should('be.checked');
       cy.get('[aria-label="select row 1"]').should('be.checked');
-      cy.get('[aria-label="select row 2"]').should('not.be.checked');
-      cy.get('[aria-label="select row 3"]').should('be.checked');
+      cy.get('[aria-label="select row 17"]').should('not.be.checked');
+      cy.get('[aria-label="select row 24"]').should('not.be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.get('[aria-label="select row 54"]').should('be.checked');
+      cy.get('[aria-label="select row 55"]').should('be.checked');
     });
 
     it('and unselect all items', () => {
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
 
+      cy.reload();
+      cy.wait('@getDatafiles');
       cy.get('[aria-label="select all rows"]').uncheck();
       cy.get('[aria-label="select all rows"]').should('not.be.checked');
       cy.get('[aria-label="select all rows"]')
@@ -245,6 +271,15 @@ describe('Datafiles Table', () => {
       cy.get(
         `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
       ).should('not.be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.get(`[aria-label="select row 55"]`).should('not.be.checked');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
     });
 
     it('by shift clicking', () => {

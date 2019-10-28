@@ -32,6 +32,23 @@ Cypress.Commands.add('login', (username, password) => {
     }).then(response => {
       window.localStorage.setItem('daaas:token', response.body.sessionID);
     });
+
+    // TODO: replace with getting from daaas:token when supported
+    const splitUrl = settings.downloadApiUrl.split('/');
+    const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
+    cy.request({
+      method: 'POST',
+      url: `${icatUrl}/session`,
+      body: {
+        json: JSON.stringify({
+          plugin: 'simple',
+          credentials: [{ username: 'root' }, { password: 'pw' }],
+        }),
+      },
+      form: true,
+    }).then(response => {
+      window.localStorage.setItem('icat:token', response.body.sessionId);
+    });
   });
 });
 

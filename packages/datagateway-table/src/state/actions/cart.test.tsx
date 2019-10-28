@@ -16,10 +16,20 @@ import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
 import { DownloadCart } from 'datagateway-common';
+import {
+  fetchAllIds,
+  fetchAllIdsRequest,
+  fetchAllIdsSuccess,
+  fetchAllIdsFailure,
+} from './cart';
+import { initialState } from '../reducers/dgtable.reducer';
+import { StateType } from '../app.types';
 
 jest.mock('loglevel');
 
 describe('Cart actions', () => {
+  Date.now = jest.fn().mockImplementation(() => 1);
+
   const mockData: DownloadCart = {
     cartItems: [
       {
@@ -166,6 +176,126 @@ describe('Cart actions', () => {
 
       expect(actions[0]).toEqual(removeFromCartRequest());
       expect(actions[1]).toEqual(removeFromCartFailure('Test error message'));
+
+      expect(log.error).toHaveBeenCalled();
+      const mockLog = (log.error as jest.Mock).mock;
+      expect(mockLog.calls[0][0]).toEqual('Test error message');
+    });
+  });
+
+  describe('fetchAllIds action', () => {
+    const mockAllIdsData = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
+
+    it('dispatches fetchAllIdsRequest and fetchAllIdsSuccess actions upon successful fetchAllIds action', async () => {
+      (axios.get as jest.Mock).mockImplementationOnce(() =>
+        Promise.resolve({
+          data: mockAllIdsData,
+        })
+      );
+
+      const asyncAction = fetchAllIds('investigation');
+      await asyncAction(dispatch, getState, null);
+
+      expect(actions[0]).toEqual(fetchAllIdsRequest(1));
+      expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
+
+      const params = new URLSearchParams();
+      params.append('distinct', JSON.stringify('ID'));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        '/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+    });
+
+    it('applies additional filters as well as sort and filter state to the request params', async () => {
+      (axios.get as jest.Mock).mockImplementationOnce(() =>
+        Promise.resolve({
+          data: mockAllIdsData,
+        })
+      );
+
+      const asyncAction = fetchAllIds('dataset', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+        },
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify('NAME'),
+        },
+      ]);
+
+      const getState = (): Partial<StateType> => ({
+        dgtable: {
+          ...initialState,
+          sort: { column1: 'desc' },
+          filters: { column1: '1', column2: '2' },
+        },
+      });
+      await asyncAction(dispatch, getState, null);
+
+      expect(actions[0]).toEqual(fetchAllIdsRequest(1));
+      expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('column1 desc'));
+      params.append('where', JSON.stringify({ column1: { like: '1' } }));
+      params.append('where', JSON.stringify({ column2: { like: '2' } }));
+      params.append('distinct', JSON.stringify(['NAME', 'ID']));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        '/datasets',
+        expect.objectContaining({
+          params,
+        })
+      );
+    });
+
+    it('can handle array distinct filters and add them to request params', async () => {
+      (axios.get as jest.Mock).mockImplementationOnce(() =>
+        Promise.resolve({
+          data: mockAllIdsData,
+        })
+      );
+
+      const asyncAction = fetchAllIds('datafile', [
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify(['NAME', 'TITLE']),
+        },
+      ]);
+
+      await asyncAction(dispatch, getState, null);
+
+      expect(actions[0]).toEqual(fetchAllIdsRequest(1));
+      expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
+
+      const params = new URLSearchParams();
+      params.append('distinct', JSON.stringify(['NAME', 'TITLE', 'ID']));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        '/datafiles',
+        expect.objectContaining({
+          params,
+        })
+      );
+    });
+
+    it('dispatches fetchAllIdsRequest and fetchAllIdsFailure actions upon unsuccessful fetchAllIds action', async () => {
+      (axios.get as jest.Mock).mockImplementationOnce(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      const asyncAction = fetchAllIds('datafile');
+      await asyncAction(dispatch, getState, null);
+
+      expect(actions[0]).toEqual(fetchAllIdsRequest(1));
+      expect(actions[1]).toEqual(fetchAllIdsFailure('Test error message'));
 
       expect(log.error).toHaveBeenCalled();
       const mockLog = (log.error as jest.Mock).mock;

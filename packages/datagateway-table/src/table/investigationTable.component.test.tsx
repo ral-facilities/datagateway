@@ -12,6 +12,7 @@ import {
   removeFromCartRequest,
   fetchInvestigationCountRequest,
   clearTable,
+  fetchAllIdsRequest,
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -51,6 +52,7 @@ describe('Investigation table component', () => {
         ENDDATE: '2019-07-24',
       },
     ];
+    state.dgtable.allIds = [1];
   });
 
   afterEach(() => {
@@ -76,7 +78,7 @@ describe('Investigation table component', () => {
     expect(testStore.getActions()[0]).toEqual(clearTable());
   });
 
-  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
+  it('sends fetchInvestigationCount, fetchInvestigations and fetchAllIds actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -97,6 +99,7 @@ describe('Investigation table component', () => {
       fetchInvestigationCountRequest(1)
     );
     expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
+    expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {

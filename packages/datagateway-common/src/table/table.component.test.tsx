@@ -4,6 +4,7 @@ import Table from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
+import SelectHeader from './headerRenderers/selectHeader.component';
 
 describe('Table component', () => {
   let mount;
@@ -13,6 +14,7 @@ describe('Table component', () => {
   const tableProps = {
     data: [
       {
+        ID: 1,
         TEST1: 'test1',
         TEST2: 2,
       },
@@ -94,7 +96,7 @@ describe('Table component', () => {
     ).toEqual('2 B');
   });
 
-  it('renders select column correctly', () => {
+  it('renders select column correctly, with both allIds defined and undefined', () => {
     const wrapper = mount(
       <Table
         {...tableProps}
@@ -106,6 +108,26 @@ describe('Table component', () => {
 
     expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
     expect(wrapper.exists('[aria-label="select all rows"]')).toBe(true);
+    expect(wrapper.find(SelectHeader).prop('allIds')).toEqual([1]);
+
+    const wrapperAllIds = mount(
+      <Table
+        {...tableProps}
+        selectedRows={[]}
+        onCheck={jest.fn()}
+        onUncheck={jest.fn()}
+        allIds={[1, 2, 3, 4]}
+      />
+    );
+
+    expect(wrapperAllIds.exists('[aria-colcount=3]')).toBe(true);
+    expect(wrapperAllIds.exists('[aria-label="select all rows"]')).toBe(true);
+    expect(wrapperAllIds.find(SelectHeader).prop('allIds')).toEqual([
+      1,
+      2,
+      3,
+      4,
+    ]);
   });
 
   it('renders details column correctly', () => {

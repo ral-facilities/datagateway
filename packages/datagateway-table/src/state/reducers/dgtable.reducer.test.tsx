@@ -59,6 +59,9 @@ import {
   removeFromCartRequest,
   removeFromCartSuccess,
   removeFromCartFailure,
+  fetchAllIdsRequest,
+  fetchAllIdsSuccess,
+  fetchAllIdsFailure,
 } from '../actions';
 import {
   Investigation,
@@ -180,6 +183,22 @@ describe('dgtable reducer', () => {
       expect(updatedState).toBe(state);
     });
 
+    it('should ignore allIds requests with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsRequest(invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
+    it('should ignore allIds successes with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsSuccess([1], invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
     it('should update dataTimestamp when given a valid fetchDataRequest', () => {
       let updatedState = DGTableReducer(
         state,
@@ -210,6 +229,22 @@ describe('dgtable reducer', () => {
         fetchInvestigationCountSuccess(1, validTimestamp)
       );
       expect(updatedState.countTimestamp).toBe(validTimestamp);
+    });
+
+    it('should update allIdsTimestamp when given a valid fetchAllIdsRequest', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsRequest(validTimestamp)
+      );
+      expect(updatedState.allIdsTimestamp).toBe(validTimestamp);
+    });
+
+    it('should update allIdsTimestamp when given a valid fetchAllIdsSuccess', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsSuccess([1], validTimestamp)
+      );
+      expect(updatedState.allIdsTimestamp).toBe(validTimestamp);
     });
   });
 
@@ -1120,6 +1155,40 @@ describe('dgtable reducer', () => {
         expect(updatedState.loading).toBe(false);
         expect(updatedState.error).toEqual('Test error message');
       });
+    });
+  });
+
+  describe('FetchAllIds actions', () => {
+    it('should set the loading state when given a FetchAllIdsRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsRequest(validTimestamp)
+      );
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the allIds state and reset loading state when given a FetchAllIdsSuccess action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsSuccess([1, 2, 3], validTimestamp)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.allIds).toEqual([1, 2, 3]);
+    });
+
+    it('should set the error state and reset loading state when given a FetchAllIdsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.error).toEqual('Test error message');
     });
   });
 });

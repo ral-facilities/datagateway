@@ -19,6 +19,7 @@ import {
   removeFromCart,
   fetchDatasetCount,
   clearTable,
+  fetchAllIds,
 } from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
@@ -44,6 +45,7 @@ interface DatasetTableStoreProps {
   loading: boolean;
   error: string | null;
   cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 interface DatasetTableDispatchProps {
@@ -57,6 +59,7 @@ interface DatasetTableDispatchProps {
   clearTable: () => Action;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type DatasetTableCombinedProps = DatasetTableProps &
@@ -78,6 +81,9 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     addToCart,
     removeFromCart,
     clearTable,
+    allIds,
+    fetchAllIds,
+    loading,
   } = props;
 
   const selectedRows = React.useMemo(
@@ -86,10 +92,10 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         .filter(
           cartItem =>
             cartItem.entityType === 'dataset' &&
-            data.some(entity => entity.ID === cartItem.entityId)
+            allIds.includes(cartItem.entityId)
         )
         .map(cartItem => cartItem.entityId),
-    [cartItems, data]
+    [cartItems, allIds]
   );
 
   React.useEffect(() => {
@@ -99,7 +105,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   useAfterMountEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, investigationId]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -120,12 +127,14 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(investigationId), params)}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         selectedRows={selectedRows}
+        allIds={allIds}
         onCheck={addToCart}
         onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
@@ -176,7 +185,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: DatasetTableProps
 ): DatasetTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -190,6 +200,17 @@ const mapDispatchToProps = (
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllIds('dataset', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
@@ -201,6 +222,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     loading: state.dgtable.loading,
     error: state.dgtable.error,
     cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

@@ -13,6 +13,7 @@ import {
   removeFromCartRequest,
   fetchDatafileCountRequest,
   clearTable,
+  fetchAllIdsRequest,
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -48,6 +49,7 @@ describe('Datafile table component', () => {
         DATASET_ID: 1,
       },
     ];
+    state.dgtable.allIds = [1];
   });
 
   afterEach(() => {
@@ -73,7 +75,7 @@ describe('Datafile table component', () => {
     expect(testStore.getActions()[0]).toEqual(clearTable());
   });
 
-  it('sends fetchDatafileCount and fetchDatafiles actions when watched store values change', () => {
+  it('sends fetchDatafileCount, fetchDatafiles and fetchAllIdsRequest actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -92,6 +94,7 @@ describe('Datafile table component', () => {
 
     expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest(1));
     expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+    expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
   });
 
   it('sends fetchDatafiles action when loadMoreRows is called', () => {

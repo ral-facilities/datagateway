@@ -12,6 +12,7 @@ import {
   removeFromCartRequest,
   fetchDatasetCountRequest,
   clearTable,
+  fetchAllIdsRequest,
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -46,6 +47,7 @@ describe('Dataset table component', () => {
         INVESTIGATION_ID: 1,
       },
     ];
+    state.dgtable.allIds = [1];
   });
 
   afterEach(() => {
@@ -71,7 +73,7 @@ describe('Dataset table component', () => {
     expect(testStore.getActions()[0]).toEqual(clearTable());
   });
 
-  it('sends fetchDatasetCount and fetchDatasets actions when watched store values change', () => {
+  it('sends fetchDatasetCount, fetchDatasets and fetchAllIds actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -90,6 +92,7 @@ describe('Dataset table component', () => {
 
     expect(testStore.getActions()[1]).toEqual(fetchDatasetCountRequest(1));
     expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest(1));
+    expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
   });
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {
