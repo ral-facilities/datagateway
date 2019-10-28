@@ -46,7 +46,7 @@ interface BreadcrumbProps {
 
 interface BreadcrumbState {
   [level: number]: {
-    // TODO: Should we store the Id, do we use for anything other than requesting entity name?
+    // TODO: Should we store the pathname and id, do we use for anything other than requesting entity name?
     pathname: string;
     id: string;
 
@@ -203,24 +203,25 @@ class PageBreadcrumbs extends React.Component<
             `${entity} is same as before with ID ${entityId}, no need request.`
           );
         }
-      } // else if (index === pathLength - 1) {
-      //   console.log(`Processing last item in path: ${entity}`);
+      } else if (index === pathLength - 1) {
+        console.log(`Processing last item in path: ${entity}`);
 
-      //   // Update the state to say that e.g. if path is /browse/investigation/,
-      //   // then display name would be just Browse > Investigations and similarly
-      //   // Browse > Proposal 1 > Datasets etc.
+        // Update the state to say that e.g. if path is /browse/investigation/,
+        // then display name would be just Browse > Investigations and similarly
+        // Browse > Proposal 1 > Datasets etc.
 
-      //   updatedState = {
-      //     ...updatedState,
-      //     [value]: {
-      //       id: '',
-      //       displayName:
-      //         `${value}`.charAt(0).toUpperCase() + `${value}s`.slice(1),
-      //       url: link,
-      //     },
-      //   };
-      //   console.log(`Updated state for ${value}:`, updatedState);
-      // }
+        updatedState = {
+          ...updatedState,
+          [index]: {
+            ...updatedState[index],
+
+            id: '',
+            displayName:
+              `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
+          },
+        };
+        console.log(`Updated state for ${entity}:`, updatedState);
+      }
     }
 
     // // Clean up the state and remove any old references
