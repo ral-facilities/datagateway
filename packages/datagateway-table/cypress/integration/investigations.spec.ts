@@ -270,6 +270,7 @@ describe('Investigations Table', () => {
       cy.reload();
       cy.wait('@getInvestigations');
 
+      cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get('[aria-label="select all rows"]').uncheck();
       cy.get('[aria-label="select all rows"]').should('not.be.checked');
       cy.get(

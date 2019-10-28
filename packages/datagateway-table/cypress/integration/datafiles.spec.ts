@@ -263,6 +263,8 @@ describe('Datafiles Table', () => {
 
       cy.reload();
       cy.wait('@getDatafiles');
+
+      cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get('[aria-label="select all rows"]').uncheck();
       cy.get('[aria-label="select all rows"]').should('not.be.checked');
       cy.get('[aria-label="select all rows"]')
