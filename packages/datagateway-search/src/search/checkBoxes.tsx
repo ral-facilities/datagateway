@@ -32,7 +32,7 @@ export default function CheckboxesGroup(): JSX.Element {
   };
 
   const { Investigation, Dataset, Datafile } = state;
-  const error = ![Investigation, Dataset, Datafile].includes(true)
+  const error = ![Investigation, Dataset, Datafile].includes(true);
 
   return (
     <div className={classes.root}>
