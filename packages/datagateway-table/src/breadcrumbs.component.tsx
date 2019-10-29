@@ -236,7 +236,7 @@ class PageBreadcrumbs extends React.Component<
         // Check if an entity id is present or if the id has changed since the last update to the state.
         if (entityInfo.id.length === 0 || entityInfo.id !== entityId) {
           // Create the entity url to request the name, this is pluralised.
-          let requestEntityUrl = `${entity}s/${entityId}`;
+          let requestEntityUrl = `${entity}s`.toLowerCase() + `/${entityId}`;
           console.log(`Contructed request URL: ${requestEntityUrl}`);
 
           const entityName = await this.getEntityName(requestEntityUrl);
