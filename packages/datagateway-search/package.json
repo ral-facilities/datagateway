@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "http://scigateway-preprod.esc.rl.ac.uk:5000/",
   "dependencies": {
+    "@date-io/date-fns": "^1.3.11",
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
     "@types/jest": "^24.0.16",
