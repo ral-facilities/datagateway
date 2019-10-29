@@ -4,16 +4,16 @@ import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
-import { Route } from 'react-router';
+// import { Route } from 'react-router';
 
-import { Link } from 'react-router-dom';
-import {
-  Link as MaterialLink,
-  Paper,
-  Breadcrumbs,
-  Typography,
-} from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+// import { Link } from 'react-router-dom';
+// import {
+//   Link as MaterialLink,
+//   Paper,
+//   Breadcrumbs,
+//   Typography,
+// } from '@material-ui/core';
+// import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 interface BreadcrumbProps {
   apiUrl: string;
@@ -106,7 +106,6 @@ class PageBreadcrumbs extends React.Component<
       currentHierarchy: [],
       last: {
         displayName: 'N/A',
-        //url: '',
       },
     };
   }
@@ -230,6 +229,7 @@ class PageBreadcrumbs extends React.Component<
           entityInfo
         );
 
+        // Get the entity Id in the path to compare with the saved one in our state.
         const entityId = this.currentPathnames[index + 1];
         console.log(`Entity ID: ${entityId}`);
 
@@ -306,13 +306,17 @@ class PageBreadcrumbs extends React.Component<
       hierarchyCount++;
     }
 
-    // Clean up the state and remove any old references
+    // Filter and set the state
     // (in the event the user moved back using the breadcrumb).
-    // Loop through the current state and the pathname.
-    // TODO: Deleting is not a good solution if we do not want this in the hierarchy anymore.
-    //       Maybe we have to implement a stack possibly?
-    // To get it working for now, we can just set it back to blank values and ensure that when
-    // rendering, we check to see that they are not blank.
+    // let pathBreadcrumbs: Array<Breadcrumb>;
+    // pathBreadcrumbs = updatedState.currentHierarchy.filter((value: Breadcrumb) => this.currentPathnames.includes(value.pathName));
+
+    // console.log('Filtered breadcrumbs: ', pathBreadcrumbs);
+    // updatedState = {
+    //   ...updatedState,
+    //   currentHierarchy: pathBreadcrumbs,
+    // };
+    // console.log('Updated state with filtered breadcrumbs: ', updatedState);
 
     // Update the final state.
     this.setState(updatedState, () =>
@@ -351,84 +355,102 @@ class PageBreadcrumbs extends React.Component<
   };
 
   public render(): React.ReactElement {
-    const breadcrumbState = this.state;
-    console.log('Rendering Breadcrumb state: ', breadcrumbState);
+    // const breadcrumbState = this.state;
+    // console.log('Rendering Breadcrumb state: ', breadcrumbState);
+    console.log('Rendering FULL Breadcrumb state: ', this.state);
 
-    // Make sure we only select the keys which are not blank.
+    // Filter to ensure the breadcrumbs are only for this path (in the event the user moved back and changed location using the breadcrumb).
+    const breadcrumbState = {
+      ...this.state,
+      currentHierarchy: this.state.currentHierarchy.filter(
+        (value: Breadcrumb, index: number) => {
+          // Return the breadcrumbs with pathnames in our current location and with the related IDs.
+          return (
+            this.currentPathnames.includes(value.pathName) &&
+            this.currentPathnames[(index + 1) * 2] === value.id
+          );
+        }
+      ),
+    };
+    console.log('Rendering FILTERED breadcrumbs: ', breadcrumbState);
+
+    // TODO: Make sure we only select the keys which are not blank?
     const hierarchyKeys = Object.keys(breadcrumbState.currentHierarchy);
 
     console.log('Rendering hierarchy keys: ', hierarchyKeys);
     console.log('Keys length: ', hierarchyKeys.length);
 
-    return (
-      <div>
-        <Paper elevation={0}>
-          <Route>
-            {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
-            {this.currentPathnames.length > 0 ? (
-              <Breadcrumbs
-                separator={<NavigateNextIcon fontSize="small" />}
-                aria-label="Breadcrumb"
-              >
-                {/* // Return the base entity as a link. 
-                  // TODO: Remove check for current pathnames length. Needs something concrete. */}
-                {breadcrumbState.base.isLast ? (
-                  <Typography
-                    color="textPrimary"
-                    key={`base-${breadcrumbState.base.entityName}`}
-                  >
-                    {breadcrumbState.base.displayName}
-                  </Typography>
-                ) : (
-                  <MaterialLink
-                    component={Link}
-                    to={breadcrumbState.base.url}
-                    key={`base-${breadcrumbState.base.entityName}`}
-                  >
-                    {breadcrumbState.base.displayName}
-                  </MaterialLink>
-                )}
+    return <div></div>;
 
-                {/* // Add in the hierarchy breadcrumbs. */}
-                {hierarchyKeys.map((level: string, index: number) => {
-                  const breadcrumbInfo =
-                    breadcrumbState.currentHierarchy[index + 1];
-                  console.log(
-                    `Creating breadcrumb for ${level}: ${breadcrumbInfo.url}, ${breadcrumbInfo.displayName}, ${breadcrumbInfo.id}`
-                  );
+    // return (
+    //   <div>
+    //     <Paper elevation={0}>
+    //       <Route>
+    //         {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
+    //         {this.currentPathnames.length > 0 ? (
+    //           <Breadcrumbs
+    //             separator={<NavigateNextIcon fontSize="small" />}
+    //             aria-label="Breadcrumb"
+    //           >
+    //             {/* // Return the base entity as a link.
+    //               // TODO: Remove check for current pathnames length. Needs something concrete. */}
+    //             {breadcrumbState.base.isLast ? (
+    //               <Typography
+    //                 color="textPrimary"
+    //                 key={`base-${breadcrumbState.base.entityName}`}
+    //               >
+    //                 {breadcrumbState.base.displayName}
+    //               </Typography>
+    //             ) : (
+    //               <MaterialLink
+    //                 component={Link}
+    //                 to={breadcrumbState.base.url}
+    //                 key={`base-${breadcrumbState.base.entityName}`}
+    //               >
+    //                 {breadcrumbState.base.displayName}
+    //               </MaterialLink>
+    //             )}
 
-                  // Return the correct type of breadcrumb with the entity name
-                  // depending on if it is at the end of the hierarchy or not.
-                  return index + 1 === hierarchyKeys.length ? (
-                    <Typography
-                      color="textPrimary"
-                      key={`${breadcrumbInfo.id}`}
-                    >
-                      {breadcrumbInfo.displayName}
-                    </Typography>
-                  ) : (
-                    <MaterialLink
-                      component={Link}
-                      to={breadcrumbInfo.url}
-                      key={`${breadcrumbInfo.id}`}
-                    >
-                      {breadcrumbInfo.displayName}
-                    </MaterialLink>
-                  );
-                })}
+    //             {/* // Add in the hierarchy breadcrumbs. */}
+    //             {hierarchyKeys.map((level: string, index: number) => {
+    //               const breadcrumbInfo =
+    //                 breadcrumbState.currentHierarchy[index + 1];
+    //               console.log(
+    //                 `Creating breadcrumb for ${level}: ${breadcrumbInfo.url}, ${breadcrumbInfo.displayName}, ${breadcrumbInfo.id}`
+    //               );
 
-                {/* // Render the last breadcrumb information; this is the current table view. */}
-                {breadcrumbState.last.displayName !== 'N/A' ? (
-                  <Typography color="textPrimary">
-                    <i>{breadcrumbState.last.displayName}</i>
-                  </Typography>
-                ) : null}
-              </Breadcrumbs>
-            ) : null}
-          </Route>
-        </Paper>
-      </div>
-    );
+    //               // Return the correct type of breadcrumb with the entity name
+    //               // depending on if it is at the end of the hierarchy or not.
+    //               return index + 1 === hierarchyKeys.length ? (
+    //                 <Typography
+    //                   color="textPrimary"
+    //                   key={`${breadcrumbInfo.id}`}
+    //                 >
+    //                   {breadcrumbInfo.displayName}
+    //                 </Typography>
+    //               ) : (
+    //                 <MaterialLink
+    //                   component={Link}
+    //                   to={breadcrumbInfo.url}
+    //                   key={`${breadcrumbInfo.id}`}
+    //                 >
+    //                   {breadcrumbInfo.displayName}
+    //                 </MaterialLink>
+    //               );
+    //             })}
+
+    //             {/* // Render the last breadcrumb information; this is the current table view. */}
+    //             {breadcrumbState.last.displayName !== 'N/A' ? (
+    //               <Typography color="textPrimary">
+    //                 <i>{breadcrumbState.last.displayName}</i>
+    //               </Typography>
+    //             ) : null}
+    //           </Breadcrumbs>
+    //         ) : null}
+    //       </Route>
+    //     </Paper>
+    //   </div>
+    // );
   }
 }
 
