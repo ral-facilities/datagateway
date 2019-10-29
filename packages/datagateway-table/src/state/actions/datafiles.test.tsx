@@ -3,18 +3,20 @@ import {
   fetchDatafilesRequest,
   fetchDatafilesSuccess,
   fetchDatafilesFailure,
-} from '.';
-import axios from 'axios';
-import { StateType } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
-import {
+  fetchDatasetDatafilesCount,
+  fetchDatasetDatafilesCountRequest,
+  fetchDatasetDatafilesCountSuccess,
+  fetchDatasetDatafilesCountFailure,
+  downloadDatafile,
+  downloadDatafileRequest,
   fetchDatafileCount,
   fetchDatafileCountRequest,
   fetchDatafileCountSuccess,
   fetchDatafileCountFailure,
-  downloadDatafile,
-  downloadDatafileRequest,
-} from './datafiles';
+} from '.';
+import axios from 'axios';
+import { StateType, EntityCache } from '../app.types';
+import { initialState } from '../reducers/dgtable.reducer';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
 import * as log from 'loglevel';
 import { Datafile } from 'datagateway-common';
@@ -22,31 +24,39 @@ import { Datafile } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Datafile actions', () => {
+  Date.now = jest.fn().mockImplementation(() => 1);
+  const mockData: Datafile[] = [
+    {
+      ID: 1,
+      NAME: 'Test 1',
+      LOCATION: '/test1',
+      SIZE: 1,
+      MOD_TIME: '2019-06-10',
+      DATASET_ID: 1,
+    },
+    {
+      ID: 2,
+      NAME: 'Test 2',
+      LOCATION: '/test2',
+      SIZE: 2,
+      MOD_TIME: '2019-06-10',
+      DATASET_ID: 1,
+    },
+  ];
+
+  // Dataset cache for dataset ID 1 which has 2 datafiles.
+  const mockDatasetCache: EntityCache = {
+    1: {
+      childEntityCount: 2,
+    },
+  };
+
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     resetActions();
   });
 
   it('dispatches fetchDatafilesRequest and fetchDatafilesSuccess actions upon successful fetchDatafiles action', async () => {
-    const mockData: Datafile[] = [
-      {
-        ID: 1,
-        NAME: 'Test 1',
-        LOCATION: '/test1',
-        SIZE: 1,
-        MOD_TIME: '2019-06-10',
-        DATASET_ID: 1,
-      },
-      {
-        ID: 2,
-        NAME: 'Test 2',
-        LOCATION: '/test2',
-        SIZE: 2,
-        MOD_TIME: '2019-06-10',
-        DATASET_ID: 1,
-      },
-    ];
-
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: mockData,
@@ -56,8 +66,8 @@ describe('Datafile actions', () => {
     const asyncAction = fetchDatafiles(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatafilesRequest());
-    expect(actions[1]).toEqual(fetchDatafilesSuccess(mockData));
+    expect(actions[0]).toEqual(fetchDatafilesRequest(1));
+    expect(actions[1]).toEqual(fetchDatafilesSuccess(mockData, 1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
@@ -87,9 +97,9 @@ describe('Datafile actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatafilesRequest());
+    expect(actions[0]).toEqual(fetchDatafilesRequest(1));
 
-    expect(actions[1]).toEqual(fetchDatafilesSuccess([]));
+    expect(actions[1]).toEqual(fetchDatafilesSuccess([], 1));
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
@@ -114,7 +124,7 @@ describe('Datafile actions', () => {
     const asyncAction = fetchDatafiles(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatafilesRequest());
+    expect(actions[0]).toEqual(fetchDatafilesRequest(1));
     expect(actions[1]).toEqual(fetchDatafilesFailure('Test error message'));
 
     expect(log.error).toHaveBeenCalled();
@@ -125,21 +135,56 @@ describe('Datafile actions', () => {
   it('dispatches fetchDatafileCountRequest and fetchDatafileCountSuccess actions upon successful fetchDatafileCount action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: 2,
+        data: 5,
       })
     );
 
     const asyncAction = fetchDatafileCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatafileCountRequest());
-    expect(actions[1]).toEqual(fetchDatafileCountSuccess(1, 2));
+    expect(actions[0]).toEqual(fetchDatafileCountRequest(1));
+    expect(actions[1]).toEqual(fetchDatafileCountSuccess(5, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datafiles/count',
       expect.objectContaining({
-        params: {
-          where: { DATASET_ID: { eq: 1 } },
-        },
+        params,
+      })
+    );
+  });
+
+  it('fetchDatafileCount action applies filters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 3,
+      })
+    );
+
+    const asyncAction = fetchDatafileCount(1);
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatafileCountRequest(1));
+
+    expect(actions[1]).toEqual(fetchDatafileCountSuccess(3, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datafiles/count',
+      expect.objectContaining({
+        params,
       })
     );
   });
@@ -154,8 +199,75 @@ describe('Datafile actions', () => {
     const asyncAction = fetchDatafileCount(1);
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(fetchDatafileCountRequest());
-    expect(actions[1]).toEqual(fetchDatafileCountFailure('Test error message'));
+    expect(actions[0]).toEqual(fetchDatafileCountRequest(1));
+    expect(actions[1]).toEqual(
+      fetchDatafileCountFailure('Test error message', 1)
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountSuccess actions upon successful fetchDatasetDatafilesCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 2,
+      })
+    );
+
+    const asyncAction = fetchDatasetDatafilesCount(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDatafilesCountRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetDatafilesCountSuccess(1, 2, 1));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datafiles/count',
+      expect.objectContaining({
+        params: {
+          where: { DATASET_ID: { eq: 1 } },
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountSuccess actions upon existing datasetCache and successful fetchDatasetDatafilesCount action', async () => {
+    const asyncAction = fetchDatasetDatafilesCount(1);
+
+    // Set up state to be used within fetchDatasetDatafilesCountSuccess with the dataset cache.
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        datasetCache: mockDatasetCache,
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    // We expect two actions to be dispatched; fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountSuccess.
+    // We do not want axio.get to have been called during the action as well.
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchDatasetDatafilesCountRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetDatafilesCountSuccess(1, 2, 1));
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountFailure actions upon unsuccessful fetchDatasetDatafilesCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchDatasetDatafilesCount(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDatafilesCountRequest(1));
+    expect(actions[1]).toEqual(
+      fetchDatasetDatafilesCountFailure('Test error message')
+    );
 
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
@@ -169,7 +281,7 @@ describe('Datafile actions', () => {
     const asyncAction = downloadDatafile(1, 'test.txt');
     await asyncAction(dispatch, getState, null);
 
-    expect(actions[0]).toEqual(downloadDatafileRequest());
+    expect(actions[0]).toEqual(downloadDatafileRequest(1));
 
     expect(document.createElement).toHaveBeenCalledWith('a');
     let link = document.createElement('a');

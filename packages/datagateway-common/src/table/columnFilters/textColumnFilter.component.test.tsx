@@ -9,6 +9,8 @@ describe('Text filter component', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+
+    jest.useRealTimers();
   });
 
   afterEach(() => {
@@ -22,17 +24,28 @@ describe('Text filter component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('calls the onChange method when input is typed into', () => {
+  it('calls the onChange method once when input is typed and calls again by debounced function after timeout', done => {
     const onChange = jest.fn();
 
     const wrapper = mount(
       <TextColumnFilter label="test" onChange={onChange} />
     );
 
+    // We simulate a change in the input from 'test' to 'test-again'.
     const textFilterInput = wrapper.find('input');
+
     textFilterInput.instance().value = 'test';
     textFilterInput.simulate('change');
 
-    expect(onChange).toHaveBeenCalledWith('test');
+    textFilterInput.instance().value = 'test-again';
+    textFilterInput.simulate('change');
+
+    // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
+    // and this setTimeout function set to the actual delay of the debouncing function.
+    setTimeout(() => {
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenLastCalledWith('test-again');
+      done();
+    }, 250);
   });
 });

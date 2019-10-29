@@ -30,11 +30,7 @@ if (process.env.NODE_ENV === `development`) {
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
   let el = document.getElementById(pluginName);
-  if (!el) {
-    el = document.createElement('div');
-    el.id = pluginName;
-    document.body.appendChild(el);
-  }
+  if (!el) el = document.createElement('div');
 
   return el;
 }

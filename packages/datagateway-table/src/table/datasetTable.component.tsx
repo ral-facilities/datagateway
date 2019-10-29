@@ -3,19 +3,27 @@ import { Paper, Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
-  formatBytes,
+  DateColumnFilter,
   datasetLink,
   Order,
   Filter,
   Dataset,
   Entity,
 } from 'datagateway-common';
-import { sortTable, filterTable, fetchDatasets } from '../state/actions';
+import {
+  sortTable,
+  filterTable,
+  fetchDatasets,
+  fetchDatasetCount,
+  clearTable,
+} from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import useAfterMountEffect from '../utils';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -29,6 +37,7 @@ interface DatasetTableStoreProps {
     [column: string]: Filter;
   };
   data: Entity[];
+  totalDataCount: number;
   loading: boolean;
   error: string | null;
 }
@@ -36,7 +45,12 @@ interface DatasetTableStoreProps {
 interface DatasetTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (investigationId: number) => Promise<void>;
+  fetchData: (
+    investigationId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
+  clearTable: () => Action;
 }
 
 type DatasetTableCombinedProps = DatasetTableProps &
@@ -46,17 +60,25 @@ type DatasetTableCombinedProps = DatasetTableProps &
 const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   const {
     data,
+    totalDataCount,
     fetchData,
+    fetchCount,
     sort,
     sortTable,
     filters,
     filterTable,
     investigationId,
+    clearTable,
   } = props;
 
   React.useEffect(() => {
-    fetchData(parseInt(investigationId));
-  }, [fetchData, sort, filters, investigationId]);
+    clearTable();
+  }, [clearTable]);
+
+  useAfterMountEffect(() => {
+    fetchCount(parseInt(investigationId));
+    fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
+  }, [fetchCount, fetchData, sort, filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -65,10 +87,21 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     />
   );
 
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        filterTable(dataKey, value)
+      }
+    />
+  );
+
   return (
-    <Paper style={{ height: window.innerHeight, width: '100%' }}>
+    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
         data={data}
+        loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+        totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
         detailsPanel={({ rowData }) => {
@@ -99,19 +132,18 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
             filterComponent: textFilter,
           },
           {
-            label: 'Size',
-            dataKey: 'SIZE',
-            cellContentRenderer: props => {
-              return formatBytes(props.cellData);
-            },
+            label: 'Datafile Count',
+            dataKey: 'DATAFILE_COUNT',
           },
           {
             label: 'Create Time',
             dataKey: 'CREATE_TIME',
+            filterComponent: dateFilter,
           },
           {
             label: 'Modified Time',
             dataKey: 'MOD_TIME',
+            filterComponent: dateFilter,
           },
         ]}
       />
@@ -126,8 +158,11 @@ const mapDispatchToProps = (
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
-  fetchData: (investigationId: number) =>
-    dispatch(fetchDatasets(investigationId)),
+  fetchData: (investigationId: number, offsetParams: IndexRange) =>
+    dispatch(fetchDatasets(investigationId, offsetParams)),
+  fetchCount: (investigationId: number) =>
+    dispatch(fetchDatasetCount(investigationId)),
+  clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
@@ -135,6 +170,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
     data: state.dgtable.data,
+    totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
   };
