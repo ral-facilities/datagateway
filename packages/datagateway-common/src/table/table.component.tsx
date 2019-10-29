@@ -56,6 +56,8 @@ const styles = (theme: Theme): StyleRules =>
       flex: 1,
       overflow: 'hidden',
       height: rowHeight,
+    },
+    dataCellContent: {
       '&:hover': {
         overflow: 'visible',
         zIndex: 10000,
@@ -64,6 +66,7 @@ const styles = (theme: Theme): StyleRules =>
       },
     },
     headerTableCell: {
+      flex: 1,
       height: headerHeight,
     },
   });
@@ -194,7 +197,7 @@ const VirtualizedTable = (
                   >
                     {selectedRows && onCheck && onUncheck && (
                       <Column
-                        width={50}
+                        width={40}
                         key="Select"
                         dataKey="Select"
                         headerRenderer={props => (
@@ -202,7 +205,7 @@ const VirtualizedTable = (
                             {...props}
                             className={clsx(
                               classes.headerTableCell,
-                              classes.headerFlexContainer
+                              classes.flexContainer
                             )}
                             selectedRows={selectedRows}
                             totalRowCount={totalRowCount}
@@ -213,6 +216,7 @@ const VirtualizedTable = (
                           />
                         )}
                         className={classes.flexContainer}
+                        headerClassName={classes.flexContainer}
                         cellRenderer={props => (
                           <SelectCell
                             {...props}
@@ -233,20 +237,23 @@ const VirtualizedTable = (
                     )}
                     {detailsPanel && (
                       <Column
-                        width={50}
+                        width={40}
                         key="Expand"
                         dataKey="expand"
                         headerRenderer={() => (
                           <TableCell
+                            size="small"
+                            padding="checkbox"
                             component="div"
                             className={clsx(
                               classes.headerTableCell,
-                              classes.headerFlexContainer
+                              classes.flexContainer
                             )}
                             variant="head"
                           />
                         )}
                         className={classes.flexContainer}
+                        headerClassName={classes.flexContainer}
                         cellRenderer={props => (
                           <ExpandCell
                             {...props}
@@ -300,6 +307,7 @@ const VirtualizedTable = (
                                   classes.tableCell,
                                   classes.flexContainer
                                 )}
+                                contentClassName={classes.dataCellContent}
                               />
                             )}
                           />
@@ -314,6 +322,7 @@ const VirtualizedTable = (
                         className={classes.flexContainer}
                         headerRenderer={headerProps => (
                           <TableCell
+                            size="small"
                             component="div"
                             className={clsx(
                               classes.headerTableCell,

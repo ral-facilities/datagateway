@@ -3,7 +3,7 @@
 exports[`Select cell component renders correctly when checked 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-body"
+  className="MuiTableCell-root test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall MuiTableCell-body"
 >
   <WithStyles(ForwardRef(Checkbox))
     checked={true}
@@ -31,7 +31,7 @@ exports[`Select cell component renders correctly when checked 1`] = `
 exports[`Select cell component renders correctly when unchecked 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-body"
+  className="MuiTableCell-root test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall MuiTableCell-body"
 >
   <WithStyles(ForwardRef(Checkbox))
     checked={false}

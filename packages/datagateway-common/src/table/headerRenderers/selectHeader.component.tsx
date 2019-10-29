@@ -29,7 +29,13 @@ const SelectHeader = (props: SelectHeaderProps): React.ReactElement => {
   } = props;
 
   return (
-    <TableCell component="div" className={className} variant="head">
+    <TableCell
+      size="small"
+      padding="checkbox"
+      component="div"
+      className={className}
+      variant="head"
+    >
       <Checkbox
         indeterminate={
           selectedRows.length > 0 && selectedRows.length < totalRowCount

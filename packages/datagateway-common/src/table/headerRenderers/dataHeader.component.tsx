@@ -49,6 +49,7 @@ const DataHeader = (
 
   return (
     <TableCell
+      size="small"
       component="div"
       className={className}
       variant="head"

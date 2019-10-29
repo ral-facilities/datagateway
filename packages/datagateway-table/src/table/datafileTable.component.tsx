@@ -163,7 +163,6 @@ const DatafileTable = (
               <IconButton
                 aria-label="Download"
                 key="download"
-                size="small"
                 onClick={() => {
                   downloadData(datafileData.ID, datafileData.LOCATION);
                 }}

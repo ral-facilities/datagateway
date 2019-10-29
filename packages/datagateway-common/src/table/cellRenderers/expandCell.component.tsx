@@ -13,12 +13,17 @@ const ExpandCell = (props: ExpandCellProps): React.ReactElement => {
   const { className, expandedIndex, setExpandedIndex } = props;
 
   return (
-    <TableCell component="div" className={className} variant="body">
+    <TableCell
+      size="small"
+      padding="checkbox"
+      component="div"
+      className={className}
+      variant="body"
+    >
       {props.rowIndex !== expandedIndex ? (
         <IconButton
           aria-label="Show details"
           onClick={() => setExpandedIndex(props.rowIndex)}
-          size="small"
         >
           <ExpandMore />
         </IconButton>
@@ -26,7 +31,6 @@ const ExpandCell = (props: ExpandCellProps): React.ReactElement => {
         <IconButton
           aria-label="Hide details"
           onClick={() => setExpandedIndex(-1)}
-          size="small"
         >
           <ExpandLess />
         </IconButton>

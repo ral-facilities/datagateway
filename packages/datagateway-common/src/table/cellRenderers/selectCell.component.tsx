@@ -33,7 +33,13 @@ const SelectCell = (props: SelectCellProps): React.ReactElement => {
   } = props;
 
   return (
-    <TableCell component="div" className={className} variant="body">
+    <TableCell
+      size="small"
+      padding="checkbox"
+      component="div"
+      className={className}
+      variant="body"
+    >
       <Checkbox
         checked={selectedRows.includes(rowData.ID)}
         inputProps={{

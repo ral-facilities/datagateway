@@ -3,12 +3,11 @@
 exports[`Expand cell component renders correctly when expanded 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-body"
+  className="MuiTableCell-root test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall MuiTableCell-body"
 >
   <WithStyles(ForwardRef(IconButton))
     aria-label="Hide details"
     onClick={[Function]}
-    size="small"
   >
     <ExpandLessIcon />
   </WithStyles(ForwardRef(IconButton))>
@@ -18,12 +17,11 @@ exports[`Expand cell component renders correctly when expanded 1`] = `
 exports[`Expand cell component renders correctly when not expanded 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-body"
+  className="MuiTableCell-root test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall MuiTableCell-body"
 >
   <WithStyles(ForwardRef(IconButton))
     aria-label="Show details"
     onClick={[Function]}
-    size="small"
   >
     <ExpandMoreIcon />
   </WithStyles(ForwardRef(IconButton))>
