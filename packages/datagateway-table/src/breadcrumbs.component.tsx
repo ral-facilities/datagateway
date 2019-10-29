@@ -244,19 +244,27 @@ class PageBreadcrumbs extends React.Component<
             console.log(`${entity} - Retrieved entity name: ${entityName}`);
 
             // Update the state with the new entity information.
-            updatedState = {
-              ...updatedState,
-              currentHierarchy: {
-                ...updatedState.currentHierarchy,
-                [hierarchyCount]: {
-                  ...updatedState.currentHierarchy[hierarchyCount],
+            // updatedState = {
+            //   ...updatedState,
+            //   currentHierarchy: {
+            //     ...updatedState.currentHierarchy,
+            //     [hierarchyCount]: {
+            //       ...updatedState.currentHierarchy[hierarchyCount],
 
-                  id: entityId,
-                  displayName: entityName,
-                  url: link,
-                },
-              },
-            };
+            //       id: entityId,
+            //       displayName: entityName,
+            //       url: link,
+            //     },
+            //   },
+            // };
+
+            updatedState.currentHierarchy.splice(hierarchyCount, 1, {
+              ...updatedState.currentHierarchy[hierarchyCount],
+
+              id: entityId,
+              displayName: entityName,
+              url: link,
+            });
             console.log(`Updated state for ${entity}:`, updatedState);
           } else {
             console.log('Did not get entity name: ', entityName);
