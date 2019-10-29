@@ -27,12 +27,12 @@ export default function CheckboxesGroup(): JSX.Element {
 
   const handleChange = (name: string) => (
     event: React.ChangeEvent<HTMLInputElement>
-  ):void => {
+  ): void => {
     setState({ ...state, [name]: event.target.checked });
   };
 
   const { Investigation, Dataset, Datafile } = state;
-  const error = [Investigation, Dataset, Datafile].filter(v => v).length < 1;
+  const error = ![Investigation, Dataset, Datafile].includes(true)
 
   return (
     <div className={classes.root}>
