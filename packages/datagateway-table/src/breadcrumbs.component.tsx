@@ -239,7 +239,7 @@ class PageBreadcrumbs extends React.Component<
           // the entity field we want is the NAME of the entity.
           let apiEntity = entity;
           let requestEntityField = 'NAME';
-          let issueRequest = true;
+          // let issueRequest = true;
 
           // There are some exceptions to this when handling the DIAMOND/DLS
           // depending on if 'proposal' has been found in the current path.
@@ -249,72 +249,75 @@ class PageBreadcrumbs extends React.Component<
             // If the entity is current proposal, then we will not make an API request,
             // as we need the investigation ID to retrieve the TITLE.
             if (entity === 'proposal') {
-              issueRequest = false;
+              // issueRequest = false;
 
-              // We will, however, update the proposal ID,
-              // so that it will be rendered correctly later on.
-              updatedState.currentHierarchy.splice(hierarchyCount, 1, {
-                ...updatedState.currentHierarchy[hierarchyCount],
-                id: entityId,
-              });
-              console.log(
-                'Updated proposal entity ID in state with: ',
-                entityId
-              );
+              // // We will, however, update the proposal ID,
+              // // so that it will be rendered correctly later on.
+              // updatedState.currentHierarchy.splice(hierarchyCount, 1, {
+              //   ...updatedState.currentHierarchy[hierarchyCount],
+              //   id: entityId,
+              // });
+              // console.log(
+              //   'Updated proposal entity ID in state with: ',
+              //   entityId
+              // );
+
+              apiEntity = 'investigation';
+              requestEntityField = 'TITLE';
             } else if (entity === 'investigation') {
-              // When we encounter the investigation and proposal has not been updated,
-              // we can use the investigation ID in order to make a request to update
-              // the proposal entry in the current hierarchy.
+              // // When we encounter the investigation and proposal has not been updated,
+              // // we can use the investigation ID in order to make a request to update
+              // // the proposal entry in the current hierarchy.
 
-              // Get the current proposal breadcrumb stored in the hierarchy.
-              const proposalBreadcrumb = updatedState.currentHierarchy[0];
-              console.log('Proposal breadcrumb: ', proposalBreadcrumb);
+              // // Get the current proposal breadcrumb stored in the hierarchy.
+              // const proposalBreadcrumb = updatedState.currentHierarchy[0];
+              // console.log('Proposal breadcrumb: ', proposalBreadcrumb);
 
-              // Check to ensure that the proposal has not already been updated.
-              if (
-                proposalBreadcrumb.pathName === 'proposal' &&
-                proposalBreadcrumb.displayName === 'N/A'
-              ) {
-                // Since 'proposal' isn't an endpoint,
-                // we will just query investigation and get the TITLE of the entity.
-                requestEntityField = 'TITLE';
+              // // Check to ensure that the proposal has not already been updated.
+              // if (
+              //   proposalBreadcrumb.pathName === 'proposal' &&
+              //   proposalBreadcrumb.displayName === 'N/A'
+              // ) {
+              //   // Since 'proposal' isn't an endpoint,
+              //   // we will just query investigation and get the TITLE of the entity.
+              //   requestEntityField = 'TITLE';
 
-                // The API entity will be investigation followed by the investigation id.
-                let proposalEntityUrl =
-                  `${apiEntity}s`.toLowerCase() + `/${entityId}`;
-                let proposalDisplayName = await this.getEntityInformation(
-                  proposalEntityUrl,
-                  requestEntityField
-                );
+              //   // The API entity will be investigation followed by the investigation id.
+              //   let proposalEntityUrl =
+              //     `${apiEntity}s`.toLowerCase() + `/${entityId}`;
+              //   let proposalDisplayName = await this.getEntityInformation(
+              //     proposalEntityUrl,
+              //     requestEntityField
+              //   );
 
-                // Update the state with the new proposal information retrieved.
-                if (proposalDisplayName) {
-                  console.log(
-                    `Received proposal information: ${proposalDisplayName}`
-                  );
+              //   // Update the state with the new proposal information retrieved.
+              //   if (proposalDisplayName) {
+              //     console.log(
+              //       `Received proposal information: ${proposalDisplayName}`
+              //     );
 
-                  // Update the proposalBreadcrumb object and replace it in the hierarchy array.
-                  // We only need to update the display name and not the entity ID on this occassion.
-                  // This is to ensure the proposal is not filtered out when rendering as it will match with the
-                  // actual proposal ID in the path.
-                  proposalBreadcrumb.displayName = proposalDisplayName;
-                  updatedState.currentHierarchy.splice(
-                    0,
-                    1,
-                    proposalBreadcrumb
-                  );
-                } else {
-                  console.log(
-                    'Did not get proposal information to update hierarchy: ',
-                    proposalDisplayName
-                  );
-                }
-              } else {
-                console.log(
-                  'The proposal breadcrumb has already been updated: ',
-                  proposalBreadcrumb
-                );
-              }
+              //     // Update the proposalBreadcrumb object and replace it in the hierarchy array.
+              //     // We only need to update the display name and not the entity ID on this occassion.
+              //     // This is to ensure the proposal is not filtered out when rendering as it will match with the
+              //     // actual proposal ID in the path.
+              //     proposalBreadcrumb.displayName = proposalDisplayName;
+              //     updatedState.currentHierarchy.splice(
+              //       0,
+              //       1,
+              //       proposalBreadcrumb
+              //     );
+              //   } else {
+              //     console.log(
+              //       'Did not get proposal information to update hierarchy: ',
+              //       proposalDisplayName
+              //     );
+              //   }
+              // } else {
+              //   console.log(
+              //     'The proposal breadcrumb has already been updated: ',
+              //     proposalBreadcrumb
+              //   );
+              // }
 
               // Otherwise, we can proceed and get the VISIT_ID for the investigation entity.
               requestEntityField = 'VISIT_ID';
@@ -327,17 +330,27 @@ class PageBreadcrumbs extends React.Component<
           console.log(`Request Entity Field: ${requestEntityField}`);
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
-          let requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
+          let requestEntityUrl;
+          if (entity !== 'proposal') {
+            requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
+          } else {
+            // If we are searching for proposal, we know that there is no investigation
+            // information in the current path. We will need to query and select one investigation
+            // from all investigations with the entity id (which is the proposal/investigation name).
+            requestEntityUrl =
+              `${apiEntity}s`.toLowerCase() +
+              `/findone?where={"NAME":{"eq": "${entityId}"}}`;
+          }
           console.log(`Contructed request URL: ${requestEntityUrl}`);
 
           // Get the entity field for the given entity request.
-          let entityDisplayName;
-          if (issueRequest) {
-            entityDisplayName = await this.getEntityInformation(
-              requestEntityUrl,
-              requestEntityField
-            );
-          }
+          // let entityDisplayName;
+          // if (issueRequest) {
+          let entityDisplayName = await this.getEntityInformation(
+            requestEntityUrl,
+            requestEntityField
+          );
+          // }
           if (entityDisplayName) {
             console.log(
               `${entity} - Retrieved entity name: ${entityDisplayName}`
