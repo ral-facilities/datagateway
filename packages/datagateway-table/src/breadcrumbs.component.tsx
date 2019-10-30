@@ -235,13 +235,44 @@ class PageBreadcrumbs extends React.Component<
 
         // Check if an entity id is present or if the id has changed since the last update to the state.
         if (entityInfo.id.length === 0 || entityInfo.id !== entityId) {
-          // Create the entity url to request the name, this is pluralised.
-          let requestEntityUrl = `${entity}s`.toLowerCase() + `/${entityId}`;
+          // In general the API endpoint will be our entity name and
+          // the entity field we want is the NAME of the entity.
+          let apiEntity = entity;
+          let requestEntityField = 'NAME';
+
+          // There are some exceptions to this when handling the DIAMOND/DLS
+          // depending on if 'proposal' has been found in the current path.
+          if ('proposal' in this.currentPathnames) {
+            // If it is current proposal and since it isn't an endpoint,
+            // we will just query investigation and get the TITLE of the entity.
+            if (entity === 'proposal') {
+              apiEntity = 'investigation';
+              requestEntityField = 'TITLE';
+            } else if (entity === 'investigation') {
+              // If the entity is investigation, we want
+              // the VISIT_ID for the entity.
+              requestEntityField = 'VISIT_ID';
+            }
+          } else {
+            // Anything else (including ISIS), we request the TITLE for the investigation entity.
+            if (entity === 'investigation') requestEntityField = 'TITLE';
+          }
+          console.log(`API Entity: ${apiEntity}`);
+          console.log(`Request Entity Field: ${requestEntityField}`);
+
+          // Create the entity url to request the name, this is pluralised to get the API endpoint.
+          let requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
           console.log(`Contructed request URL: ${requestEntityUrl}`);
 
-          const entityName = await this.getEntityName(requestEntityUrl);
-          if (entityName) {
-            console.log(`${entity} - Retrieved entity name: ${entityName}`);
+          // Get the NAME attribute for the given entity request.
+          let entityDisplayName = await this.getEntityInformation(
+            requestEntityUrl,
+            requestEntityField
+          );
+          if (entityDisplayName) {
+            console.log(
+              `${entity} - Retrieved entity name: ${entityDisplayName}`
+            );
 
             // Update the state with the new entity information.
             // updatedState = {
@@ -262,12 +293,12 @@ class PageBreadcrumbs extends React.Component<
               ...updatedState.currentHierarchy[hierarchyCount],
 
               id: entityId,
-              displayName: entityName,
+              displayName: entityDisplayName,
               url: link,
             });
             console.log(`Updated state for ${entity}:`, updatedState);
           } else {
-            console.log('Did not get entity name: ', entityName);
+            console.log('Did not get entity display name: ', entityDisplayName);
           }
         } else {
           console.log(
@@ -325,7 +356,10 @@ class PageBreadcrumbs extends React.Component<
     this.isBreadcrumbUpdated = true;
   };
 
-  private getEntityName = async (requestEntityUrl: string): Promise<string> => {
+  private getEntityInformation = async (
+    requestEntityUrl: string,
+    entityField: string
+  ): Promise<string> => {
     let entityName = '';
 
     console.log('API Url: ', this.props.apiUrl);
@@ -343,8 +377,10 @@ class PageBreadcrumbs extends React.Component<
         console.log(`${requestEntityUrl} - Response Data:`, response.data);
 
         // Return the NAME property in the data received.
-        console.log(`${requestEntityUrl} - Entity Name: ${response.data.NAME}`);
-        return response.data.NAME;
+        console.log(
+          `${requestEntityUrl} - Entity ${entityField} : ${response.data[entityField]}`
+        );
+        return response.data[entityField];
       })
       .catch(error => {
         console.log(error);
