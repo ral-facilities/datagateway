@@ -1,12 +1,11 @@
 import React from 'react';
-
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
 import { Route } from 'react-router';
-
 import { Link } from 'react-router-dom';
+
 import {
   Link as MaterialLink,
   Paper,
@@ -20,33 +19,8 @@ interface BreadcrumbProps {
   location: string;
 }
 
-// TODO: Manage state to hold changes to a particular element/hold root level.
-// interface BreadcrumbState {
-//   investigation: {
-//     id: string;
-//     displayName: string;
-//     url: string;
-//   };
-//   dataset: {
-//     id: string;
-//     displayName: string;
-//     url: string;
-//   };
-//   datafile: {
-//     id: string;
-//     displayName: string;
-//     url: string;
-//   };
-//   [key: string]: {
-//     id: string;
-//     displayName: string;
-//     url: string;
-//   };
-// }
-
 interface Breadcrumb {
-  id: string; // TODO: Should we store the id, do we use for anything other than requesting entity name?
-
+  id: string;
   pathName: string;
   displayName: string;
   url: string;
@@ -77,24 +51,6 @@ class PageBreadcrumbs extends React.Component<
 
     this.currentPathnames = [];
     this.isBreadcrumbUpdated = false;
-
-    // this.state = {
-    //   investigation: {
-    //     id: '',
-    //     displayName: 'N/A',
-    //     url: '',
-    //   },
-    //   dataset: {
-    //     id: '',
-    //     displayName: 'N/A',
-    //     url: '',
-    //   },
-    //   datafile: {
-    //     id: '',
-    //     displayName: 'N/A',
-    //     url: '',
-    //   },
-    // };
 
     this.state = {
       base: {
@@ -163,7 +119,7 @@ class PageBreadcrumbs extends React.Component<
     }
 
     // Reset the last fields for base and the whole breadcrumb state.
-    // TODO: Set the base isLast to false unless it is proven otherwise later.
+    // Set the base isLast to false unless it is proven otherwise later.
     updatedState.base.isLast = false;
     if (updatedState.last.displayName !== 'N/A') {
       updatedState = {
@@ -175,9 +131,9 @@ class PageBreadcrumbs extends React.Component<
     }
 
     // Loop through each entry in the path name before the last.
-    // We always skip 2 go ahead in steps of 2 as the we expect the format to be /{entity}/{entityId}.
+    // We always skip 2 go ahead in steps of 2 as the we expect
+    // the format to be /{entity}/{entityId}.
     let hierarchyCount = 0;
-
     const pathLength = this.currentPathnames.length;
     for (let index = 1; index < pathLength; index += 2) {
       console.log(`Current index: ${index}`);
@@ -191,27 +147,9 @@ class PageBreadcrumbs extends React.Component<
 
       // Check we are not the end of the pathnames array.
       if (index < pathLength - 1) {
-        // TODO: Do we need to create a field already?
         // If the index does not already exist,
         // create the entry for the index.
         if (!updatedState.currentHierarchy[hierarchyCount]) {
-          // hierarchyLength++;
-          //   updatedState = {
-          //     ...updatedState,
-          //     currentHierarchy: {
-          //       ...updatedState.currentHierarchy,
-
-          //       [heirarchyLength]: {
-          //         id: '',
-
-          //         pathName: entity,
-          //         displayName: 'N/A',
-          //         url: link,
-          //       },
-          //     },
-          //   };
-          // }
-
           // Insert the new breadcrumb information into the array.
           updatedState.currentHierarchy.splice(hierarchyCount, 1, {
             id: '',
@@ -239,7 +177,6 @@ class PageBreadcrumbs extends React.Component<
           // the entity field we want is the NAME of the entity.
           let apiEntity = entity;
           let requestEntityField = 'NAME';
-          // let issueRequest = true;
 
           // There are some exceptions to this when handling the DIAMOND/DLS
           // depending on if 'proposal' has been found in the current path.
@@ -249,76 +186,9 @@ class PageBreadcrumbs extends React.Component<
             // If the entity is current proposal, then we will not make an API request,
             // as we need the investigation ID to retrieve the TITLE.
             if (entity === 'proposal') {
-              // issueRequest = false;
-
-              // // We will, however, update the proposal ID,
-              // // so that it will be rendered correctly later on.
-              // updatedState.currentHierarchy.splice(hierarchyCount, 1, {
-              //   ...updatedState.currentHierarchy[hierarchyCount],
-              //   id: entityId,
-              // });
-              // console.log(
-              //   'Updated proposal entity ID in state with: ',
-              //   entityId
-              // );
-
               apiEntity = 'investigation';
               requestEntityField = 'TITLE';
             } else if (entity === 'investigation') {
-              // // When we encounter the investigation and proposal has not been updated,
-              // // we can use the investigation ID in order to make a request to update
-              // // the proposal entry in the current hierarchy.
-
-              // // Get the current proposal breadcrumb stored in the hierarchy.
-              // const proposalBreadcrumb = updatedState.currentHierarchy[0];
-              // console.log('Proposal breadcrumb: ', proposalBreadcrumb);
-
-              // // Check to ensure that the proposal has not already been updated.
-              // if (
-              //   proposalBreadcrumb.pathName === 'proposal' &&
-              //   proposalBreadcrumb.displayName === 'N/A'
-              // ) {
-              //   // Since 'proposal' isn't an endpoint,
-              //   // we will just query investigation and get the TITLE of the entity.
-              //   requestEntityField = 'TITLE';
-
-              //   // The API entity will be investigation followed by the investigation id.
-              //   let proposalEntityUrl =
-              //     `${apiEntity}s`.toLowerCase() + `/${entityId}`;
-              //   let proposalDisplayName = await this.getEntityInformation(
-              //     proposalEntityUrl,
-              //     requestEntityField
-              //   );
-
-              //   // Update the state with the new proposal information retrieved.
-              //   if (proposalDisplayName) {
-              //     console.log(
-              //       `Received proposal information: ${proposalDisplayName}`
-              //     );
-
-              //     // Update the proposalBreadcrumb object and replace it in the hierarchy array.
-              //     // We only need to update the display name and not the entity ID on this occassion.
-              //     // This is to ensure the proposal is not filtered out when rendering as it will match with the
-              //     // actual proposal ID in the path.
-              //     proposalBreadcrumb.displayName = proposalDisplayName;
-              //     updatedState.currentHierarchy.splice(
-              //       0,
-              //       1,
-              //       proposalBreadcrumb
-              //     );
-              //   } else {
-              //     console.log(
-              //       'Did not get proposal information to update hierarchy: ',
-              //       proposalDisplayName
-              //     );
-              //   }
-              // } else {
-              //   console.log(
-              //     'The proposal breadcrumb has already been updated: ',
-              //     proposalBreadcrumb
-              //   );
-              // }
-
               // Otherwise, we can proceed and get the VISIT_ID for the investigation entity.
               requestEntityField = 'VISIT_ID';
             }
@@ -344,33 +214,16 @@ class PageBreadcrumbs extends React.Component<
           console.log(`Contructed request URL: ${requestEntityUrl}`);
 
           // Get the entity field for the given entity request.
-          // let entityDisplayName;
-          // if (issueRequest) {
           let entityDisplayName = await this.getEntityInformation(
             requestEntityUrl,
             requestEntityField
           );
-          // }
           if (entityDisplayName) {
             console.log(
               `${entity} - Retrieved entity name: ${entityDisplayName}`
             );
 
             // Update the state with the new entity information.
-            // updatedState = {
-            //   ...updatedState,
-            //   currentHierarchy: {
-            //     ...updatedState.currentHierarchy,
-            //     [hierarchyCount]: {
-            //       ...updatedState.currentHierarchy[hierarchyCount],
-
-            //       id: entityId,
-            //       displayName: entityName,
-            //       url: link,
-            //     },
-            //   },
-            // };
-
             updatedState.currentHierarchy.splice(hierarchyCount, 1, {
               ...updatedState.currentHierarchy[hierarchyCount],
 
@@ -391,7 +244,6 @@ class PageBreadcrumbs extends React.Component<
       } else if (index === pathLength - 1) {
         if (entity !== updatedState.base.entityName) {
           console.log(`Processing last item in path: ${entity}`);
-
           // Update the state to say that e.g. if path is /browse/investigation/,
           // then display name would be just Browse > *Investigations*.
           // e.g. Browse > Investigations > *Proposal 1* (Datasets) etc.
@@ -416,20 +268,10 @@ class PageBreadcrumbs extends React.Component<
           console.log('Updated the base as being last in the path.');
         }
       }
+
+      // Increment the hierarchy count for the next entity (if there is one).
       hierarchyCount++;
     }
-
-    // Filter and set the state
-    // (in the event the user moved back using the breadcrumb).
-    // let pathBreadcrumbs: Array<Breadcrumb>;
-    // pathBreadcrumbs = updatedState.currentHierarchy.filter((value: Breadcrumb) => this.currentPathnames.includes(value.pathName));
-
-    // console.log('Filtered breadcrumbs: ', pathBreadcrumbs);
-    // updatedState = {
-    //   ...updatedState,
-    //   currentHierarchy: pathBreadcrumbs,
-    // };
-    // console.log('Updated state with filtered breadcrumbs: ', updatedState);
 
     // Update the final state.
     this.setState(updatedState, () =>
@@ -473,11 +315,10 @@ class PageBreadcrumbs extends React.Component<
   };
 
   public render(): React.ReactElement {
-    // const breadcrumbState = this.state;
-    // console.log('Rendering Breadcrumb state: ', breadcrumbState);
     console.log('Rendering FULL Breadcrumb state: ', this.state);
 
-    // Filter to ensure the breadcrumbs are only for this path (in the event the user moved back and changed location using the breadcrumb).
+    // Filter to ensure the breadcrumbs are only for this path
+    // (in the event the user moved back and changed location using the breadcrumb).
     const breadcrumbState = {
       ...this.state,
       currentHierarchy: this.state.currentHierarchy.filter(
@@ -494,9 +335,7 @@ class PageBreadcrumbs extends React.Component<
     };
     console.log('Rendering FILTERED breadcrumbs: ', breadcrumbState);
 
-    // TODO: Make sure we only select the keys which are not blank?
     const hierarchyKeys = Object.keys(breadcrumbState.currentHierarchy);
-
     console.log('Rendering hierarchy keys: ', hierarchyKeys);
     console.log('Keys length: ', hierarchyKeys.length);
 
@@ -510,8 +349,7 @@ class PageBreadcrumbs extends React.Component<
                 separator={<NavigateNextIcon fontSize="small" />}
                 aria-label="Breadcrumb"
               >
-                {/* // Return the base entity as a link.
-                  // TODO: Remove check for current pathnames length. Needs something concrete. */}
+                {/* // Return the base entity as a link. */}
                 {breadcrumbState.base.isLast ? (
                   <Typography
                     color="textPrimary"
