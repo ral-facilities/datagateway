@@ -247,9 +247,20 @@ class PageBreadcrumbs extends React.Component<
           console.log('Current entity: ', entity);
           if (this.currentPathnames.includes('proposal')) {
             // If the entity is current proposal, then we will not make an API request,
-            // as we need the investigation ID.
+            // as we need the investigation ID to retrieve the TITLE.
             if (entity === 'proposal') {
               issueRequest = false;
+
+              // We will, however, update the proposal ID,
+              // so that it will be rendered correctly later on.
+              updatedState.currentHierarchy.splice(hierarchyCount, 1, {
+                ...updatedState.currentHierarchy[hierarchyCount],
+                id: entityId,
+              });
+              console.log(
+                'Updated proposal entity ID in state with: ',
+                entityId
+              );
             } else if (entity === 'investigation') {
               // When we encounter the investigation and proposal has not been updated,
               // we can use the investigation ID in order to make a request to update
@@ -262,7 +273,6 @@ class PageBreadcrumbs extends React.Component<
               // Check to ensure that the proposal has not already been updated.
               if (
                 proposalBreadcrumb.pathName === 'proposal' &&
-                proposalBreadcrumb.id === '' &&
                 proposalBreadcrumb.displayName === 'N/A'
               ) {
                 // Since 'proposal' isn't an endpoint,
@@ -284,7 +294,9 @@ class PageBreadcrumbs extends React.Component<
                   );
 
                   // Update the proposalBreadcrumb object and replace it in the hierarchy array.
-                  proposalBreadcrumb.id = entityId;
+                  // We only need to update the display name and not the entity ID on this occassion.
+                  // This is to ensure the proposal is not filtered out when rendering as it will match with the
+                  // actual proposal ID in the path.
                   proposalBreadcrumb.displayName = proposalDisplayName;
                   updatedState.currentHierarchy.splice(
                     0,
