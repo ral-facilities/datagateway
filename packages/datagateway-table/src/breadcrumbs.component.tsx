@@ -239,18 +239,72 @@ class PageBreadcrumbs extends React.Component<
           // the entity field we want is the NAME of the entity.
           let apiEntity = entity;
           let requestEntityField = 'NAME';
+          let issueRequest = true;
 
           // There are some exceptions to this when handling the DIAMOND/DLS
           // depending on if 'proposal' has been found in the current path.
-          if ('proposal' in this.currentPathnames) {
-            // If it is current proposal and since it isn't an endpoint,
-            // we will just query investigation and get the TITLE of the entity.
+          console.log('Current path: ', this.currentPathnames);
+          console.log('Current entity: ', entity);
+          if (this.currentPathnames.includes('proposal')) {
+            // If the entity is current proposal, then we will not make an API request,
+            // as we need the investigation ID.
             if (entity === 'proposal') {
-              apiEntity = 'investigation';
-              requestEntityField = 'TITLE';
+              issueRequest = false;
             } else if (entity === 'investigation') {
-              // If the entity is investigation, we want
-              // the VISIT_ID for the entity.
+              // When we encounter the investigation and proposal has not been updated,
+              // we can use the investigation ID in order to make a request to update
+              // the proposal entry in the current hierarchy.
+
+              // Get the current proposal breadcrumb stored in the hierarchy.
+              const proposalBreadcrumb = updatedState.currentHierarchy[0];
+              console.log('Proposal breadcrumb: ', proposalBreadcrumb);
+
+              // Check to ensure that the proposal has not already been updated.
+              if (
+                proposalBreadcrumb.pathName === 'proposal' &&
+                proposalBreadcrumb.id === '' &&
+                proposalBreadcrumb.displayName === 'N/A'
+              ) {
+                // Since 'proposal' isn't an endpoint,
+                // we will just query investigation and get the TITLE of the entity.
+                requestEntityField = 'TITLE';
+
+                // The API entity will be investigation followed by the investigation id.
+                let proposalEntityUrl =
+                  `${apiEntity}s`.toLowerCase() + `/${entityId}`;
+                let proposalDisplayName = await this.getEntityInformation(
+                  proposalEntityUrl,
+                  requestEntityField
+                );
+
+                // Update the state with the new proposal information retrieved.
+                if (proposalDisplayName) {
+                  console.log(
+                    `Received proposal information: ${proposalDisplayName}`
+                  );
+
+                  // Update the proposalBreadcrumb object and replace it in the hierarchy array.
+                  proposalBreadcrumb.id = entityId;
+                  proposalBreadcrumb.displayName = proposalDisplayName;
+                  updatedState.currentHierarchy.splice(
+                    0,
+                    1,
+                    proposalBreadcrumb
+                  );
+                } else {
+                  console.log(
+                    'Did not get proposal information to update hierarchy: ',
+                    proposalDisplayName
+                  );
+                }
+              } else {
+                console.log(
+                  'The proposal breadcrumb has already been updated: ',
+                  proposalBreadcrumb
+                );
+              }
+
+              // Otherwise, we can proceed and get the VISIT_ID for the investigation entity.
               requestEntityField = 'VISIT_ID';
             }
           } else {
@@ -264,11 +318,14 @@ class PageBreadcrumbs extends React.Component<
           let requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
           console.log(`Contructed request URL: ${requestEntityUrl}`);
 
-          // Get the NAME attribute for the given entity request.
-          let entityDisplayName = await this.getEntityInformation(
-            requestEntityUrl,
-            requestEntityField
-          );
+          // Get the entity field for the given entity request.
+          let entityDisplayName;
+          if (issueRequest) {
+            entityDisplayName = await this.getEntityInformation(
+              requestEntityUrl,
+              requestEntityField
+            );
+          }
           if (entityDisplayName) {
             console.log(
               `${entity} - Retrieved entity name: ${entityDisplayName}`
@@ -376,7 +433,7 @@ class PageBreadcrumbs extends React.Component<
       .then(response => {
         console.log(`${requestEntityUrl} - Response Data:`, response.data);
 
-        // Return the NAME property in the data received.
+        // Return the property in the data received.
         console.log(
           `${requestEntityUrl} - Entity ${entityField} : ${response.data[entityField]}`
         );
