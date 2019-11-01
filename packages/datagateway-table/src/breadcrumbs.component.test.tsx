@@ -28,14 +28,14 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
   };
 
   // The ISIS routes to test.
-  // const ISISRoutes = {
-  //   instruments: '/browse/instrument',
-  //   facilityCycles: '/browse/instrument/1/facilityCycle',
-  //   investigations: '/browse/instrument/1/facilityCycle/1/investigation',
-  //   datasets: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset',
-  //   datafiles:
-  //     '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafiles',
-  // };
+  const ISISRoutes = {
+    instruments: '/browse/instrument',
+    facilityCycles: '/browse/instrument/1/facilityCycle',
+    investigations: '/browse/instrument/1/facilityCycle/1/investigation',
+    datasets: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset',
+    datafiles:
+      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafiles',
+  };
 
   // The DLS routes to test.
   const DLSRoutes = {
@@ -114,6 +114,21 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
   it('renders correctly for DLS proposals route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(DLSRoutes['proposals']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly for ISIS instruments route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(ISISRoutes['instruments']);
 
     // Set up store with test state and mount the breadcrumb.
     console.log('Test state: ', state);
