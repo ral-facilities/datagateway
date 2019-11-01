@@ -186,6 +186,21 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('renders correctly for ISIS datasets route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(ISISRoutes['datasets']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('renders correctly for generic datafiles route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(genericRoutes['datafiles']);
