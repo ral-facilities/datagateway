@@ -12,19 +12,38 @@ import { createLocation } from 'history';
 
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
+import { ReactWrapper } from 'enzyme';
 
 jest.mock('loglevel');
 
-describe('PageBreadcrumb Component - Generic Tests', () => {
+describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
   let mount;
-  let mockStore;
   let state: StateType;
 
   // The generic routes to test.
   const genericRoutes = {
-    investigations: '/browse/investigation/',
-    datasets: '/browse/investigation/1/dataset/',
-    datafiles: '/browse/investigation/1/dataset/1/datafile/',
+    investigations: '/browse/investigation',
+    datasets: '/browse/investigation/1/dataset',
+    datafiles: '/browse/investigation/1/dataset/1/datafile',
+  };
+
+  // The ISIS routes to test.
+  // const ISISRoutes = {
+  //   instruments: '/browse/instrument',
+  //   facilityCycles: '/browse/instrument/1/facilityCycle',
+  //   investigations: '/browse/instrument/1/facilityCycle/1/investigation',
+  //   datasets: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset',
+  //   datafiles:
+  //     '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafiles',
+  // };
+
+  // The DLS routes to test.
+  const DLSRoutes = {
+    proposals: '/browse/proposal',
+    investigations: '/browse/proposal/INVESTIGATION 1/investigation',
+    datasets: '/browse/proposal/INVESTIGATION 1/investigation/1/dataset',
+    datafiles:
+      '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
   };
 
   // Set up generic axios response; to be used for all tests.
@@ -42,6 +61,17 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
     })
   );
 
+  const createWrapper = (state: StateType): ReactWrapper => {
+    const mockStore = configureStore([thunk]);
+    return mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+          <PageBreadcrumbs />
+        </MemoryRouter>
+      </Provider>
+    );
+  };
+
   // Ensure that we can flush all promises before updating a wrapper.
   const flushPromises = (): Promise<NodeJS.Immediate> =>
     new Promise(setImmediate);
@@ -49,7 +79,6 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
   beforeEach(() => {
     mount = createMount();
 
-    mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
         dgtable: initialState,
@@ -67,20 +96,13 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
     mount.cleanUp();
   });
 
-  it('renders correctly for investigations route', async () => {
+  it('renders correctly for generic investigations route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(genericRoutes['investigations']);
 
     // Set up store with test state and mount the breadcrumb.
     console.log('Test state: ', state);
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-          <PageBreadcrumbs />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
@@ -89,20 +111,43 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('renders correctly for datasets route', async () => {
+  it('renders correctly for DLS proposals route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(DLSRoutes['proposals']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly for DLS investigations route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(DLSRoutes['investigations']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly for generic datasets route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(genericRoutes['datasets']);
 
     // Set up store with test state and mount the breadcrumb.
     console.log('Test state: ', state);
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-          <PageBreadcrumbs />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
@@ -111,20 +156,13 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('renders correctly for datafiles route', async () => {
+  it('renders correctly for generic datafiles route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(genericRoutes['datafiles']);
 
     // Set up store with test state and mount the breadcrumb.
     console.log('Test state: ', state);
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-          <PageBreadcrumbs />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
     await flushPromises();
