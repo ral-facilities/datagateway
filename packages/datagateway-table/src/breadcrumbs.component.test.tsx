@@ -110,4 +110,26 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
 
     expect(wrapper).toMatchSnapshot();
   });
+
+  it('renders correctly for datafiles route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(genericRoutes['datafiles']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+          <PageBreadcrumbs />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+  });
 });
