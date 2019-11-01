@@ -16,35 +16,35 @@ import { ReactWrapper } from 'enzyme';
 
 jest.mock('loglevel');
 
+// The generic routes to test.
+const genericRoutes = {
+  investigations: '/browse/investigation',
+  datasets: '/browse/investigation/1/dataset',
+  datafiles: '/browse/investigation/1/dataset/1/datafile',
+};
+
+// The ISIS routes to test.
+const ISISRoutes = {
+  instruments: '/browse/instrument',
+  facilityCycles: '/browse/instrument/1/facilityCycle',
+  investigations: '/browse/instrument/1/facilityCycle/1/investigation',
+  datasets: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset',
+  datafiles:
+    '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafiles',
+};
+
+// The DLS routes to test.
+const DLSRoutes = {
+  proposals: '/browse/proposal',
+  investigations: '/browse/proposal/INVESTIGATION 1/investigation',
+  datasets: '/browse/proposal/INVESTIGATION 1/investigation/1/dataset',
+  datafiles:
+    '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
+};
+
 describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
   let mount;
   let state: StateType;
-
-  // The generic routes to test.
-  const genericRoutes = {
-    investigations: '/browse/investigation',
-    datasets: '/browse/investigation/1/dataset',
-    datafiles: '/browse/investigation/1/dataset/1/datafile',
-  };
-
-  // The ISIS routes to test.
-  const ISISRoutes = {
-    instruments: '/browse/instrument',
-    facilityCycles: '/browse/instrument/1/facilityCycle',
-    investigations: '/browse/instrument/1/facilityCycle/1/investigation',
-    datasets: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset',
-    datafiles:
-      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafiles',
-  };
-
-  // The DLS routes to test.
-  const DLSRoutes = {
-    proposals: '/browse/proposal',
-    investigations: '/browse/proposal/INVESTIGATION 1/investigation',
-    datasets: '/browse/proposal/INVESTIGATION 1/investigation/1/dataset',
-    datafiles:
-      '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
-  };
 
   // Set up generic axios response; to be used for all tests.
   // We only need to include the ID, NAME, TITLE and VISIT_ID
@@ -94,6 +94,10 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
 
   afterEach(() => {
     mount.cleanUp();
+  });
+
+  afterAll(() => {
+    (axios.get as jest.Mock).mockClear();
   });
 
   it('renders correctly for generic investigations route', async () => {
@@ -259,5 +263,72 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     wrapper.update();
 
     expect(wrapper).toMatchSnapshot();
+  });
+});
+
+describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
+  let mount;
+  let state: StateType;
+
+  (axios.get as jest.Mock).mockImplementation(() =>
+    Promise.resolve({
+      data: {
+        ID: 1,
+        NAME: 'INVESTIGATION 1',
+        TITLE: 'Test 1',
+        VISIT_ID: '1',
+      },
+    })
+  );
+
+  const createWrapper = (state: StateType): ReactWrapper => {
+    const mockStore = configureStore([thunk]);
+    return mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+          <PageBreadcrumbs />
+        </MemoryRouter>
+      </Provider>
+    );
+  };
+
+  // Ensure that we can flush all promises before updating a wrapper.
+  const flushPromises = (): Promise<NodeJS.Immediate> =>
+    new Promise(setImmediate);
+
+  beforeEach(() => {
+    mount = createMount();
+
+    state = JSON.parse(
+      JSON.stringify({
+        dgtable: initialState,
+
+        // Initialise our router object to hold location information.
+        router: {
+          action: 'POP',
+          location: createLocation('/'),
+        },
+      })
+    );
+  });
+
+  afterEach(() => {
+    mount.cleanUp();
+  });
+
+  it('requests the investigation entity from the correct API endpoint for generic route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(genericRoutes['investigations']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to not have been made.
+    expect(axios.get).not.toBeCalled();
   });
 });
