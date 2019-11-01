@@ -316,6 +316,10 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     mount.cleanUp();
   });
 
+  afterAll(() => {
+    (axios.get as jest.Mock).mockClear();
+  });
+
   it('requests the investigation entity from the correct API endpoint for generic route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(genericRoutes['investigations']);
@@ -330,5 +334,26 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
 
     // Expect the axios.get to not have been made.
     expect(axios.get).not.toBeCalled();
+  });
+
+  it('requests the dataset entity from the correct API endpoint for generic route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(genericRoutes['datasets']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called once to get the investigation.
+    expect(axios.get).toBeCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledWith('/investigations/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
   });
 });
