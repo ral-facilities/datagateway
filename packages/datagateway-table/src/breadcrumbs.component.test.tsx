@@ -22,16 +22,16 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
 
   // The generic routes to test.
   const genericRoutes = {
-    investigations: '/browse/investigation',
-    datasets: '/browse/investigation/1/dataset',
-    datafiles: '/browse/investigation/1/dataset/1/datafile',
+    investigations: '/browse/investigation/',
+    datasets: '/browse/investigation/1/dataset/',
+    datafiles: '/browse/investigation/1/dataset/1/datafile/',
   };
 
   // Set up generic axios response; to be used for all tests.
   // We only need to include the ID, NAME, TITLE and VISIT_ID
   // as those are the entity fields which the breadcrumb looks for
   // when requesting information from the API.
-  (axios.get as jest.Mock).mockImplementation(() => {
+  (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({
       data: {
         ID: 1,
@@ -39,8 +39,8 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
         TITLE: 'Test 1',
         VISIT_ID: '1',
       },
-    });
-  });
+    })
+  );
 
   // Ensure that we can flush all promises before updating a wrapper.
   const flushPromises = (): Promise<NodeJS.Immediate> =>
@@ -74,7 +74,29 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
     // Set up store with test state and mount the breadcrumb.
     console.log('Test state: ', state);
     const testStore = mockStore(state);
-    let wrapper = mount(
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+          <PageBreadcrumbs />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly for datasets route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(genericRoutes['datasets']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const testStore = mockStore(state);
+    const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
           <PageBreadcrumbs />
