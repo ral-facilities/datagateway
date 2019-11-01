@@ -6,23 +6,22 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 
-import { resetActions } from './setupTests';
-import axios from 'axios';
 import { initialState } from './state/reducers/dgtable.reducer';
 import { StateType } from './state/app.types';
 import { createLocation } from 'history';
 
 import PageBreadcrumbs from './breadcrumbs.component';
+import axios from 'axios';
 
 jest.mock('loglevel');
 
 describe('PageBreadcrumb Component - Generic Tests', () => {
-  // let shallow;
   let mount;
   let mockStore;
   let state: StateType;
 
-  const generalRoutes = {
+  // The generic routes to test.
+  const genericRoutes = {
     investigations: '/browse/investigation',
     datasets: '/browse/investigation/1/dataset',
     datafiles: '/browse/investigation/1/dataset/1/datafile',
@@ -34,20 +33,21 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
   // when requesting information from the API.
   (axios.get as jest.Mock).mockImplementation(() => {
     Promise.resolve({
-      data: [
-        {
-          ID: 1,
-          NAME: 'INVESTIGATION 1',
-          TITLE: 'Test 1',
-          VISIT_ID: '1',
-        },
-      ],
+      data: {
+        ID: 1,
+        NAME: 'INVESTIGATION 1',
+        TITLE: 'Test 1',
+        VISIT_ID: '1',
+      },
     });
   });
 
+  // Ensure that we can flush all promises before updating a wrapper.
+  const flushPromises = (): Promise<NodeJS.Immediate> =>
+    new Promise(setImmediate);
+
   beforeEach(() => {
     mount = createMount();
-    // shallow = createShallow({ untilSelector: 'div' });
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -64,21 +64,17 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
   });
 
   afterEach(() => {
-    (axios.get as jest.Mock).mockClear();
-    resetActions();
+    mount.cleanUp();
   });
 
-  it('renders correctly for investigations route', () => {
-    const investigationsRoute = generalRoutes['investigations'];
-
-    // TODO: Do we need to set any apiUrl as axios is mocked?
+  it('renders correctly for investigations route', async () => {
     // Set up test state pathname.
-    state.router.location = createLocation(investigationsRoute);
+    state.router.location = createLocation(genericRoutes['investigations']);
 
     // Set up store with test state and mount the breadcrumb.
     console.log('Test state: ', state);
     const testStore = mockStore(state);
-    const wrapper = mount(
+    let wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
           <PageBreadcrumbs />
@@ -86,38 +82,10 @@ describe('PageBreadcrumb Component - Generic Tests', () => {
       </Provider>
     );
 
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
     expect(wrapper).toMatchSnapshot();
   });
-
-  // it('renders correctly when clicking a breadcrumb in trail', () => {
-  // });
 });
-
-// describe('Breadcrumb - DLS Tests', () => {
-//     // const DLSRoutes = {
-//     //     'proposals': '/browse/proposal/',
-//     //     'investigations': '/browse/proposal/INVESTIGATION%201/investigation/',
-//     //     'datasets': '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/',
-//     //     'datafiles': '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafiles/'
-//     // };
-
-//     afterEach(() => {
-//         (axios.get as jest.Mock).mockClear();
-//         // resetActions();
-//     });
-// });
-
-// describe('Breadcrumb - ISIS Tests', () => {
-//   // const ISISRoutes = {
-//   //     'instruments': '',
-//   //     'facilityCycles': '',
-//   //     'investigations': '/browse/investigation',
-//   //     'datasets': '/browse/investigation/1/dataset',
-//   //     'datafiles': '/browse/investigation/1/dataset/1/datafile',
-//   // };
-
-//   afterEach(() => {
-//     (axios.get as jest.Mock).mockClear();
-//     // resetActions();
-//   });
-// });
