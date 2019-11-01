@@ -5,51 +5,95 @@ import {
   TextColumnFilter,
   Order,
   TableActionProps,
+  DownloadCartItem,
+  DownloadCartTableItem,
 } from 'datagateway-common';
 import { IconButton, Grid, Paper, Typography, Button } from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
+import {
+  fetchDownloadCartItems,
+  removeAllDownloadCartItems,
+  removeDownloadCartItem,
+  getSize,
+  getCartDatafileCount,
+} from './downloadCartApi';
+import chunk from 'lodash.chunk';
 
-export interface DownloadCartTableItem {
-  ID: number;
-  NAME: string;
-  ENTITY_TYPE: string;
-  SIZE: number;
-  [key: string]: string | number;
-}
-
-const DownloadCart: React.FC = () => {
+const DownloadCartTable: React.FC = () => {
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
     {}
   );
+  const [data, setData] = React.useState<DownloadCartTableItem[]>([]);
+  const [sizesLoaded, setSizesLoaded] = React.useState(true);
+  const [sizesFinished, setSizesFinished] = React.useState(true);
 
   // TODO: work these out via API calls
   const [fileCount, setFileCount] = React.useState<number>(-1);
   const [fileCountMax, setFileCountMax] = React.useState<number>(-1);
-  const [totalSize, setTotalSize] = React.useState<number>(-1);
   const [totalSizeMax, setTotalSizeMax] = React.useState<number>(-1);
 
-  // TODO: get from API
-  const data: DownloadCartTableItem[] = [
-    {
-      ID: 1,
-      NAME: 'test1',
-      ENTITY_TYPE: 'datafile',
-      SIZE: 1,
-    },
-    {
-      ID: 2,
-      NAME: 'test2',
-      ENTITY_TYPE: 'dataset',
-      SIZE: 1024,
-    },
-    {
-      ID: 3,
-      NAME: 'test3',
-      ENTITY_TYPE: 'dataset',
-      SIZE: 2048,
-    },
-  ];
+  const totalSize = React.useMemo(() => {
+    if (sizesFinished) {
+      return data.reduce((accumulator, nextItem) => {
+        if (nextItem.size > -1) {
+          return accumulator + nextItem.size;
+        } else {
+          return accumulator;
+        }
+      }, 0);
+    } else {
+      return -1;
+    }
+  }, [data, sizesFinished]);
+
+  React.useEffect(() => {
+    fetchDownloadCartItems().then(cartItems => {
+      setData(cartItems.map(cartItem => ({ ...cartItem, size: -1 })));
+      setSizesLoaded(false);
+      setSizesFinished(false);
+      getCartDatafileCount(cartItems).then(count => setFileCount(count));
+    });
+  }, []);
+
+  React.useEffect(() => {
+    if (!sizesLoaded) {
+      const chunkSize = 10;
+      const chunkedData = chunk(data, chunkSize);
+      const allPromises: Promise<void>[] = [];
+      chunkedData.forEach((chunk, chunkIndex) => {
+        const updatedData = [...data];
+        const chunkPromises: Promise<void>[] = [];
+
+        const chunkIndexOffset = chunkIndex * chunkSize;
+        chunk.forEach((cartItem, index) => {
+          if (cartItem.size === -1) {
+            const promise = getSize(
+              cartItem.entityId,
+              cartItem.entityType
+            ).then(size => {
+              updatedData[chunkIndexOffset + index].size = size;
+            });
+            chunkPromises.push(promise);
+            allPromises.push(promise);
+          }
+        });
+
+        Promise.all(chunkPromises).then(() => {
+          setData(updatedData);
+        });
+      });
+      Promise.all(allPromises).then(() => {
+        setSizesFinished(true);
+      });
+      setSizesLoaded(true);
+    }
+  }, [data, sizesLoaded]);
+
+  React.useEffect(() => {
+    setFileCountMax(5000);
+    setTotalSizeMax(1000000000000);
+  }, [setFileCount, setFileCountMax, setTotalSizeMax]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -104,13 +148,6 @@ const DownloadCart: React.FC = () => {
     return filteredData.sort(sortCartItems);
   }, [data, sort, filters]);
 
-  React.useEffect(() => {
-    setFileCount(3);
-    setFileCountMax(3);
-    setTotalSize(2048 + 1024 + 1);
-    setTotalSizeMax(5000);
-  }, [setFileCount, setFileCountMax, setTotalSize, setTotalSizeMax]);
-
   return (
     <Grid container direction="column">
       <Grid item>
@@ -119,17 +156,17 @@ const DownloadCart: React.FC = () => {
             columns={[
               {
                 label: 'Name',
-                dataKey: 'NAME',
+                dataKey: 'name',
                 filterComponent: textFilter,
               },
               {
                 label: 'Type',
-                dataKey: 'ENTITY_TYPE',
+                dataKey: 'entityType',
                 filterComponent: textFilter,
               },
               {
                 label: 'Size',
-                dataKey: 'SIZE',
+                dataKey: 'size',
                 cellContentRenderer: props => {
                   return formatBytes(props.cellData);
                 },
@@ -148,14 +185,24 @@ const DownloadCart: React.FC = () => {
             data={sortedAndFilteredData}
             actions={[
               function removeButton({ rowData }: TableActionProps) {
+                const cartItem = rowData as DownloadCartItem;
                 return (
                   <IconButton
-                    aria-label={`Remove ${rowData.NAME} from cart`}
+                    aria-label={`Remove ${cartItem.name} from cart`}
                     key="remove"
                     size="small"
-                    onClick={() => {
-                      console.log('remove item!');
-                    }}
+                    onClick={() =>
+                      removeDownloadCartItem(
+                        cartItem.entityId,
+                        cartItem.entityType
+                      ).then(() =>
+                        setData(
+                          data.filter(
+                            item => item.entityId !== cartItem.entityId
+                          )
+                        )
+                      )
+                    }
                   >
                     <RemoveCircle />
                   </IconButton>
@@ -187,17 +234,19 @@ const DownloadCart: React.FC = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => console.log('remove all items!')}
+            onClick={() => removeAllDownloadCartItems().then(() => setData([]))}
           >
             Remove All
           </Button>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => console.log('download the cart!')}
+            onClick={() => alert('download the cart!')}
             disabled={
               fileCountMax !== -1 &&
               totalSizeMax !== -1 &&
+              totalSize !== -1 &&
+              fileCount !== -1 &&
               (fileCount > fileCountMax || totalSize > totalSizeMax)
             }
           >
@@ -209,4 +258,4 @@ const DownloadCart: React.FC = () => {
   );
 };
 
-export default DownloadCart;
+export default DownloadCartTable;

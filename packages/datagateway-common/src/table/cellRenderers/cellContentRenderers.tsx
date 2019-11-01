@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@material-ui/core';
 
 export function formatBytes(bytes: number): string {
+  if (bytes === -1) return 'Loading...';
   if (bytes === 0) return '0 B';
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 

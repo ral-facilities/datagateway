@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
-import DownloadCart from './downloadCart/downloadCart.component';
+import DownloadCartTable from './downloadCart/downloadCartTable.component';
 
 class App extends Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -33,7 +33,7 @@ class App extends Component<{}, { hasError: boolean }> {
 
     return (
       <div className="App">
-        <DownloadCart />
+        <DownloadCartTable />
       </div>
     );
   }

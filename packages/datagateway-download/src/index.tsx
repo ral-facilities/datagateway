@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import axios from 'axios';
 
 import singleSpaReact from 'single-spa-react';
 
@@ -61,6 +62,28 @@ export function unmount(props: any): Promise<void> {
 
 if (process.env.NODE_ENV === `development`) {
   ReactDOM.render(<App />, document.getElementById('datagateway-download'));
+
+  // TODO: replace with getting from daaas:token when supported
+  const icatUrl = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat`;
+  axios
+    .post(
+      `${icatUrl}/session`,
+      {
+        json: {
+          plugin: 'simple',
+          credentials: [{ username: 'root' }, { password: 'pw' }],
+        },
+      },
+      {
+        headers: {
+          contentType: 'application/x-www-form-urlencoded',
+        },
+      }
+    )
+    .then(response => {
+      console.log(response.data.sessionId);
+      window.localStorage.setItem('icat:token', response.data.sessionId);
+    });
 }
 
 // If you want your app to work offline and load faster, you can change
