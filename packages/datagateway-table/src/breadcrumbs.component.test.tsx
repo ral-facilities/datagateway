@@ -270,17 +270,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
   let mount;
   let state: StateType;
 
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({
-      data: {
-        ID: 1,
-        NAME: 'INVESTIGATION 1',
-        TITLE: 'Test 1',
-        VISIT_ID: '1',
-      },
-    })
-  );
-
   const createWrapper = (state: StateType): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     return mount(
@@ -310,13 +299,21 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         },
       })
     );
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          ID: 1,
+          NAME: 'INVESTIGATION 1',
+          TITLE: 'Test 1',
+          VISIT_ID: '1',
+        },
+      })
+    );
   });
 
   afterEach(() => {
     mount.cleanUp();
-  });
-
-  afterAll(() => {
     (axios.get as jest.Mock).mockClear();
   });
 
@@ -351,6 +348,32 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     // Expect the axios.get to have been called once to get the investigation.
     expect(axios.get).toBeCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith('/investigations/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+  });
+
+  it('requests the datafiles entity from the correct API endpoint for generic route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(genericRoutes['datafiles']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called once to get the investigation.
+    expect(axios.get).toBeCalledTimes(2);
+    expect(axios.get).toHaveBeenNthCalledWith(1, '/investigations/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+    expect(axios.get).toHaveBeenNthCalledWith(2, '/datasets/1', {
       headers: {
         Authorization: 'Bearer null',
       },
