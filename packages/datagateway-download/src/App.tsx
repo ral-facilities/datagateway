@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
 import DownloadCartTable from './downloadCart/downloadCartTable.component';
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'dgwd',
+});
 
 class App extends Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -33,7 +41,9 @@ class App extends Component<{}, { hasError: boolean }> {
 
     return (
       <div className="App">
-        <DownloadCartTable />
+        <StylesProvider generateClassName={generateClassName}>
+          <DownloadCartTable />
+        </StylesProvider>
       </div>
     );
   }

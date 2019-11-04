@@ -14,8 +14,8 @@
     "datagateway-common": "0.1.0",
     "lodash.chunk": "^4.2.0",
     "loglevel": "^1.6.3",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "react-scripts": "3.0.1",
     "single-spa-react": "^2.10.2",
     "typescript": "^3.5.3"
@@ -90,7 +90,7 @@
       "src/**/*.{tsx,ts,js,jsx}",
       "!src/index.tsx",
       "!src/serviceWorker.ts",
-      "!src/setupTests.js"
+      "!src/setupTests.ts"
     ]
   }
 }
