@@ -317,7 +317,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     (axios.get as jest.Mock).mockClear();
   });
 
-  it('requests the investigation entity from the correct API endpoint for generic route', async () => {
+  it('does not requests the investigation entity from the correct API endpoint for generic route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(genericRoutes['investigations']);
 
@@ -366,7 +366,8 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     await flushPromises();
     wrapper.update();
 
-    // Expect the axios.get to have been called once to get the investigation.
+    // Expect the axios.get to have been called twice; first to get the investigation
+    // and second to get the dataset.
     expect(axios.get).toBeCalledTimes(2);
     expect(axios.get).toHaveBeenNthCalledWith(1, '/investigations/1', {
       headers: {
@@ -378,5 +379,46 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
+  });
+
+  it('does not request the proposal entity from the correct API endpoint for DLS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(DLSRoutes['proposals']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to not have been called.
+    expect(axios.get).not.toBeCalled();
+  });
+
+  it('requests the investigation entity from the correct API endpoint for DLS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(DLSRoutes['investigations']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called twice.
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledWith(
+      '/investigations/findone?where=' +
+        JSON.stringify({ NAME: { eq: 'INVESTIGATION 1' } }),
+      {
+        headers: {
+          Authorization: 'Bearer null',
+        },
+      }
+    );
   });
 });

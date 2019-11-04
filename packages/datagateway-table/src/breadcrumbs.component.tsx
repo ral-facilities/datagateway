@@ -207,8 +207,6 @@ class PageBreadcrumbs extends React.Component<
             // If we are searching for proposal, we know that there is no investigation
             // information in the current path. We will need to query and select one investigation
             // from all investigations with the entity id (which is the proposal/investigation name).
-
-            // TODO: Use JSON.stringify so spaces are not an issue when testing.
             requestEntityUrl =
               `${apiEntity}s`.toLowerCase() +
               '/findone?where=' +
