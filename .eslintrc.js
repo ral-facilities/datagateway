@@ -33,6 +33,7 @@ module.exports = {
         allowTypedFunctionExpressions: true,
       },
     ],
+    'import/no-extraneous-dependencies': 'error',
   },
   parserOptions: {
     ecmaFeatures: {
