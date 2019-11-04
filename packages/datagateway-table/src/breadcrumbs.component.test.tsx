@@ -30,7 +30,7 @@ const ISISRoutes = {
   investigations: '/browse/instrument/1/facilityCycle/1/investigation',
   datasets: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset',
   datafiles:
-    '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafiles',
+    '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile',
 };
 
 // The DLS routes to test.
@@ -435,6 +435,37 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     wrapper.update();
 
     // Expect the axios.get to have been called twice.
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenNthCalledWith(
+      1,
+      '/investigations/findone?where=' +
+        JSON.stringify({ NAME: { eq: 'INVESTIGATION 1' } }),
+      {
+        headers: {
+          Authorization: 'Bearer null',
+        },
+      }
+    );
+    expect(axios.get).toHaveBeenNthCalledWith(2, '/investigations/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+  });
+
+  it('requests the datafiles entity from the correct API endpoint for DLS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(DLSRoutes['datafiles']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called three times.
     expect(axios.get).toHaveBeenCalledTimes(3);
     expect(axios.get).toHaveBeenNthCalledWith(
       1,
@@ -451,7 +482,137 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
         Authorization: 'Bearer null',
       },
     });
-    expect(axios.get).toHaveBeenNthCalledWith(2, '/datasets/1', {
+    expect(axios.get).toHaveBeenNthCalledWith(3, '/datasets/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+  });
+
+  it('requests the instrument entity from the correct API endpoint for ISIS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(ISISRoutes['instruments']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called three times.
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('requests the facilityCycles entity from the correct API endpoint for ISIS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(ISISRoutes['facilityCycles']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called three times.
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledWith('/instruments/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+  });
+
+  it('requests the investigations entity from the correct API endpoint for ISIS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(ISISRoutes['investigations']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called three times.
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenNthCalledWith(1, '/instruments/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+    expect(axios.get).toHaveBeenNthCalledWith(2, '/facilitycycles/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+  });
+
+  it('requests the datasets entity from the correct API endpoint for ISIS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(ISISRoutes['datasets']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called three times.
+    expect(axios.get).toHaveBeenCalledTimes(3);
+    expect(axios.get).toHaveBeenNthCalledWith(1, '/instruments/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+    expect(axios.get).toHaveBeenNthCalledWith(2, '/facilitycycles/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+    expect(axios.get).toHaveBeenNthCalledWith(3, '/investigations/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+  });
+
+  it('requests the datafiles entity from the correct API endpoint for ISIS route', async () => {
+    // Set up test state pathname.
+    state.router.location = createLocation(ISISRoutes['datafiles']);
+
+    // Set up store with test state and mount the breadcrumb.
+    console.log('Test state: ', state);
+    const wrapper = createWrapper(state);
+
+    // Flush promises and update the re-render the wrapper.
+    await flushPromises();
+    wrapper.update();
+
+    // Expect the axios.get to have been called three times.
+    expect(axios.get).toHaveBeenCalledTimes(4);
+    expect(axios.get).toHaveBeenNthCalledWith(1, '/instruments/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+    expect(axios.get).toHaveBeenNthCalledWith(2, '/facilitycycles/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+    expect(axios.get).toHaveBeenNthCalledWith(3, '/investigations/1', {
+      headers: {
+        Authorization: 'Bearer null',
+      },
+    });
+    expect(axios.get).toHaveBeenNthCalledWith(4, '/datasets/1', {
       headers: {
         Authorization: 'Bearer null',
       },
