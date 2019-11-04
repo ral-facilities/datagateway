@@ -2654,7 +2654,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
         <PageBreadcrumbs
           apiUrl=""
           dispatch={[Function]}
-          location="/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafiles"
+          location="/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile"
         >
           <div>
             <WithStyles(ForwardRef(Paper))
@@ -3776,7 +3776,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                         className="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
                                       >
                                         <i>
-                                          Datafiless
+                                          Datafiles
                                         </i>
                                       </p>
                                     </ForwardRef(Typography)>
