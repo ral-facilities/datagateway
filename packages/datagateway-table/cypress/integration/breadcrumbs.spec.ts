@@ -79,7 +79,7 @@ describe('Breadcrumbs Component', () => {
     cy.wait('@getInvestigation');
 
     // Click on the first link with Dataset 1.
-    cy.get('a')
+    cy.get('[role="gridcell"] a')
       .contains('Dataset 1')
       .click();
 

@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Preloader component does not render when the site is not loading 1`] = `<div />`;
+
+exports[`Preloader component renders when the site is loading 1`] = `
+<div>
+  <div
+    style={
+      Object {
+        "alignItems": "center",
+        "backgroundColor": "rgba(255,255,255,1)",
+        "display": "flex",
+        "flexDirection": "column",
+        "height": "100%",
+        "justifyContent": "center",
+        "width": "100%",
+        "zIndex": 1000,
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "boxSizing": "border-box",
+          "padding": "10px 0",
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "animation": "rotate 10s infinite linear",
+            "display": "block",
+            "height": 230,
+            "margin": "auto",
+            "width": 230,
+          }
+        }
+      >
+        <i
+          style={
+            Object {
+              "animationDuration": "3s",
+              "animationIterationCount": "infinite",
+              "animationName": "rotate",
+              "animationTimingFunction": "cubic-bezier(.09, 0, 0, .03)",
+              "border": "solid 8px transparent",
+              "borderBottom": "none",
+              "borderColor": "#8C4799",
+              "borderTopLeftRadius": 140,
+              "borderTopRightRadius": 140,
+              "boxSizing": "border-box",
+              "display": "inline-block",
+              "height": 70,
+              "left": "50%",
+              "marginLeft": -70,
+              "marginTop": -70,
+              "position": "absolute",
+              "top": "50%",
+              "transformOrigin": "50% 100% 0",
+              "width": 140,
+            }
+          }
+        />
+        <i
+          style={
+            Object {
+              "animationDuration": "3s",
+              "animationIterationCount": "infinite",
+              "animationName": "rotate",
+              "animationTimingFunction": "cubic-bezier(.09, 0.3, 0.12, .03)",
+              "border": "solid 8px transparent",
+              "borderBottom": "none",
+              "borderColor": "#1D4F91",
+              "borderTopLeftRadius": 148,
+              "borderTopRightRadius": 148,
+              "boxSizing": "border-box",
+              "display": "inline-block",
+              "height": 79,
+              "left": "50%",
+              "marginLeft": -79,
+              "marginTop": -79,
+              "position": "absolute",
+              "top": "50%",
+              "transformOrigin": "50% 100% 0",
+              "width": 158,
+            }
+          }
+        />
+        <i
+          style={
+            Object {
+              "animationDuration": "3s",
+              "animationIterationCount": "infinite",
+              "animationName": "rotate",
+              "animationTimingFunction": "cubic-bezier(.09, 0.6, 0.24, .03)",
+              "border": "solid 8px transparent",
+              "borderBottom": "none",
+              "borderColor": "#C34613",
+              "borderTopLeftRadius": 156,
+              "borderTopRightRadius": 156,
+              "boxSizing": "border-box",
+              "display": "inline-block",
+              "height": 88,
+              "left": "50%",
+              "marginLeft": -88,
+              "marginTop": -88,
+              "position": "absolute",
+              "top": "50%",
+              "transformOrigin": "50% 100% 0",
+              "width": 176,
+            }
+          }
+        />
+        <i
+          style={
+            Object {
+              "animationDuration": "3s",
+              "animationIterationCount": "infinite",
+              "animationName": "rotate",
+              "animationTimingFunction": "cubic-bezier(.09, 0.8999999999999999, 0.36, .03)",
+              "border": "solid 8px transparent",
+              "borderBottom": "none",
+              "borderColor": "#008275",
+              "borderTopLeftRadius": 164,
+              "borderTopRightRadius": 164,
+              "boxSizing": "border-box",
+              "display": "inline-block",
+              "height": 97,
+              "left": "50%",
+              "marginLeft": -97,
+              "marginTop": -97,
+              "position": "absolute",
+              "top": "50%",
+              "transformOrigin": "50% 100% 0",
+              "width": 194,
+            }
+          }
+        />
+        <i
+          style={
+            Object {
+              "animationDuration": "3s",
+              "animationIterationCount": "infinite",
+              "animationName": "rotate",
+              "animationTimingFunction": "cubic-bezier(.09, 1.2, 0.48, .03)",
+              "border": "solid 8px transparent",
+              "borderBottom": "none",
+              "borderColor": "#63666A",
+              "borderTopLeftRadius": 172,
+              "borderTopRightRadius": 172,
+              "boxSizing": "border-box",
+              "display": "inline-block",
+              "height": 106,
+              "left": "50%",
+              "marginLeft": -106,
+              "marginTop": -106,
+              "position": "absolute",
+              "top": "50%",
+              "transformOrigin": "50% 100% 0",
+              "width": 212,
+            }
+          }
+        />
+      </div>
+    </div>
+    <div>
+      Loading...
+    </div>
+  </div>
+</div>
+`;

@@ -9,6 +9,7 @@ import {
   SortTableType,
   FilterTablePayload,
   FilterTableType,
+  ClearTableType,
   ConfigureStringsType,
   ConfigureStringsPayload,
   FeatureSwitches,
@@ -17,8 +18,10 @@ import {
   URLs,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  SettingsLoadedType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
+import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
 
@@ -31,6 +34,9 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   for (let [key, value] of Object.entries(sort)) {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
+
+  // sort by ID first to guarantee order
+  searchParams.append('order', JSON.stringify(`ID asc`));
 
   for (let [column, filter] of Object.entries(filters)) {
     if (typeof filter === 'object') {
@@ -83,6 +89,14 @@ export const filterTable = (
     column,
     filter,
   },
+});
+
+export const clearTable = (): Action => ({
+  type: ClearTableType,
+});
+
+export const settingsLoaded = (): Action => ({
+  type: SettingsLoadedType,
 });
 
 export const configureStrings = (
@@ -169,6 +183,8 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           ? '/' + settings['ui-strings']
           : settings['ui-strings'];
         dispatch(loadStrings(uiStringResourcesPath));
+
+        dispatch(settingsLoaded());
       })
       .catch(error => {
         log.error(`Error loading settings.json: ${error.message}`);
