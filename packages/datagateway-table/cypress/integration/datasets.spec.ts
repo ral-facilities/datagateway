@@ -10,7 +10,7 @@ describe('Datasets Table', () => {
   });
 
   it('should be able to click a dataset to see its datafiles', () => {
-    cy.get('a')
+    cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
     cy.location('pathname').should(

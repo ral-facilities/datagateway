@@ -10,7 +10,7 @@ describe('Investigations Table', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('a')
+    cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
     cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
