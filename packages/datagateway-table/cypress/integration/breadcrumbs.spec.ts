@@ -79,57 +79,54 @@ describe('Breadcrumbs Component', () => {
       .should('have.text', 'Datafiles');
   });
 
-  // it('loads breadcrumb trail correctly after pressing forward/backward browser keys', () => {
-  //   // Load pages into the history.
-  //   cy.visit('/browse/investigation/1/dataset');
+  it('loads breadcrumb trail correctly after pressing back browser key', () => {
+    // Load pages into the history.
+    cy.visit('/browse/investigation/1/dataset');
 
-  //   cy.wait('@getInvestigation');
+    cy.wait('@getInvestigation');
 
-  //   // Click on the first link with Dataset 1.
-  //   cy.get('[role="gridcell"] a')
-  //     .contains('Dataset 1')
-  //     .click({ force: true });
+    // Click on the first link with Dataset 1.
+    cy.contains('DATASET 1').click({ force: true });
 
-  //   // Check to ensure the location is the datafile.
-  //   cy.location('pathname').should(
-  //     'eq',
-  //     '/browse/investigation/1/dataset/1/datafile'
-  //   );
+    // Check to ensure the location is the datafile.
+    cy.location('pathname').should(
+      'eq',
+      '/browse/investigation/1/dataset/25/datafile'
+    );
 
-  //   cy.wait('@getDataset');
+    cy.wait('@getDataset');
 
-  //   // Check the breadcrumb loaded on the current page.
-  //   cy.get('a')
-  //     .first()
-  //     .contains('Investigations')
-  //     .should('have.attr', 'href', '/browse/investigation');
+    // Check the first breadcrumb loaded on the current page.
+    cy.get('[aria-label="Breadcrumb-base"]')
+      .should('have.text', 'Investigations')
+      .should('have.attr', 'href', '/browse/investigation');
 
-  //   cy.contains(
-  //     'Including spend increase ability music skill former. Agreement director ' +
-  //       'concern once technology sometimes someone staff. Success pull bar. Laugh senior example.'
-  //   ).should('have.attr', 'href', '/browse/investigation/1/dataset');
+    cy.get('[aria-label="Breadcrumb-hierarchy-1"]')
+      .should(
+        'have.text',
+        'Including spend increase ability music skill former. Agreement director ' +
+          'concern once technology sometimes someone staff.\nSuccess pull bar. Laugh senior example.'
+      )
+      .should('have.attr', 'href', '/browse/investigation/1/dataset');
 
-  //   cy.get(':nth-child(5) > .MuiTypography-root').contains('Dataset 1');
+    cy.get('[aria-label="Breadcrumb-hierarchy-2"]').contains('DATASET 1');
 
-  //   cy.get('i')
-  //     .first()
-  //     .contains('Datafiles');
+    cy.get('[aria-label="Breadcrumb-last"]').contains('Datafiles');
 
-  //   // Press back.
-  //   cy.go('back');
+    // Press back.
+    cy.go('back');
 
-  //   // Check the breadcrumb trail on the previous page.
-  //   cy.get('a')
-  //     .first()
-  //     .contains('Investigations')
-  //     .should('have.attr', 'href', '/browse/investigation');
+    // Check the breadcrumb trail on the previous page.
+    cy.get('[aria-label="Breadcrumb-base"]')
+      .should('have.text', 'Investigations')
+      .should('have.attr', 'href', '/browse/investigation');
 
-  //   cy.get(':nth-child(3) > .MuiTypography-root').contains(
-  //     'quas accusantium omnis'
-  //   );
+    cy.get('[aria-label="Breadcrumb-hierarchy-1"]').should(
+      'have.text',
+      'Including spend increase ability music skill former. Agreement director ' +
+        'concern once technology sometimes someone staff.\nSuccess pull bar. Laugh senior example.'
+    );
 
-  //   cy.get('i')
-  //     .first()
-  //     .contains('Datasets');
-  // });
+    cy.get('[aria-label="Breadcrumb-last"]').contains('Datasets');
+  });
 });
