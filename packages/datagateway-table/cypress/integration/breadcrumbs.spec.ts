@@ -1,12 +1,13 @@
 describe('Breadcrumbs Component', () => {
   beforeEach(() => {
+    // Get a session and visit the table.
+    cy.login('user', 'password');
+
     // Create route and aliases.
     cy.server();
     cy.route('/investigations/*').as('getInvestigation');
     cy.route('/datasets/*').as('getDataset');
 
-    // Get a session and visit the table.
-    cy.login('user', 'password');
     cy.visit('/browse/investigation');
   });
 
@@ -18,16 +19,17 @@ describe('Breadcrumbs Component', () => {
   });
 
   it('should click on investigation and add breadcrumbs correctly', () => {
-    // Click on an investigation in the table.
+    // Click on the first investigation in the table.
     cy.get('[role="gridcell"] a')
       .first()
-      .click();
+      .click({ force: true });
 
     // Wait for the investigation request to complete.
     cy.wait('@getInvestigation');
 
     // Check to see if the breadcrumbs have been added correctly.
-    // Check that there is a link to /browse/investigations.
+    // Get the first link on the page which is a link to
+    // /browse/investigations in the breadcrumb trail.
     cy.get('a')
       .first()
       .contains('Investigations')
@@ -35,7 +37,8 @@ describe('Breadcrumbs Component', () => {
 
     // Get the investigation name.
     cy.get(':nth-child(3) > .MuiTypography-root').contains(
-      'quas accusantium omnis'
+      'Including spend increase ability music skill former. Agreement director ' +
+        'concern once technology sometimes someone staff. Success pull bar. Laugh senior example.'
     );
 
     // Ensure current page is datasets.
@@ -60,7 +63,10 @@ describe('Breadcrumbs Component', () => {
 
     // Get investigation datasets table breadcrumb.
     cy.get(':nth-child(3) > .MuiTypography-root')
-      .contains('quas accusantium omnis')
+      .contains(
+        'Including spend increase ability music skill former. Agreement director ' +
+          'concern once technology sometimes someone staff. Success pull bar. Laugh senior example.'
+      )
       .should('have.attr', 'href', '/browse/investigation/1/dataset');
 
     // Get current dataset page breadcrumb.
@@ -81,7 +87,7 @@ describe('Breadcrumbs Component', () => {
     // Click on the first link with Dataset 1.
     cy.get('[role="gridcell"] a')
       .contains('Dataset 1')
-      .click();
+      .click({ force: true });
 
     // Check to ensure the location is the datafile.
     cy.location('pathname').should(
@@ -97,9 +103,10 @@ describe('Breadcrumbs Component', () => {
       .contains('Investigations')
       .should('have.attr', 'href', '/browse/investigation');
 
-    cy.get(':nth-child(3) > .MuiTypography-root')
-      .contains('quas accusantium omnis')
-      .should('have.attr', 'href', '/browse/investigation/1/dataset');
+    cy.contains(
+      'Including spend increase ability music skill former. Agreement director ' +
+        'concern once technology sometimes someone staff. Success pull bar. Laugh senior example.'
+    ).should('have.attr', 'href', '/browse/investigation/1/dataset');
 
     cy.get(':nth-child(5) > .MuiTypography-root').contains('Dataset 1');
 
