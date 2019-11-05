@@ -355,6 +355,7 @@ class PageBreadcrumbs extends React.Component<
                   <Typography
                     color="textPrimary"
                     key={`base-${breadcrumbState.base.entityName}`}
+                    aria-label="Breadcrumb-base"
                   >
                     {breadcrumbState.base.displayName}
                   </Typography>
@@ -363,6 +364,7 @@ class PageBreadcrumbs extends React.Component<
                     component={Link}
                     to={breadcrumbState.base.url}
                     key={`base-${breadcrumbState.base.entityName}`}
+                    aria-label="Breadcrumb-base"
                   >
                     {breadcrumbState.base.displayName}
                   </MaterialLink>
@@ -382,6 +384,7 @@ class PageBreadcrumbs extends React.Component<
                     <Typography
                       color="textPrimary"
                       key={`${breadcrumbInfo.id}`}
+                      aria-label={`Breadcrumb-hierarchy-${index + 1}`}
                     >
                       {breadcrumbInfo.displayName}
                     </Typography>
@@ -390,6 +393,7 @@ class PageBreadcrumbs extends React.Component<
                       component={Link}
                       to={breadcrumbInfo.url}
                       key={`${breadcrumbInfo.id}`}
+                      aria-label={`Breadcrumb-hierarchy-${index + 1}`}
                     >
                       {breadcrumbInfo.displayName}
                     </MaterialLink>
@@ -398,7 +402,7 @@ class PageBreadcrumbs extends React.Component<
 
                 {/* // Render the last breadcrumb information; this is the current table view. */}
                 {breadcrumbState.last.displayName !== 'N/A' ? (
-                  <Typography color="textPrimary">
+                  <Typography color="textPrimary" aria-label="Breadcrumb-last">
                     <i>{breadcrumbState.last.displayName}</i>
                   </Typography>
                 ) : null}
