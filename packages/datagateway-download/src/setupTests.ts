@@ -11,3 +11,6 @@ if (typeof window.URL.createObjectURL === 'undefined') {
 }
 
 export const flushPromises = (): Promise<void> => new Promise(setImmediate);
+
+// Mock lodash.debounce to return the function we want to call.
+jest.mock('lodash.debounce', () => (fn: Function) => fn);

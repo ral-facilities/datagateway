@@ -67,16 +67,13 @@ const DownloadCartTable: React.FC = () => {
 
         const chunkIndexOffset = chunkIndex * chunkSize;
         chunk.forEach((cartItem, index) => {
-          if (cartItem.size === -1) {
-            const promise = getSize(
-              cartItem.entityId,
-              cartItem.entityType
-            ).then(size => {
+          const promise = getSize(cartItem.entityId, cartItem.entityType).then(
+            size => {
               updatedData[chunkIndexOffset + index].size = size;
-            });
-            chunkPromises.push(promise);
-            allPromises.push(promise);
-          }
+            }
+          );
+          chunkPromises.push(promise);
+          allPromises.push(promise);
         });
 
         Promise.all(chunkPromises).then(() => {
@@ -220,11 +217,11 @@ const DownloadCartTable: React.FC = () => {
         justify="space-between"
       >
         <Grid container item direction="column" xs={3}>
-          <Typography>
+          <Typography id="fileCountDisplay">
             Number of files: {fileCount !== -1 ? fileCount : 'Calculating...'}
             {fileCountMax !== -1 && ` / ${fileCountMax}`}
           </Typography>
-          <Typography>
+          <Typography id="totalSizeDisplay">
             Total size:{' '}
             {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
             {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
@@ -232,6 +229,7 @@ const DownloadCartTable: React.FC = () => {
         </Grid>
         <Grid container item alignItems="center" justify="space-around" xs={3}>
           <Button
+            id="removeAllButton"
             variant="contained"
             color="primary"
             onClick={() => removeAllDownloadCartItems().then(() => setData([]))}
@@ -239,15 +237,15 @@ const DownloadCartTable: React.FC = () => {
             Remove All
           </Button>
           <Button
+            id="downloadCartButton"
             variant="contained"
             color="primary"
             onClick={() => alert('download the cart!')}
             disabled={
-              fileCountMax !== -1 &&
-              totalSizeMax !== -1 &&
-              totalSize !== -1 &&
-              fileCount !== -1 &&
-              (fileCount > fileCountMax || totalSize > totalSizeMax)
+              fileCount === -1 ||
+              totalSize === -1 ||
+              (fileCountMax !== -1 && fileCount > fileCountMax) ||
+              (totalSizeMax !== -1 && totalSize > totalSizeMax)
             }
           >
             Download Cart

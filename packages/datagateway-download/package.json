@@ -88,6 +88,7 @@
     ],
     "collectCoverageFrom": [
       "src/**/*.{tsx,ts,js,jsx}",
+      "!src/react-app-env.d.ts",
       "!src/index.tsx",
       "!src/serviceWorker.ts",
       "!src/setupTests.ts"
