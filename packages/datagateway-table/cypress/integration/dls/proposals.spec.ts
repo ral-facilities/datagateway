@@ -1,4 +1,4 @@
-describe('Proposals Table', () => {
+describe('DLS - Proposals Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
     cy.visit('/browse/proposal');
@@ -77,6 +77,31 @@ describe('Proposals Table', () => {
         'Billion head kitchen peace appear sit civil car. State both itself only seat mean however treatment. ' +
           'Standard himself type care respond. Rise response speak worry none.'
       );
+    });
+  });
+
+  describe('should be able to filter by', () => {
+    it('text', () => {
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .type('dog');
+
+      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'INVESTIGATION 17'
+      );
+    });
+
+    it.only('multiple columns', () => {
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .type('dog');
+
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('INVESTIGATION 47');
+
+      cy.get('[aria-rowcount="1"]').should('exist');
     });
   });
 });
