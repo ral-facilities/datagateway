@@ -140,11 +140,9 @@ describe('DLS - Visits Table', () => {
       cy.contains('Sample: SAMPLE 1').should('be.visible');
 
       cy.get('[aria-controls="visit-publications-panel"]').click();
-      cy.get('[aria-labelledby="visit-publications-tab"] p')
-        .eq(0)
-        .contains(
-          'Reference: Democrat sea gas road police. Citizen relationship southern affect.\nThousand national especially. In edge far education.'
-        );
+      cy.contains(
+        'Reference: Democrat sea gas road police. Citizen relationship southern affect.\nThousand national especially. In edge far education.'
+      );
     });
 
     it('and then not view details anymore', () => {
