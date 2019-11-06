@@ -1,10 +1,6 @@
 describe('DLS - Visits Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-
-    cy.server();
-    cy.route('/investigations?*').as('getInvestigation');
-
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/');
   });
 
