@@ -92,7 +92,7 @@ describe('DLS - Proposals Table', () => {
       );
     });
 
-    it.only('multiple columns', () => {
+    it('multiple columns', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
         .type('dog');
