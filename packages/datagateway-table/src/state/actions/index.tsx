@@ -140,7 +140,7 @@ export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async dispatch => {
     await axios
-      .get('/settings.json')
+      .get('/datagateway-table-settings.json')
       .then(res => {
         const settings = res.data;
 
@@ -187,7 +187,9 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(settingsLoaded());
       })
       .catch(error => {
-        log.error(`Error loading settings.json: ${error.message}`);
+        log.error(
+          `Error loading datagateway-table-settings.json: ${error.message}`
+        );
       });
   };
 };
