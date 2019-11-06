@@ -64,4 +64,53 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
     });
   });
+
+  describe('should be able to filter by', () => {
+    it('text', () => {
+      cy.get('[aria-label="Filter by Visit Id"]')
+        .find('input')
+        .type('64');
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('64');
+    });
+
+    it.only('date between', () => {
+      cy.get('[aria-label="Start Date date filter from').type('2000-04-03');
+
+      cy.get('[aria-label="Start Date date filter to"]')
+        .parent()
+        .find('button')
+        .click();
+
+      cy.get('.MuiPickersDay-day[tabindex="0"]')
+        .first()
+        .click();
+
+      cy.contains('OK').click();
+
+      let date = new Date();
+      date.setDate(1);
+
+      cy.get('[aria-label="Start Date date filter to"]').should(
+        'have.value',
+        date.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('64');
+    });
+
+    it('multiple columns', () => {
+      cy.get('[aria-label="Filter by Visit Id"]')
+        .find('input')
+        .type('64');
+
+      cy.get('[aria-label="Filter by Beamline')
+        .find('input')
+        .type('INSTRUMENT 8');
+
+      cy.get('[aria-rowcount="1"').should('exist');
+    });
+  });
 });
