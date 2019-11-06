@@ -36,7 +36,7 @@ describe('Proposals Table', () => {
       );
     });
 
-    it.only('descending order', () => {
+    it('descending order', () => {
       cy.contains('Title').click();
       cy.contains('Title').click();
 
@@ -48,6 +48,34 @@ describe('Proposals Table', () => {
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
         'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
+      );
+    });
+
+    it('no order', () => {
+      cy.contains('Title').click();
+      cy.contains('Title').click();
+      cy.contains('Title').click();
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"').contains(
+        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+      );
+    });
+
+    it('multiple columns', () => {
+      cy.contains('Name').click();
+      cy.contains('Title').click();
+
+      cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
+        'Billion head kitchen peace appear sit civil car. State both itself only seat mean however treatment. ' +
+          'Standard himself type care respond. Rise response speak worry none.'
       );
     });
   });
