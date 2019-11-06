@@ -1,6 +1,10 @@
 describe('DLS - Visits Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+
+    cy.server();
+    cy.route('/investigations?*').as('getInvestigation');
+
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/');
   });
 
@@ -72,10 +76,10 @@ describe('DLS - Visits Table', () => {
         .type('64');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
     });
 
-    it.only('date between', () => {
+    it('date between', () => {
       cy.get('[aria-label="Start Date date filter from').type('2000-04-03');
 
       cy.get('[aria-label="Start Date date filter to"]')
@@ -98,7 +102,7 @@ describe('DLS - Visits Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
     });
 
     it('multiple columns', () => {
@@ -111,6 +115,47 @@ describe('DLS - Visits Table', () => {
         .type('INSTRUMENT 8');
 
       cy.get('[aria-rowcount="1"').should('exist');
+    });
+  });
+
+  describe('should be able to view details', () => {
+    beforeEach(() => {
+      cy.get('[aria-label="Show details"]')
+        .eq(0)
+        .click();
+    });
+
+    it('when no other row is showing details', () => {
+      cy.contains(
+        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+      ).should('be.visible');
+      cy.get('[aria-label="Hide details"]').should('exist');
+    });
+
+    it('and view users, samples and publications', () => {
+      cy.get('[aria-controls="visit-users-panel"]').click();
+      cy.contains('Investigator: Robert499').should('be.visible');
+
+      cy.get('[aria-controls="visit-samples-panel"]').click();
+      cy.contains('Sample: SAMPLE 1').should('be.visible');
+
+      cy.get('[aria-controls="visit-publications-panel"]').click();
+      cy.get('[aria-labelledby="visit-publications-tab"] p')
+        .eq(0)
+        .contains(
+          'Reference: Democrat sea gas road police. Citizen relationship southern affect.\nThousand national especially. In edge far education.'
+        );
+    });
+
+    it('and then not view details anymore', () => {
+      cy.get('[aria-label="Hide details"]')
+        .first()
+        .click();
+
+      cy.contains(
+        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+      ).should('not.be.visible');
+      cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
 });
