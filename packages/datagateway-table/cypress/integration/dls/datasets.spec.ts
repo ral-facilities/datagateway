@@ -75,4 +75,64 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
     });
   });
+
+  describe('should be able to view details', () => {
+    it('when no other row is showing details', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.contains('Name: DATASET 1').should('be.visible');
+      cy.get('[aria-label="Hide details"]').should('exist');
+    });
+
+    it('when another row is showing details', () => {
+      cy.get('[aria-label="Show details"]')
+        .eq(1)
+        .click();
+
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.contains('Name: DATASET 1').should('be.visible');
+      cy.contains('Name: DATASET 241').should('not.be.visible');
+      cy.get('[aria-label="Hide details"]').should('have.length', 1);
+    });
+
+    it('and view dataset details and type', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.contains(
+        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+      ).should('be.visible');
+    });
+
+    it('should be able to view the dataset type panel', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.get('[aria-controls="dataset-type-panel"]').click();
+
+      cy.contains('Name: DATASETTYPE 3').should('be.visible');
+    });
+
+    it.only('and then not view details anymore', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.get('[aria-label="Hide details"]')
+        .first()
+        .click();
+
+      cy.contains(
+        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+      ).should('not.be.visible');
+      cy.get('[aria-label="Hide details"]').should('not.exist');
+    });
+  });
 });

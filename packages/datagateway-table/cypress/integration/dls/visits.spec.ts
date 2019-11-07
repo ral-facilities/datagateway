@@ -135,7 +135,10 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    it('and view users, samples and publications', () => {
+    // TODO: Since we only have one investigation, we cannot test
+    // showing details when another row is showing details at the moment.
+
+    it('and view visit users, samples and publications', () => {
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.contains('Investigator: Robert499').should('be.visible');
 
