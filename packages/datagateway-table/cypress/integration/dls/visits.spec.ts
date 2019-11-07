@@ -122,13 +122,11 @@ describe('DLS - Visits Table', () => {
   });
 
   describe('should be able to view details', () => {
-    beforeEach(() => {
-      cy.get('[aria-label="Show details"]')
-        .eq(0)
-        .click();
-    });
-
     it('when no other row is showing details', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
       cy.contains(
         'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
       ).should('be.visible');
@@ -139,6 +137,10 @@ describe('DLS - Visits Table', () => {
     // showing details when another row is showing details at the moment.
 
     it('and view visit users, samples and publications', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.contains('Investigator: Robert499').should('be.visible');
 
@@ -152,6 +154,10 @@ describe('DLS - Visits Table', () => {
     });
 
     it('and then not view details anymore', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
       cy.get('[aria-label="Hide details"]')
         .first()
         .click();
