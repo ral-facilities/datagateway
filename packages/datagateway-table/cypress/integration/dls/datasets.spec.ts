@@ -150,7 +150,7 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
-    it('and view dataset details and type', () => {
+    it('and view dataset details', () => {
       cy.get('[aria-label="Show details"]')
         .first()
         .click();
