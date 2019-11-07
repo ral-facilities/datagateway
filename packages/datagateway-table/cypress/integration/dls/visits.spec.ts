@@ -83,7 +83,7 @@ describe('DLS - Visits Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from').type('2000-04-03');
+      cy.get('[aria-label="Start Date date filter from"]').type('2000-04-03');
 
       cy.get('[aria-label="Start Date date filter to"]')
         .parent()
