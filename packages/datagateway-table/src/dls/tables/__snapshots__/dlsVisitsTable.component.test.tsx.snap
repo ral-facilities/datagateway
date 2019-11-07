@@ -21,6 +21,7 @@ exports[`DLS Visits table component renders correctly 1`] = `
         },
         Object {
           "dataKey": "DATASET_COUNT",
+          "disableSort": true,
           "label": "Dataset Count",
         },
         Object {
