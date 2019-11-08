@@ -49,7 +49,7 @@ describe('ISIS - Instruments Table', () => {
       );
     });
 
-    it.only('no order', () => {
+    it('no order', () => {
       cy.contains('Name').click();
       cy.contains('Name').click();
       cy.contains('Name').click();
@@ -65,6 +65,83 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
         'Drug something increase common nature reflect purpose.\nKeep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
       );
+    });
+  });
+
+  describe('should be able to filter by', () => {
+    it('text', () => {
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('radio');
+
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+        'Radio land involve economic. Surface law how full election agency.\nAffect reality oil order catch work everybody. Husband partner do account more may power. Us police difficult fine reach what.'
+      );
+    });
+  });
+
+  describe('should be able to view details', () => {
+    it('when no other row is showing details', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.contains(
+        'Name: Drug something increase common nature reflect purpose.\nKeep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
+      ).should('be.visible');
+      cy.get('[aria-label="Hide details"]').should('exist');
+    });
+
+    it('when another row is showing details', () => {
+      cy.get('[aria-label="Show details"]')
+        .eq(2)
+        .click();
+
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.contains(
+        'Name: Drug something increase common nature reflect purpose.\nKeep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
+      ).should('be.visible');
+      cy.contains(
+        'Name: North understand leader everyone skin. Actually prove begin boy those. Could size only.\nLate race city suddenly. Treat her wife training family effect.'
+      ).should('not.be.visible');
+      cy.get('[aria-label="Hide details"]').should('have.length', 1);
+    });
+
+    it.only('and view instrument details and scientists', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.get('[aria-controls="instrument-details-panel').should('be.visible');
+      cy.get('[aria-controls="instrument-details-panel').click();
+
+      cy.contains(
+        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+      ).should('be.visible');
+
+      cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
+      cy.get('[aria-controls="instrument-users-panel"]').click();
+
+      cy.contains('Name: Matthew50').should('be.visible');
+    });
+
+    it('and then not view details anymore', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.get('[aria-label="Hide details"]')
+        .first()
+        .click();
+
+      cy.contains(
+        'Name: Drug something increase common nature reflect purpose.\nKeep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
+      ).should('not.be.visible');
+      cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
 });
