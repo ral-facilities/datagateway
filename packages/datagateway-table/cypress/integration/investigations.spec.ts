@@ -22,12 +22,6 @@ describe('Investigations Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  it('should be able to scroll down and load more rows', () => {
-    cy.get('[aria-rowcount="50"]').should('exist');
-    cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="75"]').should('exist');
-  });
-
   describe('should be able to sort by', () => {
     it('ascending order', () => {
       cy.contains('Title').click();
