@@ -1,6 +1,18 @@
 {
-  "packages": [
-    "packages/*"
-  ],
-  "version": "0.0.0"
+  "packages": ["packages/*"],
+  "version": "0.0.0",
+  "command": {
+    "bootstrap": {
+      "strict": true,
+      "hoist": [
+        "lerna",
+        "husky",
+        "lerna-update-wizard",
+        "react",
+        "react-dom",
+        "react-router",
+        "react-router-dom"
+      ]
+    }
+  }
 }
