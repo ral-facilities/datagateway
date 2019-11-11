@@ -13,6 +13,21 @@ import {
   Typography,
 } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import {
+  WithStyles,
+  Theme,
+  withStyles,
+  createStyles,
+  StyleRules,
+} from '@material-ui/core/styles';
+
+const styles = (theme: Theme): StyleRules<string> =>
+  createStyles({
+    breadcrumbs: {
+      maxWidth: '200px',
+      color: 'red',
+    },
+  });
 
 interface BreadcrumbProps {
   apiUrl: string;
@@ -39,14 +54,13 @@ interface BreadcrumbState {
   };
 }
 
-class PageBreadcrumbs extends React.Component<
-  BreadcrumbProps,
-  BreadcrumbState
-> {
+type Props = BreadcrumbProps & WithStyles<typeof styles>;
+
+class PageBreadcrumbs extends React.Component<Props, BreadcrumbState> {
   private currentPathnames: string[];
   private isBreadcrumbUpdated: boolean;
 
-  public constructor(props: BreadcrumbProps) {
+  public constructor(props: Props) {
     super(props);
 
     this.currentPathnames = [];
@@ -356,6 +370,7 @@ class PageBreadcrumbs extends React.Component<
                     color="textPrimary"
                     key={`base-${breadcrumbState.base.entityName}`}
                     aria-label="Breadcrumb-base"
+                    className={this.props.classes.breadcrumbs}
                   >
                     {breadcrumbState.base.displayName}
                   </Typography>
@@ -420,4 +435,4 @@ const mapStateToProps = (state: StateType): BreadcrumbProps => ({
   location: state.router.location.pathname,
 });
 
-export default connect(mapStateToProps)(PageBreadcrumbs);
+export default connect(mapStateToProps)(withStyles(styles)(PageBreadcrumbs));
