@@ -312,10 +312,7 @@ describe('Datafiles Table', () => {
       cy.get('[aria-label="select row 5"]').should('be.checked');
 
       cy.get('[aria-label="grid"]').scrollTo('top');
-      cy.get('body')
-        .type('{shift}', { release: false })
-        .get('[aria-label="select row 2"]')
-        .click();
+      cy.get('[aria-label="select row 2"]').click();
       cy.get('[aria-label="select row 2"]').should('not.be.checked');
 
       cy.get('[aria-label="grid"]').scrollTo('top');
