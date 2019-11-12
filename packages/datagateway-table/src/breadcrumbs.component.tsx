@@ -5,27 +5,41 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 import {
   Link as MaterialLink,
   Paper,
   Breadcrumbs,
   Typography,
+  Tooltip,
 } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+// import {
+//   WithStyles,
+//   Theme,
+//   withStyles,
+//   createStyles,
+//   StyleRules,
+// } from '@material-ui/core/styles';
+
 import {
-  WithStyles,
-  Theme,
-  withStyles,
-  createStyles,
   StyleRules,
+  createStyles,
+  WithStyles,
+  withStyles,
 } from '@material-ui/core/styles';
 
-const styles = (theme: Theme): StyleRules<string> =>
+const styles = (): StyleRules =>
   createStyles({
-    breadcrumbs: {
-      maxWidth: '200px',
-      color: 'red',
+    root: {
+      // '&:hover': {
+      //   overflow: 'visible',
+      // },
+      display: 'block',
+      whiteSpace: 'nowrap',
+      maxWidth: '15vw',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
   });
 
@@ -33,6 +47,8 @@ interface BreadcrumbProps {
   apiUrl: string;
   location: string;
 }
+
+type Props = BreadcrumbProps & WithStyles<typeof styles>;
 
 interface Breadcrumb {
   id: string;
@@ -53,8 +69,6 @@ interface BreadcrumbState {
     displayName: string;
   };
 }
-
-type Props = BreadcrumbProps & WithStyles<typeof styles>;
 
 class PageBreadcrumbs extends React.Component<Props, BreadcrumbState> {
   private currentPathnames: string[];
@@ -365,25 +379,28 @@ class PageBreadcrumbs extends React.Component<Props, BreadcrumbState> {
                 aria-label="Breadcrumb"
               >
                 {/* // Return the base entity as a link. */}
-                {breadcrumbState.base.isLast ? (
-                  <Typography
-                    color="textPrimary"
-                    key={`base-${breadcrumbState.base.entityName}`}
-                    aria-label="Breadcrumb-base"
-                    className={this.props.classes.breadcrumbs}
-                  >
-                    {breadcrumbState.base.displayName}
-                  </Typography>
-                ) : (
-                  <MaterialLink
-                    component={Link}
-                    to={breadcrumbState.base.url}
-                    key={`base-${breadcrumbState.base.entityName}`}
-                    aria-label="Breadcrumb-base"
-                  >
-                    {breadcrumbState.base.displayName}
-                  </MaterialLink>
-                )}
+                <Tooltip title={breadcrumbState.base.displayName}>
+                  {breadcrumbState.base.isLast ? (
+                    <Typography
+                      color="textPrimary"
+                      key={`base-${breadcrumbState.base.entityName}`}
+                      aria-label="Breadcrumb-base"
+                      className={this.props.classes.root}
+                    >
+                      {breadcrumbState.base.displayName}
+                    </Typography>
+                  ) : (
+                    <MaterialLink
+                      component={Link}
+                      to={breadcrumbState.base.url}
+                      key={`base-${breadcrumbState.base.entityName}`}
+                      aria-label="Breadcrumb-base"
+                      className={this.props.classes.root}
+                    >
+                      {breadcrumbState.base.displayName}
+                    </MaterialLink>
+                  )}
+                </Tooltip>
 
                 {/* // Add in the hierarchy breadcrumbs. */}
                 {hierarchyKeys.map((level: string, index: number) => {
@@ -395,31 +412,48 @@ class PageBreadcrumbs extends React.Component<Props, BreadcrumbState> {
 
                   // Return the correct type of breadcrumb with the entity name
                   // depending on if it is at the end of the hierarchy or not.
-                  return index + 1 === hierarchyKeys.length ? (
-                    <Typography
-                      color="textPrimary"
+                  const createdBreadcrumb =
+                    index + 1 === hierarchyKeys.length ? (
+                      <Typography
+                        color="textPrimary"
+                        key={`${breadcrumbInfo.id}`}
+                        aria-label={`Breadcrumb-hierarchy-${index + 1}`}
+                        className={this.props.classes.root}
+                      >
+                        {breadcrumbInfo.displayName}
+                      </Typography>
+                    ) : (
+                      <MaterialLink
+                        component={Link}
+                        to={breadcrumbInfo.url}
+                        aria-label={`Breadcrumb-hierarchy-${index + 1}`}
+                        className={this.props.classes.root}
+                      >
+                        {breadcrumbInfo.displayName}
+                      </MaterialLink>
+                    );
+
+                  return (
+                    <Tooltip
+                      title={breadcrumbInfo.displayName}
                       key={`${breadcrumbInfo.id}`}
-                      aria-label={`Breadcrumb-hierarchy-${index + 1}`}
                     >
-                      {breadcrumbInfo.displayName}
-                    </Typography>
-                  ) : (
-                    <MaterialLink
-                      component={Link}
-                      to={breadcrumbInfo.url}
-                      key={`${breadcrumbInfo.id}`}
-                      aria-label={`Breadcrumb-hierarchy-${index + 1}`}
-                    >
-                      {breadcrumbInfo.displayName}
-                    </MaterialLink>
+                      {createdBreadcrumb}
+                    </Tooltip>
                   );
                 })}
 
                 {/* // Render the last breadcrumb information; this is the current table view. */}
                 {breadcrumbState.last.displayName !== 'N/A' ? (
-                  <Typography color="textPrimary" aria-label="Breadcrumb-last">
-                    <i>{breadcrumbState.last.displayName}</i>
-                  </Typography>
+                  <Tooltip title={breadcrumbState.last.displayName}>
+                    <Typography
+                      color="textPrimary"
+                      aria-label="Breadcrumb-last"
+                      className={this.props.classes.root}
+                    >
+                      <i>{breadcrumbState.last.displayName}</i>
+                    </Typography>
+                  </Tooltip>
                 ) : null}
               </Breadcrumbs>
             ) : null}
