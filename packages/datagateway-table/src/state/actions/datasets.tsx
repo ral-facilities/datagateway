@@ -2,31 +2,40 @@ import {
   FetchDatasetsSuccessType,
   FetchDatasetsFailureType,
   FetchDatasetsRequestType,
-  FetchDatasetCountRequestType,
-  FetchDatasetCountFailureType,
-  FetchDatasetCountSuccessType,
+  FetchInvestigationDatasetsCountRequestType,
+  FetchInvestigationDatasetsCountFailureType,
+  FetchInvestigationDatasetsCountSuccessType,
   DownloadDatasetSuccessType,
   DownloadDatasetFailureType,
   DownloadDatasetRequestType,
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FetchCountSuccessPayload,
+  FetchDatasetCountSuccessType,
+  FetchDatasetCountFailureType,
+  FetchDatasetCountRequestType,
+  RequestPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
 import { Action } from 'redux';
+import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
-import { fetchDatafileCount } from './datafiles';
+import { fetchDatasetDatafilesCount } from './datafiles';
 import * as log from 'loglevel';
+import { IndexRange } from 'react-virtualized';
 import { Dataset } from 'datagateway-common';
 
 export const fetchDatasetsSuccess = (
-  datasets: Dataset[]
+  datasets: Dataset[],
+  timestamp: number
 ): ActionType<FetchDataSuccessPayload> => ({
   type: FetchDatasetsSuccessType,
   payload: {
     data: datasets,
+    timestamp,
   },
 });
 
@@ -39,38 +48,119 @@ export const fetchDatasetsFailure = (
   },
 });
 
-export const fetchDatasetsRequest = (): Action => ({
+export const fetchDatasetsRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: FetchDatasetsRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const fetchDatasets = (
-  investigationId: number
+  investigationId: number,
+  offsetParams?: IndexRange
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(fetchDatasetsRequest());
+    const timestamp = Date.now();
+    dispatch(fetchDatasetsRequest(timestamp));
 
     let params = getApiFilter(getState);
     params.append(
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
     );
+    if (offsetParams) {
+      params.append('skip', JSON.stringify(offsetParams.startIndex));
+      params.append(
+        'limit',
+        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+      );
+    }
+    const { datasetGetCount } = getState().dgtable.features;
+    const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get('/datasets', {
+      .get(`${apiUrl}/datasets`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
       })
       .then(response => {
-        dispatch(fetchDatasetsSuccess(response.data));
-        response.data.forEach((dataset: Dataset) => {
-          dispatch(fetchDatafileCount(dataset.ID));
-        });
+        dispatch(fetchDatasetsSuccess(response.data, timestamp));
+        if (datasetGetCount) {
+          batch(() => {
+            response.data.forEach((dataset: Dataset) => {
+              dispatch(fetchDatasetDatafilesCount(dataset.ID));
+            });
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);
         dispatch(fetchDatasetsFailure(error.message));
+      });
+  };
+};
+
+export const fetchDatasetCountSuccess = (
+  count: number,
+  timestamp: number
+): ActionType<FetchCountSuccessPayload> => ({
+  type: FetchDatasetCountSuccessType,
+  payload: {
+    count,
+    timestamp,
+  },
+});
+
+export const fetchDatasetCountFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchDatasetCountFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatasetCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
+  type: FetchDatasetCountRequestType,
+  payload: {
+    timestamp,
+  },
+});
+
+export const fetchDatasetCount = (
+  investigationId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchDatasetCountRequest(timestamp));
+
+    let params = getApiFilter(getState);
+    params.delete('order');
+    params.append(
+      'where',
+      JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
+    );
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(`${apiUrl}/datasets/count`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchDatasetCountSuccess(response.data, timestamp));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchDatasetCountFailure(error.message));
       });
   };
 };
@@ -88,19 +178,24 @@ export const downloadDatasetFailure = (
   },
 });
 
-export const downloadDatasetRequest = (): Action => ({
+export const downloadDatasetRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
   type: DownloadDatasetRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
 export const downloadDataset = (
   datasetId: number,
   datasetName: string
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
-    dispatch(downloadDatasetRequest());
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(downloadDatasetRequest(timestamp));
 
-    // TODO: get this from some sort of settings file
-    const idsUrl = '';
+    const { idsUrl } = getState().dgtable.urls;
 
     // TODO: get ICAT session id properly when auth is sorted
     const params = {
@@ -124,56 +219,87 @@ export const downloadDataset = (
   };
 };
 
-export const fetchDatasetCountSuccess = (
+export const fetchInvestigationDatasetsCountSuccess = (
   investigationId: number,
-  count: number
+  count: number,
+  timestamp: number
 ): ActionType<FetchDataCountSuccessPayload> => ({
-  type: FetchDatasetCountSuccessType,
+  type: FetchInvestigationDatasetsCountSuccessType,
   payload: {
     id: investigationId,
     count,
+    timestamp,
   },
 });
 
-export const fetchDatasetCountFailure = (
+export const fetchInvestigationDatasetsCountFailure = (
   error: string
 ): ActionType<FailurePayload> => ({
-  type: FetchDatasetCountFailureType,
+  type: FetchInvestigationDatasetsCountFailureType,
   payload: {
     error,
   },
 });
 
-export const fetchDatasetCountRequest = (): Action => ({
-  type: FetchDatasetCountRequestType,
+export const fetchInvestigationDatasetsCountRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
+  type: FetchInvestigationDatasetsCountRequestType,
+  payload: {
+    timestamp,
+  },
 });
 
-export const fetchDatasetCount = (
+export const fetchInvestigationDatasetsCount = (
   investigationId: number
 ): ThunkResult<Promise<void>> => {
-  return async dispatch => {
-    dispatch(fetchDatasetCountRequest());
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationDatasetsCountRequest(timestamp));
 
     const params = {
       where: {
         INVESTIGATION_ID: { eq: investigationId },
       },
     };
+    const { apiUrl } = getState().dgtable.urls;
 
-    await axios
-      .get('/datasets/count', {
-        params,
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
-        },
-        cancelToken: source.token,
-      })
-      .then(response => {
-        dispatch(fetchDatasetCountSuccess(investigationId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatasetCountFailure(error.message));
-      });
+    const currentCache = getState().dgtable.investigationCache[investigationId];
+
+    // Check to see if a cached value exists already in the cache's child entity count.
+    if (currentCache && currentCache.childEntityCount) {
+      // Dispatch success with the cached dataset count.
+      dispatch(
+        fetchInvestigationDatasetsCountSuccess(
+          investigationId,
+          currentCache.childEntityCount,
+          timestamp
+        )
+      );
+    } else {
+      await axios
+        .get(`${apiUrl}/datasets/count`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+          cancelToken: source.token,
+        })
+        .then(response => {
+          dispatch(
+            fetchInvestigationDatasetsCountSuccess(
+              investigationId,
+              response.data,
+              timestamp
+            )
+          );
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchInvestigationDatasetsCountFailure(error.message));
+        });
+    }
   };
 };

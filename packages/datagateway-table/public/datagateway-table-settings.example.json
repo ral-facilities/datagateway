@@ -1,0 +1,11 @@
+{
+  "features": {
+    "investigationGetSize": true,
+    "investigationGetCount": true,
+    "datasetGetSize": true,
+    "datasetGetCount": true
+  },
+  "idsUrl": "example.ids.url",
+  "apiUrl": "example.api.url",
+  "ui-strings": "/res/default.json"
+}

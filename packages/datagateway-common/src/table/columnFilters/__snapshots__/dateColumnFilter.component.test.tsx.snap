@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Date filter component renders correctly 1`] = `
+<form>
+  <MuiPickersUtilsProvider
+    utils={[Function]}
+  >
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      clearable={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "test date filter from",
+        }
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Invalid date range"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Date should not be before minimal date"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="From... (yyyy-MM-dd)"
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
+    <PickerWithState
+      KeyboardButtonProps={
+        Object {
+          "size": "small",
+        }
+      }
+      allowKeyboardControl={true}
+      clearable={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "test date filter to",
+        }
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Date should not be after maximal date"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Invalid date range"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="To...     (yyyy-MM-dd)"
+      value={null}
+      views={
+        Array [
+          "year",
+          "month",
+          "date",
+        ]
+      }
+    />
+  </MuiPickersUtilsProvider>
+</form>
+`;

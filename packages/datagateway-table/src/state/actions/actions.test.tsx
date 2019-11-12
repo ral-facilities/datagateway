@@ -1,18 +1,65 @@
-import { sortTable, filterTable, getApiFilter } from '.';
-import { SortTableType, FilterTableType } from './actions.types';
+import {
+  sortTable,
+  filterTable,
+  getApiFilter,
+  clearTable,
+  configureStrings,
+  loadFeatureSwitches,
+  loadUrls,
+  configureApp,
+  loadStrings,
+  settingsLoaded,
+} from '.';
+import {
+  SortTableType,
+  FilterTableType,
+  ClearTableType,
+  ConfigureStringsType,
+  ConfigureFeatureSwitchesType,
+  ConfigureURLsType,
+  SettingsLoadedType,
+} from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
+import { RouterState } from 'connected-react-router';
+import axios from 'axios';
+import * as log from 'loglevel';
+import { actions, resetActions, dispatch, getState } from '../../setupTests';
+
+jest.mock('loglevel');
 
 describe('Actions', () => {
+  afterEach(() => {
+    (axios.get as jest.Mock).mockClear();
+    (log.error as jest.Mock).mockClear();
+    resetActions();
+  });
+
   describe('getApiFilter', () => {
-    it('given a empty sort and filters it returns an empty object', () => {
+    const routerState: RouterState = {
+      action: 'POP',
+      location: {
+        hash: '',
+        key: '',
+        pathname: '/',
+        search: '',
+        state: {},
+      },
+    };
+
+    it('given a empty sort and filters it returns just sorting by ID', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
         },
+        router: routerState,
       });
       const filter = getApiFilter(getState);
-      expect(filter).toEqual(new URLSearchParams());
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
+
+      expect(filter).toEqual(params);
     });
 
     it('given a single sort column in the sort state it returns an order string', () => {
@@ -21,11 +68,13 @@ describe('Actions', () => {
           ...initialState,
           sort: { column1: 'asc' },
         },
+        router: routerState,
       });
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
+      params.append('order', JSON.stringify('ID asc'));
 
       expect(filter).toEqual(params);
     });
@@ -36,12 +85,14 @@ describe('Actions', () => {
           ...initialState,
           sort: { column1: 'asc', column2: 'desc' },
         },
+        router: routerState,
       });
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
+      params.append('order', JSON.stringify('ID asc'));
 
       expect(filter).toEqual(params);
     });
@@ -50,14 +101,22 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgtable: {
           ...initialState,
-          filters: { column1: 'test', column2: 'test2' },
+          filters: {
+            column1: 'test',
+            column2: { endDate: '2019-09-18' },
+          },
         },
+        router: routerState,
       });
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { lte: '2019-09-18 23:59:59' } })
+      );
 
       expect(filter).toEqual(params);
     });
@@ -67,16 +126,21 @@ describe('Actions', () => {
         dgtable: {
           ...initialState,
           sort: { column1: 'asc', column2: 'desc' },
-          filters: { column1: 'test', column2: 'test2' },
+          filters: { column1: 'test', column2: { startDate: '2019-09-17' } },
         },
+        router: routerState,
       });
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
-      params.append('where', JSON.stringify({ column2: { like: 'test2' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { gte: '2019-09-17 00:00:00' } })
+      );
 
       expect(filter).toEqual(params);
     });
@@ -92,5 +156,184 @@ describe('Actions', () => {
     const action = filterTable('test', 'filter text');
     expect(action.type).toEqual(FilterTableType);
     expect(action.payload).toEqual({ column: 'test', filter: 'filter text' });
+  });
+
+  it('clearTable returns a ClearTableType', () => {
+    const action = clearTable();
+    expect(action.type).toEqual(ClearTableType);
+  });
+
+  it('settingsLoaded returns an action with SettingsLoadedType', () => {
+    const action = settingsLoaded();
+    expect(action.type).toEqual(SettingsLoadedType);
+  });
+
+  it('given JSON configureStrings returns a ConfigureStringsType with ConfigureStringsPayload', () => {
+    const action = configureStrings({ testSection: { test: 'string' } });
+    expect(action.type).toEqual(ConfigureStringsType);
+    expect(action.payload).toEqual({
+      res: { testSection: { test: 'string' } },
+    });
+  });
+
+  it('given JSON loadFeatureSwitches returns a ConfigureFeatureSwitchesType with ConfigureFeatureSwitchesPayload', () => {
+    const action = loadFeatureSwitches({
+      investigationGetSize: true,
+      investigationGetCount: true,
+      datasetGetSize: true,
+      datasetGetCount: true,
+    });
+    expect(action.type).toEqual(ConfigureFeatureSwitchesType);
+    expect(action.payload).toEqual({
+      switches: {
+        investigationGetSize: true,
+        investigationGetCount: true,
+        datasetGetSize: true,
+        datasetGetCount: true,
+      },
+    });
+  });
+
+  it('given JSON loadUrls returns a ConfigureUrlsType with ConfigureUrlsPayload', () => {
+    const action = loadUrls({
+      idsUrl: 'ids',
+      apiUrl: 'api',
+    });
+    expect(action.type).toEqual(ConfigureURLsType);
+    expect(action.payload).toEqual({
+      urls: {
+        idsUrl: 'ids',
+        apiUrl: 'api',
+      },
+    });
+  });
+
+  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls and settingsLoaded actions are sent', async () => {
+    (axios.get as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            features: {
+              investigationGetSize: true,
+              investigationGetCount: true,
+              datasetGetSize: true,
+              datasetGetCount: true,
+            },
+            'ui-strings': '/res/default.json',
+            idsUrl: 'ids',
+            apiUrl: 'api',
+          },
+        })
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            testSection: { test: 'string' },
+          },
+        })
+      );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(actions.length).toEqual(4);
+    expect(actions).toContainEqual(
+      loadFeatureSwitches({
+        investigationGetSize: true,
+        investigationGetCount: true,
+        datasetGetSize: true,
+        datasetGetCount: true,
+      })
+    );
+    expect(actions).toContainEqual(
+      configureStrings({ testSection: { test: 'string' } })
+    );
+    expect(actions).toContainEqual(
+      loadUrls({
+        idsUrl: 'ids',
+        apiUrl: 'api',
+      })
+    );
+    expect(actions).toContainEqual(settingsLoaded());
+  });
+
+  it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
+    (axios.get as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            'ui-strings': 'res/default.json',
+            idsUrl: 'ids',
+            apiUrl: 'api',
+          },
+        })
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            testSection: { test: 'string' },
+          },
+        })
+      );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(actions.length).toEqual(3);
+    expect(actions).toContainEqual(
+      configureStrings({ testSection: { test: 'string' } })
+    );
+    expect(actions).toContainEqual(
+      loadUrls({
+        idsUrl: 'ids',
+        apiUrl: 'api',
+      })
+    );
+    expect(actions).toContainEqual(settingsLoaded());
+  });
+
+  it('logs an error if settings.json fails to be loaded', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      expect.stringContaining(`Error loading datagateway-table-settings.json: `)
+    );
+  });
+
+  it('logs an error if settings.json is invalid JSON object', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 1,
+      })
+    );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-table-settings.json: Invalid format'
+    );
+  });
+
+  it('logs an error if loadStrings fails to resolve', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
+
+    const path = 'non/existent/path';
+
+    const asyncAction = loadStrings(path);
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      expect.stringContaining(`Failed to read strings from ${path}: `)
+    );
   });
 });

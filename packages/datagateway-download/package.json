@@ -1,0 +1,87 @@
+{
+  "name": "datagateway-download",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@types/jest": "^24.0.16",
+    "@types/node": "^12.6.8",
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.5",
+    "@types/single-spa-react": "^2.8.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1",
+    "single-spa-react": "^2.10.2",
+    "typescript": "3.5.3"
+  },
+  "devDependencies": {
+    "@craco/craco": "^5.5.0",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "cross-env": "^5.2.0",
+    "cypress": "^3.4.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.3.5",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-cypress": "^2.6.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "prettier": "^1.18.2",
+    "serve": "^11.1.0",
+    "start-server-and-test": "^1.9.1"
+  },
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src",
+    "serve:build": "npm run build & serve -l 5001 build",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test --env=jsdom --coverage --watchAll=false",
+    "test:watch": "craco test --env=jsdom --watch",
+    "eject": "react-scripts eject",
+    "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false craco build",
+    "e2e:serve": "npm run build:e2e && node ./server/e2e-test-server.js",
+    "e2e:interactive": "start-server-and-test e2e:serve http://localhost:3000 cy:open",
+    "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{tsx,js,jsx,json}": [
+      "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "cypress/**/*.{tsx,js,jsx}": [
+      "eslint --max-warnings=0 --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{tsx,js,jsx}",
+      "!src/index.tsx",
+      "!src/serviceWorker.ts",
+      "!src/setupTests.js"
+    ]
+  }
+}

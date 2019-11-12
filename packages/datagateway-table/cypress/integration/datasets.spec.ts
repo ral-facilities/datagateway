@@ -1,7 +1,7 @@
 describe('Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1407/dataset');
+    cy.visit('/browse/investigation/1/dataset');
   });
 
   it('should load correctly', () => {
@@ -15,7 +15,7 @@ describe('Datasets Table', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/investigation/1407/dataset/2506/datafile'
+      '/browse/investigation/1/dataset/25/datafile'
     );
   });
 
@@ -63,13 +63,20 @@ describe('Datasets Table', () => {
     });
   });
 
+  // current example data only has 2 datasets per investigation, so can't test lazy loading
+  it.skip('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="75"]').should('exist');
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
       cy.contains('Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('Dataset 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
     });
 
     it('descending order', () => {
@@ -82,7 +89,7 @@ describe('Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('Dataset 3');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
     });
 
     it('no order', () => {
@@ -98,7 +105,7 @@ describe('Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('Dataset 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
     });
 
     it('multiple columns', () => {
@@ -107,7 +114,7 @@ describe('Datasets Table', () => {
       cy.contains('Name').click();
       cy.contains('Name').click();
 
-      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains('Dataset 2');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
     });
   });
 
@@ -115,17 +122,50 @@ describe('Datasets Table', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
-        .type('Dataset 3');
+        .type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '2019-02-27 10:36:25'
+        '2002-11-27 06:20:36'
       );
     });
 
-    it('date between');
+    it('date between', () => {
+      cy.get('[aria-label="Create Time date filter from"]').type('2002-01-01');
 
-    it('multiple columns');
+      cy.get('[aria-label="Create Time date filter to"]')
+        .parent()
+        .find('button')
+        .click();
+
+      cy.get('.MuiPickersDay-day[tabindex="0"]')
+        .first()
+        .click();
+
+      cy.contains('OK').click();
+
+      let date = new Date();
+      date.setDate(1);
+
+      cy.get('[aria-label="Create Time date filter to"]').should(
+        'have.value',
+        date.toISOString().slice(0, 10)
+      );
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+    });
+
+    it('multiple columns', () => {
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('1');
+
+      cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
+    });
   });
 
   describe('should be able to view details', () => {
@@ -134,7 +174,7 @@ describe('Datasets Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Dataset 1').should('be.visible');
+      cy.contains('Name: DATASET 1').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -147,8 +187,8 @@ describe('Datasets Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Dataset 1').should('be.visible');
-      cy.contains('Name: Dataset 2').should('not.be.visible');
+      cy.contains('Name: DATASET 1').should('be.visible');
+      cy.contains('Name: DATASET 241').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -161,7 +201,7 @@ describe('Datasets Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: Dataset 1').should('not.be.visible');
+      cy.contains('Name: DATASET 1').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

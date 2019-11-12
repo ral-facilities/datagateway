@@ -5,15 +5,16 @@
   "devDependencies": {
     "husky": "^3.0.2",
     "lerna": "^3.16.4",
-    "lerna-update-wizard": "^0.16.0"
+    "lerna-update-wizard": "^0.16.0",
+    "cypress": "^3.4.1"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap --hoist",
+    "prepare": "lerna bootstrap",
     "lint": "lerna run lint:js",
     "tsc": "lerna run tsc",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "lerna run test --stream",
-    "test:e2e": "lerna run e2e --stream",
+    "test:e2e": "lerna run e2e --stream --concurrency 1",
     "datagateway-table": "cd packages/datagateway-table && npm start"
   },
   "husky": {

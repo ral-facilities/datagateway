@@ -54,6 +54,6 @@ export type Entity =
   | FacilityCycle;
 
 // TODO: type this properly
-export type Filter = string | number;
+export type Filter = string | number | { startDate?: string; endDate?: string };
 
 export type Order = 'asc' | 'desc';
