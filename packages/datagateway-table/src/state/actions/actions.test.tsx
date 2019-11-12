@@ -279,7 +279,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      expect.stringContaining(`Error loading settings.json: `)
+      expect.stringContaining(`Error loading datagateway-table-settings.json: `)
     );
   });
 
@@ -296,7 +296,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading settings.json: Invalid format'
+      'Error loading datagateway-table-settings.json: Invalid format'
     );
   });
 
