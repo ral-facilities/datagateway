@@ -15,13 +15,10 @@ install:
   - npm install
 jobs:
   include:
-    - stage: lint
+    - stage: test
+      name: 'Lint'
       script: npm run lint
-    - stage: tests
-      name: 'Unit Tests'
+    - name: 'Unit Tests'
       script: npm run test:unit
-    - script: npm run test:e2e
-      name: 'E2E Tests'
-
-script:
-  - npm test
+    - name: 'E2E Tests'
+      script: npm run test:e2e
