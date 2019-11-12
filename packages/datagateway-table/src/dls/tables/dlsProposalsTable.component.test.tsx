@@ -13,7 +13,6 @@ import {
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { TableSortLabel } from '@material-ui/core';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
@@ -148,7 +147,7 @@ describe('DLS Proposals table component', () => {
     );
 
     wrapper
-      .find(TableSortLabel)
+      .find('[role="columnheader"] span')
       .first()
       .simulate('click');
 
