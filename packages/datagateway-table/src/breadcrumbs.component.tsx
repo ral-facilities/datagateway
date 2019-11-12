@@ -13,14 +13,9 @@ import {
   Breadcrumbs,
   Typography,
   Tooltip,
+  createMuiTheme,
+  MuiThemeProvider,
 } from '@material-ui/core';
-// import {
-//   WithStyles,
-//   Theme,
-//   withStyles,
-//   createStyles,
-//   StyleRules,
-// } from '@material-ui/core/styles';
 
 import {
   StyleRules,
@@ -32,16 +27,23 @@ import {
 const styles = (): StyleRules =>
   createStyles({
     root: {
-      // '&:hover': {
-      //   overflow: 'visible',
-      // },
       display: 'block',
       whiteSpace: 'nowrap',
-      maxWidth: '15vw',
+      maxWidth: '20vw',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
     },
   });
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiTooltip: {
+      tooltip: {
+        fontSize: '1em',
+      },
+    },
+  },
+});
 
 interface BreadcrumbProps {
   apiUrl: string;
@@ -370,95 +372,94 @@ class PageBreadcrumbs extends React.Component<Props, BreadcrumbState> {
 
     return (
       <div>
-        <Paper elevation={0}>
-          <Route>
-            {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
-            {this.currentPathnames.length > 0 ? (
-              <Breadcrumbs
-                separator={<NavigateNextIcon fontSize="small" />}
-                aria-label="Breadcrumb"
-              >
-                {/* // Return the base entity as a link. */}
-                <Tooltip title={breadcrumbState.base.displayName}>
-                  {breadcrumbState.base.isLast ? (
-                    <Typography
-                      color="textPrimary"
-                      key={`base-${breadcrumbState.base.entityName}`}
-                      aria-label="Breadcrumb-base"
-                      className={this.props.classes.root}
-                    >
-                      {breadcrumbState.base.displayName}
-                    </Typography>
-                  ) : (
-                    <MaterialLink
-                      component={Link}
-                      to={breadcrumbState.base.url}
-                      key={`base-${breadcrumbState.base.entityName}`}
-                      aria-label="Breadcrumb-base"
-                      className={this.props.classes.root}
-                    >
-                      {breadcrumbState.base.displayName}
-                    </MaterialLink>
-                  )}
-                </Tooltip>
-
-                {/* // Add in the hierarchy breadcrumbs. */}
-                {hierarchyKeys.map((level: string, index: number) => {
-                  const breadcrumbInfo =
-                    breadcrumbState.currentHierarchy[index];
-                  console.log(
-                    `Creating breadcrumb for ${level}: ${breadcrumbInfo.url}, ${breadcrumbInfo.displayName} (ID: ${breadcrumbInfo.id})`
-                  );
-
-                  // Return the correct type of breadcrumb with the entity name
-                  // depending on if it is at the end of the hierarchy or not.
-                  const createdBreadcrumb =
-                    index + 1 === hierarchyKeys.length ? (
+        <MuiThemeProvider theme={theme}>
+          <Paper elevation={0}>
+            <Route>
+              {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
+              {this.currentPathnames.length > 0 ? (
+                <Breadcrumbs
+                  separator={<NavigateNextIcon fontSize="small" />}
+                  aria-label="Breadcrumb"
+                >
+                  {/* // Return the base entity as a link. */}
+                  <Tooltip title={breadcrumbState.base.displayName}>
+                    {breadcrumbState.base.isLast ? (
                       <Typography
                         color="textPrimary"
-                        key={`${breadcrumbInfo.id}`}
-                        aria-label={`Breadcrumb-hierarchy-${index + 1}`}
+                        aria-label="Breadcrumb-base"
                         className={this.props.classes.root}
                       >
-                        {breadcrumbInfo.displayName}
+                        {breadcrumbState.base.displayName}
                       </Typography>
                     ) : (
                       <MaterialLink
                         component={Link}
-                        to={breadcrumbInfo.url}
-                        aria-label={`Breadcrumb-hierarchy-${index + 1}`}
+                        to={breadcrumbState.base.url}
+                        aria-label="Breadcrumb-base"
                         className={this.props.classes.root}
                       >
-                        {breadcrumbInfo.displayName}
+                        {breadcrumbState.base.displayName}
                       </MaterialLink>
+                    )}
+                  </Tooltip>
+
+                  {/* // Add in the hierarchy breadcrumbs. */}
+                  {hierarchyKeys.map((level: string, index: number) => {
+                    const breadcrumbInfo =
+                      breadcrumbState.currentHierarchy[index];
+                    console.log(
+                      `Creating breadcrumb for ${level}: ${breadcrumbInfo.url}, ${breadcrumbInfo.displayName} (ID: ${breadcrumbInfo.id})`
                     );
 
-                  return (
-                    <Tooltip
-                      title={breadcrumbInfo.displayName}
-                      key={`${breadcrumbInfo.id}`}
-                    >
-                      {createdBreadcrumb}
-                    </Tooltip>
-                  );
-                })}
+                    // Return the correct type of breadcrumb with the entity name
+                    // depending on if it is at the end of the hierarchy or not.
+                    const createdBreadcrumb =
+                      index + 1 === hierarchyKeys.length ? (
+                        <Typography
+                          color="textPrimary"
+                          aria-label={`Breadcrumb-hierarchy-${index + 1}`}
+                          className={this.props.classes.root}
+                        >
+                          {breadcrumbInfo.displayName}
+                        </Typography>
+                      ) : (
+                        <MaterialLink
+                          component={Link}
+                          to={breadcrumbInfo.url}
+                          aria-label={`Breadcrumb-hierarchy-${index + 1}`}
+                          className={this.props.classes.root}
+                        >
+                          {breadcrumbInfo.displayName}
+                        </MaterialLink>
+                      );
 
-                {/* // Render the last breadcrumb information; this is the current table view. */}
-                {breadcrumbState.last.displayName !== 'N/A' ? (
-                  <Tooltip title={breadcrumbState.last.displayName}>
-                    <Typography
-                      color="textPrimary"
-                      aria-label="Breadcrumb-last"
-                      className={this.props.classes.root}
-                    >
-                      <i>{breadcrumbState.last.displayName}</i>
-                    </Typography>
-                  </Tooltip>
-                ) : null}
-              </Breadcrumbs>
-            ) : null}
-          </Route>
-        </Paper>
+                    return (
+                      <Tooltip
+                        title={breadcrumbInfo.displayName}
+                        key={`${breadcrumbInfo.id}`}
+                      >
+                        {createdBreadcrumb}
+                      </Tooltip>
+                    );
+                  })}
+
+                  {/* // Render the last breadcrumb information; this is the current table view. */}
+                  {breadcrumbState.last.displayName !== 'N/A' ? (
+                    <Tooltip title={breadcrumbState.last.displayName}>
+                      <Typography
+                        color="textPrimary"
+                        aria-label="Breadcrumb-last"
+                        className={this.props.classes.root}
+                      >
+                        <i>{breadcrumbState.last.displayName}</i>
+                      </Typography>
+                    </Tooltip>
+                  ) : null}
+                </Breadcrumbs>
+              ) : null}
+            </Route>
+          </Paper>
+        </MuiThemeProvider>
       </div>
     );
   }
