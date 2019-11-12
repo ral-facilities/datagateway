@@ -1,11 +1,6 @@
 {
-  "features": {
-    "investigationGetSize": true,
-    "investigationGetCount": true,
-    "datasetGetSize": true,
-    "datasetGetCount": true
-  },
+  "features": {},
   "idsUrl": "example.ids.url",
-  "apiUrl": "http://scigateway-preprod.esc.rl.ac.uk:5000",
+  "apiUrl": "example.api.url",
   "ui-strings": "/res/default.json"
 }
