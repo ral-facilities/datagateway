@@ -1,0 +1,10 @@
+diff a/packages/datagateway-table/src/breadcrumbs.component.tsx b/packages/datagateway-table/src/breadcrumbs.component.tsx	(rejected hunks)
+@@ -42,4 +42,4 @@ const theme = createMuiTheme({
+-        fontSize: "1em",
+-      }
+-    }
+-  }
++        fontSize: '1em',
++      },
++    },
++  },
