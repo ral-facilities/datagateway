@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default {
   get: jest.fn(path => {
-    if (path === '/settings.json') {
+    if (path === '/datagateway-table-settings.json') {
       return Promise.resolve({
         data: {
           'ui-strings': '/res/default.json',
