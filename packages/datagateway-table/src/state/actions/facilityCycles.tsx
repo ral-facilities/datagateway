@@ -15,7 +15,6 @@ import axios from 'axios';
 import { getApiFilter } from '.';
 import * as log from 'loglevel';
 import { FacilityCycle } from 'datagateway-common';
-import { IndexRange } from 'react-virtualized';
 
 export const fetchFacilityCyclesSuccess = (
   facilityCycles: FacilityCycle[],
@@ -46,10 +45,8 @@ export const fetchFacilityCyclesRequest = (
   },
 });
 
-export const fetchFacilityCycles = (
-  instrumentId: number,
-  offsetParams?: IndexRange
-): ThunkResult<Promise<void>> => {
+// TODO: make this fetch based on instrumentId
+export const fetchFacilityCycles = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchFacilityCyclesRequest(timestamp));
@@ -57,16 +54,8 @@ export const fetchFacilityCycles = (
     let params = getApiFilter(getState);
     const { apiUrl } = getState().dgtable.urls;
 
-    if (offsetParams) {
-      params.append('skip', JSON.stringify(offsetParams.startIndex));
-      params.append(
-        'limit',
-        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
-      );
-    }
-
     await axios
-      .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles`, {
+      .get(`${apiUrl}/facilitycycles`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
@@ -111,9 +100,7 @@ export const fetchFacilityCycleCountRequest = (
   },
 });
 
-export const fetchFacilityCycleCount = (
-  instrumentId: number
-): ThunkResult<Promise<void>> => {
+export const fetchFacilityCycleCount = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchFacilityCycleCountRequest(timestamp));
@@ -123,7 +110,7 @@ export const fetchFacilityCycleCount = (
     const { apiUrl } = getState().dgtable.urls;
 
     await axios
-      .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles/count`, {
+      .get(`${apiUrl}/facilitycycles/count`, {
         params,
         headers: {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,

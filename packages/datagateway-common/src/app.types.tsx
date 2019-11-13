@@ -15,7 +15,6 @@ export interface Investigation {
   INVESTIGATIONUSER?: InvestigationUser[];
   SAMPLE?: Sample[];
   PUBLICATION?: Publication[];
-  STUDYINVESTIGATION?: StudyInvestigation[];
 }
 
 export interface Dataset {
@@ -41,7 +40,6 @@ export interface Datafile {
   FILESIZE?: number;
   LOCATION?: string;
   DESCRIPTION?: string;
-  DATAFILEPARAMETER?: DatafileParameter[];
 }
 
 export interface InvestigationInstrument {
@@ -55,11 +53,6 @@ export interface InvestigationInstrument {
 export interface Instrument {
   ID: number;
   NAME: string;
-  FULLNAME?: string;
-  DESCRIPTION?: string;
-  TYPE?: string;
-  URL?: string;
-  INSTRUMENTSCIENTIST?: InstrumentScientist[];
 }
 
 export interface InvestigationUser {
@@ -100,47 +93,6 @@ export interface DatasetType {
   ID: number;
   NAME: string;
   DESCRIPTION?: string;
-}
-
-interface StudyInvestigation {
-  ID: number;
-  STUDY_ID: number;
-  INVESTIGATION_ID: number;
-  STUDY?: Study;
-  INVESTIGATION?: Investigation;
-}
-
-interface Study {
-  ID: number;
-  PID: string;
-}
-
-interface InstrumentScientist {
-  ID: number;
-  INSTRUMENT_ID: number;
-  USER_ID: number;
-  INSTRUMENT?: Instrument;
-  USER_?: User;
-}
-
-interface DatafileParameter {
-  ID: number;
-  STRING_VALUE?: string;
-  NUMERIC_VALUE?: number;
-  DATETIME_VALUE?: string;
-  RANGEBOTTOM?: number;
-  RANGETOP?: number;
-  DATAFILE_ID: number;
-  PARAMETER_TYPE_ID: number;
-  DATAFILE?: Datafile;
-  PARAMETERTYPE: ParameterType;
-}
-
-interface ParameterType {
-  ID: number;
-  NAME: string;
-  UNITS: string;
-  VALUETYPE: string;
 }
 
 export type Entity =

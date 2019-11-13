@@ -50,12 +50,6 @@ import {
   fetchDatasetDetailsRequest,
   fetchDatasetDetailsSuccess,
   fetchDatasetDetailsFailure,
-  fetchInstrumentDetailsRequest,
-  fetchInstrumentDetailsSuccess,
-  fetchInstrumentDetailsFailure,
-  fetchDatafileDetailsRequest,
-  fetchDatafileDetailsSuccess,
-  fetchDatafileDetailsFailure,
 } from '../actions';
 import {
   fetchFacilityCyclesRequest,
@@ -817,76 +811,6 @@ describe('dgtable reducer', () => {
     });
   });
 
-  describe('FetchDatafileDetails actions', () => {
-    it('should not update state when given a FetchDatafileDetailsRequest action', () => {
-      let updatedState = DGTableReducer(state, fetchDatafileDetailsRequest());
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should update the data state and reset error state when given a FetchDatafileDetailsSuccess action', () => {
-      state.loading = true;
-      const mockData: Datafile[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-          LOCATION: '/test1',
-          FILESIZE: 1,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-          LOCATION: '/test2',
-          FILESIZE: 2,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
-        },
-      ];
-
-      state.data = mockData;
-
-      const datafileDetails: Datafile = {
-        ...mockData[0],
-        DATAFILEPARAMETER: [
-          {
-            ID: 3,
-            DATAFILE_ID: 1,
-            PARAMETER_TYPE_ID: 4,
-            PARAMETERTYPE: {
-              ID: 4,
-              NAME: 'Test parameter type',
-              UNITS: 'Test unit',
-              VALUE_TYPE: 'STRING',
-            },
-          },
-        ],
-      };
-
-      const mockDataUpdated: Datafile[] = [datafileDetails, mockData[1]];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileDetailsSuccess([datafileDetails])
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state when given a FetchDatafileDetailsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileDetailsFailure('Test error message')
-      );
-
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
   describe('DownloadDatafile actions', () => {
     it('should set the downloading state to true when given a DownloadDatafileRequest action', () => {
       expect(state.downloading).toBe(false);
@@ -1116,60 +1040,6 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(0);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchInstrumentDetails actions', () => {
-    it('should not update state when given a FetchInstrumentDetailsRequest action', () => {
-      let updatedState = DGTableReducer(state, fetchInstrumentDetailsRequest());
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should update the data state and reset error state when given a FetchInstrumentDetailsSuccess action', () => {
-      state.loading = true;
-      const mockData: Instrument[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-        },
-      ];
-
-      state.data = mockData;
-
-      const instrumentDetails: Instrument = {
-        ...mockData[0],
-        INSTRUMENTSCIENTIST: [
-          {
-            ID: 3,
-            INSTRUMENT_ID: 1,
-            USER_ID: 4,
-            USER_: { ID: 4, NAME: 'Louise' },
-          },
-        ],
-      };
-
-      const mockDataUpdated: Instrument[] = [instrumentDetails, mockData[1]];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentDetailsSuccess([instrumentDetails])
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state when given a FetchInstrumentDetailsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentDetailsFailure('Test error message')
-      );
       expect(updatedState.error).toEqual('Test error message');
     });
   });

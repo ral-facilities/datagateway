@@ -13,10 +13,6 @@ import {
   fetchDatafileCountRequest,
   fetchDatafileCountSuccess,
   fetchDatafileCountFailure,
-  fetchDatafileDetailsSuccess,
-  fetchDatafileDetails,
-  fetchDatafileDetailsRequest,
-  fetchDatafileDetailsFailure,
 } from '.';
 import axios from 'axios';
 import { StateType, EntityCache } from '../app.types';
@@ -295,63 +291,5 @@ describe('Datafile actions', () => {
     link.target = '_blank';
     link.style.display = 'none';
     expect(document.body.appendChild).toHaveBeenCalledWith(link);
-  });
-
-  it('dispatches fetchDatafileDetailsRequest and fetchDatafileDetailsSuccess actions upon successful fetchDatafileDetails action', async () => {
-    const mockData: Datafile[] = [
-      {
-        ID: 1,
-        NAME: 'Test 1',
-        LOCATION: '/test1',
-        FILESIZE: 1,
-        MOD_TIME: '2019-06-10',
-        CREATE_TIME: '2019-06-10',
-        DATASET_ID: 1,
-      },
-    ];
-
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: mockData,
-      })
-    );
-
-    const asyncAction = fetchDatafileDetails(1);
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchDatafileDetailsRequest());
-    expect(actions[1]).toEqual(fetchDatafileDetailsSuccess(mockData));
-
-    const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
-    params.append(
-      'include',
-      JSON.stringify({ DATAFILEPARAMETER: 'PARAMETERTYPE' })
-    );
-
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datafiles',
-      expect.objectContaining({ params })
-    );
-  });
-
-  it('dispatches fetchDatafileDetailsRequest and fetchDatafileDetailsFailure actions upon unsuccessful fetchDatafileDetails action', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.reject({
-        message: 'Test error message',
-      })
-    );
-
-    const asyncAction = fetchDatafileDetails(1);
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchDatafileDetailsRequest());
-    expect(actions[1]).toEqual(
-      fetchDatafileDetailsFailure('Test error message')
-    );
-
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 });

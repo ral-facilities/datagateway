@@ -49,7 +49,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycles(1);
+    const asyncAction = fetchFacilityCycles();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest(1));
@@ -63,7 +63,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycles(1);
+    const asyncAction = fetchFacilityCycles();
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -83,7 +83,7 @@ describe('FacilityCycle actions', () => {
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
     expect(axios.get).toHaveBeenCalledWith(
-      '/instruments/1/facilitycycles',
+      '/facilitycycles',
       expect.objectContaining({
         params,
       })
@@ -97,7 +97,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycles(1);
+    const asyncAction = fetchFacilityCycles();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCyclesRequest(1));
@@ -117,7 +117,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycleCount(1);
+    const asyncAction = fetchFacilityCycleCount();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCycleCountRequest(1));
@@ -131,7 +131,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycleCount(1);
+    const asyncAction = fetchFacilityCycleCount();
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -149,7 +149,7 @@ describe('FacilityCycle actions', () => {
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
     expect(axios.get).toHaveBeenCalledWith(
-      '/instruments/1/facilitycycles/count',
+      '/facilitycycles/count',
       expect.objectContaining({
         params,
       })
@@ -163,7 +163,7 @@ describe('FacilityCycle actions', () => {
       })
     );
 
-    const asyncAction = fetchFacilityCycleCount(1);
+    const asyncAction = fetchFacilityCycleCount();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchFacilityCycleCountRequest(1));
