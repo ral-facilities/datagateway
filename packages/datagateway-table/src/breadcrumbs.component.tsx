@@ -14,19 +14,125 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core';
+import { TooltipProps } from '@material-ui/core/Tooltip';
 
 import {
   withStyles,
   StyleRules,
   createStyles,
   WithStyles,
+  makeStyles,
+  Theme,
 } from '@material-ui/core/styles';
 
-const LargeTooltip = withStyles(() => ({
-  tooltip: {
-    fontSize: '0.875rem',
-  },
-}))(Tooltip);
+// Custom tooltip with ability to change the style for it.
+// const LargeTooltip = withStyles(() => ({
+//   tooltip: {
+//     fontSize: '0.875rem',
+//   },
+// }))(Tooltip);
+
+// type arrowTypes = string | number | Record<string, string>;
+
+const arrowGenerator = (
+  color: string
+): Record<string, Record<string, string | number | Record<string, string>>> => {
+  return {
+    '&[x-placement*="bottom"] $arrow': {
+      top: 0,
+      left: 0,
+      marginTop: '-0.95em',
+      width: '2em',
+      height: '1em',
+      '&::before': {
+        borderWidth: '0 1em 1em 1em',
+        borderColor: `transparent transparent ${color} transparent`,
+      },
+    },
+    '&[x-placement*="top"] $arrow': {
+      bottom: 0,
+      left: 0,
+      marginBottom: '-0.95em',
+      width: '2em',
+      height: '1em',
+      '&::before': {
+        borderWidth: '1em 1em 0 1em',
+        borderColor: `${color} transparent transparent transparent`,
+      },
+    },
+    '&[x-placement*="right"] $arrow': {
+      left: 0,
+      marginLeft: '-0.95em',
+      height: '2em',
+      width: '1em',
+      '&::before': {
+        borderWidth: '1em 1em 1em 0',
+        borderColor: `transparent ${color} transparent transparent`,
+      },
+    },
+    '&[x-placement*="left"] $arrow': {
+      right: 0,
+      marginRight: '-0.95em',
+      height: '2em',
+      width: '1em',
+      '&::before': {
+        borderWidth: '1em 0 1em 1em',
+        borderColor: `transparent transparent transparent ${color}`,
+      },
+    },
+  };
+};
+
+const useStylesArrow = makeStyles((theme: Theme) =>
+  createStyles({
+    tooltip: {
+      position: 'relative',
+      backgroundColor: theme.palette.common.black,
+      fontSize: '0.875rem',
+    },
+    popper: arrowGenerator(theme.palette.common.black),
+    arrow: {
+      position: 'absolute',
+      fontSize: 6,
+      '&::before': {
+        content: '""',
+        margin: 'auto',
+        display: 'block',
+        width: 0,
+        height: 0,
+        borderStyle: 'solid',
+      },
+    },
+  })
+);
+
+function ArrowTooltip(props: TooltipProps): React.ReactElement {
+  const { arrow, ...classes } = useStylesArrow();
+  const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
+
+  return (
+    <Tooltip
+      classes={classes}
+      PopperProps={{
+        popperOptions: {
+          modifiers: {
+            arrow: {
+              enabled: Boolean(arrowRef),
+              element: arrowRef,
+            },
+          },
+        },
+      }}
+      {...props}
+      title={
+        <React.Fragment>
+          {props.title}
+          <span className={arrow} ref={setArrowRef} />
+        </React.Fragment>
+      }
+    />
+  );
+}
 
 const styles = (): StyleRules =>
   createStyles({
@@ -102,10 +208,10 @@ class WrappedBreadcrumb extends React.Component<
 
   public render(): React.ReactElement {
     return (
-      <LargeTooltip
+      <ArrowTooltip
         title={this.props.displayName}
         ref={this.tooltipElement}
-        disableHoverListener={!this.isTooltipViewable}
+        // disableHoverListener={!this.isTooltipViewable}
         enterDelay={250}
       >
         {this.props.url ? (
@@ -130,7 +236,7 @@ class WrappedBreadcrumb extends React.Component<
             )}
           </Typography>
         )}
-      </LargeTooltip>
+      </ArrowTooltip>
     );
   }
 }
