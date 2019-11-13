@@ -24,7 +24,7 @@ import {
 
 const LargeTooltip = withStyles(() => ({
   tooltip: {
-    fontSize: '1em',
+    fontSize: '0.875rem',
   },
 }))(Tooltip);
 
@@ -86,7 +86,7 @@ class WrappedBreadcrumb extends React.Component<
   public componentDidMount(): void {
     if (this.tooltipElement !== null && this.tooltipElement.current !== null) {
       console.log(
-        `**WrappedBreadcrumb Width for ${this.props.ariaLabel}**: ${this.tooltipElement.current.offsetWidth}`
+        `WrappedBreadcrumb Width for ${this.props.ariaLabel}: ${this.tooltipElement.current.offsetWidth}`
       );
       // 0.2 here meaning the 20% of the viewport width which is set as the max width for the breadcrumb.
       console.log(
@@ -106,6 +106,7 @@ class WrappedBreadcrumb extends React.Component<
         title={this.props.displayName}
         ref={this.tooltipElement}
         disableHoverListener={!this.isTooltipViewable}
+        enterDelay={250}
       >
         {this.props.url ? (
           <MaterialLink
