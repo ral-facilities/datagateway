@@ -97,10 +97,10 @@ interface BreadcrumbProps {
 // type Props = BreadcrumbProps & WithStyles<typeof styles>;
 // type Props = BreadcrumbProps;
 interface WrappedProps {
-  url: string;
   displayName: string;
   ariaLabel: string;
   isLink: boolean;
+  url?: string;
 }
 
 interface Breadcrumb {
@@ -131,7 +131,7 @@ class WrappedBreadcrumb extends React.Component<WrappedProps> {
   public render(): React.ReactElement {
     return (
       <LargeTooltip title={this.props.displayName}>
-        {this.props.isLink ? (
+        {this.props.isLink && this.props.url ? (
           <MaterialLink
             component={Link}
             to={this.props.url}
