@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
@@ -24,15 +24,6 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core/styles';
-
-// Custom tooltip with ability to change the style for it.
-// const LargeTooltip = withStyles(() => ({
-//   tooltip: {
-//     fontSize: '0.875rem',
-//   },
-// }))(Tooltip);
-
-// type arrowTypes = string | number | Record<string, string>;
 
 const arrowGenerator = (
   color: string
@@ -106,12 +97,30 @@ const useStylesArrow = makeStyles((theme: Theme) =>
   })
 );
 
-function ArrowTooltip(props: TooltipProps): React.ReactElement {
+const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
+  const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
+  const isTooltipViewable = React.useRef(false);
+
+  useEffect(() => {
+    if (tooltipElement !== null && tooltipElement.current !== null) {
+      // 0.2 here meaning the 20% of the viewport width which is set as the max width for the breadcrumb.
+      console.log(
+        `Element viewport width (%): ${tooltipElement.current.offsetWidth /
+          window.innerWidth}`
+      );
+
+      if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
+        isTooltipViewable.current = true;
+      console.log(`Tooltip Viewable: ${isTooltipViewable}`);
+    }
+  });
+
   return (
     <Tooltip
+      ref={tooltipElement}
       classes={classes}
       PopperProps={{
         popperOptions: {
@@ -130,9 +139,10 @@ function ArrowTooltip(props: TooltipProps): React.ReactElement {
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
+      disableHoverListener={!isTooltipViewable.current}
     />
   );
-}
+};
 
 const styles = (): StyleRules =>
   createStyles({
@@ -180,40 +190,13 @@ interface WrappedProps extends WithStyles<typeof styles> {
 class WrappedBreadcrumb extends React.Component<
   WrappedProps & WithStyles<typeof styles>
 > {
-  private tooltipElement: React.RefObject<HTMLElement>;
-  private isTooltipViewable: boolean;
-
   public constructor(props: WrappedProps & WithStyles<typeof styles>) {
     super(props);
-    this.tooltipElement = React.createRef<HTMLElement>();
-    this.isTooltipViewable = false;
-  }
-
-  public componentDidMount(): void {
-    if (this.tooltipElement !== null && this.tooltipElement.current !== null) {
-      console.log(
-        `WrappedBreadcrumb Width for ${this.props.ariaLabel}: ${this.tooltipElement.current.offsetWidth}`
-      );
-      // 0.2 here meaning the 20% of the viewport width which is set as the max width for the breadcrumb.
-      console.log(
-        `Element viewport width (%): ${this.tooltipElement.current.offsetWidth /
-          window.innerWidth}`
-      );
-
-      if (this.tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
-        this.isTooltipViewable = true;
-      console.log(`Tooltip Viewable: ${this.isTooltipViewable}`);
-    }
   }
 
   public render(): React.ReactElement {
     return (
-      <ArrowTooltip
-        title={this.props.displayName}
-        ref={this.tooltipElement}
-        // disableHoverListener={!this.isTooltipViewable}
-        enterDelay={250}
-      >
+      <ArrowTooltip title={this.props.displayName}>
         {this.props.url ? (
           <MaterialLink
             component={Link}
