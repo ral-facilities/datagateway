@@ -68,6 +68,7 @@ interface WrappedProps extends WithStyles<typeof styles> {
   displayName: string;
   ariaLabel: string;
   url?: string;
+  isLast?: boolean;
 }
 
 class WrappedBreadcrumb extends React.Component<
@@ -95,7 +96,11 @@ class WrappedBreadcrumb extends React.Component<
             aria-label={this.props.ariaLabel}
             className={this.props.classes.breadcrumb}
           >
-            {this.props.displayName}
+            {this.props.isLast ? (
+              <i>{this.props.displayName}</i>
+            ) : (
+              this.props.displayName
+            )}
           </Typography>
         )}
       </LargeTooltip>
@@ -460,6 +465,7 @@ class PageBreadcrumbs extends React.Component<
                   <StyledBreadcrumb
                     displayName={breadcrumbState.last.displayName}
                     ariaLabel="Breadcrumb-last"
+                    isLast={true}
                   />
                 ) : null}
               </Breadcrumbs>
