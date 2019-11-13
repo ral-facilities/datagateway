@@ -74,13 +74,39 @@ interface WrappedProps extends WithStyles<typeof styles> {
 class WrappedBreadcrumb extends React.Component<
   WrappedProps & WithStyles<typeof styles>
 > {
+  private tooltipElement: React.RefObject<HTMLElement>;
+  private isTooltipViewable: boolean;
+
   public constructor(props: WrappedProps & WithStyles<typeof styles>) {
     super(props);
+    this.tooltipElement = React.createRef<HTMLElement>();
+    this.isTooltipViewable = false;
+  }
+
+  public componentDidMount(): void {
+    if (this.tooltipElement !== null && this.tooltipElement.current !== null) {
+      console.log(
+        `**WrappedBreadcrumb Width for ${this.props.ariaLabel}**: ${this.tooltipElement.current.offsetWidth}`
+      );
+      // 0.2 here meaning the 20% of the viewport width which is set as the max width for the breadcrumb.
+      console.log(
+        `Element viewport width (%): ${this.tooltipElement.current.offsetWidth /
+          window.innerWidth}`
+      );
+
+      if (this.tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
+        this.isTooltipViewable = true;
+      console.log(`Tooltip Viewable: ${this.isTooltipViewable}`);
+    }
   }
 
   public render(): React.ReactElement {
     return (
-      <LargeTooltip title={this.props.displayName}>
+      <LargeTooltip
+        title={this.props.displayName}
+        ref={this.tooltipElement}
+        disableHoverListener={!this.isTooltipViewable}
+      >
         {this.props.url ? (
           <MaterialLink
             component={Link}
