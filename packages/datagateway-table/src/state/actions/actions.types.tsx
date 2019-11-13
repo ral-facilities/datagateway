@@ -85,13 +85,6 @@ export const FetchDatafilesFailureType =
 export const FetchDatafilesSuccessType =
   'datagateway_table:fetch_datafiles_success';
 
-export const FetchDatafileDetailsRequestType =
-  'datagateway_table:fetch_datafile_details_request';
-export const FetchDatafileDetailsFailureType =
-  'datagateway_table:fetch_datafile_details_failure';
-export const FetchDatafileDetailsSuccessType =
-  'datagateway_table:fetch_datafile_details_success';
-
 export const FetchDatafileCountRequestType =
   'datagateway_table:fetch_datafile_count_request';
 export const FetchDatafileCountFailureType =
@@ -112,13 +105,6 @@ export const FetchInstrumentsFailureType =
   'datagateway_table:fetch_instruments_failure';
 export const FetchInstrumentsSuccessType =
   'datagateway_table:fetch_instruments_success';
-
-export const FetchInstrumentDetailsRequestType =
-  'datagateway_table:fetch_instrument_details_request';
-export const FetchInstrumentDetailsFailureType =
-  'datagateway_table:fetch_instrument_details_failure';
-export const FetchInstrumentDetailsSuccessType =
-  'datagateway_table:fetch_instrument_details_success';
 
 export const FetchInstrumentCountRequestType =
   'datagateway_table:fetch_instrument_count_request';

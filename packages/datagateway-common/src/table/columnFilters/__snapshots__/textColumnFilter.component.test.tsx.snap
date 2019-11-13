@@ -4,7 +4,6 @@ exports[`Text filter component renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Input))
     aria-label="Filter by test"
-    fullWidth={true}
     id="test filter"
     onChange={[Function]}
     placeholder="Contains..."
