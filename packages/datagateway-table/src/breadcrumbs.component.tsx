@@ -101,11 +101,8 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
-  const [isTooltipVisibile, setTooltipVisible] = React.useState(false);
-
-  // Create a reference in order to show/hide tooltip depending on width of element.
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
-  // const isTooltipViewable = React.useRef(false);
+  const [isTooltipVisibile, setTooltipVisible] = React.useState(false);
 
   useEffect(() => {
     function updateTooltip(): void {
@@ -114,9 +111,7 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
       if (tooltipElement !== null && tooltipElement.current !== null) {
         // The 0.2 here means 20% of the viewport width, which is set as
         // the max width for the breadcrumb in the CSS style.
-        // isTooltipViewable.current = false;
         if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
-          // isTooltipViewable.current = true;
           setTooltipVisible(true);
         else setTooltipVisible(false);
       }
@@ -494,13 +489,12 @@ class PageBreadcrumbs extends React.Component<
                 )}
 
                 {/* // Add in the hierarchy breadcrumbs. */}
-                {hierarchyKeys.map((level: string, index: number) => {
+                {hierarchyKeys.map((value: string, index: number) => {
                   const breadcrumbInfo =
                     breadcrumbState.currentHierarchy[index];
 
                   // Return the correct type of breadcrumb with the entity name
                   // depending on if it is at the end of the hierarchy or not.
-                  // const createdBreadcrumb =
                   return index + 1 === hierarchyKeys.length ? (
                     <StyledBreadcrumb
                       displayName={breadcrumbInfo.displayName}
