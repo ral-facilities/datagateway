@@ -105,13 +105,26 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
   const isTooltipViewable = React.useRef(false);
 
-  useEffect(() => {
+  function updateTooltip(): void {
+    // Check that the element has been rendered and set the viewable
+    // as false before checking to see the element has exceeded maximum width.
     if (tooltipElement !== null && tooltipElement.current !== null) {
       // The 0.2 here means 20% of the viewport width, which is set as
       // the max width for the breadcrumb in the CSS style.
+      isTooltipViewable.current = false;
       if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
         isTooltipViewable.current = true;
+      console.log(
+        `Tooltip: ${tooltipElement.current.offsetWidth /
+          window.innerWidth} to ${isTooltipViewable.current}`
+      );
     }
+  }
+
+  window.addEventListener('resize', updateTooltip);
+
+  useEffect(() => {
+    updateTooltip();
   });
 
   return (
