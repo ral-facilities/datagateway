@@ -64,7 +64,7 @@ describe('DLS - Proposals Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="1"').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
         'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
       );
     });
