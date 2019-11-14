@@ -20,6 +20,11 @@ jobs:
       script: npm run lint
     - name: 'Unit Tests'
       script: npm run test:unit
-      after_success: bash <(curl -s https://codecov.io/bash)
+      after_success:
+        - |
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-common/*' -F datagateway-common &&
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-table/*' -F datagateway-table &&
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-search/*' -F datagateway-search &&
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-download/*' -F datagateway-download
     - name: 'E2E Tests'
       script: npm run test:e2e
