@@ -101,20 +101,16 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
+  // Create a reference in order to show/hide tooltip depending on width of element.
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
   const isTooltipViewable = React.useRef(false);
 
   useEffect(() => {
     if (tooltipElement !== null && tooltipElement.current !== null) {
-      // 0.2 here meaning the 20% of the viewport width which is set as the max width for the breadcrumb.
-      console.log(
-        `Element viewport width (%): ${tooltipElement.current.offsetWidth /
-          window.innerWidth}`
-      );
-
+      // The 0.2 here means 20% of the viewport width, which is set as
+      // the max width for the breadcrumb in the CSS style.
       if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
         isTooltipViewable.current = true;
-      console.log(`Tooltip Viewable: ${isTooltipViewable}`);
     }
   });
 
@@ -254,40 +250,23 @@ class PageBreadcrumbs extends React.Component<
   }
 
   public componentDidMount(): void {
-    console.log('Called componentDidMount');
-
     // Store the current pathnames.
     this.currentPathnames = this.props.location.split('/').filter(x => x);
-    console.log('Saved current pathnames: ', this.currentPathnames);
-
-    this.updateBreadcrumbState(1);
+    this.updateBreadcrumbState();
   }
 
   public componentDidUpdate(prevProps: BreadcrumbProps): void {
-    console.log('Called componentDidUpdate');
-
     this.currentPathnames = this.props.location.split('/').filter(x => x);
-    console.log('Saved current pathnames: ', this.currentPathnames);
-
-    if (prevProps.location !== this.props.location) {
-      console.log(
-        `At new location, ${prevProps.location} -> ${this.props.location}`
-      );
+    if (prevProps.location !== this.props.location)
       this.isBreadcrumbUpdated = false;
-    }
 
     if (!this.isBreadcrumbUpdated) {
-      console.log('Need to update.');
-      this.updateBreadcrumbState(2);
-    } else {
-      console.log('No need to update.');
+      this.updateBreadcrumbState();
     }
   }
 
-  private updateBreadcrumbState = async (num: number) => {
+  private updateBreadcrumbState = async () => {
     let updatedState = this.state;
-    console.log('Current state: ', updatedState);
-    console.log(`Updating with path names: ${this.currentPathnames}`);
 
     // Update the base address if it has changed.
     const baseEntityName = this.currentPathnames[1];
@@ -323,14 +302,10 @@ class PageBreadcrumbs extends React.Component<
     let hierarchyCount = 0;
     const pathLength = this.currentPathnames.length;
     for (let index = 1; index < pathLength; index += 2) {
-      console.log(`Current index: ${index}`);
-
       // Get the entity and the data stored on the entity.
       let entity = this.currentPathnames[index];
-      console.log(`Current value: ${entity}`);
 
       const link = `/${this.currentPathnames.slice(0, index + 3).join('/')}`;
-      console.log(`Breadcrumb URL: ${link}`);
 
       // Check we are not the end of the pathnames array.
       if (index < pathLength - 1) {
@@ -347,16 +322,10 @@ class PageBreadcrumbs extends React.Component<
         }
 
         // Get the information held in the state for the current path name.
-        console.log('Current state: ', updatedState);
         const entityInfo = updatedState.currentHierarchy[hierarchyCount];
-        console.log(
-          `Entity Info with hierarchyCount (${hierarchyCount}): `,
-          entityInfo
-        );
 
         // Get the entity Id in the path to compare with the saved one in our state.
         const entityId = this.currentPathnames[index + 1];
-        console.log(`Entity ID: ${entityId}`);
 
         // Check if an entity id is present or if the id has changed since the last update to the state.
         if (entityInfo.id.length === 0 || entityInfo.id !== entityId) {
@@ -367,8 +336,6 @@ class PageBreadcrumbs extends React.Component<
 
           // There are some exceptions to this when handling the DIAMOND/DLS
           // depending on if 'proposal' has been found in the current path.
-          console.log('Current path: ', this.currentPathnames);
-          console.log('Current entity: ', entity);
           if (this.currentPathnames.includes('proposal')) {
             // If the entity is current proposal, then we will not make an API request,
             // as we need the investigation ID to retrieve the TITLE.
@@ -383,8 +350,6 @@ class PageBreadcrumbs extends React.Component<
             // Anything else (including ISIS), we request the TITLE for the investigation entity.
             if (entity === 'investigation') requestEntityField = 'TITLE';
           }
-          console.log(`API Entity: ${apiEntity}`);
-          console.log(`Request Entity Field: ${requestEntityField}`);
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
@@ -399,7 +364,6 @@ class PageBreadcrumbs extends React.Component<
               '/findone?where=' +
               JSON.stringify({ NAME: { eq: entityId } });
           }
-          console.log(`Contructed request URL: ${requestEntityUrl}`);
 
           // Get the entity field for the given entity request.
           let entityDisplayName = await this.getEntityInformation(
@@ -407,10 +371,6 @@ class PageBreadcrumbs extends React.Component<
             requestEntityField
           );
           if (entityDisplayName) {
-            console.log(
-              `${entity} - Retrieved entity name: ${entityDisplayName}`
-            );
-
             // Update the state with the new entity information.
             updatedState.currentHierarchy.splice(hierarchyCount, 1, {
               ...updatedState.currentHierarchy[hierarchyCount],
@@ -419,19 +379,11 @@ class PageBreadcrumbs extends React.Component<
               displayName: entityDisplayName,
               url: link,
             });
-            console.log(`Updated state for ${entity}:`, updatedState);
-          } else {
-            console.log('Did not get entity display name: ', entityDisplayName);
           }
-        } else {
-          console.log(
-            `${entity} is same as before with ID ${entityId}, no need to request again.`
-          );
         }
         // Ensure that we store the last path in a separate field and that it is not the entity name.
       } else if (index === pathLength - 1) {
         if (entity !== updatedState.base.entityName) {
-          console.log(`Processing last item in path: ${entity}`);
           // Update the state to say that e.g. if path is /browse/investigation/,
           // then display name would be just Browse > *Investigations*.
           // e.g. Browse > Investigations > *Proposal 1* (Datasets) etc.
@@ -442,7 +394,6 @@ class PageBreadcrumbs extends React.Component<
                 `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
             },
           };
-          console.log(`Updated state for ${entity}:`, updatedState);
         } else {
           // If the base is the current top directory, then update the last field.
           updatedState = {
@@ -453,7 +404,6 @@ class PageBreadcrumbs extends React.Component<
               isLast: true,
             },
           };
-          console.log('Updated the base as being last in the path.');
         }
       }
 
@@ -462,9 +412,7 @@ class PageBreadcrumbs extends React.Component<
     }
 
     // Update the final state.
-    this.setState(updatedState, () =>
-      console.log(`Final state (${num}): `, this.state)
-    );
+    this.setState(updatedState);
     this.isBreadcrumbUpdated = true;
   };
 
@@ -473,10 +421,7 @@ class PageBreadcrumbs extends React.Component<
     entityField: string
   ): Promise<string> => {
     let entityName = '';
-
-    console.log('API Url: ', this.props.apiUrl);
     const requestUrl = `${this.props.apiUrl}/${requestEntityUrl}`;
-    console.log('Final request url: ', requestUrl);
 
     // Make a GET request to the specified URL.
     entityName = await axios
@@ -486,25 +431,14 @@ class PageBreadcrumbs extends React.Component<
         },
       })
       .then(response => {
-        console.log(`${requestEntityUrl} - Response Data:`, response.data);
-
         // Return the property in the data received.
-        console.log(
-          `${requestEntityUrl} - Entity ${entityField} : ${response.data[entityField]}`
-        );
         return response.data[entityField];
-      })
-      .catch(error => {
-        console.log(error);
-        return '';
       });
 
     return entityName;
   };
 
   public render(): React.ReactElement {
-    console.log('Rendering FULL Breadcrumb state: ', this.state);
-
     // Filter to ensure the breadcrumbs are only for this path
     // (in the event the user moved back and changed location using the breadcrumb).
     const breadcrumbState = {
@@ -521,12 +455,8 @@ class PageBreadcrumbs extends React.Component<
         }
       ),
     };
-    console.log('Rendering FILTERED breadcrumbs: ', breadcrumbState);
 
     const hierarchyKeys = Object.keys(breadcrumbState.currentHierarchy);
-    console.log('Rendering hierarchy keys: ', hierarchyKeys);
-    console.log('Keys length: ', hierarchyKeys.length);
-
     return (
       <div>
         <Paper elevation={0}>
@@ -555,9 +485,6 @@ class PageBreadcrumbs extends React.Component<
                 {hierarchyKeys.map((level: string, index: number) => {
                   const breadcrumbInfo =
                     breadcrumbState.currentHierarchy[index];
-                  console.log(
-                    `Creating breadcrumb for ${level}: ${breadcrumbInfo.url}, ${breadcrumbInfo.displayName} (ID: ${breadcrumbInfo.id})`
-                  );
 
                   // Return the correct type of breadcrumb with the entity name
                   // depending on if it is at the end of the hierarchy or not.
