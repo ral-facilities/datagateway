@@ -167,6 +167,7 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-controls="dataset-type-panel"]').click();
 
+      cy.get('#dataset-type-panel').should('be.visible');
       cy.contains('Name: DATASETTYPE 3').should('be.visible');
     });
 
