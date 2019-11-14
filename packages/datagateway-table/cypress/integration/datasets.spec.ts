@@ -186,6 +186,8 @@ describe('Datasets Table', () => {
     });
 
     it('by all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get(`[aria-label="select row 0"]`).should('be.checked');
@@ -195,6 +197,8 @@ describe('Datasets Table', () => {
     });
 
     it('and unselect all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
 
