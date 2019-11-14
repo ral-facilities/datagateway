@@ -101,31 +101,30 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
+  const [isTooltipVisibile, setTooltipVisible] = React.useState(false);
+
   // Create a reference in order to show/hide tooltip depending on width of element.
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
-  const isTooltipViewable = React.useRef(false);
-
-  function updateTooltip(): void {
-    // Check that the element has been rendered and set the viewable
-    // as false before checking to see the element has exceeded maximum width.
-    if (tooltipElement !== null && tooltipElement.current !== null) {
-      // The 0.2 here means 20% of the viewport width, which is set as
-      // the max width for the breadcrumb in the CSS style.
-      isTooltipViewable.current = false;
-      if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
-        isTooltipViewable.current = true;
-      console.log(
-        `Tooltip: ${tooltipElement.current.offsetWidth /
-          window.innerWidth} to ${isTooltipViewable.current}`
-      );
-    }
-  }
-
-  window.addEventListener('resize', updateTooltip);
+  // const isTooltipViewable = React.useRef(false);
 
   useEffect(() => {
+    function updateTooltip(): void {
+      // Check that the element has been rendered and set the viewable
+      // as false before checking to see the element has exceeded maximum width.
+      if (tooltipElement !== null && tooltipElement.current !== null) {
+        // The 0.2 here means 20% of the viewport width, which is set as
+        // the max width for the breadcrumb in the CSS style.
+        // isTooltipViewable.current = false;
+        if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
+          // isTooltipViewable.current = true;
+          setTooltipVisible(true);
+        else setTooltipVisible(false);
+      }
+    }
+    window.addEventListener('resize', updateTooltip);
     updateTooltip();
-  });
+    return () => window.removeEventListener('resize', updateTooltip);
+  }, [tooltipElement, setTooltipVisible]);
 
   return (
     <Tooltip
@@ -148,7 +147,7 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
-      disableHoverListener={!isTooltipViewable.current}
+      disableHoverListener={!isTooltipVisibile}
     />
   );
 };
