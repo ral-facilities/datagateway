@@ -20,5 +20,6 @@ jobs:
       script: npm run lint
     - name: 'Unit Tests'
       script: npm run test:unit
+      after_success: bash <(curl -s https://codecov.io/bash)
     - name: 'E2E Tests'
       script: npm run test:e2e
