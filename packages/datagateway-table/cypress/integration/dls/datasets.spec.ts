@@ -160,14 +160,15 @@ describe('DLS - Datasets Table', () => {
       ).should('be.visible');
     });
 
-    it('should be able to view the dataset type panel', () => {
+    it('and view the dataset type panel', () => {
       cy.get('[aria-label="Show details"]')
         .first()
         .click();
 
+      cy.contains('Name: DATASET 1').should('be.visible');
+
       cy.get('[aria-controls="dataset-type-panel"]').click();
 
-      cy.get('#dataset-type-panel').should('be.visible');
       cy.contains('Name: DATASETTYPE 3').should('be.visible');
     });
 

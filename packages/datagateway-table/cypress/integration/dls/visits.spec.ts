@@ -141,16 +141,15 @@ describe('DLS - Visits Table', () => {
         .first()
         .click();
 
+      cy.contains('Proposal: INVESTIGATION 1').should('be.visible');
+
       cy.get('[aria-controls="visit-users-panel"]').click();
-      cy.get('#visit-users-panel').should('be.visible');
       cy.contains('Investigator: Robert499').should('be.visible');
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
-      cy.get('#visit-samples-panel').should('be.visible');
       cy.contains('Sample: SAMPLE 1').should('be.visible');
 
       cy.get('[aria-controls="visit-publications-panel"]').click();
-      cy.get('#visit-publications-panel').should('be.visible');
       cy.contains(
         'Reference: Democrat sea gas road police. Citizen relationship southern affect.\nThousand national especially. In edge far education.'
       );
