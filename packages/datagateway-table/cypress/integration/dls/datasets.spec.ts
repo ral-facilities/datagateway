@@ -165,8 +165,7 @@ describe('DLS - Datasets Table', () => {
     it('and view the dataset type panel', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.wait('@getDatafileCount');
-      cy.wait('@getDatafileCount');
+      cy.wait(['@getDatafileCount', '@getDatafileCount']);
 
       cy.get('[aria-label="Show details"]')
         .first()
