@@ -264,6 +264,8 @@ class PageBreadcrumbs extends React.Component<
 
   public componentDidUpdate(prevProps: BreadcrumbProps): void {
     this.currentPathnames = this.props.location.split('/').filter(x => x);
+
+    // TODO: Do we need isBreadcrumbUpdated anymore?
     if (prevProps.location !== this.props.location)
       this.isBreadcrumbUpdated = false;
 
@@ -499,12 +501,14 @@ class PageBreadcrumbs extends React.Component<
                     <StyledBreadcrumb
                       displayName={breadcrumbInfo.displayName}
                       ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
+                      key={`breadcrumb-${index + 1}`}
                     />
                   ) : (
                     <StyledBreadcrumb
                       displayName={breadcrumbInfo.displayName}
                       ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
                       url={breadcrumbInfo.url}
+                      key={`breadcrumb-${index + 1}`}
                     />
                   );
                 })}

@@ -551,7 +551,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="Test 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                     url="/browse/proposal/INVESTIGATION 1/investigation"
                                   >
                                     <WrappedBreadcrumb
@@ -916,7 +916,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-2"
                                     displayName="1"
-                                    key=".1:1"
+                                    key=".1:$breadcrumb-2"
                                     url="/browse/proposal/INVESTIGATION 1/investigation/1/dataset"
                                   >
                                     <WrappedBreadcrumb
@@ -1281,7 +1281,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-3"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:2"
+                                    key=".1:$breadcrumb-3"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-3"
@@ -2276,7 +2276,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="Test 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                     url="/browse/proposal/INVESTIGATION 1/investigation"
                                   >
                                     <WrappedBreadcrumb
@@ -2641,7 +2641,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-2"
                                     displayName="1"
-                                    key=".1:1"
+                                    key=".1:$breadcrumb-2"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-2"
@@ -3636,7 +3636,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="Test 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-1"
@@ -5014,7 +5014,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                     url="/browse/instrument/1/facilityCycle"
                                   >
                                     <WrappedBreadcrumb
@@ -5379,7 +5379,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-2"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:1"
+                                    key=".1:$breadcrumb-2"
                                     url="/browse/instrument/1/facilityCycle/1/investigation"
                                   >
                                     <WrappedBreadcrumb
@@ -5744,7 +5744,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-3"
                                     displayName="Test 1"
-                                    key=".1:2"
+                                    key=".1:$breadcrumb-3"
                                     url="/browse/instrument/1/facilityCycle/1/investigation/1/dataset"
                                   >
                                     <WrappedBreadcrumb
@@ -6109,7 +6109,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-4"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:3"
+                                    key=".1:$breadcrumb-4"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-4"
@@ -7104,7 +7104,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                     url="/browse/instrument/1/facilityCycle"
                                   >
                                     <WrappedBreadcrumb
@@ -7469,7 +7469,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-2"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:1"
+                                    key=".1:$breadcrumb-2"
                                     url="/browse/instrument/1/facilityCycle/1/investigation"
                                   >
                                     <WrappedBreadcrumb
@@ -7834,7 +7834,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-3"
                                     displayName="Test 1"
-                                    key=".1:2"
+                                    key=".1:$breadcrumb-3"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-3"
@@ -8829,7 +8829,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-1"
@@ -10207,7 +10207,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="Test 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                     url="/browse/investigation/1/dataset"
                                   >
                                     <WrappedBreadcrumb
@@ -10572,7 +10572,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-2"
                                     displayName="INVESTIGATION 1"
-                                    key=".1:1"
+                                    key=".1:$breadcrumb-2"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-2"
@@ -11567,7 +11567,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS) renders correctly
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
                                     displayName="Test 1"
-                                    key=".1:0"
+                                    key=".1:$breadcrumb-1"
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-1"

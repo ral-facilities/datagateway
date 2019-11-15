@@ -42,7 +42,7 @@ const DLSRoutes = {
     '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
 };
 
-describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
+describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
   let mount;
   let state: StateType;
 
