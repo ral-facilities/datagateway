@@ -4,7 +4,7 @@ describe('DLS - Visits Table', () => {
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/');
     cy.server();
     cy.route('**/investigations*').as('getVisits');
-    cy.route('**/investigations/count*').as('getVisitCount');
+    cy.route('**/datasets/count*').as('getDatasetCount');
   });
 
   it('should load correctly', () => {
@@ -143,8 +143,8 @@ describe('DLS - Visits Table', () => {
       // need to wait for these to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
       cy.wait('@getVisits');
-      cy.wait('@getVisitCount');
-      cy.wait('@getVisitCount');
+      cy.wait('@getDatasetCount');
+      cy.wait('@getDatasetCount');
 
       cy.get('[aria-label="Show details"]')
         .first()
