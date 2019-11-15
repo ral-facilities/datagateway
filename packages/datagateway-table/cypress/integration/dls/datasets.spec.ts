@@ -2,8 +2,6 @@ describe('DLS - Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset');
-    cy.server();
-    cy.route('**/datafiles/count*').as('getDatafileCount');
   });
 
   it('should load correctly', () => {
@@ -165,7 +163,12 @@ describe('DLS - Datasets Table', () => {
     it('and view the dataset type panel', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.wait(['@getDatafileCount', '@getDatafileCount']);
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '56').should(
+        'exist'
+      );
+      cy.contains('[aria-rowindex="2"] [aria-colindex="3"]', '55').should(
+        'exist'
+      );
 
       cy.get('[aria-label="Show details"]')
         .first()

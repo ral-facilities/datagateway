@@ -141,7 +141,9 @@ describe('DLS - Visits Table', () => {
     it('and view visit users, samples and publications', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.wait('@getDatasetCount');
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
+        'exist'
+      );
 
       cy.get('[aria-label="Show details"]')
         .first()
