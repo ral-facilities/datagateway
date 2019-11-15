@@ -3,7 +3,6 @@ describe('DLS - Datasets Table', () => {
     cy.login('user', 'password');
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset');
     cy.server();
-    cy.route('**/datasets*').as('getDatasets');
     cy.route('**/datafiles/count*').as('getDatafileCount');
   });
 
@@ -164,9 +163,8 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('and view the dataset type panel', () => {
-      // need to wait for these to finish, otherwise cypress might interact with the details panel
+      // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.wait('@getDatasets');
       cy.wait('@getDatafileCount');
       cy.wait('@getDatafileCount');
 

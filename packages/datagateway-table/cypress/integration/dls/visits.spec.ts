@@ -3,7 +3,6 @@ describe('DLS - Visits Table', () => {
     cy.login('user', 'password');
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/');
     cy.server();
-    cy.route('**/investigations*').as('getVisits');
     cy.route('**/datasets/count*').as('getDatasetCount');
   });
 
@@ -140,10 +139,8 @@ describe('DLS - Visits Table', () => {
     // showing details when another row is showing details at the moment.
 
     it('and view visit users, samples and publications', () => {
-      // need to wait for these to finish, otherwise cypress might interact with the details panel
+      // need to wait counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.wait('@getVisits');
-      cy.wait('@getDatasetCount');
       cy.wait('@getDatasetCount');
 
       cy.get('[aria-label="Show details"]')
