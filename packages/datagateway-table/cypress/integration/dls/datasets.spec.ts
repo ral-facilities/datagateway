@@ -2,6 +2,9 @@ describe('DLS - Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset');
+    cy.server();
+    cy.route('**/datasets*').as('getDatasets');
+    cy.route('**/datasets/count*').as('getDatasetCount');
   });
 
   it('should load correctly', () => {
@@ -161,6 +164,12 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('and view the dataset type panel', () => {
+      // need to wait for these to finish, otherwise cypress might interact with the details panel
+      // too quickly and it rerenders during the test
+      cy.wait('@getDatasets');
+      cy.wait('@getDatasetCount');
+      cy.wait('@getDatasetCount');
+
       cy.get('[aria-label="Show details"]')
         .first()
         .click();
