@@ -105,7 +105,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -121,7 +121,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -1830,7 +1830,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -1846,7 +1846,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -3190,7 +3190,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -3206,7 +3206,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -4185,7 +4185,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -4201,7 +4201,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -4568,7 +4568,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -4584,7 +4584,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -6658,7 +6658,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -6674,7 +6674,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -8383,7 +8383,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -8399,7 +8399,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -9378,7 +9378,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -9394,7 +9394,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -9761,7 +9761,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -9777,7 +9777,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -11121,7 +11121,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -11137,7 +11137,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
@@ -12116,7 +12116,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                     <WithStyles(ForwardRef(Breadcrumbs))
                       aria-label="Breadcrumb"
                       separator={
-                        <UNDEFINED
+                        <Memo(NavigateNextIcon)
                           fontSize="small"
                         />
                       }
@@ -12132,7 +12132,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                           }
                         }
                         separator={
-                          <UNDEFINED
+                          <Memo(NavigateNextIcon)
                             fontSize="small"
                           />
                         }
