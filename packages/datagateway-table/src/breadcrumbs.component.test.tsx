@@ -105,7 +105,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(genericRoutes['investigations']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -120,7 +119,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(DLSRoutes['proposals']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -135,7 +133,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(ISISRoutes['instruments']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -150,7 +147,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(ISISRoutes['facilityCycles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -165,7 +161,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(DLSRoutes['investigations']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -180,7 +175,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(genericRoutes['datasets']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -195,7 +189,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(ISISRoutes['datasets']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -210,7 +203,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(DLSRoutes['datasets']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -225,7 +217,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(genericRoutes['datafiles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -240,7 +231,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(ISISRoutes['datafiles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -255,7 +245,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, ISIS, DLS)', () => {
     state.router.location = createLocation(DLSRoutes['datafiles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -322,7 +311,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(genericRoutes['investigations']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -338,7 +326,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(genericRoutes['datasets']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -359,7 +346,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(genericRoutes['datafiles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -386,7 +372,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(DLSRoutes['proposals']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -402,7 +387,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(DLSRoutes['investigations']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -427,7 +411,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(DLSRoutes['datasets']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -458,7 +441,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(DLSRoutes['datafiles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -494,7 +476,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(ISISRoutes['instruments']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -510,7 +491,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(ISISRoutes['facilityCycles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -531,7 +511,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(ISISRoutes['investigations']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -557,7 +536,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(ISISRoutes['datasets']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
@@ -588,7 +566,6 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     state.router.location = createLocation(ISISRoutes['datafiles']);
 
     // Set up store with test state and mount the breadcrumb.
-    console.log('Test state: ', state);
     const wrapper = createWrapper(state);
 
     // Flush promises and update the re-render the wrapper.
