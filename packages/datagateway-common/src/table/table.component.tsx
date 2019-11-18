@@ -115,7 +115,10 @@ const VirtualizedTable = (
     onSort,
   } = props;
 
-  if ((loadMoreRows && !totalRowCount) || (!loadMoreRows && totalRowCount))
+  if (
+    (loadMoreRows && typeof totalRowCount === 'undefined') ||
+    (totalRowCount && typeof loadMoreRows === 'undefined')
+  )
     throw new Error(
       'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
     );
