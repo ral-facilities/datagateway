@@ -86,8 +86,8 @@ export interface TableActionProps {
 interface VirtualizedTableProps {
   data: Entity[];
   columns: ColumnType[];
-  loadMoreRows: (offsetParams: IndexRange) => Promise<void>;
-  totalRowCount: number;
+  loadMoreRows?: (offsetParams: IndexRange) => Promise<void>;
+  totalRowCount?: number;
   sort: { [column: string]: Order };
   onSort: (column: string, order: Order | null) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
@@ -115,6 +115,11 @@ const VirtualizedTable = (
     onSort,
   } = props;
 
+  if ((loadMoreRows && !totalRowCount) || (!loadMoreRows && totalRowCount))
+    throw new Error(
+      'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    );
+
   React.useEffect(() => {
     if (tableRef) {
       tableRef.recomputeRowHeights();
@@ -136,8 +141,8 @@ const VirtualizedTable = (
             {({ columnWidth }) => (
               <InfiniteLoader
                 isRowLoaded={({ index }) => !!data[index]}
-                loadMoreRows={loadMoreRows}
-                rowCount={totalRowCount}
+                loadMoreRows={loadMoreRows || (() => Promise.resolve())}
+                rowCount={totalRowCount || data.length}
                 minimumBatchSize={25}
               >
                 {({ onRowsRendered, registerChild }) => (
