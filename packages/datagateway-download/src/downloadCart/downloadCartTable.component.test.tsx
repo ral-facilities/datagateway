@@ -11,7 +11,6 @@ import {
   getCartDatafileCount,
 } from './downloadCartApi';
 import { act } from 'react-dom/test-utils';
-import { TableSortLabel } from '@material-ui/core';
 
 jest.mock('./downloadCartApi');
 
@@ -217,7 +216,9 @@ describe('Download cart table component', () => {
       .find('p')
       .first();
 
-    const typeSortLabel = wrapper.find(TableSortLabel).at(1);
+    const typeSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(1);
 
     typeSortLabel.simulate('click');
 
@@ -227,7 +228,9 @@ describe('Download cart table component', () => {
 
     expect(firstNameCell.text()).toEqual('INVESTIGATION 1');
 
-    const nameSortLabel = wrapper.find(TableSortLabel).at(0);
+    const nameSortLabel = wrapper
+      .find('[role="columnheader"] span[role="button"]')
+      .at(0);
 
     nameSortLabel.simulate('click');
 
