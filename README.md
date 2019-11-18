@@ -1,11 +1,13 @@
 # DataGateway
 
-DataGateway is a [ReactJs](https://reactjs.org/)-based web application that provides ways of discovering and accessing data produced at large-scale science facilities. DataGateway is 
-a [micro-frontend](https://micro-frontends.org/) that can be integrated with the parent web application [SciGateway](https://github.com/ral-facilities/scigateway). 
+[![Build Status](https://travis-ci.org/ral-facilities/datagateway.svg?branch=master)](https://travis-ci.org/ral-facilities/datagateway) [![codecov](https://codecov.io/gh/ral-facilities/datagateway/branch/master/graph/badge.svg)](https://codecov.io/gh/ral-facilities/datagateway)
 
-The SciGateway application offers features such as authentication and authorisation functionality, notifications, cookies management. In this way, DataGateway relies on SciGateway for these overarching features, and can focus on providing data discoverability and downloads. The data is organised according to the data hierarchy that reflects the data pipelines in each facility. The data is shown in a tabular format depicting the main metadata fields. 
+DataGateway is a [ReactJs](https://reactjs.org/)-based web application that provides ways of discovering and accessing data produced at large-scale science facilities. DataGateway is
+a [micro-frontend](https://micro-frontends.org/) that can be integrated with the parent web application [SciGateway](https://github.com/ral-facilities/scigateway).
 
-For more details about the project's architecture, development guidelines and installation procedures, visit the [SciGateway documentation](https://github.com/ral-facilities/scigateway/wiki). 
+The SciGateway application offers features such as authentication and authorisation functionality, notifications, cookies management. In this way, DataGateway relies on SciGateway for these overarching features, and can focus on providing data discoverability and downloads. The data is organised according to the data hierarchy that reflects the data pipelines in each facility. The data is shown in a tabular format depicting the main metadata fields.
+
+For more details about the project's architecture, development guidelines and installation procedures, visit the [SciGateway documentation](https://github.com/ral-facilities/scigateway/wiki).
 
 ## Code structure
 
