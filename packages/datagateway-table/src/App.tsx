@@ -7,6 +7,8 @@ import AppReducer from './state/reducers/app.reducer';
 import { Provider, connect } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+// history package is part of react-router, which we depend on
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import DGTableMiddleware, {
