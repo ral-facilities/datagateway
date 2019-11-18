@@ -23,6 +23,10 @@ describe('Cell content renderers', () => {
     it('handles 0 correctly', () => {
       expect(formatBytes(0)).toEqual('0 B');
     });
+
+    it('handles -1 correctly', () => {
+      expect(formatBytes(-1)).toEqual('Loading...');
+    });
   });
 
   describe('datasetLink', () => {
