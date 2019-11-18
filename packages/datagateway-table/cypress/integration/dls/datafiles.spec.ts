@@ -1,7 +1,9 @@
-describe('Datafiles Table', () => {
+describe('DLS - Datafiles Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1/dataset/25/datafile');
+    cy.visit(
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
+    );
   });
 
   it('should load correctly', () => {
@@ -35,7 +37,7 @@ describe('Datafiles Table', () => {
         .eq(1)
         .should('not.have.css', 'opacity', '0');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        '/yes/glass/them.jpg'
+        'yes/glass/them.jpg'
       );
     });
 
@@ -58,12 +60,12 @@ describe('Datafiles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Modified Time').click();
+      cy.contains('Create Time').click();
       cy.contains('Name').click();
       cy.contains('Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Datafile 15831'
+        'Datafile 1940'
       );
     });
   });
@@ -81,11 +83,9 @@ describe('Datafiles Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Modified Time date filter from"]').type(
-        '2019-01-01'
-      );
+      cy.get('[aria-label="Create Time date filter from"]').type('2019-01-01');
 
-      cy.get('[aria-label="Modified Time date filter to"]')
+      cy.get('[aria-label="Create Time date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -99,17 +99,17 @@ describe('Datafiles Table', () => {
       let date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Modified Time date filter to"]').should(
+      cy.get('[aria-label="Create Time date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Datafile 1940'
+        'Datafile 14873'
       );
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        'Datafile 6730'
+        'Datafile 20621'
       );
     });
 

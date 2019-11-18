@@ -1,24 +1,24 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatafileTable from './datafileTable.component';
-import { initialState } from '../state/reducers/dgtable.reducer';
+import DLSVisitsTable from './dlsVisitsTable.component';
+import { initialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType, Datafile } from '../state/app.types';
+import { StateType } from '../../state/app.types';
 import {
-  fetchDatafilesRequest,
+  fetchInvestigationsRequest,
   filterTable,
   sortTable,
-  downloadDatafileRequest,
-  fetchDatafileCountRequest,
+  fetchInvestigationDetailsRequest,
   clearTable,
-} from '../state/actions';
+  fetchInvestigationCountRequest,
+} from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
-describe('Datafile table component', () => {
+describe('DLS Visits table component', () => {
   let shallow;
   let mount;
   let mockStore;
@@ -26,7 +26,6 @@ describe('Datafile table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
-
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
@@ -38,11 +37,26 @@ describe('Datafile table component', () => {
     state.dgtable.data = [
       {
         ID: 1,
+        TITLE: 'Test 1',
         NAME: 'Test 1',
-        LOCATION: '/test1',
-        FILESIZE: 1,
-        MOD_TIME: '2019-07-23',
-        DATASET_ID: 1,
+        SUMMARY: 'foo bar',
+        VISIT_ID: '1',
+        RB_NUMBER: '1',
+        DOI: 'doi 1',
+        SIZE: 1,
+        INVESTIGATIONINSTRUMENT: [
+          {
+            ID: 1,
+            INVESTIGATION_ID: 1,
+            INSTRUMENT_ID: 3,
+            INSTRUMENT: {
+              ID: 3,
+              NAME: 'LARMOR',
+            },
+          },
+        ],
+        STARTDATE: '2019-06-10',
+        ENDDATE: '2019-06-11',
       },
     ];
   });
@@ -52,7 +66,7 @@ describe('Datafile table component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DatafileTable store={mockStore(state)} />);
+    const wrapper = shallow(<DLSVisitsTable store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -61,7 +75,7 @@ describe('Datafile table component', () => {
     mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSVisitsTable proposalName="Test 1" />
         </MemoryRouter>
       </Provider>
     );
@@ -70,12 +84,12 @@ describe('Datafile table component', () => {
     expect(testStore.getActions()[0]).toEqual(clearTable());
   });
 
-  it('sends fetchDatafileCount and fetchDatafiles actions when watched store values change', () => {
+  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSVisitsTable proposalName="Test 1" />
         </MemoryRouter>
       </Provider>
     );
@@ -87,17 +101,21 @@ describe('Datafile table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+    expect(testStore.getActions()[1]).toEqual(
+      fetchInvestigationCountRequest(1)
+    );
+    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
   });
 
-  it('sends fetchDatafiles action when loadMoreRows is called', () => {
+  it('sends fetchInvestigations action when loadMoreRows is called', () => {
     const testStore = mockStore(state);
-    const wrapper = shallow(<DatafileTable store={testStore} />);
+    const wrapper = shallow(
+      <DLSVisitsTable proposalName="Test 1" store={testStore} />
+    );
 
     wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends filterTable action on text filter', () => {
@@ -105,21 +123,21 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSVisitsTable proposalName="Test 1" />
         </MemoryRouter>
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').first();
+    const filterInput = wrapper.find('[aria-label="Filter by Visit Id"] input');
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[1]).toEqual(filterTable('VISIT_ID', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[2]).toEqual(filterTable('VISIT_ID', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -127,23 +145,23 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSVisitsTable proposalName="Test 1" />
         </MemoryRouter>
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').last();
+    const filterInput = wrapper.find('[aria-label="End Date date filter to"]');
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('MOD_TIME', { endDate: '2019-08-06' })
+      filterTable('ENDDATE', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[2]).toEqual(filterTable('ENDDATE', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -151,7 +169,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSVisitsTable proposalName="Test 1" />
         </MemoryRouter>
       </Provider>
     );
@@ -161,60 +179,70 @@ describe('Datafile table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[1]).toEqual(sortTable('VISIT_ID', 'asc'));
   });
 
-  it('sends downloadData action on click of download button', () => {
+  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSVisitsTable proposalName="Test 1" />
         </MemoryRouter>
       </Provider>
     );
 
-    wrapper.find('button[aria-label="Download"]').simulate('click');
-
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
-  });
-
-  it("doesn't display download button for datafiles with no location", () => {
-    const datafile = state.dgtable.data[0] as Datafile;
-    const { LOCATION, ...datafileWithoutLocation } = datafile;
-    state.dgtable.data = [datafileWithoutLocation];
-
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(wrapper.find('button[aria-label="Download"]')).toHaveLength(0);
-  });
-
-  it('renders details panel correctly', () => {
-    const wrapper = shallow(
-      <MemoryRouter>
-        <DatafileTable store={mockStore(state)} datasetId="1" />
-      </MemoryRouter>
-    );
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
         rowData: state.dgtable.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
+
+    mount(
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgtable.data[0],
+        detailsPanelResize: jest.fn(),
+      })
+    );
+
+    expect(testStore.getActions()[1]).toEqual(
+      fetchInvestigationDetailsRequest()
+    );
   });
 
-  it('renders file size as bytes', () => {
+  it('renders visit ID as a links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSVisitsTable proposalName="Test 1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper
+        .find('[aria-colindex=2]')
+        .find('p')
+        .children()
+    ).toMatchSnapshot();
+  });
+
+  it('gracefully handles missing Instrument from InvestigationInstrument object', () => {
+    state.dgtable.data[0] = {
+      ...state.dgtable.data[0],
+      INVESTIGATIONINSTRUMENT: [
+        {
+          ID: 1,
+          INVESTIGATION_ID: 1,
+          INSTRUMENT_ID: 3,
+        },
+      ],
+    };
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <DLSVisitsTable proposalName="Test 1" />
         </MemoryRouter>
       </Provider>
     );
@@ -224,6 +252,6 @@ describe('Datafile table component', () => {
         .find('[aria-colindex=4]')
         .find('p')
         .text()
-    ).toEqual('1 B');
+    ).toEqual('');
   });
 });

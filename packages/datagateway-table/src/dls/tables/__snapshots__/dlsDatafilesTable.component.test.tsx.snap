@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Datafile table component renders correctly 1`] = `
+exports[`DLS datafiles table component renders correctly 1`] = `
 <div
   className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
   style={
@@ -11,11 +11,6 @@ exports[`Datafile table component renders correctly 1`] = `
   }
 >
   <WithStyles(VirtualizedTable)
-    actions={
-      Array [
-        [Function],
-      ]
-    }
     columns={
       Array [
         Object {
@@ -31,23 +26,24 @@ exports[`Datafile table component renders correctly 1`] = `
         Object {
           "cellContentRenderer": [Function],
           "dataKey": "FILESIZE",
+          "filterComponent": [Function],
           "label": "Size",
         },
         Object {
-          "dataKey": "MOD_TIME",
+          "dataKey": "CREATE_TIME",
           "filterComponent": [Function],
-          "label": "Modified Time",
+          "label": "Create Time",
         },
       ]
     }
     data={
       Array [
         Object {
+          "CREATE_TIME": "2019-07-23",
           "DATASET_ID": 1,
           "FILESIZE": 1,
           "ID": 1,
           "LOCATION": "/test1",
-          "MOD_TIME": "2019-07-23",
           "NAME": "Test 1",
         },
       ]
@@ -61,23 +57,37 @@ exports[`Datafile table component renders correctly 1`] = `
 </div>
 `;
 
-exports[`Datafile table component renders details panel correctly 1`] = `
+exports[`DLS datafiles table component renders details panel correctly 1`] = `
 <div>
-  <WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))
+    variant="body2"
+  >
     <b>
       Name:
     </b>
      
     Test 1
   </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))
+    variant="body2"
+  >
+    <b>
+      Description:
+    </b>
+     
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))
+    variant="body2"
+  >
     <b>
       File Size:
     </b>
      
     1 B
   </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))
+    variant="body2"
+  >
     <b>
       Location:
     </b>

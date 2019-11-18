@@ -1,16 +1,15 @@
 import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
 import {
-  Table,
   TextColumnFilter,
-  DateColumnFilter,
-  investigationLink,
+  Table,
+  tableLink,
   Order,
   Filter,
   Investigation,
   Entity,
 } from 'datagateway-common';
-import { StateType } from '../state/app.types';
+import { Paper } from '@material-ui/core';
+import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
@@ -21,10 +20,10 @@ import {
   fetchInvestigations,
   fetchInvestigationCount,
   clearTable,
-} from '../state/actions';
-import useAfterMountEffect from '../utils';
+} from '../../state/actions';
+import useAfterMountEffect from '../../utils';
 
-interface InvestigationTableProps {
+interface DLSProposalsTableStoreProps {
   sort: {
     [column: string]: Order;
   };
@@ -37,7 +36,7 @@ interface InvestigationTableProps {
   error: string | null;
 }
 
-interface InvestigationTableDispatchProps {
+interface DLSProposalsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
@@ -45,11 +44,11 @@ interface InvestigationTableDispatchProps {
   clearTable: () => Action;
 }
 
-type InvestigationTableCombinedProps = InvestigationTableProps &
-  InvestigationTableDispatchProps;
+type DLSProposalsTableCombinedProps = DLSProposalsTableStoreProps &
+  DLSProposalsTableDispatchProps;
 
-const InvestigationTable = (
-  props: InvestigationTableCombinedProps
+const DLSProposalsTable = (
+  props: DLSProposalsTableCombinedProps
 ): React.ReactElement => {
   const {
     data,
@@ -70,15 +69,6 @@ const InvestigationTable = (
     />
   );
 
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
-      }
-    />
-  );
-
   React.useEffect(() => {
     clearTable();
   }, [clearTable]);
@@ -96,79 +86,29 @@ const InvestigationTable = (
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={({ rowData }) => {
-          const investigationData = rowData as Investigation;
-          return (
-            <div>
-              <Typography>
-                <b>Proposal:</b> {investigationData.RB_NUMBER}
-              </Typography>
-              <Typography>
-                <b>Title:</b> {investigationData.TITLE}
-              </Typography>
-              <Typography>
-                <b>Start Date:</b> {investigationData.STARTDATE}
-              </Typography>
-              <Typography>
-                <b>End Date:</b> {investigationData.ENDDATE}
-              </Typography>
-            </div>
-          );
-        }}
         columns={[
           {
             label: 'Title',
             dataKey: 'TITLE',
             cellContentRenderer: (props: TableCellProps) => {
               const investigationData = props.rowData as Investigation;
-              return investigationLink(
-                investigationData.ID,
+              return tableLink(
+                `/browse/proposal/${investigationData.NAME}/investigation/`,
                 investigationData.TITLE
               );
             },
             filterComponent: textFilter,
           },
           {
-            label: 'Visit ID',
-            dataKey: 'VISIT_ID',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'RB Number',
-            dataKey: 'RB_NUMBER',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'DOI',
-            dataKey: 'DOI',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Dataset Count',
-            dataKey: 'DATASET_COUNT',
-          },
-          {
-            label: 'Instrument',
-            dataKey: 'INSTRUMENT.NAME',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Start Date',
-            dataKey: 'STARTDATE',
-            filterComponent: dateFilter,
+            label: 'Name',
+            dataKey: 'NAME',
             cellContentRenderer: (props: TableCellProps) => {
-              if (props.cellData)
-                return props.cellData.toString().split(' ')[0];
+              return tableLink(
+                `/browse/proposal/${props.rowData.NAME}/investigation/`,
+                props.rowData.NAME
+              );
             },
-          },
-          {
-            label: 'End Date',
-            dataKey: 'ENDDATE',
-            filterComponent: dateFilter,
-            cellContentRenderer: (props: TableCellProps) => {
-              if (props.cellData)
-                return props.cellData.toString().split(' ')[0];
-            },
+            filterComponent: textFilter,
           },
         ]}
       />
@@ -178,18 +118,36 @@ const InvestigationTable = (
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
-): InvestigationTableDispatchProps => ({
+): DLSProposalsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (offsetParams: IndexRange) =>
-    dispatch(fetchInvestigations({ offsetParams })),
-  fetchCount: () => dispatch(fetchInvestigationCount()),
+    dispatch(
+      fetchInvestigations({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'distinct',
+            filterValue: JSON.stringify(['NAME', 'TITLE']),
+          },
+        ],
+      })
+    ),
+  fetchCount: () =>
+    dispatch(
+      fetchInvestigationCount([
+        {
+          filterType: 'distinct',
+          filterValue: JSON.stringify(['NAME', 'TITLE']),
+        },
+      ])
+    ),
   clearTable: () => dispatch(clearTable()),
 });
 
-const mapStateToProps = (state: StateType): InvestigationTableProps => {
+const mapStateToProps = (state: StateType): DLSProposalsTableStoreProps => {
   return {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
@@ -203,4 +161,4 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InvestigationTable);
+)(DLSProposalsTable);

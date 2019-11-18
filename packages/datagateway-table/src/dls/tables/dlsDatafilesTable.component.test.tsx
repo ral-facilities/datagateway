@@ -1,24 +1,23 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatafileTable from './datafileTable.component';
-import { initialState } from '../state/reducers/dgtable.reducer';
+import DLSDatafilesTable from './dlsDatafilesTable.component';
+import { initialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType, Datafile } from '../state/app.types';
+import { StateType } from '../../state/app.types';
 import {
   fetchDatafilesRequest,
   filterTable,
   sortTable,
-  downloadDatafileRequest,
-  fetchDatafileCountRequest,
   clearTable,
-} from '../state/actions';
+  fetchDatafileCountRequest,
+} from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
-describe('Datafile table component', () => {
+describe('DLS datafiles table component', () => {
   let shallow;
   let mount;
   let mockStore;
@@ -26,7 +25,6 @@ describe('Datafile table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
-
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
@@ -41,7 +39,7 @@ describe('Datafile table component', () => {
         NAME: 'Test 1',
         LOCATION: '/test1',
         FILESIZE: 1,
-        MOD_TIME: '2019-07-23',
+        CREATE_TIME: '2019-07-23',
         DATASET_ID: 1,
       },
     ];
@@ -52,7 +50,7 @@ describe('Datafile table component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DatafileTable store={mockStore(state)} />);
+    const wrapper = shallow(<DLSDatafilesTable store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -61,7 +59,7 @@ describe('Datafile table component', () => {
     mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSDatafilesTable datasetId="1" />
         </MemoryRouter>
       </Provider>
     );
@@ -75,7 +73,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSDatafilesTable datasetId="1" />
         </MemoryRouter>
       </Provider>
     );
@@ -93,7 +91,9 @@ describe('Datafile table component', () => {
 
   it('sends fetchDatafiles action when loadMoreRows is called', () => {
     const testStore = mockStore(state);
-    const wrapper = shallow(<DatafileTable store={testStore} />);
+    const wrapper = shallow(
+      <DLSDatafilesTable datasetId="1" store={testStore} />
+    );
 
     wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
@@ -105,12 +105,12 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSDatafilesTable datasetId="1" />
         </MemoryRouter>
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').first();
+    const filterInput = wrapper.find('[aria-label="Filter by Name"] input');
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -127,23 +127,25 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSDatafilesTable datasetId="1" />
         </MemoryRouter>
       </Provider>
     );
 
-    const filterInput = wrapper.find('input').last();
+    const filterInput = wrapper.find(
+      '[aria-label="Create Time date filter to"]'
+    );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('MOD_TIME', { endDate: '2019-08-06' })
+      filterTable('CREATE_TIME', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[2]).toEqual(filterTable('CREATE_TIME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -151,7 +153,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSDatafilesTable datasetId="1" />
         </MemoryRouter>
       </Provider>
     );
@@ -164,42 +166,10 @@ describe('Datafile table component', () => {
     expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
   });
 
-  it('sends downloadData action on click of download button', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper.find('button[aria-label="Download"]').simulate('click');
-
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
-  });
-
-  it("doesn't display download button for datafiles with no location", () => {
-    const datafile = state.dgtable.data[0] as Datafile;
-    const { LOCATION, ...datafileWithoutLocation } = datafile;
-    state.dgtable.data = [datafileWithoutLocation];
-
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(wrapper.find('button[aria-label="Download"]')).toHaveLength(0);
-  });
-
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
-        <DatafileTable store={mockStore(state)} datasetId="1" />
+        <DLSDatafilesTable store={mockStore(state)} datasetId="1" />
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
@@ -214,7 +184,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <DLSDatafilesTable datasetId="1" />
         </MemoryRouter>
       </Provider>
     );

@@ -1,7 +1,7 @@
-describe('Datasets Table', () => {
+describe('DLS - Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1/dataset');
+    cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset');
   });
 
   it('should load correctly', () => {
@@ -10,16 +10,16 @@ describe('Datasets Table', () => {
   });
 
   it('should be able to click a dataset to see its datafiles', () => {
-    cy.get('a')
+    cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/investigation/1/dataset/25/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
     );
   });
 
-  // current example data only has 2 datasets per investigation, so can't test lazy loading
+  // Lazy loading can't be tested at the moment since there are only 2 datasets in this investigation.
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
@@ -65,12 +65,14 @@ describe('Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Create Time').click();
-      cy.contains('Create Time').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('1');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
+
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
     });
   });
 
@@ -148,6 +150,36 @@ describe('Datasets Table', () => {
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
+    it('and view dataset details', () => {
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.contains(
+        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+      ).should('be.visible');
+    });
+
+    it('and view the dataset type panel', () => {
+      // need to wait for counts to finish, otherwise cypress might interact with the details panel
+      // too quickly and it rerenders during the test
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '56').should(
+        'exist'
+      );
+      cy.contains('[aria-rowindex="2"] [aria-colindex="3"]', '55').should(
+        'exist'
+      );
+
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.get('[aria-controls="dataset-type-panel"]').click();
+
+      cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
+      cy.contains('Name: DATASETTYPE 3').should('be.visible');
+    });
+
     it('and then not view details anymore', () => {
       cy.get('[aria-label="Show details"]')
         .first()
@@ -157,7 +189,9 @@ describe('Datasets Table', () => {
         .first()
         .click();
 
-      cy.contains('Name: DATASET 1').should('not.be.visible');
+      cy.contains(
+        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+      ).should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

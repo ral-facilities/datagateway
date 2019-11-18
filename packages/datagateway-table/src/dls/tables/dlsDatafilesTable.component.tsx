@@ -1,37 +1,34 @@
 import React from 'react';
-import { Paper, Typography, IconButton } from '@material-ui/core';
 import {
-  Table,
-  TableActionProps,
-  formatBytes,
   TextColumnFilter,
-  DateColumnFilter,
-  Order,
+  Table,
+  formatBytes,
   Filter,
-  Datafile,
+  Order,
   Entity,
+  Datafile,
+  DateColumnFilter,
 } from 'datagateway-common';
-import { GetApp } from '@material-ui/icons';
+import { Paper, Typography } from '@material-ui/core';
 import {
   fetchDatafiles,
   sortTable,
   filterTable,
-  downloadDatafile,
   fetchDatafileCount,
   clearTable,
-} from '../state/actions';
+} from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { StateType } from '../state/app.types';
+import { StateType } from '../../state/app.types';
 import { Action, AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
-import useAfterMountEffect from '../utils';
+import useAfterMountEffect from '../../utils';
 
-interface DatafileTableProps {
+interface DLSDatafilesTableProps {
   datasetId: string;
 }
 
-interface DatafileTableStoreProps {
+interface DLSDatafilesTableStoreProps {
   sort: {
     [column: string]: Order;
   };
@@ -44,34 +41,32 @@ interface DatafileTableStoreProps {
   error: string | null;
 }
 
-interface DatafileTableDispatchProps {
+interface DLSDatafilesTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
-  downloadData: (datafileId: number, filename: string) => Promise<void>;
   clearTable: () => Action;
 }
 
-type DatafileTableCombinedProps = DatafileTableProps &
-  DatafileTableStoreProps &
-  DatafileTableDispatchProps;
+type DLSDatafilesTableCombinedProps = DLSDatafilesTableProps &
+  DLSDatafilesTableStoreProps &
+  DLSDatafilesTableDispatchProps;
 
-const DatafileTable = (
-  props: DatafileTableCombinedProps
+const DLSDatafilesTable = (
+  props: DLSDatafilesTableCombinedProps
 ): React.ReactElement => {
   const {
     data,
     totalDataCount,
     fetchData,
     fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
     filterTable,
     datasetId,
-    downloadData,
-    clearTable,
   } = props;
 
   React.useEffect(() => {
@@ -111,40 +106,21 @@ const DatafileTable = (
           const datafileData = rowData as Datafile;
           return (
             <div>
-              <Typography>
+              <Typography variant="body2">
                 <b>Name:</b> {datafileData.NAME}
               </Typography>
-              <Typography>
+              <Typography variant="body2">
+                <b>Description:</b> {datafileData.DESCRIPTION}
+              </Typography>
+              <Typography variant="body2">
                 <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
               </Typography>
-              <Typography>
+              <Typography variant="body2">
                 <b>Location:</b> {datafileData.LOCATION}
               </Typography>
             </div>
           );
         }}
-        actions={[
-          function downloadButton({ rowData }: TableActionProps) {
-            const datafileData = rowData as Datafile;
-            if (datafileData.LOCATION) {
-              return (
-                <IconButton
-                  aria-label="Download"
-                  key="download"
-                  size="small"
-                  onClick={() => {
-                    // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
-                    downloadData(datafileData.ID, datafileData.LOCATION);
-                  }}
-                >
-                  <GetApp />
-                </IconButton>
-              );
-            } else {
-              return null;
-            }
-          },
-        ]}
         columns={[
           {
             label: 'Name',
@@ -162,10 +138,11 @@ const DatafileTable = (
             cellContentRenderer: props => {
               return formatBytes(props.cellData);
             },
+            filterComponent: textFilter,
           },
           {
-            label: 'Modified Time',
-            dataKey: 'MOD_TIME',
+            label: 'Create Time',
+            dataKey: 'CREATE_TIME',
             filterComponent: dateFilter,
           },
         ]}
@@ -176,7 +153,7 @@ const DatafileTable = (
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DatafileTableDispatchProps => ({
+): DLSDatafilesTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
@@ -184,12 +161,10 @@ const mapDispatchToProps = (
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
     dispatch(fetchDatafiles(datasetId, offsetParams)),
   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
-  downloadData: (datafileId: number, filename: string) =>
-    dispatch(downloadDatafile(datafileId, filename)),
   clearTable: () => dispatch(clearTable()),
 });
 
-const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
+const mapStateToProps = (state: StateType): DLSDatafilesTableStoreProps => {
   return {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
@@ -203,4 +178,4 @@ const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DatafileTable);
+)(DLSDatafilesTable);

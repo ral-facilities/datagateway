@@ -1,35 +1,38 @@
 import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
 import {
-  Table,
   TextColumnFilter,
-  DateColumnFilter,
-  datasetLink,
-  Order,
+  Table,
+  tableLink,
   Filter,
-  Dataset,
+  Order,
   Entity,
+  DateColumnFilter,
 } from 'datagateway-common';
+import { Paper } from '@material-ui/core';
 import {
   sortTable,
   filterTable,
   fetchDatasets,
+  fetchDatasetDetails,
   fetchDatasetCount,
   clearTable,
-} from '../state/actions';
+} from '../../state/actions';
 import { AnyAction } from 'redux';
-import { StateType } from '../state/app.types';
+import { StateType } from '../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
+import { TableCellProps } from 'react-virtualized';
+import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component';
 import { IndexRange } from 'react-virtualized';
-import useAfterMountEffect from '../utils';
+import useAfterMountEffect from '../../utils';
 
-interface DatasetTableProps {
+interface DLSDatasetsTableProps {
+  proposalName: string;
   investigationId: string;
 }
 
-interface DatasetTableStoreProps {
+interface DLSDatasetsTableStoreProps {
   sort: {
     [column: string]: Order;
   };
@@ -42,7 +45,7 @@ interface DatasetTableStoreProps {
   error: string | null;
 }
 
-interface DatasetTableDispatchProps {
+interface DLSDatasetsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (
@@ -51,24 +54,28 @@ interface DatasetTableDispatchProps {
   ) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
   clearTable: () => Action;
+  fetchDetails: (datasetId: number) => Promise<void>;
 }
 
-type DatasetTableCombinedProps = DatasetTableProps &
-  DatasetTableStoreProps &
-  DatasetTableDispatchProps;
+type DLSDatasetsTableCombinedProps = DLSDatasetsTableProps &
+  DLSDatasetsTableStoreProps &
+  DLSDatasetsTableDispatchProps;
 
-const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
+const DLSDatasetsTable = (
+  props: DLSDatasetsTableCombinedProps
+): React.ReactElement => {
   const {
     data,
     totalDataCount,
     fetchData,
     fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
     filterTable,
     investigationId,
-    clearTable,
+    proposalName,
   } = props;
 
   React.useEffect(() => {
@@ -104,36 +111,30 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
-        detailsPanel={({ rowData }) => {
-          const datasetData = rowData as Dataset;
+        detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
-            <div>
-              <Typography>
-                <b>Name:</b> {datasetData.NAME}
-              </Typography>
-              <Typography>
-                <b>Description:</b> {datasetData.NAME}
-              </Typography>
-            </div>
+            <DatasetDetailsPanel
+              rowData={rowData}
+              detailsPanelResize={detailsPanelResize}
+              fetchDetails={props.fetchDetails}
+            />
           );
         }}
         columns={[
           {
             label: 'Name',
             dataKey: 'NAME',
-            cellContentRenderer: props => {
-              const datasetData = props.rowData as Dataset;
-              return datasetLink(
-                investigationId,
-                datasetData.ID,
-                datasetData.NAME
-              );
-            },
+            cellContentRenderer: (props: TableCellProps) =>
+              tableLink(
+                `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
+                props.rowData.NAME
+              ),
             filterComponent: textFilter,
           },
           {
             label: 'Datafile Count',
             dataKey: 'DATAFILE_COUNT',
+            disableSort: true,
           },
           {
             label: 'Create Time',
@@ -153,19 +154,26 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DatasetTableDispatchProps => ({
+): DLSDatasetsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
-    dispatch(fetchDatasets({ investigationId, offsetParams })),
+    dispatch(
+      fetchDatasets({
+        investigationId,
+        offsetParams,
+        optionalParams: { getDatafileCount: true },
+      })
+    ),
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
   clearTable: () => dispatch(clearTable()),
+  fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
 });
 
-const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
+const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
   return {
     sort: state.dgtable.sort,
     filters: state.dgtable.filters,
@@ -179,4 +187,4 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DatasetTable);
+)(DLSDatasetsTable);

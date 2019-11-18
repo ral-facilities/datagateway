@@ -22,6 +22,13 @@ export const FetchInvestigationsFailureType =
 export const FetchInvestigationsSuccessType =
   'datagateway_table:fetch_investigations_success';
 
+export const FetchInvestigationDetailsRequestType =
+  'datagateway_table:fetch_investigation_details_request';
+export const FetchInvestigationDetailsFailureType =
+  'datagateway_table:fetch_investigation_details_failure';
+export const FetchInvestigationDetailsSuccessType =
+  'datagateway_table:fetch_investigation_details_success';
+
 export const FetchInvestigationCountRequestType =
   'datagateway_table:fetch_investigation_count_request';
 export const FetchInvestigationCountFailureType =
@@ -42,6 +49,13 @@ export const FetchDatasetsFailureType =
   'datagateway_table:fetch_datasets_failure';
 export const FetchDatasetsSuccessType =
   'datagateway_table:fetch_datasets_success';
+
+export const FetchDatasetDetailsRequestType =
+  'datagateway_table:fetch_dataset_details_request';
+export const FetchDatasetDetailsFailureType =
+  'datagateway_table:fetch_dataset_details_failure';
+export const FetchDatasetDetailsSuccessType =
+  'datagateway_table:fetch_dataset_details_success';
 
 export const FetchDatasetCountRequestType =
   'datagateway_table:fetch_dataset_count_request';
@@ -131,12 +145,8 @@ export interface FeatureSwitchesPayload {
   switches: FeatureSwitches;
 }
 
-export interface FeatureSwitches {
-  investigationGetSize: boolean;
-  investigationGetCount: boolean;
-  datasetGetSize: boolean;
-  datasetGetCount: boolean;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface FeatureSwitches {}
 
 export interface ConfigureUrlsPayload {
   urls: URLs;
@@ -158,6 +168,10 @@ export interface FailurePayload {
 export interface FetchDataSuccessPayload {
   data: Entity[];
   timestamp: number;
+}
+
+export interface FetchDetailsSuccessPayload {
+  data: Entity[];
 }
 
 export interface FetchCountSuccessPayload {
