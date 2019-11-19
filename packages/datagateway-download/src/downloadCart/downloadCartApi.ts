@@ -3,18 +3,17 @@ import * as log from 'loglevel';
 import { DownloadCart, DownloadCartItem, Datafile } from 'datagateway-common';
 
 // TODO: get URLs from settings or something...
+const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
+const apiUrl = 'http://scigateway-preprod.esc.rl.ac.uk:5000';
 
 export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
   return axios
-    .get<DownloadCart>(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS',
-      {
-        params: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
-        },
-      }
-    )
+    .get<DownloadCart>(`${topcatUrl}/user/cart/LILS`, {
+      params: {
+        // TODO: get session ID from somewhere else (extract from JWT)
+        sessionId: window.localStorage.getItem('icat:token'),
+      },
+    })
     .then(response => {
       return response.data.cartItems;
     })
@@ -26,16 +25,13 @@ export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
 
 export const removeAllDownloadCartItems: () => Promise<void> = () => {
   return axios
-    .delete(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
-      {
-        params: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
-          items: '*',
-        },
-      }
-    )
+    .delete(`${topcatUrl}/user/cart/LILS/cartItems`, {
+      params: {
+        // TODO: get session ID from somewhere else (extract from JWT)
+        sessionId: window.localStorage.getItem('icat:token'),
+        items: '*',
+      },
+    })
     .then(() => {})
     .catch(error => {
       log.error(error.message);
@@ -47,16 +43,13 @@ export const removeDownloadCartItem: (
   entityType: string
 ) => Promise<void> = (entityId: number, entityType: string) => {
   return axios
-    .delete(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
-      {
-        params: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
-          items: `${entityType} ${entityId}`,
-        },
-      }
-    )
+    .delete(`${topcatUrl}/user/cart/LILS/cartItems`, {
+      params: {
+        // TODO: get session ID from somewhere else (extract from JWT)
+        sessionId: window.localStorage.getItem('icat:token'),
+        items: `${entityType} ${entityId}`,
+      },
+    })
     .then(() => {})
     .catch(error => {
       log.error(error.message);
@@ -71,17 +64,12 @@ export const getSize: (
 ) => Promise<number> = (entityId: number, entityType: string) => {
   if (entityType === 'datafile') {
     return axios
-      .get<Datafile>(
-        `http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/${entityId}`,
-        {
-          headers: {
-            // TODO: get session ID from somewhere else (extract from JWT)
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'icat:token'
-            )}`,
-          },
-        }
-      )
+      .get<Datafile>(`${apiUrl}/datafiles/${entityId}`, {
+        headers: {
+          // TODO: get session ID from somewhere else (extract from JWT)
+          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+        },
+      })
       .then(response => {
         const size = response.data['FILESIZE'] as number;
         return size;
@@ -92,18 +80,15 @@ export const getSize: (
       });
   } else {
     return axios
-      .get<number>(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/getSize',
-        {
-          params: {
-            // TODO: get session ID from somewhere else (extract from JWT)
-            sessionId: window.localStorage.getItem('icat:token'),
-            facilityName: 'LILS',
-            entityType: entityType,
-            entityId: entityId,
-          },
-        }
-      )
+      .get<number>(`${topcatUrl}/user/getSize`, {
+        params: {
+          // TODO: get session ID from somewhere else (extract from JWT)
+          sessionId: window.localStorage.getItem('icat:token'),
+          facilityName: 'LILS',
+          entityType: entityType,
+          entityId: entityId,
+        },
+      })
       .then(response => {
         return response.data;
       })
@@ -122,24 +107,19 @@ export const getDatafileCount: (
     return Promise.resolve(1);
   } else if (entityType === 'dataset') {
     return axios
-      .get<number>(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
-        {
-          params: {
-            where: {
-              DATASET_ID: {
-                eq: entityId,
-              },
+      .get<number>(`${apiUrl}/datafiles/count`, {
+        params: {
+          where: {
+            DATASET_ID: {
+              eq: entityId,
             },
           },
-          headers: {
-            // TODO: get session ID from somewhere else (extract from JWT)
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'icat:token'
-            )}`,
-          },
-        }
-      )
+        },
+        headers: {
+          // TODO: get session ID from somewhere else (extract from JWT)
+          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+        },
+      })
       .then(response => {
         return response.data;
       })
@@ -149,25 +129,20 @@ export const getDatafileCount: (
       });
   } else {
     return axios
-      .get<number>(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
-        {
-          params: {
-            include: '"DATASET"',
-            where: {
-              'DATASET.INVESTIGATION_ID': {
-                eq: entityId,
-              },
+      .get<number>(`${apiUrl}/datafiles/count`, {
+        params: {
+          include: '"DATASET"',
+          where: {
+            'DATASET.INVESTIGATION_ID': {
+              eq: entityId,
             },
           },
-          headers: {
-            // TODO: get session ID from somewhere else (extract from JWT)
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'icat:token'
-            )}`,
-          },
-        }
-      )
+        },
+        headers: {
+          // TODO: get session ID from somewhere else (extract from JWT)
+          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+        },
+      })
       .then(response => {
         return response.data;
       })
