@@ -60,30 +60,35 @@ export function unmount(props: any): Promise<void> {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-if (process.env.NODE_ENV === `development`) {
-  ReactDOM.render(<App />, document.getElementById('datagateway-download'));
+if (
+  process.env.NODE_ENV === `development` ||
+  process.env.REACT_APP_E2E_TESTING
+) {
+  render();
 
-  // TODO: replace with getting from daaas:token when supported
-  const icatUrl = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat`;
-  axios
-    .post(
-      `${icatUrl}/session`,
-      {
-        json: {
-          plugin: 'simple',
-          credentials: [{ username: 'root' }, { password: 'pw' }],
+  if (process.env.NODE_ENV === `development`) {
+    // TODO: replace with getting from daaas:token when supported
+    const icatUrl = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat`;
+    axios
+      .post(
+        `${icatUrl}/session`,
+        {
+          json: {
+            plugin: 'simple',
+            credentials: [{ username: 'root' }, { password: 'pw' }],
+          },
         },
-      },
-      {
-        headers: {
-          contentType: 'application/x-www-form-urlencoded',
-        },
-      }
-    )
-    .then(response => {
-      console.log(response.data.sessionId);
-      window.localStorage.setItem('icat:token', response.data.sessionId);
-    });
+        {
+          headers: {
+            contentType: 'application/x-www-form-urlencoded',
+          },
+        }
+      )
+      .then(response => {
+        console.log(response.data.sessionId);
+        window.localStorage.setItem('icat:token', response.data.sessionId);
+      });
+  }
 }
 
 // If you want your app to work offline and load faster, you can change
