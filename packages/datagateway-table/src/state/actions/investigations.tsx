@@ -15,6 +15,7 @@ import {
   FetchDetailsSuccessPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
+import { Action } from 'redux';
 import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';

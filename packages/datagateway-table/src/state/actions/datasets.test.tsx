@@ -96,6 +96,7 @@ describe('Dataset actions', () => {
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
+
     expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
@@ -278,7 +279,7 @@ describe('Dataset actions', () => {
   it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon successful fetchInvestigationDatasetsCount action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: 8,
+        data: 2,
       })
     );
 
