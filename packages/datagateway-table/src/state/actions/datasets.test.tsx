@@ -13,6 +13,10 @@ import {
   fetchDatasetCountSuccess,
   fetchDatasetCount,
   fetchDatasetCountFailure,
+  fetchDatasetDetails,
+  fetchDatasetDetailsRequest,
+  fetchDatasetDetailsSuccess,
+  fetchDatasetDetailsFailure,
   fetchDatasetDatafilesCountRequest,
 } from '.';
 import { StateType, EntityCache } from '../app.types';
@@ -44,6 +48,12 @@ describe('Dataset actions', () => {
     },
   ];
 
+  (axios.get as jest.Mock).mockImplementation(() =>
+    Promise.resolve({
+      data: mockData,
+    })
+  );
+
   // Investigation cache for investigation ID 1 which has 2 datasets.
   const mockInvestigationCache: EntityCache = {
     1: {
@@ -57,52 +67,11 @@ describe('Dataset actions', () => {
   });
 
   it('dispatches fetchDatasetsRequest and fetchDatasetsSuccess actions upon successful fetchDatasets action', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: mockData,
-      })
-    );
-
-    const asyncAction = fetchDatasets(1);
+    const asyncAction = fetchDatasets({ investigationId: 1 });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
     expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
-
-    const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
-
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets',
-      expect.objectContaining({
-        params,
-      })
-    );
-  });
-
-  it('dispatches fetchDatafileCountRequests upon successful fetchDatasets action if datasetGetCount feature switch is set', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: mockData,
-      })
-    );
-
-    const asyncAction = fetchDatasets(1);
-    const getState = (): Partial<StateType> => ({
-      dgtable: {
-        ...initialState,
-        features: {
-          ...initialState.features,
-          datasetGetCount: true,
-        },
-      },
-    });
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
-    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
-    expect(actions[2]).toEqual(fetchDatasetDatafilesCountRequest(1));
-    expect(actions[3]).toEqual(fetchDatasetDatafilesCountRequest(1));
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
@@ -116,13 +85,7 @@ describe('Dataset actions', () => {
   });
 
   it('fetchDatasets action applies filters and sort state to request params', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: [],
-      })
-    );
-
-    const asyncAction = fetchDatasets(1);
+    const asyncAction = fetchDatasets({ investigationId: 1 });
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -133,10 +96,10 @@ describe('Dataset actions', () => {
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
-
-    expect(actions[1]).toEqual(fetchDatasetsSuccess([], 1));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
     params.append('order', JSON.stringify('column1 desc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
@@ -149,6 +112,19 @@ describe('Dataset actions', () => {
     );
   });
 
+  it('fetchDatasets action sends fetchDatafileCount actions when specified via optional parameters', async () => {
+    const asyncAction = fetchDatasets({
+      investigationId: 1,
+      optionalParams: { getDatafileCount: true },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
+    expect(actions[2]).toEqual(fetchDatasetDatafilesCountRequest(1));
+    expect(actions[3]).toEqual(fetchDatasetDatafilesCountRequest(1));
+  });
+
   it('dispatches fetchDatasetsRequest and fetchDatasetsFailure actions upon unsuccessful fetchDatasets action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.reject({
@@ -156,7 +132,7 @@ describe('Dataset actions', () => {
       })
     );
 
-    const asyncAction = fetchDatasets(1);
+    const asyncAction = fetchDatasets({ investigationId: 1 });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
@@ -242,10 +218,124 @@ describe('Dataset actions', () => {
     expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
+  it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsSuccess actions upon successful fetchDatasetDetails action', async () => {
+    const mockDetailsData: Dataset[] = [
+      {
+        ID: 1,
+        NAME: 'Test 1',
+        MOD_TIME: '2019-06-10',
+        CREATE_TIME: '2019-06-11',
+        INVESTIGATION_ID: 1,
+        DATASETTYPE: {
+          ID: 2,
+          NAME: 'Test type',
+        },
+      },
+    ];
+
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: mockDetailsData,
+      })
+    );
+
+    const asyncAction = fetchDatasetDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDetailsRequest());
+    expect(actions[1]).toEqual(fetchDatasetDetailsSuccess(mockDetailsData));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
+    params.append('include', JSON.stringify('DATASETTYPE'));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets',
+      expect.objectContaining({ params })
+    );
+  });
+
+  it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsFailure actions upon unsuccessful fetchDatasetDetails action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchDatasetDetails(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetDetailsRequest());
+    expect(actions[1]).toEqual(
+      fetchDatasetDetailsFailure('Test error message')
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
   it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon successful fetchInvestigationDatasetsCount action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: 2,
+        data: 7,
+      })
+    );
+
+    const asyncAction = fetchDatasetCount(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetCountSuccess(7, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets/count',
+      expect.objectContaining({
+        params,
+      })
+    );
+  });
+
+  it('fetchDatasetCount action applies filters to request params', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 8,
+      })
+    );
+
+    const asyncAction = fetchDatasetCount(1);
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        filters: { column1: '1', column2: '2' },
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
+
+    expect(actions[1]).toEqual(fetchDatasetCountSuccess(8, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ column1: { like: '1' } }));
+    params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/datasets/count',
+      expect.objectContaining({
+        params,
+      })
+    );
+  });
+
+  it('dispatches fetchDatasetCountRequest and fetchDatasetCountFailure actions upon unsuccessful fetchDatasetCount action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
       })
     );
 

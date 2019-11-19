@@ -6,6 +6,7 @@ const ExpandableRow = (
   props: TableRowProps & {
     detailsPanel: React.ComponentType<DetailsPanelProps>;
     detailPanelRef: React.RefObject<HTMLDivElement>;
+    detailsPanelResize: () => void;
   }
 ): React.ReactElement => {
   const { height, width, paddingRight, ...otherStyles } = props.style;
@@ -32,7 +33,10 @@ const ExpandableRow = (
           marginLeft: 10,
         }}
       >
-        <props.detailsPanel rowData={props.rowData} />
+        <props.detailsPanel
+          rowData={props.rowData}
+          detailsPanelResize={props.detailsPanelResize}
+        />
       </div>
     </div>
   );

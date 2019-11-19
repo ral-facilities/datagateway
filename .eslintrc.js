@@ -31,6 +31,7 @@ module.exports = {
       {
         allowExpressions: true,
         allowTypedFunctionExpressions: true,
+        allowHigherOrderFunctions: true,
       },
     ],
     'import/no-extraneous-dependencies': 'error',
