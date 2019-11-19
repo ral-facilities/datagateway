@@ -158,11 +158,6 @@ const styles = (): StyleRules =>
     },
   });
 
-interface BreadcrumbProps {
-  apiUrl: string;
-  location: string;
-}
-
 interface Breadcrumb {
   id: string;
   pathName: string;
@@ -170,7 +165,12 @@ interface Breadcrumb {
   url: string;
 }
 
-interface BreadcrumbState {
+interface PageBreadcrumbsProps {
+  apiUrl: string;
+  location: string;
+}
+
+interface PageBreadcrumbsState {
   base: {
     entityName: string;
     displayName: string;
@@ -230,18 +230,16 @@ class WrappedBreadcrumb extends React.Component<
 const StyledBreadcrumb = withStyles(styles)(WrappedBreadcrumb);
 
 class PageBreadcrumbs extends React.Component<
-  BreadcrumbProps,
-  BreadcrumbState
+  PageBreadcrumbsProps,
+  PageBreadcrumbsState
 > {
   private currentPathnames: string[];
-  private isBreadcrumbUpdated: boolean;
 
-  public constructor(props: BreadcrumbProps) {
+  public constructor(props: PageBreadcrumbsProps) {
     super(props);
 
+    // Set up pathnames and initial component state.
     this.currentPathnames = [];
-    this.isBreadcrumbUpdated = false;
-
     this.state = {
       base: {
         entityName: '',
@@ -257,19 +255,15 @@ class PageBreadcrumbs extends React.Component<
   }
 
   public componentDidMount(): void {
-    // Store the current pathnames.
     this.currentPathnames = this.props.location.split('/').filter(x => x);
     this.updateBreadcrumbState();
   }
 
-  public componentDidUpdate(prevProps: BreadcrumbProps): void {
+  public componentDidUpdate(prevProps: PageBreadcrumbsProps): void {
     this.currentPathnames = this.props.location.split('/').filter(x => x);
 
-    // TODO: Do we need isBreadcrumbUpdated anymore?
-    if (prevProps.location !== this.props.location)
-      this.isBreadcrumbUpdated = false;
-
-    if (!this.isBreadcrumbUpdated) {
+    // If the location has changed, then update the breadcrumb state.
+    if (prevProps.location !== this.props.location) {
       this.updateBreadcrumbState();
     }
   }
@@ -293,17 +287,8 @@ class PageBreadcrumbs extends React.Component<
       };
     }
 
-    // Reset the last fields for base and the whole breadcrumb state.
     // Set the base isLast to false unless it is proven otherwise later.
     updatedState.base.isLast = false;
-    // if (updatedState.last.displayName !== 'N/A') {
-    //   updatedState = {
-    //     ...updatedState,
-    //     last: {
-    //       displayName: 'N/A',
-    //     },
-    //   };
-    // }
 
     // Loop through each entry in the path name before the last.
     // We always skip 2 go ahead in steps of 2 as the we expect
@@ -314,6 +299,8 @@ class PageBreadcrumbs extends React.Component<
       // Get the entity and the data stored on the entity.
       let entity = this.currentPathnames[index];
 
+      // Create the link to this breadcrumb which will be updated into 
+      // the correct object in the state.
       const link = `/${this.currentPathnames.slice(0, index + 3).join('/')}`;
 
       // Check we are not the end of the pathnames array.
@@ -420,9 +407,8 @@ class PageBreadcrumbs extends React.Component<
       hierarchyCount++;
     }
 
-    // Update the final state.
+    // Update with final state.
     this.setState(updatedState);
-    this.isBreadcrumbUpdated = true;
   };
 
   private getEntityInformation = async (
@@ -530,7 +516,7 @@ class PageBreadcrumbs extends React.Component<
   }
 }
 
-const mapStateToProps = (state: StateType): BreadcrumbProps => ({
+const mapStateToProps = (state: StateType): PageBreadcrumbsProps => ({
   apiUrl: state.dgtable.urls.apiUrl,
   location: state.router.location.pathname,
 });

@@ -73,7 +73,7 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
   };
 
   // Ensure that we can flush all promises before updating a wrapper.
-  const flushPromises = (): Promise<NodeJS.Immediate> =>
+  const flushPromises = (): Promise<void> =>
     new Promise(setImmediate);
 
   beforeEach(() => {
