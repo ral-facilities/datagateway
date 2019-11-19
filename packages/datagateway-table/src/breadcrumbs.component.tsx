@@ -245,13 +245,13 @@ class PageBreadcrumbs extends React.Component<
     this.state = {
       base: {
         entityName: '',
-        displayName: 'N/A',
+        displayName: '',
         url: '',
         isLast: false,
       },
       currentHierarchy: [],
       last: {
-        displayName: 'N/A',
+        displayName: '',
       },
     };
   }
@@ -296,14 +296,14 @@ class PageBreadcrumbs extends React.Component<
     // Reset the last fields for base and the whole breadcrumb state.
     // Set the base isLast to false unless it is proven otherwise later.
     updatedState.base.isLast = false;
-    if (updatedState.last.displayName !== 'N/A') {
-      updatedState = {
-        ...updatedState,
-        last: {
-          displayName: 'N/A',
-        },
-      };
-    }
+    // if (updatedState.last.displayName !== 'N/A') {
+    //   updatedState = {
+    //     ...updatedState,
+    //     last: {
+    //       displayName: 'N/A',
+    //     },
+    //   };
+    // }
 
     // Loop through each entry in the path name before the last.
     // We always skip 2 go ahead in steps of 2 as the we expect
@@ -325,7 +325,7 @@ class PageBreadcrumbs extends React.Component<
           updatedState.currentHierarchy.splice(hierarchyCount, 1, {
             id: '',
             pathName: entity,
-            displayName: 'N/A',
+            displayName: '',
             url: link,
           });
         }
@@ -514,7 +514,7 @@ class PageBreadcrumbs extends React.Component<
                 })}
 
                 {/* // Render the last breadcrumb information; this is the current table view. */}
-                {breadcrumbState.last.displayName !== 'N/A' ? (
+                {breadcrumbState.last.displayName !== '' ? (
                   <StyledBreadcrumb
                     displayName={breadcrumbState.last.displayName}
                     ariaLabel="Breadcrumb-last"
