@@ -299,7 +299,7 @@ class PageBreadcrumbs extends React.Component<
       // Get the entity and the data stored on the entity.
       let entity = this.currentPathnames[index];
 
-      // Create the link to this breadcrumb which will be updated into 
+      // Create the link to this breadcrumb which will be updated into
       // the correct object in the state.
       const link = `/${this.currentPathnames.slice(0, index + 3).join('/')}`;
 
