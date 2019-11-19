@@ -7,6 +7,8 @@ import AppReducer from './state/reducers/app.reducer';
 import { Provider, connect } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+// history package is part of react-router, which we depend on
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import DGTableMiddleware, {
@@ -20,6 +22,10 @@ import { Link } from 'react-router-dom';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Preloader } from 'datagateway-common';
+import DLSProposalsTable from './dls/tables/dlsProposalsTable.component';
+import DLSVisitsTable from './dls/tables/dlsVisitsTable.component';
+import DLSDatasetsTable from './dls/tables/dlsDatasetsTable.component';
+import DLSDatafilesTable from './dls/tables/dlsDatafilesTable.component';
 
 import {
   createGenerateClassName,
@@ -122,6 +128,50 @@ class App extends React.Component<{}, { hasError: boolean }> {
                         <Link to="/browse/investigation">
                           Browse investigations
                         </Link>
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/proposal/"
+                      component={DLSProposalsTable}
+                    />
+                    <Route
+                      exact
+                      path="/browse/proposal/:proposalName/investigation"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{ proposalName: string }>) => (
+                        <DLSVisitsTable
+                          proposalName={match.params.proposalName}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/proposal/:proposalName/investigation/:investigationId/dataset"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{
+                        proposalName: string;
+                        investigationId: string;
+                      }>) => (
+                        <DLSDatasetsTable
+                          proposalName={match.params.proposalName}
+                          investigationId={match.params.investigationId}
+                        />
+                      )}
+                    />
+                    <Route
+                      exact
+                      path="/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile"
+                      render={({
+                        match,
+                      }: RouteComponentProps<{
+                        proposalName: string;
+                        investigationId: string;
+                        datasetId: string;
+                      }>) => (
+                        <DLSDatafilesTable datasetId={match.params.datasetId} />
                       )}
                     />
                     <Route
