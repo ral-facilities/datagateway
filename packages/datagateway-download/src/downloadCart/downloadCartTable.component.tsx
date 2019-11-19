@@ -216,7 +216,14 @@ const DownloadCartTable: React.FC = () => {
         alignItems="flex-end"
         justify="space-between"
       >
-        <Grid container item direction="column" xs={3}>
+        <Grid
+          container
+          item
+          direction="column"
+          xs={3}
+          alignContent="flex-end"
+          style={{ marginRight: '1.2em' }}
+        >
           <Typography id="fileCountDisplay">
             Number of files: {fileCount !== -1 ? fileCount : 'Calculating...'}
             {fileCountMax !== -1 && ` / ${fileCountMax}`}
@@ -227,29 +234,42 @@ const DownloadCartTable: React.FC = () => {
             {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
           </Typography>
         </Grid>
-        <Grid container item alignItems="center" justify="space-around" xs={3}>
-          <Button
-            id="removeAllButton"
-            variant="contained"
-            color="primary"
-            onClick={() => removeAllDownloadCartItems().then(() => setData([]))}
-          >
-            Remove All
-          </Button>
-          <Button
-            id="downloadCartButton"
-            variant="contained"
-            color="primary"
-            onClick={() => alert('download the cart!')}
-            disabled={
-              fileCount === -1 ||
-              totalSize === -1 ||
-              (fileCountMax !== -1 && fileCount > fileCountMax) ||
-              (totalSizeMax !== -1 && totalSize > totalSizeMax)
-            }
-          >
-            Download Cart
-          </Button>
+        <Grid
+          container
+          item
+          justify="flex-end"
+          spacing={1}
+          xs={3}
+          style={{ marginRight: '1em' }}
+        >
+          <Grid item>
+            <Button
+              id="removeAllButton"
+              variant="contained"
+              color="primary"
+              onClick={() =>
+                removeAllDownloadCartItems().then(() => setData([]))
+              }
+            >
+              Remove All
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              id="downloadCartButton"
+              variant="contained"
+              color="primary"
+              onClick={() => alert('download the cart!')}
+              disabled={
+                fileCount === -1 ||
+                totalSize === -1 ||
+                (fileCountMax !== -1 && fileCount > fileCountMax) ||
+                (totalSizeMax !== -1 && totalSize > totalSizeMax)
+              }
+            >
+              Download Cart
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

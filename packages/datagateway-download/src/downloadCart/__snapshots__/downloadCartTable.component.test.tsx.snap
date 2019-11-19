@@ -54,9 +54,15 @@ exports[`Download cart table component renders correctly 1`] = `
     justify="space-between"
   >
     <WithStyles(ForwardRef(Grid))
+      alignContent="flex-end"
       container={true}
       direction="column"
       item={true}
+      style={
+        Object {
+          "marginRight": "1.2em",
+        }
+      }
       xs={3}
     >
       <WithStyles(ForwardRef(Typography))
@@ -74,29 +80,42 @@ exports[`Download cart table component renders correctly 1`] = `
       </WithStyles(ForwardRef(Typography))>
     </WithStyles(ForwardRef(Grid))>
     <WithStyles(ForwardRef(Grid))
-      alignItems="center"
       container={true}
       item={true}
-      justify="space-around"
+      justify="flex-end"
+      spacing={1}
+      style={
+        Object {
+          "marginRight": "1em",
+        }
+      }
       xs={3}
     >
-      <WithStyles(ForwardRef(Button))
-        color="primary"
-        id="removeAllButton"
-        onClick={[Function]}
-        variant="contained"
+      <WithStyles(ForwardRef(Grid))
+        item={true}
       >
-        Remove All
-      </WithStyles(ForwardRef(Button))>
-      <WithStyles(ForwardRef(Button))
-        color="primary"
-        disabled={true}
-        id="downloadCartButton"
-        onClick={[Function]}
-        variant="contained"
+        <WithStyles(ForwardRef(Button))
+          color="primary"
+          id="removeAllButton"
+          onClick={[Function]}
+          variant="contained"
+        >
+          Remove All
+        </WithStyles(ForwardRef(Button))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
       >
-        Download Cart
-      </WithStyles(ForwardRef(Button))>
+        <WithStyles(ForwardRef(Button))
+          color="primary"
+          disabled={true}
+          id="downloadCartButton"
+          onClick={[Function]}
+          variant="contained"
+        >
+          Download Cart
+        </WithStyles(ForwardRef(Button))>
+      </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
 </div>
