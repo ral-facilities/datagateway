@@ -278,64 +278,7 @@ describe('Dataset actions', () => {
   it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon successful fetchInvestigationDatasetsCount action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
-        data: 7,
-      })
-    );
-
-    const asyncAction = fetchDatasetCount(1);
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
-    expect(actions[1]).toEqual(fetchDatasetCountSuccess(7, 1));
-
-    const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
-
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets/count',
-      expect.objectContaining({
-        params,
-      })
-    );
-  });
-
-  it('fetchDatasetCount action applies filters to request params', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
         data: 8,
-      })
-    );
-
-    const asyncAction = fetchDatasetCount(1);
-    const getState = (): Partial<StateType> => ({
-      dgtable: {
-        ...initialState,
-        filters: { column1: '1', column2: '2' },
-      },
-    });
-    await asyncAction(dispatch, getState, null);
-
-    expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
-
-    expect(actions[1]).toEqual(fetchDatasetCountSuccess(8, 1));
-
-    const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ column1: { like: '1' } }));
-    params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
-
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets/count',
-      expect.objectContaining({
-        params,
-      })
-    );
-  });
-
-  it('dispatches fetchDatasetCountRequest and fetchDatasetCountFailure actions upon unsuccessful fetchDatasetCount action', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.reject({
-        message: 'Test error message',
       })
     );
 
