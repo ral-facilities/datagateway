@@ -6,6 +6,7 @@ import {
   formatBytes,
   datasetLink,
   investigationLink,
+  tableLink,
 } from './cellContentRenderers';
 
 describe('Cell content renderers', () => {
@@ -23,6 +24,14 @@ describe('Cell content renderers', () => {
     it('handles 0 correctly', () => {
       expect(formatBytes(0)).toEqual('0 B');
     });
+
+    it('handles negative numbers correctly', () => {
+      expect(formatBytes(-7)).toEqual('Unknown');
+    });
+
+    it('handles undefined correctly', () => {
+      expect(formatBytes(undefined)).toEqual('Unknown');
+    });
   });
 
   describe('datasetLink', () => {
@@ -38,6 +47,15 @@ describe('Cell content renderers', () => {
     it('renders correctly', () => {
       const wrapper = shallow(
         <MemoryRouter>{investigationLink(1, 'test')}</MemoryRouter>
+      );
+      expect(wrapper.find(Link)).toMatchSnapshot();
+    });
+  });
+
+  describe('tableLink', () => {
+    it('renders correctly', () => {
+      const wrapper = shallow(
+        <MemoryRouter>{tableLink('/test/url', 'test text')}</MemoryRouter>
       );
       expect(wrapper.find(Link)).toMatchSnapshot();
     });

@@ -9,6 +9,7 @@
         "husky",
         "lerna-update-wizard",
         "cypress",
+        "cypress-failed-log",
         "react",
         "react-dom",
         "react-router",
