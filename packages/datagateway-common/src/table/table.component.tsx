@@ -177,6 +177,7 @@ const VirtualizedTable = (
                         {...props}
                         detailsPanel={detailsPanel}
                         detailPanelRef={detailPanelRef}
+                        detailsPanelResize={detailsPanelResize}
                       />
                     );
                   } else {
@@ -184,124 +185,33 @@ const VirtualizedTable = (
                   }
                 }}
               >
-                {({ onRowsRendered, registerChild }) => (
-                  <Table
-                    ref={ref => {
-                      tableRef = ref;
-                      registerChild(ref);
-                    }}
-                    className={classes.table}
-                    height={height || 500}
-                    width={width || 800}
-                    rowCount={data.length}
-                    onRowsRendered={onRowsRendered}
-                    headerHeight={headerHeight}
-                    rowHeight={({ index }) =>
-                      index === expandedIndex
-                        ? rowHeight + detailPanelHeight
-                        : rowHeight
-                    }
-                    rowClassName={({ index }): string =>
-                      clsx(
-                        classes.tableRow,
-                        classes.flexContainer,
-                        index > -1 && classes.tableRowHover
-                      )
-                    }
-                    rowGetter={({ index }) => data[index]}
-                    rowRenderer={props => {
-                      if (detailsPanel && props.index === expandedIndex) {
-                        return (
-                          <DetailsPanelRow
-                            {...props}
-                            detailsPanel={detailsPanel}
-                            detailPanelRef={detailPanelRef}
-                            detailsPanelResize={detailsPanelResize}
-                          />
-                        );
-                      } else {
-                        return defaultTableRowRenderer(props);
-                      }
-                    }}
-                  >
-                    {detailsPanel && (
-                      <Column
-                        width={50}
-                        flexShrink={0}
-                        key="Expand"
-                        dataKey="expand"
-                        headerRenderer={() => (
-                          <TableCell
-                            component="div"
-                            className={clsx(
-                              classes.headerTableCell,
-                              classes.headerFlexContainer
-                            )}
-                            variant="head"
-                          />
-                        )}
-                        className={classes.flexContainer}
-                        cellRenderer={props => (
-                          <ExpandCell
-                            {...props}
-                            expandedIndex={expandedIndex}
-                            setExpandedIndex={setExpandedIndex}
-                            className={clsx(
-                              classes.tableCell,
-                              classes.flexContainer
-                            )}
-                          />
+                {detailsPanel && (
+                  <Column
+                    width={50}
+                    flexShrink={0}
+                    key="Expand"
+                    dataKey="expand"
+                    headerRenderer={() => (
+                      <TableCell
+                        component="div"
+                        className={clsx(
+                          classes.headerTableCell,
+                          classes.headerFlexContainer
                         )}
                         variant="head"
                       />
                     )}
-                    {columns.map(
-                      ({
-                        cellContentRenderer,
-                        className,
-                        dataKey,
-                        label,
-                        filterComponent,
-                        disableSort,
-                      }) => {
-                        return (
-                          <Column
-                            width={columnWidth}
-                            flexGrow={3}
-                            flexShrink={1}
-                            key={dataKey}
-                            dataKey={dataKey}
-                            label={label}
-                            disableSort={disableSort}
-                            headerRenderer={headerProps => (
-                              <DataHeader
-                                {...headerProps}
-                                className={clsx(
-                                  classes.headerTableCell,
-                                  classes.headerFlexContainer
-                                )}
-                                sort={sort}
-                                onSort={onSort}
-                                filterComponent={
-                                  filterComponent &&
-                                  filterComponent(label, dataKey)
-                                }
-                              />
-                            )}
-                            className={clsx(classes.flexContainer, className)}
-                            cellRenderer={props => (
-                              <DataCell
-                                {...props}
-                                cellContentRenderer={cellContentRenderer}
-                                className={clsx(
-                                  classes.tableCell,
-                                  classes.flexContainer
-                                )}
-                              />
-                            )}
-                          />
-                        );
-                      }
+                    className={classes.flexContainer}
+                    cellRenderer={props => (
+                      <ExpandCell
+                        {...props}
+                        expandedIndex={expandedIndex}
+                        setExpandedIndex={setExpandedIndex}
+                        className={clsx(
+                          classes.tableCell,
+                          classes.flexContainer
+                        )}
+                      />
                     )}
                   />
                 )}
@@ -312,6 +222,7 @@ const VirtualizedTable = (
                     dataKey,
                     label,
                     filterComponent,
+                    disableSort,
                   }) => {
                     return (
                       <Column
@@ -321,6 +232,7 @@ const VirtualizedTable = (
                         key={dataKey}
                         dataKey={dataKey}
                         label={label}
+                        disableSort={disableSort}
                         headerRenderer={headerProps => (
                           <DataHeader
                             {...headerProps}
