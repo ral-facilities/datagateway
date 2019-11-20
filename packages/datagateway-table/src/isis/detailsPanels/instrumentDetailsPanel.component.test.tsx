@@ -106,7 +106,7 @@ describe('Instrument details panel component', () => {
   });
 
   it('calls fetchDetails on load', () => {
-    const wrapper = mount(
+    mount(
       <InstrumentsDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}

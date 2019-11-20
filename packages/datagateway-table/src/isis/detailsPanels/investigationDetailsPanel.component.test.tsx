@@ -143,7 +143,7 @@ describe('Investigation details panel component', () => {
   });
 
   it('calls fetchDetails on load', () => {
-    const wrapper = mount(
+    mount(
       <InvestigationsDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}

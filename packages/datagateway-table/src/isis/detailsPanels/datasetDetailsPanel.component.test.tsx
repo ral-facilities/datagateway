@@ -82,7 +82,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('calls fetchDetails on load', () => {
-    const wrapper = mount(
+    mount(
       <DatasetsDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
