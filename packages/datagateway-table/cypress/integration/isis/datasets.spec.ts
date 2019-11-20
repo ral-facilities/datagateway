@@ -155,7 +155,6 @@ describe('ISIS - Datasets Table', () => {
         .click();
 
       cy.get('[aria-controls="dataset-details-panel"]').should('be.visible');
-      cy.get('[aria-controls="dataset-details-panel"]').click();
 
       cy.contains(
         'Description: Onto wind media return. Cultural area while friend who rich detail.\nWord allow education.\nAcross share be. Along month decide eye. Media foot war available organization could performance.'

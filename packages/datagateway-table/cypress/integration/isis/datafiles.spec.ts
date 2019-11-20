@@ -140,7 +140,6 @@ describe('ISIS - Datafiles Table', () => {
         .click();
 
       cy.get('[aria-controls="datafile-details-panel"]').should('be.visible');
-      cy.get('[aria-controls="datafile-details-panel"]').click();
 
       cy.contains(
         'Description: Remember word economic catch. After television scene alone.\nPartner send rise your. Exist room long success financial. Help itself culture money child realize take rise.'

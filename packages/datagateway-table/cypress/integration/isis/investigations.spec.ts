@@ -153,7 +153,6 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-controls="investigation-details-panel"]').should(
         'be.visible'
       );
-      cy.get('[aria-controls="investigation-details-panel"]').click();
 
       cy.contains(
         'Summary: Most within thus represent stock entire. Shoulder table board. Tax step street early either third life.\nEdge building say wife use upon. If half true media matter Mr. Still support shake.'

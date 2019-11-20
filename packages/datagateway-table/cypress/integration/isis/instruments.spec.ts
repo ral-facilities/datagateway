@@ -117,7 +117,6 @@ describe('ISIS - Instruments Table', () => {
         .click();
 
       cy.get('[aria-controls="instrument-details-panel').should('be.visible');
-      cy.get('[aria-controls="instrument-details-panel').click();
 
       cy.contains(
         'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
