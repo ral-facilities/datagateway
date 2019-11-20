@@ -7,19 +7,19 @@ addons:
       # Ubuntu 16+ does not install this dependency by default, so we need to install it ourselves (for Cypress)
       - libgconf-2-4
 cache:
-  npm: true
+  yarn: true
   directories:
     # we also need to cache folder with Cypress binary
     - ~/.cache
 install:
-  - npm install
+  - yarn install --frozen-lockfile
 jobs:
   include:
     - stage: test
       name: 'Lint'
-      script: npm run lint
+      script: yarn lint
     - name: 'Unit Tests'
-      script: npm run test:unit
+      script: yarn test:unit
       after_success:
         - |
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-common/*' -F common &&
@@ -27,4 +27,4 @@ jobs:
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-search/*' -F search &&
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-download/*' -F download
     - name: 'E2E Tests'
-      script: npm run test:e2e
+      script: yarn test:e2e
