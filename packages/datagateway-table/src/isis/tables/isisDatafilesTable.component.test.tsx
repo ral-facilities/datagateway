@@ -15,7 +15,6 @@ import {
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { TableSortLabel } from '@material-ui/core';
 import { Table, Datafile } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
@@ -164,7 +163,7 @@ describe('ISIS datafiles table component', () => {
     );
 
     wrapper
-      .find(TableSortLabel)
+      .find('[role="columnheader"] span')
       .first()
       .simulate('click');
 
