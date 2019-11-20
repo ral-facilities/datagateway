@@ -193,7 +193,7 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
-    dispatch(fetchDatasets(investigationId, offsetParams)),
+    dispatch(fetchDatasets({ investigationId, offsetParams })),
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
   clearTable: () => dispatch(clearTable()),

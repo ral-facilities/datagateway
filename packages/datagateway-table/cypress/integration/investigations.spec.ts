@@ -144,7 +144,7 @@ describe('Investigations Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    it('when another other row is showing details', () => {
+    it('when another row is showing details', () => {
       cy.get('[aria-label="Show details"]')
         .eq(2)
         .click();

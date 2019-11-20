@@ -1,10 +1,5 @@
 {
-  "features": {
-    "investigationGetSize": true,
-    "investigationGetCount": true,
-    "datasetGetSize": true,
-    "datasetGetCount": true
-  },
+  "features": {},
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",

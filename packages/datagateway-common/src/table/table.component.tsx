@@ -82,6 +82,7 @@ export interface ColumnType {
 
 export interface DetailsPanelProps {
   rowData: Entity;
+  detailsPanelResize: () => void;
 }
 
 export interface TableActionProps {
@@ -131,14 +132,16 @@ const VirtualizedTable = (
     onSort,
   } = props;
 
-  React.useEffect(() => {
-    if (tableRef) {
-      tableRef.recomputeRowHeights();
-    }
+  const detailsPanelResize = (): void => {
     if (detailPanelRef && detailPanelRef.current) {
       setDetailPanelHeight(detailPanelRef.current.clientHeight);
     }
-  }, [tableRef, expandedIndex]);
+    if (tableRef) {
+      tableRef.recomputeRowHeights();
+    }
+  };
+
+  React.useEffect(detailsPanelResize, [tableRef, expandedIndex]);
 
   return (
     <AutoSizer>
@@ -188,6 +191,7 @@ const VirtualizedTable = (
                             {...props}
                             detailsPanel={detailsPanel}
                             detailPanelRef={detailPanelRef}
+                            detailsPanelResize={detailsPanelResize}
                           />
                         );
                       } else {
@@ -274,6 +278,7 @@ const VirtualizedTable = (
                         dataKey,
                         label,
                         filterComponent,
+                        disableSort,
                       }) => {
                         return (
                           <Column
@@ -283,6 +288,7 @@ const VirtualizedTable = (
                             key={dataKey}
                             dataKey={dataKey}
                             label={label}
+                            disableSort={disableSort}
                             headerRenderer={headerProps => (
                               <DataHeader
                                 {...headerProps}

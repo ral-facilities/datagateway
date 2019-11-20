@@ -3,14 +3,15 @@
   "private": true,
   "version": "0.1.0",
   "devDependencies": {
+    "cypress": "^3.4.1",
+    "cypress-failed-log": "^2.5.1",
     "husky": "^3.0.2",
     "lerna": "^3.16.4",
-    "lerna-update-wizard": "^0.16.0",
-    "cypress": "^3.4.1"
+    "lerna-update-wizard": "^0.16.0"
   },
   "scripts": {
     "prepare": "lerna bootstrap",
-    "lint": "lerna run lint:js",
+    "lint": "lerna run lint:js -- -- --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "lerna run test --stream",

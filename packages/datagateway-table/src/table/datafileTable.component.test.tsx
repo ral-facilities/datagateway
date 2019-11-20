@@ -3,7 +3,7 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DatafileTable from './datafileTable.component';
 import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../state/app.types';
+import { StateType, Datafile } from '../state/app.types';
 import {
   fetchDatafilesRequest,
   filterTable,
@@ -43,7 +43,7 @@ describe('Datafile table component', () => {
         ID: 1,
         NAME: 'Test 1',
         LOCATION: '/test1',
-        SIZE: 1,
+        FILESIZE: 1,
         MOD_TIME: '2019-07-23',
         DATASET_ID: 1,
       },
@@ -267,6 +267,23 @@ describe('Datafile table component', () => {
     wrapper.find('button[aria-label="Download"]').simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
+  });
+
+  it("doesn't display download button for datafiles with no location", () => {
+    const datafile = state.dgtable.data[0] as Datafile;
+    const { LOCATION, ...datafileWithoutLocation } = datafile;
+    state.dgtable.data = [datafileWithoutLocation];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatafileTable datasetId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('button[aria-label="Download"]')).toHaveLength(0);
   });
 
   it('renders details panel correctly', () => {

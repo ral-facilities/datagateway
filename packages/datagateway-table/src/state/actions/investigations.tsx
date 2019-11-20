@@ -4,13 +4,18 @@ import {
   FetchInvestigationsRequestType,
   FetchDataSuccessPayload,
   FailurePayload,
+  FetchInvestigationDetailsSuccessType,
+  FetchInvestigationDetailsFailureType,
+  FetchInvestigationDetailsRequestType,
   FetchCountSuccessPayload,
   FetchInvestigationCountSuccessType,
   FetchInvestigationCountFailureType,
   FetchInvestigationCountRequestType,
   RequestPayload,
+  FetchDetailsSuccessPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
+import { Action } from 'redux';
 import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
@@ -48,23 +53,45 @@ export const fetchInvestigationsRequest = (
   },
 });
 
+interface FetchInvestigationsParams {
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[];
+  getDatasetCount?: boolean;
+  getSize?: boolean;
+  offsetParams?: IndexRange;
+}
+
 export const fetchInvestigations = (
-  offsetParams?: IndexRange
+  optionalParams?: FetchInvestigationsParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
 
     let params = getApiFilter(getState);
-    if (offsetParams) {
-      params.append('skip', JSON.stringify(offsetParams.startIndex));
+    if (optionalParams && optionalParams.offsetParams) {
+      params.append(
+        'skip',
+        JSON.stringify(optionalParams.offsetParams.startIndex)
+      );
       params.append(
         'limit',
-        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+        JSON.stringify(
+          optionalParams.offsetParams.stopIndex -
+            optionalParams.offsetParams.startIndex +
+            1
+        )
       );
     }
-    const { investigationGetCount } = getState().dgtable.features;
     const { apiUrl } = getState().dgtable.urls;
+
+    if (optionalParams && optionalParams.additionalFilters) {
+      optionalParams.additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
 
     await axios
       .get(`${apiUrl}/investigations`, {
@@ -75,7 +102,7 @@ export const fetchInvestigations = (
       })
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
-        if (investigationGetCount) {
+        if (optionalParams && optionalParams.getDatasetCount) {
           batch(() => {
             response.data.forEach((investigation: Investigation) => {
               dispatch(fetchInvestigationDatasetsCount(investigation.ID));
@@ -89,6 +116,87 @@ export const fetchInvestigations = (
       });
   };
 };
+
+export const fetchISISInvestigations = (
+  instrumentId: number,
+  facilityCycleId: number,
+  offsetParams?: IndexRange
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationsRequest(timestamp));
+
+    // TODO: replace this with getApiFilters again when API filter change merges in
+    const sort = getState().dgtable.sort;
+    const filter = getState().dgtable.filters;
+
+    let params = new URLSearchParams();
+    for (let [key, value] of Object.entries(sort)) {
+      params.append('order', JSON.stringify(`${key} ${value}`));
+    }
+
+    for (let [key, value] of Object.entries(filter)) {
+      params.append('where', JSON.stringify({ [key]: { like: value } }));
+    }
+
+    params.append(
+      'include',
+      JSON.stringify([
+        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+        { STUDYINVESTIGATION: 'STUDY' },
+      ])
+    );
+
+    if (offsetParams) {
+      params.append('skip', JSON.stringify(offsetParams.startIndex));
+      params.append(
+        'limit',
+        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+      );
+    }
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(
+        `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+        }
+      )
+      .then(response => {
+        dispatch(fetchInvestigationsSuccess(response.data, timestamp));
+        // TODO: dispatch getSize requests
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationsFailure(error.message));
+      });
+  };
+};
+
+export const fetchInvestigationDetailsSuccess = (
+  investigations: Investigation[]
+): ActionType<FetchDetailsSuccessPayload> => ({
+  type: FetchInvestigationDetailsSuccessType,
+  payload: {
+    data: investigations,
+  },
+});
+
+export const fetchInvestigationDetailsFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchInvestigationDetailsFailureType,
+  payload: {
+    error,
+  },
+});
 
 export const fetchInvestigationCountSuccess = (
   count: number,
@@ -110,6 +218,43 @@ export const fetchInvestigationCountFailure = (
   },
 });
 
+export const fetchInvestigationDetailsRequest = (): Action => ({
+  type: FetchInvestigationDetailsRequestType,
+});
+
+export const fetchInvestigationDetails = (
+  investigationId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchInvestigationDetailsRequest());
+
+    let params = new URLSearchParams();
+
+    params.append('where', JSON.stringify({ ID: { eq: investigationId } }));
+    params.append(
+      'include',
+      JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
+    );
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(`${apiUrl}/investigations`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchInvestigationDetailsSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationDetailsFailure(error.message));
+      });
+  };
+};
+
 export const fetchInvestigationCountRequest = (
   timestamp: number
 ): ActionType<RequestPayload> => ({
@@ -119,13 +264,19 @@ export const fetchInvestigationCountRequest = (
   },
 });
 
-export const fetchInvestigationCount = (): ThunkResult<Promise<void>> => {
+export const fetchInvestigationCount = (
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[]
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
     params.delete('order');
+
     const { apiUrl } = getState().dgtable.urls;
 
     await axios
@@ -135,6 +286,41 @@ export const fetchInvestigationCount = (): ThunkResult<Promise<void>> => {
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
       })
+      .then(response => {
+        dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchISISInvestigationCount = (
+  instrumentId: number,
+  facilityCycleId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationCountRequest(timestamp));
+
+    let params = getApiFilter(getState);
+    params.delete('order');
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(
+        `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/count`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+        }
+      )
       .then(response => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })

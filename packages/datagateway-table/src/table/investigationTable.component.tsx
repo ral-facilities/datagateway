@@ -217,7 +217,7 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (offsetParams: IndexRange) =>
-    dispatch(fetchInvestigations(offsetParams)),
+    dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
   clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) =>
