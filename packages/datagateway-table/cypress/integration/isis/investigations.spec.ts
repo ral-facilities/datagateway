@@ -1,7 +1,7 @@
-describe('Investigations Table', () => {
+describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/investigation');
+    cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
   });
 
   it('should load correctly', () => {
@@ -10,13 +10,17 @@ describe('Investigations Table', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('a')
+    cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
-    cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
+    cy.location('pathname').should(
+      'eq',
+      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+    );
   });
 
-  it('should be able to scroll down and load more rows', () => {
+  // Not enough investigations to test scrolling.
+  it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="75"]').should('exist');
@@ -29,7 +33,7 @@ describe('Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'A nothing almost arrive I. Product middle design never. Cup camera then product father sort vote.'
+        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
 
@@ -44,7 +48,7 @@ describe('Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
+        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
 
@@ -62,16 +66,17 @@ describe('Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
 
     it('multiple columns', () => {
       cy.contains('Start Date').click();
       cy.contains('Title').click();
+      cy.contains('Visit Id').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Color knowledge economy return determine tell. Professor able catch cut nice anyone. Can line benefit home.'
+        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
   });
@@ -80,14 +85,14 @@ describe('Investigations Table', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
-        .type('dog');
+        .type('series');
 
-      cy.get('[aria-rowcount="4"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('1');
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('15');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2019-01-01');
+      cy.get('[aria-label="Start Date date filter from"]').type('2006-08-05');
 
       cy.get('[aria-label="Start Date date filter to"]')
         .parent()
@@ -108,53 +113,73 @@ describe('Investigations Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="12"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Happy near day assume draw again. Lead pattern nothing approach spring standard.'
-      );
+      cy.get('[aria-rowcount="1"]').should('not.exist');
+      cy.contains(
+        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+      ).should('not.be.visible');
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
-        .type('dog');
+        .type('series');
 
-      cy.get('[aria-label="Filter by Visit ID"]')
+      cy.get('[aria-label="Filter by Visit Id"]')
         .find('input')
-        .type('9');
+        .type('15');
 
-      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
     });
   });
 
   describe('should be able to view details', () => {
-    it('when no other row is showing details', () => {
+    it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]')
         .first()
         .click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('be.visible');
+      cy.contains('Proposal: INVESTIGATION 107').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .eq(2)
-        .click();
+    // Cannot test showing details when another row is showing details
+    // as well since we are currently limited to 1 investigation to test.
 
+    it('and view investigation details, users, samples and publications', () => {
       cy.get('[aria-label="Show details"]')
         .first()
         .click();
 
+      cy.get('[aria-controls="investigation-details-panel"]').should(
+        'be.visible'
+      );
+
       cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+        'Summary: Most within thus represent stock entire. Shoulder table board. Tax step street early either third life.\nEdge building say wife use upon. If half true media matter Mr. Still support shake.'
       ).should('be.visible');
+
+      cy.get('[aria-controls="investigation-users-panel"]').should(
+        'be.visible'
+      );
+      cy.get('[aria-controls="investigation-users-panel"]').click();
+
+      cy.contains('Name: Michelle228').should('be.visible');
+
+      cy.get('[aria-controls="investigation-samples-panel"]').should(
+        'be.visible'
+      );
+      cy.get('[aria-controls="investigation-samples-panel"]').click();
+
+      cy.contains('Sample: SAMPLE 87').should('be.visible');
+
+      cy.get('[aria-controls="investigation-publications-panel"]').should(
+        'be.visible'
+      );
+      cy.get('[aria-controls="investigation-publications-panel"]').click();
+
       cy.contains(
-        'Title: Dog want single resource major. Necessary bit always available term small stock game.'
-      ).should('not.be.visible');
-      cy.get('[aria-label="Hide details"]').should('have.length', 1);
+        'Reference: Follow team before this.\nBeat likely soldier anyone. By management look activity economic plant others. Take move turn pay.\nWalk project charge against sell.'
+      ).should('be.visible');
     });
 
     it('and then not view details anymore', () => {
@@ -166,9 +191,7 @@ describe('Investigations Table', () => {
         .first()
         .click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('not.be.visible');
+      cy.contains('Proposal: INVESTIGATION 107').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
