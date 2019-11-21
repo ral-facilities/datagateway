@@ -6,6 +6,7 @@ import {
   configureStrings,
   loadFeatureSwitches,
   loadUrls,
+  loadBreadcrumbSettings,
   configureApp,
   loadStrings,
   settingsLoaded,
@@ -17,6 +18,7 @@ import {
   ConfigureStringsType,
   ConfigureFeatureSwitchesType,
   ConfigureURLsType,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
 } from './actions.types';
 import { StateType } from '../app.types';
@@ -198,7 +200,25 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls and settingsLoaded actions are sent', async () => {
+  it('given JSON loadBreadcrumbSettings returns a ConfigureBreadcrumbSettingsType with ConfigureBreadcrumbSettingsPayload', () => {
+    const action = loadBreadcrumbSettings({
+      test: {
+        replaceEntity: 'testEntity',
+        replaceEntityField: 'testField',
+      },
+    });
+    expect(action.type).toEqual(ConfigureBreadcrumbSettingsType);
+    expect(action.payload).toEqual({
+      settings: {
+        test: {
+          replaceEntity: 'testEntity',
+          replaceEntityField: 'testField',
+        },
+      },
+    });
+  });
+
+  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -221,7 +241,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
@@ -257,7 +277,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
