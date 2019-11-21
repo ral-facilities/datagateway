@@ -174,6 +174,7 @@ describe('DLS - Datafiles Table', () => {
 
   describe('should be able to select items', () => {
     it('individually', () => {
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
       cy.get('[aria-label="select all rows"]')
@@ -182,6 +183,7 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('and unselect them individually', () => {
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -193,7 +195,7 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('by all items', () => {
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get('[aria-label="select all rows"]')
@@ -219,7 +221,7 @@ describe('DLS - Datafiles Table', () => {
         .find('input')
         .type('e');
 
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
 
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
@@ -234,7 +236,7 @@ describe('DLS - Datafiles Table', () => {
         .find('input')
         .clear();
 
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select all rows"]').should('not.be.checked');
       cy.get('[aria-label="select all rows"]')
         .should('have.attr', 'data-indeterminate')
@@ -253,7 +255,7 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('and unselect all items', () => {
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="grid"]').scrollTo('bottom');
       cy.wait('@getDatafiles');
       cy.get('[aria-label="grid"]').scrollTo('bottom');
@@ -262,7 +264,7 @@ describe('DLS - Datafiles Table', () => {
       cy.get('[aria-label="select all rows"]').should('be.checked');
 
       cy.reload();
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
 
       cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get('[aria-label="select all rows"]').uncheck();

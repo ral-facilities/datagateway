@@ -174,6 +174,7 @@ describe('ISIS - Datafiles Table', () => {
 
   describe('should be able to select items', () => {
     it('individually', () => {
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
       cy.get('[aria-label="select all rows"]')
@@ -182,6 +183,7 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('and unselect them individually', () => {
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -193,7 +195,7 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('by all items', () => {
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get('[aria-label="select all rows"]')
@@ -219,7 +221,7 @@ describe('ISIS - Datafiles Table', () => {
         .find('input')
         .type('e');
 
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
 
       cy.get('[aria-label="select all rows"]').check();
       cy.get('[aria-label="select all rows"]').should('be.checked');
@@ -234,7 +236,7 @@ describe('ISIS - Datafiles Table', () => {
         .find('input')
         .clear();
 
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select all rows"]').should('not.be.checked');
       cy.get('[aria-label="select all rows"]')
         .should('have.attr', 'data-indeterminate')
@@ -262,7 +264,7 @@ describe('ISIS - Datafiles Table', () => {
       cy.get('[aria-label="select all rows"]').should('be.checked');
 
       cy.reload();
-      cy.wait('@getDatafiles');
+      cy.wait(['@getDatafiles', '@getAllIds']);
 
       cy.get('[aria-label="select all rows"]').should('be.checked');
       cy.get('[aria-label="select all rows"]').uncheck();
