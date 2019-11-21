@@ -61,12 +61,6 @@ interface PageBreadcrumbsState {
   };
 }
 
-// interface PageBreadcrumbsPathObject {
-//   pathName: string,
-//   isOverriden: boolean,
-//   overridingEntity?: string,
-// }
-
 interface WrappedBreadcrumbProps extends WithStyles<typeof styles> {
   displayName: string;
   ariaLabel: string;
@@ -121,6 +115,7 @@ class PageBreadcrumbs extends React.Component<
 > {
   private breadcrumbSettings: BreadcrumbSettings;
   private currentPathnames: string[];
+  private overridingPathEntity: string;
 
   public constructor(props: PageBreadcrumbsProps) {
     super(props);
@@ -128,6 +123,7 @@ class PageBreadcrumbs extends React.Component<
     // Set up pathnames and initial component state.
     this.breadcrumbSettings = this.props.breadcrumbSettings;
     this.currentPathnames = [];
+    this.overridingPathEntity = '';
 
     this.state = {
       base: {
@@ -192,7 +188,6 @@ class PageBreadcrumbs extends React.Component<
     // the format to be /{entity}/{entityId}.
     let hierarchyCount = 0;
     const pathLength = this.currentPathnames.length;
-    let overridingPathEntity = '';
     for (let index = 1; index < pathLength; index += 2) {
       // Get the entity and the data stored on the entity.
       let entity = this.currentPathnames[index];
@@ -259,16 +254,13 @@ class PageBreadcrumbs extends React.Component<
             const entitySettings = this.breadcrumbSettings[entity];
 
             // TODO: Check if entity is overriden?
-            if (overridingPathEntity.length === 0) {
+            if (this.overridingPathEntity.length === 0) {
               // If not ...
-              console.log(`Entity settings: ${entitySettings.replaceEntity}`);
-              console.log(
-                `Entity settings: ${entitySettings.replaceEntityField}`
-              );
-              console.log(`Entity settings: ${entitySettings.subEntities}`);
-
               // Get the defined replace entity field.
               requestEntityField = entitySettings.replaceEntityField;
+              console.log(
+                `Replace entity field: ${entitySettings.replaceEntityField}`
+              );
 
               // Get the replace entity, if one has been defined.
               if (entitySettings.replaceEntity) {
@@ -279,14 +271,15 @@ class PageBreadcrumbs extends React.Component<
               }
 
               // Set the overriding path entity in order process sub entity rules defined.
+              console.log('Sub entities: ', entitySettings.subEntities);
               if (
                 entitySettings.subEntities &&
                 Object.entries(entitySettings.subEntities).length !== 0
               ) {
-                overridingPathEntity = entity;
+                this.overridingPathEntity = entity;
                 console.log(
                   'Set overriden entity path: ',
-                  overridingPathEntity
+                  this.overridingPathEntity
                 );
               }
             } else {
@@ -294,7 +287,7 @@ class PageBreadcrumbs extends React.Component<
 
               // ... if it is overriden, check if overriden path contains overriding details for current entity.
               const overridenEntities = this.breadcrumbSettings[
-                overridingPathEntity
+                this.overridingPathEntity
               ].subEntities;
               if (overridenEntities && entity in overridenEntities) {
                 console.log(
