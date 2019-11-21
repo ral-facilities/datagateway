@@ -18,6 +18,9 @@ import {
   URLs,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  BreadcrumbSettings,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
@@ -137,6 +140,15 @@ export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
   },
 });
 
+export const loadBreadcrumbSettings = (
+  breadcrumbSettings: BreadcrumbSettings
+): ActionType<ConfigureBreadcrumbSettingsPayload> => ({
+  type: ConfigureBreadcrumbSettingsType,
+  payload: {
+    settings: breadcrumbSettings,
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async dispatch => {
     await axios
@@ -159,6 +171,9 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             apiUrl: settings['apiUrl'],
           })
         );
+
+        // Dispatch the action to load the breadcrumb settings.
+        dispatch(loadBreadcrumbSettings(settings['breadcrumbs']));
 
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {

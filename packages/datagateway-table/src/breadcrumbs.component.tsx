@@ -23,8 +23,6 @@ import {
 
 import ArrowTooltip from './arrowtooltip.component';
 
-import Config from './breadcrumbsConfig';
-
 const styles = (): StyleRules =>
   createStyles({
     breadcrumb: {
@@ -205,9 +203,6 @@ class PageBreadcrumbs extends React.Component<
 
         // Check if an entity id is present or if the id has changed since the last update to the state.
         if (entityInfo.id.length === 0 || entityInfo.id !== entityId) {
-          let currentConfig = Config;
-          console.log(currentConfig);
-
           // In general the API endpoint will be our entity name and
           // the entity field we want is the NAME of the entity.
           let apiEntity = entity;

@@ -13,6 +13,8 @@ export const ConfigureStringsType = 'datagateway_table:configure_strings';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';
 export const ConfigureURLsType = 'datagateway_table:configure_urls';
+export const ConfigureBreadcrumbSettingsType =
+  'datagateway_table:configure_breadcrumb';
 export const SettingsLoadedType = 'datagateway_table:settings_loaded';
 
 export const FetchInvestigationsRequestType =
@@ -155,6 +157,23 @@ export interface ConfigureUrlsPayload {
 export interface URLs {
   idsUrl: string;
   apiUrl: string;
+}
+
+export interface ConfigureBreadcrumbSettingsPayload {
+  settings: BreadcrumbSettings;
+}
+
+export interface BreadcrumbSettings {
+  [matchEntity: string]: {
+    replaceEntity?: string;
+    replaceEntityField: string;
+    subEntities?: {
+      [matchEntity: string]: {
+        replaceEntity?: string;
+        replaceEntityField: string;
+      };
+    };
+  };
 }
 
 export interface RequestPayload {

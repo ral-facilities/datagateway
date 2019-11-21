@@ -66,6 +66,8 @@ import {
   FetchDatasetDetailsRequestType,
   FetchDatasetDetailsSuccessType,
   FetchDatasetDetailsFailureType,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -86,6 +88,7 @@ export const initialState: DGTableState = {
     idsUrl: '',
     apiUrl: '',
   },
+  breadcrumbSettings: {},
   settingsLoaded: false,
 };
 
@@ -183,6 +186,18 @@ export function handleConfigureUrls(
   return {
     ...state,
     urls: payload.urls,
+  };
+}
+
+// Reducer for the breadcrumb settings action,
+// in order to add settings to the Redux state.
+export function handleConfigureBreadcrumbSettings(
+  state: DGTableState,
+  payload: ConfigureBreadcrumbSettingsPayload
+): DGTableState {
+  return {
+    ...state,
+    breadcrumbSettings: payload.settings,
   };
 }
 
@@ -417,6 +432,7 @@ const DGTableReducer = createReducer(initialState, {
   [ConfigureStringsType]: handleConfigureStrings,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureURLsType]: handleConfigureUrls,
+  [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
