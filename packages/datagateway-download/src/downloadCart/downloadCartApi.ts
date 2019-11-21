@@ -56,8 +56,6 @@ export const removeDownloadCartItem: (
     });
 };
 
-// TODO: caching???
-
 export const getSize: (
   entityId: number,
   entityType: string
