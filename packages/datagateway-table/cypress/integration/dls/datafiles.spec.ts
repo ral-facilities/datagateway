@@ -1,9 +1,14 @@
 describe('DLS - Datafiles Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit(
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
     );
+    cy.server();
+    cy.route('**/datafiles*').as('getDatafiles');
+    cy.route('**/datafiles/count*').as('getDatafileCount');
+    cy.route('**/datafiles*&distinct="ID"').as('getAllIds');
   });
 
   it('should load correctly', () => {
@@ -23,7 +28,7 @@ describe('DLS - Datafiles Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         '/act/friend/general.jpeg'
       );
     });
@@ -36,7 +41,7 @@ describe('DLS - Datafiles Table', () => {
       cy.get('.MuiTableSortLabel-iconDirectionDesc')
         .eq(1)
         .should('not.have.css', 'opacity', '0');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         'yes/glass/them.jpg'
       );
     });
@@ -54,7 +59,7 @@ describe('DLS - Datafiles Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         '/year/how/structure.tiff'
       );
     });
@@ -64,7 +69,7 @@ describe('DLS - Datafiles Table', () => {
       cy.contains('Name').click();
       cy.contains('Name').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 1940'
       );
     });
@@ -77,7 +82,7 @@ describe('DLS - Datafiles Table', () => {
         .type('ok');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 13915'
       );
     });
@@ -105,10 +110,10 @@ describe('DLS - Datafiles Table', () => {
       );
 
       cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 14873'
       );
-      cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
         'Datafile 20621'
       );
     });
@@ -123,7 +128,7 @@ describe('DLS - Datafiles Table', () => {
         .type('.png');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 15352'
       );
     });
@@ -164,6 +169,160 @@ describe('DLS - Datafiles Table', () => {
 
       cy.contains('Name: Datafile 24').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
+    });
+  });
+
+  describe('should be able to select items', () => {
+    it('individually', () => {
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'true');
+    });
+
+    it('and unselect them individually', () => {
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('[aria-label="select row 0"]').uncheck();
+      cy.get('[aria-label="select row 0"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('by all items', () => {
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get(
+        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+      ).should('be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.get(`[aria-label="select row 55"]`).should('be.checked');
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('by all items in a filtered table', () => {
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="Filter by Location"]')
+        .find('input')
+        .type('e');
+
+      cy.wait('@getDatafiles');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get(
+        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+      ).should('be.checked');
+
+      cy.get('[aria-label="Filter by Location"]')
+        .find('input')
+        .clear();
+
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'true');
+
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+      cy.get('[aria-label="select row 1"]').should('be.checked');
+      cy.get('[aria-label="select row 17"]').should('not.be.checked');
+      cy.get('[aria-label="select row 24"]').should('not.be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.get('[aria-label="select row 54"]').should('be.checked');
+      cy.get('[aria-label="select row 55"]').should('be.checked');
+    });
+
+    it('and unselect all items', () => {
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+
+      cy.reload();
+      cy.wait('@getDatafiles');
+
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]').uncheck();
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get(
+        `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
+      ).should('not.be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.wait('@getDatafiles');
+      cy.get('[aria-label="grid"]').scrollTo('bottom');
+      cy.get(`[aria-label="select row 55"]`).should('not.be.checked');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('by shift clicking', () => {
+      cy.get('[aria-label="select row 0"]').click();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('body')
+        .type('{shift}', { release: false })
+        .get('[aria-label="select row 5"]')
+        .click();
+      cy.get('[aria-label="select row 5"]').should('be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('top');
+      cy.get('[aria-label="select row 4"]').should('be.checked');
+      cy.get('[aria-label="select row 3"]').should('be.checked');
+      cy.get('[aria-label="select row 2"]').should('be.checked');
+      cy.get('[aria-label="select row 1"]').should('be.checked');
+    });
+
+    it('and unselect by shift clicking', () => {
+      cy.get('[aria-label="select row 0"]').click();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('body')
+        .type('{shift}', { release: false })
+        .get('[aria-label="select row 5"]')
+        .click();
+      cy.get('[aria-label="select row 5"]').should('be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('top');
+      cy.get('[aria-label="select row 2"]').click();
+      cy.get('[aria-label="select row 2"]').should('not.be.checked');
+
+      cy.get('[aria-label="grid"]').scrollTo('top');
+      cy.get('[aria-label="select row 5"]').should('not.be.checked');
+      cy.get('[aria-label="select row 4"]').should('not.be.checked');
+      cy.get('[aria-label="select row 3"]').should('not.be.checked');
+      cy.get('[aria-label="select row 2"]').should('not.be.checked');
+
+      cy.get('[aria-label="select row 1"]').should('be.checked');
+      cy.get('[aria-label="select row 0"]').should('be.checked');
     });
   });
 });

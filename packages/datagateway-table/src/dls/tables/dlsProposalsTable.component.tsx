@@ -60,6 +60,7 @@ const DLSProposalsTable = (
     filters,
     filterTable,
     clearTable,
+    loading,
   } = props;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -81,6 +82,7 @@ const DLSProposalsTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={fetchData}
         totalRowCount={totalDataCount}

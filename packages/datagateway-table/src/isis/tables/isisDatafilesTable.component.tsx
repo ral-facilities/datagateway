@@ -9,6 +9,7 @@ import {
   Datafile,
   TableActionProps,
   DateColumnFilter,
+  DownloadCartItem,
 } from 'datagateway-common';
 import { Paper, IconButton } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
@@ -20,6 +21,9 @@ import {
   fetchDatafileDetails,
   fetchDatafileCount,
   clearTable,
+  addToCart,
+  removeFromCart,
+  fetchAllIds,
 } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -46,6 +50,8 @@ interface ISISDatafilesTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -57,6 +63,9 @@ interface ISISDatafilesTableDispatchProps {
   clearTable: () => Action;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   fetchDetails: (datasetId: number) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type ISISDatafilesTableCombinedProps = ISISDatafilesTableProps &
@@ -79,7 +88,25 @@ const ISISDatafilesTable = (
     datasetId,
     downloadData,
     fetchDetails,
+    loading,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    allIds,
+    fetchAllIds,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'datafile' &&
+            allIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, allIds]
+  );
 
   React.useEffect(() => {
     clearTable();
@@ -88,7 +115,8 @@ const ISISDatafilesTable = (
   useAfterMountEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, datasetId]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, sort, filters, datasetId, fetchAllIds]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -109,11 +137,16 @@ const ISISDatafilesTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(datasetId), params)}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        allIds={allIds}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
             <DatafileDetailsPanel
@@ -176,7 +209,8 @@ const ISISDatafilesTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: ISISDatafilesTableProps
 ): ISISDatafilesTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -190,6 +224,21 @@ const mapDispatchToProps = (
     dispatch(fetchDatafileDetails(datafileId)),
   downloadData: (datafileId: number, filename: string) =>
     dispatch(downloadDatafile(datafileId, filename)),
+  addToCart: (entityIds: number[]) =>
+    dispatch(addToCart('datafile', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('datafile', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllIds('datafile', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            DATASET_ID: { eq: parseInt(ownProps.datasetId) },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): ISISDatafilesTableStoreProps => {
@@ -200,6 +249,8 @@ const mapStateToProps = (state: StateType): ISISDatafilesTableStoreProps => {
     totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

@@ -21,6 +21,7 @@ import {
   fetchAllIdsRequest,
   fetchAllIdsSuccess,
   fetchAllIdsFailure,
+  fetchAllISISInvestigationIds,
 } from './cart';
 import { initialState } from '../reducers/dgtable.reducer';
 import { StateType } from '../app.types';
@@ -292,6 +293,85 @@ describe('Cart actions', () => {
       );
 
       const asyncAction = fetchAllIds('datafile');
+      await asyncAction(dispatch, getState, null);
+
+      expect(actions[0]).toEqual(fetchAllIdsRequest(1));
+      expect(actions[1]).toEqual(fetchAllIdsFailure('Test error message'));
+
+      expect(log.error).toHaveBeenCalled();
+      const mockLog = (log.error as jest.Mock).mock;
+      expect(mockLog.calls[0][0]).toEqual('Test error message');
+    });
+  });
+
+  describe('fetchAllISISInvestigationIds action', () => {
+    const mockAllIdsData = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
+
+    it('dispatches fetchAllIdsRequest and fetchAllIdsSuccess actions upon successful fetchAllISISInvestigationIds action', async () => {
+      (axios.get as jest.Mock).mockImplementationOnce(() =>
+        Promise.resolve({
+          data: mockAllIdsData,
+        })
+      );
+
+      const asyncAction = fetchAllISISInvestigationIds(1, 2);
+      await asyncAction(dispatch, getState, null);
+
+      expect(actions[0]).toEqual(fetchAllIdsRequest(1));
+      expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
+
+      const params = new URLSearchParams();
+
+      expect(axios.get).toHaveBeenCalledWith(
+        '/instruments/1/facilitycycles/2/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+    });
+
+    it('applies filter state to the request params', async () => {
+      (axios.get as jest.Mock).mockImplementationOnce(() =>
+        Promise.resolve({
+          data: mockAllIdsData,
+        })
+      );
+
+      const asyncAction = fetchAllISISInvestigationIds(1, 2);
+
+      const getState = (): Partial<StateType> => ({
+        dgtable: {
+          ...initialState,
+          sort: { column1: 'desc' },
+          filters: { column1: '1', column2: '2' },
+        },
+      });
+      await asyncAction(dispatch, getState, null);
+
+      expect(actions[0]).toEqual(fetchAllIdsRequest(1));
+      expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('column1 desc'));
+      params.append('where', JSON.stringify({ column1: { like: '1' } }));
+      params.append('where', JSON.stringify({ column2: { like: '2' } }));
+
+      expect(axios.get).toHaveBeenCalledWith(
+        '/instruments/1/facilitycycles/2/investigations',
+        expect.objectContaining({
+          params,
+        })
+      );
+    });
+
+    it('dispatches fetchAllIdsRequest and fetchAllIdsFailure actions upon unsuccessful fetchAllISISInvestigationIds action', async () => {
+      (axios.get as jest.Mock).mockImplementationOnce(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      const asyncAction = fetchAllISISInvestigationIds(1, 2);
       await asyncAction(dispatch, getState, null);
 
       expect(actions[0]).toEqual(fetchAllIdsRequest(1));

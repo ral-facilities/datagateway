@@ -7,6 +7,7 @@ import {
   Order,
   Entity,
   DateColumnFilter,
+  DownloadCartItem,
 } from 'datagateway-common';
 import { Paper } from '@material-ui/core';
 import {
@@ -16,6 +17,9 @@ import {
   fetchDatasetDetails,
   fetchDatasetCount,
   clearTable,
+  addToCart,
+  removeFromCart,
+  fetchAllIds,
 } from '../../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
@@ -43,6 +47,8 @@ interface DLSDatasetsTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 interface DLSDatasetsTableDispatchProps {
@@ -55,6 +61,9 @@ interface DLSDatasetsTableDispatchProps {
   fetchCount: (datasetId: number) => Promise<void>;
   clearTable: () => Action;
   fetchDetails: (datasetId: number) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type DLSDatasetsTableCombinedProps = DLSDatasetsTableProps &
@@ -76,7 +85,25 @@ const DLSDatasetsTable = (
     filterTable,
     investigationId,
     proposalName,
+    loading,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    allIds,
+    fetchAllIds,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'dataset' &&
+            allIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, allIds]
+  );
 
   React.useEffect(() => {
     clearTable();
@@ -85,7 +112,8 @@ const DLSDatasetsTable = (
   useAfterMountEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, investigationId]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, sort, filters, investigationId, fetchAllIds]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -106,11 +134,16 @@ const DLSDatasetsTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(investigationId), params)}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        allIds={allIds}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
             <DatasetDetailsPanel
@@ -153,7 +186,8 @@ const DLSDatasetsTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: DLSDatasetsTableProps
 ): DLSDatasetsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -171,6 +205,20 @@ const mapDispatchToProps = (
     dispatch(fetchDatasetCount(investigationId)),
   clearTable: () => dispatch(clearTable()),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
+  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('dataset', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllIds('dataset', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
@@ -181,6 +229,8 @@ const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
     totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

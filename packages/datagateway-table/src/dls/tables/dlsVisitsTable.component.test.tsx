@@ -175,7 +175,7 @@ describe('DLS Visits table component', () => {
     );
 
     wrapper
-      .find('[role="columnheader"] span')
+      .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 

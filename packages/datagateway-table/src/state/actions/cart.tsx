@@ -20,7 +20,7 @@ import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
-import { DownloadCart } from 'datagateway-common';
+import { DownloadCart, Investigation } from 'datagateway-common';
 import { getApiFilter } from '.';
 
 export const fetchDownloadCartSuccess = (
@@ -241,6 +241,44 @@ export const fetchAllIds = (
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
       })
+      .then(response => {
+        dispatch(fetchAllIdsSuccess(response.data.map(x => x.ID), timestamp));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchAllIdsFailure(error.message));
+      });
+  };
+};
+
+export const fetchAllISISInvestigationIds = (
+  instrumentId: number,
+  facilityCycleId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchAllIdsRequest(timestamp));
+
+    let params = getApiFilter(getState);
+
+    // TODO: currently datagateway-api can't apply distinct filter to ISIS queries,
+    // so for now just retrieve everything
+    // params.set('distinct', JSON.stringify('ID'));
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get<Investigation[]>(
+        `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+        }
+      )
       .then(response => {
         dispatch(fetchAllIdsSuccess(response.data.map(x => x.ID), timestamp));
       })
