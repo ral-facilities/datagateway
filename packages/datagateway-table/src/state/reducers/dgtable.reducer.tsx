@@ -59,6 +59,8 @@ import {
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
@@ -66,8 +68,6 @@ import {
   FetchDatasetDetailsRequestType,
   FetchDatasetDetailsSuccessType,
   FetchDatasetDetailsFailureType,
-  ConfigureBreadcrumbSettingsPayload,
-  ConfigureBreadcrumbSettingsType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
