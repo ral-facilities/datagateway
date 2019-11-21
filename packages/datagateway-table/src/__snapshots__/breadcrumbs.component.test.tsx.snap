@@ -57,6 +57,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile"
         >
@@ -550,7 +551,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
-                                    displayName="Test 1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-1"
                                     url="/browse/proposal/INVESTIGATION 1/investigation"
                                   >
@@ -561,11 +562,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-904",
                                         }
                                       }
-                                      displayName="Test 1"
+                                      displayName="INVESTIGATION 1"
                                       url="/browse/proposal/INVESTIGATION 1/investigation"
                                     >
                                       <ArrowTooltip
-                                        title="Test 1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -589,7 +590,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              Test 1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-907"
                                               />
@@ -624,7 +625,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                Test 1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-907"
                                                 />
@@ -814,7 +815,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                           onTouchStart={[Function]}
                                                           title={null}
                                                         >
-                                                          Test 1
+                                                          INVESTIGATION 1
                                                         </a>
                                                       </LinkAnchor>
                                                     </Link>
@@ -829,7 +830,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   class="MuiTypography-root MuiLink-root MuiLink-underlineHover WrappedBreadcrumb-breadcrumb-904 MuiTypography-colorPrimary"
                                                   href="/browse/proposal/INVESTIGATION 1/investigation"
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </a>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-906"
@@ -915,7 +916,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-2"
-                                    displayName="1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-2"
                                     url="/browse/proposal/INVESTIGATION 1/investigation/1/dataset"
                                   >
@@ -926,11 +927,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-904",
                                         }
                                       }
-                                      displayName="1"
+                                      displayName="INVESTIGATION 1"
                                       url="/browse/proposal/INVESTIGATION 1/investigation/1/dataset"
                                     >
                                       <ArrowTooltip
-                                        title="1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -954,7 +955,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-907"
                                               />
@@ -989,7 +990,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-907"
                                                 />
@@ -1179,7 +1180,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                           onTouchStart={[Function]}
                                                           title={null}
                                                         >
-                                                          1
+                                                          INVESTIGATION 1
                                                         </a>
                                                       </LinkAnchor>
                                                     </Link>
@@ -1194,7 +1195,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   class="MuiTypography-root MuiLink-root MuiLink-underlineHover WrappedBreadcrumb-breadcrumb-904 MuiTypography-colorPrimary"
                                                   href="/browse/proposal/INVESTIGATION 1/investigation/1/dataset"
                                                 >
-                                                  1
+                                                  INVESTIGATION 1
                                                 </a>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-906"
@@ -1782,6 +1783,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/proposal/INVESTIGATION 1/investigation/1/dataset"
         >
@@ -2275,7 +2277,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
-                                    displayName="Test 1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-1"
                                     url="/browse/proposal/INVESTIGATION 1/investigation"
                                   >
@@ -2286,11 +2288,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-637",
                                         }
                                       }
-                                      displayName="Test 1"
+                                      displayName="INVESTIGATION 1"
                                       url="/browse/proposal/INVESTIGATION 1/investigation"
                                     >
                                       <ArrowTooltip
-                                        title="Test 1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -2314,7 +2316,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              Test 1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-640"
                                               />
@@ -2349,7 +2351,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                Test 1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-640"
                                                 />
@@ -2539,7 +2541,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                           onTouchStart={[Function]}
                                                           title={null}
                                                         >
-                                                          Test 1
+                                                          INVESTIGATION 1
                                                         </a>
                                                       </LinkAnchor>
                                                     </Link>
@@ -2554,7 +2556,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   class="MuiTypography-root MuiLink-root MuiLink-underlineHover WrappedBreadcrumb-breadcrumb-637 MuiTypography-colorPrimary"
                                                   href="/browse/proposal/INVESTIGATION 1/investigation"
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </a>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-639"
@@ -2640,7 +2642,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-2"
-                                    displayName="1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-2"
                                   >
                                     <WrappedBreadcrumb
@@ -2650,10 +2652,10 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-637",
                                         }
                                       }
-                                      displayName="1"
+                                      displayName="INVESTIGATION 1"
                                     >
                                       <ArrowTooltip
-                                        title="1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -2677,7 +2679,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-640"
                                               />
@@ -2712,7 +2714,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-640"
                                                 />
@@ -2785,7 +2787,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   onTouchStart={[Function]}
                                                   title={null}
                                                 >
-                                                  1
+                                                  INVESTIGATION 1
                                                 </p>
                                               </ForwardRef(Typography)>
                                             </WithStyles(ForwardRef(Typography))>
@@ -2795,7 +2797,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   aria-label="Breadcrumb-hierarchy-2"
                                                   class="MuiTypography-root WrappedBreadcrumb-breadcrumb-637 MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                 >
-                                                  1
+                                                  INVESTIGATION 1
                                                 </p>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-639"
@@ -3142,6 +3144,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/proposal/INVESTIGATION 1/investigation"
         >
@@ -3635,7 +3638,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
-                                    displayName="Test 1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-1"
                                   >
                                     <WrappedBreadcrumb
@@ -3645,10 +3648,10 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-370",
                                         }
                                       }
-                                      displayName="Test 1"
+                                      displayName="INVESTIGATION 1"
                                     >
                                       <ArrowTooltip
-                                        title="Test 1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -3672,7 +3675,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              Test 1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-373"
                                               />
@@ -3707,7 +3710,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                Test 1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-373"
                                                 />
@@ -3780,7 +3783,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   onTouchStart={[Function]}
                                                   title={null}
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </p>
                                               </ForwardRef(Typography)>
                                             </WithStyles(ForwardRef(Typography))>
@@ -3790,7 +3793,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   aria-label="Breadcrumb-hierarchy-1"
                                                   class="MuiTypography-root WrappedBreadcrumb-breadcrumb-370 MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </p>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-372"
@@ -4137,6 +4140,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/proposal"
         >
@@ -4520,6 +4524,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile"
         >
@@ -5743,7 +5748,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-3"
-                                    displayName="Test 1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-3"
                                     url="/browse/instrument/1/facilityCycle/1/investigation/1/dataset"
                                   >
@@ -5754,11 +5759,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-815",
                                         }
                                       }
-                                      displayName="Test 1"
+                                      displayName="INVESTIGATION 1"
                                       url="/browse/instrument/1/facilityCycle/1/investigation/1/dataset"
                                     >
                                       <ArrowTooltip
-                                        title="Test 1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -5782,7 +5787,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              Test 1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-818"
                                               />
@@ -5817,7 +5822,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                Test 1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-818"
                                                 />
@@ -6007,7 +6012,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                           onTouchStart={[Function]}
                                                           title={null}
                                                         >
-                                                          Test 1
+                                                          INVESTIGATION 1
                                                         </a>
                                                       </LinkAnchor>
                                                     </Link>
@@ -6022,7 +6027,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   class="MuiTypography-root MuiLink-root MuiLink-underlineHover WrappedBreadcrumb-breadcrumb-815 MuiTypography-colorPrimary"
                                                   href="/browse/instrument/1/facilityCycle/1/investigation/1/dataset"
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </a>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-817"
@@ -6610,6 +6615,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/instrument/1/facilityCycle/1/investigation/1/dataset"
         >
@@ -7833,7 +7839,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-3"
-                                    displayName="Test 1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-3"
                                   >
                                     <WrappedBreadcrumb
@@ -7843,10 +7849,10 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-548",
                                         }
                                       }
-                                      displayName="Test 1"
+                                      displayName="INVESTIGATION 1"
                                     >
                                       <ArrowTooltip
-                                        title="Test 1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -7870,7 +7876,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              Test 1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-551"
                                               />
@@ -7905,7 +7911,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                Test 1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-551"
                                                 />
@@ -7978,7 +7984,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   onTouchStart={[Function]}
                                                   title={null}
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </p>
                                               </ForwardRef(Typography)>
                                             </WithStyles(ForwardRef(Typography))>
@@ -7988,7 +7994,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   aria-label="Breadcrumb-hierarchy-3"
                                                   class="MuiTypography-root WrappedBreadcrumb-breadcrumb-548 MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </p>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-550"
@@ -8335,6 +8341,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/instrument/1/facilityCycle"
         >
@@ -9330,6 +9337,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/instrument"
         >
@@ -9713,6 +9721,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/investigation/1/dataset/1/datafile"
         >
@@ -10206,7 +10215,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
-                                    displayName="Test 1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-1"
                                     url="/browse/investigation/1/dataset"
                                   >
@@ -10217,11 +10226,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-726",
                                         }
                                       }
-                                      displayName="Test 1"
+                                      displayName="INVESTIGATION 1"
                                       url="/browse/investigation/1/dataset"
                                     >
                                       <ArrowTooltip
-                                        title="Test 1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -10245,7 +10254,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              Test 1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-729"
                                               />
@@ -10280,7 +10289,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                Test 1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-729"
                                                 />
@@ -10470,7 +10479,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                           onTouchStart={[Function]}
                                                           title={null}
                                                         >
-                                                          Test 1
+                                                          INVESTIGATION 1
                                                         </a>
                                                       </LinkAnchor>
                                                     </Link>
@@ -10485,7 +10494,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   class="MuiTypography-root MuiLink-root MuiLink-underlineHover WrappedBreadcrumb-breadcrumb-726 MuiTypography-colorPrimary"
                                                   href="/browse/investigation/1/dataset"
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </a>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-728"
@@ -11073,6 +11082,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/investigation/1/dataset"
         >
@@ -11566,7 +11576,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 >
                                   <WithStyles(WrappedBreadcrumb)
                                     ariaLabel="Breadcrumb-hierarchy-1"
-                                    displayName="Test 1"
+                                    displayName="INVESTIGATION 1"
                                     key=".1:$breadcrumb-1"
                                   >
                                     <WrappedBreadcrumb
@@ -11576,10 +11586,10 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           "breadcrumb": "WrappedBreadcrumb-breadcrumb-459",
                                         }
                                       }
-                                      displayName="Test 1"
+                                      displayName="INVESTIGATION 1"
                                     >
                                       <ArrowTooltip
-                                        title="Test 1"
+                                        title="INVESTIGATION 1"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -11603,7 +11613,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              Test 1
+                                              INVESTIGATION 1
                                               <span
                                                 className="makeStyles-arrow-462"
                                               />
@@ -11638,7 +11648,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                Test 1
+                                                INVESTIGATION 1
                                                 <span
                                                   className="makeStyles-arrow-462"
                                                 />
@@ -11711,7 +11721,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   onTouchStart={[Function]}
                                                   title={null}
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </p>
                                               </ForwardRef(Typography)>
                                             </WithStyles(ForwardRef(Typography))>
@@ -11721,7 +11731,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                                   aria-label="Breadcrumb-hierarchy-1"
                                                   class="MuiTypography-root WrappedBreadcrumb-breadcrumb-459 MuiTypography-body1 MuiTypography-colorTextPrimary"
                                                 >
-                                                  Test 1
+                                                  INVESTIGATION 1
                                                 </p>
                                               }
                                               className="MuiTooltip-popper makeStyles-popper-461"
@@ -12068,6 +12078,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       <Connect(PageBreadcrumbs)>
         <PageBreadcrumbs
           apiUrl=""
+          breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/investigation"
         >

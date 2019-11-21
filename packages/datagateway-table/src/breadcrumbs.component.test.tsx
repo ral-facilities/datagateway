@@ -280,7 +280,27 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgtable: initialState,
+        dgtable: {
+          ...initialState,
+
+          // Set up the breadcrumb settings.
+          breadcrumbSettings: {
+            proposal: {
+              replaceEntity: 'investigation',
+              replaceEntityField: 'TITLE',
+              isMirrorEntity: true,
+
+              subEntities: {
+                investigation: {
+                  replaceEntityField: 'VISIT_ID',
+                },
+              },
+            },
+            investigation: {
+              replaceEntityField: 'TITLE',
+            },
+          },
+        },
 
         // Initialise our router object to hold location information.
         router: {
