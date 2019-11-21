@@ -165,8 +165,9 @@ export interface ConfigureBreadcrumbSettingsPayload {
 
 export interface BreadcrumbSettings {
   [matchEntity: string]: {
-    replaceEntity?: string;
     replaceEntityField: string;
+    replaceEntity?: string;
+    isMirrorEntity?: boolean;
     subEntities?: {
       [matchEntity: string]: {
         replaceEntity?: string;

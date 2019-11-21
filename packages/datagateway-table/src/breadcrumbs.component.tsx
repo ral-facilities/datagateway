@@ -22,6 +22,7 @@ import {
 } from '@material-ui/core/styles';
 
 import ArrowTooltip from './arrowtooltip.component';
+import { BreadcrumbSettings } from './state/actions/actions.types';
 
 const styles = (): StyleRules =>
   createStyles({
@@ -44,6 +45,7 @@ interface Breadcrumb {
 interface PageBreadcrumbsProps {
   apiUrl: string;
   location: string;
+  breadcrumbSettings: BreadcrumbSettings;
 }
 
 interface PageBreadcrumbsState {
@@ -58,6 +60,12 @@ interface PageBreadcrumbsState {
     displayName: string;
   };
 }
+
+// interface PageBreadcrumbsPathObject {
+//   pathName: string,
+//   isOverriden: boolean,
+//   overridingEntity?: string,
+// }
 
 interface WrappedBreadcrumbProps extends WithStyles<typeof styles> {
   displayName: string;
@@ -111,13 +119,16 @@ class PageBreadcrumbs extends React.Component<
   PageBreadcrumbsProps,
   PageBreadcrumbsState
 > {
+  private breadcrumbSettings: BreadcrumbSettings;
   private currentPathnames: string[];
 
   public constructor(props: PageBreadcrumbsProps) {
     super(props);
 
     // Set up pathnames and initial component state.
+    this.breadcrumbSettings = this.props.breadcrumbSettings;
     this.currentPathnames = [];
+
     this.state = {
       base: {
         entityName: '',
@@ -167,12 +178,21 @@ class PageBreadcrumbs extends React.Component<
 
     // Set the base isLast to false unless it is proven otherwise later.
     updatedState.base.isLast = false;
+    if (updatedState.last.displayName !== '') {
+      updatedState = {
+        ...updatedState,
+        last: {
+          displayName: '',
+        },
+      };
+    }
 
     // Loop through each entry in the path name before the last.
     // We always skip 2 go ahead in steps of 2 as the we expect
     // the format to be /{entity}/{entityId}.
     let hierarchyCount = 0;
     const pathLength = this.currentPathnames.length;
+    let overridingPathEntity = '';
     for (let index = 1; index < pathLength; index += 2) {
       // Get the entity and the data stored on the entity.
       let entity = this.currentPathnames[index];
@@ -207,29 +227,107 @@ class PageBreadcrumbs extends React.Component<
           // the entity field we want is the NAME of the entity.
           let apiEntity = entity;
           let requestEntityField = 'NAME';
+          let isApiEntity = true;
 
-          // There are some exceptions to this when handling the DIAMOND/DLS
-          // depending on if 'proposal' has been found in the current path.
-          if (this.currentPathnames.includes('proposal')) {
-            // If the entity is current proposal, then we will not make an API request,
-            // as we need the investigation ID to retrieve the TITLE.
-            if (entity === 'proposal') {
-              apiEntity = 'investigation';
-              requestEntityField = 'TITLE';
-            } else if (entity === 'investigation') {
-              // Otherwise, we can proceed and get the VISIT_ID for the investigation entity.
-              requestEntityField = 'VISIT_ID';
+          // // There are some exceptions to this when handling the DIAMOND/DLS
+          // // depending on if 'proposal' has been found in the current path.
+          // if (this.currentPathnames.includes('proposal')) {
+          //   // If the entity is current proposal, then we will not make an API request,
+          //   // as we need the investigation ID to retrieve the TITLE.
+          //   if (entity === 'proposal') {
+          //     apiEntity = 'investigation';
+          //     requestEntityField = 'TITLE';
+          //   } else if (entity === 'investigation') {
+          //     // Otherwise, we can proceed and get the VISIT_ID for the investigation entity.
+          //     requestEntityField = 'VISIT_ID';
+          //   }
+          // } else {
+          //   // Anything else (including ISIS), we request the TITLE for the investigation entity.
+          //   if (entity === 'investigation') requestEntityField = 'TITLE';
+          // }
+
+          // Use breadcrumb settings in state to customise API call for entities.
+          console.log(
+            'Length: ',
+            Object.entries(this.breadcrumbSettings).length
+          );
+          if (
+            Object.entries(this.breadcrumbSettings).length !== 0 &&
+            entity in this.breadcrumbSettings
+          ) {
+            console.log(`Entity ${entity} in breadcrumbSettings`);
+            const entitySettings = this.breadcrumbSettings[entity];
+
+            // TODO: Check if entity is overriden?
+            if (overridingPathEntity.length === 0) {
+              // If not ...
+              console.log(`Entity settings: ${entitySettings.replaceEntity}`);
+              console.log(
+                `Entity settings: ${entitySettings.replaceEntityField}`
+              );
+              console.log(`Entity settings: ${entitySettings.subEntities}`);
+
+              // Get the defined replace entity field.
+              requestEntityField = entitySettings.replaceEntityField;
+
+              // Get the replace entity, if one has been defined.
+              if (entitySettings.replaceEntity) {
+                console.log(
+                  `Replace entity ${entity} with ${entitySettings.replaceEntity}`
+                );
+                apiEntity = entitySettings.replaceEntity;
+              }
+
+              // Set the overriding path entity in order process sub entity rules defined.
+              if (
+                entitySettings.subEntities &&
+                Object.entries(entitySettings.subEntities).length !== 0
+              ) {
+                overridingPathEntity = entity;
+                console.log(
+                  'Set overriden entity path: ',
+                  overridingPathEntity
+                );
+              }
+            } else {
+              console.log('Entity needs to be overriden');
+
+              // ... if it is overriden, check if overriden path contains overriding details for current entity.
+              const overridenEntities = this.breadcrumbSettings[
+                overridingPathEntity
+              ].subEntities;
+              if (overridenEntities && entity in overridenEntities) {
+                console.log(
+                  `Replace entity: ${overridenEntities[entity].replaceEntity}`
+                );
+                console.log(
+                  `Replace entity field: ${overridenEntities[entity].replaceEntityField}`
+                );
+
+                requestEntityField =
+                  overridenEntities[entity].replaceEntityField;
+                if (entitySettings.replaceEntity) {
+                  console.log('Entity is a mirror entity.');
+                  apiEntity = entitySettings.replaceEntity;
+                }
+              }
             }
-          } else {
-            // Anything else (including ISIS), we request the TITLE for the investigation entity.
-            if (entity === 'investigation') requestEntityField = 'TITLE';
+
+            // Check if the entity has been declared as a mirror entity.
+            if (entitySettings.isMirrorEntity) {
+              isApiEntity = false;
+              console.log('Set is API entity to false.');
+            }
           }
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
-          if (entity !== 'proposal') {
+          if (isApiEntity) {
+            // if (entity !== 'proposal') {
+            console.log('Normal API request');
             requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
           } else {
+            console.log('Find One API request');
             // If we are searching for proposal, we know that there is no investigation
             // information in the current path. We will need to query and select one investigation
             // from all investigations with the entity id (which is the proposal/investigation name).
@@ -397,6 +495,7 @@ class PageBreadcrumbs extends React.Component<
 const mapStateToProps = (state: StateType): PageBreadcrumbsProps => ({
   apiUrl: state.dgtable.urls.apiUrl,
   location: state.router.location.pathname,
+  breadcrumbSettings: state.dgtable.breadcrumbSettings,
 });
 
 export default connect(mapStateToProps)(PageBreadcrumbs);
