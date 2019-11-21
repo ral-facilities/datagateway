@@ -167,7 +167,6 @@ const DownloadCartTable: React.FC = () => {
                 cellContentRenderer: props => {
                   return formatBytes(props.cellData);
                 },
-                disableSort: true,
               },
             ]}
             sort={sort}
