@@ -72,22 +72,20 @@ if (
     axios
       .post(
         `${icatUrl}/session`,
-        {
-          json: {
-            plugin: 'simple',
-            credentials: [{ username: 'root' }, { password: 'pw' }],
-          },
-        },
+        `json=${JSON.stringify({
+          plugin: 'simple',
+          credentials: [{ username: 'root' }, { password: 'pw' }],
+        })}`,
         {
           headers: {
-            contentType: 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
         }
       )
       .then(response => {
-        console.log(response.data.sessionId);
         window.localStorage.setItem('icat:token', response.data.sessionId);
-      });
+      })
+      .catch(error => console.error("Can't log in to ICAT"));
   }
 }
 
