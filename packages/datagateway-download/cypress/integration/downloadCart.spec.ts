@@ -16,7 +16,7 @@ describe('Download Cart', () => {
     cy.title().should('equal', 'DataGateway Download');
     cy.get('#datagateway-download').should('be.visible');
 
-    cy.get('[aria-rowcount=59]').should('exist');
+    cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');
   });
 
   it('should be able to sort cart items by name and type', () => {
