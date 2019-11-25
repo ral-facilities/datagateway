@@ -22,6 +22,8 @@ import {
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureFacilityNamePayload,
+  ConfigureFacilityNameType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
 import { Action } from 'redux';
@@ -124,6 +126,15 @@ export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
   };
 };
 
+export const loadFacilityName = (
+  name: string
+): ActionType<ConfigureFacilityNamePayload> => ({
+  type: ConfigureFacilityNameType,
+  payload: {
+    facilityName: name,
+  },
+});
+
 export const loadFeatureSwitches = (
   featureSwitches: FeatureSwitches
 ): ActionType<FeatureSwitchesPayload> => ({
@@ -160,6 +171,9 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         if (typeof settings !== 'object') {
           throw Error('Invalid format');
         }
+
+        // Get the facility name from settings.
+        dispatch(loadFacilityName(settings['facilityName']));
 
         if (settings['features']) {
           dispatch(loadFeatureSwitches(settings['features']));

@@ -56,6 +56,8 @@ import {
   FeatureSwitchesPayload,
   ConfigureStringsPayload,
   ConfigureStringsType,
+  ConfigureFacilityNamePayload,
+  ConfigureFacilityNameType,
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
@@ -72,6 +74,7 @@ import {
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
 export const initialState: DGTableState = {
+  facilityName: '',
   data: [],
   totalDataCount: 0,
   investigationCache: {},
@@ -166,6 +169,16 @@ export function handleConfigureStrings(
   return {
     ...state,
     res: payload.res,
+  };
+}
+
+export function handleConfigureFacilityName(
+  state: DGTableState,
+  payload: ConfigureFacilityNamePayload
+): DGTableState {
+  return {
+    ...state,
+    facilityName: payload.facilityName,
   };
 }
 
@@ -430,6 +443,7 @@ const DGTableReducer = createReducer(initialState, {
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
   [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureURLsType]: handleConfigureUrls,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,

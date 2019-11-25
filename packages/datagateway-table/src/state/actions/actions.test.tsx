@@ -10,6 +10,7 @@ import {
   configureApp,
   loadStrings,
   settingsLoaded,
+  loadFacilityName,
 } from '.';
 import {
   SortTableType,
@@ -20,6 +21,7 @@ import {
   ConfigureURLsType,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureFacilityNameType,
 } from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -200,6 +202,14 @@ describe('Actions', () => {
     });
   });
 
+  it('given JSON loadFacilityName returns a ConfigureFacilityNameType with ConfigureFacilityNamePayload', () => {
+    const action = loadFacilityName('Generic');
+    expect(action.type).toEqual(ConfigureFacilityNameType);
+    expect(action.payload).toEqual({
+      facilityName: 'Generic',
+    });
+  });
+
   it('given JSON loadBreadcrumbSettings returns a ConfigureBreadcrumbSettingsType with ConfigureBreadcrumbSettingsPayload', () => {
     const action = loadBreadcrumbSettings({
       test: {
@@ -218,15 +228,21 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
+  it('settings are loaded and facilityName, configureStrings, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
           data: {
+            facilityName: 'Generic',
             features: {},
             'ui-strings': '/res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
+            breadcrumbs: {
+              test: {
+                replaceEntityField: 'TITLE',
+              },
+            },
           },
         })
       )
@@ -241,7 +257,8 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(5);
+    expect(actions.length).toEqual(6);
+    expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
@@ -250,6 +267,13 @@ describe('Actions', () => {
       loadUrls({
         idsUrl: 'ids',
         apiUrl: 'api',
+      })
+    );
+    expect(actions).toContainEqual(
+      loadBreadcrumbSettings({
+        test: {
+          replaceEntityField: 'TITLE',
+        },
       })
     );
     expect(actions).toContainEqual(settingsLoaded());
@@ -277,7 +301,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );

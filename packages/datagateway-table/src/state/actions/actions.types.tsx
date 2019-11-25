@@ -10,6 +10,8 @@ export const SortTableType = 'datagateway_table:sort_table';
 export const FilterTableType = 'datagateway_table:filter_table';
 export const ClearTableType = 'datagateway_table:clear_table';
 export const ConfigureStringsType = 'datagateway_table:configure_strings';
+export const ConfigureFacilityNameType =
+  'datagateway_table:configure_facility_name';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';
 export const ConfigureURLsType = 'datagateway_table:configure_urls';
@@ -141,6 +143,10 @@ export interface FilterTablePayload {
 
 export interface ConfigureStringsPayload {
   res: ApplicationStrings;
+}
+
+export interface ConfigureFacilityNamePayload {
+  facilityName: string;
 }
 
 export interface FeatureSwitchesPayload {

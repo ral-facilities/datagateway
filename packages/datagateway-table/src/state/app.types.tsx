@@ -9,6 +9,7 @@ import {
 import { RouterState } from 'connected-react-router';
 
 export interface DGTableState {
+  facilityName: string;
   sort: {
     [column: string]: Order;
   };
