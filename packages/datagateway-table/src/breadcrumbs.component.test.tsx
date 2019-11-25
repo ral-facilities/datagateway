@@ -288,16 +288,10 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
             proposal: {
               replaceEntity: 'investigation',
               replaceEntityField: 'TITLE',
-              isApiEntity: false,
-
-              subEntities: {
-                investigation: {
-                  replaceEntityField: 'VISIT_ID',
-                },
-              },
             },
             investigation: {
               replaceEntityField: 'TITLE',
+              parentEntity: 'proposal',
             },
           },
         },
