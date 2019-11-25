@@ -173,13 +173,7 @@ export interface BreadcrumbSettings {
   [matchEntity: string]: {
     replaceEntityField: string;
     replaceEntity?: string;
-    isMirrorEntity?: boolean;
-    subEntities?: {
-      [matchEntity: string]: {
-        replaceEntity?: string;
-        replaceEntityField: string;
-      };
-    };
+    parentEntity?: string;
   };
 }
 

@@ -115,7 +115,6 @@ class PageBreadcrumbs extends React.Component<
 > {
   private breadcrumbSettings: BreadcrumbSettings;
   private currentPathnames: string[];
-  private overridingPathEntity: string;
 
   public constructor(props: PageBreadcrumbsProps) {
     super(props);
@@ -123,7 +122,6 @@ class PageBreadcrumbs extends React.Component<
     // Set up pathnames and initial component state.
     this.breadcrumbSettings = this.props.breadcrumbSettings;
     this.currentPathnames = [];
-    this.overridingPathEntity = '';
 
     this.state = {
       base: {
@@ -221,25 +219,10 @@ class PageBreadcrumbs extends React.Component<
           // In general the API endpoint will be our entity name and
           // the entity field we want is the NAME of the entity.
           let apiEntity = entity;
-          let requestEntityField = 'NAME';
-          let isApiEntity = true;
 
-          // // There are some exceptions to this when handling the DIAMOND/DLS
-          // // depending on if 'proposal' has been found in the current path.
-          // if (this.currentPathnames.includes('proposal')) {
-          //   // If the entity is current proposal, then we will not make an API request,
-          //   // as we need the investigation ID to retrieve the TITLE.
-          //   if (entity === 'proposal') {
-          //     apiEntity = 'investigation';
-          //     requestEntityField = 'TITLE';
-          //   } else if (entity === 'investigation') {
-          //     // Otherwise, we can proceed and get the VISIT_ID for the investigation entity.
-          //     requestEntityField = 'VISIT_ID';
-          //   }
-          // } else {
-          //   // Anything else (including ISIS), we request the TITLE for the investigation entity.
-          //   if (entity === 'investigation') requestEntityField = 'TITLE';
-          // }
+          // If the entity is a investigation, we always want to fetch the TITLE field.
+          let requestEntityField =
+            entity === 'investigation' ? 'TITLE' : 'NAME';
 
           // Use breadcrumb settings in state to customise API call for entities.
           console.log(
@@ -253,9 +236,19 @@ class PageBreadcrumbs extends React.Component<
             console.log(`Entity ${entity} in breadcrumbSettings`);
             const entitySettings = this.breadcrumbSettings[entity];
 
-            // TODO: Check if entity is overriden?
-            if (this.overridingPathEntity.length === 0) {
-              // If not ...
+            // Check for a parent entity.
+            console.log('Parent entity: ', entitySettings.parentEntity);
+            if (
+              !entitySettings.parentEntity ||
+              (entitySettings.parentEntity &&
+                this.currentPathnames.includes(entitySettings.parentEntity))
+            ) {
+              if (entitySettings.parentEntity)
+                console.log(
+                  'Parent entity in path: ',
+                  this.currentPathnames.includes(entitySettings.parentEntity)
+                );
+
               // Get the defined replace entity field.
               requestEntityField = entitySettings.replaceEntityField;
               console.log(
@@ -269,54 +262,12 @@ class PageBreadcrumbs extends React.Component<
                 );
                 apiEntity = entitySettings.replaceEntity;
               }
-
-              // Set the overriding path entity in order process sub entity rules defined.
-              console.log('Sub entities: ', entitySettings.subEntities);
-              if (
-                entitySettings.subEntities &&
-                Object.entries(entitySettings.subEntities).length !== 0
-              ) {
-                this.overridingPathEntity = entity;
-                console.log(
-                  'Set overriden entity path: ',
-                  this.overridingPathEntity
-                );
-              }
-            } else {
-              console.log('Entity needs to be overriden');
-
-              // ... if it is overriden, check if overriden path contains overriding details for current entity.
-              const overridenEntities = this.breadcrumbSettings[
-                this.overridingPathEntity
-              ].subEntities;
-              if (overridenEntities && entity in overridenEntities) {
-                console.log(
-                  `Replace entity: ${overridenEntities[entity].replaceEntity}`
-                );
-                console.log(
-                  `Replace entity field: ${overridenEntities[entity].replaceEntityField}`
-                );
-
-                requestEntityField =
-                  overridenEntities[entity].replaceEntityField;
-                if (entitySettings.replaceEntity) {
-                  console.log('Entity is a mirror entity.');
-                  apiEntity = entitySettings.replaceEntity;
-                }
-              }
-            }
-
-            // Check if the entity has been declared as a mirror entity.
-            if (entitySettings.isMirrorEntity) {
-              isApiEntity = false;
-              console.log('Set is API entity to false.');
             }
           }
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
-          if (isApiEntity) {
-            // if (entity !== 'proposal') {
+          if (entity !== 'proposal') {
             console.log('Normal API request');
             requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
           } else {

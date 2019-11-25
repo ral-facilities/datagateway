@@ -288,7 +288,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
             proposal: {
               replaceEntity: 'investigation',
               replaceEntityField: 'TITLE',
-              isMirrorEntity: true,
+              isApiEntity: false,
 
               subEntities: {
                 investigation: {
