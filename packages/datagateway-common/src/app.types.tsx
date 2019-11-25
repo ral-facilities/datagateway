@@ -102,6 +102,15 @@ export type Entity =
   | Instrument
   | FacilityCycle;
 
+export const EntityTypes: string[] = [
+  'investigation',
+  'dataset',
+  'datafile',
+  'facilitycycle',
+  'instrument',
+  'facility',
+];
+
 // TODO: type this properly
 export type Filter = string | number | { startDate?: string; endDate?: string };
 

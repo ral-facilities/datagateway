@@ -1,5 +1,6 @@
 import React from 'react';
 import { StateType } from './state/app.types';
+import { EntityTypes } from 'datagateway-common';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
@@ -267,7 +268,7 @@ class PageBreadcrumbs extends React.Component<
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
-          if (entity !== 'proposal') {
+          if (EntityTypes.includes(entity)) {
             console.log('Normal API request');
             requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
           } else {
