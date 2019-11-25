@@ -268,6 +268,7 @@ class PageBreadcrumbs extends React.Component<
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
+          console.log('Includes: ', entity);
           if (EntityTypes.includes(entity)) {
             console.log('Normal API request');
             requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;

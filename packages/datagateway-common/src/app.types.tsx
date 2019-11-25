@@ -106,7 +106,7 @@ export const EntityTypes: string[] = [
   'investigation',
   'dataset',
   'datafile',
-  'facilitycycle',
+  'facilityCycle',
   'instrument',
   'facility',
 ];
