@@ -13,6 +13,7 @@ import {
 import { act } from 'react-dom/test-utils';
 
 jest.mock('./downloadCartApi');
+jest.useFakeTimers();
 
 describe('Download cart table component', () => {
   let shallow;
@@ -79,6 +80,7 @@ describe('Download cart table component', () => {
     (getCartDatafileCount as jest.Mock).mockClear();
     (removeAllDownloadCartItems as jest.Mock).mockClear();
     (removeDownloadCartItem as jest.Mock).mockClear();
+    jest.clearAllTimers();
   });
 
   it('renders correctly', () => {
@@ -187,10 +189,19 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    await act(async () => {
+    wrapper
+      .find('button[aria-label="Remove INVESTIGATION 2 from cart"]')
+      .simulate('click');
+
+    expect(
       wrapper
-        .find('button[aria-label="Remove INVESTIGATION 2 from cart"]')
-        .simulate('click');
+        .find('button[aria-label="Remove INVESTIGATION 2 from cart"] svg')
+        .parent()
+        .prop('color')
+    ).toEqual('error');
+
+    await act(async () => {
+      jest.runAllTimers();
       await flushPromises();
       wrapper.update();
     });

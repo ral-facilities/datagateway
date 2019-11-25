@@ -180,27 +180,33 @@ const DownloadCartTable: React.FC = () => {
             }}
             data={sortedAndFilteredData}
             actions={[
-              function removeButton({ rowData }: TableActionProps) {
+              function RemoveButton({ rowData }: TableActionProps) {
                 const cartItem = rowData as DownloadCartItem;
+                const [isDeleting, setIsDeleting] = React.useState(false);
                 return (
                   <IconButton
                     aria-label={`Remove ${cartItem.name} from cart`}
                     key="remove"
                     size="small"
-                    onClick={() =>
-                      removeDownloadCartItem(
-                        cartItem.entityId,
-                        cartItem.entityType
-                      ).then(() =>
-                        setData(
-                          data.filter(
-                            item => item.entityId !== cartItem.entityId
-                          )
-                        )
-                      )
-                    }
+                    onClick={() => {
+                      setIsDeleting(true);
+                      setTimeout(
+                        () =>
+                          removeDownloadCartItem(
+                            cartItem.entityId,
+                            cartItem.entityType
+                          ).then(() =>
+                            setData(
+                              data.filter(
+                                item => item.entityId !== cartItem.entityId
+                              )
+                            )
+                          ),
+                        100
+                      );
+                    }}
                   >
-                    <RemoveCircle />
+                    <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />
                   </IconButton>
                 );
               },
