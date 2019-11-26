@@ -166,6 +166,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
       .get('/datagateway-table-settings.json')
       .then(res => {
         const settings = res.data;
+        console.log('Settings:', settings);
 
         // invalid settings.json
         if (typeof settings !== 'object') {
@@ -173,21 +174,34 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         }
 
         // Get the facility name from settings.
-        dispatch(loadFacilityName(settings['facilityName']));
+        if ('facilityName' in settings) {
+          dispatch(loadFacilityName(settings['facilityName']));
+        } else {
+          throw new Error('facilityName is undefined in settings');
+        }
 
-        if (settings['features']) {
+        // features is an optional setting
+        if ('features' in settings) {
           dispatch(loadFeatureSwitches(settings['features']));
         }
 
-        dispatch(
-          loadUrls({
-            idsUrl: settings['idsUrl'],
-            apiUrl: settings['apiUrl'],
-          })
-        );
+        if ('idsUrl' in settings && 'apiUrl' in settings) {
+          dispatch(
+            loadUrls({
+              idsUrl: settings['idsUrl'],
+              apiUrl: settings['apiUrl'],
+            })
+          );
+        } else {
+          throw new Error(
+            'One of the URL options (idsUrl, apiUrl) is undefined in settings'
+          );
+        }
 
-        // Dispatch the action to load the breadcrumb settings.
-        dispatch(loadBreadcrumbSettings(settings['breadcrumbs']));
+        // Dispatch the action to load the breadcrumb settings (optional settings).
+        if ('breadcrumbs' in settings) {
+          dispatch(loadBreadcrumbSettings(settings['breadcrumbs']));
+        }
 
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
@@ -208,10 +222,12 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             });
         }
 
-        const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
-          ? '/' + settings['ui-strings']
-          : settings['ui-strings'];
-        dispatch(loadStrings(uiStringResourcesPath));
+        if ('ui-strings' in settings) {
+          const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
+            ? '/' + settings['ui-strings']
+            : settings['ui-strings'];
+          dispatch(loadStrings(uiStringResourcesPath));
+        }
 
         dispatch(settingsLoaded());
       })

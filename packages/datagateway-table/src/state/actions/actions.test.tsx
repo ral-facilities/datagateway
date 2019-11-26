@@ -301,7 +301,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(5);
+    expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
