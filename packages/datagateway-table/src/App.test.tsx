@@ -34,7 +34,10 @@ describe('App', () => {
 
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual(
+
+    // We check index 1 since the first index will be settings
+    // specific errors and not the error we expect from the App component.
+    expect(mockLog.calls[1][0]).toEqual(
       `datagateway_table failed with error: ${error}`
     );
   });

@@ -284,6 +284,7 @@ describe('Actions', () => {
       .mockImplementationOnce(() =>
         Promise.resolve({
           data: {
+            facilityName: 'Generic',
             'ui-strings': 'res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
@@ -302,6 +303,7 @@ describe('Actions', () => {
     await asyncAction(dispatch, getState);
 
     expect(actions.length).toEqual(4);
+    expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
