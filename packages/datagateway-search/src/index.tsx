@@ -8,9 +8,8 @@ import './index.css';
 import App from './App';
 import * as log from 'loglevel';
 import axios from 'axios';
-
-import { Provider } from 'react-redux'
-import store from './store/store'
+import { Provider } from 'react-redux';
+import store from './store/store';
 
 const pluginName = 'datagateway-search';
 
@@ -18,10 +17,10 @@ const render = (): void => {
   let el = document.getElementById(pluginName);
   if (el) {
     ReactDOM.render(
-    <Provider store = {store}>
-    <App />,
-    </Provider>,
-    document.getElementById(pluginName)
+      <Provider store={store}>
+        <App />,
+      </Provider>,
+      document.getElementById(pluginName)
     );
   }
 };
@@ -35,29 +34,29 @@ if (process.env.NODE_ENV === `development`) {
     .then(response => {
       window.localStorage.setItem('daaas:token', response.data.sessionID);
     })
-    .catch((error: { message: any; }) => {
+    .catch((error: { message: any }) => {
       log.error(`Can't contact API.`);
     });
 }
-  // TODO: if it's still needed, get icatUrl from settings file
-  const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session/';
+// TODO: if it's still needed, get icatUrl from settings file
+const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session/';
 
-  // TODO: get ICAT session ID from daaas:token
-  const icatCreds = {
-    plugin: 'simple',
-    credentials: [{ username: 'root' }, { password: 'pw' }],
-  };
+// TODO: get ICAT session ID from daaas:token
+const icatCreds = {
+  plugin: 'simple',
+  credentials: [{ username: 'root' }, { password: 'pw' }],
+};
 
-  axios
-    .post(icatUrl, `json=${JSON.stringify(icatCreds)}`, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    })
-    .then(response => {
-      window.localStorage.setItem('icat:token', response.data.sessionId);
-    })
-    .catch((error: { message: any; }) => {
-      log.error(`Token was not retrieved.`);
-    });
+axios
+  .post(icatUrl, `json=${JSON.stringify(icatCreds)}`, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  })
+  .then(response => {
+    window.localStorage.setItem('icat:token', response.data.sessionId);
+  })
+  .catch((error: { message: any }) => {
+    log.error(`Token was not retrieved.`);
+  });
 
 console.log('test: daaas token retrieved =');
 console.log(window.localStorage.getItem('daaas:token'));
@@ -65,7 +64,7 @@ console.log(window.localStorage.getItem('daaas:token'));
 console.log('test: icat token retrieved =');
 console.log(window.localStorage.getItem('icat:token'));
 
-console.log(JSON.stringify(icatCreds))
+console.log(JSON.stringify(icatCreds));
 
 window.addEventListener('single-spa:routing-event', () => {
   render();
