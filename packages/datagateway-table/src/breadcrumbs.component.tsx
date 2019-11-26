@@ -162,6 +162,10 @@ class PageBreadcrumbs extends React.Component<
         ...updatedState,
         base: {
           entityName: baseEntityName,
+
+          // TODO: This display name requires internationalisation,
+          //       as currently it adds an 's' to the word disregarding
+          //       the current language the application is being served in.
           displayName:
             `${baseEntityName}`.charAt(0).toUpperCase() +
             `${baseEntityName}s`.slice(1),
@@ -271,12 +275,18 @@ class PageBreadcrumbs extends React.Component<
           console.log('Includes: ', entity);
           if (EntityTypes.includes(entity)) {
             console.log('Normal API request');
+
+            // TODO: Internationalisation may not be required here, though it
+            //       is adding an 's' to get the API endpoint.
             requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
           } else {
             console.log('Find One API request');
             // If we are searching for proposal, we know that there is no investigation
             // information in the current path. We will need to query and select one investigation
             // from all investigations with the entity id (which is the proposal/investigation name).
+
+            // TODO: Internationalisation; pluralising the entity name
+            //       to get API endpoint.
             requestEntityUrl =
               `${apiEntity}s`.toLowerCase() +
               '/findone?where=' +
@@ -308,6 +318,8 @@ class PageBreadcrumbs extends React.Component<
           updatedState = {
             ...updatedState,
             last: {
+              // TODO: Internationalisation; display name is pluralised
+              //       irrespective of the language the application is being served in.
               displayName:
                 `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
             },
@@ -344,6 +356,9 @@ class PageBreadcrumbs extends React.Component<
     entityName = await axios
       .get(requestUrl, {
         headers: {
+          // NOTE: Authorisation is specified as daaas token, however if this
+          //       is subject to change, it might be worth referencing the token
+          //       name which is stored elsewhere.
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
       })
