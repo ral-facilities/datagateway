@@ -3,9 +3,10 @@ describe('Download Cart', () => {
     cy.server();
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.login('user', 'password');
-    cy.seedDownloadCart();
-    cy.visit('/');
-    cy.wait('@fetchCart');
+    cy.seedDownloadCart().then(() => {
+      cy.visit('/');
+      cy.wait('@fetchCart');
+    });
   });
 
   afterEach(() => {
@@ -16,7 +17,7 @@ describe('Download Cart', () => {
     cy.title().should('equal', 'DataGateway Download');
     cy.get('#datagateway-download').should('be.visible');
 
-    cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');
+    cy.get('[aria-rowcount=59]').should('exist');
   });
 
   it('should be able to sort cart items by name and type', () => {
@@ -88,7 +89,7 @@ describe('Download Cart', () => {
   it('should be able to remove individual items from the cart', () => {
     cy.route('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('Name').click();
-    cy.contains('Loading...', { timeout: 10000 }).should('not.exist');
+    cy.contains('Calculating...').should('not.exist');
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.get('[aria-label="Remove DATASET 1 from cart"]').click();
@@ -120,7 +121,7 @@ describe('Download Cart', () => {
     const stub = cy.stub();
     cy.on('window:alert', stub);
 
-    cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
+    cy.contains('Calculating...').should('not.exist');
     cy.contains('Download Cart')
       .click()
       .then(() => {
