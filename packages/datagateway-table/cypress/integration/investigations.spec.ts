@@ -33,15 +33,15 @@ describe('Investigations Table', () => {
     cy.window()
       .then(window => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 50) / 8;
+        columnWidth = (windowWidth - 40 - 40) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
     cy.get('[role="columnheader"]')
-      .eq(1)
+      .eq(2)
       .as('titleColumn');
     cy.get('[role="columnheader"]')
-      .eq(2)
+      .eq(3)
       .as('visitColumn');
 
     cy.get('@titleColumn').should($column => {

@@ -28,6 +28,9 @@ import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
 const headerHeight = 120;
+const selectColumnWidth = 40;
+const detailsColumnWidth = 40;
+const actionsColumnWidth = 70;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -153,7 +156,10 @@ const VirtualizedTable = (
     <AutoSizer>
       {({ height, width }) => {
         const dataColumnsWidth =
-          (width || 800) - (detailsPanel ? 50 : 0) - (actions ? 70 : 0);
+          (width || 800) -
+          (selectedRows && onCheck && onUncheck ? selectColumnWidth : 0) -
+          (detailsPanel ? detailsColumnWidth : 0) -
+          (actions ? actionsColumnWidth : 0);
         return (
           <InfiniteLoader
             isRowLoaded={({ index }) => !!data[index]}
@@ -203,7 +209,8 @@ const VirtualizedTable = (
               >
                 {selectedRows && onCheck && onUncheck && (
                   <Column
-                    width={40}
+                    width={selectColumnWidth}
+                    flexShrink={0}
                     key="Select"
                     dataKey="Select"
                     headerRenderer={props => (
@@ -243,7 +250,7 @@ const VirtualizedTable = (
                 )}
                 {detailsPanel && (
                   <Column
-                    width={40}
+                    width={detailsColumnWidth}
                     flexShrink={0}
                     key="Expand"
                     dataKey="expand"
@@ -344,7 +351,7 @@ const VirtualizedTable = (
                 )}
                 {actions && (
                   <Column
-                    width={70}
+                    width={actionsColumnWidth}
                     flexShrink={0}
                     key="Actions"
                     dataKey="actions"

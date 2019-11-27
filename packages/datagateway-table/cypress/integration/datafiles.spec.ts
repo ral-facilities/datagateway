@@ -20,15 +20,15 @@ describe('Datafiles Table', () => {
     cy.window()
       .then(window => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 50 - 70) / 4;
+        columnWidth = (windowWidth - 40 - 40 - 70) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
     cy.get('[role="columnheader"]')
-      .eq(1)
+      .eq(2)
       .as('nameColumn');
     cy.get('[role="columnheader"]')
-      .eq(2)
+      .eq(3)
       .as('locationColumn');
 
     cy.get('@nameColumn').should($column => {
