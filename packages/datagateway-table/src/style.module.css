@@ -15,6 +15,14 @@
     float: left;
 }
 
+.breadcrumb .displayContent {
+    display: block;
+    white-space: nowrap;
+    max-width: 20vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Actual content style (apply to custom component and not span) */
 .breadcrumb .content {
     color: #FFF;
