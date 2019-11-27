@@ -209,41 +209,23 @@ class PageBreadcrumbs extends React.Component<
             entity === 'investigation' ? 'TITLE' : 'NAME';
 
           // Use breadcrumb settings in state to customise API call for entities.
-          console.log(
-            'Length: ',
-            Object.entries(this.breadcrumbSettings).length
-          );
           if (
             Object.entries(this.breadcrumbSettings).length !== 0 &&
             entity in this.breadcrumbSettings
           ) {
-            console.log(`Entity ${entity} in breadcrumbSettings`);
             const entitySettings = this.breadcrumbSettings[entity];
 
             // Check for a parent entity.
-            console.log('Parent entity: ', entitySettings.parentEntity);
             if (
               !entitySettings.parentEntity ||
               (entitySettings.parentEntity &&
                 this.currentPathnames.includes(entitySettings.parentEntity))
             ) {
-              if (entitySettings.parentEntity)
-                console.log(
-                  'Parent entity in path: ',
-                  this.currentPathnames.includes(entitySettings.parentEntity)
-                );
-
               // Get the defined replace entity field.
               requestEntityField = entitySettings.replaceEntityField;
-              console.log(
-                `Replace entity field: ${entitySettings.replaceEntityField}`
-              );
 
               // Get the replace entity, if one has been defined.
               if (entitySettings.replaceEntity) {
-                console.log(
-                  `Replace entity ${entity} with ${entitySettings.replaceEntity}`
-                );
                 apiEntity = entitySettings.replaceEntity;
               }
             }
@@ -251,15 +233,11 @@ class PageBreadcrumbs extends React.Component<
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
-          console.log('Includes: ', entity);
           if (EntityTypes.includes(entity)) {
-            console.log('Normal API request');
-
             // TODO: Internationalisation may not be required here, though it
             //       is adding an 's' to get the API endpoint.
             requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
           } else {
-            console.log('Find One API request');
             // If we are searching for proposal, we know that there is no investigation
             // information in the current path. We will need to query and select one investigation
             // from all investigations with the entity id (which is the proposal/investigation name).

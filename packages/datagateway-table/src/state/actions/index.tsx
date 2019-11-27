@@ -166,7 +166,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
       .get('/datagateway-table-settings.json')
       .then(res => {
         const settings = res.data;
-        console.log('Settings:', settings);
 
         // invalid settings.json
         if (typeof settings !== 'object') {
