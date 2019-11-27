@@ -1,0 +1,120 @@
+.breadcrumb {
+    list-style: none;
+    display: inline-block;
+}
+
+.breadcrumb .icon {
+    position: relative;
+    top: 5px;
+    left: 5px; 
+    font-size: 20px;
+}
+
+.breadcrumb li {
+    /* Make it side by side */
+    float: left;
+}
+
+/* Actual content style (apply to custom component and not span) */
+.breadcrumb .content {
+    color: #FFF;
+    display: block;
+    background: #3498db;
+    
+    /* Any effect? */
+    text-decoration: none;
+    position: relative;
+
+    /* Positions breadcrumb */
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px 0 5px;
+    text-align: center;
+
+    /* Adds between breadcrumbs */
+    margin-right: 23px;
+}
+
+/* Every even breadcrumb has a darker background */
+.breadcrumb li:nth-child(even) .content {
+    background-color: #2980b9;
+}
+
+.breadcrumb li:nth-child(even) .content:before {
+    border-color: #2980b9;
+    border-left-color: transparent;
+}
+
+.breadcrumb li:nth-child(even) .content:after {
+    border-left-color: #2980b9;
+}
+
+.breadcrumb li:first-child .content:before {
+    border: none;
+}
+
+.breadcrumb li:last-child .content {
+    padding-right: 15px;
+
+    /* Curve the last breadcrumb border */
+    -moz-border-radius: 0 4px 4px 0;
+    -webkit-border-radius: 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.breadcrumb li:last-child .content:after {
+    border: none;
+}
+
+.breadcrumb li .content:before, .breadcrumb li .content:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    border: 0 solid #3498db;
+    border-width: 20px 10px;
+    width: 0;
+    height: 0;
+}
+
+.breadcrumb li .content:before {
+    left: -20px;
+    border-left-color: transparent;
+}
+
+/* Completes chevrons */
+.breadcrumb li .content:after {
+    left: 100%;
+
+    /* Gap in between chevrons */
+    border-color: transparent;
+    
+    border-left-color: #3498db;
+}
+
+
+/* Hover and selecting a breadcrumb */
+.breadcrumb li .content:hover {
+    background-color: #1abc9c;
+}
+
+.breadcrumb li .content:hover:before {
+    border-color: #1abc9c;
+    border-left-color: transparent;
+}
+
+.breadcrumb li .content:hover:after {
+    border-left-color: #1abc9c;
+}
+
+.breadcrumb li .content:active {
+    background-color: #16a085;
+}
+
+.breadcrumb li .content:active:before {
+    border-color: #16a085;
+    border-left-color: transparent;
+}
+
+.breadcrumb li .content:active:after {
+    border-left-color: #16a085;
+}
