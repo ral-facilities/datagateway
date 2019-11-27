@@ -9,20 +9,13 @@ import SelectDates from './search/datePicker';
 import CheckboxesGroup from './search/checkBoxes';
 import axios from 'axios';
 import { Provider } from 'react-redux';
-import store from './store';
+import thunk from 'redux-thunk';
+import { applyMiddleware, createStore } from 'redux';
+import AppReducer from './state/reducers/app.reducer';
+import { StateType } from './state/app.types';
 
-// const initialState = {
-//   toggleCheckBox : [{
-//     Dataset: true,
-//     Datafile: true,
-//     Investigation: true
-//   }],
-//   dates: [{
-//   startDate: '2010/08/10',
-//   endDate: '2019/8/10',  // TODO set end date to retrieve current date
-//   }],
-//   searchText: ''
-// }
+const middleware = [thunk];
+const store = createStore(AppReducer, applyMiddleware(...middleware));
 
 class App extends React.Component {
   public componentDidCatch(error: Error | null): void {
@@ -35,7 +28,9 @@ class App extends React.Component {
     let requestURL = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data?sessionId=${sessionId}&query=%7B"text":"h","target":"Investigation"%7D&maxCount=300`;
     const response = await axios.get(requestURL);
     console.log(response.data);
-  }
+    // console.log(state.dgsearch.checkBox.datafile)
+    
+    }
 
   public render(): React.ReactNode {
     return (

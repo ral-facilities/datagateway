@@ -38,25 +38,37 @@ interface CheckBoxDispatchProps {
   toggleInvestigation: (toggleoption: boolean) => Action;
 }
 
-function CheckboxesGroup(): JSX.Element {
-  const classes = useStyles();
-  const [state, setState] = React.useState({
-    Investigation: true,
-    Dataset: false,
-    Datafile: false,
-  });
+type CheckBoxCombinedProps = CheckBoxStoreProps & CheckBoxDispatchProps;
 
-  const handleChange = (name: string): any => (
+const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
+  const classes = useStyles();
+  const {
+    dataset,
+    datafile,
+    investigation,
+    toggleDataset,
+    toggleDatafile,
+    toggleInvestigation,
+  } = props;
+
+  const handleChange = (name: string, checked: boolean): any => (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    setState({ ...state, [name]: event.target.checked });
+    let toggleoption = !checked;
+    console.log(toggleoption);
+    if (name === 'Investigation') {
+      toggleInvestigation(toggleoption);
+    } else if (name === 'Datafile') {
+      toggleDatafile(toggleoption);
+    } else if (name === 'Dataset') {
+      toggleDataset(toggleoption);
+    }
+
     console.log('box checked?');
-    console.log(event.target.checked);
-    console.log(state);
+    console.log(toggleoption);
   };
 
-  const { Investigation, Dataset, Datafile } = state;
-  const error = ![Investigation, Dataset, Datafile].includes(true);
+  const error = ![investigation, dataset, datafile].includes(true);
 
   return (
     <div className={classes.root}>
@@ -71,8 +83,8 @@ function CheckboxesGroup(): JSX.Element {
           <FormControlLabel
             control={
               <Checkbox
-                checked={Investigation}
-                onChange={handleChange('Investigation')}
+                checked={investigation}
+                onChange={handleChange('Investigation', investigation)}
                 value="Investigation"
               />
             }
@@ -81,8 +93,8 @@ function CheckboxesGroup(): JSX.Element {
           <FormControlLabel
             control={
               <Checkbox
-                checked={Dataset}
-                onChange={handleChange('Dataset')}
+                checked={dataset}
+                onChange={handleChange('Dataset', dataset)}
                 value="Dataset"
               />
             }
@@ -91,8 +103,8 @@ function CheckboxesGroup(): JSX.Element {
           <FormControlLabel
             control={
               <Checkbox
-                checked={Datafile}
-                onChange={handleChange('Datafile')}
+                checked={datafile}
+                onChange={handleChange('Datafile', datafile)}
                 value="Datafile"
               />
             }
@@ -102,7 +114,7 @@ function CheckboxesGroup(): JSX.Element {
       </FormControl>
     </div>
   );
-}
+};
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
@@ -123,7 +135,4 @@ const mapStateToProps = (state: StateType): CheckBoxStoreProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CheckboxesGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(CheckboxesGroup);

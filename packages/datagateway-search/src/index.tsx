@@ -9,19 +9,13 @@ import App from './App';
 import * as log from 'loglevel';
 import axios from 'axios';
 import { Provider } from 'react-redux';
-import store from './store/store';
 
 const pluginName = 'datagateway-search';
 
 const render = (): void => {
   let el = document.getElementById(pluginName);
   if (el) {
-    ReactDOM.render(
-      <Provider store={store}>
-        <App />,
-      </Provider>,
-      document.getElementById(pluginName)
-    );
+    ReactDOM.render(<App />, document.getElementById(pluginName));
   }
 };
 

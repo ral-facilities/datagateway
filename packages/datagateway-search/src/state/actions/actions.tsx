@@ -13,44 +13,42 @@ import SelectDates from '../../search/datePicker';
 export const toggleDataset = (
   toggleoption: boolean
 ): ActionType<TogglePayload> => ({
-  type: ToggleDatasetType, 
-  payload: { 
-    toggleoption, 
+  type: ToggleDatasetType,
+  payload: {
+    toggleoption,
   },
 });
 
 export const toggleDatafile = (
   toggleoption: boolean
 ): ActionType<TogglePayload> => ({
-  type: ToggleDatafileType, 
-  payload: { 
-    toggleoption, 
+  type: ToggleDatafileType,
+  payload: {
+    toggleoption,
   },
 });
 
 export const toggleInvestigation = (
   toggleoption: boolean
 ): ActionType<TogglePayload> => ({
-  type: ToggleInvestigationType, 
-  payload: { 
-    toggleoption, 
+  type: ToggleInvestigationType,
+  payload: {
+    toggleoption,
   },
 });
 
 export const selectStartDate = (
   date: number
 ): ActionType<SelectDatePayload> => ({
-  type: SelectStartDateType, 
-  payload: { 
-    date, 
+  type: SelectStartDateType,
+  payload: {
+    date,
   },
 });
 
-export const selectEndDate = (
-  date: number
-): ActionType<SelectDatePayload> => ({
-  type: SelectEndDateType, 
-  payload: { 
-    date, 
+export const selectEndDate = (date: number): ActionType<SelectDatePayload> => ({
+  type: SelectEndDateType,
+  payload: {
+    date,
   },
 });
