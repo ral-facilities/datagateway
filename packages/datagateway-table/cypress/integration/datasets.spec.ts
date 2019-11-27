@@ -20,6 +20,50 @@ describe('Datasets Table', () => {
     );
   });
 
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then(window => {
+        const windowWidth = window.innerWidth;
+        columnWidth = (windowWidth - 50) / 4;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]')
+      .eq(1)
+      .as('nameColumn');
+    cy.get('[role="columnheader"]')
+      .eq(2)
+      .as('sizeColumn');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@sizeColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 400 })
+      .trigger('mouseup');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@sizeColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+  });
+
   // current example data only has 2 datasets per investigation, so can't test lazy loading
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
