@@ -190,7 +190,7 @@ describe('Table component', () => {
     );
   });
 
-  it('resizes all data columns correctly when a column is resized and there are expand and action columns', () => {
+  it('resizes all data columns correctly when a column is resized and there are expand, select and action columns', () => {
     const wrapper = mount(
       <Table
         {...tableProps}
@@ -198,6 +198,9 @@ describe('Table component', () => {
           return <div>Details panel</div>;
         }}
         actions={[]}
+        selectedRows={[]}
+        onCheck={jest.fn()}
+        onUncheck={jest.fn()}
       />
     );
 
@@ -206,22 +209,22 @@ describe('Table component', () => {
     expect(
       wrapper
         .find('[role="columnheader"]')
-        .at(1)
+        .at(2)
         .prop('style')
     ).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('340px'),
+        flex: expect.stringContaining('325px'),
       })
     );
 
     expect(
       wrapper
         .find('[role="columnheader"]')
-        .at(2)
+        .at(3)
         .prop('style')
     ).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('340px'),
+        flex: expect.stringContaining('325px'),
       })
     );
 
@@ -229,21 +232,10 @@ describe('Table component', () => {
       wrapper
         .find('DataHeader')
         .at(0)
-        .prop('resizeColumn')(50);
+        .prop('resizeColumn')(40);
     });
 
     wrapper.update();
-
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(1)
-        .prop('style')
-    ).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('390px'),
-      })
-    );
 
     expect(
       wrapper
@@ -252,7 +244,18 @@ describe('Table component', () => {
         .prop('style')
     ).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('290px'),
+        flex: expect.stringContaining('365px'),
+      })
+    );
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(3)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('285px'),
       })
     );
   });
