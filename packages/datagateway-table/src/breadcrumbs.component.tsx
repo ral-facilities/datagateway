@@ -4,7 +4,7 @@ import { EntityTypes } from 'datagateway-common';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
-// import { Route } from 'react-router';
+import { Route } from 'react-router';
 import { Link } from 'react-router-dom';
 // import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import HomeIcon from '@material-ui/icons/Home';
@@ -18,7 +18,7 @@ import {
 
 import {
   withStyles,
-  StyleRules,
+  // StyleRules,
   createStyles,
   WithStyles,
   Theme,
@@ -29,6 +29,7 @@ import {
 import { BreadcrumbSettings } from './state/actions/actions.types';
 
 import styles from './style.module.css';
+import { CreateCSSProperties } from 'datagateway-common/node_modules/@material-ui/core/styles/withStyles';
 
 // const styles = (): StyleRules =>
 //   createStyles({
@@ -41,7 +42,19 @@ import styles from './style.module.css';
 //     },
 //   });
 
-const linkStyles = (theme: Theme): StyleRules =>
+const linkStyles = (
+  theme: Theme
+): Record<
+  'breadcrumbTooltip' | 'root',
+  | CreateCSSProperties<{
+      index: number;
+    }>
+  | ((props: {
+      index: number;
+    }) => CreateCSSProperties<{
+      index: number;
+    }>)
+> =>
   createStyles({
     // style rule
     breadcrumbTooltip: {
@@ -128,7 +141,7 @@ class WrappedBreadcrumb extends React.Component<
     return (
       // <ArrowTooltip
       //   title={this.props.displayName}
-      //   className={this.props.classes.breadcrumbTooltip}
+      //   // className={styles.content}
       // >
       <div>
         {this.props.url ? (
@@ -136,11 +149,18 @@ class WrappedBreadcrumb extends React.Component<
             component={Link}
             to={this.props.url}
             aria-label={this.props.ariaLabel}
+            // className={this.props.classes.breadcrumbTooltip}
+            className={`${styles.content}`}
           >
             {this.props.displayName}
           </MaterialLink>
         ) : (
-          <Typography color="textPrimary" aria-label={this.props.ariaLabel}>
+          <Typography
+            color="textPrimary"
+            aria-label={this.props.ariaLabel}
+            // className={this.props.classes.breadcrumbTooltip}
+            className={`${styles.content}`}
+          >
             {this.props.isLast ? (
               <i>{this.props.displayName}</i>
             ) : (
@@ -149,12 +169,11 @@ class WrappedBreadcrumb extends React.Component<
           </Typography>
         )}
       </div>
-      // {/* // </ArrowTooltip> */}
+      // {/* </ArrowTooltip> */}
     );
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledBreadcrumb = withStyles(linkStyles)(WrappedBreadcrumb);
 
 class PageBreadcrumbs extends React.Component<
@@ -435,12 +454,11 @@ class PageBreadcrumbs extends React.Component<
       ),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const hierarchyKeys = Object.keys(breadcrumbState.currentHierarchy);
     return (
       <div>
         <Paper elevation={0}>
-          <div className={styles.breadcrumb}>
+          {/* <div className={styles.breadcrumb}>
             <li>
               <span className={styles.content}>
                 <div className={styles.icon}>
@@ -457,73 +475,89 @@ class PageBreadcrumbs extends React.Component<
             <li>
               <span className={styles.content}>Breadcrumb</span>
             </li>
-          </div>
+          </div> */}
+
+          <Route>
+            {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
+            {this.currentPathnames.length > 0 ? (
+              // <Breadcrumbs
+              //   separator={<NavigateNextIcon fontSize="small" />}
+              //   aria-label="Breadcrumb"
+              // >
+              <div className={styles.breadcrumb}>
+                <li>
+                  <span className={styles.content}>
+                    <div className={styles.icon}>
+                      <HomeIcon />
+                    </div>
+                  </span>
+                </li>
+
+                <li>
+                  {/* // Return the base entity as a link. */}
+                  {breadcrumbState.base.isLast ? (
+                    <StyledBreadcrumb
+                      displayName={breadcrumbState.base.displayName}
+                      ariaLabel="Breadcrumb-base"
+                      index={0}
+                    />
+                  ) : (
+                    <StyledBreadcrumb
+                      displayName={breadcrumbState.base.displayName}
+                      ariaLabel="Breadcrumb-base"
+                      url={breadcrumbState.base.url}
+                      index={0}
+                    />
+                  )}
+                </li>
+
+                <li>
+                  {/* // Add in the hierarchy breadcrumbs. */}
+                  {hierarchyKeys.map((value: string, index: number) => {
+                    const breadcrumbInfo =
+                      breadcrumbState.currentHierarchy[index];
+
+                    // Return the correct type of breadcrumb with the entity name
+                    // depending on if it is at the end of the hierarchy or not.
+                    return index + 1 === hierarchyKeys.length ? (
+                      <StyledBreadcrumb
+                        displayName={breadcrumbInfo.displayName}
+                        ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
+                        key={`breadcrumb-${index + 1}`}
+                        index={0}
+                      />
+                    ) : (
+                      <StyledBreadcrumb
+                        displayName={breadcrumbInfo.displayName}
+                        ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
+                        url={breadcrumbInfo.url}
+                        key={`breadcrumb-${index + 1}`}
+                        index={0}
+                      />
+                    );
+                  })}
+                </li>
+
+                <li>
+                  {/* // Render the last breadcrumb information; this is the current table view. */}
+                  {breadcrumbState.last.displayName !== '' ? (
+                    <StyledBreadcrumb
+                      displayName={breadcrumbState.last.displayName}
+                      ariaLabel="Breadcrumb-last"
+                      isLast={true}
+                      index={0}
+                    />
+                  ) : null}
+                </li>
+                {/* // </Breadcrumbs> */}
+              </div>
+            ) : null}
+          </Route>
         </Paper>
       </div>
     );
   }
 }
-
-// {/* <Route>
-// {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
-// {this.currentPathnames.length > 0 ? (
-//   <Breadcrumbs
-//     separator={<NavigateNextIcon fontSize="small" />}
-//     aria-label="Breadcrumb"
-//   >
-//     {/* // Return the base entity as a link. */}
-//     {breadcrumbState.base.isLast ? (
-//       <StyledBreadcrumb
-//         displayName={breadcrumbState.base.displayName}
-//         ariaLabel="Breadcrumb-base"
-//         index={0}
-//       />
-//     ) : (
-//       <StyledBreadcrumb
-//         displayName={breadcrumbState.base.displayName}
-//         ariaLabel="Breadcrumb-base"
-//         url={breadcrumbState.base.url}
-//         index={0}
-//       />
-//     )}
-
-//     {/* // Add in the hierarchy breadcrumbs. */}
-//     {hierarchyKeys.map((value: string, index: number) => {
-//       const breadcrumbInfo =
-//         breadcrumbState.currentHierarchy[index];
-
-//       // Return the correct type of breadcrumb with the entity name
-//       // depending on if it is at the end of the hierarchy or not.
-//       return index + 1 === hierarchyKeys.length ? (
-//         <StyledBreadcrumb
-//           displayName={breadcrumbInfo.displayName}
-//           ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
-//           key={`breadcrumb-${index + 1}`}
-//           index={0}
-//         />
-//       ) : (
-//         <StyledBreadcrumb
-//           displayName={breadcrumbInfo.displayName}
-//           ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
-//           url={breadcrumbInfo.url}
-//           key={`breadcrumb-${index + 1}`}
-//           index={0}
-//         />
-//       );
-//     })}
-
-//     {/* // Render the last breadcrumb information; this is the current table view. */}
-//     {breadcrumbState.last.displayName !== '' ? (
-//       <StyledBreadcrumb
-//         displayName={breadcrumbState.last.displayName}
-//         ariaLabel="Breadcrumb-last"
-//         isLast={true}
-//         index={0}
-//       />
-//     ) : null}
-//   </Breadcrumbs>
-// ) : null}
-// </Route> */}
 
 const mapStateToProps = (state: StateType): PageBreadcrumbsProps => ({
   apiUrl: state.dgtable.urls.apiUrl,

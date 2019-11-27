@@ -5,7 +5,7 @@
 
 .breadcrumb .icon {
     position: relative;
-    top: 5px;
+    top: 3px;
     left: 5px; 
     font-size: 20px;
 }
@@ -26,8 +26,8 @@
     position: relative;
 
     /* Positions breadcrumb */
-    height: 40px;
-    line-height: 40px;
+    height: 30px;
+    line-height: 30px;
     padding: 0 10px 0 5px;
     text-align: center;
 
@@ -71,7 +71,7 @@
     position: absolute;
     top: 0;
     border: 0 solid #3498db;
-    border-width: 20px 10px;
+    border-width: 15px 10px;
     width: 0;
     height: 0;
 }
