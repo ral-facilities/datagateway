@@ -25,7 +25,7 @@ class PageHead extends React.Component<{ entityCount: number }> {
           xs={2}
           aria-label="head-entity-count"
         >
-          <b>Results: {this.props.entityCount}</b>
+          <b>Results:</b> {this.props.entityCount}
         </Grid>
       </Grid>
     );
