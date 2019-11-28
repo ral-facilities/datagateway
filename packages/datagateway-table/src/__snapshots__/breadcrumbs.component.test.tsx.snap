@@ -110,7 +110,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -144,7 +144,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -1485,7 +1485,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -1519,7 +1519,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -2574,7 +2574,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -2608,7 +2608,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -3377,7 +3377,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -3411,7 +3411,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -3713,7 +3713,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -3747,7 +3747,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -5374,7 +5374,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -5408,7 +5408,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -6749,7 +6749,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -6783,7 +6783,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -7552,7 +7552,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -7586,7 +7586,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -7888,7 +7888,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -7922,7 +7922,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -8977,7 +8977,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -9011,7 +9011,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
@@ -9780,7 +9780,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                         <span
                           className="content"
                         >
-                          <div
+                          <span
                             className="icon"
                           >
                             <ForwardRef>
@@ -9814,7 +9814,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
                                 </ForwardRef(SvgIcon)>
                               </WithStyles(ForwardRef(SvgIcon))>
                             </ForwardRef>
-                          </div>
+                          </span>
                         </span>
                       </li>
                       <StyledBreadcrumb
