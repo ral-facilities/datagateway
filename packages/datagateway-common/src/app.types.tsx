@@ -165,13 +165,14 @@ export type DownloadCartTableItem = DownloadCartItem & {
   [key: string]: string | number | DownloadCartItem[];
 };
 
-export type Entity =
+export type ICATEntity =
   | Investigation
   | Dataset
   | Datafile
   | Instrument
-  | FacilityCycle
-  | DownloadCartTableItem;
+  | FacilityCycle;
+
+export type Entity = ICATEntity | DownloadCartTableItem;
 
 // TODO: type this properly
 export type Filter = string | number | { startDate?: string; endDate?: string };

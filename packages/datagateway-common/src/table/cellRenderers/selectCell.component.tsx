@@ -5,7 +5,7 @@ import {
   CheckBoxOutlineBlank,
   CheckBox as CheckBoxIcon,
 } from '@material-ui/icons';
-import { Entity } from '../../app.types';
+import { Entity, ICATEntity } from '../../app.types';
 
 type SelectCellProps = TableCellProps & {
   selectedRows: number[];
@@ -53,7 +53,10 @@ const SelectCell = (props: SelectCellProps): React.ReactElement => {
           if (event.shiftKey) {
             const shiftClickedRows = Array(Math.abs(rowIndex - lastChecked) + 1)
               .fill(Math.min(rowIndex, lastChecked))
-              .map((value, index) => data[value + index].ID);
+              .map((value, index) => {
+                const icatEntity = data[value + index] as ICATEntity;
+                return icatEntity.ID;
+              });
 
             if (selectedRows.includes(rowData.ID)) {
               onUncheck(shiftClickedRows);

@@ -17,7 +17,7 @@ import {
   IndexRange,
 } from 'react-virtualized';
 import clsx from 'clsx';
-import { Entity, Order } from '../app.types';
+import { Entity, Order, ICATEntity } from '../app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
@@ -141,7 +141,7 @@ const VirtualizedTable = (
     throw new Error(
       'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
     );
-  
+
   const [widths, setWidths] = React.useState<{ [dataKey: string]: number }>(
     columns.reduce((result: { [dataKey: string]: number }, item) => {
       result[item.dataKey] = 1 / columns.length;
@@ -229,8 +229,14 @@ const VirtualizedTable = (
                           classes.flexContainer
                         )}
                         selectedRows={selectedRows}
-                        totalRowCount={totalRowCount}
-                        allIds={allIds || data.map(d => d.ID)}
+                        totalRowCount={totalRowCount || data.length}
+                        allIds={
+                          allIds ||
+                          data.map(d => {
+                            const icatEntity = d as ICATEntity;
+                            return icatEntity.ID;
+                          })
+                        }
                         loading={loading}
                         onCheck={onCheck}
                         onUncheck={onUncheck}
