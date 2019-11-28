@@ -326,4 +326,44 @@ describe('Table component', () => {
     ).toEqual('Actions');
     expect(wrapper.find('button').text()).toEqual('I am an action');
   });
+
+  it('renders correctly when no infinite loading properties are defined', () => {
+    const wrapper = mount(
+      <Table
+        {...tableProps}
+        loadMoreRows={undefined}
+        totalRowCount={undefined}
+      />
+    );
+
+    expect(wrapper.find('InfiniteLoader').prop('rowCount')).toBe(
+      tableProps.data.length
+    );
+    expect(wrapper.find('InfiniteLoader').prop('loadMoreRows')).toBeInstanceOf(
+      Function
+    );
+    expect(wrapper.find('InfiniteLoader').prop('loadMoreRows')()).resolves.toBe(
+      undefined
+    );
+  });
+
+  it('throws error when only one of loadMoreRows or totalRowCount are defined', () => {
+    // suppress react uncaught error warning as we're deliberately triggering an error!
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => {});
+
+    expect(() =>
+      mount(<Table {...tableProps} totalRowCount={undefined} />)
+    ).toThrowError(
+      'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    );
+
+    expect(() =>
+      mount(<Table {...tableProps} loadMoreRows={undefined} />)
+    ).toThrowError(
+      'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    );
+
+    spy.mockRestore();
+  });
 });
