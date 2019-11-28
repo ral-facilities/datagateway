@@ -8,6 +8,7 @@ import {
   Entity,
   TableActionProps,
   DateColumnFilter,
+  Dataset,
 } from 'datagateway-common';
 import { Paper, IconButton } from '@material-ui/core';
 import {
@@ -131,13 +132,14 @@ const ISISDatasetsTable = (
         }}
         actions={[
           function downloadButton({ rowData }: TableActionProps) {
+            const datasetData = rowData as Dataset;
             return (
               <IconButton
                 aria-label="Download"
                 key="download"
                 size="small"
                 onClick={() => {
-                  downloadData(rowData.ID, rowData.NAME);
+                  downloadData(datasetData.ID, datasetData.NAME);
                 }}
               >
                 <GetApp />
