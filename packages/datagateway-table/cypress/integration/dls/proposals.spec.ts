@@ -13,6 +13,7 @@ describe('DLS - Proposals Table', () => {
     cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/proposal/INVESTIGATION%201/investigation/'
@@ -27,7 +28,7 @@ describe('DLS - Proposals Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -37,8 +38,8 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Title').click();
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -52,9 +53,9 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -70,8 +71,8 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Name').click();
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
         'Billion head kitchen peace appear sit civil car. State both itself only seat mean however treatment. ' +

@@ -19,7 +19,7 @@ describe('DLS - Datafiles Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Location').click();
+      cy.contains('[role="button"]', 'Location').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -29,8 +29,8 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Location').click();
-      cy.contains('Location').click();
+      cy.contains('[role="button"]', 'Location').click();
+      cy.contains('[role="button"]', 'Location').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc')
@@ -42,9 +42,9 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Location').click();
-      cy.contains('Location').click();
-      cy.contains('Location').click();
+      cy.contains('[role="button"]', 'Location').click();
+      cy.contains('[role="button"]', 'Location').click();
+      cy.contains('[role="button"]', 'Location').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -60,9 +60,9 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Create Time').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Create Time').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
         'Datafile 1940'

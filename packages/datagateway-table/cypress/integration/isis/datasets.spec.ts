@@ -13,13 +13,14 @@ describe('ISIS - Datasets Table', () => {
     cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
     );
   });
 
-  // current example data only has 2 datasets in the investigation,
+  // Current example data only has 2 datasets in the investigation,
   // so cannot test lazy loading.
   it.skip('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
@@ -29,7 +30,7 @@ describe('ISIS - Datasets Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -37,8 +38,8 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -50,9 +51,9 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -66,10 +67,10 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Create Time').click();
-      cy.contains('Create Time').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Create Time').click();
+      cy.contains('[role="button"]', 'Create Time').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 87');
     });

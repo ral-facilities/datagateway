@@ -7,20 +7,12 @@
     position: relative;
     top: 3px;
     left: 5px; 
-    font-size: 20px;
+    font-size: 1rem;
 }
 
 .breadcrumb li {
     /* Make it side by side */
     float: left;
-}
-
-.breadcrumb .displayContent {
-    display: block;
-    white-space: nowrap;
-    max-width: 20vw;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 /* Actual content style (apply to custom component and not span) */
@@ -99,7 +91,6 @@
     border-left-color: #3498db;
 }
 
-
 /* Hover and selecting a breadcrumb */
 .breadcrumb li .content:hover {
     background-color: #1abc9c;
@@ -125,4 +116,12 @@
 
 .breadcrumb li .content:active:after {
     border-left-color: #16a085;
+}
+
+.breadcrumb .displayContent {
+    display: block;
+    white-space: nowrap;
+    max-width: 20vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

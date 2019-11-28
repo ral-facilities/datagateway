@@ -11,7 +11,7 @@ import HomeIcon from '@material-ui/icons/Home';
 
 import ArrowTooltip from './arrowtooltip.component';
 import { BreadcrumbSettings } from './state/actions/actions.types';
-import styles from './style.module.css';
+import styles from './breadcrumbsStyle.module.css';
 
 interface Breadcrumb {
   id: string;
@@ -355,9 +355,9 @@ class PageBreadcrumbs extends React.Component<
               <div className={styles.breadcrumb}>
                 <li>
                   <span className={styles.content}>
-                    <div className={styles.icon}>
+                    <span className={styles.icon}>
                       <HomeIcon />
-                    </div>
+                    </span>
                   </span>
                 </li>
 
