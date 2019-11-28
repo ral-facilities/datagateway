@@ -70,6 +70,12 @@ import {
   FetchDatasetDetailsRequestType,
   FetchDatasetDetailsSuccessType,
   FetchDatasetDetailsFailureType,
+  FetchInstrumentDetailsRequestType,
+  FetchInstrumentDetailsSuccessType,
+  FetchInstrumentDetailsFailureType,
+  FetchDatafileDetailsFailureType,
+  FetchDatafileDetailsRequestType,
+  FetchDatafileDetailsSuccessType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -480,6 +486,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatasetDatafilesCountRequestType]: handleFetchDataCountRequest,
   [FetchDatasetDatafilesCountSuccessType]: handleFetchDatasetDatafilesCountSuccess,
   [FetchDatasetDatafilesCountFailureType]: handleFetchDataCountFailure,
+  [FetchDatafileDetailsRequestType]: handleFetchDataDetailsRequest,
+  [FetchDatafileDetailsSuccessType]: handleFetchDataDetailsSuccess,
+  [FetchDatafileDetailsFailureType]: handleFetchDataDetailsFailure,
   [DownloadDatafileRequestType]: handleDownloadDataRequest,
   [DownloadDatafileSuccessType]: handleDownloadDataSuccess,
   [DownloadDatafileFailureType]: handleDownloadDataFailure,
@@ -489,6 +498,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInstrumentCountRequestType]: handleFetchCountRequest,
   [FetchInstrumentCountSuccessType]: handleFetchCountSuccess,
   [FetchInstrumentCountFailureType]: handleFetchCountFailure,
+  [FetchInstrumentDetailsRequestType]: handleFetchDataDetailsRequest,
+  [FetchInstrumentDetailsSuccessType]: handleFetchDataDetailsSuccess,
+  [FetchInstrumentDetailsFailureType]: handleFetchDataDetailsFailure,
   [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
   [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
   [FetchFacilityCyclesFailureType]: handleFetchDataFailure,

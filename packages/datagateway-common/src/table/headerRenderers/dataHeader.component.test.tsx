@@ -7,12 +7,14 @@ import { TableSortLabel } from '@material-ui/core';
 describe('Data column header component', () => {
   let shallow;
   const onSort = jest.fn();
+  const resizeColumn = jest.fn();
   const dataHeaderProps = {
     label: 'Test',
     dataKey: 'test',
     className: 'test-class',
     sort: {},
-    onSort: onSort,
+    onSort,
+    resizeColumn,
   };
 
   beforeEach(() => {
@@ -83,5 +85,13 @@ describe('Data column header component', () => {
       label.simulate('click');
       expect(onSort).toHaveBeenCalledWith('test', null);
     });
+  });
+
+  it('calls the resizeColumn method when column resizer is dragged', () => {
+    const wrapper = shallow(<DataHeader {...dataHeaderProps} />);
+
+    wrapper.find('Draggable').prop('onDrag')(null, { deltaX: 50 });
+
+    expect(resizeColumn).toHaveBeenCalledWith(50);
   });
 });

@@ -117,6 +117,69 @@ export const fetchInvestigations = (
   };
 };
 
+export const fetchISISInvestigations = (
+  instrumentId: number,
+  facilityCycleId: number,
+  offsetParams?: IndexRange
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationsRequest(timestamp));
+
+    // TODO: replace this with getApiFilters again when API filter change merges in
+    const sort = getState().dgtable.sort;
+    const filter = getState().dgtable.filters;
+
+    let params = new URLSearchParams();
+    for (let [key, value] of Object.entries(sort)) {
+      params.append('order', JSON.stringify(`${key} ${value}`));
+    }
+
+    for (let [key, value] of Object.entries(filter)) {
+      params.append('where', JSON.stringify({ [key]: { like: value } }));
+    }
+
+    params.append(
+      'include',
+      JSON.stringify([
+        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+        { STUDYINVESTIGATION: 'STUDY' },
+      ])
+    );
+
+    if (offsetParams) {
+      params.append('skip', JSON.stringify(offsetParams.startIndex));
+      params.append(
+        'limit',
+        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+      );
+    }
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(
+        `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+        }
+      )
+      .then(response => {
+        dispatch(fetchInvestigationsSuccess(response.data, timestamp));
+        // TODO: dispatch getSize requests
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationsFailure(error.message));
+      });
+  };
+};
+
 export const fetchInvestigationDetailsSuccess = (
   investigations: Investigation[]
 ): ActionType<FetchDetailsSuccessPayload> => ({
@@ -212,11 +275,6 @@ export const fetchInvestigationCount = (
     dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
-    if (additionalFilters) {
-      additionalFilters.forEach(filter => {
-        params.append(filter.filterType, filter.filterValue);
-      });
-    }
     params.delete('order');
 
     const { apiUrl } = getState().dgtable.urls;
@@ -228,6 +286,41 @@ export const fetchInvestigationCount = (
           Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
         },
       })
+      .then(response => {
+        dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchInvestigationCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchISISInvestigationCount = (
+  instrumentId: number,
+  facilityCycleId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchInvestigationCountRequest(timestamp));
+
+    let params = getApiFilter(getState);
+    params.delete('order');
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(
+        `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/count`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${window.localStorage.getItem(
+              'daaas:token'
+            )}`,
+          },
+        }
+      )
       .then(response => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
