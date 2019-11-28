@@ -168,11 +168,12 @@ const VirtualizedTable = (
           (selectedRows && onCheck && onUncheck ? selectColumnWidth : 0) -
           (detailsPanel ? detailsColumnWidth : 0) -
           (actions ? actionsColumnWidth : 0);
+        const rowCount = totalRowCount || data.length;
         return (
           <InfiniteLoader
             isRowLoaded={({ index }) => !!data[index]}
             loadMoreRows={loadMoreRows || (() => Promise.resolve())}
-            rowCount={totalRowCount || data.length}
+            rowCount={rowCount}
             minimumBatchSize={25}
           >
             {({ onRowsRendered, registerChild }) => (
@@ -229,7 +230,7 @@ const VirtualizedTable = (
                           classes.flexContainer
                         )}
                         selectedRows={selectedRows}
-                        totalRowCount={totalRowCount || data.length}
+                        totalRowCount={rowCount}
                         allIds={
                           allIds ||
                           data.map(d => {
