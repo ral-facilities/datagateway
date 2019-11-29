@@ -316,6 +316,42 @@ describe('Actions', () => {
     expect(actions).toContainEqual(settingsLoaded());
   });
 
+  it('logs an error if facility name is not defined in settings.json and fails to be loaded', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {},
+      })
+    );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-table-settings.json: facilityName is undefined in settings'
+    );
+  });
+
+  it('logs an error if urls are not defined in settings.json and fails to be loaded', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+        },
+      })
+    );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-table-settings.json: One of the URL options (idsUrl, apiUrl) is undefined in settings'
+    );
+  });
+
   it('logs an error if settings.json fails to be loaded', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
 
