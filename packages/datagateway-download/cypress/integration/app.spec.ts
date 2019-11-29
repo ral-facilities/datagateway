@@ -3,6 +3,6 @@ describe('App', () => {
     cy.visit('/');
     cy.title().should('equal', 'DataGateway Download');
 
-    cy.get('#datagateway-download').should('exist');
+    cy.get('#datagateway-download').should('be.visible');
   });
 });

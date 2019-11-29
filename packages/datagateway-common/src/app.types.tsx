@@ -143,12 +143,35 @@ interface ParameterType {
   VALUETYPE: string;
 }
 
+export interface DownloadCartItem {
+  entityId: number;
+  entityType: 'investigation' | 'dataset' | 'datafile';
+  id: number;
+  name: string;
+  parentEntities: DownloadCartItem[];
+}
+
+export interface DownloadCart {
+  cartItems: DownloadCartItem[];
+  createdAt: string;
+  facilityName: string;
+  id: number;
+  updatedAt: string;
+  userName: string;
+}
+
+export type DownloadCartTableItem = DownloadCartItem & {
+  size: number;
+  [key: string]: string | number | DownloadCartItem[];
+};
+
 export type Entity =
   | Investigation
   | Dataset
   | Datafile
   | Instrument
-  | FacilityCycle;
+  | FacilityCycle
+  | DownloadCartTableItem;
 
 export const EntityTypes: string[] = [
   'investigation',
