@@ -254,6 +254,36 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
 
     expect(wrapper).toMatchSnapshot();
   });
+
+  it('renders an updated breadcrumb for a new router location', async () => {
+    // We need to use the same state for this test.
+    const mockStore = configureStore([thunk]);
+
+    // Set up initial location; we pick datasets and compare with datafiles,
+    // since the last property displayName can also be tested and will be set initially
+    // after the first render to datasets (unlike investigations, where it will not be set).
+    state.router.location = createLocation(genericRoutes['datasets']);
+
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+          <PageBreadcrumbs />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await flushPromises();
+    wrapper.update();
+
+    // Change to new location.
+    state.router.location = createLocation(genericRoutes['datafiles']);
+
+    // Update to use new store which has a new router location.
+    wrapper.setProps({ store: mockStore(state) });
+    await flushPromises();
+
+    expect(wrapper).toMatchSnapshot();
+  });
 });
 
 describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
