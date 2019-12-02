@@ -20,7 +20,7 @@ class PageHead extends React.Component<{ entityCount: number }> {
           {/* TODO: Place PageBreadcrumbs component when it has been added. */}
         </Grid>
         <Grid
-          style={{ textAlign: 'right', paddingRight: '100px' }}
+          style={{ textAlign: 'right', paddingRight: '140px' }}
           item
           xs={2}
           aria-label="head-entity-count"
