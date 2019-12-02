@@ -39,6 +39,9 @@ import {
   FetchInvestigationCountRequestType,
   FetchInvestigationCountSuccessType,
   FetchInvestigationCountFailureType,
+  FetchInvestigationSizeRequestType,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationSizeFailureType,
   FetchDatasetCountRequestType,
   FetchDatasetCountSuccessType,
   FetchDatasetCountFailureType,
@@ -86,6 +89,7 @@ import {
   FetchAllIdsRequestType,
   FetchAllIdsSuccessType,
   FetchAllIdsSuccessPayload,
+  FetchSizeSuccessPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -309,6 +313,42 @@ export function handleFetchCountFailure(
   };
 }
 
+export function handleFetchSizeRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    // loading: true,
+  };
+}
+
+export function handleFetchSizeSuccess(
+  state: DGTableState,
+  payload: FetchSizeSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    // loading: false,
+    data: state.data.map((entity: Entity) => {
+      const investigation = entity as Investigation;
+
+      return investigation.ID === payload.id
+        ? { ...investigation, SIZE: payload.size }
+        : investigation;
+    }),
+    error: null,
+  };
+}
+
+export function handleFetchSizeFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    // loading: false,
+    error: payload.error,
+  };
+}
+
 export function handleFetchDataDetailsRequest(
   state: DGTableState
 ): DGTableState {
@@ -520,6 +560,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationCountRequestType]: handleFetchCountRequest,
   [FetchInvestigationCountSuccessType]: handleFetchCountSuccess,
   [FetchInvestigationCountFailureType]: handleFetchCountFailure,
+  [FetchInvestigationSizeRequestType]: handleFetchSizeRequest,
+  [FetchInvestigationSizeSuccessType]: handleFetchSizeSuccess,
+  [FetchInvestigationSizeFailureType]: handleFetchSizeFailure,
   [FetchDatasetCountRequestType]: handleFetchCountRequest,
   [FetchDatasetCountSuccessType]: handleFetchCountSuccess,
   [FetchDatasetCountFailureType]: handleFetchCountFailure,

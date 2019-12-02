@@ -36,6 +36,13 @@ export const FetchInvestigationCountFailureType =
 export const FetchInvestigationCountSuccessType =
   'datagateway_table:fetch_investigation_count_success';
 
+export const FetchInvestigationSizeRequestType =
+  'datagateway_table:fetch_investigation_size_request';
+export const FetchInvestigationSizeFailureType =
+  'datagateway_table:fetch_investigation_size_failure';
+export const FetchInvestigationSizeSuccessType =
+  'datagateway_table:fetch_investigation_size_success';
+
 export const FetchInvestigationDatasetsCountRequestType =
   'datagateway_table:fetch_investigation_datasets_count_request';
 export const FetchInvestigationDatasetsCountFailureType =
@@ -225,6 +232,11 @@ export interface FetchDataCountSuccessPayload {
   id: number;
   count: number;
   timestamp: number;
+}
+
+export interface FetchSizeSuccessPayload {
+  id: number;
+  size: number;
 }
 
 export interface DownloadCartPayload {
