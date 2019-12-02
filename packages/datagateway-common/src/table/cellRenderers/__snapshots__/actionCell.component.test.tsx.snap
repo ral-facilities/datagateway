@@ -3,7 +3,7 @@
 exports[`Action cell component renders an action correctly 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class"
+  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
 >
   <testAction
     key="0"
@@ -15,6 +15,6 @@ exports[`Action cell component renders an action correctly 1`] = `
 exports[`Action cell component renders no actions correctly 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class"
+  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
 />
 `;

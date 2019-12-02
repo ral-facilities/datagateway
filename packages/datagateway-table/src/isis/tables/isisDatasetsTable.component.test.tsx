@@ -12,6 +12,8 @@ import {
   downloadDatasetRequest,
   clearTable,
   fetchDatasetCountRequest,
+  addToCartRequest,
+  removeFromCartRequest,
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -45,6 +47,7 @@ describe('ISIS Dataset table component', () => {
         INVESTIGATION_ID: 1,
       },
     ];
+    state.dgtable.allIds = [1];
   });
 
   afterEach(() => {
@@ -193,11 +196,104 @@ describe('ISIS Dataset table component', () => {
     );
 
     wrapper
-      .find('[role="columnheader"] span')
+      .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+  });
+
+  it('sends addToCart action on unchecked checkbox click', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISDatasetsTable
+            instrumentId="1"
+            facilityCycleId="2"
+            investigationId="3"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+  });
+
+  it('sends removeFromCart action on checked checkbox click', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISDatasetsTable
+            instrumentId="1"
+            facilityCycleId="2"
+            investigationId="3"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+  });
+
+  it('selected rows only considers relevant cart items', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISDatasetsTable
+            instrumentId="1"
+            facilityCycleId="2"
+            investigationId="3"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const selectAllCheckbox = wrapper
+      .find('[aria-label="select all rows"]')
+      .first();
+
+    expect(selectAllCheckbox.prop('checked')).toEqual(false);
+    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
   it('renders details panel correctly and it sends off an FetchDatasetDetails action', () => {
@@ -247,7 +343,7 @@ describe('ISIS Dataset table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=2]')
+        .find('[aria-colindex=3]')
         .find('p')
         .children()
     ).toMatchSnapshot();

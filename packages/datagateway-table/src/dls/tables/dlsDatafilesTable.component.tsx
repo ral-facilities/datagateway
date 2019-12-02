@@ -8,6 +8,7 @@ import {
   Entity,
   Datafile,
   DateColumnFilter,
+  DownloadCartItem,
 } from 'datagateway-common';
 import { Paper, Typography } from '@material-ui/core';
 import {
@@ -16,6 +17,9 @@ import {
   filterTable,
   fetchDatafileCount,
   clearTable,
+  addToCart,
+  removeFromCart,
+  fetchAllIds,
 } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -39,6 +43,8 @@ interface DLSDatafilesTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 interface DLSDatafilesTableDispatchProps {
@@ -47,6 +53,9 @@ interface DLSDatafilesTableDispatchProps {
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
   clearTable: () => Action;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type DLSDatafilesTableCombinedProps = DLSDatafilesTableProps &
@@ -67,7 +76,25 @@ const DLSDatafilesTable = (
     filters,
     filterTable,
     datasetId,
+    loading,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    allIds,
+    fetchAllIds,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'datafile' &&
+            allIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, allIds]
+  );
 
   React.useEffect(() => {
     clearTable();
@@ -76,7 +103,8 @@ const DLSDatafilesTable = (
   useAfterMountEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, datasetId]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, sort, filters, datasetId, fetchAllIds]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -97,11 +125,16 @@ const DLSDatafilesTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(datasetId), params)}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        allIds={allIds}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
           const datafileData = rowData as Datafile;
           return (
@@ -152,7 +185,8 @@ const DLSDatafilesTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: DLSDatafilesTableProps
 ): DLSDatafilesTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -162,6 +196,21 @@ const mapDispatchToProps = (
     dispatch(fetchDatafiles(datasetId, offsetParams)),
   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
   clearTable: () => dispatch(clearTable()),
+  addToCart: (entityIds: number[]) =>
+    dispatch(addToCart('datafile', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('datafile', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllIds('datafile', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            DATASET_ID: { eq: parseInt(ownProps.datasetId) },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): DLSDatafilesTableStoreProps => {
@@ -172,6 +221,8 @@ const mapStateToProps = (state: StateType): DLSDatafilesTableStoreProps => {
     totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

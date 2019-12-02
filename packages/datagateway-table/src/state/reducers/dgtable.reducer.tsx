@@ -72,6 +72,20 @@ import {
   FetchDatafileDetailsFailureType,
   FetchDatafileDetailsRequestType,
   FetchDatafileDetailsSuccessType,
+  DownloadCartPayload,
+  FetchDownloadCartRequestType,
+  FetchDownloadCartSuccessType,
+  FetchDownloadCartFailureType,
+  AddToCartRequestType,
+  AddToCartFailureType,
+  AddToCartSuccessType,
+  RemoveFromCartRequestType,
+  RemoveFromCartSuccessType,
+  RemoveFromCartFailureType,
+  FetchAllIdsFailureType,
+  FetchAllIdsRequestType,
+  FetchAllIdsSuccessType,
+  FetchAllIdsSuccessPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -88,10 +102,14 @@ export const initialState: DGTableState = {
   features: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
+  allIdsTimestamp: Date.now(),
   urls: {
     idsUrl: '',
     apiUrl: '',
+    downloadApiUrl: '',
   },
+  cartItems: [],
+  allIds: [],
   settingsLoaded: false,
 };
 
@@ -415,6 +433,70 @@ export function handleFetchDatasetDatafilesCountSuccess(
   };
 }
 
+export function handleDownloadCartRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleDownloadCartSuccess(
+  state: DGTableState,
+  payload: DownloadCartPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    cartItems: payload.downloadCart.cartItems,
+    // cartItems: payload.downloadCart.cartItems.map(cartItem => ({
+    //   entityId: cartItem.entityId,
+    //   entityType: cartItem.entityType,
+    // })),
+  };
+}
+
+export function handleDownloadCartFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    error: payload.error,
+  };
+}
+
+export function handleFetchAllIdsRequest(
+  state: DGTableState,
+  payload: RequestPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      allIdsTimestamp: payload.timestamp,
+      loading: true,
+    };
+  } else {
+    return state;
+  }
+}
+
+export function handleFetchAllIdsSuccess(
+  state: DGTableState,
+  payload: FetchAllIdsSuccessPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      allIds: payload.data,
+      allIdsTimestamp: payload.timestamp,
+    };
+  } else {
+    return state;
+  }
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
@@ -477,6 +559,21 @@ const DGTableReducer = createReducer(initialState, {
   [FetchFacilityCycleCountRequestType]: handleFetchCountRequest,
   [FetchFacilityCycleCountSuccessType]: handleFetchCountSuccess,
   [FetchFacilityCycleCountFailureType]: handleFetchCountFailure,
+  [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
+  [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
+  [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
+  [FetchDownloadCartRequestType]: handleDownloadCartRequest,
+  [FetchDownloadCartSuccessType]: handleDownloadCartSuccess,
+  [FetchDownloadCartFailureType]: handleDownloadCartFailure,
+  [AddToCartRequestType]: handleDownloadCartRequest,
+  [AddToCartSuccessType]: handleDownloadCartSuccess,
+  [AddToCartFailureType]: handleDownloadCartFailure,
+  [RemoveFromCartRequestType]: handleDownloadCartRequest,
+  [RemoveFromCartSuccessType]: handleDownloadCartSuccess,
+  [RemoveFromCartFailureType]: handleDownloadCartFailure,
+  [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
+  [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
+  [FetchAllIdsFailureType]: handleFetchDataFailure,
 });
 
 export default DGTableReducer;

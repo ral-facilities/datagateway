@@ -25,6 +25,7 @@ import { RouterState } from 'connected-react-router';
 import axios from 'axios';
 import * as log from 'loglevel';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
+import { fetchDownloadCartRequest, fetchDownloadCartSuccess } from './cart';
 
 jest.mock('loglevel');
 
@@ -188,17 +189,19 @@ describe('Actions', () => {
     const action = loadUrls({
       idsUrl: 'ids',
       apiUrl: 'api',
+      downloadApiUrl: 'download-api',
     });
     expect(action.type).toEqual(ConfigureURLsType);
     expect(action.payload).toEqual({
       urls: {
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       },
     });
   });
 
-  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls and settingsLoaded actions are sent', async () => {
+  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls, fetchDownloadCart and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -207,6 +210,7 @@ describe('Actions', () => {
             'ui-strings': '/res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
+            downloadApiUrl: 'download-api',
           },
         })
       )
@@ -221,7 +225,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
@@ -230,8 +234,11 @@ describe('Actions', () => {
       loadUrls({
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       })
     );
+    expect(actions).toContainEqual(fetchDownloadCartRequest());
+    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
   });
 
@@ -243,6 +250,7 @@ describe('Actions', () => {
             'ui-strings': 'res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
+            downloadApiUrl: 'download-api',
           },
         })
       )
@@ -257,7 +265,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -265,8 +273,11 @@ describe('Actions', () => {
       loadUrls({
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       })
     );
+    expect(actions).toContainEqual(fetchDownloadCartRequest());
+    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
   });
 

@@ -12,6 +12,8 @@ import {
   fetchDatafileDetailsRequest,
   clearTable,
   fetchDatafileCountRequest,
+  removeFromCartRequest,
+  addToCartRequest,
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -45,6 +47,7 @@ describe('ISIS datafiles table component', () => {
         DATASET_ID: 1,
       },
     ];
+    state.dgtable.allIds = [1];
   });
 
   afterEach(() => {
@@ -163,11 +166,92 @@ describe('ISIS datafiles table component', () => {
     );
 
     wrapper
-      .find('[role="columnheader"] span')
+      .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+  });
+
+  it('sends addToCart action on unchecked checkbox click', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISDatafilesTable datasetId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+  });
+
+  it('sends removeFromCart action on checked checkbox click', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'datafile',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISDatafilesTable datasetId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+  });
+
+  it('selected rows only considers relevant cart items', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 2,
+        entityType: 'datafile',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISDatafilesTable datasetId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const selectAllCheckbox = wrapper
+      .find('[aria-label="select all rows"]')
+      .first();
+
+    expect(selectAllCheckbox.prop('checked')).toEqual(false);
+    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
   it('sends downloadData action on click of download button', () => {
@@ -240,7 +324,7 @@ describe('ISIS datafiles table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=4]')
+        .find('[aria-colindex=5]')
         .find('p')
         .text()
     ).toEqual('1 B');

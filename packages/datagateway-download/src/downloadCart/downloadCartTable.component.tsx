@@ -25,6 +25,7 @@ const DownloadCartTable: React.FC = () => {
     {}
   );
   const [data, setData] = React.useState<DownloadCartTableItem[]>([]);
+  const [dataLoaded, setDataLoaded] = React.useState(false);
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
 
@@ -50,6 +51,7 @@ const DownloadCartTable: React.FC = () => {
   React.useEffect(() => {
     fetchDownloadCartItems().then(cartItems => {
       setData(cartItems.map(cartItem => ({ ...cartItem, size: -1 })));
+      setDataLoaded(true);
       setSizesLoaded(false);
       setSizesFinished(false);
       getCartDatafileCount(cartItems).then(count => setFileCount(count));
@@ -179,6 +181,7 @@ const DownloadCartTable: React.FC = () => {
               }
             }}
             data={sortedAndFilteredData}
+            loading={!dataLoaded}
             actions={[
               function RemoveButton({ rowData }: TableActionProps) {
                 const cartItem = rowData as DownloadCartItem;
