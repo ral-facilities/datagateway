@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     formControl: {
-      margin: theme.spacing(1),
+      margin: theme.spacing(2),
     },
   })
 );
@@ -55,7 +55,6 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     let toggleoption = !checked;
-    console.log(toggleoption);
     if (name === 'Investigation') {
       toggleInvestigation(toggleoption);
     } else if (name === 'Datafile') {
@@ -63,9 +62,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
     } else if (name === 'Dataset') {
       toggleDataset(toggleoption);
     }
-
-    console.log('box checked?');
-    console.log(toggleoption);
+    console.log('box checked');
   };
 
   const error = ![investigation, dataset, datafile].includes(true);

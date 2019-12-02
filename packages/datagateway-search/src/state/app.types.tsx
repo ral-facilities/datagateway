@@ -2,8 +2,10 @@ import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
 export interface DGSearchState {
-  startDate: number; // not sure if this should be date type instead
-  endDate: number;
+  selectDate: {
+    startdate: number; // not sure if this should be date type instead
+    enddate: number;
+  }
   checkBox: {
     dataset: boolean;
     datafile: boolean;

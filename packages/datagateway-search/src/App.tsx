@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import SelectDates from './search/datePicker';
 import CheckboxesGroup from './search/checkBoxes';
+import SearchButton from './search/searchButton';
 import axios from 'axios';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -20,21 +21,10 @@ const store = createStore(AppReducer, applyMiddleware(...middleware));
 class App extends React.Component {
   public componentDidCatch(error: Error | null): void {
     log.error(`datagateway-search-plugin failed with error: ${error}`);
-  }
-
-  public async handleClick(): Promise<void> {
-    const sessionId = window.localStorage.getItem('icat:token');
-    console.log(window.localStorage.getItem('icat:token'));
-    let requestURL = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data?sessionId=${sessionId}&query=%7B"text":"h","target":"Investigation"%7D&maxCount=300`;
-    const response = await axios.get(requestURL);
-    console.log(response.data);
-    // console.log(state.dgsearch.checkBox.datafile)
-    
-    }
+  };
 
   public render(): React.ReactNode {
     return (
-      <Provider store={store}>
         <div
           style={{
             padding: 15,
@@ -42,6 +32,7 @@ class App extends React.Component {
           }}
           className="App"
         >
+          <Provider store={store}>
           <Grid
             container
             direction="column"
@@ -62,27 +53,19 @@ class App extends React.Component {
             </Grid>
 
             <Grid item>
-              <SelectDates startOrEnd="Start Date" />
-              <br></br>
-              <SelectDates startOrEnd="End Date" />
+              <SelectDates/>
+            </Grid>
+          
+            <Grid item>
+              <CheckboxesGroup/>
             </Grid>
 
             <Grid item>
-              <CheckboxesGroup />
+              <SearchButton/>
             </Grid>
-
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleClick}
-              >
-                Search
-              </Button>
-            </Grid>
-          </Grid>
+          </Grid>          
+        </Provider>
         </div>
-      </Provider>
     );
   }
 }

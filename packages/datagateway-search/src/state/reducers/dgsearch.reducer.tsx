@@ -12,8 +12,10 @@ import {
 import { string } from 'prop-types';
 
 export const initialState: DGSearchState = {
-  startDate: Date.parse('1990-12-12'), // Have made up a value. What is the earliest data on system?
-  endDate: Date.now(),
+  selectDate: {
+    startdate: Date.parse('1990-12-12'), // Have made up a value. What is the earliest data on system?
+    enddate: Date.now(),
+  },
   checkBox: {
     dataset: true,
     datafile: true,
@@ -66,7 +68,10 @@ export function SelectStartDate(
 ): DGSearchState {
   return {
     ...state,
-    startDate: payload.date,
+    selectDate: {
+      ...state.selectDate,
+      startdate: payload.date,
+  },
   };
 }
 
@@ -76,7 +81,10 @@ export function SelectEndDate(
 ): DGSearchState {
   return {
     ...state,
-    endDate: payload.date,
+    selectDate: {
+      ...state.selectDate,
+      enddate: payload.date,
+  },
   };
 }
 

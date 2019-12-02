@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
+  MaterialUiPickersDate,
 } from '@material-ui/pickers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import { Action, AnyAction } from 'redux';
+import {
+  selectStartDate,
+  selectEndDate,
+} from '../state/actions/actions';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../state/app.types';
 
-interface DatePickerProps {
-  startOrEnd: string;
+interface DatePickerStoreProps {
+  startdate: MaterialUiPickersDate;
+  enddate: MaterialUiPickersDate;
 }
+
+interface DatePickerDispatchProps {
+  selectStartDate: (date: number) => Action;
+  selectEndDate: (date: number) => Action;
+}
+
+type DatePickerCombinedProps = DatePickerStoreProps & DatePickerDispatchProps;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,26 +35,58 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function SelectDates(props: DatePickerProps): JSX.Element {
-  const [selectedDate, handleDateChange] = useState<Date | null>(null);
+function SelectDates(props: DatePickerCombinedProps): JSX.Element {
+  const {startdate, enddate, selectStartDate, selectEndDate} = props;
   const classes = useStyles();
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <KeyboardDatePicker
+        clearable
         className={classes.root}
         allowKeyboardControl
         disableFuture
-        minDate={selectedDate || new Date('1984-01-01')}
+        maxDate={enddate || new Date('2100-01-01')}
+        maxDateMessage="Invalid date range"
+        format="yyyy-MM-dd"
+        value={startdate}
+        onChange={selectStartDate}
+        animateYearScrolling
+        placeholder="Start Date"
+      />
+      <br></br>
+      <KeyboardDatePicker
+        clearable
+        className={classes.root}
+        allowKeyboardControl
+        disableFuture
+        minDate={startdate || new Date('1984-01-01')}
         minDateMessage="Invalid date range"
         format="yyyy-MM-dd"
-        value={selectedDate}
-        onChange={handleDateChange}
+        value={enddate}
+        onChange={selectEndDate}
         animateYearScrolling
-        placeholder={props.startOrEnd}
+        placeholder="End Date"
       />
     </MuiPickersUtilsProvider>
   );
 }
 
-/// Would be nice to fire a warning message / not allow start date to be after end date and vice versa
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): DatePickerDispatchProps => ({
+  selectStartDate: (date: number) =>
+    dispatch(selectStartDate(date)),
+  selectEndDate: (date: number) =>
+    dispatch(selectEndDate(date)),
+  
+});
+
+const mapStateToProps = (state: StateType): DatePickerStoreProps => {
+  return {
+    startdate: state.dgsearch.selectDate.startdate,
+    enddate: state.dgsearch.selectDate.enddate,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SelectDates);
