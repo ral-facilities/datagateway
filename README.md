@@ -5,6 +5,8 @@
 DataGateway is a [ReactJs](https://reactjs.org/)-based web application that provides ways of discovering and accessing data produced at large-scale science facilities. DataGateway is
 a [micro-frontend](https://micro-frontends.org/) that can be integrated with the parent web application [SciGateway](https://github.com/ral-facilities/scigateway).
 
+DataGateway uses Yarn workspaces to manage it's monorepo structure, so please use yarn instead of npm for package management.
+
 The SciGateway application offers features such as authentication and authorisation functionality, notifications, cookies management. In this way, DataGateway relies on SciGateway for these overarching features, and can focus on providing data discoverability and downloads. The data is organised according to the data hierarchy that reflects the data pipelines in each facility. The data is shown in a tabular format depicting the main metadata fields.
 
 For more details about the project's architecture, development guidelines and installation procedures, visit the [SciGateway documentation](https://github.com/ral-facilities/scigateway/wiki).
@@ -25,50 +27,53 @@ The project is structured as a monorepo. This means that the actual code package
 
 In the project directory, you can run:
 
-### `npm install`
+### `yarn install`
 
-This will install all the top level project dependencies and then call `lerna bootstrap`,
-which calls `npm install` for each package. This means that running `npm install` at the top
-level intialises all the packages, and you will be ready to start development in any of them!
+This will install all the project dependencies and then call `lerna bootstrap`,
+which links the packages together. This means that running `yarn install` at the top
+level initialises all the packages, and you will be ready to start development in any of them!
 
-### `npx lerna add {package}`
+### `yarn workspace {workspace-name} add {package(s)} / yarn workspaces add {package(s)}`
 
-Adds new packages. Use this instead of `npm install` in subfolders, as this will keep versions across
-subrepos in sync. If you only want a dependency in one package, use the `--scope` flag.
-
-```
-npx lerna add my-package --scope=datagateway-table
-```
-
-Additionally, use the `--dev` flag to install as a devDependency
+Adds new packages. Use the first command to add a package to a project at the top level.
+Alternatively, you can also change directory to the plugin you're developing and run `yarn add {package(s)}` like normal.
+Use the second command to add a package to all projects.
 
 ```
-npx lerna add my-package --scope=datagateway-table --dev
+yarn workspace datagateway-table add loglevel
 ```
 
-See [https://github.com/lerna/lerna/tree/master/commands/add#readme](https://github.com/lerna/lerna/tree/master/commands/add#readme)
+This will add the `loglevel` package to `datagateway-table`
 
-### `npm run datagateway-table`
+```
+yarn workspaces add loglevel
+```
+
+This will add the `loglevel` package to all packages.
+
+Remember that you can use `--dev` to save as a devDependency instead of a regular dependency.
+
+### `yarn datagateway-table`
 
 Runs the `datagateway-table` `start` script, which runs the app in development mode
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### `npm test`
+### `yarn test`
 
 Runs both unit tests and e2e tests for all packages
 
-### `npm run test:unit`
+### `yarn test:unit`
 
 Runs unit tests for all packages
 
-### `npm run test:e2e`
+### `yarn test:e2e`
 
 Runs e2e tests for all packages
 
-### `npm run lint`
+### `yarn lint`
 
 Lints all packages
 
-### `npm run tsc`
+### `yarn tsc`
 
 Runs `tsc` on all packages - currently this will re-build `datagateway-common`
