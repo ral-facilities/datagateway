@@ -1,7 +1,11 @@
 describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
+    cy.server();
+    cy.route('**/investigations*').as('getInvestigations');
+    cy.route('**/investigations/count*').as('getInvestigationCount');
   });
 
   it('should load correctly', () => {
@@ -26,13 +30,57 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then(window => {
+        const windowWidth = window.innerWidth;
+        columnWidth = (windowWidth - 40 - 40) / 8;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]')
+      .eq(2)
+      .as('titleColumn');
+    cy.get('[role="columnheader"]')
+      .eq(3)
+      .as('visitColumn');
+
+    cy.get('@titleColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@visitColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 200 })
+      .trigger('mouseup');
+
+    cy.get('@titleColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@visitColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
@@ -47,7 +95,7 @@ describe('ISIS - Investigations Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
@@ -65,7 +113,7 @@ describe('ISIS - Investigations Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
@@ -75,7 +123,7 @@ describe('ISIS - Investigations Table', () => {
       cy.contains('[role="button"]', 'Title').click();
       cy.contains('[role="button"]', 'Visit Id').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
       );
     });
@@ -88,7 +136,7 @@ describe('ISIS - Investigations Table', () => {
         .type('series');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('15');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('15');
     });
 
     it('date between', () => {
@@ -193,6 +241,54 @@ describe('ISIS - Investigations Table', () => {
 
       cy.contains('Proposal: INVESTIGATION 107').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
+    });
+  });
+
+  describe('should be able to select items', () => {
+    it('individually', () => {
+      cy.get('[aria-label="select row 0"]').click();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+    });
+
+    it('and unselect them individually', () => {
+      cy.get('[aria-label="select row 0"]').click();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('[aria-label="select row 0"]').click();
+      cy.get('[aria-label="select row 0"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+    });
+
+    it('by all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get(`[aria-label="select row 0"]`).should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('and unselect all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+
+      cy.get('[aria-label="select all rows"]').uncheck();
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
     });
   });
 });

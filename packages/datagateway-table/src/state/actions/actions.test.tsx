@@ -29,6 +29,7 @@ import { RouterState } from 'connected-react-router';
 import axios from 'axios';
 import * as log from 'loglevel';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
+import { fetchDownloadCartRequest, fetchDownloadCartSuccess } from './cart';
 
 jest.mock('loglevel');
 
@@ -192,12 +193,14 @@ describe('Actions', () => {
     const action = loadUrls({
       idsUrl: 'ids',
       apiUrl: 'api',
+      downloadApiUrl: 'download-api',
     });
     expect(action.type).toEqual(ConfigureURLsType);
     expect(action.payload).toEqual({
       urls: {
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       },
     });
   });
@@ -243,6 +246,56 @@ describe('Actions', () => {
                 replaceEntityField: 'TITLE',
               },
             },
+            downloadApiUrl: 'download-api',
+          },
+        })
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            testSection: { test: 'string' },
+          },
+        })
+      );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(actions.length).toEqual(8);
+    expect(actions).toContainEqual(loadFacilityName('Generic'));
+    expect(actions).toContainEqual(loadFeatureSwitches({}));
+    expect(actions).toContainEqual(
+      configureStrings({ testSection: { test: 'string' } })
+    );
+    expect(actions).toContainEqual(
+      loadUrls({
+        idsUrl: 'ids',
+        apiUrl: 'api',
+        downloadApiUrl: 'download-api',
+      })
+    );
+    expect(actions).toContainEqual(
+      loadBreadcrumbSettings({
+        test: {
+          replaceEntityField: 'TITLE',
+        },
+      })
+    );
+    expect(actions).toContainEqual(fetchDownloadCartRequest());
+    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
+    expect(actions).toContainEqual(settingsLoaded());
+  });
+
+  it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
+    (axios.get as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: {
+            facilityName: 'Generic',
+            'ui-strings': 'res/default.json',
+            idsUrl: 'ids',
+            apiUrl: 'api',
+            downloadApiUrl: 'download-api',
           },
         })
       )
@@ -259,7 +312,6 @@ describe('Actions', () => {
 
     expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
-    expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -267,52 +319,11 @@ describe('Actions', () => {
       loadUrls({
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       })
     );
-    expect(actions).toContainEqual(
-      loadBreadcrumbSettings({
-        test: {
-          replaceEntityField: 'TITLE',
-        },
-      })
-    );
-    expect(actions).toContainEqual(settingsLoaded());
-  });
-
-  it('settings are loaded despite no features and no leading slash on ui-strings', async () => {
-    (axios.get as jest.Mock)
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            facilityName: 'Generic',
-            'ui-strings': 'res/default.json',
-            idsUrl: 'ids',
-            apiUrl: 'api',
-          },
-        })
-      )
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          data: {
-            testSection: { test: 'string' },
-          },
-        })
-      );
-
-    const asyncAction = configureApp();
-    await asyncAction(dispatch, getState);
-
-    expect(actions.length).toEqual(4);
-    expect(actions).toContainEqual(loadFacilityName('Generic'));
-    expect(actions).toContainEqual(
-      configureStrings({ testSection: { test: 'string' } })
-    );
-    expect(actions).toContainEqual(
-      loadUrls({
-        idsUrl: 'ids',
-        apiUrl: 'api',
-      })
-    );
+    expect(actions).toContainEqual(fetchDownloadCartRequest());
+    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
   });
 
@@ -348,7 +359,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-table-settings.json: One of the URL options (idsUrl, apiUrl) is undefined in settings'
+      'Error loading datagateway-table-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
     );
   });
 

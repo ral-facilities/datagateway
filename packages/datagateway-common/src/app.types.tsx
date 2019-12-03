@@ -165,13 +165,14 @@ export type DownloadCartTableItem = DownloadCartItem & {
   [key: string]: string | number | DownloadCartItem[];
 };
 
-export type Entity =
+export type ICATEntity =
   | Investigation
   | Dataset
   | Datafile
   | Instrument
-  | FacilityCycle
-  | DownloadCartTableItem;
+  | FacilityCycle;
+
+export type Entity = ICATEntity | DownloadCartTableItem;
 
 export const EntityTypes: string[] = [
   'investigation',
@@ -186,3 +187,20 @@ export const EntityTypes: string[] = [
 export type Filter = string | number | { startDate?: string; endDate?: string };
 
 export type Order = 'asc' | 'desc';
+
+export interface DownloadCartItem {
+  entityId: number;
+  entityType: 'investigation' | 'dataset' | 'datafile';
+  id: number;
+  name: string;
+  parentEntities: DownloadCartItem[];
+}
+
+export interface DownloadCart {
+  cartItems: DownloadCartItem[];
+  createdAt: string;
+  facilityName: string;
+  id: number;
+  updatedAt: string;
+  userName: string;
+}

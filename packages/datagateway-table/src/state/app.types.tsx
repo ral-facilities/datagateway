@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { Order, Filter, Entity } from 'datagateway-common';
+import { Order, Filter, Entity, DownloadCartItem } from 'datagateway-common';
 import {
   FeatureSwitches,
   URLs,
@@ -20,11 +20,14 @@ export interface DGTableState {
   totalDataCount: number;
   investigationCache: EntityCache;
   datasetCache: EntityCache;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
   loading: boolean;
   downloading: boolean;
   error: string | null;
   dataTimestamp: number;
   countTimestamp: number;
+  allIdsTimestamp: number;
   res?: ApplicationStrings;
   features: FeatureSwitches;
   urls: URLs;

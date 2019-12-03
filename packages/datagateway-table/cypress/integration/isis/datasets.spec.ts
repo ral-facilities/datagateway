@@ -1,6 +1,7 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation/87/dataset');
   });
 
@@ -28,13 +29,57 @@ describe('ISIS - Datasets Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then(window => {
+        const windowWidth = window.innerWidth;
+        columnWidth = (windowWidth - 40 - 40 - 70) / 4;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]')
+      .eq(2)
+      .as('nameColumn');
+    cy.get('[role="columnheader"]')
+      .eq(3)
+      .as('sizeColumn');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@sizeColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 400 })
+      .trigger('mouseup');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@sizeColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 327');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 327');
     });
 
     it('descending order', () => {
@@ -47,7 +92,7 @@ describe('ISIS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
     });
 
     it('no order', () => {
@@ -63,7 +108,7 @@ describe('ISIS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
     });
 
     it('multiple columns', () => {
@@ -72,7 +117,7 @@ describe('ISIS - Datasets Table', () => {
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'Name').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
     });
   });
 
@@ -83,7 +128,7 @@ describe('ISIS - Datasets Table', () => {
         .type('DATASET 327');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
         '2005-06-12 08:15:28'
       );
     });
@@ -111,7 +156,7 @@ describe('ISIS - Datasets Table', () => {
       );
 
       cy.get('[aria-rowcount="2"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
     });
 
     it('multiple columns', () => {
@@ -122,7 +167,7 @@ describe('ISIS - Datasets Table', () => {
       cy.get('[aria-label="Create Time date filter to"]').type('2007-06-23');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 87');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
     });
   });
 
@@ -180,6 +225,54 @@ describe('ISIS - Datasets Table', () => {
 
       cy.contains('Name: DATASET 87').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
+    });
+  });
+
+  describe('should be able to select items', () => {
+    it('individually', () => {
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'true');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+    });
+
+    it('and unselect them individually', () => {
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('[aria-label="select row 0"]').uncheck();
+      cy.get('[aria-label="select row 0"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+    });
+
+    it('by all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get(`[aria-label="select row 0"]`).should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('and unselect all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+
+      cy.get('[aria-label="select all rows"]').uncheck();
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
     });
   });
 });

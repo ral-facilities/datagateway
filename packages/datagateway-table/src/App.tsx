@@ -36,7 +36,8 @@ import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-import PageBreadcrumbs from './breadcrumbs.component';
+
+import PageHead from './pageHead.component';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
@@ -124,7 +125,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
                 <ConnectedPreloader>
-                  <PageBreadcrumbs />
+                  <PageHead />
                   <Switch>
                     <Route
                       exact

@@ -40,6 +40,7 @@ exports[`Download cart table component renders correctly 1`] = `
           ]
         }
         data={Array []}
+        loading={true}
         onSort={[Function]}
         sort={Object {}}
       />
