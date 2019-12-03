@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { createMount } from '@material-ui/core/test-utils';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
@@ -46,6 +46,7 @@ const DLSRoutes = {
 
 describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
   let mount;
+  let shallow;
   let state: StateType;
 
   // Set up generic axios response; to be used for all tests.
@@ -65,12 +66,10 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
 
   const createWrapper = (state: StateType): ReactWrapper => {
     const mockStore = configureStore([thunk]);
-    return mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-          <PageBreadcrumbs />
-        </MemoryRouter>
-      </Provider>
+    return shallow(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageBreadcrumbs store={mockStore(state)} />
+      </MemoryRouter>
     );
   };
 
@@ -79,6 +78,7 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
 
   beforeEach(() => {
     mount = createMount();
+    shallow = createShallow({ untilSelector: 'div' });
 
     state = JSON.parse(
       JSON.stringify({
@@ -281,6 +281,7 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
     // Update to use new store which has a new router location.
     wrapper.setProps({ store: mockStore(state) });
     await flushPromises();
+    wrapper.update();
 
     expect(wrapper).toMatchSnapshot();
   });
