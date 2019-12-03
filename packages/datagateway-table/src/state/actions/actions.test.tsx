@@ -261,7 +261,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(6);
+    expect(actions.length).toEqual(8);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
@@ -310,9 +310,8 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(4);
+    expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
-    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -360,7 +359,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-table-settings.json: One of the URL options (idsUrl, apiUrl) is undefined in settings'
+      'Error loading datagateway-table-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
     );
   });
 

@@ -351,7 +351,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     (axios.get as jest.Mock).mockClear();
   });
 
-  it('does not requests the investigation entity from the correct API endpoint for generic route', async () => {
+  it('does not request the investigation entity from the correct API endpoint for generic route', async () => {
     // Set up test state pathname.
     state.router.location = createLocation(genericRoutes['investigations']);
 
