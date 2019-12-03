@@ -9,6 +9,7 @@ import {
   Filter,
   Investigation,
   Entity,
+  DownloadCartItem,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
@@ -19,8 +20,11 @@ import {
   sortTable,
   filterTable,
   fetchInvestigations,
+  addToCart,
+  removeFromCart,
   fetchInvestigationCount,
   clearTable,
+  fetchAllIds,
 } from '../state/actions';
 import useAfterMountEffect from '../utils';
 
@@ -35,13 +39,18 @@ interface InvestigationTableProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 interface InvestigationTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
+  fetchAllIds: () => Promise<void>;
   clearTable: () => Action;
 }
 
@@ -56,12 +65,30 @@ const InvestigationTable = (
     totalDataCount,
     fetchData,
     fetchCount,
+    clearTable,
     sort,
     sortTable,
     filters,
     filterTable,
-    clearTable,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    allIds,
+    fetchAllIds,
+    loading,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'investigation' &&
+            allIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, allIds]
+  );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -86,16 +113,22 @@ const InvestigationTable = (
   useAfterMountEffect(() => {
     fetchCount();
     fetchData({ startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters]);
 
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={fetchData}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        allIds={allIds}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
           const investigationData = rowData as Investigation;
           return (
@@ -187,6 +220,11 @@ const mapDispatchToProps = (
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
   clearTable: () => dispatch(clearTable()),
+  addToCart: (entityIds: number[]) =>
+    dispatch(addToCart('investigation', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('investigation', entityIds)),
+  fetchAllIds: () => dispatch(fetchAllIds('investigation')),
 });
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
@@ -197,6 +235,8 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

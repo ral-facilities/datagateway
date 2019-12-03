@@ -29,6 +29,7 @@ import { Filter, Order } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
+import { fetchDownloadCart } from './cart';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgtable.sort;
@@ -73,6 +74,7 @@ export * from './datasets';
 export * from './datafiles';
 export * from './instruments';
 export * from './facilityCycles';
+export * from './cart';
 
 export const sortTable = (
   column: string,
@@ -184,16 +186,21 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           dispatch(loadFeatureSwitches(settings['features']));
         }
 
-        if ('idsUrl' in settings && 'apiUrl' in settings) {
+        if (
+          'idsUrl' in settings &&
+          'apiUrl' in settings &&
+          'downloadApiUrl' in settings
+        ) {
           dispatch(
             loadUrls({
               idsUrl: settings['idsUrl'],
               apiUrl: settings['apiUrl'],
+              downloadApiUrl: settings['downloadApiUrl'],
             })
           );
         } else {
           throw new Error(
-            'One of the URL options (idsUrl, apiUrl) is undefined in settings'
+            'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
           );
         }
 
@@ -219,6 +226,32 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             .catch(error => {
               log.error(`Can't contact API: ${error.message}`);
             });
+
+          // TODO: replace with getting from daaas:token when supported
+          const splitUrl = settings.downloadApiUrl.split('/');
+          const icatUrl = `${splitUrl
+            .slice(0, splitUrl.length - 1)
+            .join('/')}/icat`;
+          axios
+            .post(
+              `${icatUrl}/session`,
+              `json=${JSON.stringify({
+                plugin: 'simple',
+                credentials: [{ username: 'root' }, { password: 'pw' }],
+              })}`,
+              {
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+              }
+            )
+            .then(response => {
+              window.localStorage.setItem(
+                'icat:token',
+                response.data.sessionId
+              );
+            })
+            .catch(error => log.error("Can't log in to ICAT"));
         }
 
         if ('ui-strings' in settings) {
@@ -227,6 +260,9 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             : settings['ui-strings'];
           dispatch(loadStrings(uiStringResourcesPath));
         }
+
+        // fetch initial download cart
+        dispatch(fetchDownloadCart());
 
         dispatch(settingsLoaded());
       })

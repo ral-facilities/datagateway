@@ -29,6 +29,7 @@ import { RouterState } from 'connected-react-router';
 import axios from 'axios';
 import * as log from 'loglevel';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
+import { fetchDownloadCartRequest, fetchDownloadCartSuccess } from './cart';
 
 jest.mock('loglevel');
 
@@ -192,12 +193,14 @@ describe('Actions', () => {
     const action = loadUrls({
       idsUrl: 'ids',
       apiUrl: 'api',
+      downloadApiUrl: 'download-api',
     });
     expect(action.type).toEqual(ConfigureURLsType);
     expect(action.payload).toEqual({
       urls: {
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       },
     });
   });
@@ -243,6 +246,7 @@ describe('Actions', () => {
                 replaceEntityField: 'TITLE',
               },
             },
+            downloadApiUrl: 'download-api',
           },
         })
       )
@@ -267,6 +271,7 @@ describe('Actions', () => {
       loadUrls({
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       })
     );
     expect(actions).toContainEqual(
@@ -276,6 +281,8 @@ describe('Actions', () => {
         },
       })
     );
+    expect(actions).toContainEqual(fetchDownloadCartRequest());
+    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
   });
 
@@ -288,6 +295,7 @@ describe('Actions', () => {
             'ui-strings': 'res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
+            downloadApiUrl: 'download-api',
           },
         })
       )
@@ -304,6 +312,7 @@ describe('Actions', () => {
 
     expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
+    expect(actions.length).toEqual(5);
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -311,8 +320,11 @@ describe('Actions', () => {
       loadUrls({
         idsUrl: 'ids',
         apiUrl: 'api',
+        downloadApiUrl: 'download-api',
       })
     );
+    expect(actions).toContainEqual(fetchDownloadCartRequest());
+    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
   });
 

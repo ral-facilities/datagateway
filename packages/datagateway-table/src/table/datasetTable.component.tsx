@@ -9,13 +9,17 @@ import {
   Filter,
   Dataset,
   Entity,
+  DownloadCartItem,
 } from 'datagateway-common';
 import {
   sortTable,
   filterTable,
   fetchDatasets,
+  addToCart,
+  removeFromCart,
   fetchDatasetCount,
   clearTable,
+  fetchAllIds,
 } from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
@@ -40,6 +44,8 @@ interface DatasetTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 interface DatasetTableDispatchProps {
@@ -51,6 +57,9 @@ interface DatasetTableDispatchProps {
   ) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
   clearTable: () => Action;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type DatasetTableCombinedProps = DatasetTableProps &
@@ -68,8 +77,26 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     filters,
     filterTable,
     investigationId,
+    cartItems,
+    addToCart,
+    removeFromCart,
     clearTable,
+    allIds,
+    fetchAllIds,
+    loading,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'dataset' &&
+            allIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, allIds]
+  );
 
   React.useEffect(() => {
     clearTable();
@@ -78,7 +105,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   useAfterMountEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, investigationId]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -99,11 +127,16 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(investigationId), params)}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        allIds={allIds}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData }) => {
           const datasetData = rowData as Dataset;
           return (
@@ -152,7 +185,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: DatasetTableProps
 ): DatasetTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -163,6 +197,20 @@ const mapDispatchToProps = (
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
   clearTable: () => dispatch(clearTable()),
+  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('dataset', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllIds('dataset', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
@@ -173,6 +221,8 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

@@ -69,6 +69,7 @@ const ISISFacilityCyclesTable = (
     filters,
     filterTable,
     instrumentId,
+    loading,
   } = props;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -99,6 +100,7 @@ const ISISFacilityCyclesTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(instrumentId), params)}
         totalRowCount={totalDataCount}

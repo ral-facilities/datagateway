@@ -11,6 +11,8 @@ import {
   fetchInvestigationDetailsRequest,
   clearTable,
   fetchInvestigationCountRequest,
+  removeFromCartRequest,
+  addToCartRequest,
 } from '../../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -70,6 +72,7 @@ describe('ISIS Investigations table component', () => {
         ENDDATE: '2019-06-11',
       },
     ];
+    state.dgtable.allIds = [1];
   });
 
   afterEach(() => {
@@ -196,11 +199,92 @@ describe('ISIS Investigations table component', () => {
     );
 
     wrapper
-      .find('[role="columnheader"] span')
+      .find('[role="columnheader"] span[role="button"]')
       .first()
       .simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(sortTable('TITLE', 'asc'));
+  });
+
+  it('sends addToCart action on unchecked checkbox click', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+  });
+
+  it('sends removeFromCart action on checked checkbox click', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 1,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="select row 0"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+  });
+
+  it('selected rows only considers relevant cart items', () => {
+    state.dgtable.cartItems = [
+      {
+        entityId: 2,
+        entityType: 'investigation',
+        id: 1,
+        name: 'test',
+        parentEntities: [],
+      },
+      {
+        entityId: 1,
+        entityType: 'dataset',
+        id: 2,
+        name: 'test',
+        parentEntities: [],
+      },
+    ];
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const selectAllCheckbox = wrapper
+      .find('[aria-label="select all rows"]')
+      .first();
+
+    expect(selectAllCheckbox.prop('checked')).toEqual(false);
+    expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
   it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
@@ -243,13 +327,6 @@ describe('ISIS Investigations table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=2]')
-        .find('p')
-        .children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper
         .find('[aria-colindex=3]')
         .find('p')
         .children()
@@ -265,6 +342,13 @@ describe('ISIS Investigations table component', () => {
     expect(
       wrapper
         .find('[aria-colindex=5]')
+        .find('p')
+        .children()
+    ).toMatchSnapshot();
+
+    expect(
+      wrapper
+        .find('[aria-colindex=6]')
         .find('p')
         .children()
     ).toMatchSnapshot();
@@ -298,14 +382,14 @@ describe('ISIS Investigations table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=5]')
+        .find('[aria-colindex=6]')
         .find('p')
         .text()
     ).toEqual('');
 
     expect(
       wrapper
-        .find('[aria-colindex=7]')
+        .find('[aria-colindex=8]')
         .find('p')
         .text()
     ).toEqual('');
