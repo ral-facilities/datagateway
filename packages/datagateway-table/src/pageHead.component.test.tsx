@@ -1,13 +1,12 @@
 import React from 'react';
 import { ReactWrapper } from 'enzyme';
 
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
 import { initialState } from './state/reducers/dgtable.reducer';
 
-import { createMount } from '@material-ui/core/test-utils';
+import { createShallow } from '@material-ui/core/test-utils';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createLocation } from 'history';
@@ -18,22 +17,20 @@ import PageHead from './pageHead.component';
 jest.mock('loglevel');
 
 describe('PageHead - Tests', () => {
-  let mount;
+  let shallow;
   let state: StateType;
 
   const createWrapper = (state: StateType): ReactWrapper => {
     const mockStore = configureStore([thunk]);
-    return mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-          <PageHead />
-        </MemoryRouter>
-      </Provider>
+    return shallow(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageHead store={mockStore(state)} />
+      </MemoryRouter>
     );
   };
 
   beforeEach(() => {
-    mount = createMount();
+    shallow = createShallow({ untilSelector: 'Grid' });
 
     state = JSON.parse(
       JSON.stringify({
@@ -49,10 +46,6 @@ describe('PageHead - Tests', () => {
         },
       })
     );
-  });
-
-  afterEach(() => {
-    mount.cleanUp();
   });
 
   it('displays the correct entity count', () => {
