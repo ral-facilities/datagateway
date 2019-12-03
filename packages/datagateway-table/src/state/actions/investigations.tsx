@@ -174,11 +174,17 @@ export const fetchInvestigations = (
   };
 };
 
-export const fetchISISInvestigations = (
-  instrumentId: number,
-  facilityCycleId: number,
-  offsetParams?: IndexRange
-): ThunkResult<Promise<void>> => {
+export const fetchISISInvestigations = ({
+  instrumentId,
+  facilityCycleId,
+  offsetParams,
+  optionalParams,
+}: {
+  instrumentId: number;
+  facilityCycleId: number;
+  offsetParams?: IndexRange;
+  optionalParams?: FetchInvestigationsParams;
+}): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
@@ -228,15 +234,16 @@ export const fetchISISInvestigations = (
       )
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
-        // TODO: dispatch getSize requests
 
         // Once investigation has been fetched successfully,
         // we can issue request to fetch the size.
-        batch(() => {
-          response.data.forEach((investigation: Investigation) => {
-            dispatch(fetchInvestigationSize(investigation.ID));
+        if (optionalParams && optionalParams.getSize) {
+          batch(() => {
+            response.data.forEach((investigation: Investigation) => {
+              dispatch(fetchInvestigationSize(investigation.ID));
+            });
           });
-        });
+        }
       })
       .catch(error => {
         log.error(error.message);

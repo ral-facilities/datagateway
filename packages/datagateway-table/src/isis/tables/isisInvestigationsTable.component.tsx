@@ -9,6 +9,7 @@ import {
   Investigation,
   DateColumnFilter,
   DownloadCartItem,
+  formatBytes,
 } from 'datagateway-common';
 import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
@@ -222,6 +223,9 @@ const ISISInvestigationsTable = (
           {
             label: 'Size',
             dataKey: 'SIZE',
+            cellContentRenderer: props => {
+              return formatBytes(props.cellData);
+            },
             disableSort: true,
           },
           {
@@ -271,7 +275,12 @@ const mapDispatchToProps = (
     offsetParams: IndexRange
   ) =>
     dispatch(
-      fetchISISInvestigations(instrumentId, facilityCycleId, offsetParams)
+      fetchISISInvestigations({
+        instrumentId,
+        facilityCycleId,
+        offsetParams,
+        optionalParams: { getSize: true },
+      })
     ),
   fetchCount: (instrumentId: number, facilityCycleId: number) =>
     dispatch(fetchISISInvestigationCount(instrumentId, facilityCycleId)),

@@ -71,6 +71,13 @@ export const FetchDatasetCountFailureType =
 export const FetchDatasetCountSuccessType =
   'datagateway_table:fetch_dataset_count_success';
 
+export const FetchDatasetSizeRequestType =
+  'datagateway_table:fetch_dataset_size_request';
+export const FetchDatasetSizeFailureType =
+  'datagateway_table:fetch_dataset_size_failure';
+export const FetchDatasetSizeSuccessType =
+  'datagateway_table:fetch_dataset_size_success';
+
 export const FetchDatasetDatafilesCountRequestType =
   'datagateway_table:fetch_dataset_datafiles_count_request';
 export const FetchDatasetDatafilesCountFailureType =

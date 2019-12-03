@@ -10,6 +10,7 @@ import {
   DateColumnFilter,
   Dataset,
   DownloadCartItem,
+  formatBytes,
 } from 'datagateway-common';
 import { Paper, IconButton } from '@material-ui/core';
 import {
@@ -194,6 +195,9 @@ const ISISDatasetsTable = (
           {
             label: 'Size',
             dataKey: 'SIZE',
+            cellContentRenderer: props => {
+              return formatBytes(props.cellData);
+            },
             disableSort: true,
           },
           {

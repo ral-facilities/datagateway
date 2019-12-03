@@ -90,6 +90,9 @@ import {
   FetchAllIdsSuccessType,
   FetchAllIdsSuccessPayload,
   FetchSizeSuccessPayload,
+  FetchDatasetSizeRequestType,
+  FetchDatasetSizeSuccessType,
+  FetchDatasetSizeFailureType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -316,17 +319,15 @@ export function handleFetchCountFailure(
 export function handleFetchSizeRequest(state: DGTableState): DGTableState {
   return {
     ...state,
-    // loading: true,
   };
 }
 
-export function handleFetchSizeSuccess(
+export function handleFetchInvestigationSizeSuccess(
   state: DGTableState,
   payload: FetchSizeSuccessPayload
 ): DGTableState {
   return {
     ...state,
-    // loading: false,
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
 
@@ -338,13 +339,29 @@ export function handleFetchSizeSuccess(
   };
 }
 
+export function handleFetchDatasetSizeSuccess(
+  state: DGTableState,
+  payload: FetchSizeSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    data: state.data.map((entity: Entity) => {
+      const dataset = entity as Dataset;
+
+      return dataset.ID === payload.id
+        ? { ...dataset, SIZE: payload.size }
+        : dataset;
+    }),
+    error: null,
+  };
+}
+
 export function handleFetchSizeFailure(
   state: DGTableState,
   payload: FailurePayload
 ): DGTableState {
   return {
     ...state,
-    // loading: false,
     error: payload.error,
   };
 }
@@ -561,7 +578,7 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationCountSuccessType]: handleFetchCountSuccess,
   [FetchInvestigationCountFailureType]: handleFetchCountFailure,
   [FetchInvestigationSizeRequestType]: handleFetchSizeRequest,
-  [FetchInvestigationSizeSuccessType]: handleFetchSizeSuccess,
+  [FetchInvestigationSizeSuccessType]: handleFetchInvestigationSizeSuccess,
   [FetchInvestigationSizeFailureType]: handleFetchSizeFailure,
   [FetchDatasetCountRequestType]: handleFetchCountRequest,
   [FetchDatasetCountSuccessType]: handleFetchCountSuccess,
@@ -569,6 +586,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationDatasetsCountRequestType]: handleFetchDataCountRequest,
   [FetchInvestigationDatasetsCountSuccessType]: handleFetchDatasetCountSuccess,
   [FetchInvestigationDatasetsCountFailureType]: handleFetchDataCountFailure,
+  [FetchDatasetSizeRequestType]: handleFetchSizeRequest,
+  [FetchDatasetSizeSuccessType]: handleFetchDatasetSizeSuccess,
+  [FetchDatasetSizeFailureType]: handleFetchSizeFailure,
   [DownloadDatasetRequestType]: handleDownloadDataRequest,
   [DownloadDatasetSuccessType]: handleDownloadDataSuccess,
   [DownloadDatasetFailureType]: handleDownloadDataFailure,
