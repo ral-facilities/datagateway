@@ -335,6 +335,13 @@ export function handleFetchInvestigationSizeSuccess(
         ? { ...investigation, SIZE: payload.size }
         : investigation;
     }),
+    investigationCache: {
+      ...state.investigationCache,
+      [payload.id]: {
+        ...state.investigationCache[payload.id],
+        childEntitySize: payload.size,
+      },
+    },
     error: null,
   };
 }
@@ -352,6 +359,13 @@ export function handleFetchDatasetSizeSuccess(
         ? { ...dataset, SIZE: payload.size }
         : dataset;
     }),
+    datasetCache: {
+      ...state.datasetCache,
+      [payload.id]: {
+        ...state.datasetCache[payload.id],
+        childEntitySize: payload.size,
+      },
+    },
     error: null,
   };
 }

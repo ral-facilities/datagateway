@@ -89,24 +89,38 @@ export const fetchInvestigationSize = (
 
     // We request the size from the download API.
     const { downloadApiUrl } = getState().dgtable.urls;
+    const currentCache = getState().dgtable.investigationCache[investigationId];
 
-    await axios
-      .get(`${downloadApiUrl}/user/getSize`, {
-        params: {
-          // TODO: Get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
-          facilityName: 'LILS',
-          entityType: 'investigation',
-          entityId: investigationId,
-        },
-      })
-      .then(response => {
-        dispatch(fetchInvestigationSizeSuccess(investigationId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchInvestigationSizeFailure(error.message));
-      });
+    // Check for a cached investigation size in the investigationCache.
+    if (currentCache && currentCache.childEntitySize) {
+      // Dispatch success using the cached dataset size.
+      dispatch(
+        fetchInvestigationSizeSuccess(
+          investigationId,
+          currentCache.childEntitySize
+        )
+      );
+    } else {
+      await axios
+        .get(`${downloadApiUrl}/user/getSize`, {
+          params: {
+            // TODO: Get session ID from somewhere else (extract from JWT)
+            sessionId: window.localStorage.getItem('icat:token'),
+            facilityName: 'LILS',
+            entityType: 'investigation',
+            entityId: investigationId,
+          },
+        })
+        .then(response => {
+          dispatch(
+            fetchInvestigationSizeSuccess(investigationId, response.data)
+          );
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchInvestigationSizeFailure(error.message));
+        });
+    }
   };
 };
 

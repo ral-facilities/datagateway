@@ -20,8 +20,8 @@ import {
   FetchDatasetCountRequestType,
   RequestPayload,
   FetchDetailsSuccessPayload,
-  FetchInvestigationSizeRequestType,
   FetchSizeSuccessPayload,
+  FetchDatasetSizeRequestType,
   FetchDatasetSizeSuccessType,
   FetchDatasetSizeFailureType,
 } from './actions.types';
@@ -66,7 +66,7 @@ export const fetchDatasetsRequest = (
 });
 
 export const fetchDatasetSizeRequest = (): Action => ({
-  type: FetchInvestigationSizeRequestType,
+  type: FetchDatasetSizeRequestType,
 });
 
 export const fetchDatasetSizeSuccess = (
@@ -96,24 +96,33 @@ export const fetchDatasetSize = (
     dispatch(fetchDatasetSizeRequest());
 
     const { downloadApiUrl } = getState().dgtable.urls;
+    const currentCache = getState().dgtable.datasetCache[datasetId];
 
-    await axios
-      .get(`${downloadApiUrl}/user/getSize`, {
-        params: {
-          // TODO: Get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
-          facilityName: 'LILS',
-          entityType: 'dataset',
-          entityId: datasetId,
-        },
-      })
-      .then(response => {
-        dispatch(fetchDatasetSizeSuccess(datasetId, response.data));
-      })
-      .catch(error => {
-        log.error(error.message);
-        dispatch(fetchDatasetSizeFailure(error.message));
-      });
+    // Check for cached dataset size in datasetCache.
+    if (currentCache && currentCache.childEntitySize) {
+      // Dispatch success with cache dataset size.
+      dispatch(
+        fetchDatasetSizeSuccess(datasetId, currentCache.childEntitySize)
+      );
+    } else {
+      await axios
+        .get(`${downloadApiUrl}/user/getSize`, {
+          params: {
+            // TODO: Get session ID from somewhere else (extract from JWT)
+            sessionId: window.localStorage.getItem('icat:token'),
+            facilityName: 'LILS',
+            entityType: 'dataset',
+            entityId: datasetId,
+          },
+        })
+        .then(response => {
+          dispatch(fetchDatasetSizeSuccess(datasetId, response.data));
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatasetSizeFailure(error.message));
+        });
+    }
   };
 };
 
