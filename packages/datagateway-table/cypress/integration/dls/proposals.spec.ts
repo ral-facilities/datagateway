@@ -56,7 +56,7 @@ describe('DLS - Proposals Table', () => {
     cy.get('.react-draggable')
       .first()
       .trigger('mousedown')
-      .trigger('mousemove', { clientX: 600 })
+      .trigger('mousemove', { clientX: 500 })
       .trigger('mouseup');
 
     cy.get('@titleColumn').should($column => {
