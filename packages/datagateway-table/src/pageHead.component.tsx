@@ -2,6 +2,7 @@ import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import { Grid } from '@material-ui/core';
+import PageBreadcrumbs from './breadcrumbs.component';
 
 class PageHead extends React.Component<{ entityCount: number }> {
   public constructor(props: { entityCount: number }) {
@@ -11,13 +12,8 @@ class PageHead extends React.Component<{ entityCount: number }> {
   public render(): React.ReactElement {
     return (
       <Grid container spacing={3}>
-        <Grid
-          style={{ paddingLeft: '35px' }}
-          item
-          xs={10}
-          aria-label="head-breadcrumbs"
-        >
-          {/* TODO: Place PageBreadcrumbs component when it has been added. */}
+        <Grid item xs={10} aria-label="head-breadcrumbs">
+          <PageBreadcrumbs />
         </Grid>
         <Grid
           style={{ textAlign: 'right', paddingRight: '100px' }}
