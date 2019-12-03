@@ -1,3 +1,5 @@
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+
 export const ToggleDatasetType = 'datagateway_search:toggle_dataset';
 export const ToggleDatafileType = 'datagateway_search:toggle_datafile';
 export const ToggleInvestigationType =
@@ -10,5 +12,5 @@ export interface TogglePayload {
 }
 
 export interface SelectDatePayload {
-  date: number;
+  date: MaterialUiPickersDate;
 }

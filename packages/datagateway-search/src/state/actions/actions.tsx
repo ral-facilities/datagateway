@@ -9,6 +9,7 @@ import {
 } from './actions.types';
 import { ActionType } from '../app.types';
 import SelectDates from '../../search/datePicker';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 export const toggleDataset = (
   toggleoption: boolean
@@ -38,7 +39,7 @@ export const toggleInvestigation = (
 });
 
 export const selectStartDate = (
-  date: number
+  date: MaterialUiPickersDate
 ): ActionType<SelectDatePayload> => ({
   type: SelectStartDateType,
   payload: {
@@ -46,7 +47,7 @@ export const selectStartDate = (
   },
 });
 
-export const selectEndDate = (date: number): ActionType<SelectDatePayload> => ({
+export const selectEndDate = (date: MaterialUiPickersDate): ActionType<SelectDatePayload> => ({
   type: SelectEndDateType,
   payload: {
     date,

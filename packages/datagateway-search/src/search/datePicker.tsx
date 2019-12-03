@@ -1,28 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-  MaterialUiPickersDate,
 } from '@material-ui/pickers';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import { Action, AnyAction } from 'redux';
-import {
-  selectStartDate,
-  selectEndDate,
-} from '../state/actions/actions';
+import { selectStartDate, selectEndDate } from '../state/actions/actions';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 interface DatePickerStoreProps {
-  startdate: MaterialUiPickersDate;
-  enddate: MaterialUiPickersDate;
+  date: MaterialUiPickersDate ; 
+  startdate: MaterialUiPickersDate ;
+  enddate: MaterialUiPickersDate ;
 }
 
 interface DatePickerDispatchProps {
-  selectStartDate: (date: number) => Action;
-  selectEndDate: (date: number) => Action;
+  selectStartDate: (date: MaterialUiPickersDate) => Action;
+  selectEndDate: (date: MaterialUiPickersDate) => Action;
 }
 
 type DatePickerCombinedProps = DatePickerStoreProps & DatePickerDispatchProps;
@@ -36,8 +34,16 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function SelectDates(props: DatePickerCombinedProps): JSX.Element {
-  const {startdate, enddate, selectStartDate, selectEndDate} = props;
+  const { date, startdate, enddate, selectStartDate, selectEndDate } = props;
   const classes = useStyles();
+
+  const setStartDate = (startdate: MaterialUiPickersDate): any  => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ):void  => {
+    selectStartDate(startdate);
+    console.log(date)
+    console.log(startdate)
+  }; 
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -50,7 +56,7 @@ function SelectDates(props: DatePickerCombinedProps): JSX.Element {
         maxDateMessage="Invalid date range"
         format="yyyy-MM-dd"
         value={startdate}
-        onChange={selectStartDate}
+        onChange={setStartDate(date)}}
         animateYearScrolling
         placeholder="Start Date"
       />
@@ -75,15 +81,13 @@ function SelectDates(props: DatePickerCombinedProps): JSX.Element {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DatePickerDispatchProps => ({
-  selectStartDate: (date: number) =>
-    dispatch(selectStartDate(date)),
-  selectEndDate: (date: number) =>
-    dispatch(selectEndDate(date)),
-  
+  selectStartDate: (date: MaterialUiPickersDate) => dispatch(selectStartDate(date)),
+  selectEndDate: (date: MaterialUiPickersDate) => dispatch(selectEndDate(date)),
 });
 
 const mapStateToProps = (state: StateType): DatePickerStoreProps => {
   return {
+    date: state.dgsearch.selectDate.date,
     startdate: state.dgsearch.selectDate.startdate,
     enddate: state.dgsearch.selectDate.enddate,
   };

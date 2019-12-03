@@ -15,8 +15,7 @@ const pluginName = 'datagateway-search';
 const render = (): void => {
   let el = document.getElementById(pluginName);
   if (el) {
-    ReactDOM.render(
-      <App />, document.getElementById(pluginName));
+    ReactDOM.render(<App />, document.getElementById(pluginName));
   }
 };
 

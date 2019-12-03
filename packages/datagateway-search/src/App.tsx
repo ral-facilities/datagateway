@@ -21,18 +21,18 @@ const store = createStore(AppReducer, applyMiddleware(...middleware));
 class App extends React.Component {
   public componentDidCatch(error: Error | null): void {
     log.error(`datagateway-search-plugin failed with error: ${error}`);
-  };
+  }
 
   public render(): React.ReactNode {
     return (
-        <div
-          style={{
-            padding: 15,
-            margin: 10,
-          }}
-          className="App"
-        >
-          <Provider store={store}>
+      <div
+        style={{
+          padding: 15,
+          margin: 10,
+        }}
+        className="App"
+      >
+        <Provider store={store}>
           <Grid
             container
             direction="column"
@@ -53,19 +53,19 @@ class App extends React.Component {
             </Grid>
 
             <Grid item>
-              <SelectDates/>
-            </Grid>
-          
-            <Grid item>
-              <CheckboxesGroup/>
+              <SelectDates />
             </Grid>
 
             <Grid item>
-              <SearchButton/>
+              <CheckboxesGroup />
             </Grid>
-          </Grid>          
+
+            <Grid item>
+              <SearchButton />
+            </Grid>
+          </Grid>
         </Provider>
-        </div>
+      </div>
     );
   }
 }

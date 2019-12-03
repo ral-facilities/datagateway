@@ -9,12 +9,12 @@ import {
   TogglePayload,
   SelectDatePayload,
 } from '../actions/actions.types';
-import { string } from 'prop-types';
 
 export const initialState: DGSearchState = {
   selectDate: {
-    startdate: Date.parse('1990-12-12'), // Have made up a value. What is the earliest data on system?
-    enddate: Date.now(),
+    date: null,
+    startdate: null, // Have made up a value. What is the earliest data on system?
+    enddate: null,
   },
   checkBox: {
     dataset: true,
@@ -71,7 +71,7 @@ export function SelectStartDate(
     selectDate: {
       ...state.selectDate,
       startdate: payload.date,
-  },
+    },
   };
 }
 
@@ -84,7 +84,7 @@ export function SelectEndDate(
     selectDate: {
       ...state.selectDate,
       enddate: payload.date,
-  },
+    },
   };
 }
 

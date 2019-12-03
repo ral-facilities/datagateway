@@ -1,11 +1,13 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 export interface DGSearchState {
   selectDate: {
-    startdate: number; // not sure if this should be date type instead
-    enddate: number;
-  }
+    date: MaterialUiPickersDate;
+    startdate: MaterialUiPickersDate; // not sure if this should be date type instead
+    enddate: MaterialUiPickersDate;
+  };
   checkBox: {
     dataset: boolean;
     datafile: boolean;
