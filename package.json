@@ -24,7 +24,5 @@
       "pre-commit": "lerna run --concurrency 1 --stream pre-commit"
     }
   },
-  "dependencies": {
-    "clsx": "^1.0.4"
-  }
+  "dependencies": {}
 }

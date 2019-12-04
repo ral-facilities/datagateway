@@ -37,7 +37,7 @@ describe('App', () => {
 
     // We check index 1 since the first index will be settings
     // specific errors and not the error we expect from the App component.
-    expect(mockLog.calls[1][0]).toEqual(
+    expect(mockLog.calls[0][0]).toEqual(
       `datagateway_table failed with error: ${error}`
     );
   });
