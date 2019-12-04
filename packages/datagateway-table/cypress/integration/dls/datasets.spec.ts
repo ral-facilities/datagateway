@@ -14,6 +14,7 @@ describe('DLS - Datasets Table', () => {
     cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
@@ -73,7 +74,7 @@ describe('DLS - Datasets Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -81,8 +82,8 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -94,9 +95,9 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');

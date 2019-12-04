@@ -68,7 +68,9 @@ describe('ISIS - Datafiles Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Location').click();
+      cy.get('[role="button"]')
+        .contains('Location')
+        .click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -78,8 +80,8 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Location').click();
-      cy.contains('Location').click();
+      cy.contains('[role="button"]', 'Location').click();
+      cy.contains('[role="button"]', 'Location').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc')
@@ -91,9 +93,9 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Modified Time').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Modified Time').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 13529'

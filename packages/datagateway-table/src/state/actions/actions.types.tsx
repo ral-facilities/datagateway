@@ -10,9 +10,13 @@ export const SortTableType = 'datagateway_table:sort_table';
 export const FilterTableType = 'datagateway_table:filter_table';
 export const ClearTableType = 'datagateway_table:clear_table';
 export const ConfigureStringsType = 'datagateway_table:configure_strings';
+export const ConfigureFacilityNameType =
+  'datagateway_table:configure_facility_name';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';
 export const ConfigureURLsType = 'datagateway_table:configure_urls';
+export const ConfigureBreadcrumbSettingsType =
+  'datagateway_table:configure_breadcrumb';
 export const SettingsLoadedType = 'datagateway_table:settings_loaded';
 
 export const FetchInvestigationsRequestType =
@@ -177,6 +181,10 @@ export interface ConfigureStringsPayload {
   res: ApplicationStrings;
 }
 
+export interface ConfigureFacilityNamePayload {
+  facilityName: string;
+}
+
 export interface FeatureSwitchesPayload {
   switches: FeatureSwitches;
 }
@@ -192,6 +200,18 @@ export interface URLs {
   idsUrl: string;
   apiUrl: string;
   downloadApiUrl: string;
+}
+
+export interface ConfigureBreadcrumbSettingsPayload {
+  settings: BreadcrumbSettings;
+}
+
+export interface BreadcrumbSettings {
+  [matchEntity: string]: {
+    replaceEntityField: string;
+    replaceEntity?: string;
+    parentEntity?: string;
+  };
 }
 
 export interface RequestPayload {

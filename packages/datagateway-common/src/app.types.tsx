@@ -174,6 +174,15 @@ export type ICATEntity =
 
 export type Entity = ICATEntity | DownloadCartTableItem;
 
+export const EntityTypes: string[] = [
+  'investigation',
+  'dataset',
+  'datafile',
+  'facilityCycle',
+  'instrument',
+  'facility',
+];
+
 // TODO: type this properly
 export type Filter = string | number | { startDate?: string; endDate?: string };
 

@@ -56,9 +56,13 @@ import {
   FeatureSwitchesPayload,
   ConfigureStringsPayload,
   ConfigureStringsType,
+  ConfigureFacilityNamePayload,
+  ConfigureFacilityNameType,
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
@@ -90,6 +94,7 @@ import {
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
 export const initialState: DGTableState = {
+  facilityName: '',
   data: [],
   totalDataCount: 0,
   investigationCache: {},
@@ -108,6 +113,7 @@ export const initialState: DGTableState = {
     apiUrl: '',
     downloadApiUrl: '',
   },
+  breadcrumbSettings: {},
   cartItems: [],
   allIds: [],
   settingsLoaded: false,
@@ -190,6 +196,16 @@ export function handleConfigureStrings(
   };
 }
 
+export function handleConfigureFacilityName(
+  state: DGTableState,
+  payload: ConfigureFacilityNamePayload
+): DGTableState {
+  return {
+    ...state,
+    facilityName: payload.facilityName,
+  };
+}
+
 export function handleConfigureFeatureSwitches(
   state: DGTableState,
   payload: FeatureSwitchesPayload
@@ -207,6 +223,18 @@ export function handleConfigureUrls(
   return {
     ...state,
     urls: payload.urls,
+  };
+}
+
+// Reducer for the breadcrumb settings action,
+// in order to add settings to the Redux state.
+export function handleConfigureBreadcrumbSettings(
+  state: DGTableState,
+  payload: ConfigureBreadcrumbSettingsPayload
+): DGTableState {
+  return {
+    ...state,
+    breadcrumbSettings: payload.settings,
   };
 }
 
@@ -503,8 +531,10 @@ const DGTableReducer = createReducer(initialState, {
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
   [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureURLsType]: handleConfigureUrls,
+  [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

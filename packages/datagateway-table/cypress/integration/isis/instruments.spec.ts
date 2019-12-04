@@ -25,7 +25,7 @@ describe('ISIS - Instruments Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -35,8 +35,8 @@ describe('ISIS - Instruments Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -50,9 +50,9 @@ describe('ISIS - Instruments Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -111,7 +111,7 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
-    it.only('and view instrument details and scientists', () => {
+    it('and view instrument details and scientists', () => {
       cy.get('[aria-label="Show details"]')
         .first()
         .click();

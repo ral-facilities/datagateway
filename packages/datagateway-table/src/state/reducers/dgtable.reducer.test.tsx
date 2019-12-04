@@ -46,9 +46,11 @@ import {
   fetchFacilityCycleCountSuccess,
   fetchFacilityCycleCountFailure,
   clearTable,
+  loadFacilityName,
   loadFeatureSwitches,
   configureStrings,
   loadUrls,
+  loadBreadcrumbSettings,
   settingsLoaded,
   fetchInvestigationDetailsRequest,
   fetchInvestigationDetailsSuccess,
@@ -280,6 +282,14 @@ describe('dgtable reducer', () => {
     expect(updatedState.res).toEqual({ testSection: { testId: 'test' } });
   });
 
+  it('should set facility name property when configure facility name action is sent', () => {
+    expect(state.facilityName).toEqual('');
+
+    const updatedState = DGTableReducer(state, loadFacilityName('Generic'));
+
+    expect(updatedState.facilityName).toEqual('Generic');
+  });
+
   it('should set feature switches property when configure feature switches action is sent', () => {
     expect(state.features).toEqual({});
 
@@ -300,6 +310,25 @@ describe('dgtable reducer', () => {
     );
 
     expect(updatedState.urls.apiUrl).toEqual('test');
+  });
+
+  it('should set breadcrumb settings property when configure breadcrumb settings action is sent', () => {
+    expect(state.breadcrumbSettings).toEqual({});
+
+    const updatedState = DGTableReducer(
+      state,
+      loadBreadcrumbSettings({
+        test: {
+          replaceEntityField: 'TITLE',
+        },
+      })
+    );
+
+    expect(updatedState.breadcrumbSettings).toEqual({
+      test: {
+        replaceEntityField: 'TITLE',
+      },
+    });
   });
 
   describe('FetchInvestigations actions', () => {

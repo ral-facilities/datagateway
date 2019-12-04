@@ -5,6 +5,10 @@ export default {
     if (path === '/datagateway-table-settings.json') {
       return Promise.resolve({
         data: {
+          'facilityName': 'Generic',
+          'idsUrl': 'ids',
+          'apiUrl': 'api',
+          'downloadApiUrl': 'download',
           'ui-strings': '/res/default.json',
         },
       });

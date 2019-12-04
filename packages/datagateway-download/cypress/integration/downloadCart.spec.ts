@@ -25,38 +25,38 @@ describe('Download Cart', () => {
       .invoke('text')
       .as('unsortedFirstItem');
 
-    cy.contains('Name').click();
+    cy.contains('[role="button"]', 'Name').click();
     cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
       'have.text',
       'DATASET 1'
     );
 
-    cy.contains('Name').click();
+    cy.contains('[role="button"]', 'Name').click();
     cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
       'have.text',
       'INVESTIGATION 9'
     );
 
-    cy.contains('Name').click();
+    cy.contains('[role="button"]', 'Name').click();
     cy.get('[aria-rowindex=1] [aria-colindex=1]')
       .invoke('text')
       .then(currText => {
         cy.get('@unsortedFirstItem').should('eq', currText);
       });
 
-    cy.contains('Type').click();
+    cy.contains('[role="button"]', 'Type').click();
     cy.get('[aria-rowindex=1] [aria-colindex=2]').should(
       'have.text',
       'dataset'
     );
 
-    cy.contains('Type').click();
+    cy.contains('[role="button"]', 'Type').click();
     cy.get('[aria-rowindex=1] [aria-colindex=2]').should(
       'have.text',
       'investigation'
     );
 
-    cy.contains('Name').click();
+    cy.contains('[role="button"]', 'Name').click();
     cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
       'have.text',
       'INVESTIGATION 10'
@@ -80,7 +80,7 @@ describe('Download Cart', () => {
     cy.get('[aria-rowcount=8]').should('exist');
     cy.contains('INVESTIGATION 16').should('be.visible');
 
-    cy.contains('Name').click();
+    cy.contains('[role="button"]', 'Name').click();
     cy.get('@nameFilter').type('{backspace}');
     cy.get('[aria-rowcount=29]').should('exist');
     cy.contains('INVESTIGATION 2').should('be.visible');
@@ -88,7 +88,7 @@ describe('Download Cart', () => {
 
   it('should be able to remove individual items from the cart', () => {
     cy.route('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
-    cy.contains('Name').click();
+    cy.contains('[role="button"]', 'Name').click();
     cy.contains('Calculating...').should('not.exist');
 
     cy.contains(/^DATASET 1$/).should('be.visible');
@@ -105,7 +105,7 @@ describe('Download Cart', () => {
 
   it('should be able to remove all items from the cart', () => {
     cy.route('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
-    cy.contains('Name').click();
+    cy.contains('[role="button"]', 'Name').click();
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.contains('Remove All').click();
