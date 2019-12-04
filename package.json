@@ -12,11 +12,12 @@
   },
   "scripts": {
     "prepare": "lerna run prepare",
-    "lint": "lerna run lint:js",
+    "lint": "lerna run lint:js -- -- --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "lerna run test --stream",
-    "test:e2e": "lerna run e2e --stream --concurrency 1",
+    "test:e2e": "cd packages/datagateway-table && yarn run e2e && cd ../datagateway-download && yarn run e2e && cd ../datagateway-search && yarn run e2e",
+    "test:e2e:lerna": "lerna run e2e --stream --concurrency 1",
     "datagateway-table": "cd packages/datagateway-table && yarn start"
   },
   "husky": {

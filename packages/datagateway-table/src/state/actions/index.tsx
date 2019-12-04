@@ -18,12 +18,18 @@ import {
   URLs,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  BreadcrumbSettings,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureFacilityNamePayload,
+  ConfigureFacilityNameType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
+import { fetchDownloadCart } from './cart';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgtable.sort;
@@ -68,6 +74,7 @@ export * from './datasets';
 export * from './datafiles';
 export * from './instruments';
 export * from './facilityCycles';
+export * from './cart';
 
 export const sortTable = (
   column: string,
@@ -121,6 +128,15 @@ export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
   };
 };
 
+export const loadFacilityName = (
+  name: string
+): ActionType<ConfigureFacilityNamePayload> => ({
+  type: ConfigureFacilityNameType,
+  payload: {
+    facilityName: name,
+  },
+});
+
 export const loadFeatureSwitches = (
   featureSwitches: FeatureSwitches
 ): ActionType<FeatureSwitchesPayload> => ({
@@ -137,6 +153,15 @@ export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
   },
 });
 
+export const loadBreadcrumbSettings = (
+  breadcrumbSettings: BreadcrumbSettings
+): ActionType<ConfigureBreadcrumbSettingsPayload> => ({
+  type: ConfigureBreadcrumbSettingsType,
+  payload: {
+    settings: breadcrumbSettings,
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async dispatch => {
     await axios
@@ -149,16 +174,40 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           throw Error('Invalid format');
         }
 
-        if (settings['features']) {
+        // Get the facility name from settings.
+        if ('facilityName' in settings) {
+          dispatch(loadFacilityName(settings['facilityName']));
+        } else {
+          throw new Error('facilityName is undefined in settings');
+        }
+
+        // features is an optional setting
+        if ('features' in settings) {
           dispatch(loadFeatureSwitches(settings['features']));
         }
 
-        dispatch(
-          loadUrls({
-            idsUrl: settings['idsUrl'],
-            apiUrl: settings['apiUrl'],
-          })
-        );
+        if (
+          'idsUrl' in settings &&
+          'apiUrl' in settings &&
+          'downloadApiUrl' in settings
+        ) {
+          dispatch(
+            loadUrls({
+              idsUrl: settings['idsUrl'],
+              apiUrl: settings['apiUrl'],
+              downloadApiUrl: settings['downloadApiUrl'],
+            })
+          );
+        } else {
+          throw new Error(
+            'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+          );
+        }
+
+        // Dispatch the action to load the breadcrumb settings (optional settings).
+        if ('breadcrumbs' in settings) {
+          dispatch(loadBreadcrumbSettings(settings['breadcrumbs']));
+        }
 
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
@@ -177,12 +226,43 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             .catch(error => {
               log.error(`Can't contact API: ${error.message}`);
             });
+
+          // TODO: replace with getting from daaas:token when supported
+          const splitUrl = settings.downloadApiUrl.split('/');
+          const icatUrl = `${splitUrl
+            .slice(0, splitUrl.length - 1)
+            .join('/')}/icat`;
+          axios
+            .post(
+              `${icatUrl}/session`,
+              `json=${JSON.stringify({
+                plugin: 'simple',
+                credentials: [{ username: 'root' }, { password: 'pw' }],
+              })}`,
+              {
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
+              }
+            )
+            .then(response => {
+              window.localStorage.setItem(
+                'icat:token',
+                response.data.sessionId
+              );
+            })
+            .catch(error => log.error("Can't log in to ICAT"));
         }
 
-        const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
-          ? '/' + settings['ui-strings']
-          : settings['ui-strings'];
-        dispatch(loadStrings(uiStringResourcesPath));
+        if ('ui-strings' in settings) {
+          const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
+            ? '/' + settings['ui-strings']
+            : settings['ui-strings'];
+          dispatch(loadStrings(uiStringResourcesPath));
+        }
+
+        // fetch initial download cart
+        dispatch(fetchDownloadCart());
 
         dispatch(settingsLoaded());
       })

@@ -55,6 +55,7 @@ exports[`DLS Proposals table component renders correctly 1`] = `
       ]
     }
     loadMoreRows={[Function]}
+    loading={false}
     onSort={[Function]}
     sort={Object {}}
     totalRowCount={0}

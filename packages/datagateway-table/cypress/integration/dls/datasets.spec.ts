@@ -1,6 +1,7 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset');
   });
 
@@ -13,6 +14,7 @@ describe('DLS - Datasets Table', () => {
     cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
@@ -26,18 +28,62 @@ describe('DLS - Datasets Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then(window => {
+        const windowWidth = window.innerWidth;
+        columnWidth = (windowWidth - 40 - 40) / 4;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]')
+      .eq(2)
+      .as('nameColumn');
+    cy.get('[role="columnheader"]')
+      .eq(3)
+      .as('datafileCountColumn');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@datafileCountColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 400 })
+      .trigger('mouseup');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@datafileCountColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('descending order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -45,13 +91,13 @@ describe('DLS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
 
     it('no order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -61,7 +107,7 @@ describe('DLS - Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('multiple columns', () => {
@@ -72,7 +118,7 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
   });
 
@@ -83,7 +129,7 @@ describe('DLS - Datasets Table', () => {
         .type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
         '2002-11-27 06:20:36'
       );
     });
@@ -111,7 +157,7 @@ describe('DLS - Datasets Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('multiple columns', () => {
@@ -122,7 +168,7 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
   });
 
@@ -163,10 +209,10 @@ describe('DLS - Datasets Table', () => {
     it('and view the dataset type panel', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
-      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '56').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '56').should(
         'exist'
       );
-      cy.contains('[aria-rowindex="2"] [aria-colindex="3"]', '55').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '55').should(
         'exist'
       );
 
@@ -193,6 +239,54 @@ describe('DLS - Datasets Table', () => {
         'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
       ).should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
+    });
+  });
+
+  describe('should be able to select items', () => {
+    it('individually', () => {
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'true');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+    });
+
+    it('and unselect them individually', () => {
+      cy.get('[aria-label="select row 0"]').check();
+      cy.get('[aria-label="select row 0"]').should('be.checked');
+
+      cy.get('[aria-label="select row 0"]').uncheck();
+      cy.get('[aria-label="select row 0"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+    });
+
+    it('by all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+      cy.get(`[aria-label="select row 0"]`).should('be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+    });
+
+    it('and unselect all items', () => {
+      cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+      cy.get('[aria-label="select all rows"]').check();
+      cy.get('[aria-label="select all rows"]').should('be.checked');
+
+      cy.get('[aria-label="select all rows"]').uncheck();
+      cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      cy.get('[aria-label="select all rows"]')
+        .should('have.attr', 'data-indeterminate')
+        .and('eq', 'false');
+      cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
     });
   });
 });

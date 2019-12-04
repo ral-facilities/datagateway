@@ -1,0 +1,238 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Instrument details panel component gracefully handles InstrumentScientists without Users 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="instrument-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="instrument-details-panel"
+      id="instrument-details-tab"
+      label="Instrument Details"
+      value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="instrument-users-panel"
+      id="instrument-users-tab"
+      label="Instrument Scientists"
+      value="users"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="instrument-details-tab"
+    hidden={false}
+    id="instrument-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Test Instrument
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      An instrument purely for testing
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Type:
+      </b>
+       
+      testing
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        URL:
+      </b>
+       
+      <WithStyles(ForwardRef(Link))
+        href="www.example.com"
+      >
+        www.example.com
+      </WithStyles(ForwardRef(Link))>
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+  <div
+    aria-labelledby="instrument-users-tab"
+    hidden={true}
+    id="instrument-users-panel"
+    role="tabpanel"
+  />
+</div>
+`;
+
+exports[`Instrument details panel component renders correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="instrument-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="instrument-details-panel"
+      id="instrument-details-tab"
+      label="Instrument Details"
+      value="details"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="instrument-details-tab"
+    hidden={false}
+    id="instrument-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Test Instrument
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      An instrument purely for testing
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Type:
+      </b>
+       
+      testing
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        URL:
+      </b>
+       
+      <WithStyles(ForwardRef(Link))
+        href="www.example.com"
+      >
+        www.example.com
+      </WithStyles(ForwardRef(Link))>
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+</div>
+`;
+
+exports[`Instrument details panel component renders users tab when present in the data 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="instrument-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="instrument-details-panel"
+      id="instrument-details-tab"
+      label="Instrument Details"
+      value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="instrument-users-panel"
+      id="instrument-users-tab"
+      label="Instrument Scientists"
+      value="users"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="instrument-details-tab"
+    hidden={false}
+    id="instrument-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Test Instrument
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      An instrument purely for testing
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Type:
+      </b>
+       
+      testing
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        URL:
+      </b>
+       
+      <WithStyles(ForwardRef(Link))
+        href="www.example.com"
+      >
+        www.example.com
+      </WithStyles(ForwardRef(Link))>
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+  <div
+    aria-labelledby="instrument-users-tab"
+    hidden={true}
+    id="instrument-users-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      key="5"
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Louise Davies
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      key="10"
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Louise
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+</div>
+`;

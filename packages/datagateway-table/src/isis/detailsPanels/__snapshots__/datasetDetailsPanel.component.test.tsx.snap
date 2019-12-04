@@ -1,0 +1,114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dataset details panel component renders correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="dataset-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-details-panel"
+      id="dataset-details-tab"
+      label="Dataset Details"
+      value="details"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="dataset-details-tab"
+    hidden={false}
+    id="dataset-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+</div>
+`;
+
+exports[`Dataset details panel component renders type tab when present in the data 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="dataset-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-details-panel"
+      id="dataset-details-tab"
+      label="Dataset Details"
+      value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-type-panel"
+      id="dataset-type-tab"
+      label="Dataset Type"
+      value="type"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="dataset-details-tab"
+    hidden={false}
+    id="dataset-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+  <div
+    aria-labelledby="dataset-type-tab"
+    hidden={true}
+    id="dataset-type-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Name:
+      </b>
+       
+      Test type
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      Test type description
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+</div>
+`;

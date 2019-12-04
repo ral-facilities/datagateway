@@ -21,6 +21,9 @@ import {
   fetchInstrumentsRequest,
   fetchInstrumentsSuccess,
   fetchInstrumentsFailure,
+  fetchFacilityCyclesRequest,
+  fetchFacilityCyclesSuccess,
+  fetchFacilityCyclesFailure,
   downloadDatafileRequest,
   downloadDatafileSuccess,
   downloadDatafileFailure,
@@ -39,10 +42,15 @@ import {
   fetchInstrumentCountRequest,
   fetchInstrumentCountSuccess,
   fetchInstrumentCountFailure,
+  fetchFacilityCycleCountRequest,
+  fetchFacilityCycleCountSuccess,
+  fetchFacilityCycleCountFailure,
   clearTable,
+  loadFacilityName,
   loadFeatureSwitches,
   configureStrings,
   loadUrls,
+  loadBreadcrumbSettings,
   settingsLoaded,
   fetchInvestigationDetailsRequest,
   fetchInvestigationDetailsSuccess,
@@ -50,21 +58,32 @@ import {
   fetchDatasetDetailsRequest,
   fetchDatasetDetailsSuccess,
   fetchDatasetDetailsFailure,
+  fetchInstrumentDetailsRequest,
+  fetchInstrumentDetailsSuccess,
+  fetchInstrumentDetailsFailure,
+  fetchDatafileDetailsRequest,
+  fetchDatafileDetailsSuccess,
+  fetchDatafileDetailsFailure,
+  fetchDownloadCartRequest,
+  fetchDownloadCartSuccess,
+  fetchDownloadCartFailure,
+  addToCartRequest,
+  addToCartSuccess,
+  addToCartFailure,
+  removeFromCartRequest,
+  removeFromCartSuccess,
+  removeFromCartFailure,
+  fetchAllIdsRequest,
+  fetchAllIdsSuccess,
+  fetchAllIdsFailure,
 } from '../actions';
-import {
-  fetchFacilityCyclesRequest,
-  fetchFacilityCyclesSuccess,
-  fetchFacilityCyclesFailure,
-  fetchFacilityCycleCountRequest,
-  fetchFacilityCycleCountSuccess,
-  fetchFacilityCycleCountFailure,
-} from '../actions/facilityCycles';
 import {
   Investigation,
   Dataset,
   Datafile,
   Instrument,
   FacilityCycle,
+  DownloadCart,
 } from 'datagateway-common';
 
 describe('dgtable reducer', () => {
@@ -178,6 +197,22 @@ describe('dgtable reducer', () => {
       expect(updatedState).toBe(state);
     });
 
+    it('should ignore allIds requests with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsRequest(invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
+    it('should ignore allIds successes with invalid timestamps', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsSuccess([1], invalidTimestamp)
+      );
+      expect(updatedState).toBe(state);
+    });
+
     it('should update dataTimestamp when given a valid fetchDataRequest', () => {
       let updatedState = DGTableReducer(
         state,
@@ -209,6 +244,22 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.countTimestamp).toBe(validTimestamp);
     });
+
+    it('should update allIdsTimestamp when given a valid fetchAllIdsRequest', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsRequest(validTimestamp)
+      );
+      expect(updatedState.allIdsTimestamp).toBe(validTimestamp);
+    });
+
+    it('should update allIdsTimestamp when given a valid fetchAllIdsSuccess', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsSuccess([1], validTimestamp)
+      );
+      expect(updatedState.allIdsTimestamp).toBe(validTimestamp);
+    });
   });
 
   it('should set settingsLoaded to true when SettingsLoaded action is sent', () => {
@@ -231,6 +282,14 @@ describe('dgtable reducer', () => {
     expect(updatedState.res).toEqual({ testSection: { testId: 'test' } });
   });
 
+  it('should set facility name property when configure facility name action is sent', () => {
+    expect(state.facilityName).toEqual('');
+
+    const updatedState = DGTableReducer(state, loadFacilityName('Generic'));
+
+    expect(updatedState.facilityName).toEqual('Generic');
+  });
+
   it('should set feature switches property when configure feature switches action is sent', () => {
     expect(state.features).toEqual({});
 
@@ -251,6 +310,25 @@ describe('dgtable reducer', () => {
     );
 
     expect(updatedState.urls.apiUrl).toEqual('test');
+  });
+
+  it('should set breadcrumb settings property when configure breadcrumb settings action is sent', () => {
+    expect(state.breadcrumbSettings).toEqual({});
+
+    const updatedState = DGTableReducer(
+      state,
+      loadBreadcrumbSettings({
+        test: {
+          replaceEntityField: 'TITLE',
+        },
+      })
+    );
+
+    expect(updatedState.breadcrumbSettings).toEqual({
+      test: {
+        replaceEntityField: 'TITLE',
+      },
+    });
   });
 
   describe('FetchInvestigations actions', () => {
@@ -811,6 +889,76 @@ describe('dgtable reducer', () => {
     });
   });
 
+  describe('FetchDatafileDetails actions', () => {
+    it('should not update state when given a FetchDatafileDetailsRequest action', () => {
+      let updatedState = DGTableReducer(state, fetchDatafileDetailsRequest());
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should update the data state and reset error state when given a FetchDatafileDetailsSuccess action', () => {
+      state.loading = true;
+      const mockData: Datafile[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+          LOCATION: '/test1',
+          FILESIZE: 1,
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-10',
+          DATASET_ID: 1,
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+          LOCATION: '/test2',
+          FILESIZE: 2,
+          MOD_TIME: '2019-06-10',
+          CREATE_TIME: '2019-06-10',
+          DATASET_ID: 1,
+        },
+      ];
+
+      state.data = mockData;
+
+      const datafileDetails: Datafile = {
+        ...mockData[0],
+        DATAFILEPARAMETER: [
+          {
+            ID: 3,
+            DATAFILE_ID: 1,
+            PARAMETER_TYPE_ID: 4,
+            PARAMETERTYPE: {
+              ID: 4,
+              NAME: 'Test parameter type',
+              UNITS: 'Test unit',
+              VALUE_TYPE: 'STRING',
+            },
+          },
+        ],
+      };
+
+      const mockDataUpdated: Datafile[] = [datafileDetails, mockData[1]];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileDetailsSuccess([datafileDetails])
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchDatafileDetailsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatafileDetailsFailure('Test error message')
+      );
+
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
   describe('DownloadDatafile actions', () => {
     it('should set the downloading state to true when given a DownloadDatafileRequest action', () => {
       expect(state.downloading).toBe(false);
@@ -1044,6 +1192,60 @@ describe('dgtable reducer', () => {
     });
   });
 
+  describe('FetchInstrumentDetails actions', () => {
+    it('should not update state when given a FetchInstrumentDetailsRequest action', () => {
+      let updatedState = DGTableReducer(state, fetchInstrumentDetailsRequest());
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should update the data state and reset error state when given a FetchInstrumentDetailsSuccess action', () => {
+      state.loading = true;
+      const mockData: Instrument[] = [
+        {
+          ID: 1,
+          NAME: 'Test 1',
+        },
+        {
+          ID: 2,
+          NAME: 'Test 2',
+        },
+      ];
+
+      state.data = mockData;
+
+      const instrumentDetails: Instrument = {
+        ...mockData[0],
+        INSTRUMENTSCIENTIST: [
+          {
+            ID: 3,
+            INSTRUMENT_ID: 1,
+            USER_ID: 4,
+            USER_: { ID: 4, NAME: 'Louise' },
+          },
+        ],
+      };
+
+      const mockDataUpdated: Instrument[] = [instrumentDetails, mockData[1]];
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentDetailsSuccess([instrumentDetails])
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchInstrumentDetailsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInstrumentDetailsFailure('Test error message')
+      );
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
   describe('FetchFacilityCycles actions', () => {
     it('should set the loading state when given a FetchFacilityCyclesRequest action', () => {
       expect(state.loading).toBe(false);
@@ -1128,6 +1330,149 @@ describe('dgtable reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(0);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('Cart actions', () => {
+    const mockData: DownloadCart = {
+      cartItems: [
+        {
+          entityId: 1,
+          entityType: 'dataset',
+          id: 1,
+          name: 'DATASET 1',
+          parentEntities: [],
+        },
+      ],
+      createdAt: '2019-10-15T14:11:43+01:00',
+      facilityName: 'TEST',
+      id: 1,
+      updatedAt: '2019-10-15T14:11:43+01:00',
+      userName: 'test',
+    };
+
+    describe('FetchDownloadCart actions', () => {
+      it('should set the loading state when given a FetchDownloadCartRequest action', () => {
+        expect(state.loading).toBe(false);
+
+        let updatedState = DGTableReducer(state, fetchDownloadCartRequest());
+        expect(updatedState.loading).toBe(true);
+      });
+
+      it('should set the downloadCart state and reset loading state when given a FetchDownloadCartSuccess action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          fetchDownloadCartSuccess(mockData)
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.cartItems).toEqual(mockData.cartItems);
+      });
+
+      it('should set the error state and reset loading state when given a FetchDownloadCartFailure action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          fetchDownloadCartFailure('Test error message')
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.error).toEqual('Test error message');
+      });
+    });
+
+    describe('AddToCart actions', () => {
+      it('should set the loading state when given a AddToCartRequest action', () => {
+        expect(state.loading).toBe(false);
+
+        let updatedState = DGTableReducer(state, addToCartRequest());
+        expect(updatedState.loading).toBe(true);
+      });
+
+      it('should set the downloadCart state and reset loading state when given a AddToCartSuccess action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(state, addToCartSuccess(mockData));
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.cartItems).toEqual(mockData.cartItems);
+      });
+
+      it('should set the error state and reset loading state when given a AddToCartFailure action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          addToCartFailure('Test error message')
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.error).toEqual('Test error message');
+      });
+    });
+
+    describe('RemoveFromCart actions', () => {
+      it('should set the loading state when given a RemoveFromCartRequest action', () => {
+        expect(state.loading).toBe(false);
+
+        let updatedState = DGTableReducer(state, removeFromCartRequest());
+        expect(updatedState.loading).toBe(true);
+      });
+
+      it('should set the downloadCart state and reset loading state when given a RemoveFromCartSuccess action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          removeFromCartSuccess(mockData)
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.cartItems).toEqual(mockData.cartItems);
+      });
+
+      it('should set the error state and reset loading state when given a RemoveFromCartFailure action', () => {
+        state.loading = true;
+
+        let updatedState = DGTableReducer(
+          state,
+          removeFromCartFailure('Test error message')
+        );
+        expect(updatedState.loading).toBe(false);
+        expect(updatedState.error).toEqual('Test error message');
+      });
+    });
+  });
+
+  describe('FetchAllIds actions', () => {
+    it('should set the loading state when given a FetchAllIdsRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsRequest(validTimestamp)
+      );
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the allIds state and reset loading state when given a FetchAllIdsSuccess action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsSuccess([1, 2, 3], validTimestamp)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.allIds).toEqual([1, 2, 3]);
+    });
+
+    it('should set the error state and reset loading state when given a FetchAllIdsFailure action', () => {
+      state.loading = true;
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchAllIdsFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
       expect(updatedState.error).toEqual('Test error message');
     });
   });

@@ -1,4 +1,4 @@
-import { Filter, Order, Entity } from 'datagateway-common';
+import { Filter, Order, Entity, DownloadCart } from 'datagateway-common';
 import { ApplicationStrings } from '../app.types';
 
 // parent app actions
@@ -10,9 +10,13 @@ export const SortTableType = 'datagateway_table:sort_table';
 export const FilterTableType = 'datagateway_table:filter_table';
 export const ClearTableType = 'datagateway_table:clear_table';
 export const ConfigureStringsType = 'datagateway_table:configure_strings';
+export const ConfigureFacilityNameType =
+  'datagateway_table:configure_facility_name';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';
 export const ConfigureURLsType = 'datagateway_table:configure_urls';
+export const ConfigureBreadcrumbSettingsType =
+  'datagateway_table:configure_breadcrumb';
 export const SettingsLoadedType = 'datagateway_table:settings_loaded';
 
 export const FetchInvestigationsRequestType =
@@ -85,6 +89,13 @@ export const FetchDatafilesFailureType =
 export const FetchDatafilesSuccessType =
   'datagateway_table:fetch_datafiles_success';
 
+export const FetchDatafileDetailsRequestType =
+  'datagateway_table:fetch_datafile_details_request';
+export const FetchDatafileDetailsFailureType =
+  'datagateway_table:fetch_datafile_details_failure';
+export const FetchDatafileDetailsSuccessType =
+  'datagateway_table:fetch_datafile_details_success';
+
 export const FetchDatafileCountRequestType =
   'datagateway_table:fetch_datafile_count_request';
 export const FetchDatafileCountFailureType =
@@ -105,6 +116,13 @@ export const FetchInstrumentsFailureType =
   'datagateway_table:fetch_instruments_failure';
 export const FetchInstrumentsSuccessType =
   'datagateway_table:fetch_instruments_success';
+
+export const FetchInstrumentDetailsRequestType =
+  'datagateway_table:fetch_instrument_details_request';
+export const FetchInstrumentDetailsFailureType =
+  'datagateway_table:fetch_instrument_details_failure';
+export const FetchInstrumentDetailsSuccessType =
+  'datagateway_table:fetch_instrument_details_success';
 
 export const FetchInstrumentCountRequestType =
   'datagateway_table:fetch_instrument_count_request';
@@ -127,6 +145,28 @@ export const FetchFacilityCycleCountFailureType =
 export const FetchFacilityCycleCountSuccessType =
   'datagateway_table:fetch_facility_cycle_count_success';
 
+export const FetchDownloadCartRequestType =
+  'datagateway_table:fetch_download_cart_request';
+export const FetchDownloadCartFailureType =
+  'datagateway_table:fetch_download_cart_failure';
+export const FetchDownloadCartSuccessType =
+  'datagateway_table:fetch_download_cart_success';
+
+export const AddToCartRequestType = 'datagateway_table:add_to_cart_request';
+export const AddToCartFailureType = 'datagateway_table:add_to_cart_failure';
+export const AddToCartSuccessType = 'datagateway_table:add_to_cart_success';
+
+export const RemoveFromCartRequestType =
+  'datagateway_table:remove_from_cart_request';
+export const RemoveFromCartFailureType =
+  'datagateway_table:remove_from_cart_failure';
+export const RemoveFromCartSuccessType =
+  'datagateway_table:remove_from_cart_success';
+
+export const FetchAllIdsRequestType = 'datagateway_table:fetch_all_ids_request';
+export const FetchAllIdsFailureType = 'datagateway_table:fetch_all_ids_failure';
+export const FetchAllIdsSuccessType = 'datagateway_table:fetch_all_ids_success';
+
 export interface SortTablePayload {
   column: string;
   order: Order | null;
@@ -139,6 +179,10 @@ export interface FilterTablePayload {
 
 export interface ConfigureStringsPayload {
   res: ApplicationStrings;
+}
+
+export interface ConfigureFacilityNamePayload {
+  facilityName: string;
 }
 
 export interface FeatureSwitchesPayload {
@@ -155,6 +199,19 @@ export interface ConfigureUrlsPayload {
 export interface URLs {
   idsUrl: string;
   apiUrl: string;
+  downloadApiUrl: string;
+}
+
+export interface ConfigureBreadcrumbSettingsPayload {
+  settings: BreadcrumbSettings;
+}
+
+export interface BreadcrumbSettings {
+  [matchEntity: string]: {
+    replaceEntityField: string;
+    replaceEntity?: string;
+    parentEntity?: string;
+  };
 }
 
 export interface RequestPayload {
@@ -174,6 +231,11 @@ export interface FetchDetailsSuccessPayload {
   data: Entity[];
 }
 
+export interface FetchAllIdsSuccessPayload {
+  data: number[];
+  timestamp: number;
+}
+
 export interface FetchCountSuccessPayload {
   count: number;
   timestamp: number;
@@ -183,4 +245,8 @@ export interface FetchDataCountSuccessPayload {
   id: number;
   count: number;
   timestamp: number;
+}
+
+export interface DownloadCartPayload {
+  downloadCart: DownloadCart;
 }

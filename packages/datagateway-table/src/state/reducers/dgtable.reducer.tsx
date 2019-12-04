@@ -56,9 +56,13 @@ import {
   FeatureSwitchesPayload,
   ConfigureStringsPayload,
   ConfigureStringsType,
+  ConfigureFacilityNamePayload,
+  ConfigureFacilityNameType,
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
@@ -66,10 +70,31 @@ import {
   FetchDatasetDetailsRequestType,
   FetchDatasetDetailsSuccessType,
   FetchDatasetDetailsFailureType,
+  FetchInstrumentDetailsRequestType,
+  FetchInstrumentDetailsSuccessType,
+  FetchInstrumentDetailsFailureType,
+  FetchDatafileDetailsFailureType,
+  FetchDatafileDetailsRequestType,
+  FetchDatafileDetailsSuccessType,
+  DownloadCartPayload,
+  FetchDownloadCartRequestType,
+  FetchDownloadCartSuccessType,
+  FetchDownloadCartFailureType,
+  AddToCartRequestType,
+  AddToCartFailureType,
+  AddToCartSuccessType,
+  RemoveFromCartRequestType,
+  RemoveFromCartSuccessType,
+  RemoveFromCartFailureType,
+  FetchAllIdsFailureType,
+  FetchAllIdsRequestType,
+  FetchAllIdsSuccessType,
+  FetchAllIdsSuccessPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
 export const initialState: DGTableState = {
+  facilityName: '',
   data: [],
   totalDataCount: 0,
   investigationCache: {},
@@ -82,10 +107,15 @@ export const initialState: DGTableState = {
   features: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
+  allIdsTimestamp: Date.now(),
   urls: {
     idsUrl: '',
     apiUrl: '',
+    downloadApiUrl: '',
   },
+  breadcrumbSettings: {},
+  cartItems: [],
+  allIds: [],
   settingsLoaded: false,
 };
 
@@ -166,6 +196,16 @@ export function handleConfigureStrings(
   };
 }
 
+export function handleConfigureFacilityName(
+  state: DGTableState,
+  payload: ConfigureFacilityNamePayload
+): DGTableState {
+  return {
+    ...state,
+    facilityName: payload.facilityName,
+  };
+}
+
 export function handleConfigureFeatureSwitches(
   state: DGTableState,
   payload: FeatureSwitchesPayload
@@ -183,6 +223,18 @@ export function handleConfigureUrls(
   return {
     ...state,
     urls: payload.urls,
+  };
+}
+
+// Reducer for the breadcrumb settings action,
+// in order to add settings to the Redux state.
+export function handleConfigureBreadcrumbSettings(
+  state: DGTableState,
+  payload: ConfigureBreadcrumbSettingsPayload
+): DGTableState {
+  return {
+    ...state,
+    breadcrumbSettings: payload.settings,
   };
 }
 
@@ -409,14 +461,80 @@ export function handleFetchDatasetDatafilesCountSuccess(
   };
 }
 
+export function handleDownloadCartRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleDownloadCartSuccess(
+  state: DGTableState,
+  payload: DownloadCartPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    cartItems: payload.downloadCart.cartItems,
+    // cartItems: payload.downloadCart.cartItems.map(cartItem => ({
+    //   entityId: cartItem.entityId,
+    //   entityType: cartItem.entityType,
+    // })),
+  };
+}
+
+export function handleDownloadCartFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    error: payload.error,
+  };
+}
+
+export function handleFetchAllIdsRequest(
+  state: DGTableState,
+  payload: RequestPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      allIdsTimestamp: payload.timestamp,
+      loading: true,
+    };
+  } else {
+    return state;
+  }
+}
+
+export function handleFetchAllIdsSuccess(
+  state: DGTableState,
+  payload: FetchAllIdsSuccessPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      allIds: payload.data,
+      allIdsTimestamp: payload.timestamp,
+    };
+  } else {
+    return state;
+  }
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
   [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureURLsType]: handleConfigureUrls,
+  [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
@@ -450,6 +568,9 @@ const DGTableReducer = createReducer(initialState, {
   [FetchDatasetDatafilesCountRequestType]: handleFetchDataCountRequest,
   [FetchDatasetDatafilesCountSuccessType]: handleFetchDatasetDatafilesCountSuccess,
   [FetchDatasetDatafilesCountFailureType]: handleFetchDataCountFailure,
+  [FetchDatafileDetailsRequestType]: handleFetchDataDetailsRequest,
+  [FetchDatafileDetailsSuccessType]: handleFetchDataDetailsSuccess,
+  [FetchDatafileDetailsFailureType]: handleFetchDataDetailsFailure,
   [DownloadDatafileRequestType]: handleDownloadDataRequest,
   [DownloadDatafileSuccessType]: handleDownloadDataSuccess,
   [DownloadDatafileFailureType]: handleDownloadDataFailure,
@@ -459,12 +580,30 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInstrumentCountRequestType]: handleFetchCountRequest,
   [FetchInstrumentCountSuccessType]: handleFetchCountSuccess,
   [FetchInstrumentCountFailureType]: handleFetchCountFailure,
+  [FetchInstrumentDetailsRequestType]: handleFetchDataDetailsRequest,
+  [FetchInstrumentDetailsSuccessType]: handleFetchDataDetailsSuccess,
+  [FetchInstrumentDetailsFailureType]: handleFetchDataDetailsFailure,
   [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
   [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
   [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
   [FetchFacilityCycleCountRequestType]: handleFetchCountRequest,
   [FetchFacilityCycleCountSuccessType]: handleFetchCountSuccess,
   [FetchFacilityCycleCountFailureType]: handleFetchCountFailure,
+  [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
+  [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
+  [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
+  [FetchDownloadCartRequestType]: handleDownloadCartRequest,
+  [FetchDownloadCartSuccessType]: handleDownloadCartSuccess,
+  [FetchDownloadCartFailureType]: handleDownloadCartFailure,
+  [AddToCartRequestType]: handleDownloadCartRequest,
+  [AddToCartSuccessType]: handleDownloadCartSuccess,
+  [AddToCartFailureType]: handleDownloadCartFailure,
+  [RemoveFromCartRequestType]: handleDownloadCartRequest,
+  [RemoveFromCartSuccessType]: handleDownloadCartSuccess,
+  [RemoveFromCartFailureType]: handleDownloadCartFailure,
+  [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
+  [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
+  [FetchAllIdsFailureType]: handleFetchDataFailure,
 });
 
 export default DGTableReducer;
