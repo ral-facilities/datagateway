@@ -43,6 +43,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           "label": "DOI",
         },
         Object {
+          "cellContentRenderer": [Function],
           "dataKey": "SIZE",
           "disableSort": true,
           "label": "Size",

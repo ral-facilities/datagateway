@@ -320,7 +320,7 @@ exports[`PageHead - Tests displays the correct entity count 1`] = `
                   item={true}
                   style={
                     Object {
-                      "paddingRight": "100px",
+                      "paddingRight": "140px",
                       "textAlign": "right",
                     }
                   }
@@ -438,7 +438,7 @@ exports[`PageHead - Tests displays the correct entity count 1`] = `
                     item={true}
                     style={
                       Object {
-                        "paddingRight": "100px",
+                        "paddingRight": "140px",
                         "textAlign": "right",
                       }
                     }
@@ -449,7 +449,7 @@ exports[`PageHead - Tests displays the correct entity count 1`] = `
                       className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-2"
                       style={
                         Object {
-                          "paddingRight": "100px",
+                          "paddingRight": "140px",
                           "textAlign": "right",
                         }
                       }

@@ -58,6 +58,7 @@ describe('Dataset actions', () => {
   const mockInvestigationCache: EntityCache = {
     1: {
       childEntityCount: 2,
+      childEntitySize: null,
     },
   };
 

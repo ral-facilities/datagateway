@@ -14,13 +14,18 @@ import {
   fetchInvestigationCountFailure,
   fetchInvestigationDatasetsCountRequest,
 } from '.';
-import { StateType } from '../app.types';
+import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
 import { Investigation } from 'datagateway-common';
-import { fetchISISInvestigationCount } from './investigations';
+import {
+  fetchISISInvestigationCount,
+  fetchInvestigationSizeRequest,
+  fetchInvestigationSizeSuccess,
+  fetchInvestigationSize,
+} from './investigations';
 
 jest.mock('loglevel');
 
@@ -74,11 +79,21 @@ describe('Investigation actions', () => {
     },
   ];
 
+  // Mock axios GET requests to return mock data and
+  // size data.
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({
       data: mockData,
     })
   );
+
+  // Investigation cache for investigation ID 1 which has 2 datasets.
+  const mockInvestigationCache: EntityCache = {
+    1: {
+      childEntitySize: 1,
+      childEntityCount: null,
+    },
+  };
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -160,15 +175,74 @@ describe('Investigation actions', () => {
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchISISInvestigations action', async () => {
-    const asyncAction = fetchISISInvestigations(1, 2);
+    const asyncAction = fetchISISInvestigations({
+      instrumentId: 1,
+      facilityCycleId: 2,
+    });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData, 1));
   });
 
+  it('dispatches fetchInvestigationSizeRequest and fetchInvestigationSizeSuccess actions upon successful fetchInvestigationSize action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 1,
+      })
+    );
+
+    const asyncAction = fetchInvestigationSize(1);
+    await asyncAction(dispatch, getState, null);
+
+    // TODO: Add in fetchInvestigationSuccess - test if /user/getSize/
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchInvestigationSizeRequest());
+    expect(actions[1]).toEqual(fetchInvestigationSizeSuccess(1, 1));
+    expect(axios.get).toHaveBeenCalledWith(
+      '/user/getSize',
+      expect.objectContaining({
+        params: {
+          sessionId: null,
+          facilityName: 'LILS',
+          entityType: 'investigation',
+          entityId: 1,
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchInvestigationSizeRequest and fetchInvestigationSizeSuccess actions upon existing investigation cache and successful fetchInvestigationSize action', async () => {
+    // Call fetch investigations with an ID of 1.
+    const asyncAction = fetchInvestigationSize(1);
+
+    // Set up state for calling fetchInvestigationSize with investigation cache.
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        investigationCache: mockInvestigationCache,
+      },
+    });
+
+    await asyncAction(dispatch, getState, null);
+
+    // An axios request should not have been made since the size has been cached.
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchInvestigationSizeRequest());
+    expect(actions[1]).toEqual(
+      fetchInvestigationSizeSuccess(mockData[0].ID, 1)
+    );
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  // TODO: Test fetchInvestigationSizeFailure error message
+
   it('fetchISISInvestigations action applies filters and sort state to request params', async () => {
-    const asyncAction = fetchISISInvestigations(1, 2);
+    const asyncAction = fetchISISInvestigations({
+      instrumentId: 1,
+      facilityCycleId: 2,
+    });
     const getState = (): Partial<StateType> => ({
       dgtable: {
         ...initialState,
@@ -201,7 +275,10 @@ describe('Investigation actions', () => {
       })
     );
 
-    const asyncAction = fetchISISInvestigations(1, 2);
+    const asyncAction = fetchISISInvestigations({
+      instrumentId: 1,
+      facilityCycleId: 2,
+    });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
