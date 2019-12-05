@@ -246,6 +246,7 @@ describe('ISIS - Investigations Table', () => {
   describe('should be able to select items', () => {
     beforeEach(() => {
       cy.clearDownloadCart();
+      cy.reload();
     });
 
     it('individually', () => {
