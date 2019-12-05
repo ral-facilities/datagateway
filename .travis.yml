@@ -28,4 +28,4 @@ jobs:
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-search/*' -F search &&
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-download/*' -F download
     - name: 'E2E Tests'
-      script: yarn test:e2e
+      script: CYPRESS_RETRIES=5 yarn test:e2e
