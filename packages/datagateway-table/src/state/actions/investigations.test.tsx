@@ -25,6 +25,7 @@ import {
   fetchInvestigationSizeRequest,
   fetchInvestigationSizeSuccess,
   fetchInvestigationSize,
+  fetchInvestigationSizeFailure,
 } from './investigations';
 
 jest.mock('loglevel');
@@ -79,15 +80,14 @@ describe('Investigation actions', () => {
     },
   ];
 
-  // Mock axios GET requests to return mock data and
-  // size data.
+  // Mock axios GET requests to return mock data.
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({
       data: mockData,
     })
   );
 
-  // Investigation cache for investigation ID 1 which has 2 datasets.
+  // Investigation cache for investigation ID 1 which has a size of 1.
   const mockInvestigationCache: EntityCache = {
     1: {
       childEntitySize: 1,
@@ -185,6 +185,20 @@ describe('Investigation actions', () => {
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData, 1));
   });
 
+  it('fetchISISInvestigation action sends fetchInvestigationSize actions when specified via optional parameters', async () => {
+    const asyncAction = fetchISISInvestigations({
+      instrumentId: 1,
+      facilityCycleId: 2,
+      optionalParams: { getSize: true },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions).toHaveLength(6);
+    expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
+    expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData, 1));
+    expect(actions[2]).toEqual(fetchInvestigationSizeRequest());
+  });
+
   it('dispatches fetchInvestigationSizeRequest and fetchInvestigationSizeSuccess actions upon successful fetchInvestigationSize action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
@@ -195,7 +209,6 @@ describe('Investigation actions', () => {
     const asyncAction = fetchInvestigationSize(1);
     await asyncAction(dispatch, getState, null);
 
-    // TODO: Add in fetchInvestigationSuccess - test if /user/getSize/
     expect(actions).toHaveLength(2);
     expect(actions[0]).toEqual(fetchInvestigationSizeRequest());
     expect(actions[1]).toEqual(fetchInvestigationSizeSuccess(1, 1));
@@ -230,13 +243,30 @@ describe('Investigation actions', () => {
     // An axios request should not have been made since the size has been cached.
     expect(actions).toHaveLength(2);
     expect(actions[0]).toEqual(fetchInvestigationSizeRequest());
-    expect(actions[1]).toEqual(
-      fetchInvestigationSizeSuccess(mockData[0].ID, 1)
-    );
+    expect(actions[1]).toEqual(fetchInvestigationSizeSuccess(1, 1));
     expect(axios.get).not.toHaveBeenCalled();
   });
 
   // TODO: Test fetchInvestigationSizeFailure error message
+  it('dispatches fetchInvestigationSizeRequest and fetchInvestigationSizeFailure action upon unsuccessful fetchInvestigationsSize action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchInvestigationSize(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationSizeRequest());
+    expect(actions[1]).toEqual(
+      fetchInvestigationSizeFailure('Test error message')
+    );
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
 
   it('fetchISISInvestigations action applies filters and sort state to request params', async () => {
     const asyncAction = fetchISISInvestigations({

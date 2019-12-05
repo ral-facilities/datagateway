@@ -25,6 +25,12 @@ import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
 import { Dataset } from 'datagateway-common';
+import {
+  fetchDatasetSize,
+  fetchDatasetSizeRequest,
+  fetchDatasetSizeSuccess,
+  fetchDatasetSizeFailure,
+} from './datasets';
 
 jest.mock('loglevel');
 
@@ -59,6 +65,14 @@ describe('Dataset actions', () => {
     1: {
       childEntityCount: 2,
       childEntitySize: null,
+    },
+  };
+
+  // Dataset cache for dataset ID 1 which has a size of
+  const mockDatasetCache: EntityCache = {
+    1: {
+      childEntitySize: 10000,
+      childEntityCount: null,
     },
   };
 
@@ -139,6 +153,81 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
     expect(actions[1]).toEqual(fetchDatasetsFailure('Test error message'));
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('fetchDataset action sends fetchDatasetSize actions when specified via optional parameters', async () => {
+    const asyncAction = fetchDatasets({
+      investigationId: 1,
+      optionalParams: { getSize: true },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions).toHaveLength(6);
+    expect(actions[0]).toEqual(fetchDatasetsRequest(1));
+    expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
+    expect(actions[2]).toEqual(fetchDatasetSizeRequest());
+  });
+
+  it('dispatches fetchDatasetSizeRequest and fetchDatasetSizeSuccess actions upon successful fetchDatasetSize action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: 10000,
+      })
+    );
+
+    const asyncAction = fetchDatasetSize(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchDatasetSizeRequest());
+    expect(actions[1]).toEqual(fetchDatasetSizeSuccess(1, 10000));
+    expect(axios.get).toHaveBeenCalledWith(
+      '/user/getSize',
+      expect.objectContaining({
+        params: {
+          sessionId: null,
+          facilityName: 'LILS',
+          entityType: 'dataset',
+          entityId: 1,
+        },
+      })
+    );
+  });
+
+  it('dispatches fetchDatasetSizeRequest and fetchDatasetSizeSuccess actions upon existing dataset cache and successful fetchDatasetSize action', async () => {
+    const asyncAction = fetchDatasetSize(1);
+
+    const getState = (): Partial<StateType> => ({
+      dgtable: {
+        ...initialState,
+        data: mockData,
+        datasetCache: mockDatasetCache,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions).toHaveLength(2);
+    expect(actions[0]).toEqual(fetchDatasetSizeRequest());
+    expect(actions[1]).toEqual(fetchDatasetSizeSuccess(1, 10000));
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('dispatches fetchInvestigationSizeRequest and fetchInvestigationSizeFailure action upon unsuccessful fetchInvestigationsSize action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchDatasetSize(1);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchDatasetSizeRequest());
+    expect(actions[1]).toEqual(fetchDatasetSizeFailure('Test error message'));
 
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
