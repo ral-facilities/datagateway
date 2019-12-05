@@ -1,9 +1,15 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { Order, Filter, Entity, DownloadCartItem } from 'datagateway-common';
-import { FeatureSwitches, URLs } from './actions/actions.types';
+import {
+  FeatureSwitches,
+  URLs,
+  BreadcrumbSettings,
+} from './actions/actions.types';
+import { RouterState } from 'connected-react-router';
 
 export interface DGTableState {
+  facilityName: string;
   sort: {
     [column: string]: Order;
   };
@@ -25,6 +31,7 @@ export interface DGTableState {
   res?: ApplicationStrings;
   features: FeatureSwitches;
   urls: URLs;
+  breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
 }
 
@@ -45,6 +52,7 @@ export interface ApplicationStrings {
 
 export interface StateType {
   dgtable: DGTableState;
+  router: RouterState;
 }
 
 export interface ActionType<T> {

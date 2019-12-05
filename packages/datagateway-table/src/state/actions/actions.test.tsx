@@ -6,9 +6,11 @@ import {
   configureStrings,
   loadFeatureSwitches,
   loadUrls,
+  loadBreadcrumbSettings,
   configureApp,
   loadStrings,
   settingsLoaded,
+  loadFacilityName,
 } from '.';
 import {
   SortTableType,
@@ -17,7 +19,9 @@ import {
   ConfigureStringsType,
   ConfigureFeatureSwitchesType,
   ConfigureURLsType,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureFacilityNameType,
 } from './actions.types';
 import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgtable.reducer';
@@ -201,15 +205,47 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and configureStrings, loadFeatureSwitches, loadUrls, fetchDownloadCart and settingsLoaded actions are sent', async () => {
+  it('given JSON loadFacilityName returns a ConfigureFacilityNameType with ConfigureFacilityNamePayload', () => {
+    const action = loadFacilityName('Generic');
+    expect(action.type).toEqual(ConfigureFacilityNameType);
+    expect(action.payload).toEqual({
+      facilityName: 'Generic',
+    });
+  });
+
+  it('given JSON loadBreadcrumbSettings returns a ConfigureBreadcrumbSettingsType with ConfigureBreadcrumbSettingsPayload', () => {
+    const action = loadBreadcrumbSettings({
+      test: {
+        replaceEntity: 'testEntity',
+        replaceEntityField: 'testField',
+      },
+    });
+    expect(action.type).toEqual(ConfigureBreadcrumbSettingsType);
+    expect(action.payload).toEqual({
+      settings: {
+        test: {
+          replaceEntity: 'testEntity',
+          replaceEntityField: 'testField',
+        },
+      },
+    });
+  });
+
+  it('settings are loaded and facilityName, configureStrings, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
           data: {
+            facilityName: 'Generic',
             features: {},
             'ui-strings': '/res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
+            breadcrumbs: {
+              test: {
+                replaceEntityField: 'TITLE',
+              },
+            },
             downloadApiUrl: 'download-api',
           },
         })
@@ -225,7 +261,8 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(6);
+    expect(actions.length).toEqual(8);
+    expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
@@ -235,6 +272,13 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+      })
+    );
+    expect(actions).toContainEqual(
+      loadBreadcrumbSettings({
+        test: {
+          replaceEntityField: 'TITLE',
+        },
       })
     );
     expect(actions).toContainEqual(fetchDownloadCartRequest());
@@ -247,6 +291,7 @@ describe('Actions', () => {
       .mockImplementationOnce(() =>
         Promise.resolve({
           data: {
+            facilityName: 'Generic',
             'ui-strings': 'res/default.json',
             idsUrl: 'ids',
             apiUrl: 'api',
@@ -265,7 +310,8 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(5);
+    expect(actions.length).toEqual(6);
+    expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
     );
@@ -279,6 +325,42 @@ describe('Actions', () => {
     expect(actions).toContainEqual(fetchDownloadCartRequest());
     expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
+  });
+
+  it('logs an error if facility name is not defined in settings.json and fails to be loaded', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {},
+      })
+    );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-table-settings.json: facilityName is undefined in settings'
+    );
+  });
+
+  it('logs an error if urls are not defined in settings.json and fails to be loaded', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+        },
+      })
+    );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-table-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+    );
   });
 
   it('logs an error if settings.json fails to be loaded', async () => {

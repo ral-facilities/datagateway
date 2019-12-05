@@ -15,6 +15,7 @@ describe('DLS - Visits Table', () => {
     cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
@@ -74,7 +75,7 @@ describe('DLS - Visits Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Visit Id').click();
+      cy.contains('[role="button"]', 'Visit Id').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -82,8 +83,8 @@ describe('DLS - Visits Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Visit Id').click();
-      cy.contains('Visit Id').click();
+      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit Id').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -95,9 +96,9 @@ describe('DLS - Visits Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Visit Id').click();
-      cy.contains('Visit Id').click();
-      cy.contains('Visit Id').click();
+      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit Id').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -111,8 +112,8 @@ describe('DLS - Visits Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Start Date').click();
-      cy.contains('Visit Id').click();
+      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Visit Id').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
     });
@@ -183,8 +184,9 @@ describe('DLS - Visits Table', () => {
     // showing details when another row is showing details at the moment.
 
     it('and view visit users, samples and publications', () => {
-      // need to wait for counts to finish, otherwise cypress might interact with the details panel
-      // too quickly and it rerenders during the test
+      // We need to wait for counts to finish, otherwise cypress
+      // might interact with the details panel too quickly and
+      // it re-renders during the test.
       cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
         'exist'
       );

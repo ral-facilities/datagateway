@@ -18,7 +18,12 @@ import {
   URLs,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  BreadcrumbSettings,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureFacilityNamePayload,
+  ConfigureFacilityNameType,
 } from './actions.types';
 import { Filter, Order } from 'datagateway-common';
 import { Action } from 'redux';
@@ -123,6 +128,15 @@ export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
   };
 };
 
+export const loadFacilityName = (
+  name: string
+): ActionType<ConfigureFacilityNamePayload> => ({
+  type: ConfigureFacilityNameType,
+  payload: {
+    facilityName: name,
+  },
+});
+
 export const loadFeatureSwitches = (
   featureSwitches: FeatureSwitches
 ): ActionType<FeatureSwitchesPayload> => ({
@@ -139,6 +153,15 @@ export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
   },
 });
 
+export const loadBreadcrumbSettings = (
+  breadcrumbSettings: BreadcrumbSettings
+): ActionType<ConfigureBreadcrumbSettingsPayload> => ({
+  type: ConfigureBreadcrumbSettingsType,
+  payload: {
+    settings: breadcrumbSettings,
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async dispatch => {
     await axios
@@ -151,17 +174,40 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           throw Error('Invalid format');
         }
 
-        if (settings['features']) {
+        // Get the facility name from settings.
+        if ('facilityName' in settings) {
+          dispatch(loadFacilityName(settings['facilityName']));
+        } else {
+          throw new Error('facilityName is undefined in settings');
+        }
+
+        // features is an optional setting
+        if ('features' in settings) {
           dispatch(loadFeatureSwitches(settings['features']));
         }
 
-        dispatch(
-          loadUrls({
-            idsUrl: settings['idsUrl'],
-            apiUrl: settings['apiUrl'],
-            downloadApiUrl: settings['downloadApiUrl'],
-          })
-        );
+        if (
+          'idsUrl' in settings &&
+          'apiUrl' in settings &&
+          'downloadApiUrl' in settings
+        ) {
+          dispatch(
+            loadUrls({
+              idsUrl: settings['idsUrl'],
+              apiUrl: settings['apiUrl'],
+              downloadApiUrl: settings['downloadApiUrl'],
+            })
+          );
+        } else {
+          throw new Error(
+            'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+          );
+        }
+
+        // Dispatch the action to load the breadcrumb settings (optional settings).
+        if ('breadcrumbs' in settings) {
+          dispatch(loadBreadcrumbSettings(settings['breadcrumbs']));
+        }
 
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
@@ -208,10 +254,12 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             .catch(error => log.error("Can't log in to ICAT"));
         }
 
-        const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
-          ? '/' + settings['ui-strings']
-          : settings['ui-strings'];
-        dispatch(loadStrings(uiStringResourcesPath));
+        if ('ui-strings' in settings) {
+          const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
+            ? '/' + settings['ui-strings']
+            : settings['ui-strings'];
+          dispatch(loadStrings(uiStringResourcesPath));
+        }
 
         // fetch initial download cart
         dispatch(fetchDownloadCart());

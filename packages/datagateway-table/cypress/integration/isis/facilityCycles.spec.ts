@@ -72,7 +72,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -82,8 +82,8 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -97,9 +97,9 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -115,8 +115,8 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Start Date').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
         'Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
