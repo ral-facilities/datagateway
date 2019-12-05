@@ -74,6 +74,10 @@ import {
   fetchAllIdsRequest,
   fetchAllIdsSuccess,
   fetchAllIdsFailure,
+  fetchInvestigationSizeRequest,
+  fetchInvestigationSizeSuccess,
+  fetchInvestigationSizeFailure,
+  fetchDatasetSizeSuccess,
 } from '../actions';
 import {
   Investigation,
@@ -432,6 +436,86 @@ describe('dgtable reducer', () => {
       let updatedState = DGTableReducer(
         state,
         fetchInvestigationDetailsFailure('Test error message')
+      );
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchInvestigationSize and FetchDatasetSize actions', () => {
+    const mockData: Investigation[] = [
+      {
+        ID: 1,
+        TITLE: 'Test 1',
+        NAME: 'Test 1',
+        VISIT_ID: '1',
+        RB_NUMBER: '1',
+        DOI: 'doi 1',
+        STARTDATE: '2019-06-10',
+        ENDDATE: '2019-06-11',
+      },
+      {
+        ID: 2,
+        TITLE: 'Test 2',
+        NAME: 'Test 1',
+        VISIT_ID: '2',
+        RB_NUMBER: '2',
+        DOI: 'doi 2',
+        SIZE: 10000,
+        STARTDATE: '2019-06-10',
+        ENDDATE: '2019-06-12',
+      },
+    ];
+
+    it('should have the same state when given a FetchSizeRequest', () => {
+      let updatedState = DGTableReducer(state, fetchInvestigationSizeRequest());
+
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should set the data and investigationCache state when given a FetchInvestigationSize action', () => {
+      state.data = mockData;
+
+      const mockDataUpdated = [{ ...mockData[0], SIZE: 1 }, mockData[1]];
+      const mockInvestigationCacheUpdated: EntityCache = {
+        1: {
+          childEntitySize: 1,
+        },
+      };
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationSizeSuccess(1, 1)
+      );
+      expect(updatedState.investigationCache).toEqual(
+        mockInvestigationCacheUpdated
+      );
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the data and datasetCache state when given a FetchDatasetSize action', () => {
+      state.data = mockData;
+
+      const mockDataUpdated = [mockData[0], { ...mockData[1], SIZE: 10000 }];
+      const mockDatasetCacheUpdated: EntityCache = {
+        2: {
+          childEntitySize: 10000,
+        },
+      };
+
+      let updatedState = DGTableReducer(
+        state,
+        fetchDatasetSizeSuccess(2, 10000)
+      );
+      expect(updatedState.datasetCache).toEqual(mockDatasetCacheUpdated);
+      expect(updatedState.data).toEqual(mockDataUpdated);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state when given a FetchInvestigationSizeFailure action', () => {
+      let updatedState = DGTableReducer(
+        state,
+        fetchInvestigationSizeFailure('Test error message')
       );
       expect(updatedState.error).toEqual('Test error message');
     });
