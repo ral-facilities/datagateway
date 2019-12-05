@@ -1,7 +1,6 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.clearDownloadCart();
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset');
   });
 
@@ -243,6 +242,10 @@ describe('DLS - Datasets Table', () => {
   });
 
   describe('should be able to select items', () => {
+    beforeEach(() => {
+      cy.clearDownloadCart();
+    });
+
     it('individually', () => {
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');

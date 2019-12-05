@@ -1,7 +1,6 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.clearDownloadCart();
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation/87/dataset');
   });
 
@@ -229,6 +228,10 @@ describe('ISIS - Datasets Table', () => {
   });
 
   describe('should be able to select items', () => {
+    beforeEach(() => {
+      cy.clearDownloadCart();
+    });
+
     it('individually', () => {
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');

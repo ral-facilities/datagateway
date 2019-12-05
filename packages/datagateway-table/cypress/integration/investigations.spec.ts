@@ -1,7 +1,6 @@
 describe('Investigations Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.clearDownloadCart();
     cy.visit('/browse/investigation');
     cy.server();
     cy.route('**/investigations*').as('getInvestigations');
@@ -223,6 +222,10 @@ describe('Investigations Table', () => {
   });
 
   describe('should be able to select items', () => {
+    beforeEach(() => {
+      cy.clearDownloadCart();
+    });
+
     it('individually', () => {
       cy.wait(['@getInvestigations', '@getAllIds']);
       cy.get('[aria-label="select row 0"]').check();
