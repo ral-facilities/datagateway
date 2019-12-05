@@ -16,7 +16,7 @@ exports[`PageHead - Tests displays the correct entity count 1`] = `
     item={true}
     style={
       Object {
-        "paddingRight": "100px",
+        "paddingRight": "140px",
         "textAlign": "right",
       }
     }
