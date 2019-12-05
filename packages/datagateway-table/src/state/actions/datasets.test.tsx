@@ -68,7 +68,7 @@ describe('Dataset actions', () => {
     },
   };
 
-  // Dataset cache for dataset ID 1 which has a size of
+  // Dataset cache for dataset ID 1 which has a size of 10000.
   const mockDatasetCache: EntityCache = {
     1: {
       childEntitySize: 10000,
