@@ -12,7 +12,7 @@ import { createShallow } from '@material-ui/core/test-utils';
 import { createLocation } from 'history';
 import { MemoryRouter } from 'react-router';
 
-import PageHead from './pageHead.component';
+import PageHead from './pageContainer.component';
 
 jest.mock('loglevel');
 
