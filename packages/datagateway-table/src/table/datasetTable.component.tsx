@@ -226,7 +226,4 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DatasetTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DatasetTable);

@@ -253,7 +253,4 @@ const mapStateToProps = (
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DatafileTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DatafileTable);

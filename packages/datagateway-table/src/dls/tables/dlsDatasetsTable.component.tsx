@@ -234,7 +234,4 @@ const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DLSDatasetsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DLSDatasetsTable);

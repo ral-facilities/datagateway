@@ -242,7 +242,12 @@ export const fetchAllIds = (
         },
       })
       .then(response => {
-        dispatch(fetchAllIdsSuccess(response.data.map(x => x.ID), timestamp));
+        dispatch(
+          fetchAllIdsSuccess(
+            response.data.map(x => x.ID),
+            timestamp
+          )
+        );
       })
       .catch(error => {
         log.error(error.message);
@@ -280,7 +285,12 @@ export const fetchAllISISInvestigationIds = (
         }
       )
       .then(response => {
-        dispatch(fetchAllIdsSuccess(response.data.map(x => x.ID), timestamp));
+        dispatch(
+          fetchAllIdsSuccess(
+            response.data.map(x => x.ID),
+            timestamp
+          )
+        );
       })
       .catch(error => {
         log.error(error.message);

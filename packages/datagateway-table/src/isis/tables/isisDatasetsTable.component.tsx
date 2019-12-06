@@ -263,7 +263,4 @@ const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ISISDatasetsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(ISISDatasetsTable);

@@ -1,20 +1,6 @@
 {
   "packages": ["packages/*"],
   "version": "0.0.0",
-  "command": {
-    "bootstrap": {
-      "strict": true,
-      "hoist": [
-        "lerna",
-        "husky",
-        "lerna-update-wizard",
-        "cypress",
-        "cypress-failed-log",
-        "react",
-        "react-dom",
-        "react-router",
-        "react-router-dom"
-      ]
-    }
-  }
+  "npmClient": "yarn",
+  "useWorkspaces": true
 }

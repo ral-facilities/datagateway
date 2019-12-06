@@ -240,7 +240,4 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvestigationTable);
+export default connect(mapStateToProps, mapDispatchToProps)(InvestigationTable);

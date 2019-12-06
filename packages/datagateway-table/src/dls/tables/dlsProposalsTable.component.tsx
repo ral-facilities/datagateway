@@ -160,7 +160,4 @@ const mapStateToProps = (state: StateType): DLSProposalsTableStoreProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DLSProposalsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DLSProposalsTable);

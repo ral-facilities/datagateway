@@ -218,7 +218,4 @@ const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DLSVisitsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DLSVisitsTable);
