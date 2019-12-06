@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Grid } from '@material-ui/core';
 
 import PageBreadcrumbs from './breadcrumbs.component';
-import PageRoutes from './pageRoutes.component';
+import PageTable from './pageTable.component';
 
 class PageContainer extends React.Component<{ entityCount: number }> {
   public constructor(props: { entityCount: number }) {
@@ -13,23 +13,23 @@ class PageContainer extends React.Component<{ entityCount: number }> {
 
   public render(): React.ReactElement {
     return (
-      <Grid container spacing={3}>
+      <Grid container>
         {/* Hold the breadcrumbs and table count at top of the page. */}
         <Grid item xs={10} aria-label="container-breadcrumbs">
           <PageBreadcrumbs />
         </Grid>
         <Grid
-          style={{ textAlign: 'right', paddingRight: '100px' }}
+          style={{ textAlign: 'right', paddingRight: '130px' }}
           item
           xs={2}
-          aria-label="container-entity-count"
+          aria-label="container-table-count"
         >
           <b>Results:</b> {this.props.entityCount}
         </Grid>
 
         {/* Hold the table for remainder of the page */}
-        <Grid item xs aria-label="container-table">
-          <PageRoutes />
+        <Grid item xs={12} aria-label="container-table">
+          <PageTable />
         </Grid>
       </Grid>
     );

@@ -18,7 +18,7 @@ import ISISInvestigationsTable from './isis/tables/isisInvestigationsTable.compo
 import ISISDatasetsTable from './isis/tables/isisDatasetsTable.component';
 import ISISDatafilesTable from './isis/tables/isisDatafilesTable.component';
 
-class PageRoutes extends React.Component {
+class PageTable extends React.Component {
   public render(): React.ReactNode {
     return (
       <Switch>
@@ -148,4 +148,4 @@ class PageRoutes extends React.Component {
   }
 }
 
-export default PageRoutes;
+export default PageTable;
