@@ -1,6 +1,7 @@
 describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
     cy.server();
     cy.route('**/investigations*').as('getInvestigations');
@@ -244,10 +245,6 @@ describe('ISIS - Investigations Table', () => {
   });
 
   describe('should be able to select items', () => {
-    beforeEach(() => {
-      cy.clearDownloadCart();
-    });
-
     it('individually', () => {
       cy.get('[aria-label="select row 0"]').click();
       cy.get('[aria-label="select row 0"]').should('be.checked');

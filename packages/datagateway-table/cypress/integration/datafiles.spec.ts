@@ -1,6 +1,7 @@
 describe('Datafiles Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit('/browse/investigation/1/dataset/25/datafile');
     cy.server();
     cy.route('**/datafiles*').as('getDatafiles');
@@ -216,10 +217,6 @@ describe('Datafiles Table', () => {
   });
 
   describe('should be able to select items', () => {
-    beforeEach(() => {
-      cy.clearDownloadCart();
-    });
-
     it('individually', () => {
       cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select row 0"]').check();

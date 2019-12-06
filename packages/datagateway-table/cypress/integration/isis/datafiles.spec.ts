@@ -1,6 +1,7 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
     );
@@ -218,10 +219,6 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   describe('should be able to select items', () => {
-    beforeEach(() => {
-      cy.clearDownloadCart();
-    });
-
     it('individually', () => {
       cy.wait(['@getDatafiles', '@getAllIds']);
       cy.get('[aria-label="select row 0"]').check();

@@ -1,6 +1,7 @@
 describe('Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.clearDownloadCart();
     cy.visit('/browse/investigation/1/dataset');
   });
 
@@ -207,10 +208,6 @@ describe('Datasets Table', () => {
   });
 
   describe('should be able to select items', () => {
-    beforeEach(() => {
-      cy.clearDownloadCart();
-    });
-
     it('individually', () => {
       cy.get('[aria-label="select row 0"]').check();
       cy.get('[aria-label="select row 0"]').should('be.checked');
