@@ -5,7 +5,7 @@
 DataGateway is a [ReactJs](https://reactjs.org/)-based web application that provides ways of discovering and accessing data produced at large-scale science facilities. DataGateway is
 a [micro-frontend](https://micro-frontends.org/) that can be integrated with the parent web application [SciGateway](https://github.com/ral-facilities/scigateway).
 
-DataGateway uses Yarn workspaces to manage it's monorepo structure, so please use yarn instead of npm for package management.
+DataGateway uses Yarn workspaces to manage it's monorepo structure, so please use [Yarn](https://yarnpkg.com/lang/en/docs/install/) instead of npm for package management.
 
 The SciGateway application offers features such as authentication and authorisation functionality, notifications, cookies management. In this way, DataGateway relies on SciGateway for these overarching features, and can focus on providing data discoverability and downloads. The data is organised according to the data hierarchy that reflects the data pipelines in each facility. The data is shown in a tabular format depicting the main metadata fields.
 
@@ -33,7 +33,7 @@ This will install all the project dependencies and then call `lerna bootstrap`,
 which links the packages together. This means that running `yarn install` at the top
 level initialises all the packages, and you will be ready to start development in any of them!
 
-### `yarn workspace {workspace-name} add {package(s)} / yarn workspaces add {package(s)}`
+### `yarn workspace {workspace-name} add {package(s)} / yarn workspaces run add {package(s)}`
 
 Adds new packages. Use the first command to add a package to a project at the top level.
 Alternatively, you can also change directory to the plugin you're developing and run `yarn add {package(s)}` like normal.
