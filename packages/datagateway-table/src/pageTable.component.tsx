@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Switch, Route, RouteComponentProps, Redirect } from 'react-router';
+import { Switch, Route, RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import InvestigationTable from './table/investigationTable.component';
 import DatasetTable from './table/datasetTable.component';
@@ -21,7 +22,13 @@ class PageTable extends React.Component {
   public render(): React.ReactNode {
     return (
       <Switch>
-        <Redirect exact from="/" to="/browse/investigation" />
+        <Route
+          exact
+          path="/"
+          render={() => (
+            <Link to="/browse/investigation">Browse investigations</Link>
+          )}
+        />
         <Route exact path="/browse/proposal/" component={DLSProposalsTable} />
         <Route
           exact

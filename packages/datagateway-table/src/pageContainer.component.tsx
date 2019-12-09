@@ -28,7 +28,7 @@ class PageContainer extends React.Component<{ entityCount: number }> {
           aria-label="container-table-count"
         >
           <Paper>
-            <Typography variant="h5" component="h3">
+            <Typography variant="h6" component="h3">
               <b>Results:</b> {this.props.entityCount}
             </Typography>
           </Paper>
