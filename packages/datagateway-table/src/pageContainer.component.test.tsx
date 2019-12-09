@@ -16,7 +16,7 @@ import PageHead from './pageContainer.component';
 
 jest.mock('loglevel');
 
-describe('PageHead - Tests', () => {
+describe('PageContainer - Tests', () => {
   let shallow;
   let state: StateType;
 

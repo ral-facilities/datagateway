@@ -11,7 +11,7 @@ import {
   Dataset,
   DownloadCartItem,
 } from 'datagateway-common';
-import { Paper, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import {
   sortTable,
   filterTable,
@@ -142,73 +142,71 @@ const ISISDatasetsTable = (
   );
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(parseInt(investigationId), params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData, detailsPanelResize }) => {
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData, detailsPanelResize }) => {
+        return (
+          <DatasetDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            fetchDetails={props.fetchDetails}
+          />
+        );
+      }}
+      actions={[
+        function downloadButton({ rowData }: TableActionProps) {
+          const datasetData = rowData as Dataset;
           return (
-            <DatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              fetchDetails={props.fetchDetails}
-            />
+            <IconButton
+              aria-label="Download"
+              key="download"
+              size="small"
+              onClick={() => {
+                downloadData(datasetData.ID, datasetData.NAME);
+              }}
+            >
+              <GetApp />
+            </IconButton>
           );
-        }}
-        actions={[
-          function downloadButton({ rowData }: TableActionProps) {
-            const datasetData = rowData as Dataset;
-            return (
-              <IconButton
-                aria-label="Download"
-                key="download"
-                size="small"
-                onClick={() => {
-                  downloadData(datasetData.ID, datasetData.NAME);
-                }}
-              >
-                <GetApp />
-              </IconButton>
-            );
-          },
-        ]}
-        columns={[
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            cellContentRenderer: (props: TableCellProps) =>
-              tableLink(
-                `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-                props.rowData.NAME
-              ),
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Size',
-            dataKey: 'SIZE',
-            disableSort: true,
-          },
-          {
-            label: 'Create Time',
-            dataKey: 'CREATE_TIME',
-            filterComponent: dateFilter,
-          },
-          {
-            label: 'Modified Time',
-            dataKey: 'MOD_TIME',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+        },
+      ]}
+      columns={[
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          cellContentRenderer: (props: TableCellProps) =>
+            tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
+              props.rowData.NAME
+            ),
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Size',
+          dataKey: 'SIZE',
+          disableSort: true,
+        },
+        {
+          label: 'Create Time',
+          dataKey: 'CREATE_TIME',
+          filterComponent: dateFilter,
+        },
+        {
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 
