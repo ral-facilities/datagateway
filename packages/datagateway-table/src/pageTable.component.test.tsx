@@ -96,66 +96,77 @@ describe('PageTable - Snapshot Tests', () => {
   it('renders DatasetTable for generic datasets route', () => {
     const wrapper = createWrapper(genericRoutes['datasets']);
 
+    // Expect the DatasetTable component to be present.
     expect(wrapper.exists(DatasetTable)).toBe(true);
   });
 
   it('renders DatafileTable for generic datafiles route', () => {
     const wrapper = createWrapper(genericRoutes['datafiles']);
 
+    // Expect the DatafileTable component to be present.
     expect(wrapper.exists(DatafileTable)).toBe(true);
   });
 
   it('renders ISISInstrumentsTable for ISIS instruments route', () => {
     const wrapper = createWrapper(ISISRoutes['instruments']);
 
+    // Expect the ISISInstrumentsTable component to be present.
     expect(wrapper.exists(ISISInstrumentsTable)).toBe(true);
   });
 
   it('renders ISISFacilityCyclesTable for ISIS facilityCycles route', () => {
     const wrapper = createWrapper(ISISRoutes['facilityCycles']);
 
+    // Expect the ISISFacilityCyclesTable component to be present.
     expect(wrapper.exists(ISISFacilityCyclesTable)).toBe(true);
   });
 
   it('renders ISISInvestigations for ISIS investigations route', () => {
     const wrapper = createWrapper(ISISRoutes['investigations']);
 
+    // Expect the ISISInvestigationsTable component to be present.
     expect(wrapper.exists(ISISInvestigationsTable)).toBe(true);
   });
 
   it('renders ISISDatasetsTable for ISIS datasets route', () => {
     const wrapper = createWrapper(ISISRoutes['datasets']);
 
+    // Expect the ISISDatasetsTable component to be present.
     expect(wrapper.exists(ISISDatasetsTable)).toBe(true);
   });
 
   it('renders ISISDatafilesTable for ISIS datafiles route', () => {
     const wrapper = createWrapper(ISISRoutes['datafiles']);
 
+    // Expect the ISISDatafilesTable component to be present.
     expect(wrapper.exists(ISISDatafilesTable)).toBe(true);
   });
 
   it('renders DLSProposalTable for DLS proposal route', () => {
     const wrapper = createWrapper(DLSRoutes['proposals']);
 
+    // Expect the DLSProposalsTable component to be present.
     expect(wrapper.exists(DLSProposalsTable)).toBe(true);
   });
 
   it('renders DLSVisitsTable for DLS investigations route', () => {
     const wrapper = createWrapper(DLSRoutes['investigations']);
 
+    // Expect the DLSVisitsTable component to be present.
     expect(wrapper.exists(DLSVisitsTable)).toBe(true);
   });
 
   it('renders DLSDatasetsTable for DLS datasets route', () => {
     const wrapper = createWrapper(DLSRoutes['datasets']);
 
+    // Expect the DLSDatasetsTable component to be present.
     expect(wrapper.exists(DLSDatasetsTable)).toBe(true);
   });
 
   it('renders DLSDatafilesTable for DLS datafiles route', () => {
     const wrapper = createWrapper(DLSRoutes['datafiles']);
 
+    // Expect the DLSDatafilesTable component to be present.
     expect(wrapper.exists(DLSDatafilesTable)).toBe(true);
   });
 });
