@@ -16,7 +16,7 @@ class PageHead extends React.Component<{ entityCount: number }> {
           <PageBreadcrumbs />
         </Grid>
         <Grid
-          style={{ textAlign: 'right', paddingRight: '100px' }}
+          style={{ textAlign: 'right', paddingRight: '140px' }}
           item
           xs={2}
           aria-label="head-entity-count"

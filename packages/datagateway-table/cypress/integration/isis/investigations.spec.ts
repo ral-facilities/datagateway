@@ -181,6 +181,14 @@ describe('ISIS - Investigations Table', () => {
   });
 
   describe('should be able to view details', () => {
+    beforeEach(() => {
+      // Check that we have received the size from the API as this will produce
+      // a re-render which can prevent the click.
+      cy.contains('[aria-rowindex="1"] [aria-colindex="7"]', '11.06 GB').should(
+        'exist'
+      );
+    });
+
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]')
         .first()

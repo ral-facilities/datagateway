@@ -38,12 +38,14 @@ export interface DGTableState {
 export interface EntityCache {
   [id: number]: {
     childEntityCount: number | null;
+    childEntitySize: number | null;
   };
 }
 
 export interface AppStrings {
   [id: string]: string;
 }
+
 export interface ApplicationStrings {
   [section: string]: AppStrings;
 }
