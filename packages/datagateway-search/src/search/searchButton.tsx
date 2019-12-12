@@ -5,7 +5,6 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { format } from 'date-fns';
-import { string } from 'prop-types';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -18,14 +17,14 @@ interface SearchButtonStoreProps {
 
 interface LuceneParameters {
   sessionId: string;
-    query: {
-      text: string;
-      lower: string;
-      upper: string;
-      target: string;
-    }; 
+  query: {
+    text: string;
+    lower: string;
+    upper: string;
+    target: string;
+  };
   maxCount: number;
-} 
+}
 
 type SearchButtonCombinedProps = SearchButtonStoreProps;
 
@@ -37,8 +36,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     this.urlParamsBuilder = this.urlParamsBuilder.bind(this);
   }
 
-  public urlParamsBuilder = (datasearchtype: string): 
-    LuceneParameters => {
+  public urlParamsBuilder = (datasearchtype: string): LuceneParameters => {
     // type the object returned//
 
     let stringStartDate = '0000001010000';

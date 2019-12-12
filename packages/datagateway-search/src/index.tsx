@@ -33,7 +33,6 @@ if (process.env.NODE_ENV === `development`) {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-
 // TODO: if it's still needed, get icatUrl from settings file
 const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session/';
 
@@ -50,11 +49,11 @@ axios
   .then(response => {
     window.localStorage.setItem('icat:token', response.data.sessionId);
   })
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   .catch((error: { message: any }) => {
     log.error(`Token was not retrieved.`);
   });
-
+/* eslint-enable @typescript-eslint/no-explicit-any */
 window.addEventListener('single-spa:routing-event', () => {
   render();
 });
-/* eslint-enable @typescript-eslint/no-explicit-any */
