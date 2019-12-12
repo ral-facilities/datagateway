@@ -1,0 +1,13 @@
+flags:
+  common:
+    paths:
+      - packages/datagateway-common/src
+  table:
+    paths:
+      - packages/datagateway-table/src
+  search:
+    paths:
+      - packages/datagateway-search/src
+  download:
+    paths:
+      - packages/datagateway-download/src

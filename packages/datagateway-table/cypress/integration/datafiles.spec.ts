@@ -9,6 +9,50 @@ describe('Datafiles Table', () => {
     cy.get('#datagateway-table').should('be.visible');
   });
 
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then(window => {
+        const windowWidth = window.innerWidth;
+        columnWidth = (windowWidth - 50 - 70) / 4;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]')
+      .eq(1)
+      .as('nameColumn');
+    cy.get('[role="columnheader"]')
+      .eq(2)
+      .as('locationColumn');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@locationColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 400 })
+      .trigger('mouseup');
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@locationColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+  });
+
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
@@ -139,7 +183,7 @@ describe('Datafiles Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    it('when another other row is showing details', () => {
+    it('when another row is showing details', () => {
       cy.get('[aria-label="Show details"]')
         .eq(1)
         .click();

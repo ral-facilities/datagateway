@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 'stable'
+  - 'lts/*'
 addons:
   apt:
     packages:
@@ -12,6 +12,19 @@ cache:
     # we also need to cache folder with Cypress binary
     - ~/.cache
 install:
-  - npm ci
-script:
-  - npm test
+  - npm install
+jobs:
+  include:
+    - stage: test
+      name: 'Lint'
+      script: npm run lint
+    - name: 'Unit Tests'
+      script: npm run test:unit
+      after_success:
+        - |
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-common/*' -F common &&
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-table/*' -F table &&
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-search/*' -F search &&
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-download/*' -F download
+    - name: 'E2E Tests'
+      script: npm run test:e2e

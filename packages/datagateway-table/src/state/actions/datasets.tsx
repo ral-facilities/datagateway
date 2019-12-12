@@ -11,11 +11,15 @@ import {
   FetchDataSuccessPayload,
   FailurePayload,
   FetchDataCountSuccessPayload,
+  FetchDatasetDetailsSuccessType,
+  FetchDatasetDetailsFailureType,
+  FetchDatasetDetailsRequestType,
   FetchCountSuccessPayload,
   FetchDatasetCountSuccessType,
   FetchDatasetCountFailureType,
   FetchDatasetCountRequestType,
   RequestPayload,
+  FetchDetailsSuccessPayload,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
@@ -57,10 +61,20 @@ export const fetchDatasetsRequest = (
   },
 });
 
-export const fetchDatasets = (
-  investigationId: number,
-  offsetParams?: IndexRange
-): ThunkResult<Promise<void>> => {
+interface FetchDatasetsParams {
+  getDatafileCount?: boolean;
+  getSize?: boolean;
+}
+
+export const fetchDatasets = ({
+  investigationId,
+  offsetParams,
+  optionalParams,
+}: {
+  investigationId: number;
+  offsetParams?: IndexRange;
+  optionalParams?: FetchDatasetsParams;
+}): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchDatasetsRequest(timestamp));
@@ -77,7 +91,6 @@ export const fetchDatasets = (
         JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
       );
     }
-    const { datasetGetCount } = getState().dgtable.features;
     const { apiUrl } = getState().dgtable.urls;
 
     await axios
@@ -89,7 +102,7 @@ export const fetchDatasets = (
       })
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data, timestamp));
-        if (datasetGetCount) {
+        if (optionalParams && optionalParams.getDatafileCount) {
           batch(() => {
             response.data.forEach((dataset: Dataset) => {
               dispatch(fetchDatasetDatafilesCount(dataset.ID));
@@ -301,5 +314,57 @@ export const fetchInvestigationDatasetsCount = (
           dispatch(fetchInvestigationDatasetsCountFailure(error.message));
         });
     }
+  };
+};
+
+export const fetchDatasetDetailsSuccess = (
+  datasets: Dataset[]
+): ActionType<FetchDetailsSuccessPayload> => ({
+  type: FetchDatasetDetailsSuccessType,
+  payload: {
+    data: datasets,
+  },
+});
+
+export const fetchDatasetDetailsFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchDatasetDetailsFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatasetDetailsRequest = (): Action => ({
+  type: FetchDatasetDetailsRequestType,
+});
+
+export const fetchDatasetDetails = (
+  datasetId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchDatasetDetailsRequest());
+
+    let params = new URLSearchParams();
+
+    params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
+    params.append('include', JSON.stringify('DATASETTYPE'));
+
+    const { apiUrl } = getState().dgtable.urls;
+
+    await axios
+      .get(`${apiUrl}/datasets`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        },
+      })
+      .then(response => {
+        dispatch(fetchDatasetDetailsSuccess(response.data));
+      })
+      .catch(error => {
+        log.error(error.message);
+        dispatch(fetchDatasetDetailsFailure(error.message));
+      });
   };
 };

@@ -3,9 +3,53 @@
 exports[`Data column header component renders correctly with filter but no sort 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-head"
+  className="MuiTableCell-root MuiTableCell-head test-class"
 >
-  Test
+  <div
+    style={
+      Object {
+        "display": "flex",
+      }
+    }
+  >
+    Test
+    <Draggable
+      allowAnyClick={false}
+      axis="none"
+      bounds={false}
+      cancel={null}
+      defaultClassName="react-draggable"
+      defaultClassNameDragged="react-draggable-dragged"
+      defaultClassNameDragging="react-draggable-dragging"
+      defaultPosition={
+        Object {
+          "x": 0,
+          "y": 0,
+        }
+      }
+      disabled={false}
+      enableUserSelectHack={true}
+      grid={null}
+      handle={null}
+      offsetParent={null}
+      onDrag={[Function]}
+      onMouseDown={[Function]}
+      onStart={[Function]}
+      onStop={[Function]}
+      position={null}
+      scale={1}
+      transform={null}
+    >
+      <DragIndicatorIcon
+        fontSize="small"
+        style={
+          Object {
+            "cursor": "col-resize",
+          }
+        }
+      />
+    </Draggable>
+  </div>
   <TextColumnFilter
     label="test"
     onChange={[Function]}
@@ -16,19 +60,63 @@ exports[`Data column header component renders correctly with filter but no sort 
 exports[`Data column header component renders correctly with sort and filter 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-head"
+  className="MuiTableCell-root MuiTableCell-head test-class"
 >
-  <WithStyles(ForwardRef(TableSortLabel))
-    active={false}
-    onClick={[Function]}
+  <div
     style={
       Object {
-        "flexDirection": "row",
+        "display": "flex",
       }
     }
   >
-    Test
-  </WithStyles(ForwardRef(TableSortLabel))>
+    <WithStyles(ForwardRef(TableSortLabel))
+      active={false}
+      onClick={[Function]}
+      style={
+        Object {
+          "flex": "auto",
+        }
+      }
+    >
+      Test
+    </WithStyles(ForwardRef(TableSortLabel))>
+    <Draggable
+      allowAnyClick={false}
+      axis="none"
+      bounds={false}
+      cancel={null}
+      defaultClassName="react-draggable"
+      defaultClassNameDragged="react-draggable-dragged"
+      defaultClassNameDragging="react-draggable-dragging"
+      defaultPosition={
+        Object {
+          "x": 0,
+          "y": 0,
+        }
+      }
+      disabled={false}
+      enableUserSelectHack={true}
+      grid={null}
+      handle={null}
+      offsetParent={null}
+      onDrag={[Function]}
+      onMouseDown={[Function]}
+      onStart={[Function]}
+      onStop={[Function]}
+      position={null}
+      scale={1}
+      transform={null}
+    >
+      <DragIndicatorIcon
+        fontSize="small"
+        style={
+          Object {
+            "cursor": "col-resize",
+          }
+        }
+      />
+    </Draggable>
+  </div>
   <TextColumnFilter
     label="test"
     onChange={[Function]}
@@ -39,27 +127,115 @@ exports[`Data column header component renders correctly with sort and filter 1`]
 exports[`Data column header component renders correctly with sort but no filter 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-head"
+  className="MuiTableCell-root MuiTableCell-head test-class"
 >
-  <WithStyles(ForwardRef(TableSortLabel))
-    active={false}
-    onClick={[Function]}
+  <div
     style={
       Object {
-        "flexDirection": "row",
+        "display": "flex",
       }
     }
   >
-    Test
-  </WithStyles(ForwardRef(TableSortLabel))>
+    <WithStyles(ForwardRef(TableSortLabel))
+      active={false}
+      onClick={[Function]}
+      style={
+        Object {
+          "flex": "auto",
+        }
+      }
+    >
+      Test
+    </WithStyles(ForwardRef(TableSortLabel))>
+    <Draggable
+      allowAnyClick={false}
+      axis="none"
+      bounds={false}
+      cancel={null}
+      defaultClassName="react-draggable"
+      defaultClassNameDragged="react-draggable-dragged"
+      defaultClassNameDragging="react-draggable-dragging"
+      defaultPosition={
+        Object {
+          "x": 0,
+          "y": 0,
+        }
+      }
+      disabled={false}
+      enableUserSelectHack={true}
+      grid={null}
+      handle={null}
+      offsetParent={null}
+      onDrag={[Function]}
+      onMouseDown={[Function]}
+      onStart={[Function]}
+      onStop={[Function]}
+      position={null}
+      scale={1}
+      transform={null}
+    >
+      <DragIndicatorIcon
+        fontSize="small"
+        style={
+          Object {
+            "cursor": "col-resize",
+          }
+        }
+      />
+    </Draggable>
+  </div>
 </div>
 `;
 
 exports[`Data column header component renders correctly without sort or filter 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root test-class MuiTableCell-head"
+  className="MuiTableCell-root MuiTableCell-head test-class"
 >
-  Test
+  <div
+    style={
+      Object {
+        "display": "flex",
+      }
+    }
+  >
+    Test
+    <Draggable
+      allowAnyClick={false}
+      axis="none"
+      bounds={false}
+      cancel={null}
+      defaultClassName="react-draggable"
+      defaultClassNameDragged="react-draggable-dragged"
+      defaultClassNameDragging="react-draggable-dragging"
+      defaultPosition={
+        Object {
+          "x": 0,
+          "y": 0,
+        }
+      }
+      disabled={false}
+      enableUserSelectHack={true}
+      grid={null}
+      handle={null}
+      offsetParent={null}
+      onDrag={[Function]}
+      onMouseDown={[Function]}
+      onStart={[Function]}
+      onStop={[Function]}
+      position={null}
+      scale={1}
+      transform={null}
+    >
+      <DragIndicatorIcon
+        fontSize="small"
+        style={
+          Object {
+            "cursor": "col-resize",
+          }
+        }
+      />
+    </Draggable>
+  </div>
 </div>
 `;
