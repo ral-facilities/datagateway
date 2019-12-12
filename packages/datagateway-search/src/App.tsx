@@ -2,21 +2,26 @@ import React from 'react';
 import './App.css';
 import Header from './search/Header';
 import * as log from 'loglevel';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import SelectDates from './search/datePicker';
 import CheckboxesGroup from './search/checkBoxes';
 import SearchButton from './search/searchButton';
-import axios from 'axios';
+import SearchTextBox from './search/searchTextBox';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
-import { StateType } from './state/app.types';
+
+/* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
+const composeEnhancers =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+/* eslint-enable */
 
 const middleware = [thunk];
-const store = createStore(AppReducer, applyMiddleware(...middleware));
+const store = createStore(
+  AppReducer,
+  composeEnhancers(applyMiddleware(...middleware))
+);
 
 class App extends React.Component {
   public componentDidCatch(error: Error | null): void {
@@ -44,12 +49,7 @@ class App extends React.Component {
             </Grid>
 
             <Grid item>
-              <TextField
-                id="filled-search"
-                label="Search Text"
-                type="search"
-                margin="normal"
-              />
+              <SearchTextBox />
             </Grid>
 
             <Grid item>

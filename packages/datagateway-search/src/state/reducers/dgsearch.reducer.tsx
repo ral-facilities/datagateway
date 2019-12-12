@@ -6,15 +6,19 @@ import {
   ToggleInvestigationType,
   SelectStartDateType,
   SelectEndDateType,
+  SearchTextType,
   TogglePayload,
   SelectDatePayload,
+  SearchTextPayload,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
+  searchText: '',
+  text: '',
   selectDate: {
     date: null,
-    startdate: null, // Have made up a value. What is the earliest data on system?
-    enddate: null,
+    startDate: null,
+    endDate: null,
   },
   checkBox: {
     dataset: true,
@@ -22,6 +26,16 @@ export const initialState: DGSearchState = {
     investigation: true,
   },
 };
+
+export function handleSearchText(
+  state: DGSearchState,
+  payload: SearchTextPayload
+): DGSearchState {
+  return {
+    ...state,
+    searchText: payload.searchText,
+  };
+}
 
 export function handleToggleDataset(
   state: DGSearchState,
@@ -31,7 +45,7 @@ export function handleToggleDataset(
     ...state,
     checkBox: {
       ...state.checkBox,
-      dataset: payload.toggleoption,
+      dataset: payload.toggleOption,
     },
   };
 }
@@ -44,7 +58,7 @@ export function handleToggleDatafile(
     ...state,
     checkBox: {
       ...state.checkBox,
-      datafile: payload.toggleoption,
+      datafile: payload.toggleOption,
     },
   };
 }
@@ -57,12 +71,12 @@ export function handleToggleInvestigation(
     ...state,
     checkBox: {
       ...state.checkBox,
-      investigation: payload.toggleoption,
+      investigation: payload.toggleOption,
     },
   };
 }
 
-export function SelectStartDate(
+export function selectStartDate(
   state: DGSearchState,
   payload: SelectDatePayload
 ): DGSearchState {
@@ -70,12 +84,12 @@ export function SelectStartDate(
     ...state,
     selectDate: {
       ...state.selectDate,
-      startdate: payload.date,
+      startDate: payload.date,
     },
   };
 }
 
-export function SelectEndDate(
+export function selectEndDate(
   state: DGSearchState,
   payload: SelectDatePayload
 ): DGSearchState {
@@ -83,7 +97,7 @@ export function SelectEndDate(
     ...state,
     selectDate: {
       ...state.selectDate,
-      enddate: payload.date,
+      endDate: payload.date,
     },
   };
 }
@@ -92,8 +106,9 @@ const DGSearchReducer = createReducer(initialState, {
   [ToggleDatasetType]: handleToggleDataset,
   [ToggleDatafileType]: handleToggleDatafile,
   [ToggleInvestigationType]: handleToggleInvestigation,
-  [SelectStartDateType]: SelectStartDate,
-  [SelectEndDateType]: SelectEndDate,
+  [SelectStartDateType]: selectStartDate,
+  [SelectEndDateType]: selectEndDate,
+  [SearchTextType]: handleSearchText,
 });
 
 export default DGSearchReducer;

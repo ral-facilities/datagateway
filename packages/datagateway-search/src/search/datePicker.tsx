@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   KeyboardDatePicker,
@@ -13,9 +13,9 @@ import { StateType } from '../state/app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 interface DatePickerStoreProps {
-  date: MaterialUiPickersDate ; 
-  startdate: MaterialUiPickersDate ;
-  enddate: MaterialUiPickersDate ;
+  date: MaterialUiPickersDate;
+  startDate: MaterialUiPickersDate;
+  endDate: MaterialUiPickersDate;
 }
 
 interface DatePickerDispatchProps {
@@ -34,16 +34,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function SelectDates(props: DatePickerCombinedProps): JSX.Element {
-  const { date, startdate, enddate, selectStartDate, selectEndDate } = props;
+  const { startDate, endDate, selectStartDate, selectEndDate } = props;
   const classes = useStyles();
-
-  const setStartDate = (startdate: MaterialUiPickersDate): any  => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ):void  => {
-    selectStartDate(startdate);
-    console.log(date)
-    console.log(startdate)
-  }; 
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -52,11 +44,13 @@ function SelectDates(props: DatePickerCombinedProps): JSX.Element {
         className={classes.root}
         allowKeyboardControl
         disableFuture
-        maxDate={enddate || new Date('2100-01-01')}
+        maxDate={endDate || new Date('2100-01-01')}
         maxDateMessage="Invalid date range"
         format="yyyy-MM-dd"
-        value={startdate}
-        onChange={setStartDate(date)}}
+        value={startDate}
+        onChange={date => {
+          selectStartDate(date);
+        }}
         animateYearScrolling
         placeholder="Start Date"
       />
@@ -66,11 +60,16 @@ function SelectDates(props: DatePickerCombinedProps): JSX.Element {
         className={classes.root}
         allowKeyboardControl
         disableFuture
-        minDate={startdate || new Date('1984-01-01')}
+        minDate={startDate || new Date('1984-01-01')}
         minDateMessage="Invalid date range"
         format="yyyy-MM-dd"
-        value={enddate}
-        onChange={selectEndDate}
+        value={endDate}
+        onChange={
+          // not sure why this works
+          date => {
+            selectEndDate(date);
+          }
+        }
         animateYearScrolling
         placeholder="End Date"
       />
@@ -81,15 +80,16 @@ function SelectDates(props: DatePickerCombinedProps): JSX.Element {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DatePickerDispatchProps => ({
-  selectStartDate: (date: MaterialUiPickersDate) => dispatch(selectStartDate(date)),
+  selectStartDate: (date: MaterialUiPickersDate) =>
+    dispatch(selectStartDate(date)),
   selectEndDate: (date: MaterialUiPickersDate) => dispatch(selectEndDate(date)),
 });
 
 const mapStateToProps = (state: StateType): DatePickerStoreProps => {
   return {
     date: state.dgsearch.selectDate.date,
-    startdate: state.dgsearch.selectDate.startdate,
-    enddate: state.dgsearch.selectDate.enddate,
+    startDate: state.dgsearch.selectDate.startDate,
+    endDate: state.dgsearch.selectDate.endDate,
   };
 };
 

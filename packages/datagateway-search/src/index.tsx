@@ -8,7 +8,6 @@ import './index.css';
 import App from './App';
 import * as log from 'loglevel';
 import axios from 'axios';
-import { Provider } from 'react-redux';
 
 const pluginName = 'datagateway-search';
 
@@ -20,7 +19,7 @@ const render = (): void => {
 };
 
 render();
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 if (process.env.NODE_ENV === `development`) {
   log.setDefaultLevel(log.levels.DEBUG);
   axios
@@ -32,6 +31,9 @@ if (process.env.NODE_ENV === `development`) {
       log.error(`Can't contact API.`);
     });
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+
 // TODO: if it's still needed, get icatUrl from settings file
 const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session/';
 
@@ -52,14 +54,7 @@ axios
     log.error(`Token was not retrieved.`);
   });
 
-console.log('test: daaas token retrieved =');
-console.log(window.localStorage.getItem('daaas:token'));
-
-console.log('test: icat token retrieved =');
-console.log(window.localStorage.getItem('icat:token'));
-
-console.log(JSON.stringify(icatCreds));
-
 window.addEventListener('single-spa:routing-event', () => {
   render();
 });
+/* eslint-enable @typescript-eslint/no-explicit-any */

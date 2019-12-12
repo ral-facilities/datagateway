@@ -3,10 +3,12 @@ import { AnyAction } from 'redux';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 export interface DGSearchState {
+  searchText: string;
+  text: string;
   selectDate: {
     date: MaterialUiPickersDate;
-    startdate: MaterialUiPickersDate; // not sure if this should be date type instead
-    enddate: MaterialUiPickersDate;
+    startDate: MaterialUiPickersDate; // not sure if this should be date type instead
+    endDate: MaterialUiPickersDate;
   };
   checkBox: {
     dataset: boolean;

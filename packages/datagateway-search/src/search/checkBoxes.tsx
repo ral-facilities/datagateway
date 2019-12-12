@@ -33,9 +33,9 @@ interface CheckBoxStoreProps {
 }
 
 interface CheckBoxDispatchProps {
-  toggleDataset: (toggleoption: boolean) => Action;
-  toggleDatafile: (toggleoption: boolean) => Action;
-  toggleInvestigation: (toggleoption: boolean) => Action;
+  toggleDataset: (toggleOption: boolean) => Action;
+  toggleDatafile: (toggleOption: boolean) => Action;
+  toggleInvestigation: (toggleOption: boolean) => Action;
 }
 
 type CheckBoxCombinedProps = CheckBoxStoreProps & CheckBoxDispatchProps;
@@ -51,18 +51,17 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
     toggleInvestigation,
   } = props;
 
-  const handleChange = (name: string, checked: boolean): any => (
+  const handleChange = (name: string, checked: boolean) => (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    let toggleoption = !checked;
+    let toggleOption = !checked;
     if (name === 'Investigation') {
-      toggleInvestigation(toggleoption);
+      toggleInvestigation(toggleOption);
     } else if (name === 'Datafile') {
-      toggleDatafile(toggleoption);
+      toggleDatafile(toggleOption);
     } else if (name === 'Dataset') {
-      toggleDataset(toggleoption);
+      toggleDataset(toggleOption);
     }
-    console.log('box checked');
   };
 
   const error = ![investigation, dataset, datafile].includes(true);
@@ -116,12 +115,12 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): CheckBoxDispatchProps => ({
-  toggleDataset: (toggleoption: boolean) =>
-    dispatch(toggleDataset(toggleoption)),
-  toggleDatafile: (toggleoption: boolean) =>
-    dispatch(toggleDatafile(toggleoption)),
-  toggleInvestigation: (toggleoption: boolean) =>
-    dispatch(toggleInvestigation(toggleoption)),
+  toggleDataset: (toggleOption: boolean) =>
+    dispatch(toggleDataset(toggleOption)),
+  toggleDatafile: (toggleOption: boolean) =>
+    dispatch(toggleDatafile(toggleOption)),
+  toggleInvestigation: (toggleOption: boolean) =>
+    dispatch(toggleInvestigation(toggleOption)),
 });
 
 const mapStateToProps = (state: StateType): CheckBoxStoreProps => {

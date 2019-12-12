@@ -3,53 +3,104 @@ import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { format } from 'date-fns';
+import { string } from 'prop-types';
 
 interface SearchButtonStoreProps {
+  searchText: string;
   dataset: boolean;
   datafile: boolean;
   investigation: boolean;
+  startDate: MaterialUiPickersDate;
+  endDate: MaterialUiPickersDate;
 }
+
+interface LuceneParameters {
+  sessionId: string;
+    query: {
+      text: string;
+      lower: string;
+      upper: string;
+      target: string;
+    }; 
+  maxCount: number;
+} 
 
 type SearchButtonCombinedProps = SearchButtonStoreProps;
 
 class SearchButton extends React.Component<SearchButtonCombinedProps> {
-  constructor(props: SearchButtonCombinedProps) {
+  public constructor(props: SearchButtonCombinedProps) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.sendRequest = this.sendRequest.bind(this);
+    this.urlParamsBuilder = this.urlParamsBuilder.bind(this);
   }
 
-  // const handleURL
-  handleClick(event: any) {
+  public urlParamsBuilder = (datasearchtype: string): 
+    LuceneParameters => {
+    // type the object returned//
+
+    let stringStartDate = '0000001010000';
+    if (this.props.startDate !== null) {
+      stringStartDate = format(this.props.startDate, 'yyyy-MM-dd');
+      let stringStartDateArray = stringStartDate.split('-');
+      stringStartDate =
+        stringStartDateArray[0] +
+        stringStartDateArray[1] +
+        stringStartDateArray[2] +
+        '0000';
+    }
+
+    let stringEndDate = '9000012312359';
+    if (this.props.endDate !== null) {
+      stringEndDate = format(this.props.endDate, 'yyyy-MM-dd');
+      let stringEndDateArray = stringEndDate.split('-');
+      stringEndDate =
+        stringEndDateArray[0] +
+        stringEndDateArray[1] +
+        stringEndDateArray[2] +
+        '2359';
+    }
+    const query = {
+      text: this.props.searchText,
+      lower: stringStartDate,
+      upper: stringEndDate,
+      target: datasearchtype,
+    };
+
+    const queryParams = {
+      sessionId: '6f06401a-329b-4d8a-bfc3-4796fe764e8d',
+      query,
+      maxCount: 300,
+    };
+    return queryParams;
+  };
+
+  public handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (this.props.dataset === true) {
-      // search w dataset query
-      console.log('searched datasets');
+      let datasetParams = this.urlParamsBuilder('Dataset');
+      this.sendRequest(datasetParams);
     }
     if (this.props.datafile === true) {
-      // search w dataset query
-      console.log('searched datafiles');
+      let datafileParams = this.urlParamsBuilder('Datafile');
+      this.sendRequest(datafileParams);
     }
     if (this.props.investigation === true) {
-      // search w dataset query
-      console.log('searched investigations');
+      let investigationParams = this.urlParamsBuilder('Investigation');
+      this.sendRequest(investigationParams);
     }
-    this.sendRequest();
-  }
+  };
 
-  public async sendRequest(): Promise<void> {
-    // const hello = this.state.dataset
-
-    // console.log(this.state.dgsearch.checkBox.dataset)
-
-    const sessionId = window.localStorage.getItem('icat:token');
-    console.log(window.localStorage.getItem('icat:token'));
-    let requestURL = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data?sessionId=${sessionId}&query=%7B"text":"h","target":"Investigation"%7D&maxCount=300`;
-    const response = await axios.get(requestURL);
-    console.log(response.data);
+  public async sendRequest(queryParams: LuceneParameters): Promise<void> {
+    const response = await axios.get(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      { params: queryParams }
+    );
+    console.log(response);
   }
 
   public render(): React.ReactNode {
-    const { dataset } = this.props;
     return (
       <div>
         <Button variant="contained" color="primary" onClick={this.handleClick}>
@@ -62,9 +113,12 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
 
 const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
   return {
+    searchText: state.dgsearch.searchText,
     dataset: state.dgsearch.checkBox.dataset,
     datafile: state.dgsearch.checkBox.datafile,
     investigation: state.dgsearch.checkBox.investigation,
+    startDate: state.dgsearch.selectDate.startDate,
+    endDate: state.dgsearch.selectDate.endDate,
   };
 };
 

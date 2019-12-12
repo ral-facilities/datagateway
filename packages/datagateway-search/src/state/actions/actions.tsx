@@ -4,37 +4,47 @@ import {
   ToggleInvestigationType,
   SelectStartDateType,
   SelectEndDateType,
+  SearchTextType,
   TogglePayload,
   SelectDatePayload,
+  SearchTextPayload,
 } from './actions.types';
 import { ActionType } from '../app.types';
-import SelectDates from '../../search/datePicker';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
+export const submitSearchText = (
+  searchText: string
+): ActionType<SearchTextPayload> => ({
+  type: SearchTextType,
+  payload: {
+    searchText,
+  },
+});
+
 export const toggleDataset = (
-  toggleoption: boolean
+  toggleOption: boolean
 ): ActionType<TogglePayload> => ({
   type: ToggleDatasetType,
   payload: {
-    toggleoption,
+    toggleOption,
   },
 });
 
 export const toggleDatafile = (
-  toggleoption: boolean
+  toggleOption: boolean
 ): ActionType<TogglePayload> => ({
   type: ToggleDatafileType,
   payload: {
-    toggleoption,
+    toggleOption,
   },
 });
 
 export const toggleInvestigation = (
-  toggleoption: boolean
+  toggleOption: boolean
 ): ActionType<TogglePayload> => ({
   type: ToggleInvestigationType,
   payload: {
-    toggleoption,
+    toggleOption,
   },
 });
 
@@ -47,7 +57,9 @@ export const selectStartDate = (
   },
 });
 
-export const selectEndDate = (date: MaterialUiPickersDate): ActionType<SelectDatePayload> => ({
+export const selectEndDate = (
+  date: MaterialUiPickersDate
+): ActionType<SelectDatePayload> => ({
   type: SelectEndDateType,
   payload: {
     date,

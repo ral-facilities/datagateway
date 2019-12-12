@@ -1,4 +1,4 @@
-import { combineReducers, Reducer } from 'redux';
+import { combineReducers } from 'redux';
 import DGSearchReducer from './dgsearch.reducer';
 
 const AppReducer = combineReducers({
