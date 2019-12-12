@@ -26,9 +26,53 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then(window => {
+        const windowWidth = window.innerWidth;
+        columnWidth = windowWidth / 4;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]')
+      .eq(0)
+      .as('titleColumn');
+    cy.get('[role="columnheader"]')
+      .eq(1)
+      .as('descriptionColumn');
+
+    cy.get('@titleColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@descriptionColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 400 })
+      .trigger('mouseup');
+
+    cy.get('@titleColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@descriptionColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -38,8 +82,8 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -53,9 +97,9 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Name').click();
-      cy.contains('Name').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -71,8 +115,8 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Start Date').click();
-      cy.contains('Name').click();
+      cy.contains('[role="button"]', 'Start Date').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
         'Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'

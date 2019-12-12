@@ -8,6 +8,8 @@ import {
   Entity,
   Investigation,
   DateColumnFilter,
+  DownloadCartItem,
+  formatBytes,
 } from 'datagateway-common';
 import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
@@ -22,6 +24,9 @@ import {
   fetchISISInvestigations,
   fetchISISInvestigationCount,
   clearTable,
+  addToCart,
+  removeFromCart,
+  fetchAllISISInvestigationIds,
 } from '../../state/actions';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
@@ -44,6 +49,8 @@ interface ISISInvestigationsTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -58,6 +65,9 @@ interface ISISInvestigationsTableDispatchProps {
   fetchCount: (instrumentId: number, facilityCycleId: number) => Promise<void>;
   clearTable: () => Action;
   fetchDetails: (investigationId: number) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type ISISInvestigationsTableCombinedProps = ISISInvestigationsTableProps &
@@ -79,7 +89,25 @@ const ISISInvestigationsTable = (
     filterTable,
     instrumentId,
     facilityCycleId,
+    loading,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    allIds,
+    fetchAllIds,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'investigation' &&
+            allIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, allIds]
+  );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -107,13 +135,15 @@ const ISISInvestigationsTable = (
       startIndex: 0,
       stopIndex: 49,
     });
-  }, [fetchData, instrumentId, facilityCycleId, sort, filters]);
+    fetchAllIds();
+  }, [fetchData, instrumentId, facilityCycleId, sort, filters, fetchAllIds]);
 
   const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation`;
 
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params =>
           fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
@@ -121,6 +151,10 @@ const ISISInvestigationsTable = (
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        allIds={allIds}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
             <InvestigationDetailsPanel
@@ -189,6 +223,9 @@ const ISISInvestigationsTable = (
           {
             label: 'Size',
             dataKey: 'SIZE',
+            cellContentRenderer: props => {
+              return formatBytes(props.cellData);
+            },
             disableSort: true,
           },
           {
@@ -225,7 +262,8 @@ const ISISInvestigationsTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: ISISInvestigationsTableProps
 ): ISISInvestigationsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -237,13 +275,29 @@ const mapDispatchToProps = (
     offsetParams: IndexRange
   ) =>
     dispatch(
-      fetchISISInvestigations(instrumentId, facilityCycleId, offsetParams)
+      fetchISISInvestigations({
+        instrumentId,
+        facilityCycleId,
+        offsetParams,
+        optionalParams: { getSize: true },
+      })
     ),
   fetchCount: (instrumentId: number, facilityCycleId: number) =>
     dispatch(fetchISISInvestigationCount(instrumentId, facilityCycleId)),
   clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
+  addToCart: (entityIds: number[]) =>
+    dispatch(addToCart('investigation', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('investigation', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllISISInvestigationIds(
+        parseInt(ownProps.instrumentId),
+        parseInt(ownProps.facilityCycleId)
+      )
+    ),
 });
 
 const mapStateToProps = (
@@ -256,6 +310,8 @@ const mapStateToProps = (
     totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 

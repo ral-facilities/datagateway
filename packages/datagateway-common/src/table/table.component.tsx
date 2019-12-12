@@ -17,15 +17,20 @@ import {
   IndexRange,
 } from 'react-virtualized';
 import clsx from 'clsx';
-import { Entity, Order } from '../app.types';
+import { Entity, Order, ICATEntity } from '../app.types';
 import ExpandCell from './cellRenderers/expandCell.component';
 import DataCell from './cellRenderers/dataCell.component';
 import ActionCell from './cellRenderers/actionCell.component';
 import DataHeader from './headerRenderers/dataHeader.component';
 import DetailsPanelRow from './rowRenderers/detailsPanelRow.component';
+import SelectCell from './cellRenderers/selectCell.component';
+import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
 const headerHeight = 120;
+const selectColumnWidth = 40;
+const detailsColumnWidth = 40;
+const actionsColumnWidth = 70;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -53,6 +58,8 @@ const styles = (theme: Theme): StyleRules =>
       flex: 1,
       overflow: 'hidden',
       height: rowHeight,
+    },
+    dataCellContent: {
       '&:hover': {
         overflow: 'visible',
         zIndex: 10000,
@@ -61,6 +68,7 @@ const styles = (theme: Theme): StyleRules =>
       },
     },
     headerTableCell: {
+      flex: 1,
       height: headerHeight,
     },
   });
@@ -84,14 +92,19 @@ export interface TableActionProps {
 }
 
 interface VirtualizedTableProps {
+  loading: boolean;
   data: Entity[];
   columns: ColumnType[];
-  loadMoreRows: (offsetParams: IndexRange) => Promise<void>;
-  totalRowCount: number;
+  loadMoreRows?: (offsetParams: IndexRange) => Promise<void>;
+  totalRowCount?: number;
   sort: { [column: string]: Order };
   onSort: (column: string, order: Order | null) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
+  selectedRows?: number[];
+  onCheck?: (selectedIds: number[]) => void;
+  onUncheck?: (selectedIds: number[]) => void;
+  allIds?: number[];
 }
 
 const VirtualizedTable = (
@@ -99,6 +112,7 @@ const VirtualizedTable = (
 ): React.ReactElement => {
   const [expandedIndex, setExpandedIndex] = React.useState(-1);
   const [detailPanelHeight, setDetailPanelHeight] = React.useState(rowHeight);
+  const [lastChecked, setLastChecked] = React.useState(-1);
 
   let tableRef: Table | null = null;
   const detailPanelRef = React.useRef<HTMLDivElement>(null);
@@ -108,12 +122,25 @@ const VirtualizedTable = (
     classes,
     columns,
     data,
+    selectedRows,
+    allIds,
+    onCheck,
+    onUncheck,
     loadMoreRows,
+    loading,
     totalRowCount,
     detailsPanel,
     sort,
     onSort,
   } = props;
+
+  if (
+    (loadMoreRows && typeof totalRowCount === 'undefined') ||
+    (totalRowCount && typeof loadMoreRows === 'undefined')
+  )
+    throw new Error(
+      'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    );
 
   const [widths, setWidths] = React.useState<{ [dataKey: string]: number }>(
     columns.reduce((result: { [dataKey: string]: number }, item) => {
@@ -137,12 +164,16 @@ const VirtualizedTable = (
     <AutoSizer>
       {({ height, width }) => {
         const dataColumnsWidth =
-          (width || 800) - (detailsPanel ? 50 : 0) - (actions ? 70 : 0);
+          (width || 800) -
+          (selectedRows && onCheck && onUncheck ? selectColumnWidth : 0) -
+          (detailsPanel ? detailsColumnWidth : 0) -
+          (actions ? actionsColumnWidth : 0);
+        const rowCount = totalRowCount || data.length;
         return (
           <InfiniteLoader
             isRowLoaded={({ index }) => !!data[index]}
-            loadMoreRows={loadMoreRows}
-            rowCount={totalRowCount}
+            loadMoreRows={loadMoreRows || (() => Promise.resolve())}
+            rowCount={rowCount}
             minimumBatchSize={25}
           >
             {({ onRowsRendered, registerChild }) => (
@@ -185,23 +216,73 @@ const VirtualizedTable = (
                   }
                 }}
               >
+                {selectedRows && onCheck && onUncheck && (
+                  <Column
+                    width={selectColumnWidth}
+                    flexShrink={0}
+                    key="Select"
+                    dataKey="Select"
+                    headerRenderer={props => (
+                      <SelectHeader
+                        {...props}
+                        className={clsx(
+                          classes.headerTableCell,
+                          classes.flexContainer
+                        )}
+                        selectedRows={selectedRows}
+                        totalRowCount={rowCount}
+                        allIds={
+                          allIds ||
+                          data.map(d => {
+                            const icatEntity = d as ICATEntity;
+                            return icatEntity.ID;
+                          })
+                        }
+                        loading={loading}
+                        onCheck={onCheck}
+                        onUncheck={onUncheck}
+                      />
+                    )}
+                    className={classes.flexContainer}
+                    headerClassName={classes.flexContainer}
+                    cellRenderer={props => (
+                      <SelectCell
+                        {...props}
+                        selectedRows={selectedRows}
+                        data={data}
+                        className={clsx(
+                          classes.tableCell,
+                          classes.flexContainer
+                        )}
+                        onCheck={onCheck}
+                        onUncheck={onUncheck}
+                        lastChecked={lastChecked}
+                        setLastChecked={setLastChecked}
+                        loading={loading}
+                      />
+                    )}
+                  />
+                )}
                 {detailsPanel && (
                   <Column
-                    width={50}
+                    width={detailsColumnWidth}
                     flexShrink={0}
                     key="Expand"
                     dataKey="expand"
                     headerRenderer={() => (
                       <TableCell
+                        size="small"
+                        padding="checkbox"
                         component="div"
                         className={clsx(
                           classes.headerTableCell,
-                          classes.headerFlexContainer
+                          classes.flexContainer
                         )}
                         variant="head"
                       />
                     )}
                     className={classes.flexContainer}
+                    headerClassName={classes.flexContainer}
                     cellRenderer={props => (
                       <ExpandCell
                         {...props}
@@ -276,6 +357,7 @@ const VirtualizedTable = (
                               classes.tableCell,
                               classes.flexContainer
                             )}
+                            contentClassName={classes.dataCellContent}
                           />
                         )}
                       />
@@ -284,13 +366,14 @@ const VirtualizedTable = (
                 )}
                 {actions && (
                   <Column
-                    width={70}
+                    width={actionsColumnWidth}
                     flexShrink={0}
                     key="Actions"
                     dataKey="actions"
                     className={classes.flexContainer}
                     headerRenderer={headerProps => (
                       <TableCell
+                        size="small"
                         component="div"
                         className={clsx(
                           classes.headerTableCell,

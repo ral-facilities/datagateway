@@ -8,6 +8,9 @@ import {
   Entity,
   TableActionProps,
   DateColumnFilter,
+  Dataset,
+  DownloadCartItem,
+  formatBytes,
 } from 'datagateway-common';
 import { Paper, IconButton } from '@material-ui/core';
 import {
@@ -18,6 +21,9 @@ import {
   clearTable,
   fetchDatasetDetails,
   downloadDataset,
+  addToCart,
+  removeFromCart,
+  fetchAllIds,
 } from '../../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
@@ -48,6 +54,8 @@ interface ISISDatasetsTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  cartItems: DownloadCartItem[];
+  allIds: number[];
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -62,6 +70,9 @@ interface ISISDatasetsTableDispatchProps {
   clearTable: () => Action;
   fetchDetails: (datasetId: number) => Promise<void>;
   downloadData: (datasetId: number, name: string) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type ISISDatasetsTableCombinedProps = ISISDatasetsTableProps &
@@ -85,7 +96,25 @@ const ISISDatasetsTable = (
     facilityCycleId,
     instrumentId,
     downloadData,
+    loading,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    allIds,
+    fetchAllIds,
   } = props;
+
+  const selectedRows = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'dataset' &&
+            allIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, allIds]
+  );
 
   React.useEffect(() => {
     clearTable();
@@ -94,7 +123,8 @@ const ISISDatasetsTable = (
   useAfterMountEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, investigationId]);
+    fetchAllIds();
+  }, [fetchCount, fetchData, sort, filters, investigationId, fetchAllIds]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -115,11 +145,16 @@ const ISISDatasetsTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(parseInt(investigationId), params)}
         totalRowCount={totalDataCount}
         sort={sort}
         onSort={sortTable}
+        selectedRows={selectedRows}
+        allIds={allIds}
+        onCheck={addToCart}
+        onUncheck={removeFromCart}
         detailsPanel={({ rowData, detailsPanelResize }) => {
           return (
             <DatasetDetailsPanel
@@ -131,13 +166,14 @@ const ISISDatasetsTable = (
         }}
         actions={[
           function downloadButton({ rowData }: TableActionProps) {
+            const datasetData = rowData as Dataset;
             return (
               <IconButton
                 aria-label="Download"
                 key="download"
                 size="small"
                 onClick={() => {
-                  downloadData(rowData.ID, rowData.NAME);
+                  downloadData(datasetData.ID, datasetData.NAME);
                 }}
               >
                 <GetApp />
@@ -159,6 +195,9 @@ const ISISDatasetsTable = (
           {
             label: 'Size',
             dataKey: 'SIZE',
+            cellContentRenderer: props => {
+              return formatBytes(props.cellData);
+            },
             disableSort: true,
           },
           {
@@ -178,7 +217,8 @@ const ISISDatasetsTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: ISISDatasetsTableProps
 ): ISISDatasetsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -198,6 +238,20 @@ const mapDispatchToProps = (
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
   downloadData: (datasetId: number, name: string) =>
     dispatch(downloadDataset(datasetId, name)),
+  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('dataset', entityIds)),
+  fetchAllIds: () =>
+    dispatch(
+      fetchAllIds('dataset', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
@@ -208,10 +262,9 @@ const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
     totalDataCount: state.dgtable.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
+    cartItems: state.dgtable.cartItems,
+    allIds: state.dgtable.allIds,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ISISDatasetsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(ISISDatasetsTable);

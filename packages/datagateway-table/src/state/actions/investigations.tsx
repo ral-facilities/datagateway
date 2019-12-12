@@ -13,6 +13,10 @@ import {
   FetchInvestigationCountRequestType,
   RequestPayload,
   FetchDetailsSuccessPayload,
+  FetchInvestigationSizeRequestType,
+  FetchSizeSuccessPayload,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationSizeFailureType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -52,6 +56,73 @@ export const fetchInvestigationsRequest = (
     timestamp,
   },
 });
+
+export const fetchInvestigationSizeRequest = (): Action => ({
+  type: FetchInvestigationSizeRequestType,
+});
+
+export const fetchInvestigationSizeSuccess = (
+  investigationId: number,
+  size: number
+): ActionType<FetchSizeSuccessPayload> => ({
+  type: FetchInvestigationSizeSuccessType,
+  payload: {
+    id: investigationId,
+    size,
+  },
+});
+
+export const fetchInvestigationSizeFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchInvestigationSizeFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchInvestigationSize = (
+  investigationId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchInvestigationSizeRequest());
+
+    // We request the size from the download API.
+    const { downloadApiUrl } = getState().dgtable.urls;
+    const currentCache = getState().dgtable.investigationCache[investigationId];
+
+    // Check for a cached investigation size in the investigationCache.
+    if (currentCache && currentCache.childEntitySize) {
+      // Dispatch success using the cached dataset size.
+      dispatch(
+        fetchInvestigationSizeSuccess(
+          investigationId,
+          currentCache.childEntitySize
+        )
+      );
+    } else {
+      await axios
+        .get(`${downloadApiUrl}/user/getSize`, {
+          params: {
+            // TODO: Get session ID from somewhere else (extract from JWT)
+            sessionId: window.localStorage.getItem('icat:token'),
+            facilityName: 'LILS',
+            entityType: 'investigation',
+            entityId: investigationId,
+          },
+        })
+        .then(response => {
+          dispatch(
+            fetchInvestigationSizeSuccess(investigationId, response.data)
+          );
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchInvestigationSizeFailure(error.message));
+        });
+    }
+  };
+};
 
 interface FetchInvestigationsParams {
   additionalFilters?: {
@@ -117,11 +188,17 @@ export const fetchInvestigations = (
   };
 };
 
-export const fetchISISInvestigations = (
-  instrumentId: number,
-  facilityCycleId: number,
-  offsetParams?: IndexRange
-): ThunkResult<Promise<void>> => {
+export const fetchISISInvestigations = ({
+  instrumentId,
+  facilityCycleId,
+  offsetParams,
+  optionalParams,
+}: {
+  instrumentId: number;
+  facilityCycleId: number;
+  offsetParams?: IndexRange;
+  optionalParams?: FetchInvestigationsParams;
+}): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
@@ -171,7 +248,16 @@ export const fetchISISInvestigations = (
       )
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
-        // TODO: dispatch getSize requests
+
+        // Once investigation has been fetched successfully,
+        // we can issue request to fetch the size.
+        if (optionalParams && optionalParams.getSize) {
+          batch(() => {
+            response.data.forEach((investigation: Investigation) => {
+              dispatch(fetchInvestigationSize(investigation.ID));
+            });
+          });
+        }
       })
       .catch(error => {
         log.error(error.message);

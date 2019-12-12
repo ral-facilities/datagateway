@@ -39,6 +39,9 @@ import {
   FetchInvestigationCountRequestType,
   FetchInvestigationCountSuccessType,
   FetchInvestigationCountFailureType,
+  FetchInvestigationSizeRequestType,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationSizeFailureType,
   FetchDatasetCountRequestType,
   FetchDatasetCountSuccessType,
   FetchDatasetCountFailureType,
@@ -56,9 +59,13 @@ import {
   FeatureSwitchesPayload,
   ConfigureStringsPayload,
   ConfigureStringsType,
+  ConfigureFacilityNamePayload,
+  ConfigureFacilityNameType,
   ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  ConfigureBreadcrumbSettingsPayload,
+  ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
@@ -72,10 +79,29 @@ import {
   FetchDatafileDetailsFailureType,
   FetchDatafileDetailsRequestType,
   FetchDatafileDetailsSuccessType,
+  DownloadCartPayload,
+  FetchDownloadCartRequestType,
+  FetchDownloadCartSuccessType,
+  FetchDownloadCartFailureType,
+  AddToCartRequestType,
+  AddToCartFailureType,
+  AddToCartSuccessType,
+  RemoveFromCartRequestType,
+  RemoveFromCartSuccessType,
+  RemoveFromCartFailureType,
+  FetchAllIdsFailureType,
+  FetchAllIdsRequestType,
+  FetchAllIdsSuccessType,
+  FetchAllIdsSuccessPayload,
+  FetchSizeSuccessPayload,
+  FetchDatasetSizeRequestType,
+  FetchDatasetSizeSuccessType,
+  FetchDatasetSizeFailureType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
 export const initialState: DGTableState = {
+  facilityName: '',
   data: [],
   totalDataCount: 0,
   investigationCache: {},
@@ -88,10 +114,15 @@ export const initialState: DGTableState = {
   features: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
+  allIdsTimestamp: Date.now(),
   urls: {
     idsUrl: '',
     apiUrl: '',
+    downloadApiUrl: '',
   },
+  breadcrumbSettings: {},
+  cartItems: [],
+  allIds: [],
   settingsLoaded: false,
 };
 
@@ -172,6 +203,16 @@ export function handleConfigureStrings(
   };
 }
 
+export function handleConfigureFacilityName(
+  state: DGTableState,
+  payload: ConfigureFacilityNamePayload
+): DGTableState {
+  return {
+    ...state,
+    facilityName: payload.facilityName,
+  };
+}
+
 export function handleConfigureFeatureSwitches(
   state: DGTableState,
   payload: FeatureSwitchesPayload
@@ -189,6 +230,18 @@ export function handleConfigureUrls(
   return {
     ...state,
     urls: payload.urls,
+  };
+}
+
+// Reducer for the breadcrumb settings action,
+// in order to add settings to the Redux state.
+export function handleConfigureBreadcrumbSettings(
+  state: DGTableState,
+  payload: ConfigureBreadcrumbSettingsPayload
+): DGTableState {
+  return {
+    ...state,
+    breadcrumbSettings: payload.settings,
   };
 }
 
@@ -287,6 +340,70 @@ export function handleFetchCountFailure(
   return {
     ...state,
     loading: false,
+    error: payload.error,
+  };
+}
+
+export function handleFetchSizeRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+  };
+}
+
+export function handleFetchInvestigationSizeSuccess(
+  state: DGTableState,
+  payload: FetchSizeSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    data: state.data.map((entity: Entity) => {
+      const investigation = entity as Investigation;
+
+      return investigation.ID === payload.id
+        ? { ...investigation, SIZE: payload.size }
+        : investigation;
+    }),
+    investigationCache: {
+      ...state.investigationCache,
+      [payload.id]: {
+        ...state.investigationCache[payload.id],
+        childEntitySize: payload.size,
+      },
+    },
+    error: null,
+  };
+}
+
+export function handleFetchDatasetSizeSuccess(
+  state: DGTableState,
+  payload: FetchSizeSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    data: state.data.map((entity: Entity) => {
+      const dataset = entity as Dataset;
+
+      return dataset.ID === payload.id
+        ? { ...dataset, SIZE: payload.size }
+        : dataset;
+    }),
+    datasetCache: {
+      ...state.datasetCache,
+      [payload.id]: {
+        ...state.datasetCache[payload.id],
+        childEntitySize: payload.size,
+      },
+    },
+    error: null,
+  };
+}
+
+export function handleFetchSizeFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
     error: payload.error,
   };
 }
@@ -415,14 +532,80 @@ export function handleFetchDatasetDatafilesCountSuccess(
   };
 }
 
+export function handleDownloadCartRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleDownloadCartSuccess(
+  state: DGTableState,
+  payload: DownloadCartPayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    cartItems: payload.downloadCart.cartItems,
+    // cartItems: payload.downloadCart.cartItems.map(cartItem => ({
+    //   entityId: cartItem.entityId,
+    //   entityType: cartItem.entityType,
+    // })),
+  };
+}
+
+export function handleDownloadCartFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    loading: false,
+    error: payload.error,
+  };
+}
+
+export function handleFetchAllIdsRequest(
+  state: DGTableState,
+  payload: RequestPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      allIdsTimestamp: payload.timestamp,
+      loading: true,
+    };
+  } else {
+    return state;
+  }
+}
+
+export function handleFetchAllIdsSuccess(
+  state: DGTableState,
+  payload: FetchAllIdsSuccessPayload
+): DGTableState {
+  if (payload.timestamp >= state.allIdsTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      allIds: payload.data,
+      allIdsTimestamp: payload.timestamp,
+    };
+  } else {
+    return state;
+  }
+}
+
 const DGTableReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
   [ConfigureStringsType]: handleConfigureStrings,
+  [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureURLsType]: handleConfigureUrls,
+  [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
@@ -438,12 +621,18 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationCountRequestType]: handleFetchCountRequest,
   [FetchInvestigationCountSuccessType]: handleFetchCountSuccess,
   [FetchInvestigationCountFailureType]: handleFetchCountFailure,
+  [FetchInvestigationSizeRequestType]: handleFetchSizeRequest,
+  [FetchInvestigationSizeSuccessType]: handleFetchInvestigationSizeSuccess,
+  [FetchInvestigationSizeFailureType]: handleFetchSizeFailure,
   [FetchDatasetCountRequestType]: handleFetchCountRequest,
   [FetchDatasetCountSuccessType]: handleFetchCountSuccess,
   [FetchDatasetCountFailureType]: handleFetchCountFailure,
   [FetchInvestigationDatasetsCountRequestType]: handleFetchDataCountRequest,
   [FetchInvestigationDatasetsCountSuccessType]: handleFetchDatasetCountSuccess,
   [FetchInvestigationDatasetsCountFailureType]: handleFetchDataCountFailure,
+  [FetchDatasetSizeRequestType]: handleFetchSizeRequest,
+  [FetchDatasetSizeSuccessType]: handleFetchDatasetSizeSuccess,
+  [FetchDatasetSizeFailureType]: handleFetchSizeFailure,
   [DownloadDatasetRequestType]: handleDownloadDataRequest,
   [DownloadDatasetSuccessType]: handleDownloadDataSuccess,
   [DownloadDatasetFailureType]: handleDownloadDataFailure,
@@ -477,6 +666,21 @@ const DGTableReducer = createReducer(initialState, {
   [FetchFacilityCycleCountRequestType]: handleFetchCountRequest,
   [FetchFacilityCycleCountSuccessType]: handleFetchCountSuccess,
   [FetchFacilityCycleCountFailureType]: handleFetchCountFailure,
+  [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
+  [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
+  [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
+  [FetchDownloadCartRequestType]: handleDownloadCartRequest,
+  [FetchDownloadCartSuccessType]: handleDownloadCartSuccess,
+  [FetchDownloadCartFailureType]: handleDownloadCartFailure,
+  [AddToCartRequestType]: handleDownloadCartRequest,
+  [AddToCartSuccessType]: handleDownloadCartSuccess,
+  [AddToCartFailureType]: handleDownloadCartFailure,
+  [RemoveFromCartRequestType]: handleDownloadCartRequest,
+  [RemoveFromCartSuccessType]: handleDownloadCartSuccess,
+  [RemoveFromCartFailureType]: handleDownloadCartFailure,
+  [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
+  [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
+  [FetchAllIdsFailureType]: handleFetchDataFailure,
 });
 
 export default DGTableReducer;

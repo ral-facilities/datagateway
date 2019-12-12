@@ -143,14 +143,64 @@ interface ParameterType {
   VALUETYPE: string;
 }
 
-export type Entity =
+export interface DownloadCartItem {
+  entityId: number;
+  entityType: 'investigation' | 'dataset' | 'datafile';
+  id: number;
+  name: string;
+  parentEntities: DownloadCartItem[];
+}
+
+export interface DownloadCart {
+  cartItems: DownloadCartItem[];
+  createdAt: string;
+  facilityName: string;
+  id: number;
+  updatedAt: string;
+  userName: string;
+}
+
+export type DownloadCartTableItem = DownloadCartItem & {
+  size: number;
+  [key: string]: string | number | DownloadCartItem[];
+};
+
+export type ICATEntity =
   | Investigation
   | Dataset
   | Datafile
   | Instrument
   | FacilityCycle;
 
+export type Entity = ICATEntity | DownloadCartTableItem;
+
+export const EntityTypes: string[] = [
+  'investigation',
+  'dataset',
+  'datafile',
+  'facilityCycle',
+  'instrument',
+  'facility',
+];
+
 // TODO: type this properly
 export type Filter = string | number | { startDate?: string; endDate?: string };
 
 export type Order = 'asc' | 'desc';
+
+export interface DownloadCartItem {
+  entityId: number;
+  entityType: 'investigation' | 'dataset' | 'datafile';
+  id: number;
+  name: string;
+  parentEntities: DownloadCartItem[];
+}
+
+export interface DownloadCart {
+  cartItems: DownloadCartItem[];
+  createdAt: string;
+  facilityName: string;
+  id: number;
+  updatedAt: string;
+  userName: string;
+}

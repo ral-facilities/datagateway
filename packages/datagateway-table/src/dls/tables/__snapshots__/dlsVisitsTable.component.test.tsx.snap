@@ -71,6 +71,7 @@ exports[`DLS Visits table component renders correctly 1`] = `
     }
     detailsPanel={[Function]}
     loadMoreRows={[Function]}
+    loading={false}
     onSort={[Function]}
     sort={Object {}}
     totalRowCount={0}

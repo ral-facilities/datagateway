@@ -13,6 +13,7 @@ describe('DLS - Proposals Table', () => {
     cy.get('[role="gridcell"] a')
       .first()
       .click({ force: true });
+
     cy.location('pathname').should(
       'eq',
       '/browse/proposal/INVESTIGATION%201/investigation/'
@@ -25,9 +26,53 @@ describe('DLS - Proposals Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
+  it('should be able to resize a column', () => {
+    let columnWidth = 0;
+
+    cy.window()
+      .then(window => {
+        const windowWidth = window.innerWidth;
+        columnWidth = windowWidth / 2;
+      })
+      .then(() => expect(columnWidth).to.not.equal(0));
+
+    cy.get('[role="columnheader"]')
+      .eq(0)
+      .as('titleColumn');
+    cy.get('[role="columnheader"]')
+      .eq(1)
+      .as('nameColumn');
+
+    cy.get('@titleColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.equal(columnWidth);
+    });
+
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 500 })
+      .trigger('mouseup');
+
+    cy.get('@titleColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.greaterThan(columnWidth);
+    });
+
+    cy.get('@nameColumn').should($column => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.lessThan(columnWidth);
+    });
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -37,8 +82,8 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('Title').click();
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -52,9 +97,9 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('Title').click();
-      cy.contains('Title').click();
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -70,8 +115,8 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('Name').click();
-      cy.contains('Title').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
         'Billion head kitchen peace appear sit civil car. State both itself only seat mean however treatment. ' +

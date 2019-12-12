@@ -70,6 +70,7 @@ const DLSVisitsTable = (
     filters,
     filterTable,
     proposalName,
+    loading,
   } = props;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -100,6 +101,7 @@ const DLSVisitsTable = (
   return (
     <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
       <Table
+        loading={loading}
         data={data}
         loadMoreRows={params => fetchData(proposalName, params)}
         totalRowCount={totalDataCount}
@@ -216,7 +218,4 @@ const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DLSVisitsTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DLSVisitsTable);

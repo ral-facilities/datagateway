@@ -4,6 +4,7 @@ import Table from './table.component';
 import { formatBytes } from './cellRenderers/cellContentRenderers';
 import { TableCellProps } from 'react-virtualized';
 import TextColumnFilter from './columnFilters/textColumnFilter.component';
+import SelectHeader from './headerRenderers/selectHeader.component';
 import ReactTestUtils from 'react-dom/test-utils';
 
 describe('Table component', () => {
@@ -14,6 +15,7 @@ describe('Table component', () => {
   const tableProps = {
     data: [
       {
+        ID: 1,
         TEST1: 'test1',
         TEST2: 2,
       },
@@ -95,6 +97,40 @@ describe('Table component', () => {
     ).toEqual('2 B');
   });
 
+  it('renders select column correctly, with both allIds defined and undefined', () => {
+    const wrapper = mount(
+      <Table
+        {...tableProps}
+        selectedRows={[]}
+        onCheck={jest.fn()}
+        onUncheck={jest.fn()}
+      />
+    );
+
+    expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
+    expect(wrapper.exists('[aria-label="select all rows"]')).toBe(true);
+    expect(wrapper.find(SelectHeader).prop('allIds')).toEqual([1]);
+
+    const wrapperAllIds = mount(
+      <Table
+        {...tableProps}
+        selectedRows={[]}
+        onCheck={jest.fn()}
+        onUncheck={jest.fn()}
+        allIds={[1, 2, 3, 4]}
+      />
+    );
+
+    expect(wrapperAllIds.exists('[aria-colcount=3]')).toBe(true);
+    expect(wrapperAllIds.exists('[aria-label="select all rows"]')).toBe(true);
+    expect(wrapperAllIds.find(SelectHeader).prop('allIds')).toEqual([
+      1,
+      2,
+      3,
+      4,
+    ]);
+  });
+
   it('resizes all data columns correctly when a column is resized', () => {
     const wrapper = mount(<Table {...tableProps} />);
 
@@ -154,7 +190,7 @@ describe('Table component', () => {
     );
   });
 
-  it('resizes all data columns correctly when a column is resized and there are expand and action columns', () => {
+  it('resizes all data columns correctly when a column is resized and there are expand, select and action columns', () => {
     const wrapper = mount(
       <Table
         {...tableProps}
@@ -162,6 +198,9 @@ describe('Table component', () => {
           return <div>Details panel</div>;
         }}
         actions={[]}
+        selectedRows={[]}
+        onCheck={jest.fn()}
+        onUncheck={jest.fn()}
       />
     );
 
@@ -170,22 +209,22 @@ describe('Table component', () => {
     expect(
       wrapper
         .find('[role="columnheader"]')
-        .at(1)
+        .at(2)
         .prop('style')
     ).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('340px'),
+        flex: expect.stringContaining('325px'),
       })
     );
 
     expect(
       wrapper
         .find('[role="columnheader"]')
-        .at(2)
+        .at(3)
         .prop('style')
     ).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('340px'),
+        flex: expect.stringContaining('325px'),
       })
     );
 
@@ -193,21 +232,10 @@ describe('Table component', () => {
       wrapper
         .find('DataHeader')
         .at(0)
-        .prop('resizeColumn')(50);
+        .prop('resizeColumn')(40);
     });
 
     wrapper.update();
-
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(1)
-        .prop('style')
-    ).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('390px'),
-      })
-    );
 
     expect(
       wrapper
@@ -216,7 +244,18 @@ describe('Table component', () => {
         .prop('style')
     ).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('290px'),
+        flex: expect.stringContaining('365px'),
+      })
+    );
+
+    expect(
+      wrapper
+        .find('[role="columnheader"]')
+        .at(3)
+        .prop('style')
+    ).toEqual(
+      expect.objectContaining({
+        flex: expect.stringContaining('285px'),
       })
     );
   });
@@ -286,5 +325,45 @@ describe('Table component', () => {
         .text()
     ).toEqual('Actions');
     expect(wrapper.find('button').text()).toEqual('I am an action');
+  });
+
+  it('renders correctly when no infinite loading properties are defined', () => {
+    const wrapper = mount(
+      <Table
+        {...tableProps}
+        loadMoreRows={undefined}
+        totalRowCount={undefined}
+      />
+    );
+
+    expect(wrapper.find('InfiniteLoader').prop('rowCount')).toBe(
+      tableProps.data.length
+    );
+    expect(wrapper.find('InfiniteLoader').prop('loadMoreRows')).toBeInstanceOf(
+      Function
+    );
+    expect(wrapper.find('InfiniteLoader').prop('loadMoreRows')()).resolves.toBe(
+      undefined
+    );
+  });
+
+  it('throws error when only one of loadMoreRows or totalRowCount are defined', () => {
+    // suppress react uncaught error warning as we're deliberately triggering an error!
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => {});
+
+    expect(() =>
+      mount(<Table {...tableProps} totalRowCount={undefined} />)
+    ).toThrowError(
+      'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    );
+
+    expect(() =>
+      mount(<Table {...tableProps} loadMoreRows={undefined} />)
+    ).toThrowError(
+      'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
+    );
+
+    spy.mockRestore();
   });
 });

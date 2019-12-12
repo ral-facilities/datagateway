@@ -11,6 +11,11 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
   }
 >
   <WithStyles(VirtualizedTable)
+    allIds={
+      Array [
+        1,
+      ]
+    }
     columns={
       Array [
         Object {
@@ -38,6 +43,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           "label": "DOI",
         },
         Object {
+          "cellContentRenderer": [Function],
           "dataKey": "SIZE",
           "disableSort": true,
           "label": "Size",
@@ -100,7 +106,11 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
     }
     detailsPanel={[Function]}
     loadMoreRows={[Function]}
+    loading={false}
+    onCheck={[Function]}
     onSort={[Function]}
+    onUncheck={[Function]}
+    selectedRows={Array []}
     sort={Object {}}
     totalRowCount={0}
   />

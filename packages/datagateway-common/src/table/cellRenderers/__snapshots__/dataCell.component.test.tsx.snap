@@ -3,7 +3,7 @@
 exports[`Data cell component renders correctly 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class"
+  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
 >
   <WithStyles(ForwardRef(Typography))
     noWrap={true}
@@ -17,7 +17,7 @@ exports[`Data cell component renders correctly 1`] = `
 exports[`Data cell component renders nested cell data correctly 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class"
+  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
 >
   <WithStyles(ForwardRef(Typography))
     noWrap={true}
@@ -31,7 +31,7 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
 exports[`Data cell component renders provided cell data correctly 1`] = `
 <div
   aria-sort={null}
-  className="MuiTableCell-root MuiTableCell-body test-class"
+  className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
 >
   <WithStyles(ForwardRef(Typography))
     noWrap={true}

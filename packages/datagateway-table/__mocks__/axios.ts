@@ -5,6 +5,10 @@ export default {
     if (path === '/datagateway-table-settings.json') {
       return Promise.resolve({
         data: {
+          'facilityName': 'Generic',
+          'idsUrl': 'ids',
+          'apiUrl': 'api',
+          'downloadApiUrl': 'download',
           'ui-strings': '/res/default.json',
         },
       });
@@ -15,5 +19,6 @@ export default {
     }
   }),
   post: jest.fn(() => Promise.resolve({ data: {} })),
+  delete: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
 };

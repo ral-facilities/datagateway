@@ -57,13 +57,7 @@ import { myConst } from 'datagateway-common/lib/some-file';
 
 In the project directory, you can run:
 
-### `npm install`
-
-Installs dependencies for `datagateway-common` only. Should normally use `npx lerna add` at the
-top level, but can use regular `npm install` if it's only used by `datagateway-common` and not other
-packages.
-
-### `npm start`
+### `yarn start`
 
 Runs the app in development mode
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -71,20 +65,20 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 In order to begin local development, you should uncomment the lines in `index.tsx`.
 These allow the app to load like a regular React app rather than behave as a library.
 
-### `npm run tsc`
+### `yarn tsc`
 
 Runs the Typescript compiler that converts our Typescript files into a Javascript library
 that can be imported by our other packages. When making changes to this app, you must run
-this to see the changes reflected in other apps. Think of it as a build step like `npm run build`.
+this to see the changes reflected in other apps. Think of it as a build step like `yarn build`.
 
-### `npm test`
+### `yarn test`
 
 Runs unit tests
 
-### `npm run test:watch`
+### `yarn test:watch`
 
 Runs unit tests in watch mode, allowing you to filter which tests to run and automatically restart tests on code changes.
 
-### `npm run lint:js`
+### `yarn lint:js`
 
 Lints the `src` folder
