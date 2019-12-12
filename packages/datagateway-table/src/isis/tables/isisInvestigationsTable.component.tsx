@@ -9,6 +9,7 @@ import {
   Investigation,
   DateColumnFilter,
   DownloadCartItem,
+  formatBytes,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
@@ -28,7 +29,6 @@ import {
 } from '../../state/actions';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
-import { Paper } from '@material-ui/core';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsTableProps {
@@ -140,120 +140,121 @@ const ISISInvestigationsTable = (
   const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation`;
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params =>
-          fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
-        }
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData, detailsPanelResize }) => {
-          return (
-            <InvestigationDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              fetchDetails={props.fetchDetails}
-            />
-          );
-        }}
-        columns={[
-          {
-            label: 'Title',
-            dataKey: 'TITLE',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params =>
+        fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
+      }
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData, detailsPanelResize }) => {
+        return (
+          <InvestigationDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            fetchDetails={props.fetchDetails}
+          />
+        );
+      }}
+      columns={[
+        {
+          label: 'Title',
+          dataKey: 'TITLE',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            return tableLink(
+              `${urlPrefix}/${investigationData.ID}/dataset`,
+              investigationData.TITLE
+            );
+          },
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Visit Id',
+          dataKey: 'VISIT_ID',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            return tableLink(
+              `${urlPrefix}/${investigationData.ID}/dataset`,
+              investigationData.VISIT_ID
+            );
+          },
+          filterComponent: textFilter,
+        },
+        {
+          label: 'RB Number',
+          dataKey: 'NAME',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            return tableLink(
+              `${urlPrefix}/${investigationData.ID}/dataset`,
+              investigationData.NAME
+            );
+          },
+          filterComponent: textFilter,
+        },
+        {
+          label: 'DOI',
+          dataKey: 'STUDYINVESTIGATION.STUDY.PID',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            if (
+              investigationData.STUDYINVESTIGATION &&
+              investigationData.STUDYINVESTIGATION[0].STUDY
+            ) {
               return tableLink(
                 `${urlPrefix}/${investigationData.ID}/dataset`,
-                investigationData.TITLE
+                investigationData.STUDYINVESTIGATION[0].STUDY.PID
               );
-            },
-            filterComponent: textFilter,
+            } else {
+              return '';
+            }
           },
-          {
-            label: 'Visit Id',
-            dataKey: 'VISIT_ID',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              return tableLink(
-                `${urlPrefix}/${investigationData.ID}/dataset`,
-                investigationData.VISIT_ID
-              );
-            },
-            filterComponent: textFilter,
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Size',
+          dataKey: 'SIZE',
+          cellContentRenderer: props => {
+            return formatBytes(props.cellData);
           },
-          {
-            label: 'RB Number',
-            dataKey: 'NAME',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              return tableLink(
-                `${urlPrefix}/${investigationData.ID}/dataset`,
-                investigationData.NAME
-              );
-            },
-            filterComponent: textFilter,
+          disableSort: true,
+        },
+        {
+          label: 'Instrument',
+          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            if (
+              investigationData.INVESTIGATIONINSTRUMENT &&
+              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+            ) {
+              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+                .FULLNAME;
+            } else {
+              return '';
+            }
           },
-          {
-            label: 'DOI',
-            dataKey: 'STUDYINVESTIGATION.STUDY.PID',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              if (
-                investigationData.STUDYINVESTIGATION &&
-                investigationData.STUDYINVESTIGATION[0].STUDY
-              ) {
-                return tableLink(
-                  `${urlPrefix}/${investigationData.ID}/dataset`,
-                  investigationData.STUDYINVESTIGATION[0].STUDY.PID
-                );
-              } else {
-                return '';
-              }
-            },
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Size',
-            dataKey: 'SIZE',
-            disableSort: true,
-          },
-          {
-            label: 'Instrument',
-            dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              if (
-                investigationData.INVESTIGATIONINSTRUMENT &&
-                investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-              ) {
-                return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                  .FULLNAME;
-              } else {
-                return '';
-              }
-            },
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Start Date',
-            dataKey: 'STARTDATE',
-            filterComponent: dateFilter,
-          },
-          {
-            label: 'End Date',
-            dataKey: 'ENDDATE',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
+        },
+        {
+          label: 'End Date',
+          dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 
@@ -271,7 +272,12 @@ const mapDispatchToProps = (
     offsetParams: IndexRange
   ) =>
     dispatch(
-      fetchISISInvestigations(instrumentId, facilityCycleId, offsetParams)
+      fetchISISInvestigations({
+        instrumentId,
+        facilityCycleId,
+        offsetParams,
+        optionalParams: { getSize: true },
+      })
     ),
   fetchCount: (instrumentId: number, facilityCycleId: number) =>
     dispatch(fetchISISInvestigationCount(instrumentId, facilityCycleId)),

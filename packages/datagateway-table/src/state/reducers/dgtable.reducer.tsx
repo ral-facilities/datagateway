@@ -39,6 +39,9 @@ import {
   FetchInvestigationCountRequestType,
   FetchInvestigationCountSuccessType,
   FetchInvestigationCountFailureType,
+  FetchInvestigationSizeRequestType,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationSizeFailureType,
   FetchDatasetCountRequestType,
   FetchDatasetCountSuccessType,
   FetchDatasetCountFailureType,
@@ -90,6 +93,10 @@ import {
   FetchAllIdsRequestType,
   FetchAllIdsSuccessType,
   FetchAllIdsSuccessPayload,
+  FetchSizeSuccessPayload,
+  FetchDatasetSizeRequestType,
+  FetchDatasetSizeSuccessType,
+  FetchDatasetSizeFailureType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from 'datagateway-common';
 
@@ -337,6 +344,70 @@ export function handleFetchCountFailure(
   };
 }
 
+export function handleFetchSizeRequest(state: DGTableState): DGTableState {
+  return {
+    ...state,
+  };
+}
+
+export function handleFetchInvestigationSizeSuccess(
+  state: DGTableState,
+  payload: FetchSizeSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    data: state.data.map((entity: Entity) => {
+      const investigation = entity as Investigation;
+
+      return investigation.ID === payload.id
+        ? { ...investigation, SIZE: payload.size }
+        : investigation;
+    }),
+    investigationCache: {
+      ...state.investigationCache,
+      [payload.id]: {
+        ...state.investigationCache[payload.id],
+        childEntitySize: payload.size,
+      },
+    },
+    error: null,
+  };
+}
+
+export function handleFetchDatasetSizeSuccess(
+  state: DGTableState,
+  payload: FetchSizeSuccessPayload
+): DGTableState {
+  return {
+    ...state,
+    data: state.data.map((entity: Entity) => {
+      const dataset = entity as Dataset;
+
+      return dataset.ID === payload.id
+        ? { ...dataset, SIZE: payload.size }
+        : dataset;
+    }),
+    datasetCache: {
+      ...state.datasetCache,
+      [payload.id]: {
+        ...state.datasetCache[payload.id],
+        childEntitySize: payload.size,
+      },
+    },
+    error: null,
+  };
+}
+
+export function handleFetchSizeFailure(
+  state: DGTableState,
+  payload: FailurePayload
+): DGTableState {
+  return {
+    ...state,
+    error: payload.error,
+  };
+}
+
 export function handleFetchDataDetailsRequest(
   state: DGTableState
 ): DGTableState {
@@ -550,12 +621,18 @@ const DGTableReducer = createReducer(initialState, {
   [FetchInvestigationCountRequestType]: handleFetchCountRequest,
   [FetchInvestigationCountSuccessType]: handleFetchCountSuccess,
   [FetchInvestigationCountFailureType]: handleFetchCountFailure,
+  [FetchInvestigationSizeRequestType]: handleFetchSizeRequest,
+  [FetchInvestigationSizeSuccessType]: handleFetchInvestigationSizeSuccess,
+  [FetchInvestigationSizeFailureType]: handleFetchSizeFailure,
   [FetchDatasetCountRequestType]: handleFetchCountRequest,
   [FetchDatasetCountSuccessType]: handleFetchCountSuccess,
   [FetchDatasetCountFailureType]: handleFetchCountFailure,
   [FetchInvestigationDatasetsCountRequestType]: handleFetchDataCountRequest,
   [FetchInvestigationDatasetsCountSuccessType]: handleFetchDatasetCountSuccess,
   [FetchInvestigationDatasetsCountFailureType]: handleFetchDataCountFailure,
+  [FetchDatasetSizeRequestType]: handleFetchSizeRequest,
+  [FetchDatasetSizeSuccessType]: handleFetchDatasetSizeSuccess,
+  [FetchDatasetSizeFailureType]: handleFetchSizeFailure,
   [DownloadDatasetRequestType]: handleDownloadDataRequest,
   [DownloadDatasetSuccessType]: handleDownloadDataSuccess,
   [DownloadDatasetFailureType]: handleDownloadDataFailure,

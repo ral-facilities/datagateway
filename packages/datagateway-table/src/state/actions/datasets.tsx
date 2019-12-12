@@ -20,6 +20,10 @@ import {
   FetchDatasetCountRequestType,
   RequestPayload,
   FetchDetailsSuccessPayload,
+  FetchSizeSuccessPayload,
+  FetchDatasetSizeRequestType,
+  FetchDatasetSizeSuccessType,
+  FetchDatasetSizeFailureType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { source } from '../middleware/dgtable.middleware';
@@ -60,6 +64,67 @@ export const fetchDatasetsRequest = (
     timestamp,
   },
 });
+
+export const fetchDatasetSizeRequest = (): Action => ({
+  type: FetchDatasetSizeRequestType,
+});
+
+export const fetchDatasetSizeSuccess = (
+  datasetId: number,
+  size: number
+): ActionType<FetchSizeSuccessPayload> => ({
+  type: FetchDatasetSizeSuccessType,
+  payload: {
+    id: datasetId,
+    size,
+  },
+});
+
+export const fetchDatasetSizeFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchDatasetSizeFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchDatasetSize = (
+  datasetId: number
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchDatasetSizeRequest());
+
+    const { downloadApiUrl } = getState().dgtable.urls;
+    const currentCache = getState().dgtable.datasetCache[datasetId];
+
+    // Check for cached dataset size in datasetCache.
+    if (currentCache && currentCache.childEntitySize) {
+      // Dispatch success with cache dataset size.
+      dispatch(
+        fetchDatasetSizeSuccess(datasetId, currentCache.childEntitySize)
+      );
+    } else {
+      await axios
+        .get(`${downloadApiUrl}/user/getSize`, {
+          params: {
+            // TODO: Get session ID from somewhere else (extract from JWT)
+            sessionId: window.localStorage.getItem('icat:token'),
+            facilityName: 'LILS',
+            entityType: 'dataset',
+            entityId: datasetId,
+          },
+        })
+        .then(response => {
+          dispatch(fetchDatasetSizeSuccess(datasetId, response.data));
+        })
+        .catch(error => {
+          log.error(error.message);
+          dispatch(fetchDatasetSizeFailure(error.message));
+        });
+    }
+  };
+};
 
 interface FetchDatasetsParams {
   getDatafileCount?: boolean;
@@ -102,12 +167,24 @@ export const fetchDatasets = ({
       })
       .then(response => {
         dispatch(fetchDatasetsSuccess(response.data, timestamp));
-        if (optionalParams && optionalParams.getDatafileCount) {
-          batch(() => {
-            response.data.forEach((dataset: Dataset) => {
-              dispatch(fetchDatasetDatafilesCount(dataset.ID));
+        if (optionalParams) {
+          if (optionalParams.getDatafileCount) {
+            batch(() => {
+              response.data.forEach((dataset: Dataset) => {
+                dispatch(fetchDatasetDatafilesCount(dataset.ID));
+              });
             });
-          });
+          }
+
+          // This is mainly for the ISIS dataset table, but will
+          // fetch size when the optional parameter getSize has been set.
+          if (optionalParams.getSize) {
+            batch(() => {
+              response.data.forEach((dataset: Dataset) => {
+                dispatch(fetchDatasetSize(dataset.ID));
+              });
+            });
+          }
         }
       })
       .catch(error => {

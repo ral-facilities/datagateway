@@ -21,6 +21,7 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
         "label": "Name",
       },
       Object {
+        "cellContentRenderer": [Function],
         "dataKey": "SIZE",
         "disableSort": true,
         "label": "Size",
