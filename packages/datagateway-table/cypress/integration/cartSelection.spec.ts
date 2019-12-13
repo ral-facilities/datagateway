@@ -721,7 +721,7 @@ describe('Add/remove from cart functionality', () => {
 
     describe('in generic table', () => {
       beforeEach(() => {
-        cy.visit('/browse/investigation/1/dataset/25/datafile');
+        cy.visit('/browse/investigation');
       });
 
       it('individually', () => {
