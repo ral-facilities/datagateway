@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
+
 import DownloadCartTable from './downloadCart/downloadCartTable.component';
+
 import {
   createGenerateClassName,
   StylesProvider,
