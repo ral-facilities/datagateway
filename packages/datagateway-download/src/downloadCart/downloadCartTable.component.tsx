@@ -269,8 +269,6 @@ const DownloadCartTable: React.FC = () => {
             </Grid>
             <Grid item>
               <Button
-                // component={Link}
-                // to="/confirm"
                 onClick={() => setShowConfirmation(true)}
                 id="downloadCartButton"
                 variant="contained"
@@ -289,10 +287,11 @@ const DownloadCartTable: React.FC = () => {
         </Grid>
       </Grid>
 
-      {/* TODO: Show the download confirmation dialog */}
+      {/* Show the download confirmation dialog. */}
       <DownloadConfirmDialog
-        open={showConfirmation}
-        onClose={() => setShowConfirmation(false)}
+        totalSize={totalSize}
+        setOpen={showConfirmation}
+        setClose={() => setShowConfirmation(false)}
       />
     </div>
   );
