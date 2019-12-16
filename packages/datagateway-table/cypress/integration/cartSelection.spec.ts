@@ -1,5 +1,6 @@
 describe('Add/remove from cart functionality', () => {
   beforeEach(() => {
+    Cypress.currentTest.retries(2);
     cy.login('user', 'password');
     cy.clearDownloadCart();
 
