@@ -56,6 +56,35 @@ export const removeDownloadCartItem: (
     });
 };
 
+export const submitCart: (
+  facilityName: string,
+  transport: string,
+  emailAddress: string,
+  fileName: string
+) => Promise<void> = (facilityName: string, transport: string, emailAddress:string, fileName: string) => {
+  // Construct the form parameters.
+  const params = new URLSearchParams();
+  // TODO: get session ID from somewhere else (extract from JWT)
+  params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+  params.append('transport', transport);
+  params.append('email', emailAddress);
+  params.append('fileName', fileName);
+
+  // TODO: zipType by default is 'ZIP', can be 'ZIP_AND_COMPRESS'.
+  params.append('zipType', 'ZIP');
+  
+  return axios
+    .post(`${topcatUrl}/user/cart/${facilityName}/submit`, params)
+    .then(response => {
+      log.debug(response);
+      console.log(response);
+    })
+    .catch(error => {
+      log.error(error.message);
+    })
+}
+
+
 export const getSize: (
   entityId: number,
   entityType: string

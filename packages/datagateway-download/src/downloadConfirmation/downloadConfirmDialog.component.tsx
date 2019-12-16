@@ -21,6 +21,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  FormHelperText,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { formatBytes } from 'datagateway-common';
@@ -101,12 +102,31 @@ interface DownloadConfirmDialogProps {
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
+  //   const classes = dialogStyles();
+
+  // TODO: Temporary facilityName until we load it from settings.
+  const facilityName = 'LILS';
+
   const { totalSize } = props;
   const [connSpeed, setConnSpeed] = React.useState<number>(1);
   const [downloadTime, setDownloadTime] = React.useState<number>(-1);
 
-  //   const classes = dialogStyles();
-  // const processDownload = () => {};
+  // Form values
+  // const [fileName, setFileName] = React.useState<string>('');
+  // const [accessMethod, setAccessMethod] = React.useState<string>('');
+  // const [emailAddress, setEmailAddress] = React.useState<string>('');
+
+  const getDefaultFileName = (): string => {
+    //"ISIS_2019-12-13_11-08-00"
+    const now = new Date();
+    let name = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
+      1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+    return name;
+  };
+
+  const processDownload = (): void => {
+    console.log('Submit Cart');
+  };
 
   const secondsToDHMS = (seconds: number): string => {
     const d = Math.floor(seconds / (3600 * 24));
@@ -134,7 +154,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       open={props.setOpen}
       // TODO: Set size another way; should have width without this?
       fullWidth={true}
-      maxWidth={'sm'}
+      maxWidth={'xs'}
     >
       <DialogTitle id="download-confirm-dialog-title" onClose={props.setClose}>
         Confirm Your Download
@@ -145,14 +165,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         <Grid container spacing={2}>
           {/* Set the download name text field */}
           <Grid item xs={12}>
+            {/* <FormControl> */}
             {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
             <TextField
               id="confirm-download-name"
               label="Download Name"
-              defaultValue="ISIS_2019-12-13_11-08-00"
+              // TODO: Set initial default value.
+              defaultValue={`${getDefaultFileName()}`}
               fullWidth={true}
               required
             />
+            {/* </FormControl> */}
           </Grid>
 
           {/* Select the access method */}
@@ -187,8 +210,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             <Typography>My connection speed: </Typography>
             <FormControl style={{ minWidth: 120 }}>
               <Select
-                labelId="confirm-download-size"
-                id="confirm-download-size"
+                labelId="confirm-connection-speed"
+                id="confirm-connection-speed"
                 defaultValue={1}
                 onChange={(
                   event: React.ChangeEvent<{ value: unknown }>
@@ -204,18 +227,22 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <MenuItem value={30}>30 Mbps</MenuItem>
                 <MenuItem value={100}>100 Mbps</MenuItem>
               </Select>
+              <FormHelperText id="confirm-connection-speed-help">
+                Select connection speed to approximate download time.
+              </FormHelperText>
             </FormControl>
           </Grid>
           {/* TODO: Position the download time next to connection speed select dropbox */}
           <Grid item xs={12}>
             <Typography>
-              <b>Estimated download time</b> (at {connSpeed} Mbps):{' '}
-              {secondsToDHMS(downloadTime)}
+              <b>Estimated download time</b> (at {connSpeed} Mbps):
             </Typography>
+            <Typography>{secondsToDHMS(downloadTime)}</Typography>
           </Grid>
 
           {/* Set the download name text field */}
           <Grid item xs={12}>
+            {/* <FormControl> */}
             {/* // TODO: Email address needs validation? */}
             {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
             <TextField
@@ -223,17 +250,23 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               label="Email Address (optional)"
               fullWidth={true}
             />
+            <FormHelperText id="confirm-download-email-info">
+              Send me download status messages.
+            </FormHelperText>
+            {/* </FormControl> */}
           </Grid>
         </Grid>
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={props.setClose} color="primary" variant="contained">
+        <Button onClick={processDownload} color="primary" variant="contained">
           Download
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
+
+// TODO: Pass in facilityName as prop to DownloadConfirmDialog to get customisable name.
 
 export default DownloadConfirmDialog;
