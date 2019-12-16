@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import Header from './search/Header';
+import Header from './search/Header.component';
 import * as log from 'loglevel';
 import Grid from '@material-ui/core/Grid';
-import SelectDates from './search/datePicker';
-import CheckboxesGroup from './search/checkBoxes';
-import SearchButton from './search/searchButton';
-import SearchTextBox from './search/searchTextBox';
+import SelectDates from './search/datePicker.component';
+import CheckboxesGroup from './search/checkBoxes.component';
+import SearchButton from './search/searchButton.component';
+import SearchTextBox from './search/searchTextBox.component';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
@@ -23,12 +23,34 @@ const store = createStore(
   composeEnhancers(applyMiddleware(...middleware))
 );
 
-class App extends React.Component {
+class App extends React.Component <{}, { hasError: boolean }> {
+  public constructor(props: {}) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
   public componentDidCatch(error: Error | null): void {
-    log.error(`datagateway-search-plugin failed with error: ${error}`);
+    this.setState({ hasError: true });
+    log.error(`datagateway_search failed with error: ${error}`);
   }
 
   public render(): React.ReactNode {
+    if (this.state.hasError) {
+      return (
+        <div className="error">
+          <div
+            style={{
+              padding: 20,
+              background: 'red',
+              color: 'white',
+              margin: 5,
+            }}
+          >
+            Something went wrong...
+          </div>
+        </div>
+      );
+    } else
     return (
       <div
         style={{
