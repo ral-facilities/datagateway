@@ -5,6 +5,7 @@ import { DownloadCart, DownloadCartItem, Datafile } from 'datagateway-common';
 // TODO: get URLs from settings or something...
 const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
 const apiUrl = 'http://scigateway-preprod.esc.rl.ac.uk:5000';
+const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
 export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
   return axios
@@ -61,7 +62,7 @@ export const submitCart: (
   transport: string,
   emailAddress: string,
   fileName: string
-) => Promise<void> = (facilityName: string, transport: string, emailAddress:string, fileName: string) => {
+) => Promise<number> = (facilityName: string, transport: string, emailAddress:string, fileName: string) => {
   // Construct the form parameters.
   const params = new URLSearchParams();
   // TODO: get session ID from somewhere else (extract from JWT)
@@ -78,10 +79,37 @@ export const submitCart: (
     .then(response => {
       log.debug(response);
       console.log(response);
+      
+      // Get the downloadId that was returned from the IDS server.
+      const downloadId = response.data['downloadId'] as number;
+      console.log(downloadId);
+
+      return downloadId;
     })
     .catch(error => {
       log.error(error.message);
+      return -1;
     })
+}
+
+export const downloadPreparedCart: (
+  preparedId: number
+) => void = (preparedId: number) => {
+  const params = {
+    sessionId: window.localStorage.getItem('icat:token'),
+    preparedId: preparedId,
+  };
+
+  const link = document.createElement('a');
+  link.href = `${idsUrl}/getData?${Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')}`;
+
+  link.style.display = 'none';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
 

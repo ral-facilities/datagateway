@@ -25,7 +25,10 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { formatBytes } from 'datagateway-common';
-import { submitCart } from '../downloadCart/downloadCartApi';
+import {
+  submitCart,
+  downloadPreparedCart,
+} from '../downloadCart/downloadCartApi';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -114,7 +117,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [downloadTime, setDownloadTime] = React.useState<number>(-1);
 
   // Form values
-  const [fileName, setFileName] = React.useState<string>('');
+  const [downloadName, setDownloadName] = React.useState<string>('');
   // let fileName: string = getDefaultFileName();
   const [accessMethod, setAccessMethod] = React.useState<string>(
     defaultAccessMethod
@@ -157,16 +160,23 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   const processDownload = async (): Promise<void> => {
     console.log(
-      `Submit Cart: ${facilityName}, ${fileName}, ${accessMethod}, ${emailAddress}`
+      `Submit Cart: ${facilityName}, ${downloadName}, ${accessMethod}, ${emailAddress}`
     );
 
-    const response = await submitCart(
+    // Check for file name, if there hasn't been one entered, then generate a default one.
+    let fileName = downloadName;
+    if (!fileName) fileName = getDefaultFileName();
+
+    const downloadId = await submitCart(
       facilityName,
       accessMethod,
       emailAddress,
       fileName
     );
-    console.log(response);
+    console.log('Returned downloadID ', downloadId);
+
+    // Start the download using the downloadId we received.
+    downloadPreparedCart(downloadId);
   };
 
   return totalSize > 0 ? (
@@ -202,7 +212,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 event: React.ChangeEvent<{ value: unknown }>
               ): void => {
                 console.log('Set download name: ', event.target.value);
-                setFileName(event.target.value as string);
+                setDownloadName(event.target.value as string);
               }}
               helperText="Enter a custom file name or leave as the default format (facility_date_time)."
             />
