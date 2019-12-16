@@ -25,6 +25,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { formatBytes } from 'datagateway-common';
+import { submitCart } from '../downloadCart/downloadCartApi';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -103,30 +104,42 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
   //   const classes = dialogStyles();
-
   // TODO: Temporary facilityName until we load it from settings.
+
   const facilityName = 'LILS';
+  const defaultAccessMethod = 'https';
 
   const { totalSize } = props;
   const [connSpeed, setConnSpeed] = React.useState<number>(1);
   const [downloadTime, setDownloadTime] = React.useState<number>(-1);
 
   // Form values
-  // const [fileName, setFileName] = React.useState<string>('');
-  // const [accessMethod, setAccessMethod] = React.useState<string>('');
-  // const [emailAddress, setEmailAddress] = React.useState<string>('');
+  const [fileName, setFileName] = React.useState<string>('');
+  // let fileName: string = getDefaultFileName();
+  const [accessMethod, setAccessMethod] = React.useState<string>(
+    defaultAccessMethod
+  );
+  const [emailAddress, setEmailAddress] = React.useState<string>('');
+
+  const emailHelpText = 'Send me download status messages via email.';
+  const emailErrorText = 'Please ensure the email you have entered is valid.';
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  const [emailValid, setEmailValid] = React.useState<boolean>(true);
+  const [emailHelperText, setEmailHelperText] = React.useState<string>(
+    emailHelpText
+  );
 
   const getDefaultFileName = (): string => {
-    //"ISIS_2019-12-13_11-08-00"
     const now = new Date();
-    let name = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
+    let defaultName = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
       1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
-    return name;
+
+    return defaultName;
   };
 
-  const processDownload = (): void => {
-    console.log('Submit Cart');
-  };
+  useEffect(() => {
+    setDownloadTime(totalSize / (1024 * 1024) / (connSpeed / 8));
+  }, [connSpeed, totalSize]);
 
   const secondsToDHMS = (seconds: number): string => {
     const d = Math.floor(seconds / (3600 * 24));
@@ -142,19 +155,28 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     return dDisplay + hDisplay + mDisplay + sDisplay;
   };
 
-  useEffect(() => {
-    //console.log('Result: ', (totalSize / (1024*1024)) / (connSpeed/8));
-    setDownloadTime(totalSize / (1024 * 1024) / (connSpeed / 8));
-  }, [connSpeed, totalSize]);
+  const processDownload = async (): Promise<void> => {
+    console.log(
+      `Submit Cart: ${facilityName}, ${fileName}, ${accessMethod}, ${emailAddress}`
+    );
 
-  return (
+    const response = await submitCart(
+      facilityName,
+      accessMethod,
+      emailAddress,
+      fileName
+    );
+    console.log(response);
+  };
+
+  return totalSize > 0 ? (
     <Dialog
       onClose={props.setClose}
       aria-labelledby="download-confirmation-dialog"
       open={props.setOpen}
       // TODO: Set size another way; should have width without this?
       fullWidth={true}
-      maxWidth={'xs'}
+      maxWidth={'sm'}
     >
       <DialogTitle id="download-confirm-dialog-title" onClose={props.setClose}>
         Confirm Your Download
@@ -169,11 +191,20 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
             <TextField
               id="confirm-download-name"
-              label="Download Name"
-              // TODO: Set initial default value.
-              defaultValue={`${getDefaultFileName()}`}
+              label="Download Name (optional)"
+              // TODO: We can't set the defaultName to the setFileName useState,
+              //       so instead we use a normal variable.
+              // defaultValue={`${getDefaultFileName()}`}
+              // defaultValue={`${fileName}`}
+              placeholder={`${getDefaultFileName()}`}
               fullWidth={true}
-              required
+              onChange={(
+                event: React.ChangeEvent<{ value: unknown }>
+              ): void => {
+                console.log('Set download name: ', event.target.value);
+                setFileName(event.target.value as string);
+              }}
+              helperText="Enter a custom file name or leave as the default format (facility_date_time)."
             />
             {/* </FormControl> */}
           </Grid>
@@ -187,14 +218,32 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               <Select
                 labelId="confirm-access-method"
                 id="confirm-access-method"
-                defaultValue="https"
+                defaultValue={`${defaultAccessMethod}`}
+                onChange={(
+                  event: React.ChangeEvent<{ value: unknown }>
+                ): void => {
+                  console.log('Selected access method: ', event.target.value);
 
-                // Show description for each access method
-                // onChange={handleChange}
+                  // Material UI select is not a real select element, so needs casting.
+                  setAccessMethod(event.target.value as string);
+                }}
               >
                 <MenuItem value="https">HTTPS</MenuItem>
                 <MenuItem value="globus">Globus</MenuItem>
               </Select>
+
+              {/* Provide some information on the selected access method. */}
+              <Typography>
+                <b>Access Method Information:</b>
+              </Typography>
+
+              {accessMethod === defaultAccessMethod && (
+                <Typography>HTTPS is the default access method.</Typography>
+              )}
+
+              {accessMethod === 'globus' && (
+                <Typography>Globus is a special access method.</Typography>
+              )}
             </FormControl>
           </Grid>
 
@@ -228,7 +277,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <MenuItem value={100}>100 Mbps</MenuItem>
               </Select>
               <FormHelperText id="confirm-connection-speed-help">
-                Select connection speed to approximate download time.
+                Select a connection speed to approximate download time.
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -249,22 +298,63 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               id="confirm-download-email"
               label="Email Address (optional)"
               fullWidth={true}
+              helperText={emailHelperText}
+              error={!emailValid}
+              // TODO: We could use debounce to evaluate if the email address is valid
+              //       after the user has finished typing it.
+              onChange={(
+                event: React.ChangeEvent<{ value: unknown }>
+              ): void => {
+                console.log(
+                  'Changed email address: ',
+                  event.target.value as string
+                );
+
+                // Remove whitespaces and allow for the email to be optional.
+                const email = (event.target.value as string).trim();
+                if (email) {
+                  if (emailRegex.test(email)) {
+                    // Material UI select is not a real select element, so needs casting.
+                    setEmailAddress(email);
+
+                    if (emailHelperText !== emailHelpText)
+                      setEmailHelperText(emailHelpText);
+                    setEmailValid(true);
+
+                    console.log('Set valid email');
+                  } else {
+                    if (emailHelperText !== emailErrorText)
+                      setEmailHelperText(emailErrorText);
+                    setEmailValid(false);
+
+                    console.log('Set invalid email');
+                  }
+                } else if (!emailValid) {
+                  // Allow for the error to toggle off, if there is
+                  // no longer an email entered in the text field.
+                  setEmailHelperText(emailHelpText);
+                  setEmailValid(true);
+                }
+              }}
             />
-            <FormHelperText id="confirm-download-email-info">
-              Send me download status messages.
-            </FormHelperText>
             {/* </FormControl> */}
           </Grid>
         </Grid>
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={processDownload} color="primary" variant="contained">
+        <Button
+          // TODO: Download button disables if email is invalid, potentially use debounce?
+          disabled={!emailValid}
+          onClick={processDownload}
+          color="primary"
+          variant="contained"
+        >
           Download
         </Button>
       </DialogActions>
     </Dialog>
-  );
+  ) : null;
 };
 
 // TODO: Pass in facilityName as prop to DownloadConfirmDialog to get customisable name.
