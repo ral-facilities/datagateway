@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -102,12 +102,30 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
   const { totalSize } = props;
-  const [connSpeed, setConnSpeed] = React.useState<number>(-1);
+  const [connSpeed, setConnSpeed] = React.useState<number>(1);
   const [downloadTime, setDownloadTime] = React.useState<number>(-1);
 
   //   const classes = dialogStyles();
-
   // const processDownload = () => {};
+
+  const secondsToDHMS = (seconds: number): string => {
+    const d = Math.floor(seconds / (3600 * 24));
+    const h = Math.floor((seconds % (3600 * 24)) / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+
+    const dDisplay = d > 0 ? d + (d === 1 ? ' day, ' : ' days, ') : '';
+    const hDisplay = h > 0 ? h + (h === 1 ? ' hour, ' : ' hours, ') : '';
+    const mDisplay = m > 0 ? m + (m === 1 ? ' minute, ' : ' minutes, ') : '';
+    const sDisplay = s > 0 ? s + (s === 1 ? ' second' : ' seconds') : '';
+
+    return dDisplay + hDisplay + mDisplay + sDisplay;
+  };
+
+  useEffect(() => {
+    //console.log('Result: ', (totalSize / (1024*1024)) / (connSpeed/8));
+    setDownloadTime(totalSize / (1024 * 1024) / (connSpeed / 8));
+  }, [connSpeed, totalSize]);
 
   return (
     <Dialog
@@ -116,7 +134,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       open={props.setOpen}
       // TODO: Set size another way; should have width without this?
       fullWidth={true}
-      maxWidth={'xs'}
+      maxWidth={'sm'}
     >
       <DialogTitle id="download-confirm-dialog-title" onClose={props.setClose}>
         Confirm Your Download
@@ -159,7 +177,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
           {/* Get the size of the download  */}
           <Grid item xs={12}>
-            <Typography>Download size: {formatBytes(totalSize)}</Typography>
+            <Typography>
+              <b>Download size:</b> {formatBytes(totalSize)}
+            </Typography>
           </Grid>
 
           {/* Select and estimate the download time */}
@@ -173,11 +193,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 onChange={(
                   event: React.ChangeEvent<{ value: unknown }>
                 ): void => {
-                  // TODO: Material UI select is not a real select element, so needs casting.
-                  setConnSpeed(event.currentTarget.value as number);
-                  setDownloadTime(
-                    totalSize / ((event.currentTarget.value as number) / 8)
-                  );
+                  //console.log('Total size: ', totalSize);
+                  // console.log(event.target.value);
+
+                  // Material UI select is not a real select element, so needs casting.
+                  setConnSpeed(event.target.value as number);
                 }}
               >
                 <MenuItem value={1}>1 Mbps</MenuItem>
@@ -189,8 +209,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           {/* TODO: Position the download time next to connection speed select dropbox */}
           <Grid item xs={12}>
             <Typography>
-              <b>Estimated download time</b> at {connSpeed}Mbps is{' '}
-              {downloadTime} seconds.
+              <b>Estimated download time</b> (at {connSpeed} Mbps):{' '}
+              {secondsToDHMS(downloadTime)}
             </Typography>
           </Grid>
 
@@ -200,7 +220,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
             <TextField
               id="confirm-download-email"
-              label="Email Address"
+              label="Email Address (optional)"
               fullWidth={true}
             />
           </Grid>
