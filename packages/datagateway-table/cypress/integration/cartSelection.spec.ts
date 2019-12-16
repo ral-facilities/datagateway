@@ -144,6 +144,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('by shift clicking', () => {
+        cy.wait(['@getDatafiles', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -161,6 +162,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('and unselect by shift clicking', () => {
+        cy.wait(['@getDatafiles', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -318,6 +320,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('by shift clicking', () => {
+        cy.wait(['@getDatafiles', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -335,6 +338,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('and unselect by shift clicking', () => {
+        cy.wait(['@getDatafiles', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -492,6 +496,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('by shift clicking', () => {
+        cy.wait(['@getDatafiles', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -509,6 +514,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('and unselect by shift clicking', () => {
+        cy.wait(['@getDatafiles', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -849,6 +855,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('by shift clicking', () => {
+        cy.wait(['@getInvestigations', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -866,6 +873,7 @@ describe('Add/remove from cart functionality', () => {
       });
 
       it('and unselect by shift clicking', () => {
+        cy.wait(['@getInvestigations', '@getAllIds']);
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
