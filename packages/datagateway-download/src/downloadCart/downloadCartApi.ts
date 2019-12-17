@@ -93,18 +93,25 @@ export const submitCart: (
 }
 
 export const downloadPreparedCart: (
-  preparedId: number
-) => void = (preparedId: number) => {
+  preparedId: number,
+  fileName: string
+) => void = (preparedId: number, fileName: string) => {
+
+  // We need to set the preparedId and outname query parameters 
+  // for the IDS download.
   const params = {
     sessionId: window.localStorage.getItem('icat:token'),
     preparedId: preparedId,
+    outname: fileName,
   };
 
+  // Create our IDS link from the query parameters.
   const link = document.createElement('a');
   link.href = `${idsUrl}/getData?${Object.entries(params)
     .map(([key, value]) => `${key}=${value}`)
     .join('&')}`;
 
+  // We trigger an immediate download which will begin in a new tab.
   link.style.display = 'none';
   link.target = '_blank';
   document.body.appendChild(link);

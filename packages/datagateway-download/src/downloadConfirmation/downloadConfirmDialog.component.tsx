@@ -116,9 +116,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [connSpeed, setConnSpeed] = React.useState<number>(1);
   const [downloadTime, setDownloadTime] = React.useState<number>(-1);
 
-  // Form values
+  // Submit values.
   const [downloadName, setDownloadName] = React.useState<string>('');
-  // let fileName: string = getDefaultFileName();
   const [accessMethod, setAccessMethod] = React.useState<string>(
     defaultAccessMethod
   );
@@ -176,19 +175,30 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     console.log('Returned downloadID ', downloadId);
 
     // Start the download using the downloadId we received.
-    downloadPreparedCart(downloadId);
+    downloadPreparedCart(downloadId, fileName);
+  };
+
+  const closeDialog = (): void => {
+    // Reset all fields for next time dialog is opened.
+    setDownloadName('');
+    setAccessMethod(defaultAccessMethod);
+    setEmailAddress('');
+
+    // Set close on the parent cart table component.
+    props.setClose();
   };
 
   return totalSize > 0 ? (
     <Dialog
-      onClose={props.setClose}
+      onClose={closeDialog}
       aria-labelledby="download-confirmation-dialog"
       open={props.setOpen}
       // TODO: Set size another way; should have width without this?
       fullWidth={true}
       maxWidth={'sm'}
     >
-      <DialogTitle id="download-confirm-dialog-title" onClose={props.setClose}>
+      {/* Custom title component which has a close button */}
+      <DialogTitle id="download-confirm-dialog-title" onClose={closeDialog}>
         Confirm Your Download
       </DialogTitle>
 
@@ -342,6 +352,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 } else if (!emailValid) {
                   // Allow for the error to toggle off, if there is
                   // no longer an email entered in the text field.
+                  setEmailAddress('');
                   setEmailHelperText(emailHelpText);
                   setEmailValid(true);
                 }
