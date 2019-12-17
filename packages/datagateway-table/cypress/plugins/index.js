@@ -16,8 +16,7 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   on('task', {
-    // it's installed at the top level, so disable the check
-    // eslint-disable-next-line import/no-extraneous-dependencies
     failed: require('cypress-failed-log/src/failed')(),
   });
+  require('cypress-plugin-retries/lib/plugin')(on);
 };
