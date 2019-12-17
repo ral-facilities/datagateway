@@ -121,7 +121,7 @@ describe('Download Cart', () => {
     const stub = cy.stub();
     cy.on('window:alert', stub);
 
-    cy.contains('Calculating...').should('not.exist');
+    cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
     cy.contains('Download Cart')
       .click()
       .then(() => {
