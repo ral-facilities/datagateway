@@ -41,7 +41,7 @@ describe('DatePicker component tests', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<SelectDates store={mockStore(state)}/>);
+    const wrapper = shallow(<SelectDates store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -57,31 +57,30 @@ describe('DatePicker component tests', () => {
       </Provider>
     );
 
-    
-    const startDateInput =  wrapper.find('[aria-label="start date input"]');
+    const startDateInput = wrapper.find('[aria-label="start date input"]');
     startDateInput.instance().value = '2012 01 01';
     startDateInput.simulate('change');
-    
-   expect(testStore.getActions()[0]).toEqual(selectStartDate(new Date('2012-01-01')));
-    
+
+    expect(testStore.getActions()[0]).toEqual(
+      selectStartDate(new Date('2012-01-01'))
+    );
   });
 
+  it('sends selectEndDate action when user types number into End Date input', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SelectDates />
+        </MemoryRouter>
+      </Provider>
+    );
 
-    it('sends selectEndDate action when user types number into End Date input', () => {
-      const testStore = mockStore(state);
-      const wrapper = mount(
-        <Provider store={testStore}>
-          <MemoryRouter>
-            <SelectDates />
-          </MemoryRouter>
-        </Provider>
-      );
-
-  const endDateInput =  wrapper.find('[aria-label="end date input"]');
+    const endDateInput = wrapper.find('[aria-label="end date input"]');
     endDateInput.instance().value = '2000 01 01';
     endDateInput.simulate('change');
-   expect(testStore.getActions()[0]).toEqual(selectEndDate(new Date('2000-01-01')));
-    });
-
-
- });
+    expect(testStore.getActions()[0]).toEqual(
+      selectEndDate(new Date('2000-01-01'))
+    );
+  });
+});

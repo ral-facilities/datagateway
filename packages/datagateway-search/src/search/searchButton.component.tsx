@@ -37,7 +37,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   }
 
   public urlParamsBuilder = (datasearchtype: string): LuceneParameters => {
-
     let stringStartDate = '0000001010000';
     if (this.props.startDate !== null) {
       stringStartDate = format(this.props.startDate, 'yyyy-MM-dd');
@@ -74,8 +73,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     return queryParams;
   };
 
-  
-
   public handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (this.props.dataset === true) {
       let datasetParams = this.urlParamsBuilder('Dataset');
@@ -102,11 +99,11 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   public render(): React.ReactNode {
     return (
       <div>
-        <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={this.handleClick}
-        aria-label="submit search button"
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.handleClick}
+          aria-label="submit search button"
         >
           Search
         </Button>

@@ -73,7 +73,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           inputProps={{ 'aria-label': 'end date input' }}
         />
       </MuiPickersUtilsProvider>
-      </div>
+    </div>
   );
 }
 

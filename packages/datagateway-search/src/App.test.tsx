@@ -39,5 +39,4 @@ describe('App', () => {
       `datagateway_search failed with error: ${error}`
     );
   });
-
 });

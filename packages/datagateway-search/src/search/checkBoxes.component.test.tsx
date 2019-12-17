@@ -1,5 +1,4 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
 import { StateType } from '../state/app.types';
 import {
   toggleDataset,
@@ -94,5 +93,4 @@ describe('Checkbox component tests', () => {
 
     expect(testStore.getActions()[0]).toEqual(toggleInvestigation(true));
   });
-  
 });

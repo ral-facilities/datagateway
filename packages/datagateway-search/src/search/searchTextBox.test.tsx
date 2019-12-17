@@ -7,9 +7,7 @@ import SearchTextBox from './searchTextBox.component';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { initialState } from '../state/reducers/dgsearch.reducer';
-import {
-  submitSearchText,
-} from '../state/actions/actions';
+import { submitSearchText } from '../state/actions/actions';
 
 jest.mock('loglevel');
 
@@ -43,7 +41,7 @@ describe('Search text box component tests', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<SearchTextBox store={mockStore(state)}/>);
+    const wrapper = shallow(<SearchTextBox store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -57,11 +55,10 @@ describe('Search text box component tests', () => {
       </Provider>
     );
 
-    
-    wrapper.find('[aria-label="search text input"]').simulate('change', {target: {value: 'test'}});
+    wrapper
+      .find('[aria-label="search text input"]')
+      .simulate('change', { target: { value: 'test' } });
 
-   expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));
-    
+    expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));
   });
-
- });
+});

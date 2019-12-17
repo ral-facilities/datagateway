@@ -23,7 +23,7 @@ const store = createStore(
   composeEnhancers(applyMiddleware(...middleware))
 );
 
-class App extends React.Component <{}, { hasError: boolean }> {
+class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
     super(props);
     this.state = { hasError: false };
@@ -51,44 +51,44 @@ class App extends React.Component <{}, { hasError: boolean }> {
         </div>
       );
     } else
-    return (
-      <div
-        style={{
-          padding: 15,
-          margin: 10,
-        }}
-        className="App"
-      >
-        <Provider store={store}>
-          <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="flex-start"
-          >
-            <Grid item>
-              <Header />
-            </Grid>
+      return (
+        <div
+          style={{
+            padding: 15,
+            margin: 10,
+          }}
+          className="App"
+        >
+          <Provider store={store}>
+            <Grid
+              container
+              direction="column"
+              justify="flex-start"
+              alignItems="flex-start"
+            >
+              <Grid item>
+                <Header />
+              </Grid>
 
-            <Grid item>
-              <SearchTextBox />
-            </Grid>
+              <Grid item>
+                <SearchTextBox />
+              </Grid>
 
-            <Grid item>
-              <SelectDates />
-            </Grid>
+              <Grid item>
+                <SelectDates />
+              </Grid>
 
-            <Grid item>
-              <CheckboxesGroup />
-            </Grid>
+              <Grid item>
+                <CheckboxesGroup />
+              </Grid>
 
-            <Grid item>
-              <SearchButton />
+              <Grid item>
+                <SearchButton />
+              </Grid>
             </Grid>
-          </Grid>
-        </Provider>
-      </div>
-    );
+          </Provider>
+        </div>
+      );
   }
 }
 
