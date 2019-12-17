@@ -65,7 +65,6 @@ function SelectDates(props: DatePickerCombinedProps): JSX.Element {
         format="yyyy-MM-dd"
         value={endDate}
         onChange={
-          // not sure why this works
           date => {
             selectEndDate(date);
           }

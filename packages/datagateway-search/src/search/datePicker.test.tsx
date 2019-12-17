@@ -2,21 +2,20 @@ import React from 'react';
 import { ReactWrapper } from 'enzyme';
 import { StateType } from '../state/app.types';
 import {
-  toggleDataset,
-  toggleDatafile,
-  toggleInvestigation,
+  selectStartDate,
+  selectEndDate,
 } from '../state/actions/actions';
 import { Provider } from 'react-redux';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
-import CheckBoxesGroup from './checkBoxes.component';
+import SelectDates from './datePicker.component';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 
 jest.mock('loglevel');
 
-describe('Checkbox component tests', () => {
+describe('DatePicker component tests', () => {
   let shallow;
   let state: StateType;
   let mockStore;
@@ -48,7 +47,7 @@ describe('Checkbox component tests', () => {
   });
 
  it('renders correctly', () => {
-    const wrapper = shallow(<CheckBoxesGroup store={mockStore(state)} />);
+    const wrapper = shallow(<SelectDates store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -57,7 +56,7 @@ describe('Checkbox component tests', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <CheckBoxesGroup />
+          <SelectDates />
         </MemoryRouter>
       </Provider>
     );
@@ -68,41 +67,6 @@ describe('Checkbox component tests', () => {
 
       expect(testStore.getActions()[0]).toEqual(toggleDataset(false));
   });
-
-  it('sends a toggleDatafile action when user clicks checkbox', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <CheckBoxesGroup />
-        </MemoryRouter>
-      </Provider>
-    );
-  
-    wrapper
-      .find('[aria-label="datafile checkbox"]')
-      .simulate('change');
-
-      expect(testStore.getActions()[0]).toEqual(toggleDatafile(false));
-  });
-
-  it('sends a toggleInvestigation action when user clicks checkbox', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <CheckBoxesGroup />
-        </MemoryRouter>
-      </Provider>
-    );
-  
-    wrapper
-      .find('[aria-label="investigation checkbox"]')
-      .simulate('change');
-
-      expect(testStore.getActions()[0]).toEqual(toggleInvestigation(true));
-  });
-
 
 });
 

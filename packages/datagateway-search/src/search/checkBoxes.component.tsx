@@ -82,6 +82,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 checked={investigation}
                 onChange={handleChange('Investigation', investigation)}
                 value="Investigation"
+                inputProps={{ 'aria-label': 'investigation checkbox' }}
               />
             }
             label="Investigation"
@@ -92,8 +93,9 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 checked={dataset}
                 onChange={handleChange('Dataset', dataset)}
                 value="Dataset"
+                inputProps={{ 'aria-label': 'dataset checkbox' }}
               />
-            }
+              }             
             label="Dataset"
           />
           <FormControlLabel
@@ -102,6 +104,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 checked={datafile}
                 onChange={handleChange('Datafile', datafile)}
                 value="Datafile"
+                inputProps={{ 'aria-label': 'datafile checkbox' }}
               />
             }
             label="Datafile"

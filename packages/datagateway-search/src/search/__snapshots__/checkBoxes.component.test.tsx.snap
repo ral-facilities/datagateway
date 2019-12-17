@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Checkbox component tests renders correctly 1`] = `
+<div
+  className="makeStyles-root-1"
+>
+  <WithStyles(ForwardRef(FormControl))
+    className="makeStyles-formControl-2"
+    component="fieldset"
+    error={false}
+    required={true}
+  >
+    <WithStyles(ForwardRef(FormLabel))
+      component="legend"
+    >
+      Please select at least one
+    </WithStyles(ForwardRef(FormLabel))>
+    <WithStyles(ForwardRef(FormGroup))>
+      <WithStyles(ForwardRef(FormControlLabel))
+        control={
+          <ForwardRef(WithStyles)
+            checked={false}
+            inputProps={
+              Object {
+                "aria-label": "investigation checkbox",
+              }
+            }
+            onChange={[Function]}
+            value="Investigation"
+          />
+        }
+        label="Investigation"
+      />
+      <WithStyles(ForwardRef(FormControlLabel))
+        control={
+          <ForwardRef(WithStyles)
+            checked={true}
+            inputProps={
+              Object {
+                "aria-label": "dataset checkbox",
+              }
+            }
+            onChange={[Function]}
+            value="Dataset"
+          />
+        }
+        label="Dataset"
+      />
+      <WithStyles(ForwardRef(FormControlLabel))
+        control={
+          <ForwardRef(WithStyles)
+            checked={true}
+            inputProps={
+              Object {
+                "aria-label": "datafile checkbox",
+              }
+            }
+            onChange={[Function]}
+            value="Datafile"
+          />
+        }
+        label="Datafile"
+      />
+    </WithStyles(ForwardRef(FormGroup))>
+  </WithStyles(ForwardRef(FormControl))>
+</div>
+`;
