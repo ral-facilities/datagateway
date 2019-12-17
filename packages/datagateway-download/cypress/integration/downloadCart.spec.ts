@@ -1,5 +1,6 @@
 describe('Download Cart', () => {
   beforeEach(() => {
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.login('user', 'password');

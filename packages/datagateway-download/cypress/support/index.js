@@ -20,3 +20,4 @@ import './commands';
 // require('./commands')
 
 require('cypress-failed-log');
+require('cypress-plugin-retries');
