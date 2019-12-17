@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Search text box component tests renders correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(TextField))
+    id="filled-search"
+    inputProps={
+      Object {
+        "aria-label": "search text input",
+      }
+    }
+    label="Search Text"
+    margin="normal"
+    onChange={[Function]}
+    type="search"
+    value=""
+  />
+</div>
+`;

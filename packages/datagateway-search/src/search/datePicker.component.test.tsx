@@ -1,10 +1,6 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
 import { StateType } from '../state/app.types';
-import {
-  selectStartDate,
-  selectEndDate,
-} from '../state/actions/actions';
+import { selectStartDate, selectEndDate } from '../state/actions/actions';
 import { Provider } from 'react-redux';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
@@ -22,16 +18,15 @@ describe('DatePicker component tests', () => {
   let mount;
 
   beforeEach(() => {
-    shallow = createShallow( {untilSelector: 'div'} )
+    shallow = createShallow({ untilSelector: 'SelectDate' });
     mount = createMount();
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
-    
+
     state.dgsearch = {
       searchText: '',
       text: '',
       selectDate: {
-        date: null,
         startDate: null,
         endDate: null,
       },
@@ -40,18 +35,19 @@ describe('DatePicker component tests', () => {
         datafile: true,
         investigation: false,
       },
-    }; 
+    };
 
     mockStore = configureStore([thunk]);
- 
   });
 
- it('renders correctly', () => {
-    const wrapper = shallow(<SelectDates store={mockStore(state)} />);
+  it('renders correctly', () => {
+    const wrapper = shallow(<SelectDates store={mockStore(state)}/>);
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends a toggleDataset action when user clicks checkbox', () => {
+  // test clicking and typing
+
+  it('sends selectStartDate action when user types number into Start Date input', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -61,13 +57,31 @@ describe('DatePicker component tests', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="dataset checkbox"]')
-      .simulate('change');
-
-      expect(testStore.getActions()[0]).toEqual(toggleDataset(false));
+    
+    const startDateInput =  wrapper.find('[aria-label="start date input"]');
+    startDateInput.instance().value = '2012 01 01';
+    startDateInput.simulate('change');
+    
+   expect(testStore.getActions()[0]).toEqual(selectStartDate(new Date('2012-01-01')));
+    
   });
 
-});
+
+    it('sends selectEndDate action when user types number into End Date input', () => {
+      const testStore = mockStore(state);
+      const wrapper = mount(
+        <Provider store={testStore}>
+          <MemoryRouter>
+            <SelectDates />
+          </MemoryRouter>
+        </Provider>
+      );
+
+  const endDateInput =  wrapper.find('[aria-label="end date input"]');
+    endDateInput.instance().value = '2000 01 01';
+    endDateInput.simulate('change');
+   expect(testStore.getActions()[0]).toEqual(selectEndDate(new Date('2000-01-01')));
+    });
 
 
+ });

@@ -16,7 +16,6 @@ export const initialState: DGSearchState = {
   searchText: '',
   text: '',
   selectDate: {
-    date: null,
     startDate: null,
     endDate: null,
   },

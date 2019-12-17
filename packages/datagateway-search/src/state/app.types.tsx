@@ -6,8 +6,7 @@ export interface DGSearchState {
   searchText: string;
   text: string;
   selectDate: {
-    date: MaterialUiPickersDate;
-    startDate: MaterialUiPickersDate; // not sure if this should be date type instead
+    startDate: MaterialUiPickersDate; 
     endDate: MaterialUiPickersDate;
   };
   checkBox: {

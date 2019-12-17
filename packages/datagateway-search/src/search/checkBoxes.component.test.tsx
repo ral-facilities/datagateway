@@ -23,16 +23,15 @@ describe('Checkbox component tests', () => {
   let mount;
 
   beforeEach(() => {
-    shallow = createShallow( {untilSelector: 'div'} )
+    shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
-    
+
     state.dgsearch = {
       searchText: '',
       text: '',
       selectDate: {
-        date: null,
         startDate: null,
         endDate: null,
       },
@@ -41,13 +40,12 @@ describe('Checkbox component tests', () => {
         datafile: true,
         investigation: false,
       },
-    }; 
+    };
 
     mockStore = configureStore([thunk]);
- 
   });
 
- it('renders correctly', () => {
+  it('renders correctly', () => {
     const wrapper = shallow(<CheckBoxesGroup store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
@@ -62,11 +60,9 @@ describe('Checkbox component tests', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="dataset checkbox"]')
-      .simulate('change');
+    wrapper.find('[aria-label="dataset checkbox"]').simulate('change');
 
-      expect(testStore.getActions()[0]).toEqual(toggleDataset(false));
+    expect(testStore.getActions()[0]).toEqual(toggleDataset(false));
   });
 
   it('sends a toggleDatafile action when user clicks checkbox', () => {
@@ -78,12 +74,10 @@ describe('Checkbox component tests', () => {
         </MemoryRouter>
       </Provider>
     );
-  
-    wrapper
-      .find('[aria-label="datafile checkbox"]')
-      .simulate('change');
 
-      expect(testStore.getActions()[0]).toEqual(toggleDatafile(false));
+    wrapper.find('[aria-label="datafile checkbox"]').simulate('change');
+
+    expect(testStore.getActions()[0]).toEqual(toggleDatafile(false));
   });
 
   it('sends a toggleInvestigation action when user clicks checkbox', () => {
@@ -95,15 +89,10 @@ describe('Checkbox component tests', () => {
         </MemoryRouter>
       </Provider>
     );
-  
-    wrapper
-      .find('[aria-label="investigation checkbox"]')
-      .simulate('change');
 
-      expect(testStore.getActions()[0]).toEqual(toggleInvestigation(true));
+    wrapper.find('[aria-label="investigation checkbox"]').simulate('change');
+
+    expect(testStore.getActions()[0]).toEqual(toggleInvestigation(true));
   });
-
-
+  
 });
-
-

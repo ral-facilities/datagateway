@@ -1,54 +1,67 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import { Action, AnyAction } from 'redux';
-import { connect } from 'react-redux';
-import { submitSearchText } from '../state/actions/actions';
-import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
+import { Provider } from 'react-redux';
+import { createShallow, createMount } from '@material-ui/core/test-utils';
+import configureStore from 'redux-mock-store';
+import SearchTextBox from './searchTextBox.component';
+import thunk from 'redux-thunk';
+import { MemoryRouter } from 'react-router';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import {
+  submitSearchText,
+} from '../state/actions/actions';
 
-interface SearchTextStoreProps {
-  searchText: string;
-}
+jest.mock('loglevel');
 
-interface SearchTextDispatchProps {
-  submitSearchText: (searchText: string) => Action;
-}
+describe('Search text box component tests', () => {
+  let shallow;
+  let state: StateType;
+  let mockStore;
+  let mount;
 
-type SearchTextCombinedProps = SearchTextStoreProps & SearchTextDispatchProps;
+  beforeEach(() => {
+    shallow = createShallow({ untilSelector: 'div' });
+    mount = createMount();
 
-const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
-  const { searchText, submitSearchText } = props;
+    state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
-  const sendSearchText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    let searchText = event.target.value;
-    submitSearchText(searchText);
-  };
+    state.dgsearch = {
+      searchText: '',
+      text: '',
+      selectDate: {
+        startDate: null,
+        endDate: null,
+      },
+      checkBox: {
+        dataset: true,
+        datafile: true,
+        investigation: false,
+      },
+    };
 
-  return (
-    <div>
-      <TextField
-        id="filled-search"
-        label="Search Text"
-        type="search"
-        margin="normal"
-        value={searchText} // redundant?
-        onChange={sendSearchText}
-      />
-    </div>
-  );
-};
+    mockStore = configureStore([thunk]);
+  });
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): SearchTextDispatchProps => ({
-  submitSearchText: (searchText: string) =>
-    dispatch(submitSearchText(searchText)),
-});
+  it('renders correctly', () => {
+    const wrapper = shallow(<SearchTextBox store={mockStore(state)}/>);
+    expect(wrapper).toMatchSnapshot();
+  });
 
-const mapStateToProps = (state: StateType): SearchTextStoreProps => {
-  return {
-    searchText: state.dgsearch.searchText,
-  };
-};
+  it('sends selectStartDate action when user types number into Start Date input', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchTextBox />
+        </MemoryRouter>
+      </Provider>
+    );
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchTextBox);
+    
+    wrapper.find('[aria-label="search text input"]').simulate('change', {target: {value: 'test'}});
+
+   expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));
+    
+  });
+
+ });

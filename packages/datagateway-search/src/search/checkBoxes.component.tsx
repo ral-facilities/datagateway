@@ -95,7 +95,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 value="Dataset"
                 inputProps={{ 'aria-label': 'dataset checkbox' }}
               />
-              }             
+            }
             label="Dataset"
           />
           <FormControlLabel
