@@ -92,12 +92,10 @@ interface DownloadConfirmDialogProps {
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  //   const classes = dialogStyles();
   // TODO: Temporary facilityName until we load it from settings.
-
   const facilityName = 'LILS';
-  const defaultAccessMethod = 'https';
 
+  const defaultAccessMethod = 'https';
   const { totalSize } = props;
   const [connSpeed, setConnSpeed] = React.useState<number>(1);
   const [downloadTime, setDownloadTime] = React.useState<number>(-1);
@@ -186,7 +184,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       fileName
     );
     console.log('Returned downloadID ', downloadId);
-    // downloadId = 1;
 
     if (downloadId) {
       // If we are using HTTPS then start the download using
@@ -199,9 +196,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     // Enable submitted view.
     setIsSubmitted(true);
   };
-
-  // console.log('render: ', props.setOpen);
-  // console.log('Download name: ', downloadName);
 
   // totalSize > 0 ?
   return (
@@ -462,48 +456,42 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {/* Grid to show submitted download information */}
               {isSubmitSuccessful && (
-                <div>
-                  <Grid item xs>
-                    <div style={{ textAlign: 'center', margin: '0 auto' }}>
-                      <div style={{ float: 'left', textAlign: 'right' }}>
+                <Grid item xs>
+                  <div style={{ textAlign: 'center', margin: '0 auto' }}>
+                    <div style={{ float: 'left', textAlign: 'right' }}>
+                      <Typography>
+                        <b>Download Name: </b>
+                      </Typography>
+                      <Typography>
+                        <b>Access Method: </b>
+                      </Typography>
+                      {emailAddress && (
                         <Typography>
-                          <b>Download Name: </b>
+                          <b>Email Address: </b>
                         </Typography>
-                        <Typography>
-                          <b>Access Method: </b>
-                        </Typography>
-                        {emailAddress && (
-                          <Typography>
-                            <b>Email Address: </b>
-                          </Typography>
-                        )}
-                      </div>
-                      <div
-                        style={{
-                          float: 'right',
-                          textAlign: 'left',
-                          paddingLeft: '25px',
-                        }}
-                      >
-                        <Typography>{downloadName}</Typography>
-                        <Typography>{accessMethod.toUpperCase()}</Typography>
-                        {emailAddress && (
-                          <Typography>{emailAddress}</Typography>
-                        )}
-                      </div>
+                      )}
                     </div>
-                  </Grid>
-
-                  <Grid item xs>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      href="/downloads"
+                    <div
+                      style={{
+                        float: 'right',
+                        textAlign: 'left',
+                        paddingLeft: '25px',
+                      }}
                     >
-                      View My Downloads
-                    </Button>
-                  </Grid>
-                </div>
+                      <Typography>{downloadName}</Typography>
+                      <Typography>{accessMethod.toUpperCase()}</Typography>
+                      {emailAddress && <Typography>{emailAddress}</Typography>}
+                    </div>
+                  </div>
+                </Grid>
+              )}
+
+              {isSubmitSuccessful && (
+                <Grid item xs>
+                  <Button variant="outlined" color="primary" href="/downloads">
+                    View My Downloads
+                  </Button>
+                </Grid>
               )}
             </Grid>
           </DialogContent>

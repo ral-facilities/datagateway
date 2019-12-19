@@ -62,7 +62,7 @@ export const submitCart: (
   transport: string,
   emailAddress: string,
   fileName: string
-) => Promise<number> = (facilityName: string, transport: string, emailAddress:string, fileName: string) => {
+) => Promise<string> = (facilityName: string, transport: string, emailAddress:string, fileName: string) => {
   // Construct the form parameters.
   const params = new URLSearchParams();
   
@@ -82,7 +82,7 @@ export const submitCart: (
       console.log(response);
       
       // Get the downloadId that was returned from the IDS server.
-      const downloadId = response.data['downloadId'] as number;
+      const downloadId = response.data['downloadId'];
       console.log('downloadID: ', downloadId);
 
       return downloadId;
@@ -94,9 +94,9 @@ export const submitCart: (
 }
 
 export const downloadPreparedCart: (
-  preparedId: number,
+  preparedId: string,
   fileName: string
-) => void = (preparedId: number, fileName: string) => {
+) => void = (preparedId: string, fileName: string) => {
 
   // We need to set the preparedId and outname query parameters 
   // for the IDS download.
