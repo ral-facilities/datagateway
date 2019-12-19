@@ -16,7 +16,7 @@ install:
   - yarn install --frozen-lockfile
 jobs:
   include:
-    - stage: test
+    - stage: Lint & Unit tests
       name: 'Lint'
       script: yarn lint
     - name: 'Unit Tests'
@@ -27,5 +27,10 @@ jobs:
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-table/*' -F table &&
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-search/*' -F search &&
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-download/*' -F download
-    - name: 'E2E Tests'
-      script: yarn test:e2e
+    - stage: E2E Tests
+      name: 'datagateway-download'
+      script: yarn workspace datagateway-download run e2e
+    - name: 'datagateway-search'
+      script: yarn workspace datagateway-search run e2e
+    - name: 'datagateway-table'
+      script: yarn workspace datagateway-table run e2e
