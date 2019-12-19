@@ -117,11 +117,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     emailHelpText
   );
 
-  const [submitSuccessful, setSubmitSuccessful] = React.useState<boolean>(
+  const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState<boolean>(
     false
   );
-
-  // let fileName: string = '';
 
   const getDefaultFileName = (): string => {
     const now = new Date();
@@ -140,10 +139,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       console.log('Got dialog open');
 
       // Reset checkmark view.
-      setSubmitSuccessful(false);
+      setIsSubmitted(false);
+      setIsSubmitSuccessful(false);
 
       // Reset all fields for next time dialog is opened.
-      // fileName = '';
       setDownloadName('');
       setAccessMethod(defaultAccessMethod);
       setEmailAddress('');
@@ -158,6 +157,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
 
+    // TODO: Any need for days?
     const dDisplay = d > 0 ? d + (d === 1 ? ' day, ' : ' days, ') : '';
     const hDisplay = h > 0 ? h + (h === 1 ? ' hour, ' : ' hours, ') : '';
     const mDisplay = m > 0 ? m + (m === 1 ? ' minute, ' : ' minutes, ') : '';
@@ -186,27 +186,23 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       fileName
     );
     console.log('Returned downloadID ', downloadId);
-    downloadId = 1;
+    // downloadId = 1;
 
     if (downloadId) {
-      // If we are using HTTPS then
-      if (accessMethod === defaultAccessMethod) {
-        // Start the download using the download ID we received.
+      // If we are using HTTPS then start the download using
+      // the download ID we received.
+      if (accessMethod === defaultAccessMethod)
         downloadPreparedCart(downloadId, fileName);
-
-        //  - Show ID for HTTPS and message that download started.
-      } else {
-        //  - Show ID and link to download status page for other access method (Globus).
-      }
-
-      setSubmitSuccessful(true);
-    } else {
-      // TODO: Show an error in the UI if there is no downloadId returned?
+      setIsSubmitSuccessful(true);
     }
+
+    // Enable submitted view.
+    setIsSubmitted(true);
   };
 
-  console.log('render: ', props.setOpen);
-  console.log('Download name: ', downloadName);
+  // console.log('render: ', props.setOpen);
+  // console.log('Download name: ', downloadName);
+
   // totalSize > 0 ?
   return (
     <Dialog
@@ -217,7 +213,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       fullWidth={true}
       maxWidth={'sm'}
     >
-      {!submitSuccessful ? (
+      {!isSubmitted ? (
         <div>
           {/* Custom title component which has a close button */}
           <DialogTitle
@@ -281,18 +277,31 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   </Select>
 
                   {/* Provide some information on the selected access method. */}
-                  <Typography>
+                  <Typography style={{ paddingTop: '20px' }}>
                     <b>Access Method Information:</b>
                   </Typography>
 
                   {/* TODO: Could this be neater? */}
-                  {accessMethod === defaultAccessMethod && (
-                    <Typography>HTTPS is the default access method.</Typography>
-                  )}
-
-                  {accessMethod === 'globus' && (
-                    <Typography>Globus is a special access method.</Typography>
-                  )}
+                  {/* Depending on the type of access method that has been selected,
+                  show specific access information. */}
+                  {(() => {
+                    switch (accessMethod) {
+                      case defaultAccessMethod:
+                        return (
+                          <Typography>
+                            HTTPS is the default access method.
+                          </Typography>
+                        );
+                      case 'globus':
+                        return (
+                          <Typography>
+                            Globus is a special access method.
+                          </Typography>
+                        );
+                      default:
+                        return null;
+                    }
+                  })()}
                 </FormControl>
               </Grid>
 
@@ -423,43 +432,79 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               <Grid item xs>
                 {/* TODO: When closing the animation renders again? 
                       Maybe set a fixed width for the dialog and not render it? */}
-                <Mark size={100} colour="#3E863E" />
-              </Grid>
-              <Grid item xs>
-                <Typography>
-                  Successfully submitted and started download
-                </Typography>
+                {isSubmitSuccessful ? (
+                  <Mark size={100} colour="#3E863E" />
+                ) : (
+                  <Mark size={100} colour="#A91B2E" isCross={true} />
+                )}
               </Grid>
 
-              {/* Grid to show submitted download information */}
-              <div style={{ textAlign: 'center', margin: '0 auto' }}>
-                <div style={{ float: 'left', textAlign: 'left' }}>
-                  {/* <Typography>Download ID:</Typography> */}
-                  <Typography>
-                    <b>Download Name: </b>
-                  </Typography>
-                  <Typography>
-                    <b>Access Method: </b>
-                  </Typography>
-                  {emailAddress && (
+              {isSubmitSuccessful ? (
+                <Grid item xs>
+                  {accessMethod === defaultAccessMethod ? (
                     <Typography>
-                      <b>Email Address: </b>
+                      Successfully submitted and started download
                     </Typography>
+                  ) : (
+                    <Typography>Successfully created download</Typography>
                   )}
+                </Grid>
+              ) : (
+                <div style={{ textAlign: 'center' }}>
+                  <Typography>
+                    <b>Your download request was unsuccessful</b>
+                  </Typography>
+                  <Typography>
+                    (No download information was received)
+                  </Typography>
                 </div>
-                <div
-                  style={{
-                    float: 'right',
-                    textAlign: 'left',
-                    paddingLeft: '25px',
-                  }}
-                >
-                  {/* <Typography>{downloadId}</Typography> */}
-                  <Typography>{downloadName}</Typography>
-                  <Typography>{accessMethod.toUpperCase()}</Typography>
-                  {emailAddress && <Typography>{emailAddress}</Typography>}
+              )}
+
+              {/* Grid to show submitted download information */}
+              {isSubmitSuccessful && (
+                <div>
+                  <Grid item xs>
+                    <div style={{ textAlign: 'center', margin: '0 auto' }}>
+                      <div style={{ float: 'left', textAlign: 'right' }}>
+                        <Typography>
+                          <b>Download Name: </b>
+                        </Typography>
+                        <Typography>
+                          <b>Access Method: </b>
+                        </Typography>
+                        {emailAddress && (
+                          <Typography>
+                            <b>Email Address: </b>
+                          </Typography>
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          float: 'right',
+                          textAlign: 'left',
+                          paddingLeft: '25px',
+                        }}
+                      >
+                        <Typography>{downloadName}</Typography>
+                        <Typography>{accessMethod.toUpperCase()}</Typography>
+                        {emailAddress && (
+                          <Typography>{emailAddress}</Typography>
+                        )}
+                      </div>
+                    </div>
+                  </Grid>
+
+                  <Grid item xs>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      href="/downloads"
+                    >
+                      View My Downloads
+                    </Button>
+                  </Grid>
                 </div>
-              </div>
+              )}
             </Grid>
           </DialogContent>
         </div>

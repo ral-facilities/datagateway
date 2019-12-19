@@ -32,7 +32,7 @@ const useSharedStyles = (colour: string) => {
         boxShadow: `inset 0 0 0 100vh ${colour}`,
       },
     },
-    checkmark: {
+    mark: {
       display: 'block',
       marginLeft: 'auto',
       marginRight: 'auto',
@@ -45,7 +45,7 @@ const useSharedStyles = (colour: string) => {
       animation:
         '$fill 0.4s ease-in-out 0.4s forwards, $scale 0.3s ease-in-out 0.9s both',
     },
-    checkmarkCircle: {
+    markCircle: {
       strokeDasharray: 166,
       strokeDashoffset: 166,
       strokeWidth: 5,
@@ -55,7 +55,7 @@ const useSharedStyles = (colour: string) => {
 
       animation: '$stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards',
     },
-    checkmarkCheck: {
+    markSymbol: {
       transformOrigin: '50% 50%',
       strokeDasharray: 48,
       strokeDashoffset: 48,
@@ -82,13 +82,13 @@ const Mark: React.FC<MarkProps> = (props: MarkProps) => {
 
   return (
     <svg
-      className={classes.checkmark}
+      className={classes.mark}
       xmlns="http://www.w3.org/2000/svg"
       style={checkmarkStyle}
       viewBox="0 0 52 52"
     >
       <circle
-        className={classes.checkmarkCircle}
+        className={classes.markCircle}
         cx="26"
         cy="26"
         r="25"
@@ -96,13 +96,13 @@ const Mark: React.FC<MarkProps> = (props: MarkProps) => {
       />
       {!props.isCross ? (
         <path
-          className={classes.checkmarkCheck}
+          className={classes.markSymbol}
           fill="none"
           d="M14.1 27.2l7.1 7.2 16.7-16.8"
         />
       ) : (
         <path
-          className={classes.checkmarkCheck}
+          className={classes.markSymbol}
           fill="none"
           d="M16 16 36 36 M36 16 16 36"
         />
