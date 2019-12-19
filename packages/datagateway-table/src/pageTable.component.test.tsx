@@ -55,7 +55,7 @@ const DLSRoutes = {
     '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
 };
 
-describe('PageTable - Snapshot Tests', () => {
+describe('PageTable', () => {
   let mount;
   let state: StateType;
 

@@ -36,9 +36,6 @@ class PageContainer extends React.Component<{ entityCount: number }> {
 
         {/* Hold the table for remainder of the page */}
         <Grid item xs={12} aria-label="container-table">
-          {/* // TODO: Rather than specifying the height exactly, it would be best
-              for it to automatically adjust depending on the parent height, possibly using Box/Paper? */}
-
           {/* Place table in Paper component which adjusts for the height
              of the AppBar (64px) on parent application and the breadcrumbs component (31px). */}
           <Paper style={{ height: 'calc(100vh - 95px)', width: '100%' }}>
