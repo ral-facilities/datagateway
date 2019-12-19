@@ -29,7 +29,7 @@ import {
   submitCart,
   downloadPreparedCart,
 } from '../downloadCart/downloadCartApi';
-import Checkmark from './checkmark.component';
+import Mark from './mark.component';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -45,25 +45,10 @@ const dialogTitleStyles = (theme: Theme): StyleRules =>
     },
   });
 
-// const dialogStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//       container: {
-//           display: 'flex',
-//           flexWrap: 'wrap',
-//       },
-//       formControl: {
-//           margin: theme.spacing(1),
-//           minWidth: 120,
-//       },
-//   }),
-// );
-
 interface DialogTitleProps extends WithStyles<typeof dialogTitleStyles> {
   id: string;
-  children: React.ReactNode;
-
-  // TODO: Do we need onClose; another way?
   onClose: () => void;
+  children?: React.ReactNode;
 }
 
 const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
@@ -136,6 +121,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     false
   );
 
+  // let fileName: string = '';
+
   const getDefaultFileName = (): string => {
     const now = new Date();
     let defaultName = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
@@ -149,15 +136,19 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   }, [connSpeed, totalSize]);
 
   useEffect(() => {
-    if (!props.setOpen) {
-      console.log('got dialog close');
+    if (props.setOpen) {
+      console.log('Got dialog open');
+
+      // Reset checkmark view.
+      setSubmitSuccessful(false);
 
       // Reset all fields for next time dialog is opened.
+      // fileName = '';
       setDownloadName('');
       setAccessMethod(defaultAccessMethod);
       setEmailAddress('');
-
-      setSubmitSuccessful(false);
+    } else {
+      console.log('Got close');
     }
   }, [props.setOpen]);
 
@@ -180,38 +171,42 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       `Submit Cart: ${facilityName}, ${downloadName}, ${accessMethod}, ${emailAddress}`
     );
 
-    // Check for file name, if there hasn't been one entered, then generate a default one.
+    // Check for file name, if there hasn't been one entered,
+    // then generate a default one and update state for rendering later.
     let fileName = downloadName;
-    if (!fileName) fileName = getDefaultFileName();
+    if (!fileName) {
+      fileName = getDefaultFileName();
+      setDownloadName(fileName);
+    }
 
-    const downloadId = await submitCart(
+    let downloadId = await submitCart(
       facilityName,
       accessMethod,
       emailAddress,
       fileName
     );
     console.log('Returned downloadID ', downloadId);
+    downloadId = 1;
 
-    // Start the download using the download ID we received.
-    downloadPreparedCart(downloadId, fileName);
+    if (downloadId) {
+      // If we are using HTTPS then
+      if (accessMethod === defaultAccessMethod) {
+        // Start the download using the download ID we received.
+        downloadPreparedCart(downloadId, fileName);
 
-    // Show the download successful:
-    //  - Show ID for HTTPS and message that download started.
-    //  - Show ID and link to download status page for other access method (Globus).
-    setSubmitSuccessful(true);
+        //  - Show ID for HTTPS and message that download started.
+      } else {
+        //  - Show ID and link to download status page for other access method (Globus).
+      }
+
+      setSubmitSuccessful(true);
+    } else {
+      // TODO: Show an error in the UI if there is no downloadId returned?
+    }
   };
 
-  // const closeDialog = (): void => {
-
-  //   // Reset all fields for next time dialog is opened.
-  //   setDownloadName('');
-  //   setAccessMethod(defaultAccessMethod);
-  //   setEmailAddress('');
-
-  //   // Set close on the parent cart table component.
-  //   props.setClose();
-  // };
-
+  console.log('render: ', props.setOpen);
+  console.log('Download name: ', downloadName);
   // totalSize > 0 ?
   return (
     <Dialog
@@ -244,6 +239,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   label="Download Name (optional)"
                   placeholder={`${getDefaultFileName()}`}
                   fullWidth={true}
+                  // TODO: Set a maxLength?
+                  inputProps={{
+                    maxLength: 255,
+                  }}
                   onChange={(
                     event: React.ChangeEvent<{ value: unknown }>
                   ): void => {
@@ -346,6 +345,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   fullWidth={true}
                   helperText={emailHelperText}
                   error={!emailValid}
+                  // TODO: Set a maxLength?
+                  inputProps={{
+                    maxLength: 254,
+                  }}
                   // TODO: We could use debounce to evaluate if the email address is valid
                   //       after the user has finished typing it.
                   onChange={(
@@ -402,26 +405,67 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           </DialogActions>
         </div>
       ) : (
-        <DialogContent>
-          <Grid
-            container
-            spacing={2}
-            direction="column"
-            alignItems="center"
-            justify="center"
-          >
-            <Grid item xs>
-              <Checkmark size={100} />
+        <div>
+          <DialogTitle
+            id="download-confirm-dialog-title"
+            onClose={props.setClose}
+          />
+
+          <DialogContent>
+            <Grid
+              container
+              spacing={4}
+              direction="column"
+              alignItems="center"
+              justify="center"
+              style={{ paddingBottom: '25px' }}
+            >
+              <Grid item xs>
+                {/* TODO: When closing the animation renders again? 
+                      Maybe set a fixed width for the dialog and not render it? */}
+                <Mark size={100} colour="#3E863E" />
+              </Grid>
+              <Grid item xs>
+                <Typography>
+                  Successfully submitted and started download
+                </Typography>
+              </Grid>
+
+              {/* Grid to show submitted download information */}
+              <div style={{ textAlign: 'center', margin: '0 auto' }}>
+                <div style={{ float: 'left', textAlign: 'left' }}>
+                  {/* <Typography>Download ID:</Typography> */}
+                  <Typography>
+                    <b>Download Name: </b>
+                  </Typography>
+                  <Typography>
+                    <b>Access Method: </b>
+                  </Typography>
+                  {emailAddress && (
+                    <Typography>
+                      <b>Email Address: </b>
+                    </Typography>
+                  )}
+                </div>
+                <div
+                  style={{
+                    float: 'right',
+                    textAlign: 'left',
+                    paddingLeft: '25px',
+                  }}
+                >
+                  {/* <Typography>{downloadId}</Typography> */}
+                  <Typography>{downloadName}</Typography>
+                  <Typography>{accessMethod.toUpperCase()}</Typography>
+                  {emailAddress && <Typography>{emailAddress}</Typography>}
+                </div>
+              </div>
             </Grid>
-            <Grid item xs>
-              <Typography>Successfully submitted download</Typography>
-            </Grid>
-          </Grid>
-        </DialogContent>
+          </DialogContent>
+        </div>
       )}
     </Dialog>
   );
-  // ) : null;
 };
 
 // TODO: Pass in facilityName as prop to DownloadConfirmDialog to get customisable download name.

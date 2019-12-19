@@ -65,6 +65,7 @@ export const submitCart: (
 ) => Promise<number> = (facilityName: string, transport: string, emailAddress:string, fileName: string) => {
   // Construct the form parameters.
   const params = new URLSearchParams();
+  
   // TODO: get session ID from somewhere else (extract from JWT)
   params.append('sessionId', window.localStorage.getItem('icat:token') || '');
   params.append('transport', transport);
@@ -82,7 +83,7 @@ export const submitCart: (
       
       // Get the downloadId that was returned from the IDS server.
       const downloadId = response.data['downloadId'] as number;
-      console.log(downloadId);
+      console.log('downloadID: ', downloadId);
 
       return downloadId;
     })
