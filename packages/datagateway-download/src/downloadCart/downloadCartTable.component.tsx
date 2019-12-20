@@ -289,6 +289,7 @@ const DownloadCartTable: React.FC = () => {
 
       {/* Show the download confirmation dialog. */}
       <DownloadConfirmDialog
+        aria-labelledby="downloadCartConfirmation"
         totalSize={totalSize}
         setOpen={showConfirmation}
         setClose={() => setShowConfirmation(false)}

@@ -8,6 +8,7 @@ import {
   getDatafileCount,
   getCartDatafileCount,
   getCartSize,
+  submitCart,
 } from './downloadCartApi';
 import * as log from 'loglevel';
 import { DownloadCartItem } from 'datagateway-common';
@@ -151,6 +152,38 @@ describe('Download Cart API functions test', () => {
       expect(log.error).toHaveBeenCalled();
       expect(log.error).toHaveBeenCalledWith('Test error message');
     });
+  });
+
+  describe('submitCart', () => {
+    it('returns the downloadId after the submitting cart', async () => {
+      axios.post = jest.fn().mockImplementation(() => {
+        Promise.resolve({
+          data: {
+            facilityName: 'LILS',
+            userName: 'test user',
+            cartItems: [],
+            downloadId: '1',
+          },
+        })
+      });
+
+      const downloadId = await submitCart('LILS', 'https', 'test@email.com', 'test-file');
+
+      expect(downloadId).toBe(1);
+      expect(axios.post).toHaveBeenCalled();
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+        {
+          params: {
+            sessionId: null,
+            transport: 'https',
+            email: 'test@email.com',
+            fileName: 'test-file',
+            zipType: 'ZIP',
+          }
+        }
+      )
+    })
   });
 
   describe('getSize', () => {

@@ -59,7 +59,7 @@ const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
       <Typography variant="h6">{children}</Typography>
       {onClose ? (
         <IconButton
-          aria-label="close"
+          aria-label="download-confirmation-close"
           className={classes.closeButton}
           onClick={onClose}
         >
@@ -134,7 +134,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   useEffect(() => {
     if (props.setOpen) {
-      console.log('Got dialog open');
+      // console.log('Got dialog open');
 
       // Reset checkmark view.
       setIsSubmitted(false);
@@ -144,8 +144,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName('');
       setAccessMethod(defaultAccessMethod);
       setEmailAddress('');
-    } else {
-      console.log('Got close');
     }
   }, [props.setOpen]);
 
@@ -185,7 +183,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     );
     console.log('Returned downloadID ', downloadId);
 
-    if (downloadId) {
+    // Ensure that we have received a downloadId.
+    if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
       if (accessMethod === defaultAccessMethod)
@@ -197,11 +196,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     setIsSubmitted(true);
   };
 
-  // totalSize > 0 ?
   return (
     <Dialog
       onClose={props.setClose}
-      aria-labelledby="download-confirmation-dialog"
       open={props.setOpen}
       // TODO: Set size another way; should have width without this?
       fullWidth={true}
@@ -397,6 +394,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
           <DialogActions>
             <Button
+              id="download-confirmation-download"
               // TODO: Download button disables if email is invalid, potentially use debounce?
               disabled={!emailValid}
               onClick={processDownload}
@@ -436,15 +434,20 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               {isSubmitSuccessful ? (
                 <Grid item xs>
                   {accessMethod === defaultAccessMethod ? (
-                    <Typography>
+                    <Typography id="download-confirmation-success-default">
                       Successfully submitted and started download
                     </Typography>
                   ) : (
-                    <Typography>Successfully created download</Typography>
+                    <Typography id="download-confirmation-success-other">
+                      Successfully created download
+                    </Typography>
                   )}
                 </Grid>
               ) : (
-                <div style={{ textAlign: 'center' }}>
+                <div
+                  id="download-confirmation-unsuccessful"
+                  style={{ textAlign: 'center' }}
+                >
                   <Typography>
                     <b>Your download request was unsuccessful</b>
                   </Typography>
@@ -488,7 +491,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {isSubmitSuccessful && (
                 <Grid item xs>
-                  <Button variant="outlined" color="primary" href="/downloads">
+                  <Button
+                    id="download-confirmation-status-link"
+                    variant="outlined"
+                    color="primary"
+                    href="/status"
+                  >
                     View My Downloads
                   </Button>
                 </Grid>

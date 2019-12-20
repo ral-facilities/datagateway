@@ -1,122 +1,131 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Download cart table component renders correctly 1`] = `
-<div
-  className="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
->
+<div>
   <WithStyles(ForwardRef(Grid))
-    item={true}
-  >
-    <WithStyles(ForwardRef(Paper))
-      style={
-        Object {
-          "height": "calc(100vh - 150px)",
-        }
-      }
-    >
-      <WithStyles(VirtualizedTable)
-        actions={
-          Array [
-            [Function],
-          ]
-        }
-        columns={
-          Array [
-            Object {
-              "dataKey": "name",
-              "filterComponent": [Function],
-              "label": "Name",
-            },
-            Object {
-              "dataKey": "entityType",
-              "filterComponent": [Function],
-              "label": "Type",
-            },
-            Object {
-              "cellContentRenderer": [Function],
-              "dataKey": "size",
-              "label": "Size",
-            },
-          ]
-        }
-        data={Array []}
-        loading={true}
-        onSort={[Function]}
-        sort={Object {}}
-      />
-    </WithStyles(ForwardRef(Paper))>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    alignItems="flex-end"
     container={true}
     direction="column"
-    item={true}
-    justify="space-between"
   >
     <WithStyles(ForwardRef(Grid))
-      alignContent="flex-end"
+      item={true}
+    >
+      <WithStyles(ForwardRef(Paper))
+        style={
+          Object {
+            "height": "calc(100vh - 150px)",
+          }
+        }
+      >
+        <WithStyles(VirtualizedTable)
+          actions={
+            Array [
+              [Function],
+            ]
+          }
+          columns={
+            Array [
+              Object {
+                "dataKey": "name",
+                "filterComponent": [Function],
+                "label": "Name",
+              },
+              Object {
+                "dataKey": "entityType",
+                "filterComponent": [Function],
+                "label": "Type",
+              },
+              Object {
+                "cellContentRenderer": [Function],
+                "dataKey": "size",
+                "label": "Size",
+              },
+            ]
+          }
+          data={Array []}
+          loading={true}
+          onSort={[Function]}
+          sort={Object {}}
+        />
+      </WithStyles(ForwardRef(Paper))>
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      alignItems="flex-end"
       container={true}
       direction="column"
       item={true}
-      style={
-        Object {
-          "marginRight": "1.2em",
-        }
-      }
-      xs={3}
-    >
-      <WithStyles(ForwardRef(Typography))
-        id="fileCountDisplay"
-      >
-        Number of files: 
-        Calculating...
-      </WithStyles(ForwardRef(Typography))>
-      <WithStyles(ForwardRef(Typography))
-        id="totalSizeDisplay"
-      >
-        Total size:
-         
-        0 B
-      </WithStyles(ForwardRef(Typography))>
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
-      container={true}
-      item={true}
-      justify="flex-end"
-      spacing={1}
-      style={
-        Object {
-          "marginRight": "1em",
-        }
-      }
-      xs={3}
+      justify="space-between"
     >
       <WithStyles(ForwardRef(Grid))
+        alignContent="flex-end"
+        container={true}
+        direction="column"
         item={true}
+        style={
+          Object {
+            "marginRight": "1.2em",
+          }
+        }
+        xs={3}
       >
-        <WithStyles(ForwardRef(Button))
-          color="primary"
-          id="removeAllButton"
-          onClick={[Function]}
-          variant="contained"
+        <WithStyles(ForwardRef(Typography))
+          id="fileCountDisplay"
         >
-          Remove All
-        </WithStyles(ForwardRef(Button))>
+          Number of files: 
+          Calculating...
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))
+          id="totalSizeDisplay"
+        >
+          Total size:
+           
+          0 B
+        </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
+        container={true}
         item={true}
+        justify="flex-end"
+        spacing={1}
+        style={
+          Object {
+            "marginRight": "1em",
+          }
+        }
+        xs={3}
       >
-        <WithStyles(ForwardRef(Button))
-          color="primary"
-          disabled={true}
-          id="downloadCartButton"
-          onClick={[Function]}
-          variant="contained"
+        <WithStyles(ForwardRef(Grid))
+          item={true}
         >
-          Download Cart
-        </WithStyles(ForwardRef(Button))>
+          <WithStyles(ForwardRef(Button))
+            color="primary"
+            id="removeAllButton"
+            onClick={[Function]}
+            variant="contained"
+          >
+            Remove All
+          </WithStyles(ForwardRef(Button))>
+        </WithStyles(ForwardRef(Grid))>
+        <WithStyles(ForwardRef(Grid))
+          item={true}
+        >
+          <WithStyles(ForwardRef(Button))
+            color="primary"
+            disabled={true}
+            id="downloadCartButton"
+            onClick={[Function]}
+            variant="contained"
+          >
+            Download Cart
+          </WithStyles(ForwardRef(Button))>
+        </WithStyles(ForwardRef(Grid))>
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
+  <DownloadConfirmDialog
+    aria-labelledby="downloadCartConfirmation"
+    setClose={[Function]}
+    setOpen={false}
+    totalSize={0}
+  />
 </div>
 `;

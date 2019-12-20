@@ -1,14 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-// const namedSizes: { [size: string]: number } = {
-//   small: 16,
-//   medium: 24,
-//   large: 52,
-//   xLarge: 72,
-//   xxLarge: 96,
-// };
-
 // TypeScript linting will need us to define the return type,
 // but as classes may change, there is no need.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -68,16 +60,13 @@ const useSharedStyles = (colour: string) => {
 };
 
 interface MarkProps {
-  size: number | string;
+  size: number;
   colour: string;
-
   isCross?: boolean;
 }
 
 const Mark: React.FC<MarkProps> = (props: MarkProps) => {
-  // const actualSize = namedSizes[props.size] || props.size;
   const checkmarkStyle = { width: props.size, height: props.size };
-
   const classes = useSharedStyles(props.colour);
 
   return (

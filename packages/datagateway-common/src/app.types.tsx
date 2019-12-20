@@ -160,6 +160,13 @@ export interface DownloadCart {
   userName: string;
 }
 
+export interface SubmitCart {
+  cartItems: DownloadCartItem[];
+  facilityName: string;
+  downloadId: number;
+  userName: string;
+}
+
 export type DownloadCartTableItem = DownloadCartItem & {
   size: number;
   [key: string]: string | number | DownloadCartItem[];
