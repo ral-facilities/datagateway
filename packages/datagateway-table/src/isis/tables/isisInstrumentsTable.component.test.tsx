@@ -29,7 +29,7 @@ describe('ISIS Instruments table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'ISISInstrumentsTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -97,7 +97,7 @@ describe('ISIS Instruments table component', () => {
     const testStore = mockStore(state);
     const wrapper = shallow(<ISISInstrumentsTable store={testStore} />);
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchInstrumentsRequest(1));
   });

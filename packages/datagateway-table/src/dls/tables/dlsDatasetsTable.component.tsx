@@ -9,7 +9,6 @@ import {
   DateColumnFilter,
   DownloadCartItem,
 } from 'datagateway-common';
-import { Paper } from '@material-ui/core';
 import {
   sortTable,
   filterTable,
@@ -132,56 +131,54 @@ const DLSDatasetsTable = (
   );
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(parseInt(investigationId), params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData, detailsPanelResize }) => {
-          return (
-            <DatasetDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              fetchDetails={props.fetchDetails}
-            />
-          );
-        }}
-        columns={[
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            cellContentRenderer: (props: TableCellProps) =>
-              tableLink(
-                `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-                props.rowData.NAME
-              ),
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Datafile Count',
-            dataKey: 'DATAFILE_COUNT',
-            disableSort: true,
-          },
-          {
-            label: 'Create Time',
-            dataKey: 'CREATE_TIME',
-            filterComponent: dateFilter,
-          },
-          {
-            label: 'Modified Time',
-            dataKey: 'MOD_TIME',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData, detailsPanelResize }) => {
+        return (
+          <DatasetDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            fetchDetails={props.fetchDetails}
+          />
+        );
+      }}
+      columns={[
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          cellContentRenderer: (props: TableCellProps) =>
+            tableLink(
+              `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
+              props.rowData.NAME
+            ),
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Datafile Count',
+          dataKey: 'DATAFILE_COUNT',
+          disableSort: true,
+        },
+        {
+          label: 'Create Time',
+          dataKey: 'CREATE_TIME',
+          filterComponent: dateFilter,
+        },
+        {
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 

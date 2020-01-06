@@ -1,75 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Dataset table component renders correctly 1`] = `
-<div
-  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
-  style={
-    Object {
-      "height": "calc(100vh - 64px)",
-      "width": "100%",
-    }
+<WithStyles(VirtualizedTable)
+  actions={
+    Array [
+      [Function],
+    ]
   }
->
-  <WithStyles(VirtualizedTable)
-    actions={
-      Array [
-        [Function],
-      ]
-    }
-    allIds={
-      Array [
-        1,
-      ]
-    }
-    columns={
-      Array [
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "NAME",
-          "filterComponent": [Function],
-          "label": "Name",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "SIZE",
-          "disableSort": true,
-          "label": "Size",
-        },
-        Object {
-          "dataKey": "CREATE_TIME",
-          "filterComponent": [Function],
-          "label": "Create Time",
-        },
-        Object {
-          "dataKey": "MOD_TIME",
-          "filterComponent": [Function],
-          "label": "Modified Time",
-        },
-      ]
-    }
-    data={
-      Array [
-        Object {
-          "CREATE_TIME": "2019-07-23",
-          "ID": 1,
-          "INVESTIGATION_ID": 1,
-          "MOD_TIME": "2019-07-23",
-          "NAME": "Test 1",
-          "SIZE": 1,
-        },
-      ]
-    }
-    detailsPanel={[Function]}
-    loadMoreRows={[Function]}
-    loading={false}
-    onCheck={[Function]}
-    onSort={[Function]}
-    onUncheck={[Function]}
-    selectedRows={Array []}
-    sort={Object {}}
-    totalRowCount={0}
-  />
-</div>
+  allIds={
+    Array [
+      1,
+    ]
+  }
+  columns={
+    Array [
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "label": "Name",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "SIZE",
+        "disableSort": true,
+        "label": "Size",
+      },
+      Object {
+        "dataKey": "CREATE_TIME",
+        "filterComponent": [Function],
+        "label": "Create Time",
+      },
+      Object {
+        "dataKey": "MOD_TIME",
+        "filterComponent": [Function],
+        "label": "Modified Time",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "CREATE_TIME": "2019-07-23",
+        "ID": 1,
+        "INVESTIGATION_ID": 1,
+        "MOD_TIME": "2019-07-23",
+        "NAME": "Test 1",
+        "SIZE": 1,
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  loadMoreRows={[Function]}
+  loading={false}
+  onCheck={[Function]}
+  onSort={[Function]}
+  onUncheck={[Function]}
+  selectedRows={Array []}
+  sort={Object {}}
+  totalRowCount={0}
+/>
 `;
 
 exports[`ISIS Dataset table component renders dataset name as a link 1`] = `

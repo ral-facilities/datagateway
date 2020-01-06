@@ -16,7 +16,6 @@ import {
 } from '../state/actions';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
@@ -31,7 +30,7 @@ describe('Dataset table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'DatasetTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -100,7 +99,7 @@ describe('Dataset table component', () => {
       <DatasetTable investigationId="1" store={testStore} />
     );
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
   });
@@ -261,7 +260,7 @@ describe('Dataset table component', () => {
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')({
+      wrapper.prop('detailsPanel')({
         rowData: state.dgtable.data[0],
       })
     );

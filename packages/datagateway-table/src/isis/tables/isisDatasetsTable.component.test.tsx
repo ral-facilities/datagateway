@@ -32,7 +32,7 @@ describe('ISIS Dataset table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'ISISDatasetsTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -120,7 +120,7 @@ describe('ISIS Dataset table component', () => {
       />
     );
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
   });

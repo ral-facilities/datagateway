@@ -1,59 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS FacilityCycles table component renders correctly 1`] = `
-<div
-  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
-  style={
-    Object {
-      "height": "calc(100vh - 64px)",
-      "width": "100%",
-    }
+<WithStyles(VirtualizedTable)
+  columns={
+    Array [
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "label": "Name",
+      },
+      Object {
+        "dataKey": "DESCRIPTION",
+        "filterComponent": [Function],
+        "label": "Description",
+      },
+      Object {
+        "dataKey": "STARTDATE",
+        "filterComponent": [Function],
+        "label": "Start Date",
+      },
+      Object {
+        "dataKey": "ENDDATE",
+        "filterComponent": [Function],
+        "label": "End Date",
+      },
+    ]
   }
->
-  <WithStyles(VirtualizedTable)
-    columns={
-      Array [
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "NAME",
-          "filterComponent": [Function],
-          "label": "Name",
-        },
-        Object {
-          "dataKey": "DESCRIPTION",
-          "filterComponent": [Function],
-          "label": "Description",
-        },
-        Object {
-          "dataKey": "STARTDATE",
-          "filterComponent": [Function],
-          "label": "Start Date",
-        },
-        Object {
-          "dataKey": "ENDDATE",
-          "filterComponent": [Function],
-          "label": "End Date",
-        },
-      ]
-    }
-    data={
-      Array [
-        Object {
-          "DESCRIPTION": "Test 1",
-          "ENDDATE": "2019-07-04",
-          "ID": 1,
-          "NAME": "Test 1",
-          "STARTDATE": "2019-07-03",
-        },
-      ]
-    }
-    loadMoreRows={[Function]}
-    loading={false}
-    onSort={[Function]}
-    sort={Object {}}
-    totalRowCount={0}
-  />
-</div>
+  data={
+    Array [
+      Object {
+        "DESCRIPTION": "Test 1",
+        "ENDDATE": "2019-07-04",
+        "ID": 1,
+        "NAME": "Test 1",
+        "STARTDATE": "2019-07-03",
+      },
+    ]
+  }
+  loadMoreRows={[Function]}
+  loading={false}
+  onSort={[Function]}
+  sort={Object {}}
+  totalRowCount={0}
+/>
 `;
 
 exports[`ISIS FacilityCycles table component renders facilitycycle name as a link 1`] = `null`;

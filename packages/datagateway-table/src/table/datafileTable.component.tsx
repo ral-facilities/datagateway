@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Typography, IconButton } from '@material-ui/core';
+import { Typography, IconButton } from '@material-ui/core';
 import {
   Table,
   TableActionProps,
@@ -128,81 +128,79 @@ const DatafileTable = (
   );
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(parseInt(datasetId), params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData }) => {
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData }) => {
+        const datafileData = rowData as Datafile;
+        return (
+          <div>
+            <Typography>
+              <b>Name:</b> {datafileData.NAME}
+            </Typography>
+            <Typography>
+              <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
+            </Typography>
+            <Typography>
+              <b>Location:</b> {datafileData.LOCATION}
+            </Typography>
+          </div>
+        );
+      }}
+      actions={[
+        function downloadButton({ rowData }: TableActionProps) {
           const datafileData = rowData as Datafile;
-          return (
-            <div>
-              <Typography>
-                <b>Name:</b> {datafileData.NAME}
-              </Typography>
-              <Typography>
-                <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
-              </Typography>
-              <Typography>
-                <b>Location:</b> {datafileData.LOCATION}
-              </Typography>
-            </div>
-          );
-        }}
-        actions={[
-          function downloadButton({ rowData }: TableActionProps) {
-            const datafileData = rowData as Datafile;
-            if (datafileData.LOCATION) {
-              return (
-                <IconButton
-                  aria-label="Download"
-                  key="download"
-                  onClick={() => {
-                    // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
-                    downloadData(datafileData.ID, datafileData.LOCATION);
-                  }}
-                >
-                  <GetApp />
-                </IconButton>
-              );
-            } else {
-              return null;
-            }
+          if (datafileData.LOCATION) {
+            return (
+              <IconButton
+                aria-label="Download"
+                key="download"
+                onClick={() => {
+                  // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
+                  downloadData(datafileData.ID, datafileData.LOCATION);
+                }}
+              >
+                <GetApp />
+              </IconButton>
+            );
+          } else {
+            return null;
+          }
+        },
+      ]}
+      columns={[
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Location',
+          dataKey: 'LOCATION',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Size',
+          dataKey: 'FILESIZE',
+          cellContentRenderer: props => {
+            return formatBytes(props.cellData);
           },
-        ]}
-        columns={[
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Location',
-            dataKey: 'LOCATION',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Size',
-            dataKey: 'FILESIZE',
-            cellContentRenderer: props => {
-              return formatBytes(props.cellData);
-            },
-          },
-          {
-            label: 'Modified Time',
-            dataKey: 'MOD_TIME',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+        },
+        {
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 

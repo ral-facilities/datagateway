@@ -29,7 +29,7 @@ describe('DLS Visits table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'DLSVisitsTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -113,7 +113,7 @@ describe('DLS Visits table component', () => {
       <DLSVisitsTable proposalName="Test 1" store={testStore} />
     );
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
