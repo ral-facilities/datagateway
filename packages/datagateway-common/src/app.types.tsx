@@ -151,6 +151,12 @@ export interface DownloadCartItem {
   parentEntities: DownloadCartItem[];
 }
 
+export interface DownloadItem {
+  entityId: number;
+  entityType: 'investigation' | 'dataset' | 'datafile';
+  id: number;
+}
+
 export interface DownloadCart {
   cartItems: DownloadCartItem[];
   createdAt: string;
@@ -160,10 +166,35 @@ export interface DownloadCart {
   userName: string;
 }
 
+export interface Download {
+  createdAt: string;
+  downloadItems: DownloadItem[];
+  email: string;
+  facilityName: string;
+  fileName: string;
+  fullName: string;
+  id: number;
+  isDeleted: boolean;
+  isEmailSent: boolean;
+  isTwoLevel: boolean;
+  preparedId: string;
+  sessionId: string;
+  size: number;
+  status: 'PREPARING' | 'RESTORING' | 'PAUSED' | 'COMPLETE' | 'EXPIRED';
+  transport: string;
+  username: string;
+
+  [key: string]: string | number | boolean | DownloadItem[];
+}
+
 export type DownloadCartTableItem = DownloadCartItem & {
   size: number;
   [key: string]: string | number | DownloadCartItem[];
 };
+
+// export type DownloadStatusTableItem = Download & {
+//   [key: string]: string | number | Download;
+// }
 
 export type ICATEntity =
   | Investigation
@@ -172,7 +203,7 @@ export type ICATEntity =
   | Instrument
   | FacilityCycle;
 
-export type Entity = ICATEntity | DownloadCartTableItem;
+export type Entity = ICATEntity | DownloadCartTableItem | Download; // | DownloadStatusTableItem;
 
 export const EntityTypes: string[] = [
   'investigation',
@@ -187,20 +218,3 @@ export const EntityTypes: string[] = [
 export type Filter = string | number | { startDate?: string; endDate?: string };
 
 export type Order = 'asc' | 'desc';
-
-export interface DownloadCartItem {
-  entityId: number;
-  entityType: 'investigation' | 'dataset' | 'datafile';
-  id: number;
-  name: string;
-  parentEntities: DownloadCartItem[];
-}
-
-export interface DownloadCart {
-  cartItems: DownloadCartItem[];
-  createdAt: string;
-  facilityName: string;
-  id: number;
-  updatedAt: string;
-  userName: string;
-}
