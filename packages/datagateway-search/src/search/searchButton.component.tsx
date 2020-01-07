@@ -15,16 +15,19 @@ interface SearchButtonStoreProps {
   endDate: MaterialUiPickersDate;
 }
 
-interface LuceneParameters {
+interface QueryParameters {
+  text?: string;
+  lower?: string;
+  upper?: string;
+  target: string;
+}
+
+interface RequestParameters {
   sessionId: string;
-  query: {
-    text: string;
-    lower: string;
-    upper: string;
-    target: string;
-  };
   maxCount: number;
 }
+
+type LuceneParameters = QueryParameters | RequestParameters;
 
 type SearchButtonCombinedProps = SearchButtonStoreProps;
 
@@ -37,7 +40,8 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   }
 
   public urlParamsBuilder = (datasearchtype: string): LuceneParameters => {
-    let stringStartDate = '0000001010000';
+    // let stringStartDate = '0000001010000';
+    let stringStartDate = '';
     if (this.props.startDate !== null) {
       stringStartDate = format(this.props.startDate, 'yyyy-MM-dd');
       let stringStartDateArray = stringStartDate.split('-');
@@ -48,7 +52,8 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
         '0000';
     }
 
-    let stringEndDate = '9000012312359';
+    // let stringEndDate = '9000012312359';
+    let stringEndDate = '';
     if (this.props.endDate !== null) {
       stringEndDate = format(this.props.endDate, 'yyyy-MM-dd');
       let stringEndDateArray = stringEndDate.split('-');
@@ -58,15 +63,25 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
         stringEndDateArray[2] +
         '2359';
     }
-    const query = {
-      text: this.props.searchText,
-      lower: stringStartDate,
-      upper: stringEndDate,
+
+    let query: QueryParameters = {
       target: datasearchtype,
     };
 
+    if (this.props.searchText.length > 0) {
+      query.text = this.props.searchText;
+    }
+
+    if (stringStartDate.length > 0) {
+      query.lower = stringStartDate;
+    }
+
+    if (stringEndDate.length > 0) {
+      query.upper = stringEndDate;
+    }
+
     const queryParams = {
-      sessionId: 'beedb5e7-3e88-4426-99e2-32bc0fab5700',
+      sessionId: 'af6f25da-6353-48f0-a8d4-9b581eba4dc9',
       query,
       maxCount: 300,
     };

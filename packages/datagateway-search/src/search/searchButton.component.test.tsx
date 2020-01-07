@@ -1,65 +1,80 @@
-// import React from 'react';
-// import { StateType } from '../state/app.types';
-// import { Provider } from 'react-redux';
-// import { createShallow, createMount } from '@material-ui/core/test-utils';
-// import configureStore from 'redux-mock-store';
-// import SearchButton from './searchButton.component';
-// import thunk from 'redux-thunk';
-// import { MemoryRouter } from 'react-router';
-// import { initialState } from '../state/reducers/dgsearch.reducer';
-// import { submitSearchText } from '../state/actions/actions';
+import React from 'react';
+import { StateType } from '../state/app.types';
+import { Provider } from 'react-redux';
+import { createShallow, createMount } from '@material-ui/core/test-utils';
+import configureStore from 'redux-mock-store';
+import SearchButton from './searchButton.component';
+import thunk from 'redux-thunk';
+import { MemoryRouter } from 'react-router';
+import { initialState } from '../state/reducers/dgsearch.reducer';
+import axios from 'axios';
 
-// jest.mock('loglevel');
+jest.mock('loglevel');
 
-// describe('Search Button component tests', () => {
-//   let shallow;
-//   let state: StateType;
-//   let mockStore;
-//   let mount;
+describe('Search Button component tests', () => {
+  let shallow;
+  let state: StateType;
+  let mockStore;
+  let mount;
+  (axios.get as jest.Mock).mockImplementation(() =>
+    Promise.resolve({ data: [] })
+  );
 
-//   beforeEach(() => {
-//     shallow = createShallow({ untilSelector: 'div' });
-//     mount = createMount();
+  beforeEach(() => {
+    shallow = createShallow({ untilSelector: 'div' });
+    mount = createMount();
 
-//     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
+    state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
-//     state.dgsearch = {
-//       searchText: '',
-//       text: '',
-//       selectDate: {
-//         startDate: null,
-//         endDate: null,
-//       },
-//       checkBox: {
-//         dataset: true,
-//         datafile: true,
-//         investigation: false,
-//       },
-//     };
+    state.dgsearch = {
+      searchText: '',
+      text: '',
+      selectDate: {
+        startDate: null,
+        endDate: null,
+      },
+      checkBox: {
+        dataset: true,
+        datafile: true,
+        investigation: false,
+      },
+    };
 
-//     mockStore = configureStore([thunk]);
-//   });
+    mockStore = configureStore([thunk]);
+  });
 
-//   //   it('renders correctly', () => {
-//   //     const wrapper = shallow(<div><SearchButton store={mockStore(state)} /></div>);
-//   //     expect(wrapper).toMatchSnapshot();
-//   //   });
+  it('renders correctly', () => {
+    const wrapper = shallow(
+      <div>
+        <SearchButton store={mockStore(state)} />
+      </div>
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
 
-//   //   it('sends submitSearchText action when user clicks checkbox', () => {
-//   //     const testStore = mockStore(state);
-//   //     const wrapper = mount(
-//   //       <Provider store={testStore}>
-//   //         <MemoryRouter>
-//   //           <SearchButton />
-//   //         </MemoryRouter>
-//   //       </Provider>
-//   //     );
+  it('sends submitSearchText action when user clicks checkbox', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
 
-//   //     wrapper.find('[aria-label="submit search button"]').simulate('click');
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    expect(axios.get).toBeCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: { target: 'Datafile' },
+          sessionId: 'af6f25da-6353-48f0-a8d4-9b581eba4dc9',
+        },
+      }
+    );
 
-//   // test that
-
-//   // test that it sends off a request
-
-//   // test that correct params are generated
-// });
+    //   test that correct params are generated
+  });
+});
