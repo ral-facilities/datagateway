@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as log from 'loglevel';
-import { DownloadCart, SubmitCart, DownloadCartItem, Datafile } from 'datagateway-common';
+import { DownloadCart, SubmitCart, DownloadCartItem, Datafile, Download } from 'datagateway-common';
 
 // TODO: get URLs from settings or something...
 const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
@@ -91,10 +91,33 @@ export const submitCart: (
     });
 }
 
+export const getPreparedId: (
+  facilityName: string,
+  downloadId: number
+) => Promise<string> = (facilityName: string, downloadId: number) => {
+  return axios
+    .get<Download[]>(`${topcatUrl}/user/downloads`, {
+      params: {
+        // TODO: get session ID from somewhere else (extract from JWT)
+        sessionId: window.localStorage.getItem('icat:token'),
+        facilityName: facilityName,
+        queryOffset: `where download.id = ${downloadId}`,
+      },
+    })
+    .then(response => {
+      const download = response.data[0];
+      return download.preparedId;
+    })
+    .catch(error => {
+      log.error(error.message);
+      return '';
+    });
+};
+
 export const downloadPreparedCart: (
-  preparedId: number,
+  preparedId: string,
   fileName: string
-) => void = (preparedId: number, fileName: string) => {
+) => void = (preparedId: string, fileName: string) => {
 
   // We need to set the preparedId and outname query parameters 
   // for the IDS download.

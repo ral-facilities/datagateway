@@ -28,6 +28,7 @@ import { formatBytes } from 'datagateway-common';
 import {
   submitCart,
   downloadPreparedCart,
+  getPreparedId,
 } from '../downloadCart/downloadCartApi';
 import Mark from './mark.component';
 
@@ -175,7 +176,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName(fileName);
     }
 
-    let downloadId = await submitCart(
+    const downloadId = await submitCart(
       facilityName,
       accessMethod,
       emailAddress,
@@ -187,8 +188,16 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
-      if (accessMethod === defaultAccessMethod)
-        downloadPreparedCart(downloadId, fileName);
+
+      // TODO: Check for http and https.
+      if (
+        accessMethod === defaultAccessMethod ||
+        `${accessMethod}s` === defaultAccessMethod
+      ) {
+        const preparedId = await getPreparedId(facilityName, downloadId);
+        downloadPreparedCart(preparedId, fileName);
+      }
+
       setIsSubmitSuccessful(true);
     }
 

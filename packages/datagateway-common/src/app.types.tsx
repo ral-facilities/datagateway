@@ -151,6 +151,12 @@ export interface DownloadCartItem {
   parentEntities: DownloadCartItem[];
 }
 
+export interface DownloadItem {
+  entityId: number;
+  entityType: 'investigation' | 'dataset' | 'datafile';
+  id: number;
+}
+
 export interface DownloadCart {
   cartItems: DownloadCartItem[];
   createdAt: string;
@@ -158,6 +164,27 @@ export interface DownloadCart {
   id: number;
   updatedAt: string;
   userName: string;
+}
+
+export interface Download {
+  createdAt: string;
+  downloadItems: DownloadItem[];
+  email: string;
+  facilityName: string;
+  fileName: string;
+  fullName: string;
+  id: number;
+  isDeleted: boolean;
+  isEmailSent: boolean;
+  isTwoLevel: boolean;
+  preparedId: string;
+  sessionId: string;
+  size: number;
+  status: 'PREPARING' | 'RESTORING' | 'PAUSED' | 'COMPLETE' | 'EXPIRED';
+  transport: string;
+  username: string;
+
+  [key: string]: string | number | boolean | DownloadItem[];
 }
 
 export interface SubmitCart {
