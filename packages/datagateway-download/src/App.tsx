@@ -5,8 +5,9 @@ import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
+import DownloadTabs from './downloadTab.component';
 
-import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
+// import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
@@ -44,8 +45,8 @@ class App extends Component<{}, { hasError: boolean }> {
     return (
       <div className="App">
         <StylesProvider generateClassName={generateClassName}>
-          <DownloadStatusTable />
-          {/* <DownloadTabs />     */}
+          {/* <DownloadStatusTable /> */}
+          <DownloadTabs />
           {/* <DownloadCartTable /> */}
         </StylesProvider>
       </div>

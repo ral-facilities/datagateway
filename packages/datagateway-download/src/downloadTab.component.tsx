@@ -1,6 +1,7 @@
 import React from 'react';
-import { makeStyles, Paper, Tabs } from '@material-ui/core';
+import { makeStyles, Paper, Tabs, Typography, Box } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
+import DownloadCartTable from './downloadCart/downloadCartTable.component';
 // import DownloadCartTable from './downloadCart/downloadCartTable.component';
 
 const useStyles = makeStyles({
@@ -8,6 +9,38 @@ const useStyles = makeStyles({
     flexGrow: 1,
   },
 });
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps): React.ReactElement {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
+  );
+}
+
+function a11yProps(
+  index: number
+): { id: string; [ariaControls: string]: string } {
+  return {
+    id: `tab-${index}`,
+    'aria-controls': `tabpanel-${index}`,
+  };
+}
 
 const DownloadTabs: React.FC = () => {
   const classes = useStyles();
@@ -29,9 +62,17 @@ const DownloadTabs: React.FC = () => {
         textColor="primary"
         centered
       >
-        <Tab label="Cart" />
-        <Tab label="Status" />
+        <Tab label="Cart" {...a11yProps(0)} />
+        <Tab label="Status" {...a11yProps(1)} />
       </Tabs>
+
+      <TabPanel value={value} index={0}>
+        <DownloadCartTable />
+      </TabPanel>
+
+      <TabPanel value={value} index={1}>
+        Item Two
+      </TabPanel>
     </Paper>
   );
 };
