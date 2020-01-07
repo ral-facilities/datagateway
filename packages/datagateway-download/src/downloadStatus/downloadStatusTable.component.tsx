@@ -94,7 +94,7 @@ const DownloadStatusTable: React.FC = () => {
   return (
     <Grid container direction="column">
       <Grid item>
-        <Paper style={{ height: 'calc(100vh - 150px)' }}>
+        <Paper style={{ height: 'calc(100vh - 110px)' }}>
           <Table
             columns={[
               {

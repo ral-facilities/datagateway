@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
-// import DownloadCartTable from './downloadCart/downloadCartTable.component';
 import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-import DownloadTabs from './downloadTab.component';
 
+import DownloadTabs from './downloadTab.component';
+// import DownloadCartTable from './downloadCart/downloadCartTable.component';
 // import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
 
 const generateClassName = createGenerateClassName({
@@ -45,9 +45,7 @@ class App extends Component<{}, { hasError: boolean }> {
     return (
       <div className="App">
         <StylesProvider generateClassName={generateClassName}>
-          {/* <DownloadStatusTable /> */}
           <DownloadTabs />
-          {/* <DownloadCartTable /> */}
         </StylesProvider>
       </div>
     );
