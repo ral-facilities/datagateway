@@ -1,8 +1,15 @@
 import React from 'react';
 import { Grid, Paper } from '@material-ui/core';
 
-import { Table, Order, Download, TextColumnFilter } from 'datagateway-common';
+import {
+  Table,
+  Order,
+  Download,
+  TextColumnFilter,
+  // DateColumnFilter,
+} from 'datagateway-common';
 import { fetchDownloads } from './downloadApi';
+import { TableCellProps } from 'react-virtualized';
 
 const DownloadStatusTable: React.FC = () => {
   // Sorting columns
@@ -38,6 +45,15 @@ const DownloadStatusTable: React.FC = () => {
       }}
     />
   );
+
+  // const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+  //   <DateColumnFilter
+  //     label={label}
+  //     onChange={(value: { startDate?: string; endDate?: string } | null) =>
+  //       filterTable(dataKey, value)
+  //     }
+  //   />
+  // );
 
   const sortedAndFilteredData = React.useMemo(() => {
     const filteredData = data.filter(item => {
@@ -93,12 +109,36 @@ const DownloadStatusTable: React.FC = () => {
               },
               {
                 label: 'Availability',
-                dataKey: 'availability',
-                // filterComponent: textFilter,
+                dataKey: 'status',
+                cellContentRenderer: (props: TableCellProps) => {
+                  if (props.cellData) {
+                    switch (props.cellData) {
+                      case 'COMPLETE':
+                        return 'Available';
+
+                      case 'RESTORING':
+                        return 'Restoring from Tape';
+
+                      case 'PREPARING':
+                        return 'Preparing';
+
+                      case 'EXPIRED':
+                        return 'Expired';
+
+                      default:
+                        return 'N/A';
+                    }
+                  }
+                },
+                filterComponent: textFilter,
               },
               {
                 label: 'Requested Date',
                 dataKey: 'createdAt',
+                // cellContentRenderer: (props: TableCellProps) => {
+                //   if (props.cellData)
+                //     return new Date(props.cellData).toDateString();
+                // },
                 // filterComponent: dateFilter,
               },
             ]}
