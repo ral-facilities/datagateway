@@ -190,10 +190,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       // the download ID we received.
 
       // TODO: Check for http and https.
-      if (
-        accessMethod === defaultAccessMethod ||
-        `${accessMethod}s` === defaultAccessMethod
-      ) {
+      if (accessMethod === defaultAccessMethod) {
         const preparedId = await getPreparedId(facilityName, downloadId);
         downloadPreparedCart(preparedId, fileName);
       }
@@ -260,6 +257,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   <Select
                     labelId="confirm-access-method"
                     id="confirm-access-method"
+                    aria-label="confirm-access-method"
                     defaultValue={`${defaultAccessMethod}`}
                     onChange={(
                       event: React.ChangeEvent<{ value: unknown }>
@@ -273,8 +271,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       setAccessMethod(event.target.value as string);
                     }}
                   >
-                    <MenuItem value="https">HTTPS</MenuItem>
-                    <MenuItem value="globus">Globus</MenuItem>
+                    <MenuItem id="confirm-access-method-https" value="https">
+                      HTTPS
+                    </MenuItem>
+                    <MenuItem id="confirm-access-method-globus" value="globus">
+                      Globus
+                    </MenuItem>
                   </Select>
 
                   {/* Provide some information on the selected access method. */}
@@ -286,29 +288,33 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   {/* Depending on the type of access method that has been selected,
                   show specific access information. */}
                   {(() => {
+                    let accessMethodInfo;
                     switch (accessMethod) {
                       case defaultAccessMethod:
-                        return (
-                          <Typography>
-                            HTTPS is the default access method.
-                          </Typography>
-                        );
+                        accessMethodInfo =
+                          'HTTPS is the default access method.';
+                        break;
+
                       case 'globus':
-                        return (
-                          <Typography>
-                            Globus is a special access method.
-                          </Typography>
-                        );
+                        accessMethodInfo = 'Globus is a special access method.';
+                        break;
+
                       default:
-                        return null;
+                        return 'N/A';
                     }
+
+                    return (
+                      <Typography id="confirm-access-method-information">
+                        {accessMethodInfo}
+                      </Typography>
+                    );
                   })()}
                 </FormControl>
               </Grid>
 
               {/* Get the size of the download  */}
               <Grid item xs={12}>
-                <Typography>
+                <Typography aria-label="confirm-download-size">
                   <b>Download size:</b> {formatBytes(totalSize)}
                 </Typography>
               </Grid>
@@ -342,7 +348,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <Typography>
                   <b>Estimated download time</b> (at {connSpeed} Mbps):
                 </Typography>
-                <Typography>{secondsToDHMS(downloadTime)}</Typography>
+                <Typography aria-label="confirm-estimated-time">
+                  {secondsToDHMS(downloadTime)}
+                </Typography>
               </Grid>
 
               {/* Set the download name text field */}
