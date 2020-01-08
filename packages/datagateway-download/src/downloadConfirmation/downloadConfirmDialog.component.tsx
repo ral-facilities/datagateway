@@ -505,9 +505,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         paddingLeft: '25px',
                       }}
                     >
-                      <Typography>{downloadName}</Typography>
-                      <Typography>{accessMethod.toUpperCase()}</Typography>
-                      {emailAddress && <Typography>{emailAddress}</Typography>}
+                      <Typography id="confirm-success-download-name">
+                        {downloadName}
+                      </Typography>
+                      <Typography id="confirm-success-access-method">
+                        {accessMethod.toUpperCase()}
+                      </Typography>
+                      {emailAddress && (
+                        <Typography id="confirm-success-email-address">
+                          {emailAddress}
+                        </Typography>
+                      )}
                     </div>
                   </div>
                 </Grid>

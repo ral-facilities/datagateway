@@ -99,3 +99,16 @@ Cypress.Commands.add('addCartItem', cartItem => {
     form: true,
   });
 });
+
+Cypress.Commands.add('deleteTestDownload', () => {
+  // Make sure to delete the downloaded file.
+  console.log(Cypress.platform);
+  if (Cypress.platform === 'win32') {
+    cy.exec('del %USERPROFILE%\\Downloads\\LILS_2020-1-1_1-1-1.zip')
+      .its('code')
+      .should('eq', 0);
+  } else {
+    // TODO: Find out what the default location files will download to on linux. ~/Downloads?
+    // cy.exec('del ')
+  }
+});
