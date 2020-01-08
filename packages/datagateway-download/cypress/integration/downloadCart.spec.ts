@@ -118,15 +118,10 @@ describe('Download Cart', () => {
     );
   });
 
-  it('should be able to download the cart', () => {
-    const stub = cy.stub();
-    cy.on('window:alert', stub);
-
+  it('should be able open the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
-    cy.contains('Download Cart')
-      .click()
-      .then(() => {
-        expect(stub.getCall(0)).to.be.calledWith('download the cart!');
-      });
+    cy.contains('Download Cart').click();
+
+    cy.get('[aria-label="download-confirm-dialog"]').should('exist');
   });
 });

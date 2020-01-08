@@ -83,3 +83,19 @@ Cypress.Commands.add('seedDownloadCart', () => {
     form: true,
   });
 });
+
+Cypress.Commands.add('addCartItem', cartItem => {
+  // TODO: get url from settings
+  // TODO: find facility from somewhere...
+
+  cy.request({
+    method: 'POST',
+    url:
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
+    body: {
+      sessionId: window.localStorage.getItem('icat:token'),
+      items: cartItem,
+    },
+    form: true,
+  });
+});

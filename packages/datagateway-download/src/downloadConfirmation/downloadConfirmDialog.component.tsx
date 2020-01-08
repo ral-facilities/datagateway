@@ -212,6 +212,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       // TODO: Set size another way; should have width without this?
       fullWidth={true}
       maxWidth={'sm'}
+      aria-label="download-confirm-dialog"
     >
       {!isSubmitted ? (
         <div>

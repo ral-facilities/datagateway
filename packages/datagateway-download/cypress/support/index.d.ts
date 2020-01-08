@@ -6,5 +6,8 @@ declare namespace Cypress {
     ): Cypress.Chainable<Cypress.Response>;
     clearDownloadCart(): Cypress.Chainable<Cypress.Response>;
     seedDownloadCart(): Cypress.Chainable<Cypress.Response>;
+    addCartItem(
+      cartItem: string
+    ): Cypress.Chainable<Cypress.Response>;
   }
 }
