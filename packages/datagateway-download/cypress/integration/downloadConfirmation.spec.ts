@@ -3,7 +3,6 @@ describe('Download Confirmation', () => {
         // Ensure the download cart is cleared before running tests.
         cy.login('user', 'password');
         cy.clearDownloadCart();
-        // cy.deleteTestDownload();
     });
     
     beforeEach(() => {
@@ -30,7 +29,6 @@ describe('Download Confirmation', () => {
 
     afterEach(() => {
         cy.clearDownloadCart();
-        // cy.deleteTestDownload();
     });
 
     it('should load correctly and display the confirmation dialog for the cart items', () => {
@@ -127,6 +125,9 @@ describe('Download Confirmation', () => {
 
         cy.contains('#confirm-success-download-name', 'LILS_2020-1-1_1-1-1').should('exist');
         cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
+    
+        // Delete the downloaded file.
+        cy.deleteTestDownload();
     });
 
     it('should be able to submit a download request with altered access method (Globus)', () => {
@@ -195,6 +196,7 @@ describe('Download Confirmation', () => {
 
     // This needs to be implemented once the tab has been included into the code.
     // it('should be able to link to the downloads status tab upon successful download confirmation', () => {
+        
     // });
 
     it('should be able to close the download confirmation dialog', () => {

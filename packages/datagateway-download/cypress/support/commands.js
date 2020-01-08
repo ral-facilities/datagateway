@@ -101,14 +101,21 @@ Cypress.Commands.add('addCartItem', cartItem => {
 });
 
 Cypress.Commands.add('deleteTestDownload', () => {
+  const fileName = 'LILS_2020-1-1_1-1-1.zip';
   // Make sure to delete the downloaded file.
   console.log(Cypress.platform);
   if (Cypress.platform === 'win32') {
-    cy.exec('del %USERPROFILE%\\Downloads\\LILS_2020-1-1_1-1-1.zip')
-      .its('code')
-      .should('eq', 0);
+    // cy.task('get:files:base:path').then(basePath => {
+    //   cy.readFile(`${basePath}/${fileName}`);
+    // });
+
+    cy.exec('echo %USERPROFILE%').then(result => {
+      cy.readFile(`${result.stdout}\\Downloads\\LILS_2020-1-1_1-1-1.zip`);
+      cy.exec(`del ${result.stdout}\\Downloads\\${fileName}`)
+        .its('code')
+        .should('eq', 0);
+    });
   } else {
     // TODO: Find out what the default location files will download to on linux. ~/Downloads?
-    // cy.exec('del ')
   }
 });
