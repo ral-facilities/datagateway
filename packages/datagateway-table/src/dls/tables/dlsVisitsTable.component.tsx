@@ -9,7 +9,6 @@ import {
   Entity,
   DateColumnFilter,
 } from 'datagateway-common';
-import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
@@ -99,71 +98,69 @@ const DLSVisitsTable = (
   }, [fetchCount, fetchData, sort, filters, proposalName]);
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(proposalName, params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        detailsPanel={({ rowData, detailsPanelResize }) => {
-          return (
-            <VisitDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              fetchDetails={props.fetchDetails}
-            />
-          );
-        }}
-        columns={[
-          {
-            label: 'Visit Id',
-            dataKey: 'VISIT_ID',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              return tableLink(
-                `/browse/proposal/${proposalName}/investigation/${investigationData.ID}/dataset`,
-                investigationData.VISIT_ID
-              );
-            },
-            filterComponent: textFilter,
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(proposalName, params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      detailsPanel={({ rowData, detailsPanelResize }) => {
+        return (
+          <VisitDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            fetchDetails={props.fetchDetails}
+          />
+        );
+      }}
+      columns={[
+        {
+          label: 'Visit Id',
+          dataKey: 'VISIT_ID',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            return tableLink(
+              `/browse/proposal/${proposalName}/investigation/${investigationData.ID}/dataset`,
+              investigationData.VISIT_ID
+            );
           },
-          {
-            label: 'Dataset Count',
-            dataKey: 'DATASET_COUNT',
-            disableSort: true,
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Dataset Count',
+          dataKey: 'DATASET_COUNT',
+          disableSort: true,
+        },
+        {
+          label: 'Beamline',
+          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            if (
+              investigationData.INVESTIGATIONINSTRUMENT &&
+              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+            ) {
+              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+                .NAME;
+            } else {
+              return '';
+            }
           },
-          {
-            label: 'Beamline',
-            dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              if (
-                investigationData.INVESTIGATIONINSTRUMENT &&
-                investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-              ) {
-                return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                  .NAME;
-              } else {
-                return '';
-              }
-            },
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Start Date',
-            dataKey: 'STARTDATE',
-            filterComponent: dateFilter,
-          },
-          {
-            label: 'End Date',
-            dataKey: 'ENDDATE',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
+        },
+        {
+          label: 'End Date',
+          dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 

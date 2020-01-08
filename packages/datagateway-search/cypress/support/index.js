@@ -19,6 +19,4 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-// it's installed at the top level, so disable the check
-// eslint-disable-next-line import/no-extraneous-dependencies
 require('cypress-failed-log');

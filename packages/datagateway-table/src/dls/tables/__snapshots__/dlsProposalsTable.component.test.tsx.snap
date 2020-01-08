@@ -1,66 +1,56 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DLS Proposals table component renders correctly 1`] = `
-<div
-  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
-  style={
-    Object {
-      "height": "calc(100vh - 64px)",
-      "width": "100%",
-    }
+<WithStyles(VirtualizedTable)
+  columns={
+    Array [
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "TITLE",
+        "filterComponent": [Function],
+        "label": "Title",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "label": "Name",
+      },
+    ]
   }
->
-  <WithStyles(VirtualizedTable)
-    columns={
-      Array [
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "TITLE",
-          "filterComponent": [Function],
-          "label": "Title",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "NAME",
-          "filterComponent": [Function],
-          "label": "Name",
-        },
-      ]
-    }
-    data={
-      Array [
-        Object {
-          "DOI": "doi 1",
-          "ENDDATE": "2019-06-11",
-          "ID": 1,
-          "INVESTIGATIONINSTRUMENT": Array [
-            Object {
-              "ID": 1,
-              "INSTRUMENT": Object {
-                "ID": 3,
-                "NAME": "LARMOR",
-              },
-              "INSTRUMENT_ID": 3,
-              "INVESTIGATION_ID": 1,
+  data={
+    Array [
+      Object {
+        "DOI": "doi 1",
+        "ENDDATE": "2019-06-11",
+        "ID": 1,
+        "INVESTIGATIONINSTRUMENT": Array [
+          Object {
+            "ID": 1,
+            "INSTRUMENT": Object {
+              "ID": 3,
+              "NAME": "LARMOR",
             },
-          ],
-          "NAME": "Test 1",
-          "PROPOSAL_ID": "1",
-          "RB_NUMBER": "1",
-          "SIZE": 1,
-          "STARTDATE": "2019-06-10",
-          "SUMMARY": "foo bar",
-          "TITLE": "Test 1",
-        },
-      ]
-    }
-    loadMoreRows={[Function]}
-    loading={false}
-    onSort={[Function]}
-    sort={Object {}}
-    totalRowCount={0}
-  />
-</div>
+            "INSTRUMENT_ID": 3,
+            "INVESTIGATION_ID": 1,
+          },
+        ],
+        "NAME": "Test 1",
+        "PROPOSAL_ID": "1",
+        "RB_NUMBER": "1",
+        "SIZE": 1,
+        "STARTDATE": "2019-06-10",
+        "SUMMARY": "foo bar",
+        "TITLE": "Test 1",
+      },
+    ]
+  }
+  loadMoreRows={[Function]}
+  loading={false}
+  onSort={[Function]}
+  sort={Object {}}
+  totalRowCount={0}
+/>
 `;
 
 exports[`DLS Proposals table component renders title and name as links 1`] = `

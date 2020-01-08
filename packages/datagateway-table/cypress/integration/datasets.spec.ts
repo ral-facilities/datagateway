@@ -1,7 +1,6 @@
 describe('Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.clearDownloadCart();
     cy.visit('/browse/investigation/1/dataset');
   });
 
@@ -204,54 +203,6 @@ describe('Datasets Table', () => {
 
       cy.contains('Name: DATASET 1').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
-    });
-  });
-
-  describe('should be able to select items', () => {
-    it('individually', () => {
-      cy.get('[aria-label="select row 0"]').check();
-      cy.get('[aria-label="select row 0"]').should('be.checked');
-      cy.get('[aria-label="select all rows"]')
-        .should('have.attr', 'data-indeterminate')
-        .and('eq', 'true');
-      cy.get('[aria-label="select all rows"]').should('not.be.checked');
-    });
-
-    it('and unselect them individually', () => {
-      cy.get('[aria-label="select row 0"]').check();
-      cy.get('[aria-label="select row 0"]').should('be.checked');
-
-      cy.get('[aria-label="select row 0"]').uncheck();
-      cy.get('[aria-label="select row 0"]').should('not.be.checked');
-      cy.get('[aria-label="select all rows"]')
-        .should('have.attr', 'data-indeterminate')
-        .and('eq', 'false');
-      cy.get('[aria-label="select all rows"]').should('not.be.checked');
-    });
-
-    it('by all items', () => {
-      cy.get(`[aria-label="select row 0"]`).should('be.visible');
-
-      cy.get('[aria-label="select all rows"]').check();
-      cy.get('[aria-label="select all rows"]').should('be.checked');
-      cy.get(`[aria-label="select row 0"]`).should('be.checked');
-      cy.get('[aria-label="select all rows"]')
-        .should('have.attr', 'data-indeterminate')
-        .and('eq', 'false');
-    });
-
-    it('and unselect all items', () => {
-      cy.get(`[aria-label="select row 0"]`).should('be.visible');
-
-      cy.get('[aria-label="select all rows"]').check();
-      cy.get('[aria-label="select all rows"]').should('be.checked');
-
-      cy.get('[aria-label="select all rows"]').uncheck();
-      cy.get('[aria-label="select all rows"]').should('not.be.checked');
-      cy.get('[aria-label="select all rows"]')
-        .should('have.attr', 'data-indeterminate')
-        .and('eq', 'false');
-      cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
     });
   });
 });
