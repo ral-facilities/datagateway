@@ -1,9 +1,16 @@
 describe('Download Cart', () => {
+  before(() => {
+    // Ensure the download cart is cleared before running tests.
+    cy.login('user', 'password');
+    cy.clearDownloadCart();
+  });
+
   beforeEach(() => {
     Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.login('user', 'password');
+
     cy.seedDownloadCart().then(() => {
       cy.visit('/');
       cy.wait('@fetchCart');

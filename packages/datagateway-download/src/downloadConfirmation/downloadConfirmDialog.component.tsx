@@ -334,9 +334,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       setConnSpeed(event.target.value as number);
                     }}
                   >
-                    <MenuItem value={1}>1 Mbps</MenuItem>
-                    <MenuItem value={30}>30 Mbps</MenuItem>
-                    <MenuItem value={100}>100 Mbps</MenuItem>
+                    <MenuItem id="confirm-connection-speed-1" value={1}>
+                      1 Mbps
+                    </MenuItem>
+                    <MenuItem id="confirm-connection-speed-30" value={30}>
+                      30 Mbps
+                    </MenuItem>
+                    <MenuItem id="confirm-connection-speed-100" value={100}>
+                      100 Mbps
+                    </MenuItem>
                   </Select>
                   <FormHelperText id="confirm-connection-speed-help">
                     Select a connection speed to approximate download time.
@@ -509,11 +515,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {isSubmitSuccessful && (
                 <Grid item xs>
+                  {/* TODO: Button needs to call a function that has been passed in
+                        which allow for the tab to be changed to the status page. */}
                   <Button
                     id="download-confirmation-status-link"
                     variant="outlined"
                     color="primary"
-                    href="/status"
+                    href="/"
                   >
                     View My Downloads
                   </Button>
