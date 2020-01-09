@@ -57,6 +57,18 @@ export const removeDownloadCartItem: (
     });
 };
 
+export const getIsTwoLevel: () => Promise<boolean> = () => {
+  return axios
+    .get<boolean>(`${idsUrl}/isTwoLevel`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      log.error(error.message);
+      return false;
+    });
+};
+
 export const submitCart: (
   facilityName: string,
   transport: string,

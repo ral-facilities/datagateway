@@ -16,6 +16,7 @@ import {
   removeDownloadCartItem,
   getSize,
   getCartDatafileCount,
+  getIsTwoLevel,
 } from './downloadCartApi';
 import chunk from 'lodash.chunk';
 
@@ -37,6 +38,7 @@ const DownloadCartTable: React.FC = () => {
   const [totalSizeMax, setTotalSizeMax] = React.useState<number>(-1);
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
+  const [isTwoLevel, setIsTwoLevel] = React.useState(false);
 
   const totalSize = React.useMemo(() => {
     if (sizesFinished) {
@@ -51,6 +53,12 @@ const DownloadCartTable: React.FC = () => {
       return -1;
     }
   }, [data, sizesFinished]);
+
+  React.useEffect(() => {
+    const checkTwoLevel = async (): void =>
+      setIsTwoLevel(await getIsTwoLevel());
+    checkTwoLevel();
+  }, []);
 
   React.useEffect(() => {
     fetchDownloadCartItems().then(cartItems => {
@@ -291,6 +299,7 @@ const DownloadCartTable: React.FC = () => {
       <DownloadConfirmDialog
         aria-labelledby="downloadCartConfirmation"
         totalSize={totalSize}
+        isTwoLevel={isTwoLevel}
         setOpen={showConfirmation}
         setClose={() => setShowConfirmation(false)}
       />

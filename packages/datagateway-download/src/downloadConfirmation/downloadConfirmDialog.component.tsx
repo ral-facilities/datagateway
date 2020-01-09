@@ -86,7 +86,12 @@ const DialogActions = withStyles((theme: Theme) => ({
 
 interface DownloadConfirmDialogProps {
   totalSize: number;
+  isTwoLevel: boolean;
   setOpen: boolean;
+
+  // TODO: pass in the function to call to redirect to the status tab.
+  // setStatus: () => void;
+
   setClose: () => void;
 }
 
@@ -96,8 +101,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // TODO: Temporary facilityName until we load it from settings.
   const facilityName = 'LILS';
 
+  // Access methods should be configurable and not defined in the component.
   const defaultAccessMethod = 'https';
   const { totalSize } = props;
+  const { isTwoLevel } = props;
+
+  const [showDownloadTime, setShowDownloadTime] = React.useState<boolean>(true);
   const [connSpeed, setConnSpeed] = React.useState<number>(1);
   const [downloadTime, setDownloadTime] = React.useState<number>(-1);
 
@@ -135,8 +144,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   useEffect(() => {
     if (props.setOpen) {
-      // console.log('Got dialog open');
-
       // Reset checkmark view.
       setIsSubmitted(false);
       setIsSubmitSuccessful(false);
@@ -145,8 +152,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName('');
       setAccessMethod(defaultAccessMethod);
       setEmailAddress('');
+
+      // If storage on the IDS server is two-level,
+      // then do not show the download/time table.
+      if (!isTwoLevel) setShowDownloadTime(false);
     }
-  }, [props.setOpen]);
+  }, [props.setOpen, isTwoLevel, showDownloadTime]);
 
   const secondsToDHMS = (seconds: number): string => {
     const d = Math.floor(seconds / (3600 * 24));
@@ -154,7 +165,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
 
-    // TODO: Any need for days?
+    // TODO: Show as min and sec within a table.
     const dDisplay = d > 0 ? d + (d === 1 ? ' day, ' : ' days, ') : '';
     const hDisplay = h > 0 ? h + (h === 1 ? ' hour, ' : ' hours, ') : '';
     const mDisplay = m > 0 ? m + (m === 1 ? ' minute, ' : ' minutes, ') : '';
@@ -320,48 +331,52 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               </Grid>
 
               {/* Select and estimate the download time */}
-              <Grid item xs={12}>
-                <Typography>My connection speed: </Typography>
-                <FormControl style={{ minWidth: 120 }}>
-                  <Select
-                    labelId="confirm-connection-speed"
-                    id="confirm-connection-speed"
-                    defaultValue={1}
-                    onChange={(
-                      event: React.ChangeEvent<{ value: unknown }>
-                    ): void => {
-                      // Material UI select is not a real select element, so needs casting.
-                      setConnSpeed(event.target.value as number);
-                    }}
-                  >
-                    <MenuItem id="confirm-connection-speed-1" value={1}>
-                      1 Mbps
-                    </MenuItem>
-                    <MenuItem id="confirm-connection-speed-30" value={30}>
-                      30 Mbps
-                    </MenuItem>
-                    <MenuItem id="confirm-connection-speed-100" value={100}>
-                      100 Mbps
-                    </MenuItem>
-                  </Select>
-                  <FormHelperText id="confirm-connection-speed-help">
-                    Select a connection speed to approximate download time.
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              {/* TODO: Position the download time next to connection speed select dropbox */}
-              <Grid item xs={12}>
-                <Typography>
-                  <b>Estimated download time</b> (at {connSpeed} Mbps):
-                </Typography>
-                <Typography aria-label="confirm-estimated-time">
-                  {secondsToDHMS(downloadTime)}
-                </Typography>
-              </Grid>
+              {showDownloadTime && (
+                <Grid item xs={12}>
+                  <Typography>My connection speed: </Typography>
+                  <FormControl style={{ minWidth: 120 }}>
+                    <Select
+                      labelId="confirm-connection-speed"
+                      id="confirm-connection-speed"
+                      defaultValue={1}
+                      onChange={(
+                        event: React.ChangeEvent<{ value: unknown }>
+                      ): void => {
+                        // Material UI select is not a real select element, so needs casting.
+                        setConnSpeed(event.target.value as number);
+                      }}
+                    >
+                      <MenuItem id="confirm-connection-speed-1" value={1}>
+                        1 Mbps
+                      </MenuItem>
+                      <MenuItem id="confirm-connection-speed-30" value={30}>
+                        30 Mbps
+                      </MenuItem>
+                      <MenuItem id="confirm-connection-speed-100" value={100}>
+                        100 Mbps
+                      </MenuItem>
+                    </Select>
+                    <FormHelperText id="confirm-connection-speed-help">
+                      Select a connection speed to approximate download time.
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+              )}
 
-              {/* Set the download name text field */}
+              {showDownloadTime && (
+                // {/* TODO: Position the download time next to connection speed select dropbox */}
+                <Grid item xs={12}>
+                  <Typography>
+                    <b>Estimated download time</b> (at {connSpeed} Mbps):
+                  </Typography>
+                  <Typography aria-label="confirm-estimated-time">
+                    {secondsToDHMS(downloadTime)}
+                  </Typography>
+                </Grid>
+              )}
+
+              {/* Set email address text field */}
               <Grid item xs={12}>
-                {/* <FormControl> */}
                 {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
                 <TextField
                   id="confirm-download-email"
@@ -411,7 +426,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     }
                   }}
                 />
-                {/* </FormControl> */}
               </Grid>
             </Grid>
           </DialogContent>
@@ -457,7 +471,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {isSubmitSuccessful ? (
                 <Grid item xs>
-                  {accessMethod === defaultAccessMethod ? (
+                  {/* {accessMethod === defaultAccessMethod ? (
                     <Typography id="download-confirmation-success-default">
                       Successfully submitted and started download
                     </Typography>
@@ -465,7 +479,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     <Typography id="download-confirmation-success-other">
                       Successfully created download
                     </Typography>
-                  )}
+                  )} */}
+
+                  <Typography id="download-confirmation-success">
+                    Successfully submitted download request
+                  </Typography>
                 </Grid>
               ) : (
                 <div
