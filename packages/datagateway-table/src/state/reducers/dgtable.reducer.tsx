@@ -553,7 +553,7 @@ export function handleDownloadCartSuccess(
     // })),
   };
 }
-
+// grab to common 
 export function handleDownloadCartFailure(
   state: DGTableState,
   payload: FailurePayload
@@ -595,7 +595,7 @@ export function handleFetchAllIdsSuccess(
     return state;
   }
 }
-
+// remove things I want 
 const DGTableReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,

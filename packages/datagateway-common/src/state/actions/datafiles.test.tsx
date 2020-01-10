@@ -17,11 +17,19 @@ import {
   fetchDatafileDetails,
   fetchDatafileDetailsRequest,
   fetchDatafileDetailsFailure,
-} from '.';
+} from '../../../datagateway-table/src/state/actions';
 import axios from 'axios';
-import { StateType, EntityCache } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
-import { actions, resetActions, dispatch, getState } from '../../setupTests';
+import {
+  StateType,
+  EntityCache,
+} from '../../../datagateway-table/src/state/app.types';
+import { initialState } from '../../../datagateway-table/src/state/reducers/dgtable.reducer';
+import {
+  actions,
+  resetActions,
+  dispatch,
+  getState,
+} from '../../../datagateway-table/src/setupTests';
 import * as log from 'loglevel';
 import { Datafile } from 'datagateway-common';
 

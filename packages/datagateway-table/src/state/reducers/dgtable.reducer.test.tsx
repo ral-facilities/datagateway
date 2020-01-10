@@ -37,7 +37,6 @@ import {
   fetchDatasetCountSuccess,
   fetchDatasetCountFailure,
   fetchDatafileCountRequest,
-  fetchDatafileCountSuccess,
   fetchDatafileCountFailure,
   fetchInstrumentCountRequest,
   fetchInstrumentCountSuccess,

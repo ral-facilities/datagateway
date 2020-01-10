@@ -29,7 +29,10 @@ export {
   default as ExpandCellComponent,
 } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
-
+export * from './state/actions/datafiles';
+export * from './state/actions/datasets';
+export * from './state/actions/investigations';
 export { default as Preloader } from './preloader/preloader.component';
 
 // ReactDOM.render(<App />, document.getElementById('root'));
+

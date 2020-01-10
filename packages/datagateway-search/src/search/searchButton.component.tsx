@@ -5,6 +5,18 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { format } from 'date-fns';
+// import {
+//   TextColumnFilter,
+//   Table,
+//   formatBytes,
+//   Order,
+//   Filter,
+//   Entity,
+//   Datafile,
+//   TableActionProps,
+//   DateColumnFilter,
+//   DownloadCartItem,
+// } from 'datagateway-common';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -35,7 +47,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   public constructor(props: SearchButtonCombinedProps) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
-    this.sendRequest = this.sendRequest.bind(this);
+    this.luceneRequest = this.luceneRequest.bind(this);
     this.urlParamsBuilder = this.urlParamsBuilder.bind(this);
   }
 
@@ -81,7 +93,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     }
 
     const queryParams = {
-      sessionId: 'af6f25da-6353-48f0-a8d4-9b581eba4dc9',
+      sessionId: 'ac7382f9-daa2-46f4-96f3-524f2342b074',
       query,
       maxCount: 300,
     };
@@ -91,26 +103,34 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   public handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (this.props.dataset === true) {
       let datasetParams = this.urlParamsBuilder('Dataset');
-      this.sendRequest(datasetParams);
+      this.luceneRequest(datasetParams);
     }
     if (this.props.datafile === true) {
       let datafileParams = this.urlParamsBuilder('Datafile');
-      this.sendRequest(datafileParams);
+      this.luceneRequest(datafileParams);
     }
     if (this.props.investigation === true) {
       let investigationParams = this.urlParamsBuilder('Investigation');
-      this.sendRequest(investigationParams);
+      this.luceneRequest(investigationParams);
     }
   };
 
-  public async sendRequest(queryParams: LuceneParameters): Promise<void> {
+  public async luceneRequest(queryParams: LuceneParameters): Promise<void> {
     const response = await axios.get(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       { params: queryParams }
     );
-    console.log(response);
-  }
 
+    const ids = response.data.map((x: {id: number; score: number}) => x.id);
+    console.log(ids)
+  };
+
+  
+  
+  
+  //  Louise does this already, find her work
+  //  public async apiRequest 
+   
   public render(): React.ReactNode {
     return (
       <div>

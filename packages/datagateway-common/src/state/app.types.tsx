@@ -52,7 +52,6 @@ export interface ApplicationStrings {
 
 export interface StateType {
   dgtable: DGTableState;
-  dgcommon: DGCommonState;
   router: RouterState;
 }
 

@@ -11,19 +11,19 @@ import {
   Datafile,
   Entity,
   DownloadCartItem,
+  fetchDatafiles,
+  downloadDatafile,
+  fetchDatafileCount,
 } from 'datagateway-common';
 import { GetApp } from '@material-ui/icons';
 import {
-  fetchDatafiles,
   sortTable,
   filterTable,
-  downloadDatafile,
   addToCart,
   removeFromCart,
-  fetchDatafileCount,
   clearTable,
   fetchAllIds,
-} from '../state/actions';
+} from '../state/actions'; 
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
