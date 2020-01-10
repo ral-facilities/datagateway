@@ -9,6 +9,8 @@ declare namespace Cypress {
     addCartItem(
       cartItem: string
     ): Cypress.Chainable<Cypress.Response>;
-    deleteTestDownload(): Cypress.Chainable<Cypress.Response>;
+    deleteTestDownload(
+      fileName: string
+    ): Cypress.Chainable<Cypress.Response>;
   }
 }

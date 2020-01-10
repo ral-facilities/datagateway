@@ -4,13 +4,7 @@ import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import {
-  Theme,
-  createStyles,
-  withStyles,
-  WithStyles,
-  StyleRules,
-} from '@material-ui/core/styles';
+
 import {
   Typography,
   IconButton,
@@ -21,16 +15,24 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  // FormHelperText,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import Mark from './mark.component';
+
 import { formatBytes } from 'datagateway-common';
 import {
   submitCart,
   downloadPreparedCart,
   getPreparedId,
 } from '../downloadCart/downloadCartApi';
-import Mark from './mark.component';
+
+import {
+  Theme,
+  createStyles,
+  withStyles,
+  WithStyles,
+  StyleRules,
+} from '@material-ui/core/styles';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -106,7 +108,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const { totalSize } = props;
   const { isTwoLevel } = props;
 
-  // Download
+  // Download speed/time table.
   const [showDownloadTime, setShowDownloadTime] = React.useState<boolean>(true);
   const [timeAtOne, setTimeAtOne] = React.useState<number>(-1);
   const [timeAtThirty, setTimeAtThirty] = React.useState<number>(-1);
@@ -119,7 +121,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
   const [emailAddress, setEmailAddress] = React.useState<string>('');
 
-  // Email validation
+  // Email validation.
   const emailHelpText = 'Send me download status messages via email.';
   const emailErrorText = 'Please ensure the email you have entered is valid.';
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -128,7 +130,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     emailHelpText
   );
 
-  // Submission button
+  // Download button.
   const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
   const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState<boolean>(
     false
@@ -172,16 +174,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
 
-    // TODO: Show as min and sec within a table.
     const dDisplay =
       d > 0
         ? d + (d === 1 ? ' day' : ' days') + (h + m + s > 0 ? ', ' : '')
         : '';
     const hDisplay =
       h > 0 ? h + (h === 1 ? ' hour' : ' hours') + (m + s > 0 ? ', ' : '') : '';
-    const mDisplay =
-      m > 0 ? m + (m === 1 ? ' minute' : ' minutes') + (s > 0 ? ', ' : '') : '';
-    const sDisplay = s > 0 ? s + (s === 1 ? ' second' : ' seconds') : '';
+    const mDisplay = m > 0 ? m + (s > 0 ? ' min, ' : ' min') : '';
+    const sDisplay = s > 0 ? s + ' sec' : '';
 
     return dDisplay + hDisplay + mDisplay + sDisplay || '< 1 second';
   };
@@ -211,8 +211,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
-
-      // TODO: Check for http and https.
       if (accessMethod === defaultAccessMethod) {
         const preparedId = await getPreparedId(facilityName, downloadId);
         downloadPreparedCart(preparedId, fileName);
@@ -229,7 +227,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     <Dialog
       onClose={props.setClose}
       open={props.setOpen}
-      // TODO: Set size another way; should have width without this?
       fullWidth={true}
       maxWidth={'sm'}
       aria-label="download-confirm-dialog"
@@ -249,7 +246,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             <Grid container spacing={2}>
               {/* Set the download name text field */}
               <Grid item xs={12}>
-                {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
                 <TextField
                   id="confirm-download-name"
                   label="Download Name (optional)"
@@ -305,7 +301,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     <b>Access Method Information:</b>
                   </Typography>
 
-                  {/* TODO: Could this be neater? */}
                   {/* Depending on the type of access method that has been selected,
                   show specific access information. */}
                   {(() => {
@@ -340,56 +335,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 </Typography>
               </Grid>
 
-              {/* Select and estimate the download time */}
-              {/* {showDownloadTime && (
-                <Grid item xs={12}>
-                  <Typography>My connection speed: </Typography>
-                  <FormControl style={{ minWidth: 120 }}>
-                    <Select
-                      labelId="confirm-connection-speed"
-                      id="confirm-connection-speed"
-                      defaultValue={1}
-                      onChange={(
-                        event: React.ChangeEvent<{ value: unknown }>
-                      ): void => {
-                        // Material UI select is not a real select element, so needs casting.
-                        setConnSpeed(event.target.value as number);
-                      }}
-                    >
-                      <MenuItem id="confirm-connection-speed-1" value={1}>
-                        1 Mbps
-                      </MenuItem>
-                      <MenuItem id="confirm-connection-speed-30" value={30}>
-                        30 Mbps
-                      </MenuItem>
-                      <MenuItem id="confirm-connection-speed-100" value={100}>
-                        100 Mbps
-                      </MenuItem>
-                    </Select>
-                    <FormHelperText id="confirm-connection-speed-help">
-                      Select a connection speed to approximate download time.
-                    </FormHelperText>
-                  </FormControl>
-                </Grid>
-              )} */}
-
-              {/* TODO: Position the download time next to connection speed select dropbox */}
-              {/* {showDownloadTime && (
-                <Grid item xs={12}>
-                  <Typography>
-                    <b>Estimated download time</b> (at {connSpeed} Mbps):
-                  </Typography>
-                  <Typography aria-label="confirm-estimated-time">
-                    {secondsToDHMS(downloadTime)}
-                  </Typography>
-                </Grid>
-              )} */}
-
+              {/* Show the estimated download times */}
               {showDownloadTime && (
                 <Grid item xs={12}>
                   <Typography>Estimated download times:</Typography>
                   <div style={{ paddingTop: '10px' }}>
                     <table
+                      aria-label="download-table"
                       style={{ borderCollapse: 'collapse', width: '100%' }}
                     >
                       <tr>
@@ -401,6 +353,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       </tr>
                       <tr>
                         <td
+                          aria-label="download-table-one"
                           style={{
                             border: '1px solid #dddddd',
                             textAlign: 'center',
@@ -409,6 +362,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           {secondsToDHMS(timeAtOne)}
                         </td>
                         <td
+                          aria-label="download-table-thirty"
                           style={{
                             border: '1px solid #dddddd',
                             textAlign: 'center',
@@ -417,6 +371,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           {secondsToDHMS(timeAtThirty)}
                         </td>
                         <td
+                          aria-label="download-table-hundred"
                           style={{
                             border: '1px solid #dddddd',
                             textAlign: 'center',
@@ -432,19 +387,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {/* Set email address text field */}
               <Grid item xs={12}>
-                {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
                 <TextField
                   id="confirm-download-email"
                   label="Email Address (optional)"
                   fullWidth={true}
                   helperText={emailHelperText}
                   error={!emailValid}
-                  // TODO: Set a maxLength?
                   inputProps={{
                     maxLength: 254,
                   }}
-                  // TODO: We could use debounce to evaluate if the email address is valid
-                  //       after the user has finished typing it.
                   onChange={(
                     event: React.ChangeEvent<{ value: unknown }>
                   ): void => {
@@ -488,7 +439,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           <DialogActions>
             <Button
               id="download-confirmation-download"
-              // TODO: Download button disables if email is invalid, potentially use debounce?
               disabled={!emailValid}
               onClick={processDownload}
               color="primary"
@@ -516,7 +466,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             >
               <Grid item xs>
                 {/* TODO: When closing the animation renders again? 
-                      Maybe set a fixed width for the dialog and not render it? */}
+                Maybe set a fixed width for the dialog and not render it? */}
                 {isSubmitSuccessful ? (
                   <Mark size={100} colour="#3E863E" />
                 ) : (
@@ -526,16 +476,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {isSubmitSuccessful ? (
                 <Grid item xs>
-                  {/* {accessMethod === defaultAccessMethod ? (
-                    <Typography id="download-confirmation-success-default">
-                      Successfully submitted and started download
-                    </Typography>
-                  ) : (
-                    <Typography id="download-confirmation-success-other">
-                      Successfully created download
-                    </Typography>
-                  )} */}
-
                   <Typography id="download-confirmation-success">
                     Successfully submitted download request
                   </Typography>
@@ -617,5 +557,4 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 };
 
 // TODO: Pass in facilityName as prop to DownloadConfirmDialog to get customisable download name.
-
 export default DownloadConfirmDialog;

@@ -11,6 +11,7 @@ describe('Download Confirmation', () => {
 
         Cypress.currentTest.retries(2);
         cy.server();
+        cy.route('GET', '**/ids/isTwoLevel').as('fetchIsTwoLevel');
         cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
         cy.login('user', 'password');
 
@@ -19,6 +20,7 @@ describe('Download Confirmation', () => {
 
         cy.addCartItem('investigation 1').then(() => {
             cy.visit('/');
+            cy.wait('@fetchIsTwoLevel');
             cy.wait('@fetchCart');
         });
 
@@ -38,64 +40,12 @@ describe('Download Confirmation', () => {
         // Shows HTTPS as the default access method.
         cy.contains('[aria-label="confirm-access-method"]', 'HTTPS').should('exist');
 
-        // Shows the estimated download time (at 1 Mbps).
-        cy.contains('[aria-label="confirm-estimated-time"]', '1 day, 33 minutes, 54 seconds').should('exist');
-    });
-
-    it('should show access method information varying on access method selection', () => {
-        // Ensure that it is set to HTTPS already.
-        cy.contains('[aria-label="confirm-access-method"]', 'HTTPS').should('exist');
-
-        // Check the access method information shown presently.
-        cy.contains('#confirm-access-method-information', 
-            'HTTPS is the default access method.'    
-        ).should('exist');
-
-        cy.get('[aria-label="confirm-access-method"]').click();
-
-        cy.contains('#confirm-access-method-globus', 'Globus')
-            .should('exist')
-            .click();
-
-        // Check the access method information has changed to Globus.
-        cy.contains('#confirm-access-method-information', 
-            'Globus is a special access method.'    
-        ).should('exist');
-    });
-
-    it('should show estimated download time varying on connection speed selection', () => {
-        // Ensure that 1 Mbps is already selected and the expected time is already showing.
-        cy.contains('#confirm-connection-speed', '1 Mbps').should('exist');
-
-        cy.contains('[aria-label="confirm-estimated-time"]', 
-            '1 day, 33 minutes, 54 seconds'
-        ).should('exist');
-
-        // Check at 30 Mbps.
-        cy.get('#confirm-connection-speed').click();
-
-        cy.contains('#confirm-connection-speed-30', '30 Mbps')
-            .should('exist')
-            .click();
-
-        cy.contains('#confirm-connection-speed', '30 Mbps').should('exist');
-
-        cy.contains('[aria-label="confirm-estimated-time"]', 
-            '49 minutes, 7 seconds'
-        ).should('exist');
-
-        // Check at 100 Mbps.
-        cy.get('#confirm-connection-speed').click();
-        
-        cy.contains('#confirm-connection-speed-100', '100 Mbps')
-            .should('exist')
-            .click();
-
-        cy.contains('#confirm-connection-speed', '100 Mbps').should('exist');
-
-        cy.contains('[aria-label="confirm-estimated-time"]', 
-            '14 minutes, 44 seconds'
-        ).should('exist');
+        // Shows the estimated download times in the table.
+        // cy.contains('[aria-label="confirm-estimated-time"]', '1 day, 33 minutes, 54 seconds').should('exist');
+        cy.get('[aria-label="download-table"]').should('exist');
+        cy.contains('[aria-label="download-table-one"]', '1 day, 33 min, 54 sec').should('exist');
+        cy.contains('[aria-label="download-table-thirty"]', '49 min, 7 sec').should('exist');
+        cy.contains('[aria-label="download-table-hundred"]', '14 min, 44 sec').should('exist');
     });
 
     it('should prevent download requests with an invalid email address', () => {
@@ -119,15 +69,17 @@ describe('Download Confirmation', () => {
         cy.get('#download-confirmation-download').click();
 
         // Ensure the correct message and download details are shown.
-        cy.contains('#download-confirmation-success-default',
-            'Successfully submitted and started download'
+        cy.contains('#download-confirmation-success',
+            'Successfully submitted download request'
         ).should('exist');
 
         cy.contains('#confirm-success-download-name', 'LILS_2020-1-1_1-1-1').should('exist');
         cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
     
+        // NOTE: When running this e2e test interactively the downloaded file 
+        //       must be saved in your default Downloads folder in order for it to be deleted. 
         // Delete the downloaded file.
-        cy.deleteTestDownload();
+        cy.deleteTestDownload('LILS_2020-1-1_1-1-1.zip');
     });
 
     it('should be able to submit a download request with altered access method (Globus)', () => {
@@ -144,8 +96,8 @@ describe('Download Confirmation', () => {
         cy.get('#download-confirmation-download').click();
 
         // Ensure the correct message and download details are shown.
-        cy.contains('#download-confirmation-success-other',
-            'Successfully created download'
+        cy.contains('#download-confirmation-success',
+            'Successfully submitted download request'
         ).should('exist');
 
         cy.contains('#confirm-success-download-name', 'LILS_2020-1-1_1-1-1').should('exist');
@@ -184,8 +136,8 @@ describe('Download Confirmation', () => {
         // Request download.
         cy.get('#download-confirmation-download').click();
 
-        cy.contains('#download-confirmation-success-other', 
-            'Successfully created download'
+        cy.contains('#download-confirmation-success', 
+            'Successfully submitted download request'
         ).should('exist');
 
         // Ensure the download name, access method and email address match that of which we changed.
