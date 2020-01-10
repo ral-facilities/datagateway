@@ -103,10 +103,10 @@ export const submitCart: (
     });
 }
 
-export const getPreparedId: (
+export const getDownload: (
   facilityName: string,
   downloadId: number
-) => Promise<string> = (facilityName: string, downloadId: number) => {
+) => Promise<Download | null> = (facilityName: string, downloadId: number) => {
   return axios
     .get<Download[]>(`${topcatUrl}/user/downloads`, {
       params: {
@@ -118,11 +118,11 @@ export const getPreparedId: (
     })
     .then(response => {
       const download = response.data[0];
-      return download.preparedId;
+      return download;
     })
     .catch(error => {
       log.error(error.message);
-      return '';
+      return null;
     });
 };
 

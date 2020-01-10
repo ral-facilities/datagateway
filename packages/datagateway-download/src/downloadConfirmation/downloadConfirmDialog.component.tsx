@@ -22,8 +22,8 @@ import Mark from './mark.component';
 import { formatBytes } from 'datagateway-common';
 import {
   submitCart,
+  getDownload,
   downloadPreparedCart,
-  getPreparedId,
 } from '../downloadCart/downloadCartApi';
 
 import {
@@ -212,8 +212,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       // If we are using HTTPS then start the download using
       // the download ID we received.
       if (accessMethod === defaultAccessMethod) {
-        const preparedId = await getPreparedId(facilityName, downloadId);
-        downloadPreparedCart(preparedId, fileName);
+        const downloadInfo = await getDownload(facilityName, downloadId);
+        console.log('Received submitted download information: ', downloadInfo);
+
+        // Download the file as long as it is available for immediate download.
+        if (downloadInfo != null && downloadInfo.status === 'COMPLETE')
+          downloadPreparedCart(downloadInfo.preparedId, downloadInfo.fileName);
       }
 
       setIsSubmitSuccessful(true);
