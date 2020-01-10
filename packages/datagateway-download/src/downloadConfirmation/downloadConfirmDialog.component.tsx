@@ -21,7 +21,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  FormHelperText,
+  // FormHelperText,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { formatBytes } from 'datagateway-common';
@@ -106,9 +106,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const { totalSize } = props;
   const { isTwoLevel } = props;
 
+  // Download
   const [showDownloadTime, setShowDownloadTime] = React.useState<boolean>(true);
-  const [connSpeed, setConnSpeed] = React.useState<number>(1);
-  const [downloadTime, setDownloadTime] = React.useState<number>(-1);
+  const [timeAtOne, setTimeAtOne] = React.useState<number>(-1);
+  const [timeAtThirty, setTimeAtThirty] = React.useState<number>(-1);
+  const [timeAtHundred, setTimeAtHundred] = React.useState<number>(-1);
 
   // Submit values.
   const [downloadName, setDownloadName] = React.useState<string>('');
@@ -117,6 +119,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
   const [emailAddress, setEmailAddress] = React.useState<string>('');
 
+  // Email validation
   const emailHelpText = 'Send me download status messages via email.';
   const emailErrorText = 'Please ensure the email you have entered is valid.';
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -125,22 +128,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     emailHelpText
   );
 
+  // Submission button
   const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
   const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState<boolean>(
     false
   );
-
-  const getDefaultFileName = (): string => {
-    const now = new Date();
-    let defaultName = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
-      1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
-
-    return defaultName;
-  };
-
-  useEffect(() => {
-    setDownloadTime(totalSize / (1024 * 1024) / (connSpeed / 8));
-  }, [connSpeed, totalSize]);
 
   useEffect(() => {
     if (props.setOpen) {
@@ -153,11 +145,26 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setAccessMethod(defaultAccessMethod);
       setEmailAddress('');
 
-      // If storage on the IDS server is two-level,
-      // then do not show the download/time table.
-      if (!isTwoLevel) setShowDownloadTime(false);
+      if (!isTwoLevel) {
+        // Calculate the download times as storage is not two-level.
+        setTimeAtOne(totalSize / (1024 * 1024) / (1 / 8));
+        setTimeAtThirty(totalSize / (1024 * 1024) / (30 / 8));
+        setTimeAtHundred(totalSize / (1024 * 1024) / (100 / 8));
+      } else {
+        // If storage on IDS server is two-level,
+        // then do not show the download speed/time table.
+        setShowDownloadTime(false);
+      }
     }
-  }, [props.setOpen, isTwoLevel, showDownloadTime]);
+  }, [props.setOpen, isTwoLevel, totalSize]);
+
+  const getDefaultFileName = (): string => {
+    const now = new Date();
+    let defaultName = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
+      1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+
+    return defaultName;
+  };
 
   const secondsToDHMS = (seconds: number): string => {
     const d = Math.floor(seconds / (3600 * 24));
@@ -166,12 +173,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     const s = Math.floor(seconds % 60);
 
     // TODO: Show as min and sec within a table.
-    const dDisplay = d > 0 ? d + (d === 1 ? ' day, ' : ' days, ') : '';
-    const hDisplay = h > 0 ? h + (h === 1 ? ' hour, ' : ' hours, ') : '';
-    const mDisplay = m > 0 ? m + (m === 1 ? ' minute, ' : ' minutes, ') : '';
+    const dDisplay =
+      d > 0
+        ? d + (d === 1 ? ' day' : ' days') + (h + m + s > 0 ? ', ' : '')
+        : '';
+    const hDisplay =
+      h > 0 ? h + (h === 1 ? ' hour' : ' hours') + (m + s > 0 ? ', ' : '') : '';
+    const mDisplay =
+      m > 0 ? m + (m === 1 ? ' minute' : ' minutes') + (s > 0 ? ', ' : '') : '';
     const sDisplay = s > 0 ? s + (s === 1 ? ' second' : ' seconds') : '';
 
-    return dDisplay + hDisplay + mDisplay + sDisplay;
+    return dDisplay + hDisplay + mDisplay + sDisplay || '< 1 second';
   };
 
   const processDownload = async (): Promise<void> => {
@@ -237,7 +249,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             <Grid container spacing={2}>
               {/* Set the download name text field */}
               <Grid item xs={12}>
-                {/* <FormControl> */}
                 {/* // TODO: fullWidth={true} works on components normally but we want them to size depending on parent. */}
                 <TextField
                   id="confirm-download-name"
@@ -256,7 +267,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   }}
                   helperText="Enter a custom file name or leave as the default format (facility_date_time)."
                 />
-                {/* </FormControl> */}
               </Grid>
 
               {/* Select the access method */}
@@ -331,7 +341,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               </Grid>
 
               {/* Select and estimate the download time */}
-              {showDownloadTime && (
+              {/* {showDownloadTime && (
                 <Grid item xs={12}>
                   <Typography>My connection speed: </Typography>
                   <FormControl style={{ minWidth: 120 }}>
@@ -361,10 +371,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     </FormHelperText>
                   </FormControl>
                 </Grid>
-              )}
+              )} */}
 
-              {showDownloadTime && (
-                // {/* TODO: Position the download time next to connection speed select dropbox */}
+              {/* TODO: Position the download time next to connection speed select dropbox */}
+              {/* {showDownloadTime && (
                 <Grid item xs={12}>
                   <Typography>
                     <b>Estimated download time</b> (at {connSpeed} Mbps):
@@ -372,6 +382,51 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   <Typography aria-label="confirm-estimated-time">
                     {secondsToDHMS(downloadTime)}
                   </Typography>
+                </Grid>
+              )} */}
+
+              {showDownloadTime && (
+                <Grid item xs={12}>
+                  <Typography>Estimated download times:</Typography>
+                  <div style={{ paddingTop: '10px' }}>
+                    <table
+                      style={{ borderCollapse: 'collapse', width: '100%' }}
+                    >
+                      <tr>
+                        <th style={{ border: '1px solid #dddddd' }}>1 Mbps</th>
+                        <th style={{ border: '1px solid #dddddd' }}>30 Mbps</th>
+                        <th style={{ border: '1px solid #dddddd' }}>
+                          100 Mbps
+                        </th>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            border: '1px solid #dddddd',
+                            textAlign: 'center',
+                          }}
+                        >
+                          {secondsToDHMS(timeAtOne)}
+                        </td>
+                        <td
+                          style={{
+                            border: '1px solid #dddddd',
+                            textAlign: 'center',
+                          }}
+                        >
+                          {secondsToDHMS(timeAtThirty)}
+                        </td>
+                        <td
+                          style={{
+                            border: '1px solid #dddddd',
+                            textAlign: 'center',
+                          }}
+                        >
+                          {secondsToDHMS(timeAtHundred)}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
                 </Grid>
               )}
 

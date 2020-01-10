@@ -55,7 +55,7 @@ const DownloadCartTable: React.FC = () => {
   }, [data, sizesFinished]);
 
   React.useEffect(() => {
-    const checkTwoLevel = async (): void =>
+    const checkTwoLevel = async (): Promise<void> =>
       setIsTwoLevel(await getIsTwoLevel());
     checkTwoLevel();
   }, []);
