@@ -255,7 +255,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   label="Download Name (optional)"
                   placeholder={`${getDefaultFileName()}`}
                   fullWidth={true}
-                  // TODO: Set a maxLength?
                   inputProps={{
                     maxLength: 255,
                   }}
