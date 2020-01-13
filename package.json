@@ -19,7 +19,8 @@
     "test:e2e": "cd packages/datagateway-table && yarn run e2e && cd ../datagateway-download && yarn run e2e && cd ../datagateway-search && yarn run e2e",
     "test:e2e:lerna": "lerna run e2e --stream --concurrency 1",
     "datagateway-table": "cd packages/datagateway-table && yarn start",
-    "datagateway-download": "cd packages/datagateway-download && yarn start"
+    "datagateway-download": "cd packages/datagateway-download && yarn start",
+    "datagateway-search": "cd packages/datagateway-search && yarn start"
   },
   "husky": {
     "hooks": {

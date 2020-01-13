@@ -459,7 +459,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     class="MuiInputBase-input MuiInput-input"
                                     id="confirm-download-name"
                                     maxlength="255"
-                                    placeholder="LILS_2020-1-10_15-22-49"
+                                    placeholder="LILS_2020-1-1_1-1-1"
                                     type="text"
                                     value=""
                                   />
@@ -561,43 +561,45 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                   aria-label="download-table"
                                   style="border-collapse: collapse; width: 100%;"
                                 >
-                                  <tr>
-                                    <th
-                                      style="border: 1px solid #dddddd;"
-                                    >
-                                      1 Mbps
-                                    </th>
-                                    <th
-                                      style="border: 1px solid #dddddd;"
-                                    >
-                                      30 Mbps
-                                    </th>
-                                    <th
-                                      style="border: 1px solid #dddddd;"
-                                    >
-                                      100 Mbps
-                                    </th>
-                                  </tr>
-                                  <tr>
-                                    <td
-                                      aria-label="download-table-one"
-                                      style="border: 1px solid #dddddd; text-align: center;"
-                                    >
-                                      &lt; 1 second
-                                    </td>
-                                    <td
-                                      aria-label="download-table-thirty"
-                                      style="border: 1px solid #dddddd; text-align: center;"
-                                    >
-                                      &lt; 1 second
-                                    </td>
-                                    <td
-                                      aria-label="download-table-hundred"
-                                      style="border: 1px solid #dddddd; text-align: center;"
-                                    >
-                                      &lt; 1 second
-                                    </td>
-                                  </tr>
+                                  <tbody>
+                                    <tr>
+                                      <th
+                                        style="border: 1px solid #dddddd;"
+                                      >
+                                        1 Mbps
+                                      </th>
+                                      <th
+                                        style="border: 1px solid #dddddd;"
+                                      >
+                                        30 Mbps
+                                      </th>
+                                      <th
+                                        style="border: 1px solid #dddddd;"
+                                      >
+                                        100 Mbps
+                                      </th>
+                                    </tr>
+                                    <tr>
+                                      <td
+                                        aria-label="download-table-one"
+                                        style="border: 1px solid #dddddd; text-align: center;"
+                                      >
+                                        &lt; 1 second
+                                      </td>
+                                      <td
+                                        aria-label="download-table-thirty"
+                                        style="border: 1px solid #dddddd; text-align: center;"
+                                      >
+                                        &lt; 1 second
+                                      </td>
+                                      <td
+                                        aria-label="download-table-hundred"
+                                        style="border: 1px solid #dddddd; text-align: center;"
+                                      >
+                                        &lt; 1 second
+                                      </td>
+                                    </tr>
+                                  </tbody>
                                 </table>
                               </div>
                             </div>
@@ -755,7 +757,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     class="MuiInputBase-input MuiInput-input"
                                     id="confirm-download-name"
                                     maxlength="255"
-                                    placeholder="LILS_2020-1-10_15-22-49"
+                                    placeholder="LILS_2020-1-1_1-1-1"
                                     type="text"
                                     value=""
                                   />
@@ -1590,7 +1592,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                     }
                                                     label="Download Name (optional)"
                                                     onChange={[Function]}
-                                                    placeholder="LILS_2020-1-10_15-22-49"
+                                                    placeholder="LILS_2020-1-1_1-1-1"
                                                   >
                                                     <ForwardRef(TextField)
                                                       classes={
@@ -1608,7 +1610,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                       }
                                                       label="Download Name (optional)"
                                                       onChange={[Function]}
-                                                      placeholder="LILS_2020-1-10_15-22-49"
+                                                      placeholder="LILS_2020-1-1_1-1-1"
                                                     >
                                                       <WithStyles(ForwardRef(FormControl))
                                                         className="MuiTextField-root"
@@ -1720,7 +1722,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                               }
                                                               multiline={false}
                                                               onChange={[Function]}
-                                                              placeholder="LILS_2020-1-10_15-22-49"
+                                                              placeholder="LILS_2020-1-1_1-1-1"
                                                             >
                                                               <ForwardRef(Input)
                                                                 aria-describedby="confirm-download-name-helper-text"
@@ -1751,7 +1753,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                 }
                                                                 multiline={false}
                                                                 onChange={[Function]}
-                                                                placeholder="LILS_2020-1-10_15-22-49"
+                                                                placeholder="LILS_2020-1-1_1-1-1"
                                                               >
                                                                 <WithStyles(ForwardRef(InputBase))
                                                                   aria-describedby="confirm-download-name-helper-text"
@@ -1783,7 +1785,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   }
                                                                   multiline={false}
                                                                   onChange={[Function]}
-                                                                  placeholder="LILS_2020-1-10_15-22-49"
+                                                                  placeholder="LILS_2020-1-1_1-1-1"
                                                                   type="text"
                                                                 >
                                                                   <ForwardRef(InputBase)
@@ -1822,7 +1824,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     }
                                                                     multiline={false}
                                                                     onChange={[Function]}
-                                                                    placeholder="LILS_2020-1-10_15-22-49"
+                                                                    placeholder="LILS_2020-1-1_1-1-1"
                                                                     type="text"
                                                                   >
                                                                     <div
@@ -1841,7 +1843,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         onBlur={[Function]}
                                                                         onChange={[Function]}
                                                                         onFocus={[Function]}
-                                                                        placeholder="LILS_2020-1-10_15-22-49"
+                                                                        placeholder="LILS_2020-1-1_1-1-1"
                                                                         required={false}
                                                                         type="text"
                                                                       />
@@ -2949,7 +2951,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           class="MuiInputBase-input MuiInput-input"
                                                                                                           id="confirm-download-name"
                                                                                                           maxlength="255"
-                                                                                                          placeholder="LILS_2020-1-10_15-22-49"
+                                                                                                          placeholder="LILS_2020-1-1_1-1-1"
                                                                                                           type="text"
                                                                                                           value=""
                                                                                                         />
@@ -3051,43 +3053,45 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                         aria-label="download-table"
                                                                                                         style="border-collapse: collapse; width: 100%;"
                                                                                                       >
-                                                                                                        <tr>
-                                                                                                          <th
-                                                                                                            style="border: 1px solid #dddddd;"
-                                                                                                          >
-                                                                                                            1 Mbps
-                                                                                                          </th>
-                                                                                                          <th
-                                                                                                            style="border: 1px solid #dddddd;"
-                                                                                                          >
-                                                                                                            30 Mbps
-                                                                                                          </th>
-                                                                                                          <th
-                                                                                                            style="border: 1px solid #dddddd;"
-                                                                                                          >
-                                                                                                            100 Mbps
-                                                                                                          </th>
-                                                                                                        </tr>
-                                                                                                        <tr>
-                                                                                                          <td
-                                                                                                            aria-label="download-table-one"
-                                                                                                            style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                          >
-                                                                                                            &lt; 1 second
-                                                                                                          </td>
-                                                                                                          <td
-                                                                                                            aria-label="download-table-thirty"
-                                                                                                            style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                          >
-                                                                                                            &lt; 1 second
-                                                                                                          </td>
-                                                                                                          <td
-                                                                                                            aria-label="download-table-hundred"
-                                                                                                            style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                          >
-                                                                                                            &lt; 1 second
-                                                                                                          </td>
-                                                                                                        </tr>
+                                                                                                        <tbody>
+                                                                                                          <tr>
+                                                                                                            <th
+                                                                                                              style="border: 1px solid #dddddd;"
+                                                                                                            >
+                                                                                                              1 Mbps
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                              style="border: 1px solid #dddddd;"
+                                                                                                            >
+                                                                                                              30 Mbps
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                              style="border: 1px solid #dddddd;"
+                                                                                                            >
+                                                                                                              100 Mbps
+                                                                                                            </th>
+                                                                                                          </tr>
+                                                                                                          <tr>
+                                                                                                            <td
+                                                                                                              aria-label="download-table-one"
+                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
+                                                                                                            >
+                                                                                                              &lt; 1 second
+                                                                                                            </td>
+                                                                                                            <td
+                                                                                                              aria-label="download-table-thirty"
+                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
+                                                                                                            >
+                                                                                                              &lt; 1 second
+                                                                                                            </td>
+                                                                                                            <td
+                                                                                                              aria-label="download-table-hundred"
+                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
+                                                                                                            >
+                                                                                                              &lt; 1 second
+                                                                                                            </td>
+                                                                                                          </tr>
+                                                                                                        </tbody>
                                                                                                       </table>
                                                                                                     </div>
                                                                                                   </div>
@@ -3245,7 +3249,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           class="MuiInputBase-input MuiInput-input"
                                                                                                           id="confirm-download-name"
                                                                                                           maxlength="255"
-                                                                                                          placeholder="LILS_2020-1-10_15-22-49"
+                                                                                                          placeholder="LILS_2020-1-1_1-1-1"
                                                                                                           type="text"
                                                                                                           value=""
                                                                                                         />
@@ -4757,7 +4761,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     class="MuiInputBase-input MuiInput-input"
                                     id="confirm-download-name"
                                     maxlength="255"
-                                    placeholder="LILS_2020-1-10_15-22-49"
+                                    placeholder="LILS_2020-1-1_1-1-1"
                                     type="text"
                                     value=""
                                   />
@@ -4859,43 +4863,45 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                   aria-label="download-table"
                                   style="border-collapse: collapse; width: 100%;"
                                 >
-                                  <tr>
-                                    <th
-                                      style="border: 1px solid #dddddd;"
-                                    >
-                                      1 Mbps
-                                    </th>
-                                    <th
-                                      style="border: 1px solid #dddddd;"
-                                    >
-                                      30 Mbps
-                                    </th>
-                                    <th
-                                      style="border: 1px solid #dddddd;"
-                                    >
-                                      100 Mbps
-                                    </th>
-                                  </tr>
-                                  <tr>
-                                    <td
-                                      aria-label="download-table-one"
-                                      style="border: 1px solid #dddddd; text-align: center;"
-                                    >
-                                      &lt; 1 second
-                                    </td>
-                                    <td
-                                      aria-label="download-table-thirty"
-                                      style="border: 1px solid #dddddd; text-align: center;"
-                                    >
-                                      &lt; 1 second
-                                    </td>
-                                    <td
-                                      aria-label="download-table-hundred"
-                                      style="border: 1px solid #dddddd; text-align: center;"
-                                    >
-                                      &lt; 1 second
-                                    </td>
-                                  </tr>
+                                  <tbody>
+                                    <tr>
+                                      <th
+                                        style="border: 1px solid #dddddd;"
+                                      >
+                                        1 Mbps
+                                      </th>
+                                      <th
+                                        style="border: 1px solid #dddddd;"
+                                      >
+                                        30 Mbps
+                                      </th>
+                                      <th
+                                        style="border: 1px solid #dddddd;"
+                                      >
+                                        100 Mbps
+                                      </th>
+                                    </tr>
+                                    <tr>
+                                      <td
+                                        aria-label="download-table-one"
+                                        style="border: 1px solid #dddddd; text-align: center;"
+                                      >
+                                        &lt; 1 second
+                                      </td>
+                                      <td
+                                        aria-label="download-table-thirty"
+                                        style="border: 1px solid #dddddd; text-align: center;"
+                                      >
+                                        &lt; 1 second
+                                      </td>
+                                      <td
+                                        aria-label="download-table-hundred"
+                                        style="border: 1px solid #dddddd; text-align: center;"
+                                      >
+                                        &lt; 1 second
+                                      </td>
+                                    </tr>
+                                  </tbody>
                                 </table>
                               </div>
                             </div>
@@ -5647,7 +5653,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                     }
                                                     label="Download Name (optional)"
                                                     onChange={[Function]}
-                                                    placeholder="LILS_2020-1-10_15-22-49"
+                                                    placeholder="LILS_2020-1-1_1-1-1"
                                                   >
                                                     <ForwardRef(TextField)
                                                       classes={
@@ -5665,7 +5671,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                       }
                                                       label="Download Name (optional)"
                                                       onChange={[Function]}
-                                                      placeholder="LILS_2020-1-10_15-22-49"
+                                                      placeholder="LILS_2020-1-1_1-1-1"
                                                     >
                                                       <WithStyles(ForwardRef(FormControl))
                                                         className="MuiTextField-root"
@@ -5777,7 +5783,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                               }
                                                               multiline={false}
                                                               onChange={[Function]}
-                                                              placeholder="LILS_2020-1-10_15-22-49"
+                                                              placeholder="LILS_2020-1-1_1-1-1"
                                                             >
                                                               <ForwardRef(Input)
                                                                 aria-describedby="confirm-download-name-helper-text"
@@ -5808,7 +5814,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                 }
                                                                 multiline={false}
                                                                 onChange={[Function]}
-                                                                placeholder="LILS_2020-1-10_15-22-49"
+                                                                placeholder="LILS_2020-1-1_1-1-1"
                                                               >
                                                                 <WithStyles(ForwardRef(InputBase))
                                                                   aria-describedby="confirm-download-name-helper-text"
@@ -5840,7 +5846,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   }
                                                                   multiline={false}
                                                                   onChange={[Function]}
-                                                                  placeholder="LILS_2020-1-10_15-22-49"
+                                                                  placeholder="LILS_2020-1-1_1-1-1"
                                                                   type="text"
                                                                 >
                                                                   <ForwardRef(InputBase)
@@ -5879,7 +5885,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     }
                                                                     multiline={false}
                                                                     onChange={[Function]}
-                                                                    placeholder="LILS_2020-1-10_15-22-49"
+                                                                    placeholder="LILS_2020-1-1_1-1-1"
                                                                     type="text"
                                                                   >
                                                                     <div
@@ -5898,7 +5904,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         onBlur={[Function]}
                                                                         onChange={[Function]}
                                                                         onFocus={[Function]}
-                                                                        placeholder="LILS_2020-1-10_15-22-49"
+                                                                        placeholder="LILS_2020-1-1_1-1-1"
                                                                         required={false}
                                                                         type="text"
                                                                       />
@@ -7000,7 +7006,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           class="MuiInputBase-input MuiInput-input"
                                                                                                           id="confirm-download-name"
                                                                                                           maxlength="255"
-                                                                                                          placeholder="LILS_2020-1-10_15-22-49"
+                                                                                                          placeholder="LILS_2020-1-1_1-1-1"
                                                                                                           type="text"
                                                                                                           value=""
                                                                                                         />
@@ -7102,43 +7108,45 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                         aria-label="download-table"
                                                                                                         style="border-collapse: collapse; width: 100%;"
                                                                                                       >
-                                                                                                        <tr>
-                                                                                                          <th
-                                                                                                            style="border: 1px solid #dddddd;"
-                                                                                                          >
-                                                                                                            1 Mbps
-                                                                                                          </th>
-                                                                                                          <th
-                                                                                                            style="border: 1px solid #dddddd;"
-                                                                                                          >
-                                                                                                            30 Mbps
-                                                                                                          </th>
-                                                                                                          <th
-                                                                                                            style="border: 1px solid #dddddd;"
-                                                                                                          >
-                                                                                                            100 Mbps
-                                                                                                          </th>
-                                                                                                        </tr>
-                                                                                                        <tr>
-                                                                                                          <td
-                                                                                                            aria-label="download-table-one"
-                                                                                                            style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                          >
-                                                                                                            &lt; 1 second
-                                                                                                          </td>
-                                                                                                          <td
-                                                                                                            aria-label="download-table-thirty"
-                                                                                                            style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                          >
-                                                                                                            &lt; 1 second
-                                                                                                          </td>
-                                                                                                          <td
-                                                                                                            aria-label="download-table-hundred"
-                                                                                                            style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                          >
-                                                                                                            &lt; 1 second
-                                                                                                          </td>
-                                                                                                        </tr>
+                                                                                                        <tbody>
+                                                                                                          <tr>
+                                                                                                            <th
+                                                                                                              style="border: 1px solid #dddddd;"
+                                                                                                            >
+                                                                                                              1 Mbps
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                              style="border: 1px solid #dddddd;"
+                                                                                                            >
+                                                                                                              30 Mbps
+                                                                                                            </th>
+                                                                                                            <th
+                                                                                                              style="border: 1px solid #dddddd;"
+                                                                                                            >
+                                                                                                              100 Mbps
+                                                                                                            </th>
+                                                                                                          </tr>
+                                                                                                          <tr>
+                                                                                                            <td
+                                                                                                              aria-label="download-table-one"
+                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
+                                                                                                            >
+                                                                                                              &lt; 1 second
+                                                                                                            </td>
+                                                                                                            <td
+                                                                                                              aria-label="download-table-thirty"
+                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
+                                                                                                            >
+                                                                                                              &lt; 1 second
+                                                                                                            </td>
+                                                                                                            <td
+                                                                                                              aria-label="download-table-hundred"
+                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
+                                                                                                            >
+                                                                                                              &lt; 1 second
+                                                                                                            </td>
+                                                                                                          </tr>
+                                                                                                        </tbody>
                                                                                                       </table>
                                                                                                     </div>
                                                                                                   </div>
@@ -7691,70 +7699,72 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                         }
                                                       }
                                                     >
-                                                      <tr>
-                                                        <th
-                                                          style={
-                                                            Object {
-                                                              "border": "1px solid #dddddd",
+                                                      <tbody>
+                                                        <tr>
+                                                          <th
+                                                            style={
+                                                              Object {
+                                                                "border": "1px solid #dddddd",
+                                                              }
                                                             }
-                                                          }
-                                                        >
-                                                          1 Mbps
-                                                        </th>
-                                                        <th
-                                                          style={
-                                                            Object {
-                                                              "border": "1px solid #dddddd",
+                                                          >
+                                                            1 Mbps
+                                                          </th>
+                                                          <th
+                                                            style={
+                                                              Object {
+                                                                "border": "1px solid #dddddd",
+                                                              }
                                                             }
-                                                          }
-                                                        >
-                                                          30 Mbps
-                                                        </th>
-                                                        <th
-                                                          style={
-                                                            Object {
-                                                              "border": "1px solid #dddddd",
+                                                          >
+                                                            30 Mbps
+                                                          </th>
+                                                          <th
+                                                            style={
+                                                              Object {
+                                                                "border": "1px solid #dddddd",
+                                                              }
                                                             }
-                                                          }
-                                                        >
-                                                          100 Mbps
-                                                        </th>
-                                                      </tr>
-                                                      <tr>
-                                                        <td
-                                                          aria-label="download-table-one"
-                                                          style={
-                                                            Object {
-                                                              "border": "1px solid #dddddd",
-                                                              "textAlign": "center",
+                                                          >
+                                                            100 Mbps
+                                                          </th>
+                                                        </tr>
+                                                        <tr>
+                                                          <td
+                                                            aria-label="download-table-one"
+                                                            style={
+                                                              Object {
+                                                                "border": "1px solid #dddddd",
+                                                                "textAlign": "center",
+                                                              }
                                                             }
-                                                          }
-                                                        >
-                                                          &lt; 1 second
-                                                        </td>
-                                                        <td
-                                                          aria-label="download-table-thirty"
-                                                          style={
-                                                            Object {
-                                                              "border": "1px solid #dddddd",
-                                                              "textAlign": "center",
+                                                          >
+                                                            &lt; 1 second
+                                                          </td>
+                                                          <td
+                                                            aria-label="download-table-thirty"
+                                                            style={
+                                                              Object {
+                                                                "border": "1px solid #dddddd",
+                                                                "textAlign": "center",
+                                                              }
                                                             }
-                                                          }
-                                                        >
-                                                          &lt; 1 second
-                                                        </td>
-                                                        <td
-                                                          aria-label="download-table-hundred"
-                                                          style={
-                                                            Object {
-                                                              "border": "1px solid #dddddd",
-                                                              "textAlign": "center",
+                                                          >
+                                                            &lt; 1 second
+                                                          </td>
+                                                          <td
+                                                            aria-label="download-table-hundred"
+                                                            style={
+                                                              Object {
+                                                                "border": "1px solid #dddddd",
+                                                                "textAlign": "center",
+                                                              }
                                                             }
-                                                          }
-                                                        >
-                                                          &lt; 1 second
-                                                        </td>
-                                                      </tr>
+                                                          >
+                                                            &lt; 1 second
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
                                                     </table>
                                                   </div>
                                                 </div>

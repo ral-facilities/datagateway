@@ -94,7 +94,7 @@ export const submitCart: (
       
       // Get the downloadId that was returned from the IDS server.
       console.log('downloadId in submitCart: ', response.data['downloadId'] as number || -1);
-      const downloadId = response.data['downloadId'] as number;
+      const downloadId = response.data['downloadId'];
       return downloadId;
     })
     .catch(error => {

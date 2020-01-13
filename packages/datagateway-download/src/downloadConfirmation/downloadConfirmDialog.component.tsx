@@ -347,42 +347,48 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       aria-label="download-table"
                       style={{ borderCollapse: 'collapse', width: '100%' }}
                     >
-                      <tr>
-                        <th style={{ border: '1px solid #dddddd' }}>1 Mbps</th>
-                        <th style={{ border: '1px solid #dddddd' }}>30 Mbps</th>
-                        <th style={{ border: '1px solid #dddddd' }}>
-                          100 Mbps
-                        </th>
-                      </tr>
-                      <tr>
-                        <td
-                          aria-label="download-table-one"
-                          style={{
-                            border: '1px solid #dddddd',
-                            textAlign: 'center',
-                          }}
-                        >
-                          {secondsToDHMS(timeAtOne)}
-                        </td>
-                        <td
-                          aria-label="download-table-thirty"
-                          style={{
-                            border: '1px solid #dddddd',
-                            textAlign: 'center',
-                          }}
-                        >
-                          {secondsToDHMS(timeAtThirty)}
-                        </td>
-                        <td
-                          aria-label="download-table-hundred"
-                          style={{
-                            border: '1px solid #dddddd',
-                            textAlign: 'center',
-                          }}
-                        >
-                          {secondsToDHMS(timeAtHundred)}
-                        </td>
-                      </tr>
+                      <tbody>
+                        <tr>
+                          <th style={{ border: '1px solid #dddddd' }}>
+                            1 Mbps
+                          </th>
+                          <th style={{ border: '1px solid #dddddd' }}>
+                            30 Mbps
+                          </th>
+                          <th style={{ border: '1px solid #dddddd' }}>
+                            100 Mbps
+                          </th>
+                        </tr>
+                        <tr>
+                          <td
+                            aria-label="download-table-one"
+                            style={{
+                              border: '1px solid #dddddd',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {secondsToDHMS(timeAtOne)}
+                          </td>
+                          <td
+                            aria-label="download-table-thirty"
+                            style={{
+                              border: '1px solid #dddddd',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {secondsToDHMS(timeAtThirty)}
+                          </td>
+                          <td
+                            aria-label="download-table-hundred"
+                            style={{
+                              border: '1px solid #dddddd',
+                              textAlign: 'center',
+                            }}
+                          >
+                            {secondsToDHMS(timeAtHundred)}
+                          </td>
+                        </tr>
+                      </tbody>
                     </table>
                   </div>
                 </Grid>

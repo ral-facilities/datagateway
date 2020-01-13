@@ -11,8 +11,25 @@ describe('DownloadConfirmDialog', () => {
   let mount;
   let dialogCloseFunction = jest.fn();
 
+  beforeAll(() => {
+    // Fix the time to 2020-1-1 1hr:1min:1sec in order to match
+    // snapshots for the DownloadConfirmDialog component.
+    const fixedDate = new Date(2020, 0, 1, 1, 1, 1);
+    const d = Date;
+
+    const _global: NodeJS.Global = global;
+    _global.Date = jest.fn(() => fixedDate);
+    _global.Date.UTC = d.UTC;
+    _global.Date.parse = d.parse;
+    _global.Date.now = d.now;
+  });
+
   beforeEach(() => {
     mount = createMount();
+  });
+
+  afterAll(() => {
+    global.Date = Date;
   });
 
   const createWrapper = (
