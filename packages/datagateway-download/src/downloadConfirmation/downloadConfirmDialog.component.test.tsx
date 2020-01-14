@@ -19,8 +19,8 @@ describe('DownloadConfirmDialog', () => {
 
     const _global: NodeJS.Global = global;
     _global.Date = jest.fn(() => fixedDate);
-    _global.Date.UTC = d.UTC;
     _global.Date.parse = d.parse;
+    _global.Date.UTC = d.UTC;
     _global.Date.now = d.now;
   });
 
