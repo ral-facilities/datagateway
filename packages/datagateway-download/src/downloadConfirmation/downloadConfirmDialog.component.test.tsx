@@ -88,52 +88,48 @@ describe('DownloadConfirmDialog', () => {
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
   });
 
-  // it('successfully loads submit successful view after submitting download request with custom values', async () => {
-  //   const wrapper = createWrapper(100, false, true);
+  it('successfully loads submit successful view after submitting download request with custom values', async () => {
+    const wrapper = createWrapper(100, false, true);
 
-  //   (axios.post as jest.Mock).mockImplementationOnce(() =>
-  //     Promise.resolve({
-  //       data: {
-  //         facilityName: 'LILS',
-  //         userName: 'test user',
-  //         cartItems: [],
-  //         downloadId: '1',
-  //       },
-  //     })
-  //   );
+    (axios.post as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'LILS',
+          userName: 'test user',
+          cartItems: [],
+          downloadId: '1',
+        },
+      })
+    );
 
-  //   // Fill in the custom download name, access method and email address.
-  //   expect(wrapper.exists('input#confirm-download-name')).toBe(true);
-  //   const downloadName = wrapper.find('input#confirm-download-name');
-  //   downloadName.instance().value = 'test-name';
-  //   downloadName.simulate('change');
+    // Fill in the custom download name, access method and email address.
+    expect(wrapper.exists('input#confirm-download-name')).toBe(true);
+    const downloadName = wrapper.find('input#confirm-download-name');
+    downloadName.instance().value = 'test-name';
+    downloadName.simulate('change');
 
-  //   expect(wrapper.exists('input#confirm-download-name')).toBe(true);
-  //   wrapper.find('select option[value="confirm-access-method-globus"]').simulate('change');
+    expect(wrapper.exists('[role="button"]#confirm-access-method')).toBe(true);
+    wrapper.find('[role="button"]#confirm-access-method').simulate('click');
+    wrapper
+      .find('[role="button"]#confirm-access-method')
+      .simulate('change', { value: 'globus' });
 
-  //   expect(wrapper.exists('input#confirm-download-email')).toBe(true);
-  //   const emailAddress = wrapper.find('input#confirm-download-email');
-  //   emailAddress.instance().value = 'test@email.com';
-  //   emailAddress.simulate('change');
+    expect(wrapper.exists('input#confirm-download-email')).toBe(true);
+    const emailAddress = wrapper.find('input#confirm-download-email');
+    emailAddress.instance().value = 'test@email.com';
+    emailAddress.simulate('change');
 
-  //   // Ensure the close button is present.
-  //   expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
+    // Ensure the close button is present.
+    expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
 
-  //   await act(async () => {
-  //     wrapper.find('button#download-confirmation-download').simulate('click');
-  //     await flushPromises();
-  //     wrapper.update();
-  //   });
+    await act(async () => {
+      wrapper.find('button#download-confirmation-download').simulate('click');
+      await flushPromises();
+      wrapper.update();
+    });
 
-  //   expect(axios.post).toHaveBeenCalledWith(
-  //     'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-  //     {
-  //       params: {
-  //         sessionId: null,
-  //       }
-  //     }
-  //   )
-  // });
+    expect(wrapper.exists('#download-confirmation-success')).toBe(true);
+  });
 
   it('prevents the submission of a download request with an invalid email', async () => {
     const wrapper = createWrapper(100, false, true);
@@ -141,21 +137,65 @@ describe('DownloadConfirmDialog', () => {
     // Ensure the download button is present.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
 
+    // Simulate incorrect email address entry.
     await act(async () => {
       expect(
         wrapper.find('input#confirm-download-email').prop('disabled')
       ).toBeFalsy();
+
+      console.log(
+        'Disabled: ',
+        wrapper.find('button#download-confirmation-download').prop('disabled')
+      );
+
       wrapper
         .find('input#confirm-download-email')
-        .simulate('change', { value: 'test' });
+        .simulate('change', { target: { value: 'test@' } });
+
+      await flushPromises();
+      wrapper.update();
+
+      console.log(
+        'Disabled: ',
+        wrapper.find('button#download-confirmation-download').prop('disabled')
+      );
+    });
+
+    expect(
+      wrapper.find('button#download-confirmation-download').props().disabled
+    ).toBe(true);
+
+    // Simulate correct email address entry.
+    await act(async () => {
+      wrapper
+        .find('input#confirm-download-email')
+        .simulate('change', { target: { value: 'test@test.com' } });
 
       await flushPromises();
       wrapper.update();
     });
 
     expect(
-      wrapper.find('#download-confirmation-download').props().disabled
-    ).toBeTruthy();
+      wrapper.find('button#download-confirmation-download').props().disabled
+    ).toBe(false);
+
+    // Simulate removing an email address completely,
+    // thus, emptying the text field.
+    await act(async () => {
+      wrapper
+        .find('input#confirm-download-email')
+        .simulate('change', { target: { value: '' } });
+
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('button#download-confirmation-download').props().disabled
+    ).toBe(false);
+    expect(
+      wrapper.find('input#confirm-download-email').instance().value
+    ).toEqual('');
   });
 
   it('loads the submit unsuccessful view when download button is clicked', async () => {

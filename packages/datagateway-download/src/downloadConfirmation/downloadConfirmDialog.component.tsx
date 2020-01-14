@@ -60,7 +60,7 @@ const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
-      {onClose ? (
+      {onClose && (
         <IconButton
           aria-label="download-confirmation-close"
           className={classes.closeButton}
@@ -68,7 +68,7 @@ const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
         >
           <CloseIcon />
         </IconButton>
-      ) : null}
+      )}
     </MuiDialogTitle>
   );
 });
@@ -432,12 +432,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
                         console.log('Set invalid email');
                       }
-                    } else if (!emailValid) {
-                      // Allow for the error to toggle off, if there is
-                      // no longer an email entered in the text field.
+                    } else {
+                      // Allow for the red highlighted error to toggle off,
+                      // if there is no longer an email entered in the text field.
                       setEmailAddress('');
                       setEmailHelperText(emailHelpText);
                       setEmailValid(true);
+
+                      console.log('Cleared email address');
                     }
                   }}
                 />

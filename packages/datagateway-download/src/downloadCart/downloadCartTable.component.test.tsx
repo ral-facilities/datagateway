@@ -135,7 +135,6 @@ describe('Download cart table component', () => {
     );
   });
 
-  // TODO: this should assert it loads the cart confirmation component
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
     const wrapper = mount(<DownloadCartTable />);
 
@@ -159,6 +158,16 @@ describe('Download cart table component', () => {
     expect(wrapper.exists('[aria-labelledby="downloadCartConfirmation"]')).toBe(
       true
     );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Close the confirmation dialog.
+    wrapper
+      .find('button[aria-label="download-confirmation-close"]')
+      .simulate('click');
   });
 
   it('removes all items from cart when Remove All button is clicked', async () => {
