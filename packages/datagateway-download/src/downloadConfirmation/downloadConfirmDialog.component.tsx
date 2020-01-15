@@ -101,11 +101,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
   // TODO: Temporary facilityName until we load it from settings.
+  // TODO: Access methods should be configurable and not defined in the component.
   const facilityName = 'LILS';
-
-  // Access methods should be configurable and not defined in the component.
   const defaultAccessMethod = 'https';
+
   const { totalSize } = props;
+  // const totalSize = 471859200;
   const { isTwoLevel } = props;
 
   // Download speed/time table.
@@ -148,7 +149,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setEmailAddress('');
 
       if (!isTwoLevel) {
-        // Calculate the download times as storage is not two-level.
+        // Calculate the download times as storage is not two-level;
+        // varied for 1 Mbps, 30 Mbps and 100 Mbps.
         setTimeAtOne(totalSize / (1024 * 1024) / (1 / 8));
         setTimeAtThirty(totalSize / (1024 * 1024) / (30 / 8));
         setTimeAtHundred(totalSize / (1024 * 1024) / (100 / 8));
@@ -291,6 +293,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       setAccessMethod(event.target.value as string);
                     }}
                   >
+                    {/* TODO: Values need to be retrieved from an object from settings. */}
                     <MenuItem id="confirm-access-method-https" value="https">
                       HTTPS
                     </MenuItem>
@@ -308,19 +311,25 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   show specific access information. */}
                   {(() => {
                     let accessMethodInfo;
-                    switch (accessMethod) {
-                      case defaultAccessMethod:
-                        accessMethodInfo =
-                          'HTTPS is the default access method.';
-                        break;
+                    // switch (accessMethod) {
+                    //   case defaultAccessMethod:
+                    //     accessMethodInfo =
+                    //       'HTTPS is the default access method.';
+                    //     break;
 
-                      case 'globus':
-                        accessMethodInfo = 'Globus is a special access method.';
-                        break;
+                    //   case 'globus':
+                    //     accessMethodInfo = 'Globus is a special access method.';
+                    //     break;
 
-                      default:
-                        return 'N/A';
-                    }
+                    //   default:
+                    //     accessMethodInfo = 'N/A';
+                    //     break;
+                    // }
+
+                    if (accessMethod === defaultAccessMethod)
+                      accessMethodInfo = 'HTTPS is the default access method.';
+                    else if (accessMethod === 'globus')
+                      accessMethodInfo = 'Globus is a special access method.';
 
                     return (
                       <Typography id="confirm-access-method-information">

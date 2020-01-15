@@ -6,6 +6,7 @@ import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
 
 import axios from 'axios';
+import { MenuItem } from '@material-ui/core';
 
 describe('DownloadConfirmDialog', () => {
   let mount;
@@ -26,6 +27,10 @@ describe('DownloadConfirmDialog', () => {
 
   beforeEach(() => {
     mount = createMount();
+  });
+
+  afterEach(() => {
+    mount.cleanUp();
   });
 
   afterAll(() => {
@@ -75,6 +80,36 @@ describe('DownloadConfirmDialog', () => {
       })
     );
 
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [
+          {
+            createdAt: '2020-01-01T01:01:01Z',
+            downloadItems: [
+              {
+                entityId: 1,
+                entityType: 'investigation',
+                id: 1,
+              },
+            ],
+            facilityName: 'LILS',
+            fileName: 'LILS_2020-1-1_1-1-1',
+            fullName: 'simple/root',
+            id: 1,
+            isDeleted: false,
+            isEmailSent: false,
+            isTwoLevel: false,
+            preparedId: 'test-id',
+            sessionId: '',
+            size: 0,
+            status: 'COMPLETE',
+            transport: 'https',
+            userName: 'simple/root',
+          },
+        ],
+      })
+    );
+
     // Ensure the close button is present.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
 
@@ -108,11 +143,20 @@ describe('DownloadConfirmDialog', () => {
     downloadName.instance().value = 'test-name';
     downloadName.simulate('change');
 
+    // Change the value of the dropdown access method list.
     expect(wrapper.exists('[role="button"]#confirm-access-method')).toBe(true);
     wrapper.find('[role="button"]#confirm-access-method').simulate('click');
     wrapper
-      .find('[role="button"]#confirm-access-method')
-      .simulate('change', { value: 'globus' });
+      .find(MenuItem)
+      .at(1)
+      .simulate('click');
+
+    // wrapper
+    //   .find('[role="select"]#confirm-access-method')
+    //   .simulate('change', { target: { value: 'globus' }});
+    // const accessMethod = wrapper.find('[role="listbox"]#confirm-access-method');
+    // accessMethod.instance().value = 'globus';
+    // accessMethod.simulate('change');
 
     expect(wrapper.exists('input#confirm-download-email')).toBe(true);
     const emailAddress = wrapper.find('input#confirm-download-email');
@@ -130,6 +174,65 @@ describe('DownloadConfirmDialog', () => {
 
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
   });
+
+  // describe('test a variety of estimated download times in table depending on given file sizes', () => {
+  //   let timeMount;
+
+  //   const createTimeWrapper = (
+  //     size: number
+  //   ): ReactWrapper => {
+  //     return timeMount(
+  //       <DownloadConfirmDialog
+  //         totalSize={size}
+  //         isTwoLevel={false}
+  //         setOpen={true}
+  //         setClose={dialogCloseFunction}
+  //       />
+  //     );
+  //   };
+
+  //   beforeEach(() => {
+  //     timeMount = createMount();
+  //   });
+
+  //   afterEach(() => {
+  //     timeMount.cleanUp();
+  //   });
+
+  //   it('displays estimated download time with only a day as the time measurement', () => {
+  //     const wrapper = createTimeWrapper(11324620800);
+
+  //     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+  //     console.log('done day time');
+  //   });
+
+  //   it('displays estimated download time with only an hour as the time measurement', () => {
+  //     const wrapper = createTimeWrapper(471859200);
+
+  //     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+  //     console.log('done hour time');
+  //   });
+
+  //   // it('displays time with days, hours, minutes and seconds', () => {
+  //   //   // Create a wrapper with a size that tests mutiple days, hours, minutes and seconds.
+  //   //   const wrapper = createWrapper(32345678912, false, true);
+
+  //   //   expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+
+  //   //   // todo; expect the correct times to be displayed.
+  //   // });
+
+  //   // it('displays time with 1 day, 1 hour, 1 minute and 1 second', () => {
+  //   //   // Create wrapper with a size that tests a single day, a single hour, a single minute and a single second.
+  //   //   const wrapper = createWrapper(11804475392, false, true);
+
+  //   //   expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+
+  //   //   // todo; expect the correct times to be displayed.
+  //   // });
+
+  //   // it('displays a time with ')
+  // });
 
   it('prevents the submission of a download request with an invalid email', async () => {
     const wrapper = createWrapper(100, false, true);
@@ -218,7 +321,6 @@ describe('DownloadConfirmDialog', () => {
     await act(async () => {
       wrapper.find('button#download-confirmation-download').simulate('click');
       await flushPromises();
-
       wrapper.update();
     });
 

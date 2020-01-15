@@ -364,12 +364,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                   id="app"
                 />
                 <div
-                  aria-hidden="true"
-                  class="app"
-                  id="app"
-                />
-                <div
-                  aria-hidden="true"
                   aria-label="download-confirm-dialog"
                   class="MuiDialog-root"
                   role="presentation"
@@ -396,7 +390,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                     >
                       <div>
                         <div
-                          class="MuiDialogTitle-root Component-root-45"
+                          class="MuiDialogTitle-root Component-root-371"
                           id="download-confirm-dialog-title"
                         >
                           <h6
@@ -406,7 +400,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                           </h6>
                           <button
                             aria-label="download-confirmation-close"
-                            class="MuiButtonBase-root MuiIconButton-root Component-closeButton-46"
+                            class="MuiButtonBase-root MuiIconButton-root Component-closeButton-372"
                             tabindex="0"
                             type="button"
                           >
@@ -431,305 +425,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                           </button>
                         </div>
                         <div
-                          class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-99"
-                        >
-                          <div
-                            class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
-                          >
-                            <div
-                              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                            >
-                              <div
-                                class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
-                              >
-                                <label
-                                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
-                                  data-shrink="false"
-                                  for="confirm-download-name"
-                                  id="confirm-download-name-label"
-                                >
-                                  Download Name (optional)
-                                </label>
-                                <div
-                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
-                                >
-                                  <input
-                                    aria-describedby="confirm-download-name-helper-text"
-                                    aria-invalid="false"
-                                    class="MuiInputBase-input MuiInput-input"
-                                    id="confirm-download-name"
-                                    maxlength="255"
-                                    placeholder="LILS_2020-1-1_1-1-1"
-                                    type="text"
-                                    value=""
-                                  />
-                                </div>
-                                <p
-                                  class="MuiFormHelperText-root"
-                                  id="confirm-download-name-helper-text"
-                                >
-                                  Enter a custom file name or leave as the default format (facility_date_time).
-                                </p>
-                              </div>
-                            </div>
-                            <div
-                              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                            >
-                              <div
-                                class="MuiFormControl-root"
-                                style="min-width: 120px;"
-                              >
-                                <label
-                                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
-                                  data-shrink="true"
-                                  id="confirm-access-method-label"
-                                >
-                                  Access Method
-                                </label>
-                                <div
-                                  aria-label="confirm-access-method"
-                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
-                                >
-                                  <div
-                                    aria-haspopup="listbox"
-                                    aria-labelledby="confirm-access-method confirm-access-method"
-                                    class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input MuiInputBase-inputSelect"
-                                    id="confirm-access-method"
-                                    role="button"
-                                    tabindex="0"
-                                  >
-                                    HTTPS
-                                  </div>
-                                  <input
-                                    type="hidden"
-                                    value="https"
-                                  />
-                                  <svg
-                                    aria-hidden="true"
-                                    class="MuiSvgIcon-root MuiSelect-icon"
-                                    focusable="false"
-                                    role="presentation"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      d="M7 10l5 5 5-5z"
-                                    />
-                                  </svg>
-                                </div>
-                                <p
-                                  class="MuiTypography-root MuiTypography-body1"
-                                  style="padding-top: 20px;"
-                                >
-                                  <b>
-                                    Access Method Information:
-                                  </b>
-                                </p>
-                                <p
-                                  class="MuiTypography-root MuiTypography-body1"
-                                  id="confirm-access-method-information"
-                                >
-                                  HTTPS is the default access method.
-                                </p>
-                              </div>
-                            </div>
-                            <div
-                              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                            >
-                              <p
-                                aria-label="confirm-download-size"
-                                class="MuiTypography-root MuiTypography-body1"
-                              >
-                                <b>
-                                  Download size:
-                                </b>
-                                 
-                                100 B
-                              </p>
-                            </div>
-                            <div
-                              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                            >
-                              <p
-                                class="MuiTypography-root MuiTypography-body1"
-                              >
-                                Estimated download times:
-                              </p>
-                              <div
-                                style="padding-top: 10px;"
-                              >
-                                <table
-                                  aria-label="download-table"
-                                  style="border-collapse: collapse; width: 100%;"
-                                >
-                                  <tbody>
-                                    <tr>
-                                      <th
-                                        style="border: 1px solid #dddddd;"
-                                      >
-                                        1 Mbps
-                                      </th>
-                                      <th
-                                        style="border: 1px solid #dddddd;"
-                                      >
-                                        30 Mbps
-                                      </th>
-                                      <th
-                                        style="border: 1px solid #dddddd;"
-                                      >
-                                        100 Mbps
-                                      </th>
-                                    </tr>
-                                    <tr>
-                                      <td
-                                        aria-label="download-table-one"
-                                        style="border: 1px solid #dddddd; text-align: center;"
-                                      >
-                                        &lt; 1 second
-                                      </td>
-                                      <td
-                                        aria-label="download-table-thirty"
-                                        style="border: 1px solid #dddddd; text-align: center;"
-                                      >
-                                        &lt; 1 second
-                                      </td>
-                                      <td
-                                        aria-label="download-table-hundred"
-                                        style="border: 1px solid #dddddd; text-align: center;"
-                                      >
-                                        &lt; 1 second
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                            <div
-                              class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                            >
-                              <div
-                                class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
-                              >
-                                <label
-                                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
-                                  data-shrink="false"
-                                  for="confirm-download-email"
-                                  id="confirm-download-email-label"
-                                >
-                                  Email Address (optional)
-                                </label>
-                                <div
-                                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
-                                >
-                                  <input
-                                    aria-describedby="confirm-download-email-helper-text"
-                                    aria-invalid="false"
-                                    class="MuiInputBase-input MuiInput-input"
-                                    id="confirm-download-email"
-                                    maxlength="254"
-                                    type="text"
-                                    value=""
-                                  />
-                                </div>
-                                <p
-                                  class="MuiFormHelperText-root"
-                                  id="confirm-download-email-helper-text"
-                                >
-                                  Send me download status messages via email.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-286 MuiDialogActions-spacing"
-                        >
-                          <button
-                            class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
-                            id="download-confirmation-download"
-                            tabindex="0"
-                            type="button"
-                          >
-                            <span
-                              class="MuiButton-label"
-                            >
-                              Download
-                            </span>
-                            <span
-                              class="MuiTouchRipple-root"
-                            />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    data-test="sentinelEnd"
-                    tabindex="0"
-                  />
-                </div>
-                <div
-                  aria-label="download-confirm-dialog"
-                  class="MuiDialog-root"
-                  role="presentation"
-                  style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px;"
-                >
-                  <div
-                    aria-hidden="true"
-                    class="MuiBackdrop-root"
-                    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
-                  />
-                  <div
-                    data-test="sentinelStart"
-                    tabindex="0"
-                  />
-                  <div
-                    class="MuiDialog-container MuiDialog-scrollPaper"
-                    role="none presentation"
-                    style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
-                    tabindex="-1"
-                  >
-                    <div
-                      class="MuiPaper-root MuiPaper-elevation24 MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiDialog-paperFullWidth MuiPaper-rounded"
-                      role="dialog"
-                    >
-                      <div>
-                        <div
-                          class="MuiDialogTitle-root Component-root-45"
-                          id="download-confirm-dialog-title"
-                        >
-                          <h6
-                            class="MuiTypography-root MuiTypography-h6"
-                          >
-                            Confirm Your Download
-                          </h6>
-                          <button
-                            aria-label="download-confirmation-close"
-                            class="MuiButtonBase-root MuiIconButton-root Component-closeButton-46"
-                            tabindex="0"
-                            type="button"
-                          >
-                            <span
-                              class="MuiIconButton-label"
-                            >
-                              <svg
-                                aria-hidden="true"
-                                class="MuiSvgIcon-root"
-                                focusable="false"
-                                role="presentation"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                                />
-                              </svg>
-                            </span>
-                            <span
-                              class="MuiTouchRipple-root"
-                            />
-                          </button>
-                        </div>
-                        <div
-                          class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-99"
+                          class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-425"
                         >
                           <div
                             class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
@@ -882,7 +578,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                           </div>
                         </div>
                         <div
-                          class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-286 MuiDialogActions-spacing"
+                          class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-612 MuiDialogActions-spacing"
                         >
                           <button
                             class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
@@ -1113,20 +809,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                 <Component
                                   classes={
                                     Object {
-                                      "closeButton": "Component-closeButton-46",
-                                      "root": "Component-root-45",
+                                      "closeButton": "Component-closeButton-372",
+                                      "root": "Component-root-371",
                                     }
                                   }
                                   id="download-confirm-dialog-title"
                                   onClose={[MockFunction]}
                                 >
                                   <WithStyles(ForwardRef(DialogTitle))
-                                    className="Component-root-45"
+                                    className="Component-root-371"
                                     disableTypography={true}
                                     id="download-confirm-dialog-title"
                                   >
                                     <ForwardRef(DialogTitle)
-                                      className="Component-root-45"
+                                      className="Component-root-371"
                                       classes={
                                         Object {
                                           "root": "MuiDialogTitle-root",
@@ -1136,7 +832,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                       id="download-confirm-dialog-title"
                                     >
                                       <div
-                                        className="MuiDialogTitle-root Component-root-45"
+                                        className="MuiDialogTitle-root Component-root-371"
                                         id="download-confirm-dialog-title"
                                       >
                                         <WithStyles(ForwardRef(Typography))
@@ -1188,12 +884,12 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                         </WithStyles(ForwardRef(Typography))>
                                         <WithStyles(ForwardRef(IconButton))
                                           aria-label="download-confirmation-close"
-                                          className="Component-closeButton-46"
+                                          className="Component-closeButton-372"
                                           onClick={[MockFunction]}
                                         >
                                           <ForwardRef(IconButton)
                                             aria-label="download-confirmation-close"
-                                            className="Component-closeButton-46"
+                                            className="Component-closeButton-372"
                                             classes={
                                               Object {
                                                 "colorInherit": "MuiIconButton-colorInherit",
@@ -1212,7 +908,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                             <WithStyles(ForwardRef(ButtonBase))
                                               aria-label="download-confirmation-close"
                                               centerRipple={true}
-                                              className="MuiIconButton-root Component-closeButton-46"
+                                              className="MuiIconButton-root Component-closeButton-372"
                                               disabled={false}
                                               focusRipple={true}
                                               onClick={[MockFunction]}
@@ -1220,7 +916,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                               <ForwardRef(ButtonBase)
                                                 aria-label="download-confirmation-close"
                                                 centerRipple={true}
-                                                className="MuiIconButton-root Component-closeButton-46"
+                                                className="MuiIconButton-root Component-closeButton-372"
                                                 classes={
                                                   Object {
                                                     "disabled": "Mui-disabled",
@@ -1234,7 +930,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                               >
                                                 <button
                                                   aria-label="download-confirmation-close"
-                                                  className="MuiButtonBase-root MuiIconButton-root Component-closeButton-46"
+                                                  className="MuiButtonBase-root MuiIconButton-root Component-closeButton-372"
                                                   disabled={false}
                                                   onBlur={[Function]}
                                                   onClick={[MockFunction]}
@@ -1330,7 +1026,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                 <WithStyles(ForwardRef(DialogContent))
                                   classes={
                                     Object {
-                                      "root": "WithStyles(ForwardRef(DialogContent))-root-99",
+                                      "root": "WithStyles(ForwardRef(DialogContent))-root-425",
                                     }
                                   }
                                 >
@@ -1338,12 +1034,12 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     classes={
                                       Object {
                                         "dividers": "MuiDialogContent-dividers",
-                                        "root": "MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-99",
+                                        "root": "MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-425",
                                       }
                                     }
                                   >
                                     <div
-                                      className="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-99"
+                                      className="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-425"
                                     >
                                       <WithStyles(ForwardRef(Grid))
                                         container={true}
@@ -2856,12 +2552,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                         id="app"
                                                                                       />
                                                                                       <div
-                                                                                        aria-hidden="true"
-                                                                                        class="app"
-                                                                                        id="app"
-                                                                                      />
-                                                                                      <div
-                                                                                        aria-hidden="true"
                                                                                         aria-label="download-confirm-dialog"
                                                                                         class="MuiDialog-root"
                                                                                         role="presentation"
@@ -2888,7 +2578,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                           >
                                                                                             <div>
                                                                                               <div
-                                                                                                class="MuiDialogTitle-root Component-root-45"
+                                                                                                class="MuiDialogTitle-root Component-root-371"
                                                                                                 id="download-confirm-dialog-title"
                                                                                               >
                                                                                                 <h6
@@ -2898,7 +2588,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                 </h6>
                                                                                                 <button
                                                                                                   aria-label="download-confirmation-close"
-                                                                                                  class="MuiButtonBase-root MuiIconButton-root Component-closeButton-46"
+                                                                                                  class="MuiButtonBase-root MuiIconButton-root Component-closeButton-372"
                                                                                                   tabindex="0"
                                                                                                   type="button"
                                                                                                 >
@@ -2923,305 +2613,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                 </button>
                                                                                               </div>
                                                                                               <div
-                                                                                                class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-99"
-                                                                                              >
-                                                                                                <div
-                                                                                                  class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
-                                                                                                >
-                                                                                                  <div
-                                                                                                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                                                                                                  >
-                                                                                                    <div
-                                                                                                      class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
-                                                                                                    >
-                                                                                                      <label
-                                                                                                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
-                                                                                                        data-shrink="false"
-                                                                                                        for="confirm-download-name"
-                                                                                                        id="confirm-download-name-label"
-                                                                                                      >
-                                                                                                        Download Name (optional)
-                                                                                                      </label>
-                                                                                                      <div
-                                                                                                        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
-                                                                                                      >
-                                                                                                        <input
-                                                                                                          aria-describedby="confirm-download-name-helper-text"
-                                                                                                          aria-invalid="false"
-                                                                                                          class="MuiInputBase-input MuiInput-input"
-                                                                                                          id="confirm-download-name"
-                                                                                                          maxlength="255"
-                                                                                                          placeholder="LILS_2020-1-1_1-1-1"
-                                                                                                          type="text"
-                                                                                                          value=""
-                                                                                                        />
-                                                                                                      </div>
-                                                                                                      <p
-                                                                                                        class="MuiFormHelperText-root"
-                                                                                                        id="confirm-download-name-helper-text"
-                                                                                                      >
-                                                                                                        Enter a custom file name or leave as the default format (facility_date_time).
-                                                                                                      </p>
-                                                                                                    </div>
-                                                                                                  </div>
-                                                                                                  <div
-                                                                                                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                                                                                                  >
-                                                                                                    <div
-                                                                                                      class="MuiFormControl-root"
-                                                                                                      style="min-width: 120px;"
-                                                                                                    >
-                                                                                                      <label
-                                                                                                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
-                                                                                                        data-shrink="true"
-                                                                                                        id="confirm-access-method-label"
-                                                                                                      >
-                                                                                                        Access Method
-                                                                                                      </label>
-                                                                                                      <div
-                                                                                                        aria-label="confirm-access-method"
-                                                                                                        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
-                                                                                                      >
-                                                                                                        <div
-                                                                                                          aria-haspopup="listbox"
-                                                                                                          aria-labelledby="confirm-access-method confirm-access-method"
-                                                                                                          class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input MuiInputBase-inputSelect"
-                                                                                                          id="confirm-access-method"
-                                                                                                          role="button"
-                                                                                                          tabindex="0"
-                                                                                                        >
-                                                                                                          HTTPS
-                                                                                                        </div>
-                                                                                                        <input
-                                                                                                          type="hidden"
-                                                                                                          value="https"
-                                                                                                        />
-                                                                                                        <svg
-                                                                                                          aria-hidden="true"
-                                                                                                          class="MuiSvgIcon-root MuiSelect-icon"
-                                                                                                          focusable="false"
-                                                                                                          role="presentation"
-                                                                                                          viewBox="0 0 24 24"
-                                                                                                        >
-                                                                                                          <path
-                                                                                                            d="M7 10l5 5 5-5z"
-                                                                                                          />
-                                                                                                        </svg>
-                                                                                                      </div>
-                                                                                                      <p
-                                                                                                        class="MuiTypography-root MuiTypography-body1"
-                                                                                                        style="padding-top: 20px;"
-                                                                                                      >
-                                                                                                        <b>
-                                                                                                          Access Method Information:
-                                                                                                        </b>
-                                                                                                      </p>
-                                                                                                      <p
-                                                                                                        class="MuiTypography-root MuiTypography-body1"
-                                                                                                        id="confirm-access-method-information"
-                                                                                                      >
-                                                                                                        HTTPS is the default access method.
-                                                                                                      </p>
-                                                                                                    </div>
-                                                                                                  </div>
-                                                                                                  <div
-                                                                                                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                                                                                                  >
-                                                                                                    <p
-                                                                                                      aria-label="confirm-download-size"
-                                                                                                      class="MuiTypography-root MuiTypography-body1"
-                                                                                                    >
-                                                                                                      <b>
-                                                                                                        Download size:
-                                                                                                      </b>
-                                                                                                       
-                                                                                                      100 B
-                                                                                                    </p>
-                                                                                                  </div>
-                                                                                                  <div
-                                                                                                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                                                                                                  >
-                                                                                                    <p
-                                                                                                      class="MuiTypography-root MuiTypography-body1"
-                                                                                                    >
-                                                                                                      Estimated download times:
-                                                                                                    </p>
-                                                                                                    <div
-                                                                                                      style="padding-top: 10px;"
-                                                                                                    >
-                                                                                                      <table
-                                                                                                        aria-label="download-table"
-                                                                                                        style="border-collapse: collapse; width: 100%;"
-                                                                                                      >
-                                                                                                        <tbody>
-                                                                                                          <tr>
-                                                                                                            <th
-                                                                                                              style="border: 1px solid #dddddd;"
-                                                                                                            >
-                                                                                                              1 Mbps
-                                                                                                            </th>
-                                                                                                            <th
-                                                                                                              style="border: 1px solid #dddddd;"
-                                                                                                            >
-                                                                                                              30 Mbps
-                                                                                                            </th>
-                                                                                                            <th
-                                                                                                              style="border: 1px solid #dddddd;"
-                                                                                                            >
-                                                                                                              100 Mbps
-                                                                                                            </th>
-                                                                                                          </tr>
-                                                                                                          <tr>
-                                                                                                            <td
-                                                                                                              aria-label="download-table-one"
-                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                            >
-                                                                                                              &lt; 1 second
-                                                                                                            </td>
-                                                                                                            <td
-                                                                                                              aria-label="download-table-thirty"
-                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                            >
-                                                                                                              &lt; 1 second
-                                                                                                            </td>
-                                                                                                            <td
-                                                                                                              aria-label="download-table-hundred"
-                                                                                                              style="border: 1px solid #dddddd; text-align: center;"
-                                                                                                            >
-                                                                                                              &lt; 1 second
-                                                                                                            </td>
-                                                                                                          </tr>
-                                                                                                        </tbody>
-                                                                                                      </table>
-                                                                                                    </div>
-                                                                                                  </div>
-                                                                                                  <div
-                                                                                                    class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                                                                                                  >
-                                                                                                    <div
-                                                                                                      class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
-                                                                                                    >
-                                                                                                      <label
-                                                                                                        class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
-                                                                                                        data-shrink="false"
-                                                                                                        for="confirm-download-email"
-                                                                                                        id="confirm-download-email-label"
-                                                                                                      >
-                                                                                                        Email Address (optional)
-                                                                                                      </label>
-                                                                                                      <div
-                                                                                                        class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
-                                                                                                      >
-                                                                                                        <input
-                                                                                                          aria-describedby="confirm-download-email-helper-text"
-                                                                                                          aria-invalid="false"
-                                                                                                          class="MuiInputBase-input MuiInput-input"
-                                                                                                          id="confirm-download-email"
-                                                                                                          maxlength="254"
-                                                                                                          type="text"
-                                                                                                          value=""
-                                                                                                        />
-                                                                                                      </div>
-                                                                                                      <p
-                                                                                                        class="MuiFormHelperText-root"
-                                                                                                        id="confirm-download-email-helper-text"
-                                                                                                      >
-                                                                                                        Send me download status messages via email.
-                                                                                                      </p>
-                                                                                                    </div>
-                                                                                                  </div>
-                                                                                                </div>
-                                                                                              </div>
-                                                                                              <div
-                                                                                                class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-286 MuiDialogActions-spacing"
-                                                                                              >
-                                                                                                <button
-                                                                                                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
-                                                                                                  id="download-confirmation-download"
-                                                                                                  tabindex="0"
-                                                                                                  type="button"
-                                                                                                >
-                                                                                                  <span
-                                                                                                    class="MuiButton-label"
-                                                                                                  >
-                                                                                                    Download
-                                                                                                  </span>
-                                                                                                  <span
-                                                                                                    class="MuiTouchRipple-root"
-                                                                                                  />
-                                                                                                </button>
-                                                                                              </div>
-                                                                                            </div>
-                                                                                          </div>
-                                                                                        </div>
-                                                                                        <div
-                                                                                          data-test="sentinelEnd"
-                                                                                          tabindex="0"
-                                                                                        />
-                                                                                      </div>
-                                                                                      <div
-                                                                                        aria-label="download-confirm-dialog"
-                                                                                        class="MuiDialog-root"
-                                                                                        role="presentation"
-                                                                                        style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px;"
-                                                                                      >
-                                                                                        <div
-                                                                                          aria-hidden="true"
-                                                                                          class="MuiBackdrop-root"
-                                                                                          style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
-                                                                                        />
-                                                                                        <div
-                                                                                          data-test="sentinelStart"
-                                                                                          tabindex="0"
-                                                                                        />
-                                                                                        <div
-                                                                                          class="MuiDialog-container MuiDialog-scrollPaper"
-                                                                                          role="none presentation"
-                                                                                          style="opacity: 1; webkit-transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; transition: opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;"
-                                                                                          tabindex="-1"
-                                                                                        >
-                                                                                          <div
-                                                                                            class="MuiPaper-root MuiPaper-elevation24 MuiDialog-paper MuiDialog-paperScrollPaper MuiDialog-paperWidthSm MuiDialog-paperFullWidth MuiPaper-rounded"
-                                                                                            role="dialog"
-                                                                                          >
-                                                                                            <div>
-                                                                                              <div
-                                                                                                class="MuiDialogTitle-root Component-root-45"
-                                                                                                id="download-confirm-dialog-title"
-                                                                                              >
-                                                                                                <h6
-                                                                                                  class="MuiTypography-root MuiTypography-h6"
-                                                                                                >
-                                                                                                  Confirm Your Download
-                                                                                                </h6>
-                                                                                                <button
-                                                                                                  aria-label="download-confirmation-close"
-                                                                                                  class="MuiButtonBase-root MuiIconButton-root Component-closeButton-46"
-                                                                                                  tabindex="0"
-                                                                                                  type="button"
-                                                                                                >
-                                                                                                  <span
-                                                                                                    class="MuiIconButton-label"
-                                                                                                  >
-                                                                                                    <svg
-                                                                                                      aria-hidden="true"
-                                                                                                      class="MuiSvgIcon-root"
-                                                                                                      focusable="false"
-                                                                                                      role="presentation"
-                                                                                                      viewBox="0 0 24 24"
-                                                                                                    >
-                                                                                                      <path
-                                                                                                        d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                                                                                                      />
-                                                                                                    </svg>
-                                                                                                  </span>
-                                                                                                  <span
-                                                                                                    class="MuiTouchRipple-root"
-                                                                                                  />
-                                                                                                </button>
-                                                                                              </div>
-                                                                                              <div
-                                                                                                class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-99"
+                                                                                                class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-425"
                                                                                               >
                                                                                                 <div
                                                                                                   class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
@@ -3374,7 +2766,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                 </div>
                                                                                               </div>
                                                                                               <div
-                                                                                                class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-286 MuiDialogActions-spacing"
+                                                                                                class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-612 MuiDialogActions-spacing"
                                                                                               >
                                                                                                 <button
                                                                                                   class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
@@ -4136,20 +3528,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                 <WithStyles(ForwardRef(DialogActions))
                                   classes={
                                     Object {
-                                      "root": "WithStyles(ForwardRef(DialogActions))-root-286",
+                                      "root": "WithStyles(ForwardRef(DialogActions))-root-612",
                                     }
                                   }
                                 >
                                   <ForwardRef(DialogActions)
                                     classes={
                                       Object {
-                                        "root": "MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-286",
+                                        "root": "MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-612",
                                         "spacing": "MuiDialogActions-spacing",
                                       }
                                     }
                                   >
                                     <div
-                                      className="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-286 MuiDialogActions-spacing"
+                                      className="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-612 MuiDialogActions-spacing"
                                     >
                                       <WithStyles(ForwardRef(Button))
                                         color="primary"
