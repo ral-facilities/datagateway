@@ -311,21 +311,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   show specific access information. */}
                   {(() => {
                     let accessMethodInfo;
-                    // switch (accessMethod) {
-                    //   case defaultAccessMethod:
-                    //     accessMethodInfo =
-                    //       'HTTPS is the default access method.';
-                    //     break;
-
-                    //   case 'globus':
-                    //     accessMethodInfo = 'Globus is a special access method.';
-                    //     break;
-
-                    //   default:
-                    //     accessMethodInfo = 'N/A';
-                    //     break;
-                    // }
-
                     if (accessMethod === defaultAccessMethod)
                       accessMethodInfo = 'HTTPS is the default access method.';
                     else if (accessMethod === 'globus')

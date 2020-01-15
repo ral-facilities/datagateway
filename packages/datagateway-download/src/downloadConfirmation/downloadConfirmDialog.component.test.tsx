@@ -10,7 +10,6 @@ import { MenuItem } from '@material-ui/core';
 
 describe('DownloadConfirmDialog', () => {
   let mount;
-  let dialogCloseFunction = jest.fn();
 
   beforeAll(() => {
     // Fix the time to 2020-1-1 1hr:1min:1sec in order to match
@@ -47,7 +46,7 @@ describe('DownloadConfirmDialog', () => {
         totalSize={size}
         isTwoLevel={isTwoLevel}
         setOpen={open}
-        setClose={dialogCloseFunction}
+        setClose={jest.fn()}
       />
     );
   };
@@ -69,7 +68,7 @@ describe('DownloadConfirmDialog', () => {
   it('loads the submit successful view when download button is clicked', async () => {
     const wrapper = createWrapper(100, false, true);
 
-    (axios.post as jest.Mock).mockImplementationOnce(() =>
+    (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
           facilityName: 'LILS',
@@ -80,7 +79,7 @@ describe('DownloadConfirmDialog', () => {
       })
     );
 
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
+    (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: [
           {
@@ -126,7 +125,7 @@ describe('DownloadConfirmDialog', () => {
   it('successfully loads submit successful view after submitting download request with custom values', async () => {
     const wrapper = createWrapper(100, false, true);
 
-    (axios.post as jest.Mock).mockImplementationOnce(() =>
+    (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
           facilityName: 'LILS',
@@ -151,13 +150,6 @@ describe('DownloadConfirmDialog', () => {
       .at(1)
       .simulate('click');
 
-    // wrapper
-    //   .find('[role="select"]#confirm-access-method')
-    //   .simulate('change', { target: { value: 'globus' }});
-    // const accessMethod = wrapper.find('[role="listbox"]#confirm-access-method');
-    // accessMethod.instance().value = 'globus';
-    // accessMethod.simulate('change');
-
     expect(wrapper.exists('input#confirm-download-email')).toBe(true);
     const emailAddress = wrapper.find('input#confirm-download-email');
     emailAddress.instance().value = 'test@email.com';
@@ -174,65 +166,6 @@ describe('DownloadConfirmDialog', () => {
 
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
   });
-
-  // describe('test a variety of estimated download times in table depending on given file sizes', () => {
-  //   let timeMount;
-
-  //   const createTimeWrapper = (
-  //     size: number
-  //   ): ReactWrapper => {
-  //     return timeMount(
-  //       <DownloadConfirmDialog
-  //         totalSize={size}
-  //         isTwoLevel={false}
-  //         setOpen={true}
-  //         setClose={dialogCloseFunction}
-  //       />
-  //     );
-  //   };
-
-  //   beforeEach(() => {
-  //     timeMount = createMount();
-  //   });
-
-  //   afterEach(() => {
-  //     timeMount.cleanUp();
-  //   });
-
-  //   it('displays estimated download time with only a day as the time measurement', () => {
-  //     const wrapper = createTimeWrapper(11324620800);
-
-  //     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-  //     console.log('done day time');
-  //   });
-
-  //   it('displays estimated download time with only an hour as the time measurement', () => {
-  //     const wrapper = createTimeWrapper(471859200);
-
-  //     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-  //     console.log('done hour time');
-  //   });
-
-  //   // it('displays time with days, hours, minutes and seconds', () => {
-  //   //   // Create a wrapper with a size that tests mutiple days, hours, minutes and seconds.
-  //   //   const wrapper = createWrapper(32345678912, false, true);
-
-  //   //   expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-
-  //   //   // todo; expect the correct times to be displayed.
-  //   // });
-
-  //   // it('displays time with 1 day, 1 hour, 1 minute and 1 second', () => {
-  //   //   // Create wrapper with a size that tests a single day, a single hour, a single minute and a single second.
-  //   //   const wrapper = createWrapper(11804475392, false, true);
-
-  //   //   expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-
-  //   //   // todo; expect the correct times to be displayed.
-  //   // });
-
-  //   // it('displays a time with ')
-  // });
 
   it('prevents the submission of a download request with an invalid email', async () => {
     const wrapper = createWrapper(100, false, true);
@@ -305,7 +238,7 @@ describe('DownloadConfirmDialog', () => {
     const wrapper = createWrapper(100, false, true);
 
     // We omit the downloadId which will cause the unsuccessful view to be shown.
-    (axios.post as jest.Mock).mockImplementationOnce(() =>
+    (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
           facilityName: 'LILS',
