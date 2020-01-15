@@ -179,22 +179,12 @@ describe('DownloadConfirmDialog', () => {
         wrapper.find('input#confirm-download-email').prop('disabled')
       ).toBeFalsy();
 
-      console.log(
-        'Disabled: ',
-        wrapper.find('button#download-confirmation-download').prop('disabled')
-      );
-
       wrapper
         .find('input#confirm-download-email')
         .simulate('change', { target: { value: 'test@' } });
 
       await flushPromises();
       wrapper.update();
-
-      console.log(
-        'Disabled: ',
-        wrapper.find('button#download-confirmation-download').prop('disabled')
-      );
     });
 
     expect(

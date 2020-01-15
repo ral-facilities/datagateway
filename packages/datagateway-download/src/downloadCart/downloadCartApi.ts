@@ -1,6 +1,12 @@
 import axios from 'axios';
 import * as log from 'loglevel';
-import { DownloadCart, SubmitCart, DownloadCartItem, Datafile, Download } from 'datagateway-common';
+import {
+  DownloadCart,
+  SubmitCart,
+  DownloadCartItem,
+  Datafile,
+  Download,
+} from 'datagateway-common';
 
 // TODO: get URLs from settings or something...
 const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
@@ -74,9 +80,14 @@ export const submitCart: (
   transport: string,
   emailAddress: string,
   fileName: string
-) => Promise<number> = (facilityName: string, transport: string, emailAddress:string, fileName: string) => {
+) => Promise<number> = (
+  facilityName: string,
+  transport: string,
+  emailAddress: string,
+  fileName: string
+) => {
   const params = new URLSearchParams();
-  
+
   // TODO: get session ID from somewhere else (extract from JWT)
   // Construct the form parameters.
   params.append('sessionId', window.localStorage.getItem('icat:token') || '');
@@ -86,14 +97,14 @@ export const submitCart: (
 
   // NOTE: zipType by default is 'ZIP', it can be 'ZIP_AND_COMPRESS'.
   params.append('zipType', 'ZIP');
-  
+
   return axios
     .post<SubmitCart>(`${topcatUrl}/user/cart/${facilityName}/submit`, params)
     .then(response => {
       log.debug(response);
-      
+
       // Get the downloadId that was returned from the IDS server.
-      console.log('downloadId in submitCart: ', response.data['downloadId']);
+      // console.log('downloadId in submitCart: ', response.data['downloadId']);
       const downloadId = response.data['downloadId'];
       return downloadId;
     })
@@ -101,7 +112,7 @@ export const submitCart: (
       log.error(error.message);
       return -1;
     });
-}
+};
 
 export const getDownload: (
   facilityName: string,
@@ -130,8 +141,7 @@ export const downloadPreparedCart: (
   preparedId: string,
   fileName: string
 ) => void = (preparedId: string, fileName: string) => {
-
-  // We need to set the preparedId and outname query parameters 
+  // We need to set the preparedId and outname query parameters
   // for the IDS download.
   const params = {
     sessionId: window.localStorage.getItem('icat:token'),
@@ -151,7 +161,7 @@ export const downloadPreparedCart: (
   document.body.appendChild(link);
   link.click();
   link.remove();
-}
+};
 
 export const getSize: (
   entityId: number,

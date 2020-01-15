@@ -74,7 +74,10 @@ const useStylesArrow = makeStyles((theme: Theme) =>
   })
 );
 
-const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
+const ArrowTooltip = (
+  props: TooltipProps & { breadcrumbWidth: number }
+): React.ReactElement => {
+  const { breadcrumbWidth } = props;
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
@@ -89,8 +92,11 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
         // The 0.2 here means 20% of the viewport width, which is set as
         // the max width for the breadcrumb in the CSS style.
 
-        // TODO: The value here for 0.2 could be passed via a prop instead.
-        if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
+        // Check to ensure whether the tooltip should be visible.
+        if (
+          tooltipElement.current.offsetWidth / window.innerWidth >=
+          breadcrumbWidth
+        )
           setTooltipVisible(true);
         else setTooltipVisible(false);
       }
@@ -98,7 +104,7 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
     window.addEventListener('resize', updateTooltip);
     updateTooltip();
     return () => window.removeEventListener('resize', updateTooltip);
-  }, [tooltipElement, setTooltipVisible]);
+  }, [tooltipElement, setTooltipVisible, breadcrumbWidth]);
 
   return (
     <Tooltip

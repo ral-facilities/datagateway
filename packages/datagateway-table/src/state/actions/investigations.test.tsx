@@ -247,7 +247,6 @@ describe('Investigation actions', () => {
     expect(axios.get).not.toHaveBeenCalled();
   });
 
-  // TODO: Test fetchInvestigationSizeFailure error message
   it('dispatches fetchInvestigationSizeRequest and fetchInvestigationSizeFailure action upon unsuccessful fetchInvestigationsSize action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.reject({
