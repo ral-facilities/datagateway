@@ -59,9 +59,8 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
 
   public render(): React.ReactElement {
     return (
-      // We give the tooltip component the content (title) and the max width
-      // allowed for breadcrumbs (defined in our CSS).
-      <ArrowTooltip title={this.props.displayName} breadcrumbWidth={0.2}>
+      // We give the tooltip component the content (title) as the display content.
+      <ArrowTooltip title={this.props.displayName}>
         <div>
           {this.props.url ? (
             <MaterialLink
