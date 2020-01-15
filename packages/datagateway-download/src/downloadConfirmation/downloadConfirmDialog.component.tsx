@@ -48,6 +48,23 @@ const dialogTitleStyles = (theme: Theme): StyleRules =>
     },
   });
 
+const dialogContentStyles = (): StyleRules =>
+  createStyles({
+    tableContent: {
+      '& table': {
+        borderCollapse: 'collapse',
+        width: '100%',
+      },
+      '& th': {
+        border: '1px solid #dddddd',
+      },
+      '& td': {
+        border: '1px solid #dddddd',
+        textAlign: 'center',
+      },
+    },
+  });
+
 interface DialogTitleProps extends WithStyles<typeof dialogTitleStyles> {
   id: string;
   onClose: () => void;
@@ -86,7 +103,8 @@ const DialogActions = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogActions);
 
-interface DownloadConfirmDialogProps {
+interface DownloadConfirmDialogProps
+  extends WithStyles<typeof dialogContentStyles> {
   totalSize: number;
   isTwoLevel: boolean;
   setOpen: boolean;
@@ -100,6 +118,8 @@ interface DownloadConfirmDialogProps {
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
+  const { classes } = props;
+
   // TODO: Temporary facilityName until we load it from settings.
   // TODO: Access methods should be configurable and not defined in the component.
   const facilityName = 'LILS';
@@ -335,49 +355,25 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               {showDownloadTime && (
                 <Grid item xs={12}>
                   <Typography>Estimated download times:</Typography>
-                  <div style={{ paddingTop: '10px' }}>
-                    <table
-                      aria-label="download-table"
-                      style={{ borderCollapse: 'collapse', width: '100%' }}
-                    >
+                  <div
+                    style={{ paddingTop: '10px' }}
+                    className={classes.tableContent}
+                  >
+                    <table aria-label="download-table">
                       <tbody>
                         <tr>
-                          <th style={{ border: '1px solid #dddddd' }}>
-                            1 Mbps
-                          </th>
-                          <th style={{ border: '1px solid #dddddd' }}>
-                            30 Mbps
-                          </th>
-                          <th style={{ border: '1px solid #dddddd' }}>
-                            100 Mbps
-                          </th>
+                          <th>1 Mbps</th>
+                          <th>30 Mbps</th>
+                          <th>100 Mbps</th>
                         </tr>
                         <tr>
-                          <td
-                            aria-label="download-table-one"
-                            style={{
-                              border: '1px solid #dddddd',
-                              textAlign: 'center',
-                            }}
-                          >
+                          <td aria-label="download-table-one">
                             {secondsToDHMS(timeAtOne)}
                           </td>
-                          <td
-                            aria-label="download-table-thirty"
-                            style={{
-                              border: '1px solid #dddddd',
-                              textAlign: 'center',
-                            }}
-                          >
+                          <td aria-label="download-table-thirty">
                             {secondsToDHMS(timeAtThirty)}
                           </td>
-                          <td
-                            aria-label="download-table-hundred"
-                            style={{
-                              border: '1px solid #dddddd',
-                              textAlign: 'center',
-                            }}
-                          >
+                          <td aria-label="download-table-hundred">
                             {secondsToDHMS(timeAtHundred)}
                           </td>
                         </tr>
@@ -561,4 +557,4 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 };
 
 // TODO: Pass in facilityName as prop to DownloadConfirmDialog to get customisable download name.
-export default DownloadConfirmDialog;
+export default withStyles(dialogContentStyles)(DownloadConfirmDialog);

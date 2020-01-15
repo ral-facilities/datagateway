@@ -97,7 +97,7 @@ describe('Download Confirmation', () => {
     // NOTE: When running this e2e test interactively the downloaded file
     //       must be saved in your default Downloads folder in order for it to be deleted.
     // Delete the downloaded file.
-    cy.deleteTestDownload('LILS_2020-1-1_1-1-1.zip');
+    // cy.deleteTestDownload('LILS_2020-1-1_1-1-1.zip');
   });
 
   it('should be able to submit a download request with altered access method (Globus)', () => {
