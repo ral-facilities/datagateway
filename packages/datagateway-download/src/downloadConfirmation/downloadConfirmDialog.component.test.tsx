@@ -134,7 +134,7 @@ describe('DownloadConfirmDialog', () => {
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-      expect.objectContaining(params)
+      params
     );
     expect(axios.get).toHaveBeenCalled();
     expect(axios.get).toHaveBeenCalledWith(
@@ -300,7 +300,7 @@ describe('DownloadConfirmDialog', () => {
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-      expect.objectContaining(params)
+      params
     );
     expect(axios.get).not.toHaveBeenCalled();
   });

@@ -236,7 +236,7 @@ describe('Download Cart API functions test', () => {
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-        expect.objectContaining(params)
+        params
       );
     });
 
@@ -265,7 +265,7 @@ describe('Download Cart API functions test', () => {
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-        expect.objectContaining(params)
+        params
       );
       expect(log.error).toHaveBeenCalled();
       expect(log.error).toHaveBeenCalledWith('Test error message');
