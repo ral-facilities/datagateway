@@ -86,31 +86,20 @@ export const submitCart: (
   emailAddress: string,
   fileName: string
 ) => {
-  // const params = new URLSearchParams();
+  const params = new URLSearchParams();
 
-  // // TODO: get session ID from somewhere else (extract from JWT)
-  // // Construct the form parameters.
-  // params.append('sessionId', window.localStorage.getItem('icat:token') || '');
-  // params.append('transport', transport);
-  // params.append('email', emailAddress);
-  // params.append('fileName', fileName);
+  // TODO: get session ID from somewhere else (extract from JWT)
+  // Construct the form parameters.
+  params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+  params.append('transport', transport);
+  params.append('email', emailAddress);
+  params.append('fileName', fileName);
 
-  // // NOTE: zipType by default is 'ZIP', it can be 'ZIP_AND_COMPRESS'.
-  // params.append('zipType', 'ZIP');
+  // NOTE: zipType by default is 'ZIP', it can be 'ZIP_AND_COMPRESS'.
+  params.append('zipType', 'ZIP');
 
   return axios
-    .post<SubmitCart>(`${topcatUrl}/user/cart/${facilityName}/submit`, {
-      params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token') || '',
-        transport: transport,
-        email: emailAddress,
-        fileName: fileName,
-
-        // NOTE: zipType by default is 'ZIP', it can be 'ZIP_AND_COMPRESS'.
-        zipType: 'ZIP',
-      },
-    })
+    .post<SubmitCart>(`${topcatUrl}/user/cart/${facilityName}/submit`, params)
     .then(response => {
       log.debug(response);
 

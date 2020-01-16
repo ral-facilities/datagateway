@@ -225,26 +225,18 @@ describe('Download Cart API functions test', () => {
         'test@email.com',
         'test-file'
       );
-      // const params = new URLSearchParams();
-      // params.append('sessionId', '');
-      // params.append('transport', 'https');
-      // params.append('email', 'test@email.com');
-      // params.append('fileName', 'test-file');
-      // params.append('zipType', 'ZIP');
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append('transport', 'https');
+      params.append('email', 'test@email.com');
+      params.append('fileName', 'test-file');
+      params.append('zipType', 'ZIP');
 
       expect(downloadId).toBe(1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-        {
-          params: {
-            sessionId: '',
-            transport: 'https',
-            email: 'test@email.com',
-            fileName: 'test-file',
-            zipType: 'ZIP',
-          },
-        }
+        expect.objectContaining(params)
       );
     });
 
@@ -262,26 +254,18 @@ describe('Download Cart API functions test', () => {
         'test@email.com',
         'test-file'
       );
-      //  const params = new URLSearchParams();
-      //  params.append('sessionId', '');
-      //  params.append('transport', 'globus');
-      //  params.append('email', 'test@email.com');
-      //  params.append('fileName', 'test-file');
-      //  params.append('zipType', 'ZIP');
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append('transport', 'globus');
+      params.append('email', 'test@email.com');
+      params.append('fileName', 'test-file');
+      params.append('zipType', 'ZIP');
 
       expect(downloadId).toBe(-1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-        {
-          params: {
-            sessionId: '',
-            transport: 'globus',
-            email: 'test@email.com',
-            fileName: 'test-file',
-            zipType: 'ZIP',
-          },
-        }
+        expect.objectContaining(params)
       );
       expect(log.error).toHaveBeenCalled();
       expect(log.error).toHaveBeenCalledWith('Test error message');

@@ -124,25 +124,17 @@ describe('DownloadConfirmDialog', () => {
     // The success message should exist.
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
 
-    // const params = new URLSearchParams();
-    // params.append('sessionId', '');
-    // params.append('transport', 'https');
-    // params.append('email', '');
-    // params.append('fileName', 'LILS_2020-1-1_1-1-1');
-    // params.append('zipType', 'ZIP');
+    const params = new URLSearchParams();
+    params.append('sessionId', '');
+    params.append('transport', 'https');
+    params.append('email', '');
+    params.append('fileName', 'LILS_2020-1-1_1-1-1');
+    params.append('zipType', 'ZIP');
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-      {
-        params: {
-          sessionId: '',
-          transport: 'https',
-          email: '',
-          fileName: 'LILS_2020-1-1_1-1-1',
-          zipType: 'ZIP',
-        },
-      }
+      expect.objectContaining(params)
     );
     expect(axios.get).toHaveBeenCalled();
     expect(axios.get).toHaveBeenCalledWith(
@@ -166,7 +158,7 @@ describe('DownloadConfirmDialog', () => {
           facilityName: 'LILS',
           userName: 'test user',
           cartItems: [],
-          downloadId: '1',
+          downloadId: '2',
         },
       })
     );
@@ -201,30 +193,19 @@ describe('DownloadConfirmDialog', () => {
 
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
 
+    const params = new URLSearchParams();
+    params.append('sessionId', '');
+    params.append('transport', 'globus');
+    params.append('email', 'test@email.com');
+    params.append('fileName', 'test-name');
+    params.append('zipType', 'ZIP');
+
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-      {
-        params: {
-          sessionId: '',
-          transport: 'globus',
-          email: 'test@email.com',
-          fileName: 'test-name',
-          zipType: 'ZIP',
-        },
-      }
+      params
     );
-    // expect(axios.get).toHaveBeenCalled();
-    // expect(axios.get).toHaveBeenCalledWith(
-    //   'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
-    //   {
-    //     params: {
-    //       sessionId: null,
-    //       facilityName: 'LILS',
-    //       queryOffset: 'where download.id = 1',
-    //     },
-    //   }
-    // );
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('prevents the submission of a download request with an invalid email', async () => {
@@ -309,18 +290,17 @@ describe('DownloadConfirmDialog', () => {
 
     expect(wrapper.exists('#download-confirmation-unsuccessful')).toBe(true);
 
+    const params = new URLSearchParams();
+    params.append('sessionId', '');
+    params.append('transport', 'https');
+    params.append('email', '');
+    params.append('fileName', 'LILS_2020-1-1_1-1-1');
+    params.append('zipType', 'ZIP');
+
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-      {
-        params: {
-          sessionId: '',
-          transport: 'https',
-          email: '',
-          fileName: 'LILS_2020-1-1_1-1-1',
-          zipType: 'ZIP',
-        },
-      }
+      expect.objectContaining(params)
     );
     expect(axios.get).not.toHaveBeenCalled();
   });
@@ -385,12 +365,18 @@ describe('renders the estimated download speed/time table with varying values', 
     const wrapper = timeWrapper(timeToSize(2, 2, 2, 2));
 
     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+    expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
+      '2 days, 2 hours, 2 min, 2 sec'
+    );
   });
 
   it('renders for a single day, hour, minute and second', () => {
     const wrapper = timeWrapper(timeToSize(1, 1, 1, 1));
 
     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+    expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
+      '1 day, 1 hour, 1 min, 1 sec'
+    );
   });
 
   describe('estimated download table renders for single time measurements', () => {
@@ -398,24 +384,36 @@ describe('renders the estimated download speed/time table with varying values', 
       const wrapper = timeWrapper(timeToSize(0, 0, 0, 1));
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
+        '1 day'
+      );
     });
 
     it('renders for a single hour', () => {
       const wrapper = timeWrapper(timeToSize(0, 0, 1, 0));
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
+        '1 hour'
+      );
     });
 
     it('renders for a single minute', () => {
       const wrapper = timeWrapper(timeToSize(0, 1, 0, 0));
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
+        '1 min'
+      );
     });
 
     it('renders for a single second', () => {
       const wrapper = timeWrapper(timeToSize(1, 0, 0, 0));
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
+        '1 sec'
+      );
     });
   });
 });
