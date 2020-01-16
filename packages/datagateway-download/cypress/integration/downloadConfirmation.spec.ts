@@ -74,7 +74,7 @@ describe('Download Confirmation', () => {
     cy.get('#download-confirmation-download').should('be.enabled');
   });
 
-  it.only('should be able to submit a download request and start immediate download with default values (HTTPS)', () => {
+  it('should be able to submit a download request and start immediate download with default values (HTTPS)', () => {
     // Ensure our access method is HTTPS before starting an immediate download.
     cy.contains('[aria-label="confirm-access-method"]', 'HTTPS').should(
       'exist'
