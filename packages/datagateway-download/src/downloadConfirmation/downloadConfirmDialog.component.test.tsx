@@ -30,6 +30,9 @@ describe('DownloadConfirmDialog', () => {
 
   afterEach(() => {
     mount.cleanUp();
+
+    (axios.get as jest.Mock).mockClear();
+    (axios.post as jest.Mock).mockClear();
   });
 
   afterAll(() => {
@@ -120,6 +123,38 @@ describe('DownloadConfirmDialog', () => {
 
     // The success message should exist.
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
+
+    // const params = new URLSearchParams();
+    // params.append('sessionId', '');
+    // params.append('transport', 'https');
+    // params.append('email', '');
+    // params.append('fileName', 'LILS_2020-1-1_1-1-1');
+    // params.append('zipType', 'ZIP');
+
+    expect(axios.post).toHaveBeenCalled();
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      {
+        params: {
+          sessionId: '',
+          transport: 'https',
+          email: '',
+          fileName: 'LILS_2020-1-1_1-1-1',
+          zipType: 'ZIP',
+        },
+      }
+    );
+    expect(axios.get).toHaveBeenCalled();
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+      {
+        params: {
+          sessionId: null,
+          facilityName: 'LILS',
+          queryOffset: 'where download.id = 1',
+        },
+      }
+    );
   });
 
   it('successfully loads submit successful view after submitting download request with custom values', async () => {
@@ -165,6 +200,31 @@ describe('DownloadConfirmDialog', () => {
     });
 
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
+
+    expect(axios.post).toHaveBeenCalled();
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      {
+        params: {
+          sessionId: '',
+          transport: 'globus',
+          email: 'test@email.com',
+          fileName: 'test-name',
+          zipType: 'ZIP',
+        },
+      }
+    );
+    // expect(axios.get).toHaveBeenCalled();
+    // expect(axios.get).toHaveBeenCalledWith(
+    //   'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+    //   {
+    //     params: {
+    //       sessionId: null,
+    //       facilityName: 'LILS',
+    //       queryOffset: 'where download.id = 1',
+    //     },
+    //   }
+    // );
   });
 
   it('prevents the submission of a download request with an invalid email', async () => {
@@ -248,6 +308,21 @@ describe('DownloadConfirmDialog', () => {
     });
 
     expect(wrapper.exists('#download-confirmation-unsuccessful')).toBe(true);
+
+    expect(axios.post).toHaveBeenCalled();
+    expect(axios.post).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      {
+        params: {
+          sessionId: '',
+          transport: 'https',
+          email: '',
+          fileName: 'LILS_2020-1-1_1-1-1',
+          zipType: 'ZIP',
+        },
+      }
+    );
+    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
