@@ -12,11 +12,11 @@ import { createShallow } from '@material-ui/core/test-utils';
 import { createLocation } from 'history';
 import { MemoryRouter } from 'react-router';
 
-import PageHead from './pageHead.component';
+import PageContainer from './pageContainer.component';
 
 jest.mock('loglevel');
 
-describe('PageHead - Tests', () => {
+describe('PageContainer - Tests', () => {
   let shallow;
   let state: StateType;
 
@@ -24,7 +24,7 @@ describe('PageHead - Tests', () => {
     const mockStore = configureStore([thunk]);
     return shallow(
       <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-        <PageHead store={mockStore(state)} />
+        <PageContainer store={mockStore(state)} />
       </MemoryRouter>
     );
   };

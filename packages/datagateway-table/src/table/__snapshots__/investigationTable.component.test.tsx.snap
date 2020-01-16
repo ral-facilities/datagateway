@@ -1,95 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Investigation table component renders correctly 1`] = `
-<div
-  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
-  style={
-    Object {
-      "height": "calc(100vh - 64px)",
-      "width": "100%",
-    }
+<WithStyles(VirtualizedTable)
+  allIds={
+    Array [
+      1,
+    ]
   }
->
-  <WithStyles(VirtualizedTable)
-    allIds={
-      Array [
-        1,
-      ]
-    }
-    columns={
-      Array [
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "TITLE",
-          "filterComponent": [Function],
-          "label": "Title",
+  columns={
+    Array [
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "TITLE",
+        "filterComponent": [Function],
+        "label": "Title",
+      },
+      Object {
+        "dataKey": "VISIT_ID",
+        "filterComponent": [Function],
+        "label": "Visit ID",
+      },
+      Object {
+        "dataKey": "RB_NUMBER",
+        "filterComponent": [Function],
+        "label": "RB Number",
+      },
+      Object {
+        "dataKey": "DOI",
+        "filterComponent": [Function],
+        "label": "DOI",
+      },
+      Object {
+        "dataKey": "DATASET_COUNT",
+        "label": "Dataset Count",
+      },
+      Object {
+        "dataKey": "INSTRUMENT.NAME",
+        "filterComponent": [Function],
+        "label": "Instrument",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "STARTDATE",
+        "filterComponent": [Function],
+        "label": "Start Date",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "ENDDATE",
+        "filterComponent": [Function],
+        "label": "End Date",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "DOI": "doi 1",
+        "ENDDATE": "2019-07-24",
+        "ID": 1,
+        "INSTRUMENT": Object {
+          "NAME": "LARMOR",
         },
-        Object {
-          "dataKey": "VISIT_ID",
-          "filterComponent": [Function],
-          "label": "Visit ID",
-        },
-        Object {
-          "dataKey": "RB_NUMBER",
-          "filterComponent": [Function],
-          "label": "RB Number",
-        },
-        Object {
-          "dataKey": "DOI",
-          "filterComponent": [Function],
-          "label": "DOI",
-        },
-        Object {
-          "dataKey": "DATASET_COUNT",
-          "label": "Dataset Count",
-        },
-        Object {
-          "dataKey": "INSTRUMENT.NAME",
-          "filterComponent": [Function],
-          "label": "Instrument",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "STARTDATE",
-          "filterComponent": [Function],
-          "label": "Start Date",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "ENDDATE",
-          "filterComponent": [Function],
-          "label": "End Date",
-        },
-      ]
-    }
-    data={
-      Array [
-        Object {
-          "DOI": "doi 1",
-          "ENDDATE": "2019-07-24",
-          "ID": 1,
-          "INSTRUMENT": Object {
-            "NAME": "LARMOR",
-          },
-          "RB_NUMBER": "1",
-          "SIZE": 1,
-          "STARTDATE": "2019-07-23",
-          "TITLE": "Test 1",
-          "VISIT_ID": "1",
-        },
-      ]
-    }
-    detailsPanel={[Function]}
-    loadMoreRows={[Function]}
-    loading={false}
-    onCheck={[Function]}
-    onSort={[Function]}
-    onUncheck={[Function]}
-    selectedRows={Array []}
-    sort={Object {}}
-    totalRowCount={0}
-  />
-</div>
+        "RB_NUMBER": "1",
+        "SIZE": 1,
+        "STARTDATE": "2019-07-23",
+        "TITLE": "Test 1",
+        "VISIT_ID": "1",
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  loadMoreRows={[Function]}
+  loading={false}
+  onCheck={[Function]}
+  onSort={[Function]}
+  onUncheck={[Function]}
+  selectedRows={Array []}
+  sort={Object {}}
+  totalRowCount={0}
+/>
 `;
 
 exports[`Investigation table component renders details panel correctly 1`] = `
