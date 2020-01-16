@@ -89,14 +89,13 @@ describe('Dataset actions', () => {
     expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datasets', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('fetchDatasets action applies filters and sort state to request params', async () => {
@@ -115,17 +114,16 @@ describe('Dataset actions', () => {
     expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
     params.append('order', JSON.stringify('column1 desc'));
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datasets', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('fetchDatasets action sends fetchDatafileCount actions when specified via optional parameters', async () => {
@@ -250,12 +248,10 @@ describe('Dataset actions', () => {
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets/count',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datasets/count', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('fetchDatasetCount action applies filters to request params', async () => {
@@ -283,12 +279,10 @@ describe('Dataset actions', () => {
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets/count',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datasets/count', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchDatasetCountRequest and fetchDatasetCountFailure actions upon unsuccessful fetchDatasetCount action', async () => {
@@ -340,10 +334,10 @@ describe('Dataset actions', () => {
     params.append('where', JSON.stringify({ ID: { eq: 1 } }));
     params.append('include', JSON.stringify('DATASETTYPE'));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datasets',
-      expect.objectContaining({ params })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datasets', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsFailure actions upon unsuccessful fetchDatasetDetails action', async () => {

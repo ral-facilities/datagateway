@@ -118,7 +118,10 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(addToCartSuccess(mockData));
       expect(axios.post).toHaveBeenCalledWith(
         '/user/cart/LILS/cartItems',
-        expect.objectContaining(params)
+        params
+      );
+      expect((axios.post as jest.Mock).mock.calls[0][1]).toHaveSameSearchParams(
+        params
       );
     });
 
@@ -209,6 +212,9 @@ describe('Cart actions', () => {
           params,
         })
       );
+      expect(
+        (axios.get as jest.Mock).mock.calls[0][1].params
+      ).toHaveSameSearchParams(params);
     });
 
     it('applies additional filters as well as sort and filter state to the request params', async () => {
@@ -253,6 +259,9 @@ describe('Cart actions', () => {
           params,
         })
       );
+      expect(
+        (axios.get as jest.Mock).mock.calls[0][1].params
+      ).toHaveSameSearchParams(params);
     });
 
     it('can handle array distinct filters and add them to request params', async () => {
@@ -283,6 +292,9 @@ describe('Cart actions', () => {
           params,
         })
       );
+      expect(
+        (axios.get as jest.Mock).mock.calls[0][1].params
+      ).toHaveSameSearchParams(params);
     });
 
     it('dispatches fetchAllIdsRequest and fetchAllIdsFailure actions upon unsuccessful fetchAllIds action', async () => {
@@ -328,6 +340,9 @@ describe('Cart actions', () => {
           params,
         })
       );
+      expect(
+        (axios.get as jest.Mock).mock.calls[0][1].params
+      ).toHaveSameSearchParams(params);
     });
 
     it('applies filter state to the request params', async () => {
@@ -362,6 +377,9 @@ describe('Cart actions', () => {
           params,
         })
       );
+      expect(
+        (axios.get as jest.Mock).mock.calls[0][1].params
+      ).toHaveSameSearchParams(params);
     });
 
     it('dispatches fetchAllIdsRequest and fetchAllIdsFailure actions upon unsuccessful fetchAllISISInvestigationIds action', async () => {

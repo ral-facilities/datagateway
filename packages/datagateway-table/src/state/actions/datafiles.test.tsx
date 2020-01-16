@@ -76,14 +76,13 @@ describe('Datafile actions', () => {
     expect(actions[1]).toEqual(fetchDatafilesSuccess(mockData, 1));
 
     const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datafiles',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datafiles', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('fetchDatafiles action applies filters and sort state to request params', async () => {
@@ -109,15 +108,15 @@ describe('Datafile actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datafiles',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datafiles', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchDatafilesRequest and fetchDatafilesFailure actions upon unsuccessful fetchDatafiles action', async () => {
@@ -154,12 +153,10 @@ describe('Datafile actions', () => {
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datafiles/count',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datafiles/count', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('fetchDatafileCount action applies filters to request params', async () => {
@@ -187,12 +184,10 @@ describe('Datafile actions', () => {
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
     params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datafiles/count',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datafiles/count', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchDatafileCountRequest and fetchDatafileCountFailure actions upon unsuccessful fetchDatafileCount action', async () => {
@@ -329,10 +324,10 @@ describe('Datafile actions', () => {
       JSON.stringify({ DATAFILEPARAMETER: 'PARAMETERTYPE' })
     );
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/datafiles',
-      expect.objectContaining({ params })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/datafiles', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchDatafileDetailsRequest and fetchDatafileDetailsFailure actions upon unsuccessful fetchDatafileDetails action', async () => {
