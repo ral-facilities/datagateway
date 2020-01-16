@@ -259,3 +259,88 @@ describe('DownloadConfirmDialog', () => {
     );
   });
 });
+
+describe('renders the estimated download speed/time table with varying values', () => {
+  let timeMount;
+
+  const timeWrapper = (size: number): ReactWrapper => {
+    return timeMount(
+      <DownloadConfirmDialog
+        totalSize={size}
+        isTwoLevel={false}
+        setOpen={true}
+        setClose={jest.fn()}
+      />
+    );
+  };
+
+  beforeEach(() => {
+    timeMount = createMount();
+  });
+
+  afterEach(() => {
+    timeMount.cleanUp();
+  });
+
+  // Calculate the file size required to reach the given download time (at 1 Mbps).
+  const timeToSize = (
+    seconds: number,
+    minutes?: number,
+    hours?: number,
+    days?: number
+  ): number => {
+    // NOTE: For these tests to make it simple we use 1 Mbps for this.
+    let downloadSpeed = 1; // Mbps
+
+    // Get the all the time in seconds.
+    let inSeconds =
+      (days ? days * 86400 : 0) +
+      (hours ? hours * 3600 : 0) +
+      (minutes ? minutes * 60 : 0) +
+      seconds;
+
+    // Calculate final file size required (in bytes).
+    let fileSize = inSeconds * (downloadSpeed / 8) * (1024 * 1024);
+
+    return fileSize;
+  };
+
+  it('renders for multiple days, hours, minutes and seconds', () => {
+    // Test for 2 seconds, 2 minutes, 2 hours and 2 days.
+    const wrapper = timeWrapper(timeToSize(2, 2, 2, 2));
+
+    expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+  });
+
+  it('renders for a single day, hour, minute and second', () => {
+    const wrapper = timeWrapper(timeToSize(1, 1, 1, 1));
+
+    expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+  });
+
+  describe('estimated download table renders for single time measurements', () => {
+    it('renders for a single day', () => {
+      const wrapper = timeWrapper(timeToSize(0, 0, 0, 1));
+
+      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+    });
+
+    it('renders for a single hour', () => {
+      const wrapper = timeWrapper(timeToSize(0, 0, 1, 0));
+
+      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+    });
+
+    it('renders for a single minute', () => {
+      const wrapper = timeWrapper(timeToSize(0, 1, 0, 0));
+
+      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+    });
+
+    it('renders for a single second', () => {
+      const wrapper = timeWrapper(timeToSize(1, 0, 0, 0));
+
+      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
+    });
+  });
+});
