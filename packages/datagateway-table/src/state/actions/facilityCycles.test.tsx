@@ -79,15 +79,14 @@ describe('FacilityCycle actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/instruments/1/facilitycycles',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/instruments/1/facilitycycles', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchFacilityCyclesRequest and fetchFacilityCyclesFailure actions upon unsuccessful fetchFacilityCycles action', async () => {
@@ -150,9 +149,10 @@ describe('FacilityCycle actions', () => {
 
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/1/facilitycycles/count',
-      expect.objectContaining({
+      {
+        headers: { Authorization: 'Bearer null' },
         params,
-      })
+      }
     );
   });
 
