@@ -1,5 +1,5 @@
 import { Filter, Order, Entity, DownloadCart } from '../../app.types';
-
+import { ApplicationStrings } from '../app.types';
 // remove uneeded actions
 
 // internal actions

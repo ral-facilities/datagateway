@@ -26,7 +26,7 @@ import {
   FetchDatasetSizeFailureType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
-import { source } from '../middleware/dgtable.middleware';
+import { source } from '../middleware/dgcommon.middleware';
 import { Action } from 'redux';
 import { batch } from 'react-redux';
 import axios from 'axios';

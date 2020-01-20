@@ -25,7 +25,7 @@ import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
-import { source } from '../middleware/dgtable.middleware';
+import { source } from '../middleware/dgcommon.middleware';
 import * as log from 'loglevel';
 import { Datafile } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';

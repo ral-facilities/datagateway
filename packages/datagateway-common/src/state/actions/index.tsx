@@ -1,8 +1,8 @@
 import { StateType } from '../app.types';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-  const sort = getState().dgtable.sort;
-  const filters = getState().dgtable.filters;
+  const sort = getState().dgcommon.sort;
+  const filters = getState().dgcommon.filters;
 
   let searchParams = new URLSearchParams();
 

@@ -12,10 +12,9 @@ import {
   fetchInvestigationCountRequest,
   fetchInvestigationCountSuccess,
   fetchInvestigationCountFailure,
-  fetchInvestigationDatasetsCountRequest,
-} from '.';
+} from './investigations';
 import { StateType, EntityCache } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
+import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
@@ -27,6 +26,8 @@ import {
   fetchInvestigationSize,
   fetchInvestigationSizeFailure,
 } from './investigations';
+import { fetchInvestigationDatasetsCountRequest } from './datasets';
+import { DownloadDatasetSuccessType } from './actions.types';
 
 jest.mock('loglevel');
 
@@ -118,7 +119,7 @@ describe('Investigation actions', () => {
       ],
     });
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -231,7 +232,7 @@ describe('Investigation actions', () => {
 
     // Set up state for calling fetchInvestigationSize with investigation cache.
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         investigationCache: mockInvestigationCache,
@@ -274,7 +275,7 @@ describe('Investigation actions', () => {
       facilityCycleId: 2,
     });
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -424,7 +425,7 @@ describe('Investigation actions', () => {
     ]);
 
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },
@@ -492,7 +493,7 @@ describe('Investigation actions', () => {
     const asyncAction = fetchISISInvestigationCount(1, 2);
 
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },

@@ -17,19 +17,11 @@ import {
   fetchDatafileDetails,
   fetchDatafileDetailsRequest,
   fetchDatafileDetailsFailure,
-} from '../../../datagateway-table/src/state/actions';
+} from './datafiles';
 import axios from 'axios';
-import {
-  StateType,
-  EntityCache,
-} from '../../../datagateway-table/src/state/app.types';
-import { initialState } from '../../../datagateway-table/src/state/reducers/dgtable.reducer';
-import {
-  actions,
-  resetActions,
-  dispatch,
-  getState,
-} from '../../../datagateway-table/src/setupTests';
+import { StateType, EntityCache } from '../app.types';
+import { initialState } from '../reducers/dgcommon.reducer';
+import { actions, resetActions, dispatch, getState } from '../../setupTests';
 import * as log from 'loglevel';
 import { Datafile } from 'datagateway-common';
 
@@ -62,6 +54,7 @@ describe('Datafile actions', () => {
   const mockDatasetCache: EntityCache = {
     1: {
       childEntityCount: 2,
+      childEntitySize: 3,
     },
   };
 
@@ -103,7 +96,7 @@ describe('Datafile actions', () => {
 
     const asyncAction = fetchDatafiles(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -179,7 +172,7 @@ describe('Datafile actions', () => {
 
     const asyncAction = fetchDatafileCount(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },
@@ -251,7 +244,7 @@ describe('Datafile actions', () => {
 
     // Set up state to be used within fetchDatasetDatafilesCountSuccess with the dataset cache.
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         datasetCache: mockDatasetCache,

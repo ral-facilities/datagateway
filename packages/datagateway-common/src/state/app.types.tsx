@@ -8,7 +8,7 @@ import {
 } from './actions/actions.types';
 import { RouterState } from 'connected-react-router';
 
-export interface DGTableState {
+export interface DGCommonState {
   facilityName: string;
   sort: {
     [column: string]: Order;
@@ -51,7 +51,7 @@ export interface ApplicationStrings {
 }
 
 export interface StateType {
-  dgtable: DGTableState;
+  dgcommon: DGCommonState;
   router: RouterState;
 }
 
