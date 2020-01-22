@@ -191,6 +191,7 @@ const DownloadCartTable: React.FC = () => {
                     aria-label={`Remove ${cartItem.name} from cart`}
                     key="remove"
                     size="small"
+                    // Remove the download when clicked.
                     onClick={() => {
                       setIsDeleting(true);
                       setTimeout(

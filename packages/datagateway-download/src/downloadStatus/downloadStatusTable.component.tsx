@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Grid,
-  Paper,
-  IconButton,
-  // Icon
-} from '@material-ui/core';
+import { Grid, Paper, IconButton } from '@material-ui/core';
 
 import {
   Table,
@@ -12,15 +7,15 @@ import {
   Download,
   TextColumnFilter,
   TableActionProps,
-  // DownloadCartTableItem,
   // DateColumnFilter,
 } from 'datagateway-common';
-import { fetchDownloads, downloadDeleted } from './downloadApi';
-import { TableCellProps } from 'react-virtualized';
 import {
-  RemoveCircle,
-  // GetApp
-} from '@material-ui/icons';
+  fetchDownloads,
+  downloadDeleted,
+  downloadPreparedCart,
+} from './downloadApi';
+import { TableCellProps } from 'react-virtualized';
+import { RemoveCircle, GetApp } from '@material-ui/icons';
 
 const DownloadStatusTable: React.FC = () => {
   // Sorting columns
@@ -28,10 +23,8 @@ const DownloadStatusTable: React.FC = () => {
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
     {}
   );
-
   const [data, setData] = React.useState<Download[]>([]);
   const [dataLoaded, setDataLoaded] = React.useState(false);
-  // TODO: No need for size, fileCount, totalSize?
 
   React.useEffect(() => {
     // TODO: Fetch downloads for the user.
@@ -164,25 +157,33 @@ const DownloadStatusTable: React.FC = () => {
             }}
             data={sortedAndFilteredData}
             loading={!dataLoaded}
-            // TODO: Implement Download and Remove action buttons
+            // Pass in a custom actions column width to fit both buttons.
+            actionsWidth={100}
             actions={[
-              // function DownloadButton({ rowData }: TableActionProps) {
-              //   const downloadItem = rowData as Download;
-              //   return (
-              //     <IconButton
-              //       aria-label={`Download ${downloadItem.fileName}`}
-              //       key="download"
-              //       size="small"
-
-              //       // Download the prepared cart.
-              //       // onClick={() => {
-
-              //       // }}
-              //     >
-              //       <GetApp />
-              //     </IconButton>
-              //   );
-              // },
+              function DownloadButton({ rowData }: TableActionProps) {
+                const downloadItem = rowData as Download;
+                const [started, setStarted] = React.useState(false);
+                return (
+                  <IconButton
+                    aria-label={`Download ${downloadItem.fileName}`}
+                    key="download"
+                    size="small"
+                    // Download the prepared cart.
+                    onClick={() => {
+                      setStarted(true);
+                      setTimeout(() => {
+                        downloadPreparedCart(
+                          downloadItem.preparedId,
+                          downloadItem.fileName
+                        );
+                        setStarted(false);
+                      }, 100);
+                    }}
+                  >
+                    <GetApp color={started ? 'primary' : 'inherit'} />
+                  </IconButton>
+                );
+              },
               function RemoveButton({ rowData }: TableActionProps) {
                 const downloadItem = rowData as Download;
                 const [isDeleting, setIsDeleting] = React.useState(false);
@@ -197,7 +198,7 @@ const DownloadStatusTable: React.FC = () => {
                       setTimeout(
                         () =>
                           downloadDeleted(
-                            // TODO: get the facilityName from config
+                            // TODO: get the facilityName from config.
                             'LILS',
                             downloadItem.id,
                             true

@@ -101,6 +101,7 @@ interface VirtualizedTableProps {
   onSort: (column: string, order: Order | null) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
+  actionsWidth?: number;
   selectedRows?: number[];
   onCheck?: (selectedIds: number[]) => void;
   onUncheck?: (selectedIds: number[]) => void;
@@ -119,6 +120,7 @@ const VirtualizedTable = (
 
   const {
     actions,
+    actionsWidth,
     classes,
     columns,
     data,
@@ -366,7 +368,7 @@ const VirtualizedTable = (
                 )}
                 {actions && (
                   <Column
-                    width={actionsColumnWidth}
+                    width={actionsWidth || actionsColumnWidth}
                     flexShrink={0}
                     key="Actions"
                     dataKey="actions"
