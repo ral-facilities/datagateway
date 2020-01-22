@@ -2,6 +2,10 @@ import { Filter, Order, Entity, DownloadCart } from '../../app.types';
 import { ApplicationStrings } from '../app.types';
 // remove uneeded actions
 
+// parent app actions
+export const RegisterRouteType = 'daaas:api:register_route';
+export const RequestPluginRerenderType = 'daaas:api:plugin_rerender';
+
 // internal actions
 export const SortTableType = 'datagateway_table:sort_table';
 export const FilterTableType = 'datagateway_table:filter_table';

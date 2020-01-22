@@ -25,11 +25,10 @@ import {
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
 } from './actions.types';
-import { Filter, Order } from 'datagateway-common';
+import { Filter, Order, fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
-import { fetchDownloadCart } from './cart';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgtable.sort;
@@ -69,12 +68,8 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   return searchParams;
 };
 
-export * from './investigations';
-export * from './datasets';
-export * from './datafiles';
 export * from './instruments';
 export * from './facilityCycles';
-export * from './cart';
 
 export const sortTable = (
   column: string,

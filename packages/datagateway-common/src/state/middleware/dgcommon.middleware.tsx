@@ -27,7 +27,7 @@ export const listenToMessages = (dispatch: Dispatch): void => {
       pluginMessage.detail &&
       pluginMessage.detail.type &&
       (pluginMessage.detail.type.startsWith('daaas:api:') ||
-        pluginMessage.detail.type.startsWith('datagateway_table:api:'))
+        pluginMessage.detail.type.startsWith('datagateway_common:api:'))
     ) {
       // this is a valid message, so process it
       switch (pluginMessage.detail.type) {
@@ -53,7 +53,7 @@ export const listenToMessages = (dispatch: Dispatch): void => {
   });
 };
 
-const DGTableMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
+const DGCommonMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
   action: AnyAction
 ): AnyAction => {
   if (action.payload && action.payload.broadcast) {
@@ -67,4 +67,4 @@ const DGTableMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
   return next(action);
 }) as Middleware;
 
-export default DGTableMiddleware;
+export default DGCommonMiddleware;

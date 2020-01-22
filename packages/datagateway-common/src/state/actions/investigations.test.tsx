@@ -12,20 +12,18 @@ import {
   fetchInvestigationCountRequest,
   fetchInvestigationCountSuccess,
   fetchInvestigationCountFailure,
-} from './investigations';
+  fetchISISInvestigationCount,
+  fetchInvestigationSizeRequest,
+  fetchInvestigationSizeSuccess,
+  fetchInvestigationSize,
+  fetchInvestigationSizeFailure,
+} from '.';
 import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
 import { Investigation } from 'datagateway-common';
-import {
-  fetchISISInvestigationCount,
-  fetchInvestigationSizeRequest,
-  fetchInvestigationSizeSuccess,
-  fetchInvestigationSize,
-  fetchInvestigationSizeFailure,
-} from './investigations';
 import { fetchInvestigationDatasetsCountRequest } from './datasets';
 import { DownloadDatasetSuccessType } from './actions.types';
 

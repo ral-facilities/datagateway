@@ -10,21 +10,17 @@ import {
   TableActionProps,
   DateColumnFilter,
   DownloadCartItem,
-} from 'datagateway-common';
-import { Paper, IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
-import {
   fetchDatafiles,
-  sortTable,
-  filterTable,
   downloadDatafile,
   fetchDatafileDetails,
   fetchDatafileCount,
-  clearTable,
   addToCart,
   removeFromCart,
   fetchAllIds,
-} from '../../state/actions';
+} from 'datagateway-common';
+import { Paper, IconButton } from '@material-ui/core';
+import { GetApp } from '@material-ui/icons';
+import { sortTable, filterTable, clearTable } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';

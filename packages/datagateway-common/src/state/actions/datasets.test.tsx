@@ -17,19 +17,17 @@ import {
   fetchDatasetDetailsRequest,
   fetchDatasetDetailsSuccess,
   fetchDatasetDetailsFailure,
-} from './datasets';
+  fetchDatasetSize,
+  fetchDatasetSizeRequest,
+  fetchDatasetSizeSuccess,
+  fetchDatasetSizeFailure,
+} from '.';
 import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
 import { Dataset } from 'datagateway-common';
-import {
-  fetchDatasetSize,
-  fetchDatasetSizeRequest,
-  fetchDatasetSizeSuccess,
-  fetchDatasetSizeFailure,
-} from './datasets';
 
 import { fetchDatasetDatafilesCountRequest } from './datafiles';
 

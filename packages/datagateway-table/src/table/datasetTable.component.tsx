@@ -10,17 +10,13 @@ import {
   Dataset,
   Entity,
   DownloadCartItem,
-} from 'datagateway-common';
-import {
-  sortTable,
-  filterTable,
   fetchDatasets,
   addToCart,
   removeFromCart,
   fetchDatasetCount,
-  clearTable,
   fetchAllIds,
-} from '../state/actions';
+} from 'datagateway-common';
+import { sortTable, filterTable, clearTable } from '../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';

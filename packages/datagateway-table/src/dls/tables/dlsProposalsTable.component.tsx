@@ -7,6 +7,8 @@ import {
   Filter,
   Investigation,
   Entity,
+  fetchInvestigations,
+  fetchInvestigationCount,
 } from 'datagateway-common';
 import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
@@ -14,13 +16,7 @@ import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  sortTable,
-  filterTable,
-  fetchInvestigations,
-  fetchInvestigationCount,
-  clearTable,
-} from '../../state/actions';
+import { sortTable, filterTable, clearTable } from '../../state/actions';
 import useAfterMountEffect from '../../utils';
 
 interface DLSProposalsTableStoreProps {

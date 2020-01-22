@@ -1,12 +1,17 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { Order, Filter, Entity, DownloadCartItem } from 'datagateway-common';
+import {
+  Order,
+  Filter,
+  Entity,
+  DownloadCartItem,
+  DGCommonState,
+} from 'datagateway-common';
 import {
   FeatureSwitches,
   URLs,
   BreadcrumbSettings,
 } from './actions/actions.types';
-import { RouterState } from 'connected-react-router';
 
 export interface DGTableState {
   facilityName: string;
@@ -34,6 +39,7 @@ export interface DGTableState {
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
 }
+// need to deduplicate this with dg-common
 
 export interface EntityCache {
   [id: number]: {
@@ -50,11 +56,9 @@ export interface ApplicationStrings {
   [section: string]: AppStrings;
 }
 
-export interface StateType {
+export type StateType = {
   dgtable: DGTableState;
-  dgcommon: DGCommonState;
-  router: RouterState;
-}
+} & DGCommonState;
 
 export interface ActionType<T> {
   type: string;

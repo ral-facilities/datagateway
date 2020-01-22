@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { Order, Filter, Entity, DownloadCartItem } from 'datagateway-common';
+import { Order, Filter, Entity, DownloadCartItem } from '../app.types';
 import {
   FeatureSwitches,
   URLs,

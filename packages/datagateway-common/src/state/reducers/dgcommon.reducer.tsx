@@ -98,7 +98,7 @@ import {
   FetchDatasetSizeSuccessType,
   FetchDatasetSizeFailureType,
 } from '../actions/actions.types';
-import { Entity, Investigation, Dataset } from 'datagateway-common';
+import { Entity, Investigation, Dataset } from '../../app.types';
 
 export const initialState: DGCommonState = {
   facilityName: '',
@@ -598,7 +598,7 @@ export function handleFetchAllIdsSuccess(
   }
 }
 // remove things I want
-const DGCommonReducer = createReducer(initialState, {
+const dGCommonReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
@@ -685,4 +685,4 @@ const DGCommonReducer = createReducer(initialState, {
   [FetchAllIdsFailureType]: handleFetchDataFailure,
 });
 
-export default DGCommonReducer;
+export default dGCommonReducer;

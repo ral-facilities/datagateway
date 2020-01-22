@@ -10,6 +10,12 @@ import {
   DateColumnFilter,
   DownloadCartItem,
   formatBytes,
+  fetchInvestigationDetails,
+  fetchISISInvestigations,
+  fetchISISInvestigationCount,
+  addToCart,
+  removeFromCart,
+  fetchAllISISInvestigationIds,
 } from 'datagateway-common';
 import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
@@ -17,17 +23,7 @@ import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  sortTable,
-  filterTable,
-  fetchInvestigationDetails,
-  fetchISISInvestigations,
-  fetchISISInvestigationCount,
-  clearTable,
-  addToCart,
-  removeFromCart,
-  fetchAllISISInvestigationIds,
-} from '../../state/actions';
+import { sortTable, filterTable, clearTable } from '../../state/actions';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 

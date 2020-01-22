@@ -126,30 +126,6 @@ describe('dgtable reducer', () => {
   });
 
   describe('timestamps', () => {
-    it('should ignore data requests with invalid timestamps', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationsRequest(invalidTimestamp)
-      );
-      expect(updatedState).toBe(state);
-    });
-
-    it('should ignore data successes with invalid timestamps', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetsSuccess([], invalidTimestamp)
-      );
-      expect(updatedState).toBe(state);
-    });
-
-    it('should ignore count requests with invalid timestamps', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileCountRequest(invalidTimestamp)
-      );
-      expect(updatedState).toBe(state);
-    });
-
     it('should ignore count successes with invalid timestamps', () => {
       let updatedState = DGTableReducer(
         state,
@@ -174,36 +150,12 @@ describe('dgtable reducer', () => {
       expect(updatedState).toBe(state);
     });
 
-    it('should update dataTimestamp when given a valid fetchDataRequest', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafilesRequest(validTimestamp)
-      );
-      expect(updatedState.dataTimestamp).toBe(validTimestamp);
-    });
-
     it('should update dataTimestamp when given a valid fetchDataSuccess', () => {
       let updatedState = DGTableReducer(
         state,
         fetchFacilityCyclesSuccess([], validTimestamp)
       );
       expect(updatedState.dataTimestamp).toBe(validTimestamp);
-    });
-
-    it('should update countTimestamp when given a valid fetchCountRequest', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetCountRequest(validTimestamp)
-      );
-      expect(updatedState.countTimestamp).toBe(validTimestamp);
-    });
-
-    it('should update countTimestamp when given a valid fetchCountSuccess', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationCountSuccess(1, validTimestamp)
-      );
-      expect(updatedState.countTimestamp).toBe(validTimestamp);
     });
 
     it('should update allIdsTimestamp when given a valid fetchAllIdsRequest', () => {
@@ -293,16 +245,6 @@ describe('dgtable reducer', () => {
   });
 
   describe('FetchInvestigations actions', () => {
-    it('should set the loading state when given a FetchInvestigationsRequest action', () => {
-      expect(state.loading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationsRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
-
     it('should set the data state and reset error and loading state when given a FetchInvestigationsSuccess action', () => {
       state.loading = true;
       const mockData: Investigation[] = [
@@ -329,750 +271,59 @@ describe('dgtable reducer', () => {
           ENDDATE: '2019-06-12',
         },
       ];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationsSuccess(mockData, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual(mockData);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state and reset loading and data state when given a FetchInvestigationsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationsFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual([]);
-      expect(updatedState.error).toEqual('Test error message');
     });
   });
 
-  describe('FetchInvestigationDetails actions', () => {
-    it('should not update state when given a FetchInvestigationDetailsRequest action', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationDetailsRequest()
-      );
-      expect(updatedState).toEqual(state);
-    });
+  it('should set the data state with cached dataset count and reset error and loading state when given a FetchInvestigationDatasetsCountSuccess action', () => {
+    state.loading = true;
 
-    it('should update the data state and reset error state when given a FetchInvestigationDetailsSuccess action', () => {
-      state.loading = true;
-      const mockData: Investigation[] = [
-        {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
-          RB_NUMBER: '1',
-          DOI: 'doi 1',
-          SIZE: 1,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-11',
-        },
-        {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 1',
-          VISIT_ID: '2',
-          RB_NUMBER: '2',
-          DOI: 'doi 2',
-          SIZE: 10000,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-12',
-        },
-      ];
+    state.investigationCache = {
+      1: {
+        childEntityCount: 3,
+        childEntitySize: 2,
+      },
+      2: {
+        childEntityCount: 5,
+        childEntitySize: 1,
+      },
+    };
 
-      state.data = mockData;
-
-      const investigationDetails = {
-        ...mockData[0],
-        INVESTIGATIONUSER: [
-          {
-            ID: 3,
-            INVESTIGATION_ID: 1,
-            USER_ID: 4,
-            ROLE: 'Investigator',
-            USER_: { ID: 4, NAME: 'Louise' },
-          },
-        ],
-      };
-
-      const mockDataUpdated: Investigation[] = [
-        investigationDetails,
-        mockData[1],
-      ];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationDetailsSuccess([investigationDetails])
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state when given a FetchInvestigationDetailsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationDetailsFailure('Test error message')
-      );
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchInvestigationSize and FetchDatasetSize actions', () => {
     const mockData: Investigation[] = [
       {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
-      },
-      {
-        ID: 2,
-        TITLE: 'Test 2',
-        NAME: 'Test 1',
-        VISIT_ID: '2',
-        RB_NUMBER: '2',
-        DOI: 'doi 2',
-        SIZE: 10000,
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-12',
+        ID: 3,
+        TITLE: 'Test 3',
+        VISIT_ID: '3',
+        RB_NUMBER: '3',
+        DOI: 'doi 3',
+        SIZE: 1,
+        INSTRUMENT: {
+          NAME: 'LARMOR',
+        },
+        STARTDATE: '2019-10-08',
+        ENDDATE: '2019-10-08',
       },
     ];
 
-    it('should have the same state when given a FetchSizeRequest', () => {
-      let updatedState = DGTableReducer(state, fetchInvestigationSizeRequest());
-
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should set the data and investigationCache state when given a FetchInvestigationSize action', () => {
-      state.data = mockData;
-
-      const mockDataUpdated = [{ ...mockData[0], SIZE: 1 }, mockData[1]];
-      const mockInvestigationCacheUpdated: EntityCache = {
-        1: {
-          childEntitySize: 1,
-        },
-      };
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationSizeSuccess(1, 1)
-      );
-      expect(updatedState.investigationCache).toEqual(
-        mockInvestigationCacheUpdated
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the data and datasetCache state when given a FetchDatasetSize action', () => {
-      state.data = mockData;
-
-      const mockDataUpdated = [mockData[0], { ...mockData[1], SIZE: 10000 }];
-      const mockDatasetCacheUpdated: EntityCache = {
-        2: {
-          childEntitySize: 10000,
-        },
-      };
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetSizeSuccess(2, 10000)
-      );
-      expect(updatedState.datasetCache).toEqual(mockDatasetCacheUpdated);
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state when given a FetchInvestigationSizeFailure action', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationSizeFailure('Test error message')
-      );
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchInvestigationCount actions', () => {
-    it('should set the loading state when given a FetchInvestigationCountRequest action', () => {
-      expect(state.loading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationCountRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
-
-    it('should set the totalDataCount state and reset error and loading state when given a FetchInvestigationCountSuccess action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationCountSuccess(11, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(11);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state and reset loading and data state when given a FetchInvestigationCountFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationCountFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(0);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchDatasets actions', () => {
-    it('should set the loading state when given a FetchDatasetsRequest action', () => {
-      expect(state.loading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetsRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
-
-    it('should set the data state and reset error and loading state when given a FetchDatasetsSuccess action', () => {
-      state.loading = true;
-      const mockData: Dataset[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-11',
-          INVESTIGATION_ID: 1,
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-12',
-          INVESTIGATION_ID: 1,
-        },
-      ];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetsSuccess(mockData, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual(mockData);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state and reset loading and data state when given a FetchDatasetsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetsFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual([]);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchDatasetDetails actions', () => {
-    it('should not update state when given a FetchDatasetDetailsRequest action', () => {
-      let updatedState = DGTableReducer(state, fetchDatasetDetailsRequest());
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should update the data state and reset error state when given a FetchDatasetDetailsSuccess action', () => {
-      state.loading = true;
-      const mockData: Dataset[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-11',
-          INVESTIGATION_ID: 1,
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-12',
-          INVESTIGATION_ID: 1,
-        },
-      ];
-
-      state.data = mockData;
-
-      const datasetDetails = {
-        ...mockData[0],
-        DATASETTYPE: {
-          ID: 3,
-          NAME: 'Test type',
-        },
-      };
-
-      const mockDataUpdated: Dataset[] = [datasetDetails, mockData[1]];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetDetailsSuccess([datasetDetails])
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state when given a FetchDatasetDetailsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetDetailsFailure('Test error message')
-      );
-
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchDatasetCount actions', () => {
-    it('should set the loading state when given a FetchDatasetCountRequest action', () => {
-      expect(state.loading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetCountRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
-
-    it('should set the totalDataCount state and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetCountSuccess(12, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(12);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state and reset loading and data state when given a FetchDatasetCountFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetCountFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(0);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('DownloadDataset actions', () => {
-    it('should set the downloading state to true when given a DownloadDatasetRequest action', () => {
-      expect(state.downloading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        downloadDatasetRequest(validTimestamp)
-      );
-      expect(updatedState.downloading).toBe(true);
-    });
-
-    it('should set the downloading state to false when given a DownloadDatasetSuccess action', () => {
-      state.downloading = true;
-
-      let updatedState = DGTableReducer(state, downloadDatasetSuccess());
-      expect(updatedState.downloading).toBe(false);
-    });
-
-    it('should set the error state and the downloading state to false when given a DownloadDatasetFailure action', () => {
-      state.downloading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        downloadDatasetFailure('Test error message')
-      );
-      expect(updatedState.downloading).toBe(false);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchInvestigationDatasetsCount actions', () => {
-    it('should not affect state when given a FetchInvestigationDatasetsCountRequest action', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationDatasetsCountRequest(validTimestamp)
-      );
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should set the data state and reset error and loading state when given a FetchInvestigationDatasetsCountSuccess action', () => {
-      state.loading = true;
-      const mockData: Investigation[] = [
-        {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
-          RB_NUMBER: '1',
-          DOI: 'doi 1',
-          SIZE: 1,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-11',
-        },
-        {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 2',
-          VISIT_ID: '2',
-          RB_NUMBER: '2',
-          DOI: 'doi 2',
-          SIZE: 10000,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-12',
-        },
-      ];
-
-      state.data = mockData;
-
-      const mockDataUpdated: Investigation[] = [
-        { ...mockData[0], DATASET_COUNT: 2 },
-        mockData[1],
-      ];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationDatasetsCountSuccess(1, 2, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the data state with cached dataset count and reset error and loading state when given a FetchInvestigationDatasetsCountSuccess action', () => {
-      state.loading = true;
-
-      state.investigationCache = {
-        1: {
-          childEntityCount: 3,
-        },
-        2: {
-          childEntityCount: 5,
-        },
-      };
-
-      const mockData: Investigation[] = [
-        {
-          ID: 3,
-          TITLE: 'Test 3',
-          VISIT_ID: '3',
-          RB_NUMBER: '3',
-          DOI: 'doi 3',
-          SIZE: 1,
-          INSTRUMENT: {
-            NAME: 'LARMOR',
-          },
-          STARTDATE: '2019-10-08',
-          ENDDATE: '2019-10-08',
-        },
-      ];
-
-      state.data = mockData;
-
-      const mockDataUpdated: Investigation[] = [
-        { ...mockData[0], DATASET_COUNT: 4 },
-      ];
-
-      const mockInvestigationCacheUpdated: EntityCache = {
-        1: {
-          childEntityCount: 3,
-        },
-        2: {
-          childEntityCount: 5,
-        },
-        3: {
-          childEntityCount: 4,
-        },
-      };
-
-      // We give the investigation ID of 3 and the new dataset count (we would cache) as 4.
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationDatasetsCountSuccess(3, 4, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.investigationCache).toEqual(
-        mockInvestigationCacheUpdated
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state when given a FetchInvestigationDatasetsCountFailure action', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchInvestigationDatasetsCountFailure('Test error message')
-      );
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchDatafiles actions', () => {
-    it('should set the loading state when given a FetchDatafilesRequest action', () => {
-      expect(state.loading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafilesRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
-
-    it('should set the data state and reset error and loading state when given a FetchDatafilesSuccess action', () => {
-      state.loading = true;
-      const mockData: Datafile[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-          LOCATION: '/test1',
-          FILESIZE: 1,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-          LOCATION: '/test2',
-          FILESIZE: 2,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
-        },
-      ];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafilesSuccess(mockData, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual(mockData);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state and reset loading and data state when given a FetchDatafilesFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafilesFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual([]);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchDatafileCount actions', () => {
-    it('should set the loading state when given a FetchDatafileCountRequest action', () => {
-      expect(state.loading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileCountRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
-
-    it('should set the totalDataCount state and reset error and loading state when given a FetchDatafileCountSuccess action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileCountSuccess(13, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(13);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state and reset loading and data state when given a FetchDatafileCountFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileCountFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(0);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchDatafileDetails actions', () => {
-    it('should not update state when given a FetchDatafileDetailsRequest action', () => {
-      let updatedState = DGTableReducer(state, fetchDatafileDetailsRequest());
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should update the data state and reset error state when given a FetchDatafileDetailsSuccess action', () => {
-      state.loading = true;
-      const mockData: Datafile[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-          LOCATION: '/test1',
-          FILESIZE: 1,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-          LOCATION: '/test2',
-          FILESIZE: 2,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
-        },
-      ];
-
-      state.data = mockData;
-
-      const datafileDetails: Datafile = {
-        ...mockData[0],
-        DATAFILEPARAMETER: [
-          {
-            ID: 3,
-            DATAFILE_ID: 1,
-            PARAMETER_TYPE_ID: 4,
-            PARAMETERTYPE: {
-              ID: 4,
-              NAME: 'Test parameter type',
-              UNITS: 'Test unit',
-              VALUE_TYPE: 'STRING',
-            },
-          },
-        ],
-      };
-
-      const mockDataUpdated: Datafile[] = [datafileDetails, mockData[1]];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileDetailsSuccess([datafileDetails])
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state when given a FetchDatafileDetailsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatafileDetailsFailure('Test error message')
-      );
-
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('DownloadDatafile actions', () => {
-    it('should set the downloading state to true when given a DownloadDatafileRequest action', () => {
-      expect(state.downloading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        downloadDatafileRequest(validTimestamp)
-      );
-      expect(updatedState.downloading).toBe(true);
-    });
-
-    it('should set the downloading state to false when given a DownloadDatafileSuccess action', () => {
-      state.downloading = true;
-
-      let updatedState = DGTableReducer(state, downloadDatafileSuccess());
-      expect(updatedState.downloading).toBe(false);
-    });
-
-    it('should set the error state and the downloading state to false when given a DownloadDatafileFailure action', () => {
-      state.downloading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        downloadDatafileFailure('Test error message')
-      );
-      expect(updatedState.downloading).toBe(false);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchDatasetDatafilesCount actions', () => {
-    it('should not affect state when given a FetchDatasetDatafilesCountRequest action', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetDatafilesCountRequest(validTimestamp)
-      );
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should set the data state and reset error and loading state when given a FetchDatasetDatafilesCountSuccess action', () => {
-      state.loading = true;
-      const mockData: Dataset[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-11',
-          INVESTIGATION_ID: 1,
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-12',
-          INVESTIGATION_ID: 1,
-        },
-      ];
-
-      state.data = mockData;
-
-      const mockDataUpdated: Dataset[] = [
-        { ...mockData[0], DATAFILE_COUNT: 2 },
-        mockData[1],
-      ];
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetDatafilesCountSuccess(1, 2, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
+    state.data = mockData;
+
+    const mockDataUpdated: Investigation[] = [
+      { ...mockData[0], DATASET_COUNT: 4 },
+    ];
+
+    const mockInvestigationCacheUpdated: EntityCache = {
+      1: {
+        childEntityCount: 3,
+        childEntitySize: 4,
+      },
+      2: {
+        childEntityCount: 5,
+        childEntitySize: 3,
+      },
+      3: {
+        childEntityCount: 4,
+        childEntitySize: 6,
+      },
+    };
 
     it('should set the data state with cached datafile count and reset error and loading state when given a FetchDatasetDatafilesCountSuccess action', () => {
       state.loading = true;
@@ -1080,9 +331,11 @@ describe('dgtable reducer', () => {
       state.datasetCache = {
         1: {
           childEntityCount: 100,
+          childEntitySize: 1,
         },
         2: {
           childEntityCount: 100,
+          childEntitySize: 5,
         },
       };
 
@@ -1121,400 +374,396 @@ describe('dgtable reducer', () => {
       const mockDatasetCacheUpdated: EntityCache = {
         1: {
           childEntityCount: 100,
+          childEntitySize: 2,
         },
         2: {
           childEntityCount: 100,
+          childEntitySize: 2,
         },
         3: {
           childEntityCount: 99,
+          childEntitySize: 2,
         },
       };
 
-      // We give the investigation ID of 3 and the new datafile count (we would cache) as 99.
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetDatafilesCountSuccess(3, 99, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.datasetCache).toEqual(mockDatasetCacheUpdated);
+      describe('FetchInstruments actions', () => {
+        it('should set the loading state when given a FetchInstrumentsRequest action', () => {
+          expect(state.loading).toBe(false);
 
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentsRequest(validTimestamp)
+          );
+          expect(updatedState.loading).toBe(true);
+        });
 
-    it('should set the error state when given a FetchDatasetDatafilesCountFailure action', () => {
-      let updatedState = DGTableReducer(
-        state,
-        fetchDatasetDatafilesCountFailure('Test error message')
-      );
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
+        it('should set the data state and reset error and loading state when given a FetchInstrumentsSuccess action', () => {
+          state.loading = true;
+          const mockData: Instrument[] = [
+            {
+              ID: 1,
+              NAME: 'Test 1',
+            },
+            {
+              ID: 2,
+              NAME: 'Test 2',
+            },
+          ];
 
-  describe('FetchInstruments actions', () => {
-    it('should set the loading state when given a FetchInstrumentsRequest action', () => {
-      expect(state.loading).toBe(false);
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentsSuccess(mockData, validTimestamp)
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.data).toEqual(mockData);
+          expect(updatedState.error).toBeNull();
+        });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentsRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
+        it('should set the error state and reset loading and data state when given a FetchInstrumentsFailure action', () => {
+          state.loading = true;
 
-    it('should set the data state and reset error and loading state when given a FetchInstrumentsSuccess action', () => {
-      state.loading = true;
-      const mockData: Instrument[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-        },
-      ];
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentsFailure('Test error message')
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.data).toEqual([]);
+          expect(updatedState.error).toEqual('Test error message');
+        });
+      });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentsSuccess(mockData, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual(mockData);
-      expect(updatedState.error).toBeNull();
-    });
+      describe('FetchInstrumentCount actions', () => {
+        it('should set the loading state when given a FetchInstrumentCountRequest action', () => {
+          expect(state.loading).toBe(false);
 
-    it('should set the error state and reset loading and data state when given a FetchInstrumentsFailure action', () => {
-      state.loading = true;
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentCountRequest(validTimestamp)
+          );
+          expect(updatedState.loading).toBe(true);
+        });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentsFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual([]);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
+        it('should set the totalDataCount state and reset error and loading state when given a FetchInstrumentCountSuccess action', () => {
+          state.loading = true;
 
-  describe('FetchInstrumentCount actions', () => {
-    it('should set the loading state when given a FetchInstrumentCountRequest action', () => {
-      expect(state.loading).toBe(false);
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentCountSuccess(14, validTimestamp)
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.totalDataCount).toEqual(14);
+          expect(updatedState.error).toBeNull();
+        });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentCountRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
+        it('should set the error state and reset loading and data state when given a FetchInstrumentCountFailure action', () => {
+          state.loading = true;
 
-    it('should set the totalDataCount state and reset error and loading state when given a FetchInstrumentCountSuccess action', () => {
-      state.loading = true;
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentCountFailure('Test error message')
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.totalDataCount).toEqual(0);
+          expect(updatedState.error).toEqual('Test error message');
+        });
+      });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentCountSuccess(14, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(14);
-      expect(updatedState.error).toBeNull();
-    });
+      describe('FetchInstrumentDetails actions', () => {
+        it('should not update state when given a FetchInstrumentDetailsRequest action', () => {
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentDetailsRequest()
+          );
+          expect(updatedState).toEqual(state);
+        });
 
-    it('should set the error state and reset loading and data state when given a FetchInstrumentCountFailure action', () => {
-      state.loading = true;
+        it('should update the data state and reset error state when given a FetchInstrumentDetailsSuccess action', () => {
+          state.loading = true;
+          const mockData: Instrument[] = [
+            {
+              ID: 1,
+              NAME: 'Test 1',
+            },
+            {
+              ID: 2,
+              NAME: 'Test 2',
+            },
+          ];
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentCountFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(0);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
+          state.data = mockData;
 
-  describe('FetchInstrumentDetails actions', () => {
-    it('should not update state when given a FetchInstrumentDetailsRequest action', () => {
-      let updatedState = DGTableReducer(state, fetchInstrumentDetailsRequest());
-      expect(updatedState).toEqual(state);
-    });
+          const instrumentDetails: Instrument = {
+            ...mockData[0],
+            INSTRUMENTSCIENTIST: [
+              {
+                ID: 3,
+                INSTRUMENT_ID: 1,
+                USER_ID: 4,
+                USER_: { ID: 4, NAME: 'Louise' },
+              },
+            ],
+          };
 
-    it('should update the data state and reset error state when given a FetchInstrumentDetailsSuccess action', () => {
-      state.loading = true;
-      const mockData: Instrument[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-        },
-      ];
+          const mockDataUpdated: Instrument[] = [
+            instrumentDetails,
+            mockData[1],
+          ];
 
-      state.data = mockData;
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentDetailsSuccess([instrumentDetails])
+          );
+          expect(updatedState.data).toEqual(mockDataUpdated);
+          expect(updatedState.error).toBeNull();
+        });
 
-      const instrumentDetails: Instrument = {
-        ...mockData[0],
-        INSTRUMENTSCIENTIST: [
-          {
-            ID: 3,
-            INSTRUMENT_ID: 1,
-            USER_ID: 4,
-            USER_: { ID: 4, NAME: 'Louise' },
-          },
-        ],
-      };
+        it('should set the error state when given a FetchInstrumentDetailsFailure action', () => {
+          state.loading = true;
 
-      const mockDataUpdated: Instrument[] = [instrumentDetails, mockData[1]];
+          let updatedState = DGTableReducer(
+            state,
+            fetchInstrumentDetailsFailure('Test error message')
+          );
+          expect(updatedState.error).toEqual('Test error message');
+        });
+      });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentDetailsSuccess([instrumentDetails])
-      );
-      expect(updatedState.data).toEqual(mockDataUpdated);
-      expect(updatedState.error).toBeNull();
-    });
+      describe('FetchFacilityCycles actions', () => {
+        it('should set the loading state when given a FetchFacilityCyclesRequest action', () => {
+          expect(state.loading).toBe(false);
 
-    it('should set the error state when given a FetchInstrumentDetailsFailure action', () => {
-      state.loading = true;
+          let updatedState = DGTableReducer(
+            state,
+            fetchFacilityCyclesRequest(validTimestamp)
+          );
+          expect(updatedState.loading).toBe(true);
+        });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchInstrumentDetailsFailure('Test error message')
-      );
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
+        it('should set the data state and reset error and loading state when given a FetchFacilityCyclesSuccess action', () => {
+          state.loading = true;
+          const mockData: FacilityCycle[] = [
+            {
+              ID: 1,
+              NAME: 'Test 1',
+              DESCRIPTION: 'Test 1',
+              STARTDATE: '2019-07-03',
+              ENDDATE: '2019-07-04',
+            },
+            {
+              ID: 2,
+              NAME: 'Test 2',
+              DESCRIPTION: 'Test 2',
+              STARTDATE: '2019-07-03',
+              ENDDATE: '2019-07-04',
+            },
+          ];
 
-  describe('FetchFacilityCycles actions', () => {
-    it('should set the loading state when given a FetchFacilityCyclesRequest action', () => {
-      expect(state.loading).toBe(false);
+          let updatedState = DGTableReducer(
+            state,
+            fetchFacilityCyclesSuccess(mockData, validTimestamp)
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.data).toEqual(mockData);
+          expect(updatedState.error).toBeNull();
+        });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchFacilityCyclesRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
+        it('should set the error state and reset loading and data state when given a FetchFacilityCyclesFailure action', () => {
+          state.loading = true;
 
-    it('should set the data state and reset error and loading state when given a FetchFacilityCyclesSuccess action', () => {
-      state.loading = true;
-      const mockData: FacilityCycle[] = [
-        {
-          ID: 1,
-          NAME: 'Test 1',
-          DESCRIPTION: 'Test 1',
-          STARTDATE: '2019-07-03',
-          ENDDATE: '2019-07-04',
-        },
-        {
-          ID: 2,
-          NAME: 'Test 2',
-          DESCRIPTION: 'Test 2',
-          STARTDATE: '2019-07-03',
-          ENDDATE: '2019-07-04',
-        },
-      ];
+          let updatedState = DGTableReducer(
+            state,
+            fetchFacilityCyclesFailure('Test error message')
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.data).toEqual([]);
+          expect(updatedState.error).toEqual('Test error message');
+        });
+      });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchFacilityCyclesSuccess(mockData, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual(mockData);
-      expect(updatedState.error).toBeNull();
-    });
+      describe('FetchFacilityCycleCount actions', () => {
+        it('should set the loading state when given a FetchFacilityCycleCountRequest action', () => {
+          expect(state.loading).toBe(false);
 
-    it('should set the error state and reset loading and data state when given a FetchFacilityCyclesFailure action', () => {
-      state.loading = true;
+          let updatedState = DGTableReducer(
+            state,
+            fetchFacilityCycleCountRequest(validTimestamp)
+          );
+          expect(updatedState.loading).toBe(true);
+        });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchFacilityCyclesFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.data).toEqual([]);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
+        it('should set the totalDataCount state and reset error and loading state when given a FetchFacilityCycleCountSuccess action', () => {
+          state.loading = true;
 
-  describe('FetchFacilityCycleCount actions', () => {
-    it('should set the loading state when given a FetchFacilityCycleCountRequest action', () => {
-      expect(state.loading).toBe(false);
+          let updatedState = DGTableReducer(
+            state,
+            fetchFacilityCycleCountSuccess(15, validTimestamp)
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.totalDataCount).toEqual(15);
+          expect(updatedState.error).toBeNull();
+        });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchFacilityCycleCountRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
+        it('should set the error state and reset loading and data state when given a FetchFacilityCycleCountFailure action', () => {
+          state.loading = true;
 
-    it('should set the totalDataCount state and reset error and loading state when given a FetchFacilityCycleCountSuccess action', () => {
-      state.loading = true;
+          let updatedState = DGTableReducer(
+            state,
+            fetchFacilityCycleCountFailure('Test error message')
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.totalDataCount).toEqual(0);
+          expect(updatedState.error).toEqual('Test error message');
+        });
+      });
 
-      let updatedState = DGTableReducer(
-        state,
-        fetchFacilityCycleCountSuccess(15, validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(15);
-      expect(updatedState.error).toBeNull();
-    });
-
-    it('should set the error state and reset loading and data state when given a FetchFacilityCycleCountFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchFacilityCycleCountFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.totalDataCount).toEqual(0);
-      expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('Cart actions', () => {
-    const mockData: DownloadCart = {
-      cartItems: [
-        {
-          entityId: 1,
-          entityType: 'dataset',
+      describe('Cart actions', () => {
+        const mockData: DownloadCart = {
+          cartItems: [
+            {
+              entityId: 1,
+              entityType: 'dataset',
+              id: 1,
+              name: 'DATASET 1',
+              parentEntities: [],
+            },
+          ],
+          createdAt: '2019-10-15T14:11:43+01:00',
+          facilityName: 'TEST',
           id: 1,
-          name: 'DATASET 1',
-          parentEntities: [],
-        },
-      ],
-      createdAt: '2019-10-15T14:11:43+01:00',
-      facilityName: 'TEST',
-      id: 1,
-      updatedAt: '2019-10-15T14:11:43+01:00',
-      userName: 'test',
-    };
+          updatedAt: '2019-10-15T14:11:43+01:00',
+          userName: 'test',
+        };
 
-    describe('FetchDownloadCart actions', () => {
-      it('should set the loading state when given a FetchDownloadCartRequest action', () => {
-        expect(state.loading).toBe(false);
+        describe('FetchDownloadCart actions', () => {
+          it('should set the loading state when given a FetchDownloadCartRequest action', () => {
+            expect(state.loading).toBe(false);
 
-        let updatedState = DGTableReducer(state, fetchDownloadCartRequest());
-        expect(updatedState.loading).toBe(true);
+            let updatedState = DGTableReducer(
+              state,
+              fetchDownloadCartRequest()
+            );
+            expect(updatedState.loading).toBe(true);
+          });
+
+          it('should set the downloadCart state and reset loading state when given a FetchDownloadCartSuccess action', () => {
+            state.loading = true;
+
+            let updatedState = DGTableReducer(
+              state,
+              fetchDownloadCartSuccess(mockData)
+            );
+            expect(updatedState.loading).toBe(false);
+            expect(updatedState.cartItems).toEqual(mockData.cartItems);
+          });
+
+          it('should set the error state and reset loading state when given a FetchDownloadCartFailure action', () => {
+            state.loading = true;
+
+            let updatedState = DGTableReducer(
+              state,
+              fetchDownloadCartFailure('Test error message')
+            );
+            expect(updatedState.loading).toBe(false);
+            expect(updatedState.error).toEqual('Test error message');
+          });
+        });
+
+        describe('AddToCart actions', () => {
+          it('should set the loading state when given a AddToCartRequest action', () => {
+            expect(state.loading).toBe(false);
+
+            let updatedState = DGTableReducer(state, addToCartRequest());
+            expect(updatedState.loading).toBe(true);
+          });
+
+          it('should set the downloadCart state and reset loading state when given a AddToCartSuccess action', () => {
+            state.loading = true;
+
+            let updatedState = DGTableReducer(
+              state,
+              addToCartSuccess(mockData)
+            );
+            expect(updatedState.loading).toBe(false);
+            expect(updatedState.cartItems).toEqual(mockData.cartItems);
+          });
+
+          it('should set the error state and reset loading state when given a AddToCartFailure action', () => {
+            state.loading = true;
+
+            let updatedState = DGTableReducer(
+              state,
+              addToCartFailure('Test error message')
+            );
+            expect(updatedState.loading).toBe(false);
+            expect(updatedState.error).toEqual('Test error message');
+          });
+        });
+
+        describe('RemoveFromCart actions', () => {
+          it('should set the loading state when given a RemoveFromCartRequest action', () => {
+            expect(state.loading).toBe(false);
+
+            let updatedState = DGTableReducer(state, removeFromCartRequest());
+            expect(updatedState.loading).toBe(true);
+          });
+
+          it('should set the downloadCart state and reset loading state when given a RemoveFromCartSuccess action', () => {
+            state.loading = true;
+
+            let updatedState = DGTableReducer(
+              state,
+              removeFromCartSuccess(mockData)
+            );
+            expect(updatedState.loading).toBe(false);
+            expect(updatedState.cartItems).toEqual(mockData.cartItems);
+          });
+
+          it('should set the error state and reset loading state when given a RemoveFromCartFailure action', () => {
+            state.loading = true;
+
+            let updatedState = DGTableReducer(
+              state,
+              removeFromCartFailure('Test error message')
+            );
+            expect(updatedState.loading).toBe(false);
+            expect(updatedState.error).toEqual('Test error message');
+          });
+        });
       });
 
-      it('should set the downloadCart state and reset loading state when given a FetchDownloadCartSuccess action', () => {
-        state.loading = true;
+      describe('FetchAllIds actions', () => {
+        it('should set the loading state when given a FetchAllIdsRequest action', () => {
+          expect(state.loading).toBe(false);
 
-        let updatedState = DGTableReducer(
-          state,
-          fetchDownloadCartSuccess(mockData)
-        );
-        expect(updatedState.loading).toBe(false);
-        expect(updatedState.cartItems).toEqual(mockData.cartItems);
+          let updatedState = DGTableReducer(
+            state,
+            fetchAllIdsRequest(validTimestamp)
+          );
+          expect(updatedState.loading).toBe(true);
+        });
+
+        it('should set the allIds state and reset loading state when given a FetchAllIdsSuccess action', () => {
+          state.loading = true;
+
+          let updatedState = DGTableReducer(
+            state,
+            fetchAllIdsSuccess([1, 2, 3], validTimestamp)
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.allIds).toEqual([1, 2, 3]);
+        });
+
+        it('should set the error state and reset loading state when given a FetchAllIdsFailure action', () => {
+          state.loading = true;
+
+          let updatedState = DGTableReducer(
+            state,
+            fetchAllIdsFailure('Test error message')
+          );
+          expect(updatedState.loading).toBe(false);
+          expect(updatedState.error).toEqual('Test error message');
+        });
       });
-
-      it('should set the error state and reset loading state when given a FetchDownloadCartFailure action', () => {
-        state.loading = true;
-
-        let updatedState = DGTableReducer(
-          state,
-          fetchDownloadCartFailure('Test error message')
-        );
-        expect(updatedState.loading).toBe(false);
-        expect(updatedState.error).toEqual('Test error message');
-      });
-    });
-
-    describe('AddToCart actions', () => {
-      it('should set the loading state when given a AddToCartRequest action', () => {
-        expect(state.loading).toBe(false);
-
-        let updatedState = DGTableReducer(state, addToCartRequest());
-        expect(updatedState.loading).toBe(true);
-      });
-
-      it('should set the downloadCart state and reset loading state when given a AddToCartSuccess action', () => {
-        state.loading = true;
-
-        let updatedState = DGTableReducer(state, addToCartSuccess(mockData));
-        expect(updatedState.loading).toBe(false);
-        expect(updatedState.cartItems).toEqual(mockData.cartItems);
-      });
-
-      it('should set the error state and reset loading state when given a AddToCartFailure action', () => {
-        state.loading = true;
-
-        let updatedState = DGTableReducer(
-          state,
-          addToCartFailure('Test error message')
-        );
-        expect(updatedState.loading).toBe(false);
-        expect(updatedState.error).toEqual('Test error message');
-      });
-    });
-
-    describe('RemoveFromCart actions', () => {
-      it('should set the loading state when given a RemoveFromCartRequest action', () => {
-        expect(state.loading).toBe(false);
-
-        let updatedState = DGTableReducer(state, removeFromCartRequest());
-        expect(updatedState.loading).toBe(true);
-      });
-
-      it('should set the downloadCart state and reset loading state when given a RemoveFromCartSuccess action', () => {
-        state.loading = true;
-
-        let updatedState = DGTableReducer(
-          state,
-          removeFromCartSuccess(mockData)
-        );
-        expect(updatedState.loading).toBe(false);
-        expect(updatedState.cartItems).toEqual(mockData.cartItems);
-      });
-
-      it('should set the error state and reset loading state when given a RemoveFromCartFailure action', () => {
-        state.loading = true;
-
-        let updatedState = DGTableReducer(
-          state,
-          removeFromCartFailure('Test error message')
-        );
-        expect(updatedState.loading).toBe(false);
-        expect(updatedState.error).toEqual('Test error message');
-      });
-    });
-  });
-
-  describe('FetchAllIds actions', () => {
-    it('should set the loading state when given a FetchAllIdsRequest action', () => {
-      expect(state.loading).toBe(false);
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchAllIdsRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-    });
-
-    it('should set the allIds state and reset loading state when given a FetchAllIdsSuccess action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchAllIdsSuccess([1, 2, 3], validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.allIds).toEqual([1, 2, 3]);
-    });
-
-    it('should set the error state and reset loading state when given a FetchAllIdsFailure action', () => {
-      state.loading = true;
-
-      let updatedState = DGTableReducer(
-        state,
-        fetchAllIdsFailure('Test error message')
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.error).toEqual('Test error message');
     });
   });
 });

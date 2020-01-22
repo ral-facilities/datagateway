@@ -10,22 +10,18 @@ import {
   Investigation,
   Entity,
   DownloadCartItem,
+  fetchInvestigations,
+  addToCart,
+  removeFromCart,
+  fetchInvestigationCount,
+  fetchAllIds,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  sortTable,
-  filterTable,
-  fetchInvestigations,
-  addToCart,
-  removeFromCart,
-  fetchInvestigationCount,
-  clearTable,
-  fetchAllIds,
-} from '../state/actions';
+import { sortTable, filterTable, clearTable } from '../state/actions';
 import useAfterMountEffect from '../utils';
 
 interface InvestigationTableProps {
@@ -229,10 +225,10 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgtable.loading,
     error: state.dgtable.error,
     cartItems: state.dgtable.cartItems,

@@ -14,16 +14,12 @@ import {
   fetchDatafiles,
   downloadDatafile,
   fetchDatafileCount,
-} from 'datagateway-common';
-import { GetApp } from '@material-ui/icons';
-import {
-  sortTable,
-  filterTable,
   addToCart,
   removeFromCart,
-  clearTable,
   fetchAllIds,
-} from '../state/actions'; 
+} from 'datagateway-common';
+import { GetApp } from '@material-ui/icons';
+import { sortTable, filterTable, clearTable } from '../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';

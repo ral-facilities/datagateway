@@ -17,7 +17,7 @@ import {
   fetchDatafileDetails,
   fetchDatafileDetailsRequest,
   fetchDatafileDetailsFailure,
-} from './datafiles';
+} from '.';
 import axios from 'axios';
 import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';

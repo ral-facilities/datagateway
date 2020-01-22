@@ -4,6 +4,7 @@
 // import App from './App';
 
 export * from './app.types';
+export * from './state/actions/actions.types';
 
 export { default as Table } from './table/table.component';
 export * from './table/table.component';
@@ -18,6 +19,11 @@ export * from './table/cellRenderers/cellContentRenderers';
 export * from './state/actions/datafiles';
 export * from './state/actions/datasets';
 export * from './state/actions/investigations';
+export * from './state/actions/cart';
 export { default as Preloader } from './preloader/preloader.component';
+export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';
+
+import { StateType } from './state/app.types';
+export type DGCommonState = StateType;
 
 // ReactDOM.render(<App />, document.getElementById('root'));

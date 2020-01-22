@@ -23,7 +23,7 @@ import {
   fetchAllIdsFailure,
   fetchAllISISInvestigationIds,
 } from './cart';
-import { initialState } from '../reducers/dgtable.reducer';
+import { initialState } from '../reducers/dgcommon.reducer';
 import { StateType } from '../app.types';
 
 jest.mock('loglevel');

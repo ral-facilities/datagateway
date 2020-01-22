@@ -9,18 +9,14 @@ import {
   Datafile,
   DateColumnFilter,
   DownloadCartItem,
-} from 'datagateway-common';
-import { Paper, Typography } from '@material-ui/core';
-import {
   fetchDatafiles,
-  sortTable,
-  filterTable,
   fetchDatafileCount,
-  clearTable,
   addToCart,
   removeFromCart,
   fetchAllIds,
-} from '../../state/actions';
+} from 'datagateway-common';
+import { Paper, Typography } from '@material-ui/core';
+import { sortTable, filterTable, clearTable } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';

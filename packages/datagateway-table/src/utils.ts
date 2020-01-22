@@ -5,12 +5,15 @@ const useAfterMountEffect = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   deps?: any[]
 ): void => {
+  console.log('lo');
   const hasMounted = React.useRef(false);
 
   React.useEffect(() => {
     if (hasMounted.current) {
       func();
+      console.log('true');
     } else {
+      console.log('false');
       hasMounted.current = true;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

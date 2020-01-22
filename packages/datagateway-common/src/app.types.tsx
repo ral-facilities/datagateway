@@ -195,12 +195,3 @@ export interface DownloadCartItem {
   name: string;
   parentEntities: DownloadCartItem[];
 }
-
-export interface DownloadCart {
-  cartItems: DownloadCartItem[];
-  createdAt: string;
-  facilityName: string;
-  id: number;
-  updatedAt: string;
-  userName: string;
-}
