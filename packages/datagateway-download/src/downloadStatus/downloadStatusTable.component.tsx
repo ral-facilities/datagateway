@@ -1,15 +1,26 @@
 import React from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import {
+  Grid,
+  Paper,
+  IconButton,
+  // Icon
+} from '@material-ui/core';
 
 import {
   Table,
   Order,
   Download,
   TextColumnFilter,
+  TableActionProps,
+  // DownloadCartTableItem,
   // DateColumnFilter,
 } from 'datagateway-common';
-import { fetchDownloads } from './downloadApi';
+import { fetchDownloads, downloadDeleted } from './downloadApi';
 import { TableCellProps } from 'react-virtualized';
+import {
+  RemoveCircle,
+  // GetApp
+} from '@material-ui/icons';
 
 const DownloadStatusTable: React.FC = () => {
   // Sorting columns
@@ -153,11 +164,57 @@ const DownloadStatusTable: React.FC = () => {
             }}
             data={sortedAndFilteredData}
             loading={!dataLoaded}
-
             // TODO: Implement Download and Remove action buttons
-            // actions={[
-            //   function RemoveButton({ row})
-            // ]}
+            actions={[
+              // function DownloadButton({ rowData }: TableActionProps) {
+              //   const downloadItem = rowData as Download;
+              //   return (
+              //     <IconButton
+              //       aria-label={`Download ${downloadItem.fileName}`}
+              //       key="download"
+              //       size="small"
+
+              //       // Download the prepared cart.
+              //       // onClick={() => {
+
+              //       // }}
+              //     >
+              //       <GetApp />
+              //     </IconButton>
+              //   );
+              // },
+              function RemoveButton({ rowData }: TableActionProps) {
+                const downloadItem = rowData as Download;
+                const [isDeleting, setIsDeleting] = React.useState(false);
+
+                return (
+                  <IconButton
+                    aria-label={`Remove ${downloadItem.fileName} from cart`}
+                    key="remove"
+                    size="small"
+                    onClick={() => {
+                      setIsDeleting(true);
+                      setTimeout(
+                        () =>
+                          downloadDeleted(
+                            // TODO: get the facilityName from config
+                            'LILS',
+                            downloadItem.id,
+                            true
+                          ).then(() =>
+                            setData(
+                              data.filter(item => item.id !== downloadItem.id)
+                            )
+                          ),
+                        100
+                      );
+                    }}
+                  >
+                    <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />
+                  </IconButton>
+                );
+              },
+            ]}
           />
         </Paper>
       </Grid>
