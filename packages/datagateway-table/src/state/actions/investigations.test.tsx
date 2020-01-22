@@ -132,16 +132,15 @@ describe('Investigation actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
     params.append('where', JSON.stringify({ column3: { eq: 3 } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/investigations',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/investigations', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('fetchInvestigations action sends fetchDatasetCount actions when specified via optional parameters', async () => {
@@ -286,14 +285,23 @@ describe('Investigation actions', () => {
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData, 1));
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append(
+      'include',
+      JSON.stringify([
+        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+        { STUDYINVESTIGATION: 'STUDY' },
+      ])
+    );
 
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/1/facilitycycles/2/investigations',
-      expect.objectContaining({
+      {
+        headers: { Authorization: 'Bearer null' },
         params,
-      })
+      }
     );
   });
 
@@ -368,10 +376,10 @@ describe('Investigation actions', () => {
       JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
     );
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/investigations',
-      expect.objectContaining({ params })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/investigations', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchInvestigationDetailsRequest and fetchInvestigationDetailsFailure actions upon unsuccessful fetchInvestigationDetails action', async () => {
@@ -439,12 +447,10 @@ describe('Investigation actions', () => {
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
     params.append('distinct', JSON.stringify(['NAME']));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/investigations/count',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/investigations/count', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchInvestigationCountRequest and fetchInvestigationCountFailure actions upon unsuccessful fetchInvestigationCount action', async () => {
@@ -508,9 +514,10 @@ describe('Investigation actions', () => {
 
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/1/facilitycycles/2/investigations/count',
-      expect.objectContaining({
+      {
+        headers: { Authorization: 'Bearer null' },
         params,
-      })
+      }
     );
   });
 
