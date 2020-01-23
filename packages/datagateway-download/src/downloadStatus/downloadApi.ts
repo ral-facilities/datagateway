@@ -30,32 +30,6 @@ export const fetchDownloads: (
     });
 };
 
-export const downloadPreparedCart: (
-  preparedId: string,
-  fileName: string
-) => void = (preparedId: string, fileName: string) => {
-  // We need to set the preparedId and outname query parameters
-  // for the IDS download.
-  const params = {
-    sessionId: window.localStorage.getItem('icat:token'),
-    preparedId: preparedId,
-    outname: fileName,
-  };
-
-  // Create our IDS link from the query parameters.
-  const link = document.createElement('a');
-  link.href = `${idsUrl}/getData?${Object.entries(params)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&')}`;
-
-  // We trigger an immediate download which will begin in a new tab.
-  link.style.display = 'none';
-  link.target = '_blank';
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-};
-
 export const downloadDeleted: (
   facilityName: string,
   downloadId: number,

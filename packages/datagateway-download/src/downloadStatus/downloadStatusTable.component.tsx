@@ -9,13 +9,14 @@ import {
   TableActionProps,
   // DateColumnFilter,
 } from 'datagateway-common';
-import {
-  fetchDownloads,
-  downloadDeleted,
-  downloadPreparedCart,
-} from './downloadApi';
+import { fetchDownloads, downloadDeleted } from './downloadApi';
 import { TableCellProps } from 'react-virtualized';
-import { RemoveCircle, GetApp } from '@material-ui/icons';
+import {
+  RemoveCircle,
+  // GetApp
+} from '@material-ui/icons';
+
+// const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
 const DownloadStatusTable: React.FC = () => {
   // Sorting columns
@@ -95,6 +96,72 @@ const DownloadStatusTable: React.FC = () => {
     return filteredData.sort(sortDownloadItems);
   }, [data, sort, filters]);
 
+  const getActionButtons = (): React.ComponentType<TableActionProps>[] => {
+    // function DownloadButton({ rowData }: TableActionProps) {
+    //   const downloadItem = rowData as Download;
+    //   const [started, setStarted] = React.useState(false);
+    //   return (
+    //     <IconButton
+    //       component="a"
+    //       // Construct a link to download the prepared cart.
+    //       href={`${idsUrl}/getData?sessionId=${window.localStorage.getItem(
+    //         'icat:token'
+    //       )}&preparedId=${downloadItem.preparedId}&outname=${
+    //         downloadItem.fileName
+    //       }`}
+    //       target="_blank"
+    //       aria-label={`Download ${downloadItem.fileName}`}
+    //       key="download"
+    //       size="small"
+    //       onClick={() => {
+    //         setStarted(true);
+    //         setTimeout(() => {
+    //           setStarted(false);
+    //         }, 100);
+    //       }}
+    //     >
+    //       <GetApp color={started ? 'primary' : 'inherit'} />
+    //     </IconButton>
+    //   );
+    // }
+
+    function RemoveButton({ rowData }: TableActionProps): JSX.Element {
+      const downloadItem = rowData as Download;
+      const [isDeleting, setIsDeleting] = React.useState(false);
+
+      return (
+        <IconButton
+          aria-label={`Remove ${downloadItem.fileName} from cart`}
+          key="remove"
+          size="small"
+          onClick={() => {
+            setIsDeleting(true);
+            setTimeout(
+              () =>
+                downloadDeleted(
+                  // TODO: get the facilityName from config.
+                  'LILS',
+                  downloadItem.id,
+                  true
+                ).then(() =>
+                  setData(data.filter(item => item.id !== downloadItem.id))
+                ),
+              100
+            );
+          }}
+        >
+          <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />
+        </IconButton>
+      );
+    }
+
+    let statusButtons: React.ComponentType<TableActionProps>[] = [];
+    // if (downloadItem.transport === 'https') statusButtons.push(DownloadButton);
+    statusButtons.push(RemoveButton);
+
+    return statusButtons;
+  };
+
   return (
     <Grid container direction="column">
       <Grid item>
@@ -159,63 +226,7 @@ const DownloadStatusTable: React.FC = () => {
             loading={!dataLoaded}
             // Pass in a custom actions column width to fit both buttons.
             actionsWidth={100}
-            actions={[
-              function DownloadButton({ rowData }: TableActionProps) {
-                const downloadItem = rowData as Download;
-                const [started, setStarted] = React.useState(false);
-                return (
-                  <IconButton
-                    aria-label={`Download ${downloadItem.fileName}`}
-                    key="download"
-                    size="small"
-                    // Download the prepared cart.
-                    onClick={() => {
-                      setStarted(true);
-                      setTimeout(() => {
-                        downloadPreparedCart(
-                          downloadItem.preparedId,
-                          downloadItem.fileName
-                        );
-                        setStarted(false);
-                      }, 100);
-                    }}
-                  >
-                    <GetApp color={started ? 'primary' : 'inherit'} />
-                  </IconButton>
-                );
-              },
-              function RemoveButton({ rowData }: TableActionProps) {
-                const downloadItem = rowData as Download;
-                const [isDeleting, setIsDeleting] = React.useState(false);
-
-                return (
-                  <IconButton
-                    aria-label={`Remove ${downloadItem.fileName} from cart`}
-                    key="remove"
-                    size="small"
-                    onClick={() => {
-                      setIsDeleting(true);
-                      setTimeout(
-                        () =>
-                          downloadDeleted(
-                            // TODO: get the facilityName from config.
-                            'LILS',
-                            downloadItem.id,
-                            true
-                          ).then(() =>
-                            setData(
-                              data.filter(item => item.id !== downloadItem.id)
-                            )
-                          ),
-                        100
-                      );
-                    }}
-                  >
-                    <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />
-                  </IconButton>
-                );
-              },
-            ]}
+            actions={getActionButtons()}
           />
         </Paper>
       </Grid>
