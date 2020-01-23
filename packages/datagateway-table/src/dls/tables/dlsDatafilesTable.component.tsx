@@ -14,9 +14,11 @@ import {
   addToCart,
   removeFromCart,
   fetchAllIds,
+  sortTable,
+  filterTable,
 } from 'datagateway-common';
 import { Paper, Typography } from '@material-ui/core';
-import { sortTable, filterTable, clearTable } from '../../state/actions';
+import { clearTable } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
@@ -119,64 +121,62 @@ const DLSDatafilesTable = (
   );
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(parseInt(datasetId), params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData }) => {
-          const datafileData = rowData as Datafile;
-          return (
-            <div>
-              <Typography variant="body2">
-                <b>Name:</b> {datafileData.NAME}
-              </Typography>
-              <Typography variant="body2">
-                <b>Description:</b> {datafileData.DESCRIPTION}
-              </Typography>
-              <Typography variant="body2">
-                <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
-              </Typography>
-              <Typography variant="body2">
-                <b>Location:</b> {datafileData.LOCATION}
-              </Typography>
-            </div>
-          );
-        }}
-        columns={[
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            filterComponent: textFilter,
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData }) => {
+        const datafileData = rowData as Datafile;
+        return (
+          <div>
+            <Typography variant="body2">
+              <b>Name:</b> {datafileData.NAME}
+            </Typography>
+            <Typography variant="body2">
+              <b>Description:</b> {datafileData.DESCRIPTION}
+            </Typography>
+            <Typography variant="body2">
+              <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
+            </Typography>
+            <Typography variant="body2">
+              <b>Location:</b> {datafileData.LOCATION}
+            </Typography>
+          </div>
+        );
+      }}
+      columns={[
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Location',
+          dataKey: 'LOCATION',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Size',
+          dataKey: 'FILESIZE',
+          cellContentRenderer: props => {
+            return formatBytes(props.cellData);
           },
-          {
-            label: 'Location',
-            dataKey: 'LOCATION',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Size',
-            dataKey: 'FILESIZE',
-            cellContentRenderer: props => {
-              return formatBytes(props.cellData);
-            },
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Create Time',
-            dataKey: 'CREATE_TIME',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Create Time',
+          dataKey: 'CREATE_TIME',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 

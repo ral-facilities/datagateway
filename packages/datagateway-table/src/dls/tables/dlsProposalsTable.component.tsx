@@ -9,14 +9,15 @@ import {
   Entity,
   fetchInvestigations,
   fetchInvestigationCount,
+  sortTable,
+  filterTable,
 } from 'datagateway-common';
-import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import { sortTable, filterTable, clearTable } from '../../state/actions';
+import { clearTable } from '../../state/actions';
 import useAfterMountEffect from '../../utils';
 
 interface DLSProposalsTableStoreProps {
@@ -76,41 +77,39 @@ const DLSProposalsTable = (
   }, [fetchCount, fetchData, sort, filters]);
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={fetchData}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        columns={[
-          {
-            label: 'Title',
-            dataKey: 'TITLE',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              return tableLink(
-                `/browse/proposal/${investigationData.NAME}/investigation/`,
-                investigationData.TITLE
-              );
-            },
-            filterComponent: textFilter,
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={fetchData}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      columns={[
+        {
+          label: 'Title',
+          dataKey: 'TITLE',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            return tableLink(
+              `/browse/proposal/${investigationData.NAME}/investigation/`,
+              investigationData.TITLE
+            );
           },
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            cellContentRenderer: (props: TableCellProps) => {
-              return tableLink(
-                `/browse/proposal/${props.rowData.NAME}/investigation/`,
-                props.rowData.NAME
-              );
-            },
-            filterComponent: textFilter,
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          cellContentRenderer: (props: TableCellProps) => {
+            return tableLink(
+              `/browse/proposal/${props.rowData.NAME}/investigation/`,
+              props.rowData.NAME
+            );
           },
-        ]}
-      />
-    </Paper>
+          filterComponent: textFilter,
+        },
+      ]}
+    />
   );
 };
 

@@ -9,12 +9,12 @@ import {
   filterTable,
   sortTable,
   fetchFacilityCycleCountRequest,
-  clearTable,
-} from '../../state/actions';
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { clearTable } from '../../state/actions';
 
 describe('ISIS FacilityCycles table component', () => {
   let shallow;
@@ -27,7 +27,7 @@ describe('ISIS FacilityCycles table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'ISISFacilityCyclesTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -97,7 +97,7 @@ describe('ISIS FacilityCycles table component', () => {
       <ISISFacilityCyclesTable instrumentId="1" store={testStore} />
     );
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchFacilityCyclesRequest(1));
   });

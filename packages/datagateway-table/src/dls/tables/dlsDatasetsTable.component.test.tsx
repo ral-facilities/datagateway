@@ -9,16 +9,16 @@ import {
   filterTable,
   sortTable,
   fetchDatasetDetailsRequest,
-  clearTable,
   fetchDatasetCountRequest,
   removeFromCartRequest,
   addToCartRequest,
-} from '../../state/actions';
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { clearTable } from '../../state/actions';
 
 describe('DLS Dataset table component', () => {
   let shallow;
@@ -31,7 +31,7 @@ describe('DLS Dataset table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'DLSDatasetsTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -103,7 +103,7 @@ describe('DLS Dataset table component', () => {
       />
     );
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
   });

@@ -27,7 +27,6 @@ import {
   fetchFacilityCycleCountRequest,
   fetchFacilityCycleCountSuccess,
   fetchFacilityCycleCountFailure,
-  clearTable,
   loadFacilityName,
   configureStrings,
   loadUrls,

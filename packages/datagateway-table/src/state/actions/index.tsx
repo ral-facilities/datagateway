@@ -5,95 +5,94 @@ import {
   ApplicationStrings,
 } from '../app.types';
 import {
-  SortTablePayload,
-  SortTableType,
-  FilterTablePayload,
-  FilterTableType,
   ClearTableType,
   ConfigureStringsType,
   ConfigureStringsPayload,
   FeatureSwitches,
   FeatureSwitchesPayload,
   ConfigureFeatureSwitchesType,
-  URLs,
-  ConfigureUrlsPayload,
-  ConfigureURLsType,
   BreadcrumbSettings,
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+} from './actions.types';
+import {
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
-} from './actions.types';
+  URLs,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
+  SortTablePayload,
+  SortTableType,
+  FilterTablePayload,
+  FilterTableType,
+} from 'datagateway-common';
 import { Filter, Order, fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
 
-export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-  const sort = getState().dgcommon.sort;
-  const filters = getState().dgcommon.filters;
+// export const getApiFilter = (getState: () => StateType): URLSearchParams => {
+//   const sort = getState().dgcommon.sort;
+//   const filters = getState().dgcommon.filters;
 
-  let searchParams = new URLSearchParams();
+//   let searchParams = new URLSearchParams();
 
-  for (let [key, value] of Object.entries(sort)) {
-    searchParams.append('order', JSON.stringify(`${key} ${value}`));
-  }
+//   for (let [key, value] of Object.entries(sort)) {
+//     searchParams.append('order', JSON.stringify(`${key} ${value}`));
+//   }
 
-  // sort by ID first to guarantee order
-  searchParams.append('order', JSON.stringify(`ID asc`));
+//   // sort by ID first to guarantee order
+//   searchParams.append('order', JSON.stringify(`ID asc`));
 
-  for (let [column, filter] of Object.entries(filters)) {
-    if (typeof filter === 'object') {
-      if ('startDate' in filter && filter.startDate) {
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
-        );
-      }
-      if ('endDate' in filter && filter.endDate) {
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
-        );
-      }
-    } else {
-      searchParams.append(
-        'where',
-        JSON.stringify({ [column]: { like: filter } })
-      );
-    }
-  }
+//   for (let [column, filter] of Object.entries(filters)) {
+//     if (typeof filter === 'object') {
+//       if ('startDate' in filter && filter.startDate) {
+//         searchParams.append(
+//           'where',
+//           JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
+//         );
+//       }
+//       if ('endDate' in filter && filter.endDate) {
+//         searchParams.append(
+//           'where',
+//           JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
+//         );
+//       }
+//     } else {
+//       searchParams.append(
+//         'where',
+//         JSON.stringify({ [column]: { like: filter } })
+//       );
+//     }
+//   }
 
-  return searchParams;
-};
-
-export * from 'datagateway-common/src/state/actions/instruments';
-export * from 'datagateway-common/src/state/actions/facilityCycles';
+//   return searchParams;
+// };
 
 // extract more of these functions out, e.g. sortTable
 
-export const sortTable = (
-  column: string,
-  order: Order | null
-): ActionType<SortTablePayload> => ({
-  type: SortTableType,
-  payload: {
-    column,
-    order,
-  },
-});
+// export const sortTable = (
+//   column: string,
+//   order: Order | null
+// ): ActionType<SortTablePayload> => ({
+//   type: SortTableType,
+//   payload: {
+//     column,
+//     order,
+//   },
+// });
 
-export const filterTable = (
-  column: string,
-  filter: Filter | null
-): ActionType<FilterTablePayload> => ({
-  type: FilterTableType,
-  payload: {
-    column,
-    filter,
-  },
-});
+// export const filterTable = (
+//   column: string,
+//   filter: Filter | null
+// ): ActionType<FilterTablePayload> => ({
+//   type: FilterTableType,
+//   payload: {
+//     column,
+//     filter,
+//   },
+// });
 
 export const clearTable = (): Action => ({
   type: ClearTableType,

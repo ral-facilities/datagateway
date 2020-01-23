@@ -8,7 +8,6 @@ import {
   Entity,
   DateColumnFilter,
 } from 'datagateway-common';
-import { Paper } from '@material-ui/core';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
@@ -19,9 +18,9 @@ import {
   filterTable,
   fetchFacilityCycles,
   fetchFacilityCycleCount,
-  clearTable,
-} from '../../state/actions';
+} from 'datagateway-common';
 import useAfterMountEffect from '../../utils';
+import { clearTable } from '../../state/actions';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISFacilityCyclesTableProps {
@@ -98,43 +97,41 @@ const ISISFacilityCyclesTable = (
   }, [fetchData, instrumentId, sort, filters]);
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(parseInt(instrumentId), params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        columns={[
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            cellContentRenderer: (props: TableCellProps) =>
-              tableLink(
-                `/browse/instrument/${instrumentId}/facilityCycle/${props.rowData.ID}/investigation`,
-                props.rowData.NAME
-              ),
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Description',
-            dataKey: 'DESCRIPTION',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Start Date',
-            dataKey: 'STARTDATE',
-            filterComponent: dateFilter,
-          },
-          {
-            label: 'End Date',
-            dataKey: 'ENDDATE',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(parseInt(instrumentId), params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      columns={[
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          cellContentRenderer: (props: TableCellProps) =>
+            tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${props.rowData.ID}/investigation`,
+              props.rowData.NAME
+            ),
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Description',
+          dataKey: 'DESCRIPTION',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
+        },
+        {
+          label: 'End Date',
+          dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 

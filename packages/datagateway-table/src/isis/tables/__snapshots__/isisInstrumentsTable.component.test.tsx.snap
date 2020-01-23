@@ -1,49 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Instruments table component renders correctly 1`] = `
-<div
-  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
-  style={
-    Object {
-      "height": "calc(100vh - 64px)",
-      "width": "100%",
-    }
+<WithStyles(VirtualizedTable)
+  columns={
+    Array [
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "FULLNAME",
+        "filterComponent": [Function],
+        "label": "Name",
+      },
+    ]
   }
->
-  <WithStyles(VirtualizedTable)
-    columns={
-      Array [
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "FULLNAME",
-          "filterComponent": [Function],
-          "label": "Name",
-        },
-      ]
-    }
-    data={
-      Array [
-        Object {
-          "DESCRIPTION": "foo bar",
-          "FULLNAME": "Test instrument 1",
-          "ID": 1,
-          "NAME": "Test 1",
-        },
-        Object {
-          "DESCRIPTION": "foo bar",
-          "ID": 2,
-          "NAME": "Test 2",
-        },
-      ]
-    }
-    detailsPanel={[Function]}
-    loadMoreRows={[Function]}
-    loading={false}
-    onSort={[Function]}
-    sort={Object {}}
-    totalRowCount={0}
-  />
-</div>
+  data={
+    Array [
+      Object {
+        "DESCRIPTION": "foo bar",
+        "FULLNAME": "Test instrument 1",
+        "ID": 1,
+        "NAME": "Test 1",
+      },
+      Object {
+        "DESCRIPTION": "foo bar",
+        "ID": 2,
+        "NAME": "Test 2",
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  loadMoreRows={[Function]}
+  loading={false}
+  onSort={[Function]}
+  sort={Object {}}
+  totalRowCount={0}
+/>
 `;
 
 exports[`ISIS Instruments table component renders details panel correctly and it sends off an FetchInstrumentDetails action 1`] = `

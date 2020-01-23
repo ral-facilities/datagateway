@@ -78,15 +78,14 @@ describe('Instrument actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
+    params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/instruments',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/instruments', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchInstrumentsRequest and fetchInstrumentsFailure actions upon unsuccessful fetchInstruments action', async () => {
@@ -145,12 +144,10 @@ describe('Instrument actions', () => {
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/instruments/count',
-      expect.objectContaining({
-        params,
-      })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/instruments/count', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchInstrumentCountRequest and fetchInstrumentCountFailure actions upon unsuccessful fetchInstrumentCount action', async () => {
@@ -206,12 +203,12 @@ describe('Instrument actions', () => {
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ ID: { eq: 1 } }));
-    params.append('include', JSON.stringify({ INSTRUMENTUSER: 'USER_' }));
+    params.append('include', JSON.stringify({ INSTRUMENTSCIENTIST: 'USER_' }));
 
-    expect(axios.get).toHaveBeenCalledWith(
-      '/instruments',
-      expect.objectContaining({ params })
-    );
+    expect(axios.get).toHaveBeenCalledWith('/instruments', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchInstrumentDetailsRequest and fetchInstrumentDetailsFailure actions upon unsuccessful fetchInstrumentDetails action', async () => {

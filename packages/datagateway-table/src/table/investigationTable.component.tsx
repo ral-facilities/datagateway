@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
@@ -15,13 +15,15 @@ import {
   removeFromCart,
   fetchInvestigationCount,
   fetchAllIds,
+  sortTable,
+  filterTable,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import { sortTable, filterTable, clearTable } from '../state/actions';
+import { clearTable } from '../state/actions';
 import useAfterMountEffect from '../utils';
 
 interface InvestigationTableProps {
@@ -113,95 +115,91 @@ const InvestigationTable = (
   }, [fetchCount, fetchData, fetchAllIds, sort, filters]);
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={fetchData}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData }) => {
-          const investigationData = rowData as Investigation;
-          return (
-            <div>
-              <Typography>
-                <b>Proposal:</b> {investigationData.RB_NUMBER}
-              </Typography>
-              <Typography>
-                <b>Title:</b> {investigationData.TITLE}
-              </Typography>
-              <Typography>
-                <b>Start Date:</b> {investigationData.STARTDATE}
-              </Typography>
-              <Typography>
-                <b>End Date:</b> {investigationData.ENDDATE}
-              </Typography>
-            </div>
-          );
-        }}
-        columns={[
-          {
-            label: 'Title',
-            dataKey: 'TITLE',
-            cellContentRenderer: (props: TableCellProps) => {
-              const investigationData = props.rowData as Investigation;
-              return investigationLink(
-                investigationData.ID,
-                investigationData.TITLE
-              );
-            },
-            filterComponent: textFilter,
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={fetchData}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData }) => {
+        const investigationData = rowData as Investigation;
+        return (
+          <div>
+            <Typography>
+              <b>Proposal:</b> {investigationData.RB_NUMBER}
+            </Typography>
+            <Typography>
+              <b>Title:</b> {investigationData.TITLE}
+            </Typography>
+            <Typography>
+              <b>Start Date:</b> {investigationData.STARTDATE}
+            </Typography>
+            <Typography>
+              <b>End Date:</b> {investigationData.ENDDATE}
+            </Typography>
+          </div>
+        );
+      }}
+      columns={[
+        {
+          label: 'Title',
+          dataKey: 'TITLE',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            return investigationLink(
+              investigationData.ID,
+              investigationData.TITLE
+            );
           },
-          {
-            label: 'Visit ID',
-            dataKey: 'VISIT_ID',
-            filterComponent: textFilter,
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Visit ID',
+          dataKey: 'VISIT_ID',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'RB Number',
+          dataKey: 'RB_NUMBER',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'DOI',
+          dataKey: 'DOI',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Dataset Count',
+          dataKey: 'DATASET_COUNT',
+        },
+        {
+          label: 'Instrument',
+          dataKey: 'INSTRUMENT.NAME',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
+          cellContentRenderer: (props: TableCellProps) => {
+            if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
-          {
-            label: 'RB Number',
-            dataKey: 'RB_NUMBER',
-            filterComponent: textFilter,
+        },
+        {
+          label: 'End Date',
+          dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
+          cellContentRenderer: (props: TableCellProps) => {
+            if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
-          {
-            label: 'DOI',
-            dataKey: 'DOI',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Dataset Count',
-            dataKey: 'DATASET_COUNT',
-          },
-          {
-            label: 'Instrument',
-            dataKey: 'INSTRUMENT.NAME',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Start Date',
-            dataKey: 'STARTDATE',
-            filterComponent: dateFilter,
-            cellContentRenderer: (props: TableCellProps) => {
-              if (props.cellData)
-                return props.cellData.toString().split(' ')[0];
-            },
-          },
-          {
-            label: 'End Date',
-            dataKey: 'ENDDATE',
-            filterComponent: dateFilter,
-            cellContentRenderer: (props: TableCellProps) => {
-              if (props.cellData)
-                return props.cellData.toString().split(' ')[0];
-            },
-          },
-        ]}
-      />
-    </Paper>
+        },
+      ]}
+    />
   );
 };
 

@@ -17,10 +17,12 @@ import {
   addToCart,
   removeFromCart,
   fetchAllIds,
+  sortTable,
+  filterTable,
 } from 'datagateway-common';
 import { Paper, IconButton } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
-import { sortTable, filterTable, clearTable } from '../../state/actions';
+import { clearTable } from '../../state/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
@@ -131,76 +133,74 @@ const ISISDatafilesTable = (
   );
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(parseInt(datasetId), params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData, detailsPanelResize }) => {
-          return (
-            <DatafileDetailsPanel
-              rowData={rowData}
-              detailsPanelResize={detailsPanelResize}
-              fetchDetails={fetchDetails}
-            />
-          );
-        }}
-        actions={[
-          function downloadButton({ rowData }: TableActionProps) {
-            const datafileData = rowData as Datafile;
-            if (datafileData.LOCATION) {
-              return (
-                <IconButton
-                  aria-label="Download"
-                  key="download"
-                  size="small"
-                  onClick={() => {
-                    // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
-                    downloadData(datafileData.ID, datafileData.LOCATION);
-                  }}
-                >
-                  <GetApp />
-                </IconButton>
-              );
-            } else {
-              return null;
-            }
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData, detailsPanelResize }) => {
+        return (
+          <DatafileDetailsPanel
+            rowData={rowData}
+            detailsPanelResize={detailsPanelResize}
+            fetchDetails={fetchDetails}
+          />
+        );
+      }}
+      actions={[
+        function downloadButton({ rowData }: TableActionProps) {
+          const datafileData = rowData as Datafile;
+          if (datafileData.LOCATION) {
+            return (
+              <IconButton
+                aria-label="Download"
+                key="download"
+                size="small"
+                onClick={() => {
+                  // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
+                  downloadData(datafileData.ID, datafileData.LOCATION);
+                }}
+              >
+                <GetApp />
+              </IconButton>
+            );
+          } else {
+            return null;
+          }
+        },
+      ]}
+      columns={[
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Location',
+          dataKey: 'LOCATION',
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Size',
+          dataKey: 'FILESIZE',
+          cellContentRenderer: props => {
+            return formatBytes(props.cellData);
           },
-        ]}
-        columns={[
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Location',
-            dataKey: 'LOCATION',
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Size',
-            dataKey: 'FILESIZE',
-            cellContentRenderer: props => {
-              return formatBytes(props.cellData);
-            },
-            filterComponent: textFilter,
-          },
-          {
-            label: 'Modified Time',
-            dataKey: 'MOD_TIME',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 

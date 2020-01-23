@@ -8,13 +8,13 @@ import {
   fetchInvestigationsRequest,
   filterTable,
   sortTable,
-  clearTable,
   fetchInvestigationCountRequest,
-} from '../../state/actions';
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { clearTable } from '../../state/actions';
 
 describe('DLS Proposals table component', () => {
   let shallow;
@@ -27,7 +27,7 @@ describe('DLS Proposals table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'DLSProposalsTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -109,7 +109,7 @@ describe('DLS Proposals table component', () => {
     const testStore = mockStore(state);
     const wrapper = shallow(<DLSProposalsTable store={testStore} />);
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });

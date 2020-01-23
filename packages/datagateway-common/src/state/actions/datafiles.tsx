@@ -20,6 +20,10 @@ import {
   FetchDatafileCountFailureType,
   RequestPayload,
   FetchDetailsSuccessPayload,
+  SortTablePayload,
+  SortTableType,
+  FilterTablePayload,
+  FilterTableType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
@@ -29,6 +33,29 @@ import { source } from '../middleware/dgcommon.middleware';
 import * as log from 'loglevel';
 import { Datafile } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
+import { Filter, Order } from '../../app.types';
+
+export const sortTable = (
+  column: string,
+  order: Order | null
+): ActionType<SortTablePayload> => ({
+  type: SortTableType,
+  payload: {
+    column,
+    order,
+  },
+});
+
+export const filterTable = (
+  column: string,
+  filter: Filter | null
+): ActionType<FilterTablePayload> => ({
+  type: FilterTableType,
+  payload: {
+    column,
+    filter,
+  },
+});
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[],

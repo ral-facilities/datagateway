@@ -10,16 +10,16 @@ import {
   sortTable,
   downloadDatafileRequest,
   fetchDatafileDetailsRequest,
-  clearTable,
   fetchDatafileCountRequest,
   removeFromCartRequest,
   addToCartRequest,
-} from '../../state/actions';
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table, Datafile } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { clearTable } from '../../state/actions';
 
 describe('ISIS datafiles table component', () => {
   let shallow;
@@ -32,7 +32,7 @@ describe('ISIS datafiles table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'div' });
+    shallow = createShallow({ untilSelector: 'ISISDatafilesTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
@@ -102,7 +102,7 @@ describe('ISIS datafiles table component', () => {
       <ISISDatafilesTable datasetId="1" store={testStore} />
     );
 
-    wrapper.childAt(0).prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
+    wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });
