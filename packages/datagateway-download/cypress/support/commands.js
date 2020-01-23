@@ -100,17 +100,15 @@ Cypress.Commands.add('addCartItem', cartItem => {
   });
 });
 
+// Delete a test download file in the Windows download
+// folder given the file name.
 Cypress.Commands.add('deleteTestDownload', fileName => {
-  // Make sure to delete the downloaded file.
-  console.log(Cypress.platform);
   if (Cypress.platform === 'win32') {
     cy.exec('echo %USERPROFILE%').then(result => {
-      cy.readFile(`${result.stdout}\\Downloads\\LILS_2020-1-1_1-1-1.zip`);
+      cy.readFile(`${result.stdout}\\Downloads\\${fileName}`);
       cy.exec(`del ${result.stdout}\\Downloads\\${fileName}`)
         .its('code')
         .should('eq', 0);
     });
-  } else {
-    // TODO: Find out what the default location files will download to on linux. ~/Downloads?
   }
 });

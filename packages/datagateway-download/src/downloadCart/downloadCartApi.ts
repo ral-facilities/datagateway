@@ -104,7 +104,6 @@ export const submitCart: (
       log.debug(response);
 
       // Get the downloadId that was returned from the IDS server.
-      // console.log('downloadId in submitCart: ', response.data['downloadId']);
       const downloadId = response.data['downloadId'];
       return downloadId;
     })

@@ -208,10 +208,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   };
 
   const processDownload = async (): Promise<void> => {
-    // console.log(
-    //   `Submit Cart: ${facilityName}, ${downloadName}, ${accessMethod}, ${emailAddress}`
-    // );
-
     // Check for file name, if there hasn't been one entered,
     // then generate a default one and update state for rendering later.
     let fileName = downloadName;
@@ -226,7 +222,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       emailAddress,
       fileName
     );
-    // console.log('Returned downloadID ', downloadId);
 
     // Ensure that we have received a downloadId.
     if (downloadId && downloadId !== -1) {
@@ -234,7 +229,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       // the download ID we received.
       if (accessMethod === defaultAccessMethod) {
         const downloadInfo = await getDownload(facilityName, downloadId);
-        // console.log('Received submitted download information: ', downloadInfo);
 
         // Download the file as long as it is available for immediate download.
         if (downloadInfo != null && downloadInfo.status === 'COMPLETE')
@@ -279,11 +273,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   inputProps={{
                     maxLength: 255,
                   }}
-                  onChange={(
-                    event: React.ChangeEvent<{ value: unknown }>
-                  ): void => {
-                    // console.log('Set download name: ', event.target.value);
-                    setDownloadName(event.target.value as string);
+                  onChange={e => {
+                    setDownloadName(e.target.value as string);
                   }}
                   helperText="Enter a custom file name or leave as the default format (facility_date_time)."
                 />
@@ -300,16 +291,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     id="confirm-access-method"
                     aria-label="confirm-access-method"
                     defaultValue={`${defaultAccessMethod}`}
-                    onChange={(
-                      event: React.ChangeEvent<{ value: unknown }>
-                    ): void => {
-                      // console.log(
-                      //   'Selected access method: ',
-                      //   event.target.value
-                      // );
-
+                    onChange={e => {
                       // Material UI select is not a real select element, so needs casting.
-                      setAccessMethod(event.target.value as string);
+                      setAccessMethod(e.target.value as string);
                     }}
                   >
                     {/* TODO: Values need to be retrieved from an object from settings. */}
@@ -394,16 +378,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   inputProps={{
                     maxLength: 254,
                   }}
-                  onChange={(
-                    event: React.ChangeEvent<{ value: unknown }>
-                  ): void => {
-                    // console.log(
-                    //   'Changed email address: ',
-                    //   event.target.value as string
-                    // );
-
+                  onChange={e => {
                     // Remove whitespaces and allow for the email to be optional.
-                    const email = (event.target.value as string).trim();
+                    const email = (e.target.value as string).trim();
                     if (email) {
                       if (emailRegex.test(email)) {
                         // Material UI select is not a real select element, so needs casting.
@@ -412,14 +389,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         if (emailHelperText !== emailHelpText)
                           setEmailHelperText(emailHelpText);
                         setEmailValid(true);
-
-                        // console.log('Set valid email');
                       } else {
                         if (emailHelperText !== emailErrorText)
                           setEmailHelperText(emailErrorText);
                         setEmailValid(false);
-
-                        // console.log('Set invalid email');
                       }
                     } else {
                       // Allow for the red highlighted error to toggle off,
@@ -427,8 +400,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       setEmailAddress('');
                       setEmailHelperText(emailHelpText);
                       setEmailValid(true);
-
-                      // console.log('Cleared email address');
                     }
                   }}
                 />

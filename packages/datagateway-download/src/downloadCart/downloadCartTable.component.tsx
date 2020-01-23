@@ -282,8 +282,8 @@ const DownloadCartTable: React.FC = () => {
                 variant="contained"
                 color="primary"
                 disabled={
-                  fileCount === -1 ||
-                  totalSize === -1 ||
+                  fileCount <= 0 ||
+                  totalSize <= 0 ||
                   (fileCountMax !== -1 && fileCount > fileCountMax) ||
                   (totalSizeMax !== -1 && totalSize > totalSizeMax)
                 }
