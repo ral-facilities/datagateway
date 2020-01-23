@@ -28,11 +28,7 @@ export interface DGCommonState {
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
-  res?: ApplicationStrings;
-  features: FeatureSwitches;
   urls: URLs;
-  breadcrumbSettings: BreadcrumbSettings;
-  settingsLoaded: boolean;
 }
 
 export interface EntityCache {

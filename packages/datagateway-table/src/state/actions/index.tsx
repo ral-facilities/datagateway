@@ -31,8 +31,8 @@ import axios from 'axios';
 import * as log from 'loglevel';
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-  const sort = getState().dgtable.sort;
-  const filters = getState().dgtable.filters;
+  const sort = getState().dgcommon.sort;
+  const filters = getState().dgcommon.filters;
 
   let searchParams = new URLSearchParams();
 
@@ -68,8 +68,10 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   return searchParams;
 };
 
-export * from './instruments';
-export * from './facilityCycles';
+export * from 'datagateway-common/src/state/actions/instruments';
+export * from 'datagateway-common/src/state/actions/facilityCycles';
+
+// extract more of these functions out, e.g. sortTable
 
 export const sortTable = (
   column: string,

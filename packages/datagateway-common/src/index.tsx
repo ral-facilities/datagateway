@@ -20,6 +20,8 @@ export * from './state/actions/datafiles';
 export * from './state/actions/datasets';
 export * from './state/actions/investigations';
 export * from './state/actions/cart';
+export * from './state/actions/instruments';
+export * from './state/actions/facilityCycles';
 export { default as Preloader } from './preloader/preloader.component';
 export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';
 

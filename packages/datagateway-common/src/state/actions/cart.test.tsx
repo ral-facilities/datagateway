@@ -15,7 +15,7 @@ import {
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
-import { DownloadCart } from 'datagateway-common';
+import { DownloadCart } from '../../app.types';
 import {
   fetchAllIds,
   fetchAllIdsRequest,
@@ -27,6 +27,7 @@ import { initialState } from '../reducers/dgcommon.reducer';
 import { StateType } from '../app.types';
 
 jest.mock('loglevel');
+jest.mock('axios');
 
 describe('Cart actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
@@ -230,7 +231,7 @@ describe('Cart actions', () => {
       ]);
 
       const getState = (): Partial<StateType> => ({
-        dgtable: {
+        dgcommon: {
           ...initialState,
           sort: { column1: 'desc' },
           filters: { column1: '1', column2: '2' },
@@ -340,7 +341,7 @@ describe('Cart actions', () => {
       const asyncAction = fetchAllISISInvestigationIds(1, 2);
 
       const getState = (): Partial<StateType> => ({
-        dgtable: {
+        dgcommon: {
           ...initialState,
           sort: { column1: 'desc' },
           filters: { column1: '1', column2: '2' },

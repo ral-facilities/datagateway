@@ -14,7 +14,7 @@ import { ActionType, ThunkResult } from '../app.types';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import * as log from 'loglevel';
-import { FacilityCycle } from 'datagateway-common';
+import { FacilityCycle } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
 
 export const fetchFacilityCyclesSuccess = (
@@ -55,7 +55,7 @@ export const fetchFacilityCycles = (
     dispatch(fetchFacilityCyclesRequest(timestamp));
 
     let params = getApiFilter(getState);
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     if (offsetParams) {
       params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -120,7 +120,7 @@ export const fetchFacilityCycleCount = (
 
     let params = getApiFilter(getState);
     params.delete('order');
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles/count`, {

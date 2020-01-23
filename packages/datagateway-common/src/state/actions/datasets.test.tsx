@@ -27,11 +27,12 @@ import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
-import { Dataset } from 'datagateway-common';
+import { Dataset } from '../../app.types';
 
 import { fetchDatasetDatafilesCountRequest } from './datafiles';
 
 jest.mock('loglevel');
+jest.mock('axios');
 
 describe('Dataset actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);

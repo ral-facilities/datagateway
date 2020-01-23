@@ -56,17 +56,10 @@ import {
   FetchFacilityCycleCountFailureType,
   ClearTableType,
   RequestPayload,
-  FeatureSwitchesPayload,
-  ConfigureStringsPayload,
-  ConfigureStringsType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
-  ConfigureFeatureSwitchesType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
-  ConfigureBreadcrumbSettingsPayload,
-  ConfigureBreadcrumbSettingsType,
-  SettingsLoadedType,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
   FetchInvestigationDetailsFailureType,
@@ -111,7 +104,6 @@ export const initialState: DGCommonState = {
   error: null,
   sort: {},
   filters: {},
-  features: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
   allIdsTimestamp: Date.now(),
@@ -120,18 +112,9 @@ export const initialState: DGCommonState = {
     apiUrl: '',
     downloadApiUrl: '',
   },
-  breadcrumbSettings: {},
   cartItems: [],
   allIds: [],
-  settingsLoaded: false,
 };
-
-export function handleSettingsLoaded(state: DGCommonState): DGCommonState {
-  return {
-    ...state,
-    settingsLoaded: true,
-  };
-}
 
 export function handleSortTable(
   state: DGCommonState,
@@ -193,16 +176,6 @@ export function handleFilterTable(
   }
 }
 
-export function handleConfigureStrings(
-  state: DGCommonState,
-  payload: ConfigureStringsPayload
-): DGCommonState {
-  return {
-    ...state,
-    res: payload.res,
-  };
-}
-
 export function handleConfigureFacilityName(
   state: DGCommonState,
   payload: ConfigureFacilityNamePayload
@@ -210,38 +183,6 @@ export function handleConfigureFacilityName(
   return {
     ...state,
     facilityName: payload.facilityName,
-  };
-}
-
-export function handleConfigureFeatureSwitches(
-  state: DGCommonState,
-  payload: FeatureSwitchesPayload
-): DGCommonState {
-  return {
-    ...state,
-    features: payload.switches,
-  };
-}
-
-export function handleConfigureUrls(
-  state: DGCommonState,
-  payload: ConfigureUrlsPayload
-): DGCommonState {
-  return {
-    ...state,
-    urls: payload.urls,
-  };
-}
-
-// Reducer for the breadcrumb settings action,
-// in order to add settings to the Redux state.
-export function handleConfigureBreadcrumbSettings(
-  state: DGCommonState,
-  payload: ConfigureBreadcrumbSettingsPayload
-): DGCommonState {
-  return {
-    ...state,
-    breadcrumbSettings: payload.settings,
   };
 }
 
@@ -567,6 +508,16 @@ export function handleDownloadCartFailure(
   };
 }
 
+export function handleConfigureUrls(
+  state: DGCommonState,
+  payload: ConfigureUrlsPayload
+): DGCommonState {
+  return {
+    ...state,
+    urls: payload.urls,
+  };
+}
+
 export function handleFetchAllIdsRequest(
   state: DGCommonState,
   payload: RequestPayload
@@ -599,15 +550,11 @@ export function handleFetchAllIdsSuccess(
 }
 // remove things I want
 const dGCommonReducer = createReducer(initialState, {
-  [SettingsLoadedType]: handleSettingsLoaded,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
-  [ConfigureStringsType]: handleConfigureStrings,
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
-  [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureURLsType]: handleConfigureUrls,
-  [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

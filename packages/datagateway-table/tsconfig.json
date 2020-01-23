@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -20,6 +16,10 @@
     "jsx": "preserve"
   },
   "include": [
-    "src"
+    "src",
+    "../datagateway-common/src/state/actions/instruments.tsx",
+    "../datagateway-common/src/state/actions/facilityCycles.tsx",
+    "../datagateway-common/src/state/actions/instruments.test.tsx",
+    "../datagateway-common/src/state/actions/facilityCycles.test.tsx"
   ]
 }

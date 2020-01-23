@@ -156,12 +156,12 @@ const mapStateToProps = (
   state: StateType
 ): ISISFacilityCyclesTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
   };
 };
 

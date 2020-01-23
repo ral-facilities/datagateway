@@ -9,13 +9,14 @@ import {
   fetchFacilityCycleCountFailure,
 } from '.';
 import { StateType } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
+import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
-import { FacilityCycle } from 'datagateway-common';
+import { FacilityCycle } from '../../app.types';
 
 jest.mock('loglevel');
+jest.mock('axios');
 
 describe('FacilityCycle actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
@@ -65,7 +66,7 @@ describe('FacilityCycle actions', () => {
 
     const asyncAction = fetchFacilityCycles(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -133,7 +134,7 @@ describe('FacilityCycle actions', () => {
 
     const asyncAction = fetchFacilityCycleCount(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },

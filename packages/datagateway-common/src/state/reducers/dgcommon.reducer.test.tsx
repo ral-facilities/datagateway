@@ -29,10 +29,8 @@ import {
   fetchFacilityCycleCountFailure,
   clearTable,
   loadFacilityName,
-  loadFeatureSwitches,
   configureStrings,
   loadUrls,
-  loadBreadcrumbSettings,
   settingsLoaded,
   fetchInvestigationDetailsRequest,
   fetchInvestigationDetailsSuccess,
@@ -89,7 +87,7 @@ import {
   Instrument,
   FacilityCycle,
   DownloadCart,
-} from 'datagateway-common';
+} from '../../app.types';
 
 describe('DGCommon reducer', () => {
   let state: DGCommonState;
@@ -295,14 +293,6 @@ describe('DGCommon reducer', () => {
     expect(updatedState.facilityName).toEqual('Generic');
   });
 
-  it('should set feature switches property when configure feature switches action is sent', () => {
-    expect(state.features).toEqual({});
-
-    const updatedState = DGCommonReducer(state, loadFeatureSwitches({}));
-
-    expect(updatedState.features).toEqual({});
-  });
-
   it('should set urls property when configure urls action is sent', () => {
     expect(state.urls.apiUrl).toEqual('');
 
@@ -315,25 +305,6 @@ describe('DGCommon reducer', () => {
     );
 
     expect(updatedState.urls.apiUrl).toEqual('test');
-  });
-
-  it('should set breadcrumb settings property when configure breadcrumb settings action is sent', () => {
-    expect(state.breadcrumbSettings).toEqual({});
-
-    const updatedState = DGCommonReducer(
-      state,
-      loadBreadcrumbSettings({
-        test: {
-          replaceEntityField: 'TITLE',
-        },
-      })
-    );
-
-    expect(updatedState.breadcrumbSettings).toEqual({
-      test: {
-        replaceEntityField: 'TITLE',
-      },
-    });
   });
 
   describe('FetchInvestigations actions', () => {

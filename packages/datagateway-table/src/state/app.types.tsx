@@ -14,32 +14,11 @@ import {
 } from './actions/actions.types';
 
 export interface DGTableState {
-  facilityName: string;
-  sort: {
-    [column: string]: Order;
-  };
-  filters: {
-    [column: string]: Filter;
-  };
-  data: Entity[];
-  totalDataCount: number;
-  investigationCache: EntityCache;
-  datasetCache: EntityCache;
-  cartItems: DownloadCartItem[];
-  allIds: number[];
-  loading: boolean;
-  downloading: boolean;
-  error: string | null;
-  dataTimestamp: number;
-  countTimestamp: number;
-  allIdsTimestamp: number;
   res?: ApplicationStrings;
   features: FeatureSwitches;
-  urls: URLs;
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
 }
-// need to deduplicate this with dg-common
 
 export interface EntityCache {
   [id: number]: {

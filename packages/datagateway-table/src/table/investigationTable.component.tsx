@@ -229,11 +229,13 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     filters: state.dgcommon.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
-    cartItems: state.dgtable.cartItems,
-    allIds: state.dgtable.allIds,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
+    cartItems: state.dgcommon.cartItems,
+    allIds: state.dgcommon.allIds,
   };
 };
+
+// these all need to be converted to dgcommon
 
 export default connect(mapStateToProps, mapDispatchToProps)(InvestigationTable);
