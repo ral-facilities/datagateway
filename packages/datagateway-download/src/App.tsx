@@ -8,6 +8,7 @@ import {
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
+  disableGlobal: true,
 });
 
 class App extends Component<{}, { hasError: boolean }> {

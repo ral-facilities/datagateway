@@ -27,6 +27,7 @@ import PageContainer from './pageContainer.component';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
+  disableGlobal: true,
 });
 
 const history = createBrowserHistory();

@@ -9,6 +9,16 @@ import SelectDates from './search/datePicker';
 import Checkboxes from './search/checkBoxes';
 // import axios from 'axios';
 
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'dgws',
+  disableGlobal: true,
+});
+
 class App extends React.Component {
   public componentDidCatch(error: Error | null): void {
     this.setState({ hasError: true });
@@ -36,46 +46,48 @@ class App extends React.Component {
         }}
         className="App"
       >
-        <Grid
-          container
-          direction="column"
-          justify="flex-start"
-          alignItems="flex-start"
-        >
-          <Grid item>
-            <Header />
-            <p> Fill out form and then click search. </p>
-          </Grid>
+        <StylesProvider generateClassName={generateClassName}>
+          <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="flex-start"
+          >
+            <Grid item>
+              <Header />
+              <p> Fill out form and then click search. </p>
+            </Grid>
 
-          <Grid item>
-            <TextField
-              id="filled-search"
-              label="Search Text"
-              type="search"
-              margin="normal"
-            />
-          </Grid>
+            <Grid item>
+              <TextField
+                id="filled-search"
+                label="Search Text"
+                type="search"
+                margin="normal"
+              />
+            </Grid>
 
-          <Grid item>
-            <SelectDates startOrEnd="Start Date" />
-            <br></br>
-            <SelectDates startOrEnd="End Date" />
-          </Grid>
+            <Grid item>
+              <SelectDates startOrEnd="Start Date" />
+              <br></br>
+              <SelectDates startOrEnd="End Date" />
+            </Grid>
 
-          <Grid item>
-            <Checkboxes />
-          </Grid>
+            <Grid item>
+              <Checkboxes />
+            </Grid>
 
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.handleClick}
-            >
-              Search
-            </Button>
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleClick}
+              >
+                Search
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
+        </StylesProvider>
       </div>
     );
   }
