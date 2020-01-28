@@ -27,6 +27,11 @@ import PageContainer from './pageContainer.component';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
+
+  // Only set disable when we are in production and not running e2e tests;
+  // ensures class selectors are working on tests.
+  disableGlobal:
+    process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
 });
 
 const history = createBrowserHistory();
