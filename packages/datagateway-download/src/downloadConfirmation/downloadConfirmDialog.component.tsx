@@ -107,7 +107,7 @@ interface DownloadConfirmDialogProps
   extends WithStyles<typeof dialogContentStyles> {
   totalSize: number;
   isTwoLevel: boolean;
-  setOpen: boolean;
+  open: boolean;
 
   // TODO: pass in the function to call to redirect to the status tab.
   // setStatus: () => void;
@@ -157,7 +157,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
 
   useEffect(() => {
-    if (props.setOpen) {
+    if (props.open) {
       // Reset checkmark view.
       setIsSubmitted(false);
       setIsSubmitSuccessful(false);
@@ -179,7 +179,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         setShowDownloadTime(false);
       }
     }
-  }, [props.setOpen, isTwoLevel, totalSize]);
+  }, [props.open, isTwoLevel, totalSize]);
 
   const getDefaultFileName = (): string => {
     const now = new Date();
@@ -245,7 +245,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   return (
     <Dialog
       onClose={props.setClose}
-      open={props.setOpen}
+      open={props.open}
       fullWidth={true}
       maxWidth={'sm'}
       aria-label="download-confirm-dialog"
@@ -439,13 +439,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 {/* TODO: When closing the animation renders again? 
                 Maybe set a fixed width for the dialog and not render it? */}
                 {isSubmitSuccessful ? (
-                  <Mark size={100} colour="#3E863E" visible={props.setOpen} />
+                  <Mark size={100} colour="#3E863E" visible={props.open} />
                 ) : (
                   <Mark
                     size={100}
                     colour="#A91B2E"
                     isCross={true}
-                    visible={props.setOpen}
+                    visible={props.open}
                   />
                 )}
               </Grid>

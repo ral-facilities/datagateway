@@ -300,7 +300,7 @@ const DownloadCartTable: React.FC = () => {
         aria-labelledby="downloadCartConfirmation"
         totalSize={totalSize}
         isTwoLevel={isTwoLevel}
-        setOpen={showConfirmation}
+        open={showConfirmation}
         setClose={() => setShowConfirmation(false)}
       />
     </div>

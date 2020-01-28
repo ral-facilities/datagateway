@@ -48,7 +48,7 @@ describe('DownloadConfirmDialog', () => {
       <DownloadConfirmDialog
         totalSize={size}
         isTwoLevel={isTwoLevel}
-        setOpen={open}
+        open={open}
         setClose={jest.fn()}
       />
     );
@@ -306,12 +306,34 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
-    const wrapper = createWrapper(1, false, true);
+    let openDialog = true;
+    const closeFunction = jest.fn();
+
+    const wrapper = mount(
+      <DownloadConfirmDialog
+        totalSize={1}
+        isTwoLevel={false}
+        open={openDialog}
+        setClose={closeFunction}
+      />
+    );
 
     // Ensure the close button is present.
     expect(wrapper.exists('[aria-label="download-confirmation-close"]')).toBe(
       true
     );
+    expect(wrapper.prop('open')).toBe(true);
+
+    // Close the download confirmation dialog.
+    wrapper.setProps({ open: false });
+    expect(wrapper.prop('open')).toBe(false);
+
+    // Click the close button and ensure the close function has been called.
+    wrapper
+      .find('button[aria-label="download-confirmation-close"]')
+      .simulate('click');
+
+    expect(closeFunction).toHaveBeenCalled();
   });
 });
 
@@ -323,7 +345,7 @@ describe('renders the estimated download speed/time table with varying values', 
       <DownloadConfirmDialog
         totalSize={size}
         isTwoLevel={false}
-        setOpen={true}
+        open={true}
         setClose={jest.fn()}
       />
     );

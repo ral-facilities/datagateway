@@ -3,8 +3,8 @@
 exports[`DownloadConfirmDialog does not load the download speed/time table when isTwoLevel is true 1`] = `
 <WithStyles(DownloadConfirmDialog)
   isTwoLevel={true}
+  open={true}
   setClose={[MockFunction]}
-  setOpen={true}
   totalSize={100}
 >
   <DownloadConfirmDialog
@@ -14,8 +14,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
       }
     }
     isTwoLevel={true}
+    open={true}
     setClose={[MockFunction]}
-    setOpen={true}
     totalSize={100}
   >
     <WithStyles(ForwardRef(Dialog))
@@ -3715,8 +3715,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
 exports[`DownloadConfirmDialog renders correctly 1`] = `
 <WithStyles(DownloadConfirmDialog)
   isTwoLevel={false}
+  open={true}
   setClose={[MockFunction]}
-  setOpen={true}
   totalSize={100}
 >
   <DownloadConfirmDialog
@@ -3726,8 +3726,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
       }
     }
     isTwoLevel={false}
+    open={true}
     setClose={[MockFunction]}
-    setOpen={true}
     totalSize={100}
   >
     <WithStyles(ForwardRef(Dialog))
