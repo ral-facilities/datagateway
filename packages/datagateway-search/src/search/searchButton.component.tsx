@@ -81,7 +81,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     }
 
     const queryParams = {
-      sessionId: 'af6f25da-6353-48f0-a8d4-9b581eba4dc9',
+      sessionId: null,
       query,
       maxCount: 300,
     };

@@ -27,16 +27,16 @@ describe('Search Button component tests', () => {
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
-      searchText: '',
+      searchText: 'hello',
       text: '',
       selectDate: {
-        startDate: null,
-        endDate: null,
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
       },
       checkBox: {
         dataset: true,
         datafile: true,
-        investigation: false,
+        investigation: true,
       },
     };
 
@@ -52,7 +52,7 @@ describe('Search Button component tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends submitSearchText action when user clicks checkbox', () => {
+  it('builds correct parameters for request if date and search text properties are in use', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -63,18 +63,50 @@ describe('Search Button component tests', () => {
     );
 
     wrapper.find('button[aria-label="submit search button"]').simulate('click');
-    expect(axios.get).toBeCalledTimes(2);
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
           maxCount: 300,
-          query: { target: 'Datafile' },
-          sessionId: 'af6f25da-6353-48f0-a8d4-9b581eba4dc9',
+          query: {
+            target: 'Investigation',
+            lower: '201311110000',
+            text: 'hello',
+            upper: '201611112359',
+          },
+          sessionId: null,
         },
       }
     );
-
-    //   test that correct params are generated
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+            lower: '201311110000',
+            text: 'hello',
+            upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Dataset',
+            lower: '201311110000',
+            text: 'hello',
+            upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
   });
 });
