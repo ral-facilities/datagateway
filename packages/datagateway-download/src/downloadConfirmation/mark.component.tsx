@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 // TypeScript linting will need us to define the return type,
 // but as classes may change, there is no need.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useSharedStyles = (colour: string) => {
+const useSharedStyles = (colour: string, visible: boolean) => {
   const useStyles = makeStyles({
     '@keyframes stroke': {
       '100%': {
@@ -33,6 +33,7 @@ const useSharedStyles = (colour: string) => {
       strokeWidth: 5,
       strokeMiterlimit: 10,
       boxShadow: `inset 0px 0px ${colour}`,
+      visibility: visible ? 'visible' : 'hidden',
 
       animation:
         '$fill 0.4s ease-in-out 0.4s forwards, $scale 0.3s ease-in-out 0.9s both',
@@ -63,11 +64,12 @@ interface MarkProps {
   size: number;
   colour: string;
   isCross?: boolean;
+  visible: boolean;
 }
 
 const Mark: React.FC<MarkProps> = (props: MarkProps) => {
   const checkmarkStyle = { width: props.size, height: props.size };
-  const classes = useSharedStyles(props.colour);
+  const classes = useSharedStyles(props.colour, props.visible);
 
   return (
     <svg

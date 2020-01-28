@@ -439,9 +439,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 {/* TODO: When closing the animation renders again? 
                 Maybe set a fixed width for the dialog and not render it? */}
                 {isSubmitSuccessful ? (
-                  <Mark size={100} colour="#3E863E" />
+                  <Mark size={100} colour="#3E863E" visible={props.setOpen} />
                 ) : (
-                  <Mark size={100} colour="#A91B2E" isCross={true} />
+                  <Mark
+                    size={100}
+                    colour="#A91B2E"
+                    isCross={true}
+                    visible={props.setOpen}
+                  />
                 )}
               </Grid>
 
