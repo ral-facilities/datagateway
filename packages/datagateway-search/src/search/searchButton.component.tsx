@@ -81,7 +81,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     }
 
     const queryParams = {
-      sessionId: null,
+      sessionId: window.localStorage.getItem('icat:token'),
       query,
       maxCount: 300,
     };
