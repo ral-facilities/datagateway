@@ -23,7 +23,7 @@ interface QueryParameters {
 }
 
 interface RequestParameters {
-  sessionId: string;
+  sessionId: string | null;
   maxCount: number;
 }
 
