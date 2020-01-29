@@ -301,12 +301,8 @@ const DownloadCartTable: React.FC = () => {
         totalSize={totalSize}
         isTwoLevel={isTwoLevel}
         open={showConfirmation}
-        setClose={() => {
-          // Hide the confirmation dialog and clear the cart
-          // when the dialog is closed.
-          setShowConfirmation(false);
-          setData([]);
-        }}
+        setClose={() => setShowConfirmation(false)}
+        clearCart={() => setData([])}
       />
     </div>
   );

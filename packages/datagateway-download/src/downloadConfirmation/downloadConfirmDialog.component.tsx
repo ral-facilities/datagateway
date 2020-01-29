@@ -111,14 +111,14 @@ interface DownloadConfirmDialogProps
 
   // TODO: pass in the function to call to redirect to the status tab.
   // setStatus: () => void;
-
   setClose: () => void;
+  clearCart: () => void;
 }
 
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { classes } = props;
+  const { classes, setClose, clearCart } = props;
 
   // TODO: Temporary facilityName until we load it from settings.
   // TODO: Access methods should be configurable and not defined in the component.
@@ -155,6 +155,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState<boolean>(
     false
   );
+
+  // Hide the confirmation dialog and clear the download cart
+  // when the dialog is closed.
+  const dialogClose = (): void => {
+    setClose();
+    if (isSubmitSuccessful) clearCart();
+  };
 
   useEffect(() => {
     if (props.open) {
@@ -244,7 +251,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   return (
     <Dialog
-      onClose={props.setClose}
+      onClose={dialogClose}
       open={props.open}
       fullWidth={true}
       maxWidth={'sm'}
@@ -253,10 +260,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       {!isSubmitted ? (
         <div>
           {/* Custom title component which has a close button */}
-          <DialogTitle
-            id="download-confirm-dialog-title"
-            onClose={props.setClose}
-          >
+          <DialogTitle id="download-confirm-dialog-title" onClose={dialogClose}>
             Confirm Your Download
           </DialogTitle>
 
@@ -423,7 +427,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         <div>
           <DialogTitle
             id="download-confirm-dialog-title"
-            onClose={props.setClose}
+            onClose={dialogClose}
           />
 
           <DialogContent>
