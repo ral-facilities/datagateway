@@ -203,18 +203,7 @@ export const fetchISISInvestigations = ({
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
 
-    // TODO: replace this with getApiFilters again when API filter change merges in
-    const sort = getState().dgtable.sort;
-    const filter = getState().dgtable.filters;
-
-    let params = new URLSearchParams();
-    for (let [key, value] of Object.entries(sort)) {
-      params.append('order', JSON.stringify(`${key} ${value}`));
-    }
-
-    for (let [key, value] of Object.entries(filter)) {
-      params.append('where', JSON.stringify({ [key]: { like: value } }));
-    }
+    let params = getApiFilter(getState);
 
     params.append(
       'include',
@@ -361,6 +350,13 @@ export const fetchInvestigationCount = (
     dispatch(fetchInvestigationCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+
+    if (additionalFilters) {
+      additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
     params.delete('order');
 
     const { apiUrl } = getState().dgtable.urls;
