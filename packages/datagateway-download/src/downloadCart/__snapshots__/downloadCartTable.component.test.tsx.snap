@@ -123,6 +123,7 @@ exports[`Download cart table component renders correctly 1`] = `
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(DownloadConfirmDialog)
     aria-labelledby="downloadCartConfirmation"
+    clearCart={[Function]}
     isTwoLevel={false}
     open={false}
     setClose={[Function]}

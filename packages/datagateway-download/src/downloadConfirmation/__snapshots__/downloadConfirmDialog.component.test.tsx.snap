@@ -22,7 +22,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
       aria-label="download-confirm-dialog"
       fullWidth={true}
       maxWidth="sm"
-      onClose={[MockFunction]}
+      onClose={[Function]}
       open={true}
     >
       <ForwardRef(Dialog)
@@ -48,7 +48,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
         }
         fullWidth={true}
         maxWidth="sm"
-        onClose={[MockFunction]}
+        onClose={[Function]}
         open={true}
       >
         <ForwardRef(Modal)
@@ -358,7 +358,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
           closeAfterTransition={true}
           disableBackdropClick={false}
           disableEscapeKeyDown={false}
-          onClose={[MockFunction]}
+          onClose={[Function]}
           open={true}
         >
           <ForwardRef(Portal)
@@ -815,7 +815,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                               <div>
                                 <WithStyles(Component)
                                   id="download-confirm-dialog-title"
-                                  onClose={[MockFunction]}
+                                  onClose={[Function]}
                                 >
                                   <Component
                                     classes={
@@ -825,7 +825,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                       }
                                     }
                                     id="download-confirm-dialog-title"
-                                    onClose={[MockFunction]}
+                                    onClose={[Function]}
                                   >
                                     <WithStyles(ForwardRef(DialogTitle))
                                       className="Component-root-373"
@@ -896,7 +896,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                           <WithStyles(ForwardRef(IconButton))
                                             aria-label="download-confirmation-close"
                                             className="Component-closeButton-374"
-                                            onClick={[MockFunction]}
+                                            onClick={[Function]}
                                           >
                                             <ForwardRef(IconButton)
                                               aria-label="download-confirmation-close"
@@ -914,7 +914,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                   "sizeSmall": "MuiIconButton-sizeSmall",
                                                 }
                                               }
-                                              onClick={[MockFunction]}
+                                              onClick={[Function]}
                                             >
                                               <WithStyles(ForwardRef(ButtonBase))
                                                 aria-label="download-confirmation-close"
@@ -922,7 +922,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                 className="MuiIconButton-root Component-closeButton-374"
                                                 disabled={false}
                                                 focusRipple={true}
-                                                onClick={[MockFunction]}
+                                                onClick={[Function]}
                                               >
                                                 <ForwardRef(ButtonBase)
                                                   aria-label="download-confirmation-close"
@@ -937,14 +937,14 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                   }
                                                   disabled={false}
                                                   focusRipple={true}
-                                                  onClick={[MockFunction]}
+                                                  onClick={[Function]}
                                                 >
                                                   <button
                                                     aria-label="download-confirmation-close"
                                                     className="MuiButtonBase-root MuiIconButton-root Component-closeButton-374"
                                                     disabled={false}
                                                     onBlur={[Function]}
-                                                    onClick={[MockFunction]}
+                                                    onClick={[Function]}
                                                     onDragLeave={[Function]}
                                                     onFocus={[Function]}
                                                     onKeyDown={[Function]}
@@ -3734,7 +3734,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
       aria-label="download-confirm-dialog"
       fullWidth={true}
       maxWidth="sm"
-      onClose={[MockFunction]}
+      onClose={[Function]}
       open={true}
     >
       <ForwardRef(Dialog)
@@ -3760,7 +3760,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
         }
         fullWidth={true}
         maxWidth="sm"
-        onClose={[MockFunction]}
+        onClose={[Function]}
         open={true}
       >
         <ForwardRef(Modal)
@@ -4070,7 +4070,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
           closeAfterTransition={true}
           disableBackdropClick={false}
           disableEscapeKeyDown={false}
-          onClose={[MockFunction]}
+          onClose={[Function]}
           open={true}
         >
           <ForwardRef(Portal)
@@ -4575,7 +4575,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                               <div>
                                 <WithStyles(Component)
                                   id="download-confirm-dialog-title"
-                                  onClose={[MockFunction]}
+                                  onClose={[Function]}
                                 >
                                   <Component
                                     classes={
@@ -4585,7 +4585,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       }
                                     }
                                     id="download-confirm-dialog-title"
-                                    onClose={[MockFunction]}
+                                    onClose={[Function]}
                                   >
                                     <WithStyles(ForwardRef(DialogTitle))
                                       className="Component-root-46"
@@ -4656,7 +4656,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                           <WithStyles(ForwardRef(IconButton))
                                             aria-label="download-confirmation-close"
                                             className="Component-closeButton-47"
-                                            onClick={[MockFunction]}
+                                            onClick={[Function]}
                                           >
                                             <ForwardRef(IconButton)
                                               aria-label="download-confirmation-close"
@@ -4674,7 +4674,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                   "sizeSmall": "MuiIconButton-sizeSmall",
                                                 }
                                               }
-                                              onClick={[MockFunction]}
+                                              onClick={[Function]}
                                             >
                                               <WithStyles(ForwardRef(ButtonBase))
                                                 aria-label="download-confirmation-close"
@@ -4682,7 +4682,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                 className="MuiIconButton-root Component-closeButton-47"
                                                 disabled={false}
                                                 focusRipple={true}
-                                                onClick={[MockFunction]}
+                                                onClick={[Function]}
                                               >
                                                 <ForwardRef(ButtonBase)
                                                   aria-label="download-confirmation-close"
@@ -4697,14 +4697,14 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                   }
                                                   disabled={false}
                                                   focusRipple={true}
-                                                  onClick={[MockFunction]}
+                                                  onClick={[Function]}
                                                 >
                                                   <button
                                                     aria-label="download-confirmation-close"
                                                     className="MuiButtonBase-root MuiIconButton-root Component-closeButton-47"
                                                     disabled={false}
                                                     onBlur={[Function]}
-                                                    onClick={[MockFunction]}
+                                                    onClick={[Function]}
                                                     onDragLeave={[Function]}
                                                     onFocus={[Function]}
                                                     onKeyDown={[Function]}
