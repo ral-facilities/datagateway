@@ -7,10 +7,14 @@ import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
+import { Provider } from 'react-redux';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -23,16 +27,6 @@ const store = createStore(
   composeEnhancers(applyMiddleware(...middleware))
 );
 
-class App extends React.Component<{}, { hasError: boolean }> {
-  public constructor(props: {}) {
-    super(props);
-    this.state = { hasError: false };
-    
-import {
-  createGenerateClassName,
-  StylesProvider,
-} from '@material-ui/core/styles';
-
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgws',
 
@@ -42,10 +36,10 @@ const generateClassName = createGenerateClassName({
     process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
 });
 
-class App extends React.Component {
-  public componentDidCatch(error: Error | null): void {
-    this.setState({ hasError: true });
-    log.error(`datagateway-search-plugin failed with error: ${error}`);
+class App extends React.Component<{}, { hasError: boolean }> {
+  public constructor(props: {}) {
+    super(props);
+    this.state = { hasError: false };
   }
 
   public componentDidCatch(error: Error | null): void {
@@ -53,59 +47,63 @@ class App extends React.Component {
     log.error(`datagateway_search failed with error: ${error}`);
   }
 
-  public render(): React.ReactElement {
-    return (
-      <div
-        style={{
-          padding: 15,
-          margin: 10,
-        }}
-        className="App"
-      >
-        <StylesProvider generateClassName={generateClassName}>
-          <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="flex-start"
+  public render(): React.ReactNode {
+    if (this.state.hasError) {
+      return (
+        <div className="error">
+          <div
+            style={{
+              padding: 20,
+              background: 'red',
+              color: 'white',
+              margin: 5,
+            }}
           >
-            <Grid item>
-              <Header />
-              <p> Fill out form and then click search. </p>
-            </Grid>
-
-            <Grid item>
-              <TextField
-                id="filled-search"
-                label="Search Text"
-                type="search"
-                margin="normal"
-              />
-            </Grid>
-
-            <Grid item>
-              <SelectDates startOrEnd="Start Date" />
-              <br></br>
-              <SelectDates startOrEnd="End Date" />
-            </Grid>
-
-            <Grid item>
-              <Checkboxes />
-            </Grid>
-
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleClick}
+            Something went wrong...
+          </div>
+        </div>
+      );
+    } else
+      return (
+        <div
+          style={{
+            padding: 15,
+            margin: 10,
+          }}
+          className="App"
+        >
+          <Provider store={store}>
+            <StylesProvider generateClassName={generateClassName}>
+              <Grid
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="flex-start"
               >
-                Search
-              </Button>
-            </Grid>
-          </Grid>
-        </StylesProvider>
-      </div>
-    );
+                <Grid item>
+                  <Header />
+                </Grid>
+
+                <Grid item>
+                  <SearchTextBox />
+                </Grid>
+
+                <Grid item>
+                  <SelectDates />
+                </Grid>
+
+                <Grid item>
+                  <CheckboxesGroup />
+                </Grid>
+
+                <Grid item>
+                  <SearchButton />
+                </Grid>
+              </Grid>
+            </StylesProvider>
+          </Provider>
+        </div>
+      );
   }
 }
 
