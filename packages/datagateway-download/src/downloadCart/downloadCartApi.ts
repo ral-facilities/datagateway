@@ -1,10 +1,17 @@
 import axios from 'axios';
 import * as log from 'loglevel';
-import { DownloadCart, DownloadCartItem, Datafile } from 'datagateway-common';
+import {
+  DownloadCart,
+  SubmitCart,
+  DownloadCartItem,
+  Datafile,
+  Download,
+} from 'datagateway-common';
 
 // TODO: get URLs from settings or something...
 const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
 const apiUrl = 'http://scigateway-preprod.esc.rl.ac.uk:5000';
+const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
 export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
   return axios
@@ -54,6 +61,105 @@ export const removeDownloadCartItem: (
     .catch(error => {
       log.error(error.message);
     });
+};
+
+export const getIsTwoLevel: () => Promise<boolean> = () => {
+  return axios
+    .get<boolean>(`${idsUrl}/isTwoLevel`)
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      log.error(error.message);
+      return false;
+    });
+};
+
+export const submitCart: (
+  facilityName: string,
+  transport: string,
+  emailAddress: string,
+  fileName: string
+) => Promise<number> = (
+  facilityName: string,
+  transport: string,
+  emailAddress: string,
+  fileName: string
+) => {
+  const params = new URLSearchParams();
+
+  // TODO: get session ID from somewhere else (extract from JWT)
+  // Construct the form parameters.
+  params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+  params.append('transport', transport);
+  params.append('email', emailAddress);
+  params.append('fileName', fileName);
+
+  // NOTE: zipType by default is 'ZIP', it can be 'ZIP_AND_COMPRESS'.
+  params.append('zipType', 'ZIP');
+
+  return axios
+    .post<SubmitCart>(`${topcatUrl}/user/cart/${facilityName}/submit`, params)
+    .then(response => {
+      log.debug(response);
+
+      // Get the downloadId that was returned from the IDS server.
+      const downloadId = response.data['downloadId'];
+      return downloadId;
+    })
+    .catch(error => {
+      log.error(error.message);
+      return -1;
+    });
+};
+
+export const getDownload: (
+  facilityName: string,
+  downloadId: number
+) => Promise<Download | null> = (facilityName: string, downloadId: number) => {
+  return axios
+    .get<Download[]>(`${topcatUrl}/user/downloads`, {
+      params: {
+        // TODO: get session ID from somewhere else (extract from JWT)
+        sessionId: window.localStorage.getItem('icat:token'),
+        facilityName: facilityName,
+        queryOffset: `where download.id = ${downloadId}`,
+      },
+    })
+    .then(response => {
+      const download = response.data[0];
+      return download;
+    })
+    .catch(error => {
+      log.error(error.message);
+      return null;
+    });
+};
+
+export const downloadPreparedCart: (
+  preparedId: string,
+  fileName: string
+) => void = (preparedId: string, fileName: string) => {
+  // We need to set the preparedId and outname query parameters
+  // for the IDS download.
+  const params = {
+    sessionId: window.localStorage.getItem('icat:token'),
+    preparedId: preparedId,
+    outname: fileName,
+  };
+
+  // Create our IDS link from the query parameters.
+  const link = document.createElement('a');
+  link.href = `${idsUrl}/getData?${Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')}`;
+
+  // We trigger an immediate download which will begin in a new tab.
+  link.style.display = 'none';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 };
 
 export const getSize: (
