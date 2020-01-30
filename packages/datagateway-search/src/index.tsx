@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === `development`) {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-// TODO: if it's still needed, get icatUrl from settings file
+// TODO: if it's still needed get icatUrl from settings file
 const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session/';
 
 // TODO: get ICAT session ID from daaas:token
