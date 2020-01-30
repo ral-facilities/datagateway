@@ -6,4 +6,5 @@ export default {
       return Promise.resolve({ data: {} });
     }
   }),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
 };

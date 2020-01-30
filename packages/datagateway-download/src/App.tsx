@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
-import {
-  createGenerateClassName,
-  StylesProvider,
-} from '@material-ui/core/styles';
 
 import DownloadTabs from './downloadTab.component';
 // import DownloadCartTable from './downloadCart/downloadCartTable.component';
 // import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
+
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
