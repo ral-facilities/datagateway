@@ -3,6 +3,8 @@
 // import ReactDOM from 'react-dom';
 // import App from './App';
 
+import { StateType } from './state/app.types';
+
 export * from './app.types';
 export * from './state/actions/actions.types';
 
@@ -16,6 +18,7 @@ export { default as ActionCellComponent } from './table/cellRenderers/actionCell
 export { default as DataCellComponent } from './table/cellRenderers/dataCell.component';
 export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
+
 export * from './state/actions/datafiles';
 export * from './state/actions/datasets';
 export * from './state/actions/investigations';
@@ -25,7 +28,6 @@ export * from './state/actions/facilityCycles';
 export { default as Preloader } from './preloader/preloader.component';
 export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';
 
-import { StateType } from './state/app.types';
 export type DGCommonState = StateType;
 
 // ReactDOM.render(<App />, document.getElementById('root'));

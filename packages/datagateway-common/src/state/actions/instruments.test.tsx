@@ -20,7 +20,6 @@ import * as log from 'loglevel';
 import { Instrument } from '../../app.types';
 
 jest.mock('loglevel');
-jest.mock('axios');
 
 describe('Instrument actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);

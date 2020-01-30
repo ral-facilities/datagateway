@@ -28,6 +28,3 @@ export const dispatch = (action: Action): void | Promise<void> => {
     actions.push(action);
   }
 };
-
-// Mock lodash.debounce to return the function we want to call.
-jest.mock('lodash.debounce', () => (fn: Function) => fn);

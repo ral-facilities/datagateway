@@ -27,7 +27,6 @@ import { initialState } from '../reducers/dgcommon.reducer';
 import { StateType } from '../app.types';
 
 jest.mock('loglevel');
-jest.mock('axios');
 
 describe('Cart actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);

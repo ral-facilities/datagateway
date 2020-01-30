@@ -26,7 +26,6 @@ import * as log from 'loglevel';
 import { Datafile } from '../../app.types';
 
 jest.mock('loglevel');
-jest.mock('axios');
 
 describe('Datafile actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);

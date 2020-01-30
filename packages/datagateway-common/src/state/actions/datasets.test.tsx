@@ -32,7 +32,6 @@ import { Dataset } from '../../app.types';
 import { fetchDatasetDatafilesCountRequest } from './datafiles';
 
 jest.mock('loglevel');
-jest.mock('axios');
 
 describe('Dataset actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);

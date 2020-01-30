@@ -16,7 +16,6 @@ import * as log from 'loglevel';
 import { FacilityCycle } from '../../app.types';
 
 jest.mock('loglevel');
-jest.mock('axios');
 
 describe('FacilityCycle actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);

@@ -28,9 +28,7 @@ import {
   fetchFacilityCycleCountSuccess,
   fetchFacilityCycleCountFailure,
   loadFacilityName,
-  configureStrings,
   loadUrls,
-  settingsLoaded,
   fetchInvestigationDetailsRequest,
   fetchInvestigationDetailsSuccess,
   fetchInvestigationDetailsFailure,
@@ -141,31 +139,6 @@ describe('DGCommon reducer', () => {
     expect(updatedState.sort).toEqual({});
   });
 
-  it('should clear the table state when given a ClearTable action', () => {
-    state = {
-      ...initialState,
-      data: [{ ID: 1, NAME: 'test' }],
-      totalDataCount: 1,
-      loading: true,
-      downloading: true,
-      error: 'test error',
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
-    };
-
-    let updatedState = DGCommonReducer(state, clearTable());
-    expect(updatedState).toEqual({
-      ...initialState,
-      data: [],
-      totalDataCount: 0,
-      loading: false,
-      downloading: false,
-      error: null,
-      sort: {},
-      filters: {},
-    });
-  });
-
   describe('timestamps', () => {
     it('should ignore data requests with invalid timestamps', () => {
       let updatedState = DGCommonReducer(
@@ -262,26 +235,6 @@ describe('DGCommon reducer', () => {
       );
       expect(updatedState.allIdsTimestamp).toBe(validTimestamp);
     });
-  });
-
-  it('should set settingsLoaded to true when SettingsLoaded action is sent', () => {
-    expect(state.settingsLoaded).toBe(false);
-
-    const updatedState = DGCommonReducer(state, settingsLoaded());
-
-    expect(updatedState.settingsLoaded).toBe(true);
-  });
-
-  it('should set res property when configure strings action is sent', () => {
-    expect(state).not.toHaveProperty('res');
-
-    const updatedState = DGCommonReducer(
-      state,
-      configureStrings({ testSection: { testId: 'test' } })
-    );
-
-    expect(updatedState).toHaveProperty('res');
-    expect(updatedState.res).toEqual({ testSection: { testId: 'test' } });
   });
 
   it('should set facility name property when configure facility name action is sent', () => {

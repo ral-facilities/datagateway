@@ -27,7 +27,6 @@ import { Investigation } from '../../app.types';
 import { fetchInvestigationDatasetsCountRequest } from './datasets';
 
 jest.mock('loglevel');
-jest.mock('axios');
 
 describe('Investigation actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
