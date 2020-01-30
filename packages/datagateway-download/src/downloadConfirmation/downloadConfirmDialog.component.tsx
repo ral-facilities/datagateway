@@ -109,8 +109,7 @@ interface DownloadConfirmDialogProps
   isTwoLevel: boolean;
   open: boolean;
 
-  // TODO: pass in the function to call to redirect to the status tab.
-  // setStatus: () => void;
+  setStatus: () => void;
   setClose: () => void;
   clearCart: () => void;
 }
@@ -118,7 +117,7 @@ interface DownloadConfirmDialogProps
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { classes, setClose, clearCart } = props;
+  const { classes, setStatus, setClose, clearCart } = props;
 
   // TODO: Temporary facilityName until we load it from settings.
   // TODO: Access methods should be configurable and not defined in the component.
@@ -522,7 +521,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     id="download-confirmation-status-link"
                     variant="outlined"
                     color="primary"
-                    href="/"
+                    onClick={setStatus}
                   >
                     View My Downloads
                   </Button>

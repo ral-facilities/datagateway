@@ -4,7 +4,7 @@ import { Download } from 'datagateway-common';
 
 // TODO: Need to be passed in from a configuration?
 const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
-const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
+// const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
 export const fetchDownloads: (
   facilityName: string,

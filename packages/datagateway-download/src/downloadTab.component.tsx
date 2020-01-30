@@ -72,7 +72,8 @@ const DownloadTabs: React.FC = () => {
       </Tabs>
 
       <TabPanel value={value} index={0}>
-        <DownloadCartTable />
+        {/* Provide a link to the status table for the download confirmation dialog to use */}
+        <DownloadCartTable statusLink={() => setValue(1)} />
       </TabPanel>
 
       <TabPanel value={value} index={1}>
