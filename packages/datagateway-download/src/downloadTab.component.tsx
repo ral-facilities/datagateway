@@ -1,10 +1,19 @@
 import React from 'react';
 
-import { makeStyles, Paper, Tabs, Typography, Box } from '@material-ui/core';
+import {
+  makeStyles,
+  Paper,
+  Tabs,
+  Typography,
+  Box,
+  Grid,
+} from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 
 import DownloadCartTable from './downloadCart/downloadCartTable.component';
 import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
+
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 const useStyles = makeStyles({
   root: {
@@ -77,7 +86,31 @@ const DownloadTabs: React.FC = () => {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        <DownloadStatusTable />
+        <Grid container spacing={1}>
+          {/* Place the last updated time above the table. */}
+          <Grid item xs={12} aria-label="Last updated time">
+            <Typography
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                float: 'right',
+              }}
+              variant="subtitle1"
+              component="h3"
+            >
+              <i>Last checked: </i> {new Date().toLocaleString()}
+              {/* // TODO: Make this icon clickable and refresh the tab/page to show updated status table. */}
+              <RefreshIcon
+                // onClick={location.reload}
+                style={{ paddingLeft: '10px' }}
+              />
+            </Typography>
+          </Grid>
+
+          <Grid item xs aria-label="Download status table">
+            <DownloadStatusTable />
+          </Grid>
+        </Grid>
       </TabPanel>
     </Paper>
   );
