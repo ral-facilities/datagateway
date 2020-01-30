@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
@@ -125,62 +125,60 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   );
 
   return (
-    <Paper style={{ height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Table
-        loading={loading}
-        data={data}
-        loadMoreRows={params => fetchData(parseInt(investigationId), params)}
-        totalRowCount={totalDataCount}
-        sort={sort}
-        onSort={sortTable}
-        selectedRows={selectedRows}
-        allIds={allIds}
-        onCheck={addToCart}
-        onUncheck={removeFromCart}
-        detailsPanel={({ rowData }) => {
-          const datasetData = rowData as Dataset;
-          return (
-            <div>
-              <Typography>
-                <b>Name:</b> {datasetData.NAME}
-              </Typography>
-              <Typography>
-                <b>Description:</b> {datasetData.NAME}
-              </Typography>
-            </div>
-          );
-        }}
-        columns={[
-          {
-            label: 'Name',
-            dataKey: 'NAME',
-            cellContentRenderer: props => {
-              const datasetData = props.rowData as Dataset;
-              return datasetLink(
-                investigationId,
-                datasetData.ID,
-                datasetData.NAME
-              );
-            },
-            filterComponent: textFilter,
+    <Table
+      loading={loading}
+      data={data}
+      loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+      totalRowCount={totalDataCount}
+      sort={sort}
+      onSort={sortTable}
+      selectedRows={selectedRows}
+      allIds={allIds}
+      onCheck={addToCart}
+      onUncheck={removeFromCart}
+      detailsPanel={({ rowData }) => {
+        const datasetData = rowData as Dataset;
+        return (
+          <div>
+            <Typography>
+              <b>Name:</b> {datasetData.NAME}
+            </Typography>
+            <Typography>
+              <b>Description:</b> {datasetData.NAME}
+            </Typography>
+          </div>
+        );
+      }}
+      columns={[
+        {
+          label: 'Name',
+          dataKey: 'NAME',
+          cellContentRenderer: props => {
+            const datasetData = props.rowData as Dataset;
+            return datasetLink(
+              investigationId,
+              datasetData.ID,
+              datasetData.NAME
+            );
           },
-          {
-            label: 'Datafile Count',
-            dataKey: 'DATAFILE_COUNT',
-          },
-          {
-            label: 'Create Time',
-            dataKey: 'CREATE_TIME',
-            filterComponent: dateFilter,
-          },
-          {
-            label: 'Modified Time',
-            dataKey: 'MOD_TIME',
-            filterComponent: dateFilter,
-          },
-        ]}
-      />
-    </Paper>
+          filterComponent: textFilter,
+        },
+        {
+          label: 'Datafile Count',
+          dataKey: 'DATAFILE_COUNT',
+        },
+        {
+          label: 'Create Time',
+          dataKey: 'CREATE_TIME',
+          filterComponent: dateFilter,
+        },
+        {
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
+        },
+      ]}
+    />
   );
 };
 

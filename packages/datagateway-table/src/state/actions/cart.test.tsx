@@ -118,7 +118,7 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(addToCartSuccess(mockData));
       expect(axios.post).toHaveBeenCalledWith(
         '/user/cart/LILS/cartItems',
-        expect.objectContaining(params)
+        params
       );
     });
 
@@ -201,14 +201,13 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
 
       const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
       params.append('distinct', JSON.stringify('ID'));
 
-      expect(axios.get).toHaveBeenCalledWith(
-        '/investigations',
-        expect.objectContaining({
-          params,
-        })
-      );
+      expect(axios.get).toHaveBeenCalledWith('/investigations', {
+        headers: { Authorization: 'Bearer null' },
+        params,
+      });
     });
 
     it('applies additional filters as well as sort and filter state to the request params', async () => {
@@ -243,16 +242,16 @@ describe('Cart actions', () => {
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 desc'));
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: '1' } }));
       params.append('where', JSON.stringify({ column2: { like: '2' } }));
+      params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
       params.append('distinct', JSON.stringify(['NAME', 'ID']));
 
-      expect(axios.get).toHaveBeenCalledWith(
-        '/datasets',
-        expect.objectContaining({
-          params,
-        })
-      );
+      expect(axios.get).toHaveBeenCalledWith('/datasets', {
+        headers: { Authorization: 'Bearer null' },
+        params,
+      });
     });
 
     it('can handle array distinct filters and add them to request params', async () => {
@@ -275,14 +274,13 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
 
       const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
       params.append('distinct', JSON.stringify(['NAME', 'TITLE', 'ID']));
 
-      expect(axios.get).toHaveBeenCalledWith(
-        '/datafiles',
-        expect.objectContaining({
-          params,
-        })
-      );
+      expect(axios.get).toHaveBeenCalledWith('/datafiles', {
+        headers: { Authorization: 'Bearer null' },
+        params,
+      });
     });
 
     it('dispatches fetchAllIdsRequest and fetchAllIdsFailure actions upon unsuccessful fetchAllIds action', async () => {
@@ -321,12 +319,14 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
 
       const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
 
       expect(axios.get).toHaveBeenCalledWith(
         '/instruments/1/facilitycycles/2/investigations',
-        expect.objectContaining({
+        {
+          headers: { Authorization: 'Bearer null' },
           params,
-        })
+        }
       );
     });
 
@@ -353,14 +353,16 @@ describe('Cart actions', () => {
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 desc'));
+      params.append('order', JSON.stringify('ID asc'));
       params.append('where', JSON.stringify({ column1: { like: '1' } }));
       params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
       expect(axios.get).toHaveBeenCalledWith(
         '/instruments/1/facilitycycles/2/investigations',
-        expect.objectContaining({
+        {
+          headers: { Authorization: 'Bearer null' },
           params,
-        })
+        }
       );
     });
 

@@ -1,120 +1,110 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ISIS Investigations table component renders correctly 1`] = `
-<div
-  className="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
-  style={
-    Object {
-      "height": "calc(100vh - 64px)",
-      "width": "100%",
-    }
+<WithStyles(VirtualizedTable)
+  allIds={
+    Array [
+      1,
+    ]
   }
->
-  <WithStyles(VirtualizedTable)
-    allIds={
-      Array [
-        1,
-      ]
-    }
-    columns={
-      Array [
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "TITLE",
-          "filterComponent": [Function],
-          "label": "Title",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "VISIT_ID",
-          "filterComponent": [Function],
-          "label": "Visit Id",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "NAME",
-          "filterComponent": [Function],
-          "label": "RB Number",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "STUDYINVESTIGATION.STUDY.PID",
-          "filterComponent": [Function],
-          "label": "DOI",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "SIZE",
-          "disableSort": true,
-          "label": "Size",
-        },
-        Object {
-          "cellContentRenderer": [Function],
-          "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME",
-          "filterComponent": [Function],
-          "label": "Instrument",
-        },
-        Object {
-          "dataKey": "STARTDATE",
-          "filterComponent": [Function],
-          "label": "Start Date",
-        },
-        Object {
-          "dataKey": "ENDDATE",
-          "filterComponent": [Function],
-          "label": "End Date",
-        },
-      ]
-    }
-    data={
-      Array [
-        Object {
-          "DOI": "doi 1",
-          "ENDDATE": "2019-06-11",
-          "ID": 1,
-          "INVESTIGATIONINSTRUMENT": Array [
-            Object {
-              "ID": 1,
-              "INSTRUMENT": Object {
-                "ID": 3,
-                "NAME": "LARMOR",
-              },
-              "INSTRUMENT_ID": 3,
-              "INVESTIGATION_ID": 1,
+  columns={
+    Array [
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "TITLE",
+        "filterComponent": [Function],
+        "label": "Title",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "VISIT_ID",
+        "filterComponent": [Function],
+        "label": "Visit Id",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "label": "RB Number",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "STUDYINVESTIGATION.STUDY.PID",
+        "filterComponent": [Function],
+        "label": "DOI",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "SIZE",
+        "disableSort": true,
+        "label": "Size",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME",
+        "filterComponent": [Function],
+        "label": "Instrument",
+      },
+      Object {
+        "dataKey": "STARTDATE",
+        "filterComponent": [Function],
+        "label": "Start Date",
+      },
+      Object {
+        "dataKey": "ENDDATE",
+        "filterComponent": [Function],
+        "label": "End Date",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "DOI": "doi 1",
+        "ENDDATE": "2019-06-11",
+        "ID": 1,
+        "INVESTIGATIONINSTRUMENT": Array [
+          Object {
+            "ID": 1,
+            "INSTRUMENT": Object {
+              "ID": 3,
+              "NAME": "LARMOR",
             },
-          ],
-          "NAME": "Test 1",
-          "RB_NUMBER": "1",
-          "SIZE": 1,
-          "STARTDATE": "2019-06-10",
-          "STUDYINVESTIGATION": Array [
-            Object {
-              "ID": 6,
-              "INVESTIGATION_ID": 1,
-              "STUDY": Object {
-                "ID": 7,
-                "PID": "study pid",
-              },
-              "STUDY_ID": 7,
+            "INSTRUMENT_ID": 3,
+            "INVESTIGATION_ID": 1,
+          },
+        ],
+        "NAME": "Test 1",
+        "RB_NUMBER": "1",
+        "SIZE": 1,
+        "STARTDATE": "2019-06-10",
+        "STUDYINVESTIGATION": Array [
+          Object {
+            "ID": 6,
+            "INVESTIGATION_ID": 1,
+            "STUDY": Object {
+              "ID": 7,
+              "PID": "study pid",
             },
-          ],
-          "SUMMARY": "foo bar",
-          "TITLE": "Test 1",
-          "VISIT_ID": "1",
-        },
-      ]
-    }
-    detailsPanel={[Function]}
-    loadMoreRows={[Function]}
-    loading={false}
-    onCheck={[Function]}
-    onSort={[Function]}
-    onUncheck={[Function]}
-    selectedRows={Array []}
-    sort={Object {}}
-    totalRowCount={0}
-  />
-</div>
+            "STUDY_ID": 7,
+          },
+        ],
+        "SUMMARY": "foo bar",
+        "TITLE": "Test 1",
+        "VISIT_ID": "1",
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  loadMoreRows={[Function]}
+  loading={false}
+  onCheck={[Function]}
+  onSort={[Function]}
+  onUncheck={[Function]}
+  selectedRows={Array []}
+  sort={Object {}}
+  totalRowCount={0}
+/>
 `;
 
 exports[`ISIS Investigations table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
