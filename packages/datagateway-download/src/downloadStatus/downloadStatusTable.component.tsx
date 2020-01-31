@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Grid,
-  Paper,
-  IconButton,
-  Tooltip,
-  makeStyles,
-  createStyles,
-  Theme,
-} from '@material-ui/core';
+import { Grid, Paper, IconButton } from '@material-ui/core';
 
 import {
   Table,
@@ -20,21 +12,11 @@ import {
 import { fetchDownloads, downloadDeleted } from './downloadApi';
 import { TableCellProps } from 'react-virtualized';
 import { RemoveCircle, GetApp } from '@material-ui/icons';
+import BlackTooltip from '../tooltip.component';
 
 const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
-const useStylesTooltip = makeStyles((theme: Theme) =>
-  createStyles({
-    tooltip: {
-      backgroundColor: theme.palette.common.black,
-      fontSize: '0.875rem',
-    },
-  })
-);
-
 const DownloadStatusTable: React.FC = () => {
-  const classes = useStylesTooltip();
-
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
@@ -193,38 +175,35 @@ const DownloadStatusTable: React.FC = () => {
 
                 const [clicked, setClicked] = React.useState(false);
                 return (
-                  <Tooltip
+                  <BlackTooltip
                     title={`Instant download not supported for ${downloadItem.transport} download type`}
-                    classes={classes}
                     enterDelay={500}
                     disableHoverListener={!downloadable}
                   >
-                    <span>
-                      <IconButton
-                        component="a"
-                        // Construct a link to download the prepared cart.
-                        href={`${idsUrl}/getData?sessionId=${window.localStorage.getItem(
-                          'icat:token'
-                        )}&preparedId=${downloadItem.preparedId}&outname=${
-                          downloadItem.fileName
-                        }`}
-                        target="_blank"
-                        aria-label={`Download ${downloadItem.fileName}`}
-                        key="download"
-                        size="small"
-                        onClick={() => {
-                          setClicked(true);
-                          setTimeout(() => {
-                            setClicked(false);
-                          }, 100);
-                        }}
-                        // Set the button to be disabled if the transport type is not "https" (cover http?).
-                        disabled={downloadable}
-                      >
-                        <GetApp color={clicked ? 'primary' : 'inherit'} />
-                      </IconButton>
-                    </span>
-                  </Tooltip>
+                    <IconButton
+                      component="a"
+                      // Construct a link to download the prepared cart.
+                      href={`${idsUrl}/getData?sessionId=${window.localStorage.getItem(
+                        'icat:token'
+                      )}&preparedId=${downloadItem.preparedId}&outname=${
+                        downloadItem.fileName
+                      }`}
+                      target="_blank"
+                      aria-label={`Download ${downloadItem.fileName}`}
+                      key="download"
+                      size="small"
+                      onClick={() => {
+                        setClicked(true);
+                        setTimeout(() => {
+                          setClicked(false);
+                        }, 100);
+                      }}
+                      // Set the button to be disabled if the transport type is not "https" (cover http?).
+                      disabled={downloadable}
+                    >
+                      <GetApp color={clicked ? 'primary' : 'inherit'} />
+                    </IconButton>
+                  </BlackTooltip>
                 );
               },
 

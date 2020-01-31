@@ -7,6 +7,7 @@ import {
   Typography,
   Box,
   Grid,
+  IconButton,
 } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 
@@ -14,6 +15,7 @@ import DownloadCartTable from './downloadCart/downloadCartTable.component';
 import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
 
 import RefreshIcon from '@material-ui/icons/Refresh';
+import BlackTooltip from './tooltip.component';
 
 const useStyles = makeStyles({
   root: {
@@ -118,14 +120,20 @@ const DownloadTabs: React.FC = () => {
               variant="subtitle1"
               component="h3"
             >
+              {/* // TODO: Make this icon clickable and refresh the tab/page to show updated status table. */}
+              <BlackTooltip title="Refresh Downloads" enterDelay={250}>
+                <IconButton
+                  color="secondary"
+                  aria-label="Refresh download status table"
+                  style={{ paddingLeft: '10px' }}
+                >
+                  <RefreshIcon />
+                </IconButton>
+              </BlackTooltip>
+
               <p>
                 <i>Last checked: </i> {new Date().toLocaleString()}
               </p>
-              {/* // TODO: Make this icon clickable and refresh the tab/page to show updated status table. */}
-              <RefreshIcon
-                // onClick={}
-                style={{ paddingLeft: '10px' }}
-              />
             </Typography>
           </Grid>
 
