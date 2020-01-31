@@ -19,25 +19,25 @@ export interface DGTableState {
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
   facilityName: string;
-    // sort: {
-    //     [column: string]: Order;
-    // };
-    // filters: {
-    //     [column: string]: Filter;
-    // };
-    // data: Entity[];
-    // totalDataCount: number;
-    // investigationCache: EntityCache;
-    // datasetCache: EntityCache;
-    // cartItems: DownloadCartItem[];
-    // allIds: number[];
-    // loading: boolean;
-    // downloading: boolean;
-    // error: string | null;
-    // dataTimestamp: number;
-    // countTimestamp: number;
-    // allIdsTimestamp: number;
-    // urls: URLs;
+  // sort: {
+  //     [column: string]: Order;
+  // };
+  // filters: {
+  //     [column: string]: Filter;
+  // };
+  // data: Entity[];
+  // totalDataCount: number;
+  // investigationCache: EntityCache;
+  // datasetCache: EntityCache;
+  // cartItems: DownloadCartItem[];
+  // allIds: number[];
+  // loading: boolean;
+  // downloading: boolean;
+  // error: string | null;
+  // dataTimestamp: number;
+  // countTimestamp: number;
+  // allIdsTimestamp: number;
+  // urls: URLs;
 }
 
 export interface EntityCache {

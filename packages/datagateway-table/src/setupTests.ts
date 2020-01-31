@@ -19,7 +19,10 @@ export let actions: Action[] = [];
 export const resetActions = (): void => {
   actions = [];
 };
-export const getState = (): Partial<StateType> => ({ dgtable: dgTableInitialState, dgcommon: dGCommonInitialState });
+export const getState = (): Partial<StateType> => ({
+  dgtable: dgTableInitialState,
+  dgcommon: dGCommonInitialState,
+});
 export const dispatch = (action: Action): void | Promise<void> => {
   if (typeof action === 'function') {
     action(dispatch, getState);

@@ -32,7 +32,12 @@ describe('DLS Proposals table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: dgTableInitialState, dgcommon: dGCommonInitialState, }));
+    state = JSON.parse(
+      JSON.stringify({
+        dgtable: dgTableInitialState,
+        dgcommon: dGCommonInitialState,
+      })
+    );
     state.dgcommon.data = [
       {
         ID: 1,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
-import {  initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
@@ -36,7 +36,12 @@ describe('ISIS Investigations table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: dgTableInitialState, dgcommon: dGCommonInitialState, }));
+    state = JSON.parse(
+      JSON.stringify({
+        dgtable: dgTableInitialState,
+        dgcommon: dGCommonInitialState,
+      })
+    );
     state.dgcommon.data = [
       {
         ID: 1,

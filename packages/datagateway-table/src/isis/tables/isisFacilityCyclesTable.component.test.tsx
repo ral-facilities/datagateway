@@ -32,7 +32,12 @@ describe('ISIS FacilityCycles table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: dgTableInitialState, dgcommon: dGCommonInitialState, }));
+    state = JSON.parse(
+      JSON.stringify({
+        dgtable: dgTableInitialState,
+        dgcommon: dGCommonInitialState,
+      })
+    );
     state.dgtable.data = [
       {
         ID: 1,
