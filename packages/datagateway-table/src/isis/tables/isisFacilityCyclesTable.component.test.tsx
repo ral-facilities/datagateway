@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
-import { initialState } from '../../state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
@@ -9,6 +9,7 @@ import {
   filterTable,
   sortTable,
   fetchFacilityCycleCountRequest,
+  dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -31,7 +32,7 @@ describe('ISIS FacilityCycles table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
+    state = JSON.parse(JSON.stringify({ dgtable: dgTableInitialState, dgcommon: dGCommonInitialState, }));
     state.dgtable.data = [
       {
         ID: 1,

@@ -11,6 +11,7 @@ import {
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
+  facilityName: '',
   features: {},
   breadcrumbSettings: {},
   settingsLoaded: false,

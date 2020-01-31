@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import ISISInvestigationsTable from './isisInvestigationsTable.component';
-import { initialState } from '../../state/reducers/dgtable.reducer';
+import {  initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
@@ -12,6 +12,7 @@ import {
   fetchInvestigationCountRequest,
   removeFromCartRequest,
   addToCartRequest,
+  dGCommonInitialState,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -35,8 +36,8 @@ describe('ISIS Investigations table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
-    state.dgtable.data = [
+    state = JSON.parse(JSON.stringify({ dgtable: dgTableInitialState, dgcommon: dGCommonInitialState, }));
+    state.dgcommon.data = [
       {
         ID: 1,
         TITLE: 'Test 1',
@@ -72,7 +73,7 @@ describe('ISIS Investigations table component', () => {
         ENDDATE: '2019-06-11',
       },
     ];
-    state.dgtable.allIds = [1];
+    state.dgcommon.allIds = [1];
   });
 
   afterEach(() => {

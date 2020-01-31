@@ -1,7 +1,4 @@
 import {
-  sortTable,
-  filterTable,
-  getApiFilter,
   clearTable,
   configureStrings,
   loadFeatureSwitches,
@@ -24,12 +21,13 @@ import {
   ConfigureFacilityNameType,
 } from './actions.types';
 import { StateType } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from '../reducers/dgtable.reducer';
+import { dGCommonInitialState } from 'datagateway-common';
 import { RouterState } from 'connected-react-router';
 import axios from 'axios';
 import * as log from 'loglevel';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
-import { fetchDownloadCartRequest, fetchDownloadCartSuccess } from './cart';
+import { fetchDownloadCartRequest, fetchDownloadCartSuccess } from 'datagateway-common';
 
 jest.mock('loglevel');
 

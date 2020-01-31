@@ -9,7 +9,8 @@ import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter } from 'react-router';
 import PageTable from './pageTable.component';
 import { Provider } from 'react-redux';
-import { initialState } from './state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState} from './state/reducers/dgtable.reducer';
+import { dGCommonInitialState } from 'datagateway-common';
 import { Link } from 'react-router-dom';
 
 import InvestigationTable from './table/investigationTable.component';
@@ -75,7 +76,8 @@ describe('PageTable', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgtable: initialState,
+        dgtable: dgTableInitialState,
+        dgcommon: dGCommonInitialState,
       })
     );
   });

@@ -26,6 +26,7 @@ export * from './state/actions/cart';
 export * from './state/actions/instruments';
 export * from './state/actions/facilityCycles';
 export { default as Preloader } from './preloader/preloader.component';
+export { initialState as dGCommonInitialState } from './state/reducers/dgcommon.reducer';
 export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';
 
 export type DGCommonState = StateType;

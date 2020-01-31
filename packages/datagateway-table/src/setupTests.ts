@@ -2,7 +2,8 @@ import Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { Action } from 'redux';
 import { StateType } from './state/app.types';
-import { initialState } from './state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from './state/reducers/dgtable.reducer';
+import { dGCommonInitialState } from 'datagateway-common';
 // React 16 Enzyme adapter
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -18,7 +19,7 @@ export let actions: Action[] = [];
 export const resetActions = (): void => {
   actions = [];
 };
-export const getState = (): Partial<StateType> => ({ dgtable: initialState });
+export const getState = (): Partial<StateType> => ({ dgtable: dgTableInitialState, dgcommon: dGCommonInitialState });
 export const dispatch = (action: Action): void | Promise<void> => {
   if (typeof action === 'function') {
     action(dispatch, getState);
