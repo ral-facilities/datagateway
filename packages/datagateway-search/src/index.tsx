@@ -19,35 +19,41 @@ const render = (): void => {
 };
 
 render();
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 if (process.env.NODE_ENV === `development`) {
   log.setDefaultLevel(log.levels.DEBUG);
   axios
     .post('/sessions', { username: 'user', password: 'password' })
     .then(response => {
       window.localStorage.setItem('daaas:token', response.data.sessionID);
-    });
-
-  // TODO: if it's still needed, get icatUrl from settings file
-  const icatUrl = '';
-
-  // TODO: get ICAT session ID from daaas:token
-  const icatCreds = {
-    plugin: 'simple',
-    credentials: [{ username: 'root' }, { password: 'pw' }],
-  };
-
-  axios
-    .post(icatUrl, `json=${JSON.stringify(icatCreds)}`, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
-    .then(response => {
-      window.localStorage.setItem('icat:token', response.data.sessionId);
+    .catch((error: { message: any }) => {
+      log.error(`Can't contact API.`);
     });
-} else {
-  log.setDefaultLevel(log.levels.ERROR);
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
+// TODO: if it's still needed, get icatUrl from settings file
+const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session/';
+
+// TODO: get ICAT session ID from daaas:token
+const icatCreds = {
+  plugin: 'simple',
+  credentials: [{ username: 'root' }, { password: 'pw' }],
+};
+
+axios
+  .post(icatUrl, `json=${JSON.stringify(icatCreds)}`, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  })
+  .then(response => {
+    window.localStorage.setItem('icat:token', response.data.sessionId);
+  })
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  .catch((error: { message: any }) => {
+    log.error(`Token was not retrieved.`);
+  });
+/* eslint-enable @typescript-eslint/no-explicit-any */
 window.addEventListener('single-spa:routing-event', () => {
   render();
 });
