@@ -36,10 +36,17 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener('daaas-frontend', e => {
+document.addEventListener('scigateway', e => {
   // attempt to re-render the plugin if the corresponding div is present
   const action = (e as CustomEvent).detail;
-  if (action.type === 'daaas:api:plugin_rerender') {
+  if (action.type === 'scigateway:api:plugin_rerender') {
+    // This is a temporary fix for the current issue with the tab indicator
+    // not updating after the size of the page has been altered.
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('resize'));
+      console.log('resize done');
+    }, 125);
+
     render();
   }
 });
@@ -95,9 +102,9 @@ if (
 serviceWorker.unregister();
 
 document.dispatchEvent(
-  new CustomEvent('daaas-frontend', {
+  new CustomEvent('scigateway', {
     detail: {
-      type: 'daaas:api:register_route',
+      type: 'scigateway:api:register_route',
       payload: {
         section: 'Test',
         link: '/download',

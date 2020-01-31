@@ -54,11 +54,30 @@ function a11yProps(
 }
 
 const DownloadTabs: React.FC = () => {
-  // TODO: Needs a function that can be passed to the cart component and
-  //       to the modal in order to move from cart to status page.
-
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+
+  // TODO: Needs a function that can be passed to the cart component and
+  //       to the modal in order to move from cart to status page.
+  // const tabActions = React.useRef<TabsActions>();
+  // const handleRerender = useCallback(event => {
+  //   console.log('Caught inside Tabs: ', event);
+  //   const action = (event as CustomEvent).detail;
+  //   if (action.type === 'scigateway:api:plugin_rerender') {
+  //     if (tabActions.current) {
+  //       tabActions.current.updateIndicator();
+  //       console.log('test');
+  //     }
+  //   }
+  // }, []);
+
+  // React.useEffect(() => {
+  //   document.addEventListener('scigateway', handleRerender);
+
+  //   return () => {
+  //     document.removeEventListener('scigateway', handleRerender);
+  //   };
+  // }, [handleRerender]);
 
   const handleChange = (
     event: React.ChangeEvent<{}>,
@@ -70,6 +89,7 @@ const DownloadTabs: React.FC = () => {
   return (
     <Paper className={classes.root}>
       <Tabs
+        // action={tabActions}
         value={value}
         onChange={handleChange}
         indicatorColor="primary"
@@ -98,10 +118,12 @@ const DownloadTabs: React.FC = () => {
               variant="subtitle1"
               component="h3"
             >
-              <i>Last checked: </i> {new Date().toLocaleString()}
+              <p>
+                <i>Last checked: </i> {new Date().toLocaleString()}
+              </p>
               {/* // TODO: Make this icon clickable and refresh the tab/page to show updated status table. */}
               <RefreshIcon
-                // onClick={location.reload}
+                // onClick={}
                 style={{ paddingLeft: '10px' }}
               />
             </Typography>
