@@ -94,10 +94,6 @@ import * as log from 'loglevel';
 //   },
 // });
 
-export const clearTable = (): Action => ({
-  type: ClearTableType,
-});
-
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
 });

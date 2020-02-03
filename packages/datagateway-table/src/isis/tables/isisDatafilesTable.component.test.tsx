@@ -14,13 +14,13 @@ import {
   removeFromCartRequest,
   addToCartRequest,
   dGCommonInitialState,
+  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table, Datafile } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import { clearTable } from '../../state/actions';
 
 describe('ISIS datafiles table component', () => {
   let shallow;
@@ -198,7 +198,7 @@ describe('ISIS datafiles table component', () => {
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'datafile',
@@ -226,7 +226,7 @@ describe('ISIS datafiles table component', () => {
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'dataset',
@@ -276,9 +276,9 @@ describe('ISIS datafiles table component', () => {
   });
 
   it("doesn't display download button for datafiles with no location", () => {
-    const datafile = state.dgtable.data[0] as Datafile;
+    const datafile = state.dgcommon.data[0] as Datafile;
     const { LOCATION, ...datafileWithoutLocation } = datafile;
-    state.dgtable.data = [datafileWithoutLocation];
+    state.dgcommon.data = [datafileWithoutLocation];
 
     const testStore = mockStore(state);
     const wrapper = mount(
@@ -304,14 +304,14 @@ describe('ISIS datafiles table component', () => {
 
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
         detailsPanelResize: jest.fn(),
       })
     );

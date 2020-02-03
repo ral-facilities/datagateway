@@ -11,13 +11,13 @@ import {
   fetchInvestigationDetailsRequest,
   fetchInvestigationCountRequest,
   dGCommonInitialState,
+  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import { clearTable } from '../../state/actions';
 
 describe('DLS Visits table component', () => {
   let shallow;
@@ -200,14 +200,14 @@ describe('DLS Visits table component', () => {
 
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
         detailsPanelResize: jest.fn(),
       })
     );
@@ -235,8 +235,8 @@ describe('DLS Visits table component', () => {
   });
 
   it('gracefully handles missing Instrument from InvestigationInstrument object', () => {
-    state.dgtable.data[0] = {
-      ...state.dgtable.data[0],
+    state.dgcommon.data[0] = {
+      ...state.dgcommon.data[0],
       INVESTIGATIONINSTRUMENT: [
         {
           ID: 1,

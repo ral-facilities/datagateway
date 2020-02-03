@@ -20,9 +20,9 @@ import {
   fetchAllIds,
   sortTable,
   filterTable,
+  clearTable,
 } from 'datagateway-common';
 import { Paper, IconButton } from '@material-ui/core';
-import { clearTable } from '../../state/actions';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';

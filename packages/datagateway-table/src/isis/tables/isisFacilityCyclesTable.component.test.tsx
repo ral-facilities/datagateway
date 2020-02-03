@@ -10,12 +10,12 @@ import {
   sortTable,
   fetchFacilityCycleCountRequest,
   dGCommonInitialState,
+  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import { clearTable } from '../../state/actions';
 
 describe('ISIS FacilityCycles table component', () => {
   let shallow;
@@ -38,7 +38,7 @@ describe('ISIS FacilityCycles table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    state.dgtable.data = [
+    state.dgcommon.data = [
       {
         ID: 1,
         NAME: 'Test 1',

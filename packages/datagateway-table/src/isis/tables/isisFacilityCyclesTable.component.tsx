@@ -18,9 +18,9 @@ import {
   filterTable,
   fetchFacilityCycles,
   fetchFacilityCycleCount,
+  clearTable,
 } from 'datagateway-common';
 import useAfterMountEffect from '../../utils';
-import { clearTable } from '../../state/actions';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISFacilityCyclesTableProps {

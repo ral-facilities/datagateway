@@ -12,13 +12,13 @@ import {
   fetchInstruments,
   fetchInstrumentDetails,
   fetchInstrumentCount,
+  clearTable,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import { clearTable } from '../../state/actions';
 import InstrumentDetailsPanel from '../detailsPanels/instrumentDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 

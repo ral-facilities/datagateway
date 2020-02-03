@@ -12,12 +12,12 @@ import {
   removeFromCartRequest,
   addToCartRequest,
   dGCommonInitialState,
+  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import { clearTable } from '../../state/actions';
 
 describe('DLS datafiles table component', () => {
   let shallow;

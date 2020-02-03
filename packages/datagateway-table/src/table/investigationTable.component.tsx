@@ -17,13 +17,13 @@ import {
   fetchAllIds,
   sortTable,
   filterTable,
+  clearTable,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import { clearTable } from '../state/actions';
 import useAfterMountEffect from '../utils';
 
 interface InvestigationTableProps {

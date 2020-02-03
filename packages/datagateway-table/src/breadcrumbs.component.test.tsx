@@ -327,6 +327,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
             },
           },
         },
+        dgcommon: dGCommonInitialState,
 
         // Initialise our router object to hold location information.
         router: {

@@ -13,13 +13,13 @@ import {
   removeFromCartRequest,
   addToCartRequest,
   dGCommonInitialState,
+  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import { clearTable } from '../../state/actions';
 
 describe('DLS Dataset table component', () => {
   let shallow;
@@ -199,7 +199,7 @@ describe('DLS Dataset table component', () => {
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'dataset',
@@ -227,7 +227,7 @@ describe('DLS Dataset table component', () => {
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'investigation',
@@ -277,14 +277,14 @@ describe('DLS Dataset table component', () => {
 
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
         detailsPanelResize: jest.fn(),
       })
     );

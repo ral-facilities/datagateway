@@ -1,6 +1,7 @@
 import DGCommonReducer, { initialState } from './dgcommon.reducer';
 import { DGCommonState, EntityCache } from '../app.types';
 import {
+  clearTable,
   sortTable,
   filterTable,
   fetchDatafilesRequest,
@@ -137,6 +138,31 @@ describe('DGCommon reducer', () => {
 
     let updatedState = DGCommonReducer(state, filterTable('test', null));
     expect(updatedState.sort).toEqual({});
+  });
+
+  it('should clear the table state when given a ClearTable action', () => {
+    state = {
+      ...initialState,
+      data: [{ ID: 1, NAME: 'test' }],
+      totalDataCount: 1,
+      loading: true,
+      downloading: true,
+      error: 'test error',
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
+    };
+
+    let updatedState = DGCommonReducer(state, clearTable());
+    expect(updatedState).toEqual({
+      ...initialState,
+      data: [],
+      totalDataCount: 0,
+      loading: false,
+      downloading: false,
+      error: null,
+      sort: {},
+      filters: {},
+    });
   });
 
   describe('timestamps', () => {

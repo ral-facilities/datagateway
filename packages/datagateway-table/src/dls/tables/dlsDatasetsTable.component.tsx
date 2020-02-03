@@ -16,6 +16,7 @@ import {
   addToCart,
   removeFromCart,
   fetchAllIds,
+  clearTable,
 } from 'datagateway-common';
 import { Paper } from '@material-ui/core';
 import { AnyAction } from 'redux';
@@ -27,7 +28,6 @@ import { TableCellProps } from 'react-virtualized';
 import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
-import { clearTable } from '../../state/actions';
 
 interface DLSDatasetsTableProps {
   proposalName: string;

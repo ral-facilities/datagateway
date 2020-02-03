@@ -4,20 +4,20 @@ import DatasetTable from './datasetTable.component';
 import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
-import {
-  fetchDatasetsRequest,
+import {fetchDatasetsRequest,
   filterTable,
+  clearTable,
   sortTable,
   addToCartRequest,
   removeFromCartRequest,
   fetchDatasetCountRequest,
-  clearTable,
   fetchAllIdsRequest,
-} from '../state/actions';
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import {dGCommonInitialState,} from 'datagateway-common';
 
 describe('Dataset table component', () => {
   let shallow;
@@ -34,8 +34,8 @@ describe('Dataset table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
-    state.dgtable.data = [
+    state = JSON.parse(JSON.stringify({ dgcommon: dGCommonInitialState,dgtable: initialState }));
+    state.dgcommon.data = [
       {
         ID: 1,
         NAME: 'Test 1',
@@ -45,7 +45,7 @@ describe('Dataset table component', () => {
         INVESTIGATION_ID: 1,
       },
     ];
-    state.dgtable.allIds = [1];
+    state.dgcommon.allIds = [1];
   });
 
   afterEach(() => {
@@ -191,7 +191,7 @@ describe('Dataset table component', () => {
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'dataset',
@@ -219,7 +219,7 @@ describe('Dataset table component', () => {
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'investigation',
@@ -261,7 +261,7 @@ describe('Dataset table component', () => {
     );
     const detailsPanelWrapper = shallow(
       wrapper.prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
