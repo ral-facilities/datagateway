@@ -42,10 +42,10 @@ document.addEventListener('scigateway', e => {
   if (action.type === 'scigateway:api:plugin_rerender') {
     // This is a temporary fix for the current issue with the tab indicator
     // not updating after the size of the page has been altered.
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('resize'));
-      console.log('resize done');
-    }, 125);
+    // setTimeout(() => {
+    //   window.dispatchEvent(new CustomEvent('resize'));
+    //   console.log('resize done');
+    // }, 125);
 
     render();
   }

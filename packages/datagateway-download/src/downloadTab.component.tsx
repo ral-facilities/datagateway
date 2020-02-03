@@ -57,42 +57,34 @@ function a11yProps(
 
 const DownloadTabs: React.FC = () => {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
 
-  // TODO: Needs a function that can be passed to the cart component and
-  //       to the modal in order to move from cart to status page.
-  // const tabActions = React.useRef<TabsActions>();
-  // const handleRerender = useCallback(event => {
-  //   console.log('Caught inside Tabs: ', event);
-  //   const action = (event as CustomEvent).detail;
-  //   if (action.type === 'scigateway:api:plugin_rerender') {
-  //     if (tabActions.current) {
-  //       tabActions.current.updateIndicator();
-  //       console.log('test');
-  //     }
-  //   }
-  // }, []);
+  // Setting the selected tab in session storage is required
+  // as the selected tab information is lost with each re-render
+  // (e.g. opening/closing the navigation drawer).
+  const getTab = (): number => {
+    let savedTab = sessionStorage.getItem('downloadStatusTab');
+    console.log('Saved tab in sessionStorage: ', savedTab);
 
-  // React.useEffect(() => {
-  //   document.addEventListener('scigateway', handleRerender);
+    // If the tab has not been saved, then set it to the initial cart view (0).
+    if (!savedTab) sessionStorage.setItem('downloadStatusTab', '0');
+    else return parseInt(savedTab);
 
-  //   return () => {
-  //     document.removeEventListener('scigateway', handleRerender);
-  //   };
-  // }, [handleRerender]);
+    return 0;
+  };
 
-  const handleChange = (
-    event: React.ChangeEvent<{}>,
-    newValue: number
-  ): void => {
-    setValue(newValue);
+  // Set the initial tab.
+  const [selectedTab, setSelectedTab] = React.useState(getTab());
+
+  const handleChange = (event: React.ChangeEvent<{}>, setTab: number): void => {
+    // Set the tab in the session storage.
+    sessionStorage.setItem('downloadStatusTab', setTab.toString());
+    setSelectedTab(setTab);
   };
 
   return (
     <Paper className={classes.root}>
       <Tabs
-        // action={tabActions}
-        value={value}
+        value={selectedTab}
         onChange={handleChange}
         indicatorColor="primary"
         textColor="primary"
@@ -102,12 +94,12 @@ const DownloadTabs: React.FC = () => {
         <Tab label="Downloads" {...a11yProps(1)} />
       </Tabs>
 
-      <TabPanel value={value} index={0}>
+      <TabPanel value={selectedTab} index={0}>
         {/* Provide a link to the status table for the download confirmation dialog to use */}
-        <DownloadCartTable statusLink={() => setValue(1)} />
+        <DownloadCartTable statusLink={() => setSelectedTab(1)} />
       </TabPanel>
 
-      <TabPanel value={value} index={1}>
+      <TabPanel value={selectedTab} index={1}>
         <Grid container spacing={1}>
           {/* Place the last updated time above the table. */}
           <Grid item xs={12} aria-label="Last updated time">
