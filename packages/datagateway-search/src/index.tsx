@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === `development`) {
   axios
     .post('/sessions', { username: 'user', password: 'password' })
     .then(response => {
-      window.localStorage.setItem('daaas:token', response.data.sessionID);
+      window.localStorage.setItem('icat:token', response.data.sessionID);
     });
 
   // TODO: if it's still needed, get icatUrl from settings file

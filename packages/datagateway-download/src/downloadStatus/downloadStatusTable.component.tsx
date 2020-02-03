@@ -16,7 +16,15 @@ import BlackTooltip from '../tooltip.component';
 
 const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
-const DownloadStatusTable: React.FC = () => {
+interface DownloadStatusTableProps {
+  refreshTable: boolean;
+  setRefreshTable: (refresh: boolean) => void;
+  setLastChecked: () => void;
+}
+
+const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
+  props: DownloadStatusTableProps
+) => {
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
@@ -25,15 +33,55 @@ const DownloadStatusTable: React.FC = () => {
   const [data, setData] = React.useState<Download[]>([]);
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
+  const { refreshTable, setRefreshTable, setLastChecked } = props;
+
+  console.log('Data loaded: ', dataLoaded);
+
   React.useEffect(() => {
-    // TODO: Fetch downloads for the user.
-    // NOTE: facilityName needs to be passed in from a configuration?
-    fetchDownloads('LILS').then(downloads => {
-      // TODO: Add in availability and a custom DownloadStatusTableItem
-      setData(downloads);
-      setDataLoaded(true);
-    });
-  }, []);
+    if (!dataLoaded || refreshTable) {
+      // Clear the current contents, this will make sure
+      // there is visually a refresh of the table.
+      setData([]);
+      setDataLoaded(false);
+
+      // NOTE: facilityName needs to be passed in from a configuration?
+      fetchDownloads('LILS').then(downloads => {
+        setData(downloads);
+        // setData([
+        //   {
+        //     email: '',
+        //     createdAt: '2020-01-01T01:01:01Z',
+        //     downloadItems: [
+        //       {
+        //         entityId: 1,
+        //         entityType: 'investigation',
+        //         id: 1,
+        //       },
+        //     ],
+        //     facilityName: 'LILS',
+        //     fileName: 'LILS_2020-1-1_1-1-1',
+        //     fullName: 'simple/root',
+        //     id: 1,
+        //     isDeleted: false,
+        //     isEmailSent: false,
+        //     isTwoLevel: false,
+        //     preparedId: 'test-id',
+        //     sessionId: '',
+        //     size: 0,
+        //     status: 'COMPLETE',
+        //     transport: 'https',
+        //     userName: 'simple/root',
+        //   },
+        // ]);
+        setDataLoaded(true);
+
+        // Set the refresh status to false, so does not refresh unless specified
+        // via a click of the refresh button.
+        setRefreshTable(false);
+        setLastChecked();
+      });
+    }
+  }, [refreshTable, dataLoaded, setLastChecked, setRefreshTable]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -93,15 +141,6 @@ const DownloadStatusTable: React.FC = () => {
 
     return filteredData.sort(sortDownloadItems);
   }, [data, sort, filters]);
-
-  // const getActionButtons = (): React.ComponentType<TableActionProps>[] => {
-
-  //   let statusButtons: React.ComponentType<TableActionProps>[] = [];
-  //   // if (downloadItem.transport === 'https') statusButtons.push(DownloadButton);
-  //   statusButtons.push(RemoveButton);
-
-  //   return statusButtons;
-  // };
 
   return (
     <Grid container direction="column">
@@ -223,7 +262,7 @@ const DownloadStatusTable: React.FC = () => {
                       setTimeout(
                         () =>
                           downloadDeleted(
-                            // TODO: get the facilityName from config.
+                            // TODO: get the facilityName from configuration file
                             'LILS',
                             downloadItem.id,
                             true

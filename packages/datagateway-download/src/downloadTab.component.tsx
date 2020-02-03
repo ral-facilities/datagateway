@@ -8,6 +8,7 @@ import {
   Box,
   Grid,
   IconButton,
+  CircularProgress,
 } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 
@@ -74,12 +75,16 @@ const DownloadTabs: React.FC = () => {
 
   // Set the initial tab.
   const [selectedTab, setSelectedTab] = React.useState(getTab());
+  const [refreshDownloads, setRefreshDownloads] = React.useState(true);
+  const [lastChecked, setLastChecked] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<{}>, setTab: number): void => {
     // Set the tab in the session storage.
     sessionStorage.setItem('downloadStatusTab', setTab.toString());
     setSelectedTab(setTab);
   };
+
+  console.log('Refresh status: ', refreshDownloads);
 
   return (
     <Paper className={classes.root}>
@@ -100,37 +105,51 @@ const DownloadTabs: React.FC = () => {
       </TabPanel>
 
       <TabPanel value={selectedTab} index={1}>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} aria-label="Last updated time">
           {/* Place the last updated time above the table. */}
-          <Grid item xs={12} aria-label="Last updated time">
+          <Grid item xs={12}>
             <Typography
               style={{
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
                 float: 'right',
               }}
               variant="subtitle1"
               component="h3"
             >
-              {/* // TODO: Make this icon clickable and refresh the tab/page to show updated status table. */}
-              <BlackTooltip title="Refresh Downloads" enterDelay={250}>
-                <IconButton
-                  color="secondary"
-                  aria-label="Refresh download status table"
-                  style={{ paddingLeft: '10px' }}
-                >
-                  <RefreshIcon />
-                </IconButton>
-              </BlackTooltip>
+              {/* Show refresh icon and re-populate the download status table. */}
+              {!refreshDownloads ? (
+                <BlackTooltip title="Refresh Downloads" enterDelay={250}>
+                  <IconButton
+                    color="secondary"
+                    aria-label="Refresh download status table"
+                    onClick={() => setRefreshDownloads(true)}
+                  >
+                    <RefreshIcon />
+                  </IconButton>
+                </BlackTooltip>
+              ) : (
+                <CircularProgress size={20} />
+              )}
 
-              <p>
-                <i>Last checked: </i> {new Date().toLocaleString()}
-              </p>
+              {!refreshDownloads ? (
+                <p style={{ paddingLeft: '10px ' }}>
+                  <i>Last checked: </i> {lastChecked}
+                </p>
+              ) : (
+                <p style={{ paddingLeft: '10px ' }}>
+                  <i>Refreshing downloads...</i>
+                </p>
+              )}
             </Typography>
           </Grid>
 
           <Grid item xs aria-label="Download status table">
-            <DownloadStatusTable />
+            <DownloadStatusTable
+              refreshTable={refreshDownloads}
+              setRefreshTable={setRefreshDownloads}
+              setLastChecked={() => setLastChecked(new Date().toLocaleString())}
+            />
           </Grid>
         </Grid>
       </TabPanel>

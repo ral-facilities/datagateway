@@ -182,7 +182,7 @@ export interface Download {
   size: number;
   status: 'PREPARING' | 'RESTORING' | 'PAUSED' | 'COMPLETE' | 'EXPIRED';
   transport: string;
-  username: string;
+  userName: string;
 
   [key: string]: string | number | boolean | DownloadItem[];
 }
