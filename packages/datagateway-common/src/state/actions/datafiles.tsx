@@ -20,85 +20,15 @@ import {
   FetchDatafileCountFailureType,
   RequestPayload,
   FetchDetailsSuccessPayload,
-  SortTablePayload,
-  SortTableType,
-  FilterTablePayload,
-  FilterTableType,
-  ClearTableType,
 } from './actions.types';
-import { ActionType, StateType, ThunkResult } from '../app.types';
+import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
-// import { getApiFilter } from '.';
+import { getApiFilter } from '.';
 import { source } from '../middleware/dgcommon.middleware';
 import * as log from 'loglevel';
 import { Datafile } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
-import { Filter, Order } from '../../app.types';
-
-export const sortTable = (
-  column: string,
-  order: Order | null
-): ActionType<SortTablePayload> => ({
-  type: SortTableType,
-  payload: {
-    column,
-    order,
-  },
-});
-
-export const filterTable = (
-  column: string,
-  filter: Filter | null
-): ActionType<FilterTablePayload> => ({
-  type: FilterTableType,
-  payload: {
-    column,
-    filter,
-  },
-});
-
-export const clearTable = (): Action => ({
-  type: ClearTableType,
-});
-
-export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-  const sort = getState().dgcommon.sort;
-  const filters = getState().dgcommon.filters;
-
-  let searchParams = new URLSearchParams();
-
-  for (let [key, value] of Object.entries(sort)) {
-    searchParams.append('order', JSON.stringify(`${key} ${value}`));
-  }
-
-  // sort by ID first to guarantee order
-  searchParams.append('order', JSON.stringify(`ID asc`));
-
-  for (let [column, filter] of Object.entries(filters)) {
-    if (typeof filter === 'object') {
-      if ('startDate' in filter && filter.startDate) {
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
-        );
-      }
-      if ('endDate' in filter && filter.endDate) {
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
-        );
-      }
-    } else {
-      searchParams.append(
-        'where',
-        JSON.stringify({ [column]: { like: filter } })
-      );
-    }
-  }
-
-  return searchParams;
-};
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[],

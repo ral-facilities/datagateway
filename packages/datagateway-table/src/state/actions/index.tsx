@@ -10,13 +10,7 @@ import {
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
 } from './actions.types';
-import {
-  ConfigureFacilityNamePayload,
-  ConfigureFacilityNameType,
-  URLs,
-  ConfigureUrlsPayload,
-  ConfigureURLsType,
-} from 'datagateway-common';
+import { loadUrls, loadFacilityName } from 'datagateway-common';
 import { fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
@@ -48,28 +42,12 @@ export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
   };
 };
 
-export const loadFacilityName = (
-  name: string
-): ActionType<ConfigureFacilityNamePayload> => ({
-  type: ConfigureFacilityNameType,
-  payload: {
-    facilityName: name,
-  },
-});
-
 export const loadFeatureSwitches = (
   featureSwitches: FeatureSwitches
 ): ActionType<FeatureSwitchesPayload> => ({
   type: ConfigureFeatureSwitchesType,
   payload: {
     switches: featureSwitches,
-  },
-});
-
-export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
-  type: ConfigureURLsType,
-  payload: {
-    urls,
   },
 });
 

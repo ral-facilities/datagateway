@@ -19,12 +19,7 @@ export { default as DataCellComponent } from './table/cellRenderers/dataCell.com
 export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
 
-export * from './state/actions/datafiles';
-export * from './state/actions/datasets';
-export * from './state/actions/investigations';
-export * from './state/actions/cart';
-export * from './state/actions/instruments';
-export * from './state/actions/facilityCycles';
+export * from './state/actions/index';
 export { default as Preloader } from './preloader/preloader.component';
 export { initialState as dGCommonInitialState } from './state/reducers/dgcommon.reducer';
 export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';
