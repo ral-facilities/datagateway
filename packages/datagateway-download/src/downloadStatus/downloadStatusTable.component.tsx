@@ -7,9 +7,10 @@ import {
   Download,
   TextColumnFilter,
   TableActionProps,
+  DateColumnFilter,
   // DateColumnFilter,
 } from 'datagateway-common';
-import { fetchDownloads, downloadDeleted } from './downloadApi';
+import { fetchDownloads, downloadDeleted } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
 import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
@@ -27,9 +28,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 ) => {
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
-  const [filters, setFilters] = React.useState<{ [column: string]: string }>(
-    {}
-  );
+  const [filters, setFilters] = React.useState<{
+    // [column: string]: string;
+    [column: string]: string | { startDate?: string; endDate?: string };
+  }>({});
   const [data, setData] = React.useState<Download[]>([]);
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
@@ -47,32 +49,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       // NOTE: facilityName needs to be passed in from a configuration?
       fetchDownloads('LILS').then(downloads => {
         setData(downloads);
-        // setData([
-        //   {
-        //     email: '',
-        //     createdAt: '2020-01-01T01:01:01Z',
-        //     downloadItems: [
-        //       {
-        //         entityId: 1,
-        //         entityType: 'investigation',
-        //         id: 1,
-        //       },
-        //     ],
-        //     facilityName: 'LILS',
-        //     fileName: 'LILS_2020-1-1_1-1-1',
-        //     fullName: 'simple/root',
-        //     id: 1,
-        //     isDeleted: false,
-        //     isEmailSent: false,
-        //     isTwoLevel: false,
-        //     preparedId: 'test-id',
-        //     sessionId: '',
-        //     size: 0,
-        //     status: 'COMPLETE',
-        //     transport: 'https',
-        //     userName: 'simple/root',
-        //   },
-        // ]);
         setDataLoaded(true);
 
         // Set the refresh status to false, so does not refresh unless specified
@@ -97,29 +73,72 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     />
   );
 
-  // const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-  //   <DateColumnFilter
-  //     label={label}
-  //     onChange={(value: { startDate?: string; endDate?: string } | null) =>
-  //       filterTable(dataKey, value)
-  //     }
-  //   />
-  // );
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) => {
+        // filterTable(dataKey, value)
+        if (value) {
+          setFilters({ ...filters, [dataKey]: value });
+        } else {
+          const { [dataKey]: value, ...restOfFilters } = filters;
+          setFilters(restOfFilters);
+        }
+      }}
+    />
+  );
 
+  // TODO: Add in handling for both text and start/end date (for date filtering).
+  console.log('Filters: ', filters);
   const sortedAndFilteredData = React.useMemo(() => {
+    console.log(data.length);
     const filteredData = data.filter(item => {
+      console.log('Current item: ', item);
       for (let [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
-        if (
-          tableValue === undefined ||
-          (typeof tableValue === 'string' && !tableValue.includes(value))
-        ) {
+        console.log('Current key: ', key);
+        console.log('Current table value: ', tableValue);
+        console.log('Current value: ', value);
+
+        // Filter for both text and date filters
+        if (tableValue !== undefined && typeof tableValue === 'string') {
+          if (typeof value === 'string' && !tableValue.includes(value)) {
+            return false;
+          } else if (
+            typeof value === 'object' &&
+            'startDate' in value &&
+            'endDate' in value &&
+            value.startDate
+          ) {
+            // TODO: Check that the given date is in the range specified by the filter.
+            console.log('Object value: ', value);
+
+            const tableTimestamp = new Date(tableValue).getTime();
+            console.log('Table timestamp: ', tableTimestamp);
+
+            const startTimestamp = new Date(value.startDate).getTime();
+            const endTimestamp = value.endDate
+              ? new Date(`${value.endDate} 23:59:59`).getTime()
+              : Date.now();
+            console.log('Start timestamp: ', startTimestamp);
+            console.log('End timestamp: ', endTimestamp);
+
+            if (
+              !(
+                startTimestamp <= tableTimestamp &&
+                tableTimestamp <= endTimestamp
+              )
+            )
+              return false;
+          }
+        } else {
           return false;
         }
       }
       return true;
     });
 
+    // TODO: Fix sorting so that the user does not have to click multiple times.
     function sortDownloadItems(a: Download, b: Download): number {
       for (let [sortColumn, sortDirection] of Object.entries(sort)) {
         if (sortDirection === 'asc') {
@@ -187,11 +206,17 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               {
                 label: 'Requested Date',
                 dataKey: 'createdAt',
-                // cellContentRenderer: (props: TableCellProps) => {
-                //   if (props.cellData)
-                //     return new Date(props.cellData).toDateString();
-                // },
-                // filterComponent: dateFilter,
+                cellContentRenderer: (props: TableCellProps) => {
+                  if (props.cellData) {
+                    // return props.cellData.toString().split(' ')[0];
+                    const d = new Date(props.cellData);
+                    return `${d.getFullYear()}-${(
+                      '0' +
+                      (d.getMonth() + 1)
+                    ).slice(-2)}-${('0' + d.getDate()).slice(-2)}`;
+                  }
+                },
+                filterComponent: dateFilter,
               },
             ]}
             sort={sort}

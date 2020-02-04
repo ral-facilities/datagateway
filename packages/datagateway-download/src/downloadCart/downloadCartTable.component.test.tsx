@@ -9,7 +9,7 @@ import {
   removeDownloadCartItem,
   getSize,
   getCartDatafileCount,
-} from './downloadCartApi';
+} from '../downloadApi';
 import { act } from 'react-dom/test-utils';
 
 jest.mock('./downloadCartApi');

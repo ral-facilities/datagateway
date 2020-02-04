@@ -12,7 +12,7 @@ import {
   getIsTwoLevel,
   getDownload,
   downloadPreparedCart,
-} from './downloadCartApi';
+} from './downloadApi';
 import * as log from 'loglevel';
 import { DownloadCartItem } from 'datagateway-common';
 

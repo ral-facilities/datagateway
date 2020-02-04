@@ -17,7 +17,7 @@ import {
   getSize,
   getCartDatafileCount,
   getIsTwoLevel,
-} from './downloadCartApi';
+} from '../downloadApi';
 import chunk from 'lodash.chunk';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';

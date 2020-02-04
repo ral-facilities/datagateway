@@ -20,11 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Mark from './mark.component';
 
 import { formatBytes } from 'datagateway-common';
-import {
-  submitCart,
-  getDownload,
-  downloadPreparedCart,
-} from '../downloadCart/downloadCartApi';
+import { submitCart, getDownload, downloadPreparedCart } from '../downloadApi';
 
 import {
   Theme,

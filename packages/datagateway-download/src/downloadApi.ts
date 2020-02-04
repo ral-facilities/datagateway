@@ -113,6 +113,30 @@ export const submitCart: (
     });
 };
 
+export const fetchDownloads: (
+  facilityName: string,
+  queryOffset?: string
+) => Promise<Download[]> = (facilityName: string, queryOffset?: string) => {
+  return axios
+    .get<Download[]>(`${topcatUrl}/user/downloads`, {
+      params: {
+        // TODO: get session ID from somewhere else (extract from JWT)
+        sessionId: window.localStorage.getItem('icat:token'),
+        facilityName: facilityName,
+        queryOffset: !queryOffset
+          ? 'where download.isDeleted = false'
+          : queryOffset,
+      },
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      log.error(error.message);
+      return [];
+    });
+};
+
 export const getDownload: (
   facilityName: string,
   downloadId: number
@@ -160,6 +184,29 @@ export const downloadPreparedCart: (
   document.body.appendChild(link);
   link.click();
   link.remove();
+};
+
+export const downloadDeleted: (
+  facilityName: string,
+  downloadId: number,
+  deleted: boolean
+) => Promise<void> = (
+  facilityName: string,
+  downloadId: number,
+  deleted: boolean
+) => {
+  const params = new URLSearchParams();
+  params.append('facilityName', facilityName);
+  // TODO: get session ID from somewhere else (extract from JWT)
+  params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+  params.append('value', JSON.stringify(deleted));
+
+  return axios
+    .put(`${topcatUrl}/user/download/${downloadId}/isDeleted`, params)
+    .then(() => {})
+    .catch(error => {
+      log.error(error.message);
+    });
 };
 
 export const getSize: (

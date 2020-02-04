@@ -137,7 +137,7 @@ const DownloadTabs: React.FC = () => {
                   <i>Last checked: </i> {lastChecked}
                 </p>
               ) : (
-                <p style={{ paddingLeft: '10px ' }}>
+                <p style={{ paddingLeft: '20px ' }}>
                   <i>Refreshing downloads...</i>
                 </p>
               )}
