@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DatePicker component tests renders correctly 1`] = `
+<div>
+  <MuiPickersUtilsProvider
+    utils={[Function]}
+  >
+    <PickerWithState
+      allowKeyboardControl={true}
+      animateYearScrolling={true}
+      className="makeStyles-root-1"
+      clearable={true}
+      disableFuture={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "start date input",
+        }
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Invalid date range"
+      minDate={1900-01-01T00:00:00.000Z}
+      minDateMessage="Date should not be before minimal date"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="Start Date"
+      value={null}
+      views={
+        Array [
+          "year",
+          "date",
+        ]
+      }
+    />
+    <br />
+    <PickerWithState
+      allowKeyboardControl={true}
+      animateYearScrolling={true}
+      className="makeStyles-root-1"
+      clearable={true}
+      disableFuture={true}
+      format="yyyy-MM-dd"
+      inputProps={
+        Object {
+          "aria-label": "end date input",
+        }
+      }
+      invalidDateMessage="Invalid Date Format"
+      maxDate={2100-01-01T00:00:00.000Z}
+      maxDateMessage="Date should not be after maximal date"
+      minDate={1984-01-01T00:00:00.000Z}
+      minDateMessage="Invalid date range"
+      onChange={[Function]}
+      openTo="date"
+      placeholder="End Date"
+      value={null}
+      views={
+        Array [
+          "year",
+          "date",
+        ]
+      }
+    />
+  </MuiPickersUtilsProvider>
+</div>
+`;
