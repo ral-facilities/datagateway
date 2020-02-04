@@ -1,12 +1,10 @@
 import {
   configureStrings,
   loadFeatureSwitches,
-  loadUrls,
   loadBreadcrumbSettings,
   configureApp,
   loadStrings,
   settingsLoaded,
-  loadFacilityName,
 } from '.';
 import { getApiFilter } from 'datagateway-common';
 import {
@@ -25,6 +23,8 @@ import {
   fetchDownloadCartRequest,
   fetchDownloadCartSuccess,
   dGCommonInitialState,
+  loadUrls,
+  loadFacilityName,
 } from 'datagateway-common';
 
 jest.mock('loglevel');
