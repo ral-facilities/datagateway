@@ -121,16 +121,13 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
       { params: queryParams }
     );
 
-    const ids = response.data.map((x: {id: number; score: number}) => x.id);
-    console.log(ids)
-  };
+    const ids = response.data.map((x: { id: number; score: number }) => x.id);
+    console.log(ids);
+  }
 
-  
-  
-  
   //  Louise does this already, find her work
-  //  public async apiRequest 
-   
+  //  public async apiRequest
+
   public render(): React.ReactNode {
     return (
       <div>

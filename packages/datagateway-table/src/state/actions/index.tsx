@@ -1,11 +1,5 @@
+import { ActionType, ThunkResult, ApplicationStrings } from '../app.types';
 import {
-  ActionType,
-  StateType,
-  ThunkResult,
-  ApplicationStrings,
-} from '../app.types';
-import {
-  ClearTableType,
   ConfigureStringsType,
   ConfigureStringsPayload,
   FeatureSwitches,
@@ -22,77 +16,11 @@ import {
   URLs,
   ConfigureUrlsPayload,
   ConfigureURLsType,
-  SortTablePayload,
-  SortTableType,
-  FilterTablePayload,
-  FilterTableType,
 } from 'datagateway-common';
-import { Filter, Order, fetchDownloadCart } from 'datagateway-common';
+import { fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
-
-// export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-//   const sort = getState().dgcommon.sort;
-//   const filters = getState().dgcommon.filters;
-
-//   let searchParams = new URLSearchParams();
-
-//   for (let [key, value] of Object.entries(sort)) {
-//     searchParams.append('order', JSON.stringify(`${key} ${value}`));
-//   }
-
-//   // sort by ID first to guarantee order
-//   searchParams.append('order', JSON.stringify(`ID asc`));
-
-//   for (let [column, filter] of Object.entries(filters)) {
-//     if (typeof filter === 'object') {
-//       if ('startDate' in filter && filter.startDate) {
-//         searchParams.append(
-//           'where',
-//           JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
-//         );
-//       }
-//       if ('endDate' in filter && filter.endDate) {
-//         searchParams.append(
-//           'where',
-//           JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
-//         );
-//       }
-//     } else {
-//       searchParams.append(
-//         'where',
-//         JSON.stringify({ [column]: { like: filter } })
-//       );
-//     }
-//   }
-
-//   return searchParams;
-// };
-
-// extract more of these functions out, e.g. sortTable
-
-// export const sortTable = (
-//   column: string,
-//   order: Order | null
-// ): ActionType<SortTablePayload> => ({
-//   type: SortTableType,
-//   payload: {
-//     column,
-//     order,
-//   },
-// });
-
-// export const filterTable = (
-//   column: string,
-//   filter: Filter | null
-// ): ActionType<FilterTablePayload> => ({
-//   type: FilterTableType,
-//   payload: {
-//     column,
-//     filter,
-//   },
-// });
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,

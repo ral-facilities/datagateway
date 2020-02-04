@@ -70,7 +70,7 @@ describe('Search Button component tests', () => {
         params: {
           maxCount: 300,
           query: { target: 'Datafile' },
-          sessionId: 'af6f25da-6353-48f0-a8d4-9b581eba4dc9',
+          sessionId: 'ac7382f9-daa2-46f4-96f3-524f2342b074',
         },
       }
     );

@@ -21,7 +21,7 @@ import {
   filterTable,
   clearTable,
 } from 'datagateway-common';
-import { Paper, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';

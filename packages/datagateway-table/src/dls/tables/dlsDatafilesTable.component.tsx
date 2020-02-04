@@ -18,7 +18,7 @@ import {
   filterTable,
   clearTable,
 } from 'datagateway-common';
-import { Paper, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';

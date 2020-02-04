@@ -4,7 +4,8 @@ import DatasetTable from './datasetTable.component';
 import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
-import {fetchDatasetsRequest,
+import {
+  fetchDatasetsRequest,
   filterTable,
   clearTable,
   sortTable,
@@ -17,7 +18,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import {dGCommonInitialState,} from 'datagateway-common';
+import { dGCommonInitialState } from 'datagateway-common';
 
 describe('Dataset table component', () => {
   let shallow;
@@ -34,7 +35,9 @@ describe('Dataset table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgcommon: dGCommonInitialState,dgtable: initialState }));
+    state = JSON.parse(
+      JSON.stringify({ dgcommon: dGCommonInitialState, dgtable: initialState })
+    );
     state.dgcommon.data = [
       {
         ID: 1,

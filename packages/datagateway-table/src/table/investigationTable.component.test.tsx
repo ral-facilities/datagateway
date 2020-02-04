@@ -18,7 +18,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import {dGCommonInitialState,} from 'datagateway-common';
+import { dGCommonInitialState } from 'datagateway-common';
 
 describe('Investigation table component', () => {
   let shallow;
@@ -35,7 +35,9 @@ describe('Investigation table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgcommon: dGCommonInitialState,dgtable: initialState }));
+    state = JSON.parse(
+      JSON.stringify({ dgcommon: dGCommonInitialState, dgtable: initialState })
+    );
     state.dgcommon.data = [
       {
         ID: 1,

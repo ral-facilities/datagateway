@@ -1,11 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { Order, Filter, Entity, DownloadCartItem } from '../app.types';
-import {
-  FeatureSwitches,
-  URLs,
-  BreadcrumbSettings,
-} from './actions/actions.types';
+import { URLs } from './actions/actions.types';
 import { RouterState } from 'connected-react-router';
 
 export interface DGCommonState {

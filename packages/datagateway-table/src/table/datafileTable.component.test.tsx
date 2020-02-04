@@ -3,8 +3,9 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DatafileTable from './datafileTable.component';
 import { initialState as dgTableInitialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType,  } from '../state/app.types';
-import {   fetchDatafilesRequest,
+import { StateType } from '../state/app.types';
+import {
+  fetchDatafilesRequest,
   fetchAllIdsRequest,
   clearTable,
   Datafile,
@@ -13,12 +14,13 @@ import {   fetchDatafilesRequest,
   downloadDatafileRequest,
   addToCartRequest,
   removeFromCartRequest,
-  fetchDatafileCountRequest, } from 'datagateway-common';
+  fetchDatafileCountRequest,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import {dGCommonInitialState,} from 'datagateway-common';
+import { dGCommonInitialState } from 'datagateway-common';
 
 describe('Datafile table component', () => {
   let shallow;
@@ -36,7 +38,12 @@ describe('Datafile table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgcommon: dGCommonInitialState, dgtable: dgTableInitialState }));
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgtable: dgTableInitialState,
+      })
+    );
     state.dgcommon.data = [
       {
         ID: 1,
