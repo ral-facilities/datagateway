@@ -125,9 +125,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     console.log(ids);
   }
 
-  //  Louise does this already, find her work
-  //  public async apiRequest
-
   public render(): React.ReactNode {
     return (
       <div>
