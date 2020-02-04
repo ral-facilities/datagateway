@@ -59,6 +59,7 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
 
   public render(): React.ReactElement {
     return (
+      // We give the tooltip component the content (title) as the display content.
       <ArrowTooltip title={this.props.displayName}>
         <div>
           {this.props.url ? (
@@ -512,7 +513,7 @@ class PageBreadcrumbs extends React.Component<
 }
 
 const mapStateToProps = (state: StateType): PageBreadcrumbsProps => ({
-  apiUrl: state.dgtable.urls.apiUrl,
+  apiUrl: state.dgcommon.urls.apiUrl,
   location: state.router.location.pathname,
   breadcrumbSettings: state.dgtable.breadcrumbSettings,
 });

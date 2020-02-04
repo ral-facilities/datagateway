@@ -18,7 +18,7 @@ import { ActionType, ThunkResult } from '../app.types';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import * as log from 'loglevel';
-import { Instrument } from 'datagateway-common';
+import { Instrument } from '../../app.types';
 import { Action } from 'redux';
 import { IndexRange } from 'react-virtualized';
 
@@ -59,7 +59,7 @@ export const fetchInstruments = (
     dispatch(fetchInstrumentsRequest(timestamp));
 
     let params = getApiFilter(getState);
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     if (offsetParams) {
       params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -122,7 +122,7 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
 
     let params = getApiFilter(getState);
     params.delete('order');
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/instruments/count`, {
@@ -174,7 +174,7 @@ export const fetchInstrumentDetails = (
     params.append('where', JSON.stringify({ ID: { eq: instrumentId } }));
     params.append('include', JSON.stringify({ INSTRUMENTSCIENTIST: 'USER_' }));
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/instruments`, {

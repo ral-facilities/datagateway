@@ -25,9 +25,9 @@ import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
-import { source } from '../middleware/dgtable.middleware';
+import { source } from '../middleware/dgcommon.middleware';
 import * as log from 'loglevel';
-import { Datafile } from 'datagateway-common';
+import { Datafile } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
 
 export const fetchDatafilesSuccess = (
@@ -69,7 +69,7 @@ export const fetchDatafiles = (
 
     let params = getApiFilter(getState);
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     if (offsetParams) {
       params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -135,7 +135,7 @@ export const fetchDatafileCount = (
     let params = getApiFilter(getState);
     params.delete('order');
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/datafiles/count`, {
@@ -197,9 +197,9 @@ export const fetchDatasetDatafilesCount = (
         DATASET_ID: { eq: datasetId },
       },
     };
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
-    const currentCache = getState().dgtable.datasetCache[datasetId];
+    const currentCache = getState().dgcommon.datasetCache[datasetId];
 
     // Check if the cached value exists already in the cache's child entity count.
     if (currentCache && currentCache.childEntityCount) {
@@ -274,7 +274,7 @@ export const fetchDatafileDetails = (
       'include',
       JSON.stringify({ DATAFILEPARAMETER: 'PARAMETERTYPE' })
     );
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/datafiles`, {
@@ -323,7 +323,7 @@ export const downloadDatafile = (
     const timestamp = Date.now();
     dispatch(downloadDatafileRequest(timestamp));
 
-    const { idsUrl } = getState().dgtable.urls;
+    const { idsUrl } = getState().dgcommon.urls;
 
     // TODO: get ICAT session id properly when auth is sorted
     const params = {

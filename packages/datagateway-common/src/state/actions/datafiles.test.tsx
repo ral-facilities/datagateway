@@ -20,10 +20,10 @@ import {
 } from '.';
 import axios from 'axios';
 import { StateType, EntityCache } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
+import { initialState } from '../reducers/dgcommon.reducer';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
 import * as log from 'loglevel';
-import { Datafile } from 'datagateway-common';
+import { Datafile } from '../../app.types';
 
 jest.mock('loglevel');
 
@@ -54,6 +54,7 @@ describe('Datafile actions', () => {
   const mockDatasetCache: EntityCache = {
     1: {
       childEntityCount: 2,
+      childEntitySize: 3,
     },
   };
 
@@ -94,7 +95,7 @@ describe('Datafile actions', () => {
 
     const asyncAction = fetchDatafiles(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -168,7 +169,7 @@ describe('Datafile actions', () => {
 
     const asyncAction = fetchDatafileCount(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },
@@ -238,7 +239,7 @@ describe('Datafile actions', () => {
 
     // Set up state to be used within fetchDatasetDatafilesCountSuccess with the dataset cache.
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         datasetCache: mockDatasetCache,

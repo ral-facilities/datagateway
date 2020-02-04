@@ -1,7 +1,8 @@
 import { getAppStrings, getString } from './strings';
 import { DGTableState, StateType, AppStrings } from './app.types';
 import { RouterState } from 'connected-react-router';
-import { initialState } from './reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from './reducers/dgtable.reducer';
+import { dGCommonInitialState } from 'datagateway-common';
 
 describe('strings', () => {
   describe('getString', () => {
@@ -44,7 +45,7 @@ describe('strings', () => {
     };
 
     const dgtableState: DGTableState = {
-      ...initialState,
+      ...dgTableInitialState,
       res: {
         'section-name': testRes,
         'unused-section': otherSection,
@@ -54,6 +55,7 @@ describe('strings', () => {
     const state: StateType = {
       router: routerState,
       dgtable: dgtableState,
+      dgcommon: dGCommonInitialState,
     };
 
     it('returns key element from state object if section exists', () => {

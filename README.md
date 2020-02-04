@@ -58,6 +58,8 @@ Remember that you can use `--dev` to save as a devDependency instead of a regula
 Runs the `datagateway-table` `start` script, which runs the app in development mode
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
+Similarly, use `yarn datagateway-download` and `yarn datagateway-search` to run the datagateway-download and datagateway-search packages respectively.
+
 ### `yarn test`
 
 Runs both unit tests and e2e tests for all packages

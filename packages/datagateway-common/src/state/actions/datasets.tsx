@@ -26,7 +26,7 @@ import {
   FetchDatasetSizeFailureType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
-import { source } from '../middleware/dgtable.middleware';
+import { source } from '../middleware/dgcommon.middleware';
 import { Action } from 'redux';
 import { batch } from 'react-redux';
 import axios from 'axios';
@@ -34,7 +34,7 @@ import { getApiFilter } from '.';
 import { fetchDatasetDatafilesCount } from './datafiles';
 import * as log from 'loglevel';
 import { IndexRange } from 'react-virtualized';
-import { Dataset } from 'datagateway-common';
+import { Dataset } from '../../app.types';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[],
@@ -95,8 +95,8 @@ export const fetchDatasetSize = (
   return async (dispatch, getState) => {
     dispatch(fetchDatasetSizeRequest());
 
-    const { downloadApiUrl } = getState().dgtable.urls;
-    const currentCache = getState().dgtable.datasetCache[datasetId];
+    const { downloadApiUrl } = getState().dgcommon.urls;
+    const currentCache = getState().dgcommon.datasetCache[datasetId];
 
     // Check for cached dataset size in datasetCache.
     if (currentCache && currentCache.childEntitySize) {
@@ -156,7 +156,7 @@ export const fetchDatasets = ({
         JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
       );
     }
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/datasets`, {
@@ -236,7 +236,7 @@ export const fetchDatasetCount = (
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
     );
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/datasets/count`, {
@@ -285,7 +285,7 @@ export const downloadDataset = (
     const timestamp = Date.now();
     dispatch(downloadDatasetRequest(timestamp));
 
-    const { idsUrl } = getState().dgtable.urls;
+    const { idsUrl } = getState().dgcommon.urls;
 
     // TODO: get ICAT session id properly when auth is sorted
     const params = {
@@ -352,9 +352,11 @@ export const fetchInvestigationDatasetsCount = (
         INVESTIGATION_ID: { eq: investigationId },
       },
     };
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
-    const currentCache = getState().dgtable.investigationCache[investigationId];
+    const currentCache = getState().dgcommon.investigationCache[
+      investigationId
+    ];
 
     // Check to see if a cached value exists already in the cache's child entity count.
     if (currentCache && currentCache.childEntityCount) {
@@ -427,7 +429,7 @@ export const fetchDatasetDetails = (
     params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
     params.append('include', JSON.stringify('DATASETTYPE'));
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/datasets`, {

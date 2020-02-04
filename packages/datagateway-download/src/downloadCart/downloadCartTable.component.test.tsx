@@ -135,8 +135,7 @@ describe('Download cart table component', () => {
     );
   });
 
-  // TODO: this should assert it loads the cart confirmation component
-  it('sends alert when Download Cart button is clicked', async () => {
+  it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
     const wrapper = mount(<DownloadCartTable />);
 
     expect(wrapper.find('button#downloadCartButton').prop('disabled')).toBe(
@@ -152,14 +151,23 @@ describe('Download cart table component', () => {
       false
     );
 
-    window.alert = jest.fn();
-
     act(() => {
       wrapper.find('button#downloadCartButton').simulate('click');
     });
 
-    expect(window.alert).toHaveBeenCalled();
-    expect(window.alert).toHaveBeenCalledWith('download the cart!');
+    expect(wrapper.exists('[aria-labelledby="downloadCartConfirmation"]')).toBe(
+      true
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Close the confirmation dialog.
+    wrapper
+      .find('button[aria-label="download-confirmation-close"]')
+      .simulate('click');
   });
 
   it('removes all items from cart when Remove All button is clicked', async () => {

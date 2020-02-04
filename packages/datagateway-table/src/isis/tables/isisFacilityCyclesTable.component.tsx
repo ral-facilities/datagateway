@@ -19,7 +19,7 @@ import {
   fetchFacilityCycles,
   fetchFacilityCycleCount,
   clearTable,
-} from '../../state/actions';
+} from 'datagateway-common';
 import useAfterMountEffect from '../../utils';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -153,12 +153,12 @@ const mapStateToProps = (
   state: StateType
 ): ISISFacilityCyclesTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
   };
 };
 

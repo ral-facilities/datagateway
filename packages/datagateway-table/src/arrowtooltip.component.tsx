@@ -89,7 +89,7 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
         // The 0.2 here means 20% of the viewport width, which is set as
         // the max width for the breadcrumb in the CSS style.
 
-        // TODO: The value here for 0.2 could be passed via a prop instead.
+        // Check to ensure whether the tooltip should be visible.
         if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
           setTooltipVisible(true);
         else setTooltipVisible(false);

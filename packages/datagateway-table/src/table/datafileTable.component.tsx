@@ -11,19 +11,17 @@ import {
   Datafile,
   Entity,
   DownloadCartItem,
-} from 'datagateway-common';
-import { GetApp } from '@material-ui/icons';
-import {
   fetchDatafiles,
-  sortTable,
-  filterTable,
   downloadDatafile,
+  fetchDatafileCount,
   addToCart,
   removeFromCart,
-  fetchDatafileCount,
-  clearTable,
   fetchAllIds,
-} from '../state/actions';
+  sortTable,
+  filterTable,
+  clearTable,
+} from 'datagateway-common';
+import { GetApp } from '@material-ui/icons';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
@@ -240,14 +238,14 @@ const mapStateToProps = (
   ownProps: DatafileTableProps
 ): DatafileTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
-    cartItems: state.dgtable.cartItems,
-    allIds: state.dgtable.allIds,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
+    cartItems: state.dgcommon.cartItems,
+    allIds: state.dgcommon.allIds,
   };
 };
 

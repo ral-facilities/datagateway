@@ -4,7 +4,8 @@ import { ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
-import { initialState } from './state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from './state/reducers/dgtable.reducer';
+import { dGCommonInitialState } from 'datagateway-common';
 
 import { createShallow } from '@material-ui/core/test-utils';
 // history package is part of react-router, which we depend on
@@ -34,11 +35,8 @@ describe('PageContainer - Tests', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgtable: {
-          ...initialState,
-
-          totalDataCount: 101,
-        },
+        dgcommon: { ...dGCommonInitialState, totalDataCount: 101 },
+        dgtable: dgTableInitialState,
 
         router: {
           action: 'POP',

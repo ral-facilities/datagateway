@@ -13,11 +13,11 @@ import {
   fetchInstrumentCountFailure,
 } from '.';
 import { StateType } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
+import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
-import { Instrument } from 'datagateway-common';
+import { Instrument } from '../../app.types';
 
 jest.mock('loglevel');
 
@@ -63,7 +63,7 @@ describe('Instrument actions', () => {
 
     const asyncAction = fetchInstruments();
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -128,7 +128,7 @@ describe('Instrument actions', () => {
 
     const asyncAction = fetchInstrumentCount();
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },

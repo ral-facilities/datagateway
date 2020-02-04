@@ -8,20 +8,18 @@ import {
   Investigation,
   Entity,
   DateColumnFilter,
+  fetchInvestigations,
+  fetchInvestigationDetails,
+  fetchInvestigationCount,
+  sortTable,
+  filterTable,
+  clearTable,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  sortTable,
-  filterTable,
-  fetchInvestigations,
-  fetchInvestigationDetails,
-  fetchInvestigationCount,
-  clearTable,
-} from '../../state/actions';
 import VisitDetailsPanel from '../detailsPanels/visitDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 
@@ -206,12 +204,12 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
   };
 };
 

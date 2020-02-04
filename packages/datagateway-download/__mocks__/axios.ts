@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
   get: jest.fn(path => {
     if (path.includes('/topcat/user/cart/')) {
@@ -6,4 +8,6 @@ export default {
       return Promise.resolve({ data: {} });
     }
   }),
+  post: jest.fn(() => Promise.resolve({ data: {} })),
+  CancelToken: axios.CancelToken,
 };

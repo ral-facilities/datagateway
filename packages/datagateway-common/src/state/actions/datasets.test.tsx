@@ -17,20 +17,19 @@ import {
   fetchDatasetDetailsRequest,
   fetchDatasetDetailsSuccess,
   fetchDatasetDetailsFailure,
-  fetchDatasetDatafilesCountRequest,
-} from '.';
-import { StateType, EntityCache } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
-import axios from 'axios';
-import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
-import { Dataset } from 'datagateway-common';
-import {
   fetchDatasetSize,
   fetchDatasetSizeRequest,
   fetchDatasetSizeSuccess,
   fetchDatasetSizeFailure,
-} from './datasets';
+} from '.';
+import { StateType, EntityCache } from '../app.types';
+import { initialState } from '../reducers/dgcommon.reducer';
+import axios from 'axios';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
+import * as log from 'loglevel';
+import { Dataset } from '../../app.types';
+
+import { fetchDatasetDatafilesCountRequest } from './datafiles';
 
 jest.mock('loglevel');
 
@@ -101,7 +100,7 @@ describe('Dataset actions', () => {
   it('fetchDatasets action applies filters and sort state to request params', async () => {
     const asyncAction = fetchDatasets({ investigationId: 1 });
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -200,7 +199,7 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasetSize(1);
 
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         datasetCache: mockDatasetCache,
@@ -263,7 +262,7 @@ describe('Dataset actions', () => {
 
     const asyncAction = fetchDatasetCount(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },
@@ -387,7 +386,7 @@ describe('Dataset actions', () => {
 
     // Set up the state for calling fetchInvestigationDatasetsCountSuccess with investigation cache.
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         investigationCache: mockInvestigationCache,

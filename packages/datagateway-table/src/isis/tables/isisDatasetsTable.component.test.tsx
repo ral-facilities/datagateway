@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import ISISDatasetsTable from './isisDatasetsTable.component';
-import { initialState } from '../../state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
@@ -10,11 +10,12 @@ import {
   sortTable,
   fetchDatasetDetailsRequest,
   downloadDatasetRequest,
-  clearTable,
   fetchDatasetCountRequest,
   addToCartRequest,
   removeFromCartRequest,
-} from '../../state/actions';
+  dGCommonInitialState,
+  clearTable,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
@@ -36,8 +37,13 @@ describe('ISIS Dataset table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
-    state.dgtable.data = [
+    state = JSON.parse(
+      JSON.stringify({
+        dgtable: dgTableInitialState,
+        dgcommon: dGCommonInitialState,
+      })
+    );
+    state.dgcommon.data = [
       {
         ID: 1,
         NAME: 'Test 1',
@@ -47,7 +53,7 @@ describe('ISIS Dataset table component', () => {
         INVESTIGATION_ID: 1,
       },
     ];
-    state.dgtable.allIds = [1];
+    state.dgcommon.allIds = [1];
   });
 
   afterEach(() => {
@@ -226,7 +232,7 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'dataset',
@@ -258,7 +264,7 @@ describe('ISIS Dataset table component', () => {
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'investigation',
@@ -313,14 +319,14 @@ describe('ISIS Dataset table component', () => {
 
     const detailsPanelWrapper = shallow(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
 
     mount(
       wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
         detailsPanelResize: jest.fn(),
       })
     );
