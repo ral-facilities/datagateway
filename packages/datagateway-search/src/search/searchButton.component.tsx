@@ -35,7 +35,7 @@ interface QueryParameters {
 }
 
 interface RequestParameters {
-  sessionId: string;
+  sessionId: string | null;
   maxCount: number;
 }
 
@@ -93,7 +93,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     }
 
     const queryParams = {
-      sessionId: 'ac7382f9-daa2-46f4-96f3-524f2342b074',
+      sessionId: window.localStorage.getItem('icat:token'),
       query,
       maxCount: 300,
     };

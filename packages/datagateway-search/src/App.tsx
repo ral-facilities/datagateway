@@ -7,10 +7,14 @@ import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
+import {
+  createGenerateClassName,
+  StylesProvider,
+} from '@material-ui/core/styles';
+import { Provider } from 'react-redux';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -22,6 +26,15 @@ const store = createStore(
   AppReducer,
   composeEnhancers(applyMiddleware(...middleware))
 );
+
+const generateClassName = createGenerateClassName({
+  productionPrefix: 'dgws',
+
+  // Only set disable when we are in production and not running e2e tests;
+  // ensures class selectors are working on tests.
+  disableGlobal:
+    process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
+});
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -60,32 +73,34 @@ class App extends React.Component<{}, { hasError: boolean }> {
           className="App"
         >
           <Provider store={store}>
-            <Grid
-              container
-              direction="column"
-              justify="flex-start"
-              alignItems="flex-start"
-            >
-              <Grid item>
-                <Header />
-              </Grid>
+            <StylesProvider generateClassName={generateClassName}>
+              <Grid
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="flex-start"
+              >
+                <Grid item>
+                  <Header />
+                </Grid>
 
-              <Grid item>
-                <SearchTextBox />
-              </Grid>
+                <Grid item>
+                  <SearchTextBox />
+                </Grid>
 
-              <Grid item>
-                <SelectDates />
-              </Grid>
+                <Grid item>
+                  <SelectDates />
+                </Grid>
 
-              <Grid item>
-                <CheckboxesGroup />
-              </Grid>
+                <Grid item>
+                  <CheckboxesGroup />
+                </Grid>
 
-              <Grid item>
-                <SearchButton />
+                <Grid item>
+                  <SearchButton />
+                </Grid>
               </Grid>
-            </Grid>
+            </StylesProvider>
           </Provider>
         </div>
       );

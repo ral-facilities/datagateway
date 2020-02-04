@@ -1,9 +1,16 @@
 describe('Download Cart', () => {
+  before(() => {
+    // Ensure the download cart is cleared before running tests.
+    cy.login('user', 'password');
+    cy.clearDownloadCart();
+  });
+
   beforeEach(() => {
     Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.login('user', 'password');
+
     cy.seedDownloadCart().then(() => {
       cy.visit('/');
       cy.wait('@fetchCart');
@@ -118,15 +125,10 @@ describe('Download Cart', () => {
     );
   });
 
-  it('should be able to download the cart', () => {
-    const stub = cy.stub();
-    cy.on('window:alert', stub);
-
+  it('should be able open the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
-    cy.contains('Download Cart')
-      .click()
-      .then(() => {
-        expect(stub.getCall(0)).to.be.calledWith('download the cart!');
-      });
+    cy.contains('Download Cart').click();
+
+    cy.get('[aria-label="download-confirm-dialog"]').should('exist');
   });
 });

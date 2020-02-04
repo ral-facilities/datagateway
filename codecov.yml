@@ -1,0 +1,36 @@
+coverage:
+  status:
+    project: 
+      default: off
+      common:
+        flags: common
+        target: auto
+        threshold: 5
+      table:
+        flags: table
+        target: auto
+        threshold: 5
+      search:
+        flags: search
+        target: auto
+        threshold: 5
+      download:
+        flags: download
+        target: auto
+        threshold: 5 
+    patch:
+      default:
+        target: 90
+flags:
+  common:
+    paths:
+      - packages/datagateway-common/src
+  table:
+    paths:
+      - packages/datagateway-table/src
+  search:
+    paths:
+      - packages/datagateway-search/src
+  download:
+    paths:
+      - packages/datagateway-download/src

@@ -8,6 +8,10 @@ import {
   getDatafileCount,
   getCartDatafileCount,
   getCartSize,
+  submitCart,
+  getIsTwoLevel,
+  getDownload,
+  downloadPreparedCart,
 } from './downloadCartApi';
 import * as log from 'loglevel';
 import { DownloadCartItem } from 'datagateway-common';
@@ -51,7 +55,9 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toBe(downloadCartMockData.cartItems);
       expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
+      expect(
+        axios.get
+      ).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS',
         { params: { sessionId: null } }
       );
@@ -68,7 +74,9 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();
-      expect(axios.get).toHaveBeenCalledWith(
+      expect(
+        axios.get
+      ).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS',
         { params: { sessionId: null } }
       );
@@ -89,7 +97,9 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(
+        axios.delete
+      ).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: '*' } }
       );
@@ -106,7 +116,9 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(
+        axios.delete
+      ).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: '*' } }
       );
@@ -127,7 +139,9 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(
+        axios.delete
+      ).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: 'datafile 1' } }
       );
@@ -144,12 +158,210 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(
+        axios.delete
+      ).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: 'investigation 1' } }
       );
       expect(log.error).toHaveBeenCalled();
       expect(log.error).toHaveBeenCalledWith('Test error message');
+    });
+  });
+
+  describe('getIsTwoLevel', () => {
+    it('returns true if IDS is two-level', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: true,
+        })
+      );
+
+      const isTwoLevel = await getIsTwoLevel();
+
+      expect(isTwoLevel).toBe(true);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/ids/isTwoLevel'
+      );
+    });
+
+    it('returns false in the event of an error and logs error upon unsuccessful response', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      const isTwoLevel = await getIsTwoLevel();
+
+      expect(isTwoLevel).toBe(false);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/ids/isTwoLevel'
+      );
+      expect(log.error).toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith('Test error message');
+    });
+  });
+
+  describe('submitCart', () => {
+    it('returns the downloadId after the submitting cart', async () => {
+      axios.post = jest.fn().mockImplementation(() => {
+        return Promise.resolve({
+          data: {
+            facilityName: 'LILS',
+            userName: 'test user',
+            cartItems: [],
+            downloadId: 1,
+          },
+        });
+      });
+
+      // Wait for our mocked response with a download id.
+      const downloadId = await submitCart(
+        'LILS',
+        'https',
+        'test@email.com',
+        'test-file'
+      );
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append('transport', 'https');
+      params.append('email', 'test@email.com');
+      params.append('fileName', 'test-file');
+      params.append('zipType', 'ZIP');
+
+      expect(downloadId).toBe(1);
+      expect(axios.post).toHaveBeenCalled();
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+        params
+      );
+    });
+
+    it('returns -1 if an errors occurs and logs the error upon unsuccessful response', async () => {
+      axios.post = jest.fn().mockImplementation(() => {
+        return Promise.reject({
+          message: 'Test error message',
+        });
+      });
+
+      // Wait for our mocked response with a download id.
+      const downloadId = await submitCart(
+        'LILS',
+        'globus',
+        'test@email.com',
+        'test-file'
+      );
+      const params = new URLSearchParams();
+      params.append('sessionId', '');
+      params.append('transport', 'globus');
+      params.append('email', 'test@email.com');
+      params.append('fileName', 'test-file');
+      params.append('zipType', 'ZIP');
+
+      expect(downloadId).toBe(-1);
+      expect(axios.post).toHaveBeenCalled();
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+        params
+      );
+      expect(log.error).toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith('Test error message');
+    });
+  });
+
+  describe('getDownload', () => {
+    it('returns the download information upon successful response for download ID', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: [
+            {
+              createdAt: '2020-01-01T01:01:01Z',
+              downloadItems: [
+                {
+                  entityId: 1,
+                  entityType: 'investigation',
+                  id: 1,
+                },
+              ],
+              facilityName: 'LILS',
+              fileName: 'test-file',
+              fullName: 'simple/root',
+              id: 1,
+              isDeleted: false,
+              isEmailSent: false,
+              isTwoLevel: false,
+              preparedId: 'test-prepared-id',
+              sessionId: '',
+              size: 0,
+              status: 'COMPLETE',
+              transport: 'https',
+              userName: 'simple/root',
+            },
+          ],
+        })
+      );
+
+      const download = await getDownload('LILS', 1);
+
+      expect(download).not.toBe(null);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: `where download.id = 1`,
+          },
+        }
+      );
+    });
+
+    it('returns null if error occurs and logs the error message upon unsuccessful response', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      const download = await getDownload('LILS', 1);
+
+      expect(download).toBe(null);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: `where download.id = 1`,
+          },
+        }
+      );
+      expect(log.error).toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith('Test error message');
+    });
+  });
+
+  describe('downloadPreparedCart', () => {
+    it('opens a link to download test-file upon successful response for a download request', async () => {
+      jest.spyOn(document, 'createElement');
+      jest.spyOn(document.body, 'appendChild');
+
+      await downloadPreparedCart('test-id', 'test-file.zip');
+
+      expect(document.createElement).toHaveBeenCalledWith('a');
+
+      // Create our prepared cart download link.
+      let link = document.createElement('a');
+      link.href = `https://scigateway-preprod.esc.rl.ac.uk:8181/ids/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
+      link.style.display = 'none';
+      link.target = '_blank';
+
+      expect(document.body.appendChild).toHaveBeenCalledWith(link);
     });
   });
 
