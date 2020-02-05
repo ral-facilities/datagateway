@@ -8,7 +8,6 @@ export interface DGTableState {
   features: FeatureSwitches;
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
-  facilityName: string;
 }
 
 export interface EntityCache {

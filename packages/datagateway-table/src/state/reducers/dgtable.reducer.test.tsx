@@ -1,5 +1,5 @@
 import DGTableReducer, {
-  initialState as dgTableInitialState,
+  initialState 
 } from './dgtable.reducer';
 import { StateType } from '../app.types';
 import {
@@ -8,7 +8,6 @@ import {
   loadBreadcrumbSettings,
   settingsLoaded,
 } from '../actions';
-import { dGCommonInitialState } from 'datagateway-common';
 
 describe('dgtable reducer', () => {
   let state: StateType;
@@ -17,8 +16,7 @@ describe('dgtable reducer', () => {
     // state = { ...dgTableInitialState };
     state = JSON.parse(
       JSON.stringify({
-        dgcommon: dGCommonInitialState,
-        dgtable: dgTableInitialState,
+        dgtable: initialState,
       })
     );
   });
