@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
 
-import DownloadTabs from './downloadTab.component';
-// import DownloadCartTable from './downloadCart/downloadCartTable.component';
-// import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
+import DownloadTabs from './downloadTab/downloadTab.component';
 
 import {
   createGenerateClassName,

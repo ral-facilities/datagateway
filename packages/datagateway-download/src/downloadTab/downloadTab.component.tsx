@@ -12,11 +12,11 @@ import {
 } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 
-import DownloadCartTable from './downloadCart/downloadCartTable.component';
-import DownloadStatusTable from './downloadStatus/downloadStatusTable.component';
+import DownloadCartTable from '../downloadCart/downloadCartTable.component';
+import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component';
 
 import RefreshIcon from '@material-ui/icons/Refresh';
-import BlackTooltip from './tooltip.component';
+import BlackTooltip from '../tooltip.component';
 
 const useStyles = makeStyles({
   root: {
@@ -64,7 +64,7 @@ const DownloadTabs: React.FC = () => {
   // (e.g. opening/closing the navigation drawer).
   const getTab = (): number => {
     let savedTab = sessionStorage.getItem('downloadStatusTab');
-    console.log('Saved tab in sessionStorage: ', savedTab);
+    // console.log('Saved tab in sessionStorage: ', savedTab);
 
     // If the tab has not been saved, then set it to the initial cart view (0).
     if (!savedTab) sessionStorage.setItem('downloadStatusTab', '0');
@@ -84,7 +84,7 @@ const DownloadTabs: React.FC = () => {
     setSelectedTab(setTab);
   };
 
-  console.log('Refresh status: ', refreshDownloads);
+  // console.log('Refresh status: ', refreshDownloads);
 
   return (
     <Paper className={classes.root}>
@@ -95,8 +95,8 @@ const DownloadTabs: React.FC = () => {
         textColor="primary"
         centered
       >
-        <Tab label="Cart" {...a11yProps(0)} />
-        <Tab label="Downloads" {...a11yProps(1)} />
+        <Tab label="Cart" aria-label="Cart tab" {...a11yProps(0)} />
+        <Tab label="Downloads" aria-label="Downloads tab" {...a11yProps(1)} />
       </Tabs>
 
       <TabPanel value={selectedTab} index={0}>
@@ -105,9 +105,9 @@ const DownloadTabs: React.FC = () => {
       </TabPanel>
 
       <TabPanel value={selectedTab} index={1}>
-        <Grid container spacing={1} aria-label="Last updated time">
+        <Grid container spacing={1}>
           {/* Place the last updated time above the table. */}
-          <Grid item xs={12}>
+          <Grid item xs={12} aria-label="Last updated time">
             <Typography
               style={{
                 display: 'inline-flex',
@@ -119,7 +119,7 @@ const DownloadTabs: React.FC = () => {
             >
               {/* Show refresh icon and re-populate the download status table. */}
               {!refreshDownloads ? (
-                <BlackTooltip title="Refresh Downloads" enterDelay={250}>
+                <BlackTooltip title="Refresh Downloads" enterDelay={500}>
                   <IconButton
                     color="secondary"
                     aria-label="Refresh download status table"
@@ -134,7 +134,7 @@ const DownloadTabs: React.FC = () => {
 
               {!refreshDownloads ? (
                 <p style={{ paddingLeft: '10px ' }}>
-                  <i>Last checked: </i> {lastChecked}
+                  <b>Last checked: </b> {lastChecked}
                 </p>
               ) : (
                 <p style={{ paddingLeft: '20px ' }}>

@@ -74,7 +74,7 @@ if (
   render();
 
   if (process.env.NODE_ENV === `development`) {
-    // TODO: replace with getting from daaas:token when supported
+    // TODO: replace with getting from scigateway:token when supported; extract icat token from JWT.
     const icatUrl = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat`;
     axios
       .post(

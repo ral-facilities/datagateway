@@ -38,7 +38,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
 
-  // TODO: work these out via API calls
+  // TODO: Determine fileCountMax and totalSizeMax from settings.
   const [fileCount, setFileCount] = React.useState<number>(-1);
   const [fileCountMax, setFileCountMax] = React.useState<number>(-1);
   const [totalSizeMax, setTotalSizeMax] = React.useState<number>(-1);

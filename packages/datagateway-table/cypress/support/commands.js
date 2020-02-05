@@ -65,3 +65,9 @@ Cypress.Commands.add('clearDownloadCart', () => {
     });
   });
 });
+
+// Cypress.Commands.add('clearDownloads', () => {
+// });
+
+// Cypress.Commands.add('seedDownloads', () => {
+// });

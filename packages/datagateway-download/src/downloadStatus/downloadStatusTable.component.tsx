@@ -8,7 +8,6 @@ import {
   TextColumnFilter,
   TableActionProps,
   DateColumnFilter,
-  // DateColumnFilter,
 } from 'datagateway-common';
 import { fetchDownloads, downloadDeleted } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
@@ -88,7 +87,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     />
   );
 
-  // TODO: Add in handling for both text and start/end date (for date filtering).
+  // Handle filtering for both text and date filters.
   console.log('Filters: ', filters);
   const sortedAndFilteredData = React.useMemo(() => {
     console.log(data.length);
@@ -96,11 +95,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       console.log('Current item: ', item);
       for (let [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
-        console.log('Current key: ', key);
-        console.log('Current table value: ', tableValue);
-        console.log('Current value: ', value);
-
-        // Filter for both text and date filters
         if (tableValue !== undefined && typeof tableValue === 'string') {
           if (typeof value === 'string' && !tableValue.includes(value)) {
             return false;
@@ -110,18 +104,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             'endDate' in value &&
             value.startDate
           ) {
-            // TODO: Check that the given date is in the range specified by the filter.
-            console.log('Object value: ', value);
-
+            // Check that the given date is in the range specified by the filter.
             const tableTimestamp = new Date(tableValue).getTime();
-            console.log('Table timestamp: ', tableTimestamp);
-
             const startTimestamp = new Date(value.startDate).getTime();
             const endTimestamp = value.endDate
               ? new Date(`${value.endDate} 23:59:59`).getTime()
               : Date.now();
-            console.log('Start timestamp: ', startTimestamp);
-            console.log('End timestamp: ', endTimestamp);
 
             if (
               !(
@@ -138,8 +126,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       return true;
     });
 
-    // TODO: Fix sorting so that the user does not have to click multiple times.
     function sortDownloadItems(a: Download, b: Download): number {
+      console.log('Sort items: ', sort);
       for (let [sortColumn, sortDirection] of Object.entries(sort)) {
         if (sortDirection === 'asc') {
           if (a[sortColumn] > b[sortColumn]) {
@@ -181,7 +169,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 label: 'Availability',
                 dataKey: 'status',
                 cellContentRenderer: (props: TableCellProps) => {
-                  // TODO: Re-work so we can get the get status of each element?
+                  // TODO: Re-work so we can get the status of each element?
+                  //       Filtering works with the actual table value and not what we display.
                   if (props.cellData) {
                     switch (props.cellData) {
                       case 'COMPLETE':
@@ -208,12 +197,15 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 dataKey: 'createdAt',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
-                    // return props.cellData.toString().split(' ')[0];
                     const d = new Date(props.cellData);
                     return `${d.getFullYear()}-${(
                       '0' +
                       (d.getMonth() + 1)
-                    ).slice(-2)}-${('0' + d.getDate()).slice(-2)}`;
+                    ).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${(
+                      '0' + d.getHours()
+                    ).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${(
+                      '0' + d.getSeconds()
+                    ).slice(-2)}`;
                   }
                 },
                 filterComponent: dateFilter,
@@ -235,38 +227,57 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
                 const downloadItem = rowData as Download;
-                const downloadable = downloadItem.transport !== 'https';
+                // const isDownloadable = downloadItem.transport === 'https';
+                const isDownloadable = downloadItem.transport.match(
+                  /https|http/
+                )
+                  ? true
+                  : false;
 
                 const [clicked, setClicked] = React.useState(false);
                 return (
                   <BlackTooltip
                     title={`Instant download not supported for ${downloadItem.transport} download type`}
                     enterDelay={500}
-                    disableHoverListener={!downloadable}
+                    // Disable tooltip for access methods that are not http/https.
+                    disableHoverListener={isDownloadable}
                   >
-                    <IconButton
-                      component="a"
-                      // Construct a link to download the prepared cart.
-                      href={`${idsUrl}/getData?sessionId=${window.localStorage.getItem(
-                        'icat:token'
-                      )}&preparedId=${downloadItem.preparedId}&outname=${
-                        downloadItem.fileName
-                      }`}
-                      target="_blank"
-                      aria-label={`Download ${downloadItem.fileName}`}
-                      key="download"
-                      size="small"
-                      onClick={() => {
-                        setClicked(true);
-                        setTimeout(() => {
-                          setClicked(false);
-                        }, 100);
-                      }}
-                      // Set the button to be disabled if the transport type is not "https" (cover http?).
-                      disabled={downloadable}
-                    >
-                      <GetApp color={clicked ? 'primary' : 'inherit'} />
-                    </IconButton>
+                    <div>
+                      {/* Provide a download button and set disabled if instant download is not supported. */}
+                      {isDownloadable ? (
+                        <IconButton
+                          component="a"
+                          // Construct a link to download the prepared cart.
+                          href={`${idsUrl}/getData?sessionId=${window.localStorage.getItem(
+                            'icat:token'
+                          )}&preparedId=${downloadItem.preparedId}&outname=${
+                            downloadItem.fileName
+                          }`}
+                          target="_blank"
+                          aria-label={`Download ${downloadItem.fileName}`}
+                          key="download"
+                          size="small"
+                          onClick={() => {
+                            setClicked(true);
+                            setTimeout(() => {
+                              setClicked(false);
+                            }, 100);
+                          }}
+                        >
+                          <GetApp color={clicked ? 'primary' : 'inherit'} />
+                        </IconButton>
+                      ) : (
+                        <IconButton
+                          aria-label={`Instant download not supported for ${downloadItem.fileName}`}
+                          key="non-downloadable"
+                          size="small"
+                          // Set the button to be disabled if the transport type is not "https" (cover http?).
+                          disabled={!isDownloadable}
+                        >
+                          <GetApp color={clicked ? 'primary' : 'inherit'} />
+                        </IconButton>
+                      )}
+                    </div>
                   </BlackTooltip>
                 );
               },
@@ -279,7 +290,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
                 return (
                   <IconButton
-                    aria-label={`Remove ${downloadItem.fileName} from cart`}
+                    aria-label={`Remove ${downloadItem.fileName} from downloads`}
                     key="remove"
                     size="small"
                     onClick={() => {
@@ -287,7 +298,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       setTimeout(
                         () =>
                           downloadDeleted(
-                            // TODO: get the facilityName from configuration file
+                            // TODO: Get the facilityName from configuration file.
                             'LILS',
                             downloadItem.id,
                             true

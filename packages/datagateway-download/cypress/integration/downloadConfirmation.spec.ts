@@ -46,7 +46,6 @@ describe('Download Confirmation', () => {
     );
 
     // Shows the estimated download times in the table.
-    // cy.contains('[aria-label="confirm-estimated-time"]', '1 day, 33 minutes, 54 seconds').should('exist');
     cy.get('[aria-label="download-table"]').should('exist');
     cy.contains(
       '[aria-label="download-table-one"]',

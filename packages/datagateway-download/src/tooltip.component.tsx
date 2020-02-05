@@ -19,14 +19,13 @@ const useTooltipStyles: (
 
 interface BlackTooltipProps {
   fontSize?: string;
-  disabledButton?: boolean;
   children?: React.ReactNode;
 }
 
 const BlackTooltip: React.FC<BlackTooltipProps & TooltipProps> = (
   props: BlackTooltipProps & TooltipProps
 ) => {
-  const { fontSize, disabledButton, children, ...other } = props;
+  const { fontSize, children, ...other } = props;
   const classes = useTooltipStyles(fontSize);
 
   // Handle tooltip on disabled button elements by placing a span element.
