@@ -1,5 +1,5 @@
 import { DGTableState } from '../app.types';
-import createReducer from './createReducer';
+import { createReducer } from 'datagateway-common';
 import {
   FeatureSwitchesPayload,
   ConfigureStringsPayload,

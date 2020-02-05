@@ -5,18 +5,6 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { format } from 'date-fns';
-// import {
-//   TextColumnFilter,
-//   Table,
-//   formatBytes,
-//   Order,
-//   Filter,
-//   Entity,
-//   Datafile,
-//   TableActionProps,
-//   DateColumnFilter,
-//   DownloadCartItem,
-// } from 'datagateway-common';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -124,9 +112,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     const ids = response.data.map((x: { id: number; score: number }) => x.id);
     console.log(ids);
   }
-
-  //  Louise does this already, find her work
-  //  public async apiRequest
 
   public render(): React.ReactNode {
     return (
