@@ -10,9 +10,11 @@ import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
-import {DGCommonMiddleware,
+import {
+  DGCommonMiddleware,
   listenToMessages,
-RegisterRouteType, } from 'datagateway-common';
+  RegisterRouteType,
+} from 'datagateway-common';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Preloader } from 'datagateway-common';

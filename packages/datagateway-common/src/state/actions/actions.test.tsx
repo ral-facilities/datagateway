@@ -47,7 +47,6 @@ describe('Actions', () => {
           ...dGCommonInitialState,
           sort: { column1: 'asc', column2: 'desc' },
         },
-        // dgtable: dgTableInitialState,
         router: routerState,
       });
       const filter = getApiFilter(getState);
@@ -69,7 +68,6 @@ describe('Actions', () => {
             column2: { endDate: '2019-09-18' },
           },
         },
-        // dgtable: dgTableInitialState,
         router: routerState,
       });
       const filter = getApiFilter(getState);
@@ -91,7 +89,6 @@ describe('Actions', () => {
           ...dGCommonInitialState,
           sort: { column1: 'asc' },
         },
-        // dgtable: dgTableInitialState,
         router: routerState,
       });
       const filter = getApiFilter(getState);
@@ -108,7 +105,6 @@ describe('Actions', () => {
         dgcommon: {
           ...dGCommonInitialState,
         },
-        // dgtable: dgTableInitialState,
         router: routerState,
       });
       const filter = getApiFilter(getState);

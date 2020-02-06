@@ -1,6 +1,4 @@
-import DGTableReducer, {
-  initialState 
-} from './dgtable.reducer';
+import DGTableReducer, { initialState } from './dgtable.reducer';
 import { StateType } from '../app.types';
 import {
   loadFeatureSwitches,

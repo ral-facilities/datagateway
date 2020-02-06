@@ -6,7 +6,6 @@ import { connectRouter } from 'connected-react-router';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { History } from 'history';
 
-
 const AppReducer = (history: History): Reducer =>
   combineReducers({
     router: connectRouter(history),
