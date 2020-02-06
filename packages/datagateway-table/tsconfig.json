@@ -16,10 +16,6 @@
     "jsx": "preserve"
   },
   "include": [
-    "src",
-    "../datagateway-common/src/state/actions/instruments.tsx",
-    "../datagateway-common/src/state/actions/facilityCycles.tsx",
-    "../datagateway-common/src/state/actions/instruments.test.tsx",
-    "../datagateway-common/src/state/actions/facilityCycles.test.tsx"
+    "src"
   ]
 }
