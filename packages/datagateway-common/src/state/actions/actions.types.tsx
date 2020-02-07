@@ -1,5 +1,4 @@
 import { Filter, Order, Entity, DownloadCart } from '../../app.types';
-import { ApplicationStrings } from '../app.types';
 
 // parent app actions
 export const RegisterRouteType = 'daaas:api:register_route';
@@ -9,15 +8,9 @@ export const RequestPluginRerenderType = 'daaas:api:plugin_rerender';
 export const SortTableType = 'datagateway_common:sort_table';
 export const FilterTableType = 'datagateway_common:filter_table';
 export const ClearTableType = 'datagateway_common:clear_table';
-// export const ConfigureStringsType = 'datagateway_common:configure_strings';
 export const ConfigureFacilityNameType =
   'datagateway_common:configure_facility_name';
-// export const ConfigureFeatureSwitchesType =
-// 'datagateway_common:configure_feature_switches';
 export const ConfigureURLsType = 'datagateway_common:configure_urls';
-// export const ConfigureBreadcrumbSettingsType =
-//   'datagateway_common:configure_breadcrumb';
-// export const SettingsLoadedType = 'datagateway_common:settings_loaded';
 
 export const FetchInvestigationsRequestType =
   'datagateway_common:fetch_investigations_request';
@@ -194,16 +187,8 @@ export interface FilterTablePayload {
   filter: Filter | null;
 }
 
-export interface ConfigureStringsPayload {
-  res: ApplicationStrings;
-}
-
 export interface ConfigureFacilityNamePayload {
   facilityName: string;
-}
-
-export interface FeatureSwitchesPayload {
-  switches: FeatureSwitches;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -217,18 +202,6 @@ export interface URLs {
   idsUrl: string;
   apiUrl: string;
   downloadApiUrl: string;
-}
-
-export interface ConfigureBreadcrumbSettingsPayload {
-  settings: BreadcrumbSettings;
-}
-
-export interface BreadcrumbSettings {
-  [matchEntity: string]: {
-    replaceEntityField: string;
-    replaceEntity?: string;
-    parentEntity?: string;
-  };
 }
 
 export interface RequestPayload {
