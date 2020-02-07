@@ -1,5 +1,5 @@
 import { DGTableState } from '../app.types';
-import createReducer from './createReducer';
+import { createReducer } from 'datagateway-common';
 import {
   FeatureSwitchesPayload,
   ConfigureStringsPayload,
@@ -11,7 +11,6 @@ import {
 } from '../actions/actions.types';
 
 export const initialState: DGTableState = {
-  facilityName: '',
   features: {},
   breadcrumbSettings: {},
   settingsLoaded: false,

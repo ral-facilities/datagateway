@@ -41,6 +41,80 @@ describe('Actions', () => {
       },
     };
 
+    it('given multiple sort column in the sort state it returns a list', () => {
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          sort: { column1: 'asc', column2: 'desc' },
+        },
+        router: routerState,
+      });
+      const filter = getApiFilter(getState);
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('column1 asc'));
+      params.append('order', JSON.stringify('column2 desc'));
+      params.append('order', JSON.stringify('ID asc'));
+
+      expect(filter).toEqual(params);
+    });
+
+    it('given filter state it returns a filter', () => {
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          filters: {
+            column1: 'test',
+            column2: { endDate: '2019-09-18' },
+          },
+        },
+        router: routerState,
+      });
+      const filter = getApiFilter(getState);
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
+      params.append('where', JSON.stringify({ column1: { like: 'test' } }));
+      params.append(
+        'where',
+        JSON.stringify({ column2: { lte: '2019-09-18 23:59:59' } })
+      );
+
+      expect(filter).toEqual(params);
+    });
+
+    it('given a single sort column in the sort state it returns an order string', () => {
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          sort: { column1: 'asc' },
+        },
+        router: routerState,
+      });
+      const filter = getApiFilter(getState);
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('column1 asc'));
+      params.append('order', JSON.stringify('ID asc'));
+
+      expect(filter).toEqual(params);
+    });
+
+    it('given a empty sort and filters it returns just sorting by ID', () => {
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+        },
+        router: routerState,
+      });
+      const filter = getApiFilter(getState);
+
+      const params = new URLSearchParams();
+      params.append('order', JSON.stringify('ID asc'));
+
+      expect(filter).toEqual(params);
+    });
+
     it('given both sort and filter state it returns both an order and where filter', () => {
       const getState = (): StateType => ({
         dgcommon: {

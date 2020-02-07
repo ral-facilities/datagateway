@@ -221,11 +221,3 @@ export const EntityTypes: string[] = [
 export type Filter = string | number | { startDate?: string; endDate?: string };
 
 export type Order = 'asc' | 'desc';
-
-export interface DownloadCartItem {
-  entityId: number;
-  entityType: 'investigation' | 'dataset' | 'datafile';
-  id: number;
-  name: string;
-  parentEntities: DownloadCartItem[];
-}

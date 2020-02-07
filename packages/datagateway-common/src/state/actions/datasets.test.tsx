@@ -302,6 +302,31 @@ describe('Dataset actions', () => {
     expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
+  it('fetchDatasets applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchDatasets({
+      investigationId: 1,
+      offsetParams: { startIndex: 0, stopIndex: 49 },
+    });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith('/datasets', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
+  });
+
   it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsSuccess actions upon successful fetchDatasetDetails action', async () => {
     const mockDetailsData: Dataset[] = [
       {

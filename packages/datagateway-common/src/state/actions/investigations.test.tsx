@@ -151,6 +151,68 @@ describe('Investigation actions', () => {
     expect(actions[3]).toEqual(fetchInvestigationDatasetsCountRequest(1));
   });
 
+  it('fetchInvestigations applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchInvestigations({
+      offsetParams: { startIndex: 0, stopIndex: 49 },
+    });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith('/investigations', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
+  });
+
+  it('fetchISISInvestigations applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchISISInvestigations({
+      instrumentId: 1,
+      facilityCycleId: 2,
+      offsetParams: { startIndex: 0, stopIndex: 49 },
+    });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    console.log((axios.get as jest.Mock).mock.calls[0][1]['params'].toString());
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append(
+      'include',
+      JSON.stringify([
+        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+        { STUDYINVESTIGATION: 'STUDY' },
+      ])
+    );
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/instruments/1/facilitycycles/2/investigations',
+      {
+        headers: { Authorization: 'Bearer null' },
+        params,
+      }
+    );
+  });
+
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsFailure actions upon unsuccessful fetchInvestigations action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.reject({

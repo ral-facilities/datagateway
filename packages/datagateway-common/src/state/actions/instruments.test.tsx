@@ -105,6 +105,27 @@ describe('Instrument actions', () => {
     expect(mockLog.calls[0][0]).toEqual('Test error message');
   });
 
+  it('fetchInstruments applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchInstruments({ startIndex: 0, stopIndex: 49 });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith('/instruments', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
+  });
+
   it('dispatches fetchInstrumentCountRequest and fetchInstrumentCountSuccess actions upon successful fetchInstrumentCount action', async () => {
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({

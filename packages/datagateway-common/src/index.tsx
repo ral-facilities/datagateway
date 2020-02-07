@@ -20,6 +20,10 @@ export { default as ExpandCellComponent } from './table/cellRenderers/expandCell
 export * from './table/cellRenderers/cellContentRenderers';
 
 export * from './state/actions/index';
+
+export { default as DGCommonMiddleware } from './state/middleware/dgcommon.middleware';
+export { default as createReducer } from './state/reducers/createReducer';
+export * from './state/middleware/dgcommon.middleware';
 export { default as Preloader } from './preloader/preloader.component';
 export { initialState as dGCommonInitialState } from './state/reducers/dgcommon.reducer';
 export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';

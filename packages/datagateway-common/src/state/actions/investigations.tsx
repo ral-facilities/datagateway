@@ -140,7 +140,6 @@ export const fetchInvestigations = (
   optionalParams?: FetchInvestigationsParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    console.log('hey');
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
 
