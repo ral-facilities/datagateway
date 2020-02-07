@@ -1,4 +1,5 @@
-import DaaasMiddleware, { listenToMessages } from './dgcommon.middleware';
+import DGCommonMiddleware, { listenToMessages } from './dgcommon.middleware';
+import * as middlewareMock from './dgcommon.middleware';
 import { AnyAction } from 'redux';
 import configureStore, {
   MockStoreEnhanced,
@@ -9,6 +10,7 @@ import {
   RequestPluginRerenderType,
   RegisterRouteType,
 } from '../actions/actions.types';
+import axios from 'axios';
 
 describe('DGCommon middleware', () => {
   let events: CustomEvent<AnyAction>[] = [];
@@ -56,6 +58,19 @@ describe('DGCommon middleware', () => {
   it('should not broadcast messages without payload', () => {
     DaaasMiddleware(store)(store.dispatch)({ type: 'test' });
     expect(events.length).toEqual(0);
+  });
+
+  it('should cancel axios requests + generate new cancel token when router location changes', () => {
+    const cancelMock = jest.fn();
+    middlewareMock.source.cancel = cancelMock;
+    const sourceSpy = jest.spyOn(axios.CancelToken, 'source');
+
+    DaaasMiddleware(store)(store.dispatch)({
+      type: '@@router/LOCATION_CHANGE',
+    });
+
+    expect(cancelMock).toHaveBeenCalled();
+    expect(sourceSpy).toHaveBeenCalled();
   });
 
   it('should handle plugin_rerender action and ignore it (it is handled in index.tsx)', () => {
