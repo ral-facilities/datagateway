@@ -44,19 +44,19 @@ describe('DGCommon middleware', () => {
   });
 
   it('should broadcast messages with broadcast flag', () => {
-    DaaasMiddleware(store)(store.dispatch)(action);
+    DGCommonMiddleware(store)(store.dispatch)(action);
 
     expect(events.length).toEqual(1);
     expect(events[0].detail).toEqual(action);
   });
 
   it('should not broadcast messages without broadcast flag', () => {
-    DaaasMiddleware(store)(store.dispatch)({ type: 'test', payload: {} });
+    DGCommonMiddleware(store)(store.dispatch)({ type: 'test', payload: {} });
     expect(events.length).toEqual(0);
   });
 
   it('should not broadcast messages without payload', () => {
-    DaaasMiddleware(store)(store.dispatch)({ type: 'test' });
+    DGCommonMiddleware(store)(store.dispatch)({ type: 'test' });
     expect(events.length).toEqual(0);
   });
 
@@ -65,7 +65,7 @@ describe('DGCommon middleware', () => {
     middlewareMock.source.cancel = cancelMock;
     const sourceSpy = jest.spyOn(axios.CancelToken, 'source');
 
-    DaaasMiddleware(store)(store.dispatch)({
+    DGCommonMiddleware(store)(store.dispatch)({
       type: '@@router/LOCATION_CHANGE',
     });
 
