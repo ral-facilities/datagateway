@@ -9,11 +9,11 @@ import {
   fetchFacilityCycleCountFailure,
 } from '.';
 import { StateType } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
+import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import * as log from 'loglevel';
-import { FacilityCycle } from 'datagateway-common';
+import { FacilityCycle } from '../../app.types';
 
 jest.mock('loglevel');
 
@@ -65,7 +65,7 @@ describe('FacilityCycle actions', () => {
 
     const asyncAction = fetchFacilityCycles(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -132,7 +132,7 @@ describe('FacilityCycle actions', () => {
 
     const asyncAction = fetchFacilityCycleCount(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },
@@ -174,5 +174,29 @@ describe('FacilityCycle actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual('Test error message');
+  });
+
+  it('fetchFacilityCycles applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchFacilityCycles(1, {
+      startIndex: 0,
+      stopIndex: 49,
+    });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith('/instruments/1/facilitycycles', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 });

@@ -25,7 +25,7 @@ import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchInvestigationDatasetsCount } from './datasets';
 import * as log from 'loglevel';
-import { Investigation } from 'datagateway-common';
+import { Investigation } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
 
 export const fetchInvestigationsSuccess = (
@@ -88,8 +88,10 @@ export const fetchInvestigationSize = (
     dispatch(fetchInvestigationSizeRequest());
 
     // We request the size from the download API.
-    const { downloadApiUrl } = getState().dgtable.urls;
-    const currentCache = getState().dgtable.investigationCache[investigationId];
+    const { downloadApiUrl } = getState().dgcommon.urls;
+    const currentCache = getState().dgcommon.investigationCache[
+      investigationId
+    ];
 
     // Check for a cached investigation size in the investigationCache.
     if (currentCache && currentCache.childEntitySize) {
@@ -156,7 +158,7 @@ export const fetchInvestigations = (
         )
       );
     }
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     if (optionalParams && optionalParams.additionalFilters) {
       optionalParams.additionalFilters.forEach(filter => {
@@ -221,7 +223,7 @@ export const fetchISISInvestigations = ({
       );
     }
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(
@@ -311,7 +313,7 @@ export const fetchInvestigationDetails = (
       JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
     );
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/investigations`, {
@@ -359,7 +361,7 @@ export const fetchInvestigationCount = (
 
     params.delete('order');
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/investigations/count`, {
@@ -389,7 +391,7 @@ export const fetchISISInvestigationCount = (
     let params = getApiFilter(getState);
     params.delete('order');
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(

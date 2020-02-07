@@ -10,23 +10,21 @@ import {
   DateColumnFilter,
   DownloadCartItem,
   formatBytes,
+  fetchInvestigationDetails,
+  fetchISISInvestigations,
+  fetchISISInvestigationCount,
+  addToCart,
+  removeFromCart,
+  fetchAllISISInvestigationIds,
+  sortTable,
+  filterTable,
+  clearTable,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  sortTable,
-  filterTable,
-  fetchInvestigationDetails,
-  fetchISISInvestigations,
-  fetchISISInvestigationCount,
-  clearTable,
-  addToCart,
-  removeFromCart,
-  fetchAllISISInvestigationIds,
-} from '../../state/actions';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 
@@ -301,14 +299,14 @@ const mapStateToProps = (
   state: StateType
 ): ISISInvestigationsTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
-    cartItems: state.dgtable.cartItems,
-    allIds: state.dgtable.allIds,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
+    cartItems: state.dgcommon.cartItems,
+    allIds: state.dgcommon.allIds,
   };
 };
 

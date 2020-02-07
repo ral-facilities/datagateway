@@ -20,7 +20,7 @@ import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
-import { DownloadCart, Investigation } from 'datagateway-common';
+import { DownloadCart, Investigation } from '../../app.types';
 import { getApiFilter } from '.';
 
 export const fetchDownloadCartSuccess = (
@@ -49,7 +49,7 @@ export const fetchDownloadCart = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDownloadCartRequest());
 
-    const { downloadApiUrl } = getState().dgtable.urls;
+    const { downloadApiUrl } = getState().dgcommon.urls;
 
     // TODO: get facility name from somewhere else...
     await axios
@@ -98,7 +98,7 @@ export const addToCart = (
   return async (dispatch, getState) => {
     dispatch(addToCartRequest());
 
-    const { downloadApiUrl } = getState().dgtable.urls;
+    const { downloadApiUrl } = getState().dgcommon.urls;
 
     const params = new URLSearchParams();
     // TODO: get session ID from somewhere else (extract from JWT)
@@ -150,7 +150,7 @@ export const removeFromCart = (
   return async (dispatch, getState) => {
     dispatch(removeFromCartRequest());
 
-    const { downloadApiUrl } = getState().dgtable.urls;
+    const { downloadApiUrl } = getState().dgcommon.urls;
 
     // TODO: get facility name from somewhere else...
     await axios
@@ -232,7 +232,7 @@ export const fetchAllIds = (
       params.set('distinct', JSON.stringify('ID'));
     }
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get<{ ID: number }[]>(`${apiUrl}/${entityType}s`, {
@@ -270,7 +270,7 @@ export const fetchAllISISInvestigationIds = (
     // so for now just retrieve everything
     // params.set('distinct', JSON.stringify('ID'));
 
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get<Investigation[]>(

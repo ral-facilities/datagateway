@@ -6,18 +6,19 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
   fetchInvestigationsRequest,
+  clearTable,
   filterTable,
   sortTable,
   addToCartRequest,
   removeFromCartRequest,
   fetchInvestigationCountRequest,
-  clearTable,
   fetchAllIdsRequest,
-} from '../state/actions';
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { dGCommonInitialState } from 'datagateway-common';
 
 describe('Investigation table component', () => {
   let shallow;
@@ -34,8 +35,10 @@ describe('Investigation table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
-    state.dgtable.data = [
+    state = JSON.parse(
+      JSON.stringify({ dgcommon: dGCommonInitialState, dgtable: initialState })
+    );
+    state.dgcommon.data = [
       {
         ID: 1,
         TITLE: 'Test 1',
@@ -50,7 +53,7 @@ describe('Investigation table component', () => {
         ENDDATE: '2019-07-24',
       },
     ];
-    state.dgtable.allIds = [1];
+    state.dgcommon.allIds = [1];
   });
 
   afterEach(() => {
@@ -194,7 +197,7 @@ describe('Investigation table component', () => {
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'investigation',
@@ -222,7 +225,7 @@ describe('Investigation table component', () => {
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 2,
         entityType: 'investigation',
@@ -264,7 +267,7 @@ describe('Investigation table component', () => {
     );
     const detailsPanelWrapper = shallow(
       wrapper.prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();
@@ -313,7 +316,7 @@ describe('Investigation table component', () => {
 
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
-    state.dgtable.data = [
+    state.dgcommon.data = [
       {
         ID: 1,
         NAME: 'test',

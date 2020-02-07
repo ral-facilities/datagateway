@@ -12,21 +12,19 @@ import {
   fetchInvestigationCountRequest,
   fetchInvestigationCountSuccess,
   fetchInvestigationCountFailure,
-  fetchInvestigationDatasetsCountRequest,
-} from '.';
-import { StateType, EntityCache } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
-import axios from 'axios';
-import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
-import { Investigation } from 'datagateway-common';
-import {
   fetchISISInvestigationCount,
   fetchInvestigationSizeRequest,
   fetchInvestigationSizeSuccess,
   fetchInvestigationSize,
   fetchInvestigationSizeFailure,
-} from './investigations';
+} from '.';
+import { StateType, EntityCache } from '../app.types';
+import { initialState } from '../reducers/dgcommon.reducer';
+import axios from 'axios';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
+import * as log from 'loglevel';
+import { Investigation } from '../../app.types';
+import { fetchInvestigationDatasetsCountRequest } from './datasets';
 
 jest.mock('loglevel');
 
@@ -118,7 +116,7 @@ describe('Investigation actions', () => {
       ],
     });
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -151,6 +149,66 @@ describe('Investigation actions', () => {
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData, 1));
     expect(actions[2]).toEqual(fetchInvestigationDatasetsCountRequest(1));
     expect(actions[3]).toEqual(fetchInvestigationDatasetsCountRequest(1));
+  });
+
+  it('fetchInvestigations applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchInvestigations({
+      offsetParams: { startIndex: 0, stopIndex: 49 },
+    });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith('/investigations', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
+  });
+
+  it('fetchISISInvestigations applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchISISInvestigations({
+      instrumentId: 1,
+      facilityCycleId: 2,
+      offsetParams: { startIndex: 0, stopIndex: 49 },
+    });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append(
+      'include',
+      JSON.stringify([
+        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+        { STUDYINVESTIGATION: 'STUDY' },
+      ])
+    );
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith(
+      '/instruments/1/facilitycycles/2/investigations',
+      {
+        headers: { Authorization: 'Bearer null' },
+        params,
+      }
+    );
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsFailure actions upon unsuccessful fetchInvestigations action', async () => {
@@ -230,7 +288,7 @@ describe('Investigation actions', () => {
 
     // Set up state for calling fetchInvestigationSize with investigation cache.
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         investigationCache: mockInvestigationCache,
@@ -272,7 +330,7 @@ describe('Investigation actions', () => {
       facilityCycleId: 2,
     });
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -431,7 +489,7 @@ describe('Investigation actions', () => {
     ]);
 
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },
@@ -497,7 +555,7 @@ describe('Investigation actions', () => {
     const asyncAction = fetchISISInvestigationCount(1, 2);
 
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },

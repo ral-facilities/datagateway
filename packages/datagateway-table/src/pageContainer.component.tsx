@@ -48,7 +48,7 @@ class PageContainer extends React.Component<{ entityCount: number }> {
 }
 
 const mapStateToProps = (state: StateType): { entityCount: number } => ({
-  entityCount: state.dgtable.totalDataCount,
+  entityCount: state.dgcommon.totalDataCount,
 });
 
 export default connect(mapStateToProps)(PageContainer);
