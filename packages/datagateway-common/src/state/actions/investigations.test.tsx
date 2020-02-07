@@ -190,8 +190,6 @@ describe('Investigation actions', () => {
     });
     await asyncAction(dispatch, getState, null);
 
-    console.log((axios.get as jest.Mock).mock.calls[0][1]['params'].toString());
-
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('ID asc'));
     params.append(
