@@ -49,7 +49,9 @@ describe('DownloadConfirmDialog', () => {
         totalSize={size}
         isTwoLevel={isTwoLevel}
         open={open}
+        setStatus={jest.fn()}
         setClose={jest.fn()}
+        clearCart={jest.fn()}
       />
     );
   };
@@ -314,7 +316,9 @@ describe('DownloadConfirmDialog', () => {
         totalSize={1}
         isTwoLevel={false}
         open={openDialog}
+        setStatus={jest.fn()}
         setClose={closeFunction}
+        clearCart={jest.fn()}
       />
     );
 
@@ -334,6 +338,58 @@ describe('DownloadConfirmDialog', () => {
       .simulate('click');
 
     expect(closeFunction).toHaveBeenCalled();
+  });
+
+  it('calls the clearCart function when the Download Confirmation Dialog has been closed after a successful submission', async () => {
+    let openDialog = true;
+    const clearCartFunction = jest.fn();
+
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          downloadId: '1',
+        },
+      })
+    );
+
+    const wrapper = mount(
+      <DownloadConfirmDialog
+        totalSize={1}
+        isTwoLevel={false}
+        open={openDialog}
+        setStatus={jest.fn()}
+        setClose={jest.fn()}
+        clearCart={clearCartFunction}
+      />
+    );
+
+    // Click on the download button and ensure the successful confirmation is present.
+    expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
+
+    await act(async () => {
+      wrapper.find('button#download-confirmation-download').simulate('click');
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#download-confirmation-success')).toBe(true);
+
+    // Ensure the close button is present.
+    expect(wrapper.exists('[aria-label="download-confirmation-close"]')).toBe(
+      true
+    );
+    expect(wrapper.prop('open')).toBe(true);
+
+    // Close the download confirmation dialog.
+    wrapper.setProps({ open: false });
+    expect(wrapper.prop('open')).toBe(false);
+
+    // Click the close button and ensure the close function has been called.
+    wrapper
+      .find('button[aria-label="download-confirmation-close"]')
+      .simulate('click');
+
+    expect(clearCartFunction).toHaveBeenCalled();
   });
 });
 

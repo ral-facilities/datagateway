@@ -12,7 +12,7 @@ import {
 } from '../downloadApi';
 import { act } from 'react-dom/test-utils';
 
-jest.mock('./downloadCartApi');
+jest.mock('../downloadApi');
 jest.useFakeTimers();
 
 describe('Download cart table component', () => {
@@ -84,13 +84,13 @@ describe('Download cart table component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DownloadCartTable />);
+    const wrapper = shallow(<DownloadCartTable statusLink={jest.fn()} />);
 
     expect(wrapper).toMatchSnapshot();
   });
 
   it('fetches the download cart on load', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     await act(async () => {
       await flushPromises();
@@ -101,7 +101,7 @@ describe('Download cart table component', () => {
   });
 
   it('calculates sizes once cart items have been fetched', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     await act(async () => {
       await flushPromises();
@@ -122,7 +122,7 @@ describe('Download cart table component', () => {
   });
 
   it('calculates total file count once cart items have been fetched', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     await act(async () => {
       await flushPromises();
@@ -135,8 +135,8 @@ describe('Download cart table component', () => {
     );
   });
 
-  it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+  it('loads/closes cart confirmation dialog when Download Cart button is clicked/closed', async () => {
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     expect(wrapper.find('button#downloadCartButton').prop('disabled')).toBe(
       true
@@ -170,8 +170,10 @@ describe('Download cart table component', () => {
       .simulate('click');
   });
 
+  it('calls clearCart function once the download cart is closed', async () => {});
+
   it('removes all items from cart when Remove All button is clicked', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     await act(async () => {
       await flushPromises();
@@ -190,7 +192,7 @@ describe('Download cart table component', () => {
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     await act(async () => {
       await flushPromises();
@@ -223,7 +225,7 @@ describe('Download cart table component', () => {
   });
 
   it('sorts data when headers are clicked', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     await act(async () => {
       await flushPromises();
@@ -265,7 +267,7 @@ describe('Download cart table component', () => {
   });
 
   it('filters data when text fields are typed into', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(<DownloadCartTable statusLink={jest.fn()} />);
 
     await act(async () => {
       await flushPromises();
