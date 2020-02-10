@@ -9,7 +9,7 @@ import axios from 'axios';
 const CancelToken = axios.CancelToken;
 export let source = CancelToken.source();
 
-const microFrontendMessageId = 'daaas-frontend';
+const microFrontendMessageId = 'scigateway';
 
 const broadcastMessage = (action: AnyAction): void => {
   document.dispatchEvent(
@@ -26,7 +26,7 @@ export const listenToMessages = (dispatch: Dispatch): void => {
     if (
       pluginMessage.detail &&
       pluginMessage.detail.type &&
-      (pluginMessage.detail.type.startsWith('daaas:api:') ||
+      (pluginMessage.detail.type.startsWith('scigateway:api:') ||
         pluginMessage.detail.type.startsWith('datagateway_common:api:'))
     ) {
       // this is a valid message, so process it

@@ -72,7 +72,7 @@ const registerRouteAction = {
 };
 
 document.dispatchEvent(
-  new CustomEvent('daaas-frontend', { detail: registerRouteAction })
+  new CustomEvent('scigateway', { detail: registerRouteAction })
 );
 
 function mapPreloaderStateToProps(state: StateType): { loading: boolean } {

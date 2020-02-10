@@ -39,7 +39,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener('daaas-frontend', e => {
+document.addEventListener('scigateway', e => {
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {
     render();

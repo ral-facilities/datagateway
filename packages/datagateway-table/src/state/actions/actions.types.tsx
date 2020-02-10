@@ -1,8 +1,8 @@
 import { ApplicationStrings } from '../app.types';
 
 // // parent app actions
-export const RegisterRouteType = 'daaas:api:register_route';
-export const RequestPluginRerenderType = 'daaas:api:plugin_rerender';
+export const RegisterRouteType = 'scigateway:api:register_route';
+export const RequestPluginRerenderType = 'scigateway:api:plugin_rerender';
 
 // // internal actions
 export const ConfigureStringsType = 'datagateway_table:configure_strings';
