@@ -9,6 +9,7 @@ describe('Download Cart', () => {
     Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
+    cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login('user', 'password');
 
     cy.seedDownloadCart().then(() => {
@@ -19,11 +20,28 @@ describe('Download Cart', () => {
 
   afterEach(() => {
     cy.clearDownloadCart();
+
+    // Ensure to clear sessionStorage to prevent the app
+    // storing tab data.
+    sessionStorage.clear();
   });
 
   it('should load correctly and display cart items', () => {
     cy.title().should('equal', 'DataGateway Download');
     cy.get('#datagateway-download').should('be.visible');
+
+    // Ensure we can move away from the table and come back to it.
+    cy.get('[aria-label="Download cart panel"]').should('exist');
+    cy.get('[aria-label="Downloads tab"]')
+      .should('exist')
+      .click();
+
+    // Wait for the downloads to be fetched before moving back to the cart.
+    cy.wait('@fetchDownloads');
+    cy.get('[aria-label="Download status panel"]').should('exist');
+
+    cy.get('[aria-label="Cart tab').click();
+    cy.get('[aria-label="Download cart panel"]').should('exist');
 
     cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');
   });

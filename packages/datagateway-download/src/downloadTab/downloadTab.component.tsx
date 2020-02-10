@@ -99,12 +99,16 @@ const DownloadTabs: React.FC = () => {
         <Tab label="Downloads" aria-label="Downloads tab" {...a11yProps(1)} />
       </Tabs>
 
-      <TabPanel value={selectedTab} index={0}>
+      <TabPanel value={selectedTab} index={0} aria-label="Download cart panel">
         {/* Provide a link to the status table for the download confirmation dialog to use */}
         <DownloadCartTable statusLink={() => setSelectedTab(1)} />
       </TabPanel>
 
-      <TabPanel value={selectedTab} index={1}>
+      <TabPanel
+        value={selectedTab}
+        index={1}
+        aria-label="Download status panel"
+      >
         <Grid container spacing={1}>
           {/* Place the last updated time above the table. */}
           <Grid item xs={12} aria-label="Last updated time">
@@ -144,7 +148,7 @@ const DownloadTabs: React.FC = () => {
             </Typography>
           </Grid>
 
-          <Grid item xs aria-label="Download status table">
+          <Grid item xs>
             <DownloadStatusTable
               refreshTable={refreshDownloads}
               setRefreshTable={setRefreshDownloads}

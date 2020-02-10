@@ -278,6 +278,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 onClick={() =>
                   removeAllDownloadCartItems().then(() => setData([]))
                 }
+                disabled={fileCount <= 0 || totalSize <= 0}
               >
                 Remove All
               </Button>
