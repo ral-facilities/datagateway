@@ -27,6 +27,7 @@ import { fetchInvestigationDatasetsCount } from './datasets';
 import * as log from 'loglevel';
 import { Investigation } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[],
@@ -106,8 +107,7 @@ export const fetchInvestigationSize = (
       await axios
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
-            // TODO: Get session ID from somewhere else (extract from JWT)
-            sessionId: window.localStorage.getItem('icat:token'),
+            sessionId: readSciGatewayToken().sessionId,
             facilityName: 'LILS',
             entityType: 'investigation',
             entityId: investigationId,
@@ -170,7 +170,7 @@ export const fetchInvestigations = (
       .get(`${apiUrl}/investigations`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -231,9 +231,7 @@ export const fetchISISInvestigations = ({
         {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
         }
       )
@@ -319,7 +317,7 @@ export const fetchInvestigationDetails = (
       .get(`${apiUrl}/investigations`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -367,7 +365,7 @@ export const fetchInvestigationCount = (
       .get(`${apiUrl}/investigations/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -399,9 +397,7 @@ export const fetchISISInvestigationCount = (
         {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
         }
       )

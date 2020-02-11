@@ -16,6 +16,7 @@ import { getApiFilter } from '.';
 import * as log from 'loglevel';
 import { FacilityCycle } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
 
 export const fetchFacilityCyclesSuccess = (
   facilityCycles: FacilityCycle[],
@@ -69,7 +70,7 @@ export const fetchFacilityCycles = (
       .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -126,7 +127,7 @@ export const fetchFacilityCycleCount = (
       .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {

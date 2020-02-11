@@ -35,6 +35,7 @@ import { fetchDatasetDatafilesCount } from './datafiles';
 import * as log from 'loglevel';
 import { IndexRange } from 'react-virtualized';
 import { Dataset } from '../../app.types';
+import { readSciGatewayToken } from '../../parseTokens';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[],
@@ -108,8 +109,7 @@ export const fetchDatasetSize = (
       await axios
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
-            // TODO: Get session ID from somewhere else (extract from JWT)
-            sessionId: window.localStorage.getItem('icat:token'),
+            sessionId: readSciGatewayToken().sessionId,
             facilityName: 'LILS',
             entityType: 'dataset',
             entityId: datasetId,
@@ -162,7 +162,7 @@ export const fetchDatasets = ({
       .get(`${apiUrl}/datasets`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -242,7 +242,7 @@ export const fetchDatasetCount = (
       .get(`${apiUrl}/datasets/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -287,9 +287,8 @@ export const downloadDataset = (
 
     const { idsUrl } = getState().dgcommon.urls;
 
-    // TODO: get ICAT session id properly when auth is sorted
     const params = {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       datasetIds: datasetId,
       compress: false,
       zip: true,
@@ -373,9 +372,7 @@ export const fetchInvestigationDatasetsCount = (
         .get(`${apiUrl}/datasets/count`, {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
           cancelToken: source.token,
         })
@@ -435,7 +432,7 @@ export const fetchDatasetDetails = (
       .get(`${apiUrl}/datasets`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {

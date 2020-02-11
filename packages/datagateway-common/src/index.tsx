@@ -30,4 +30,7 @@ export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';
 
 export type DGCommonState = StateType;
 
+export * from './parseTokens';
+export * from './handleICATError';
+
 // ReactDOM.render(<App />, document.getElementById('root'));

@@ -1,3 +1,5 @@
+import { readSciGatewayToken } from 'datagateway-common';
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -56,7 +58,7 @@ Cypress.Commands.add('clearDownloadCart', () => {
     url:
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
     qs: {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       items: '*',
     },
   });
@@ -77,7 +79,7 @@ Cypress.Commands.add('seedDownloadCart', () => {
     url:
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
     body: {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       items,
     },
     form: true,
@@ -93,7 +95,7 @@ Cypress.Commands.add('addCartItem', cartItem => {
     url:
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
     body: {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       items: cartItem,
     },
     form: true,

@@ -6,6 +6,7 @@ import {
   DownloadCartItem,
   Datafile,
   Download,
+  readSciGatewayToken,
 } from 'datagateway-common';
 
 // TODO: get URLs from settings or something...
@@ -17,8 +18,7 @@ export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
   return axios
     .get<DownloadCart>(`${topcatUrl}/user/cart/LILS`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
       },
     })
     .then(response => {
@@ -34,8 +34,7 @@ export const removeAllDownloadCartItems: () => Promise<void> = () => {
   return axios
     .delete(`${topcatUrl}/user/cart/LILS/cartItems`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         items: '*',
       },
     })
@@ -52,8 +51,7 @@ export const removeDownloadCartItem: (
   return axios
     .delete(`${topcatUrl}/user/cart/LILS/cartItems`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         items: `${entityType} ${entityId}`,
       },
     })
@@ -88,9 +86,8 @@ export const submitCart: (
 ) => {
   const params = new URLSearchParams();
 
-  // TODO: get session ID from somewhere else (extract from JWT)
   // Construct the form parameters.
-  params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('transport', transport);
   params.append('email', emailAddress);
   params.append('fileName', fileName);
@@ -120,8 +117,7 @@ export const getDownload: (
   return axios
     .get<Download[]>(`${topcatUrl}/user/downloads`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         facilityName: facilityName,
         queryOffset: `where download.id = ${downloadId}`,
       },
@@ -143,7 +139,7 @@ export const downloadPreparedCart: (
   // We need to set the preparedId and outname query parameters
   // for the IDS download.
   const params = {
-    sessionId: window.localStorage.getItem('icat:token'),
+    sessionId: readSciGatewayToken().sessionId,
     preparedId: preparedId,
     outname: fileName,
   };
@@ -170,8 +166,7 @@ export const getSize: (
     return axios
       .get<Datafile>(`${apiUrl}/datafiles/${entityId}`, {
         headers: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -186,8 +181,7 @@ export const getSize: (
     return axios
       .get<number>(`${topcatUrl}/user/getSize`, {
         params: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
+          sessionId: readSciGatewayToken().sessionId,
           facilityName: 'LILS',
           entityType: entityType,
           entityId: entityId,
@@ -220,8 +214,7 @@ export const getDatafileCount: (
           },
         },
         headers: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -243,8 +236,7 @@ export const getDatafileCount: (
           },
         },
         headers: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {

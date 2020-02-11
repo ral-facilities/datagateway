@@ -24,6 +24,8 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import { readSciGatewayToken } from 'datagateway-common';
+
 Cypress.Commands.add('login', (username, password) => {
   return cy.readFile('server/e2e-settings.json').then(settings => {
     cy.request('POST', `${settings.apiUrl}/sessions`, {
@@ -59,7 +61,7 @@ Cypress.Commands.add('clearDownloadCart', () => {
       method: 'DELETE',
       url: `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
       qs: {
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         items: '*',
       },
     });

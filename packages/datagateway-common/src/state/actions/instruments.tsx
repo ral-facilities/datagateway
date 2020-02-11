@@ -21,6 +21,7 @@ import * as log from 'loglevel';
 import { Instrument } from '../../app.types';
 import { Action } from 'redux';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
 
 export const fetchInstrumentsSuccess = (
   instruments: Instrument[],
@@ -73,7 +74,7 @@ export const fetchInstruments = (
       .get(`${apiUrl}/instruments`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -128,7 +129,7 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
       .get(`${apiUrl}/instruments/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -180,7 +181,7 @@ export const fetchInstrumentDetails = (
       .get(`${apiUrl}/instruments`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {

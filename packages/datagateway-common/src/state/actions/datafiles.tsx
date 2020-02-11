@@ -29,6 +29,7 @@ import { source } from '../middleware/dgcommon.middleware';
 import * as log from 'loglevel';
 import { Datafile } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[],
@@ -83,7 +84,7 @@ export const fetchDatafiles = (
       .get(`${apiUrl}/datafiles`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -141,7 +142,7 @@ export const fetchDatafileCount = (
       .get(`${apiUrl}/datafiles/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -216,9 +217,7 @@ export const fetchDatasetDatafilesCount = (
         .get(`${apiUrl}/datafiles/count`, {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
           cancelToken: source.token,
         })
@@ -280,7 +279,7 @@ export const fetchDatafileDetails = (
       .get(`${apiUrl}/datafiles`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -325,9 +324,8 @@ export const downloadDatafile = (
 
     const { idsUrl } = getState().dgcommon.urls;
 
-    // TODO: get ICAT session id properly when auth is sorted
     const params = {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       datafileIds: datafileId,
       compress: false,
       outname: filename,
