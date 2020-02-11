@@ -7,8 +7,6 @@ export const RegisterRouteType = `${MicroFrontendMessageId}:api:register_route`;
 export const RequestPluginRerenderType = `${MicroFrontendMessageId}:api:plugin_rerender`;
 
 // internal actions
-// export const CommonCustomMessageType = 'datagateway_common:api:';
-
 export const SortTableType = 'datagateway_common:sort_table';
 export const FilterTableType = 'datagateway_common:filter_table';
 export const ClearTableType = 'datagateway_common:clear_table';

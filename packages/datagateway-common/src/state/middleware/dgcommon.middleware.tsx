@@ -11,8 +11,6 @@ import axios from 'axios';
 const CancelToken = axios.CancelToken;
 export let source = CancelToken.source();
 
-// const microFrontendMessageId = 'scigateway';
-
 const broadcastMessage = (action: AnyAction): void => {
   document.dispatchEvent(
     new CustomEvent(MicroFrontendMessageId, { detail: action })
