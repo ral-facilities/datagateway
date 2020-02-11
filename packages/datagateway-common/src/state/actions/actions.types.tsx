@@ -1,10 +1,14 @@
 import { Filter, Order, Entity, DownloadCart } from '../../app.types';
 
 // parent app actions
-export const RegisterRouteType = 'scigateway:api:register_route';
-export const RequestPluginRerenderType = 'scigateway:api:plugin_rerender';
+export const MicroFrontendMessageId = 'scigateway';
+export const CustomFrontendMessageType = `${MicroFrontendMessageId}:api:`;
+export const RegisterRouteType = `${MicroFrontendMessageId}:api:register_route`;
+export const RequestPluginRerenderType = `${MicroFrontendMessageId}:api:plugin_rerender`;
 
 // internal actions
+// export const CommonCustomMessageType = 'datagateway_common:api:';
+
 export const SortTableType = 'datagateway_common:sort_table';
 export const FilterTableType = 'datagateway_common:filter_table';
 export const ClearTableType = 'datagateway_common:clear_table';

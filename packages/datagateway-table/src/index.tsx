@@ -8,7 +8,11 @@ import './index.css';
 import App from './App';
 import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
-import { RequestPluginRerenderType } from './state/actions/actions.types';
+
+import {
+  MicroFrontendMessageId,
+  RequestPluginRerenderType,
+} from 'datagateway-common';
 
 const pluginName = 'datagateway-table';
 
@@ -39,7 +43,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener('scigateway', e => {
+document.addEventListener(MicroFrontendMessageId, e => {
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {
     render();

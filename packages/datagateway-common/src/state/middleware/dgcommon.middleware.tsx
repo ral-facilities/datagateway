@@ -3,30 +3,32 @@ import log from 'loglevel';
 import {
   RegisterRouteType,
   RequestPluginRerenderType,
+  MicroFrontendMessageId,
+  CustomFrontendMessageType,
 } from '../actions/actions.types';
 import axios from 'axios';
 
 const CancelToken = axios.CancelToken;
 export let source = CancelToken.source();
 
-const microFrontendMessageId = 'scigateway';
+// const microFrontendMessageId = 'scigateway';
 
 const broadcastMessage = (action: AnyAction): void => {
   document.dispatchEvent(
-    new CustomEvent(microFrontendMessageId, { detail: action })
+    new CustomEvent(MicroFrontendMessageId, { detail: action })
   );
 };
 
 type microFrontendMessageType = CustomEvent<AnyAction>;
 
 export const listenToMessages = (dispatch: Dispatch): void => {
-  document.addEventListener(microFrontendMessageId, event => {
+  document.addEventListener(MicroFrontendMessageId, event => {
     const pluginMessage = event as microFrontendMessageType;
 
     if (
       pluginMessage.detail &&
       pluginMessage.detail.type &&
-      (pluginMessage.detail.type.startsWith('scigateway:api:') ||
+      (pluginMessage.detail.type.startsWith(CustomFrontendMessageType) ||
         pluginMessage.detail.type.startsWith('datagateway_common:api:'))
     ) {
       // this is a valid message, so process it

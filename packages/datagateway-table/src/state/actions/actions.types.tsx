@@ -1,10 +1,10 @@
 import { ApplicationStrings } from '../app.types';
 
-// // parent app actions
-export const RegisterRouteType = 'scigateway:api:register_route';
-export const RequestPluginRerenderType = 'scigateway:api:plugin_rerender';
+// parent app actions
+// export const RegisterRouteType = 'scigateway:api:register_route';
+// export const RequestPluginRerenderType = 'scigateway:api:plugin_rerender';
 
-// // internal actions
+// internal actions
 export const ConfigureStringsType = 'datagateway_table:configure_strings';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';
