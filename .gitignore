@@ -27,3 +27,4 @@ yarn-error.log*
 
 **/public/settings.json
 **/public/datagateway-table-settings.json
+**/public/datagateway-download-settings.json
