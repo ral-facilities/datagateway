@@ -33,6 +33,7 @@ import {
   WithStyles,
   StyleRules,
 } from '@material-ui/core/styles';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -122,7 +123,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // TODO: Temporary facilityName until we load it from settings.
   // TODO: Access methods should be configurable and not defined in the component.
-  const facilityName = 'LILS';
+  const settings = React.useContext(DownloadSettingsContext);
+  // const facilityName = 'LILS';
   const defaultAccessMethod = 'https';
 
   const { totalSize } = props;
@@ -190,7 +192,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   const getDefaultFileName = (): string => {
     const now = new Date();
-    let defaultName = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
+    let defaultName = `${
+      settings.facilityName
+    }_${now.getFullYear()}-${now.getMonth() +
       1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
 
     return defaultName;
@@ -224,10 +228,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     }
 
     const downloadId = await submitCart(
-      facilityName,
+      settings.facilityName,
       accessMethod,
       emailAddress,
-      fileName
+      fileName,
+      settings.downloadApiUrl
     );
 
     // Ensure that we have received a downloadId.
@@ -235,11 +240,19 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       // If we are using HTTPS then start the download using
       // the download ID we received.
       if (accessMethod === defaultAccessMethod) {
-        const downloadInfo = await getDownload(facilityName, downloadId);
+        const downloadInfo = await getDownload(
+          settings.facilityName,
+          downloadId,
+          settings.downloadApiUrl
+        );
 
         // Download the file as long as it is available for immediate download.
         if (downloadInfo != null && downloadInfo.status === 'COMPLETE')
-          downloadPreparedCart(downloadInfo.preparedId, downloadInfo.fileName);
+          downloadPreparedCart(
+            downloadInfo.preparedId,
+            downloadInfo.fileName,
+            settings.idsUrl
+          );
       }
 
       setIsSubmitSuccessful(true);

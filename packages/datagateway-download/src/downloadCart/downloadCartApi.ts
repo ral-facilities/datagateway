@@ -7,17 +7,21 @@ import {
   Datafile,
   Download,
 } from 'datagateway-common';
-import React from 'react';
-import { DownloadSettingsContext, DownloadSettings } from '../ConfigProvider';
 
 // TODO: get URLs from settings or something...
-const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
-const apiUrl = 'http://scigateway-preprod.esc.rl.ac.uk:5000';
-const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
+// const downloadApiUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
+// const apiUrl = 'http://scigateway-preprod.esc.rl.ac.uk:5000';
+// const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
-export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
+export const fetchDownloadCartItems: (
+  facilityName: string,
+  downloadApiUrl: string
+) => Promise<DownloadCartItem[]> = (
+  facilityName: string,
+  downloadApiUrl: string
+) => {
   return axios
-    .get<DownloadCart>(`${topcatUrl}/user/cart/LILS`, {
+    .get<DownloadCart>(`${downloadApiUrl}/user/cart/${facilityName}`, {
       params: {
         // TODO: get session ID from somewhere else (extract from JWT)
         sessionId: window.localStorage.getItem('icat:token'),
@@ -32,9 +36,12 @@ export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
     });
 };
 
-export const removeAllDownloadCartItems: () => Promise<void> = () => {
+export const removeAllDownloadCartItems: (
+  facilityName: string,
+  downloadApiUrl: string
+) => Promise<void> = (facilityName: string, downloadApiUrl: string) => {
   return axios
-    .delete(`${topcatUrl}/user/cart/LILS/cartItems`, {
+    .delete(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, {
       params: {
         // TODO: get session ID from somewhere else (extract from JWT)
         sessionId: window.localStorage.getItem('icat:token'),
@@ -49,10 +56,17 @@ export const removeAllDownloadCartItems: () => Promise<void> = () => {
 
 export const removeDownloadCartItem: (
   entityId: number,
-  entityType: string
-) => Promise<void> = (entityId: number, entityType: string) => {
+  entityType: string,
+  facilityName: string,
+  downloadApiUrl: string
+) => Promise<void> = (
+  entityId: number,
+  entityType: string,
+  facilityName: string,
+  downloadApiUrl: string
+) => {
   return axios
-    .delete(`${topcatUrl}/user/cart/LILS/cartItems`, {
+    .delete(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, {
       params: {
         // TODO: get session ID from somewhere else (extract from JWT)
         sessionId: window.localStorage.getItem('icat:token'),
@@ -65,7 +79,9 @@ export const removeDownloadCartItem: (
     });
 };
 
-export const getIsTwoLevel: () => Promise<boolean> = () => {
+export const getIsTwoLevel: (idsUrl: string) => Promise<boolean> = (
+  idsUrl: string
+) => {
   return axios
     .get<boolean>(`${idsUrl}/isTwoLevel`)
     .then(response => {
@@ -81,12 +97,14 @@ export const submitCart: (
   facilityName: string,
   transport: string,
   emailAddress: string,
-  fileName: string
+  fileName: string,
+  downloadApiUrl: string
 ) => Promise<number> = (
   facilityName: string,
   transport: string,
   emailAddress: string,
-  fileName: string
+  fileName: string,
+  downloadApiUrl: string
 ) => {
   const params = new URLSearchParams();
 
@@ -101,7 +119,10 @@ export const submitCart: (
   params.append('zipType', 'ZIP');
 
   return axios
-    .post<SubmitCart>(`${topcatUrl}/user/cart/${facilityName}/submit`, params)
+    .post<SubmitCart>(
+      `${downloadApiUrl}/user/cart/${facilityName}/submit`,
+      params
+    )
     .then(response => {
       log.debug(response);
 
@@ -117,10 +138,15 @@ export const submitCart: (
 
 export const getDownload: (
   facilityName: string,
-  downloadId: number
-) => Promise<Download | null> = (facilityName: string, downloadId: number) => {
+  downloadId: number,
+  downloadApiUrl: string
+) => Promise<Download | null> = (
+  facilityName: string,
+  downloadId: number,
+  downloadApiUrl: string
+) => {
   return axios
-    .get<Download[]>(`${topcatUrl}/user/downloads`, {
+    .get<Download[]>(`${downloadApiUrl}/user/downloads`, {
       params: {
         // TODO: get session ID from somewhere else (extract from JWT)
         sessionId: window.localStorage.getItem('icat:token'),
@@ -140,8 +166,9 @@ export const getDownload: (
 
 export const downloadPreparedCart: (
   preparedId: string,
-  fileName: string
-) => void = (preparedId: string, fileName: string) => {
+  fileName: string,
+  idsUrl: string
+) => void = (preparedId: string, fileName: string, idsUrl: string) => {
   // We need to set the preparedId and outname query parameters
   // for the IDS download.
   const params = {
@@ -166,8 +193,17 @@ export const downloadPreparedCart: (
 
 export const getSize: (
   entityId: number,
-  entityType: string
-) => Promise<number> = (entityId: number, entityType: string) => {
+  entityType: string,
+  facilityName: string,
+  apiUrl: string,
+  downloadApiUrl: string
+) => Promise<number> = (
+  entityId: number,
+  entityType: string,
+  facilityName: string,
+  apiUrl: string,
+  downloadApiUrl: string
+) => {
   if (entityType === 'datafile') {
     return axios
       .get<Datafile>(`${apiUrl}/datafiles/${entityId}`, {
@@ -186,11 +222,12 @@ export const getSize: (
       });
   } else {
     return axios
-      .get<number>(`${topcatUrl}/user/getSize`, {
+      .get<number>(`${downloadApiUrl}/user/getSize`, {
         params: {
           // TODO: get session ID from somewhere else (extract from JWT)
           sessionId: window.localStorage.getItem('icat:token'),
-          facilityName: 'LILS',
+          // facilityName: 'LILS',
+          facilityName: facilityName,
           entityType: entityType,
           entityId: entityId,
         },
@@ -207,8 +244,13 @@ export const getSize: (
 
 export const getDatafileCount: (
   entityId: number,
-  entityType: string
-) => Promise<number> = (entityId: number, entityType: string) => {
+  entityType: string,
+  apiUrl: string
+) => Promise<number> = (
+  entityId: number,
+  entityType: string,
+  apiUrl: string
+) => {
   if (entityType === 'datafile') {
     return Promise.resolve(1);
   } else if (entityType === 'dataset') {
@@ -260,12 +302,13 @@ export const getDatafileCount: (
 };
 
 export const getCartDatafileCount: (
-  cartItems: DownloadCartItem[]
-) => Promise<number> = (cartItems: DownloadCartItem[]) => {
+  cartItems: DownloadCartItem[],
+  apiUrl: string
+) => Promise<number> = (cartItems: DownloadCartItem[], apiUrl: string) => {
   const getDatafileCountPromises: Promise<number>[] = [];
   cartItems.forEach(cartItem =>
     getDatafileCountPromises.push(
-      getDatafileCount(cartItem.entityId, cartItem.entityType)
+      getDatafileCount(cartItem.entityId, cartItem.entityType, apiUrl)
     )
   );
 
@@ -278,12 +321,28 @@ export const getCartDatafileCount: (
   );
 };
 
-export const getCartSize: (cartItems: DownloadCartItem[]) => Promise<number> = (
-  cartItems: DownloadCartItem[]
+export const getCartSize: (
+  cartItems: DownloadCartItem[],
+  facilityName: string,
+  apiUrl: string,
+  downloadApiUrl: string
+) => Promise<number> = (
+  cartItems: DownloadCartItem[],
+  facilityName: string,
+  apiUrl: string,
+  downloadApiUrl: string
 ) => {
   const getSizePromises: Promise<number>[] = [];
   cartItems.forEach(cartItem =>
-    getSizePromises.push(getSize(cartItem.entityId, cartItem.entityType))
+    getSizePromises.push(
+      getSize(
+        cartItem.entityId,
+        cartItem.entityType,
+        facilityName,
+        apiUrl,
+        downloadApiUrl
+      )
+    )
   );
 
   return Promise.all(getSizePromises).then(sizes =>

@@ -24,8 +24,7 @@ import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog
 import { DownloadSettingsContext } from '../ConfigProvider';
 
 const DownloadCartTable: React.FC = () => {
-  const downloadSettings = React.useContext(DownloadSettingsContext);
-  console.log('Cart values for download settings: ', downloadSettings);
+  const settings = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
@@ -59,20 +58,28 @@ const DownloadCartTable: React.FC = () => {
   }, [data, sizesFinished]);
 
   React.useEffect(() => {
+    console.log(settings.idsUrl);
     const checkTwoLevel = async (): Promise<void> =>
-      setIsTwoLevel(await getIsTwoLevel());
-    checkTwoLevel();
-  }, []);
+      setIsTwoLevel(await getIsTwoLevel(settings.idsUrl));
+
+    if (settings.idsUrl) checkTwoLevel();
+  }, [settings.idsUrl]);
 
   React.useEffect(() => {
-    fetchDownloadCartItems().then(cartItems => {
-      setData(cartItems.map(cartItem => ({ ...cartItem, size: -1 })));
-      setDataLoaded(true);
-      setSizesLoaded(false);
-      setSizesFinished(false);
-      getCartDatafileCount(cartItems).then(count => setFileCount(count));
-    });
-  }, []);
+    if (settings.facilityName && settings.apiUrl && settings.downloadApiUrl)
+      fetchDownloadCartItems(
+        settings.facilityName,
+        settings.downloadApiUrl
+      ).then(cartItems => {
+        setData(cartItems.map(cartItem => ({ ...cartItem, size: -1 })));
+        setDataLoaded(true);
+        setSizesLoaded(false);
+        setSizesFinished(false);
+        getCartDatafileCount(cartItems, settings.apiUrl).then(count =>
+          setFileCount(count)
+        );
+      });
+  }, [settings.facilityName, settings.apiUrl, settings.downloadApiUrl]);
 
   React.useEffect(() => {
     if (!sizesLoaded) {
@@ -85,11 +92,15 @@ const DownloadCartTable: React.FC = () => {
 
         const chunkIndexOffset = chunkIndex * chunkSize;
         chunk.forEach((cartItem, index) => {
-          const promise = getSize(cartItem.entityId, cartItem.entityType).then(
-            size => {
-              updatedData[chunkIndexOffset + index].size = size;
-            }
-          );
+          const promise = getSize(
+            cartItem.entityId,
+            cartItem.entityType,
+            settings.facilityName,
+            settings.apiUrl,
+            settings.downloadApiUrl
+          ).then(size => {
+            updatedData[chunkIndexOffset + index].size = size;
+          });
           chunkPromises.push(promise);
           allPromises.push(promise);
         });
@@ -103,7 +114,13 @@ const DownloadCartTable: React.FC = () => {
       });
       setSizesLoaded(true);
     }
-  }, [data, sizesLoaded]);
+  }, [
+    data,
+    sizesLoaded,
+    settings.facilityName,
+    settings.apiUrl,
+    settings.downloadApiUrl,
+  ]);
 
   React.useEffect(() => {
     setFileCountMax(5000);
@@ -214,7 +231,9 @@ const DownloadCartTable: React.FC = () => {
                           () =>
                             removeDownloadCartItem(
                               cartItem.entityId,
-                              cartItem.entityType
+                              cartItem.entityType,
+                              settings.facilityName,
+                              settings.downloadApiUrl
                             ).then(() =>
                               setData(
                                 data.filter(
@@ -273,7 +292,10 @@ const DownloadCartTable: React.FC = () => {
                 variant="contained"
                 color="primary"
                 onClick={() =>
-                  removeAllDownloadCartItems().then(() => setData([]))
+                  removeAllDownloadCartItems(
+                    settings.facilityName,
+                    settings.downloadApiUrl
+                  ).then(() => setData([]))
                 }
               >
                 Remove All
