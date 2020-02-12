@@ -32,10 +32,10 @@ import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetDatafilesCount } from './datafiles';
-import * as log from 'loglevel';
 import { IndexRange } from 'react-virtualized';
 import { Dataset } from '../../app.types';
 import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[],
@@ -119,7 +119,7 @@ export const fetchDatasetSize = (
           dispatch(fetchDatasetSizeSuccess(datasetId, response.data));
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchDatasetSizeFailure(error.message));
         });
     }
@@ -188,7 +188,7 @@ export const fetchDatasets = ({
         }
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatasetsFailure(error.message));
       });
   };
@@ -249,7 +249,7 @@ export const fetchDatasetCount = (
         dispatch(fetchDatasetCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatasetCountFailure(error.message));
       });
   };
@@ -386,7 +386,7 @@ export const fetchInvestigationDatasetsCount = (
           );
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchInvestigationDatasetsCountFailure(error.message));
         });
     }
@@ -439,7 +439,7 @@ export const fetchDatasetDetails = (
         dispatch(fetchDatasetDetailsSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatasetDetailsFailure(error.message));
       });
   };

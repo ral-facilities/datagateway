@@ -24,10 +24,10 @@ import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchInvestigationDatasetsCount } from './datasets';
-import * as log from 'loglevel';
 import { Investigation } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
 import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[],
@@ -119,7 +119,7 @@ export const fetchInvestigationSize = (
           );
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchInvestigationSizeFailure(error.message));
         });
     }
@@ -184,7 +184,7 @@ export const fetchInvestigations = (
         }
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
   };
@@ -249,7 +249,7 @@ export const fetchISISInvestigations = ({
         }
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
   };
@@ -324,7 +324,7 @@ export const fetchInvestigationDetails = (
         dispatch(fetchInvestigationDetailsSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationDetailsFailure(error.message));
       });
   };
@@ -372,7 +372,7 @@ export const fetchInvestigationCount = (
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });
   };
@@ -405,7 +405,7 @@ export const fetchISISInvestigationCount = (
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });
   };

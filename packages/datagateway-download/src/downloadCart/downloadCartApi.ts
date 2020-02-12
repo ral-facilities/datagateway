@@ -7,6 +7,7 @@ import {
   Datafile,
   Download,
   readSciGatewayToken,
+  handleICATError,
 } from 'datagateway-common';
 
 // TODO: get URLs from settings or something...
@@ -25,7 +26,7 @@ export const fetchDownloadCartItems: () => Promise<DownloadCartItem[]> = () => {
       return response.data.cartItems;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
       return [];
     });
 };
@@ -39,9 +40,7 @@ export const removeAllDownloadCartItems: () => Promise<void> = () => {
       },
     })
     .then(() => {})
-    .catch(error => {
-      log.error(error.message);
-    });
+    .catch(handleICATError);
 };
 
 export const removeDownloadCartItem: (
@@ -56,9 +55,7 @@ export const removeDownloadCartItem: (
       },
     })
     .then(() => {})
-    .catch(error => {
-      log.error(error.message);
-    });
+    .catch(handleICATError);
 };
 
 export const getIsTwoLevel: () => Promise<boolean> = () => {
@@ -68,7 +65,7 @@ export const getIsTwoLevel: () => Promise<boolean> = () => {
       return response.data;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error, false);
       return false;
     });
 };
@@ -105,7 +102,7 @@ export const submitCart: (
       return downloadId;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
       return -1;
     });
 };
@@ -127,7 +124,7 @@ export const getDownload: (
       return download;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
       return null;
     });
 };
@@ -174,7 +171,7 @@ export const getSize: (
         return size;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   } else {
@@ -191,7 +188,7 @@ export const getSize: (
         return response.data;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   }
@@ -221,7 +218,7 @@ export const getDatafileCount: (
         return response.data;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   } else {
@@ -243,7 +240,7 @@ export const getDatafileCount: (
         return response.data;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   }

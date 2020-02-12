@@ -26,10 +26,10 @@ import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { source } from '../middleware/dgcommon.middleware';
-import * as log from 'loglevel';
 import { Datafile } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
 import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[],
@@ -91,7 +91,7 @@ export const fetchDatafiles = (
         dispatch(fetchDatafilesSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatafilesFailure(error.message));
       });
   };
@@ -149,7 +149,7 @@ export const fetchDatafileCount = (
         dispatch(fetchDatafileCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatafileCountFailure(error.message));
       });
   };
@@ -231,7 +231,7 @@ export const fetchDatasetDatafilesCount = (
           );
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchDatasetDatafilesCountFailure(error.message));
         });
     }
@@ -286,7 +286,7 @@ export const fetchDatafileDetails = (
         dispatch(fetchDatafileDetailsSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatafileDetailsFailure(error.message));
       });
   };

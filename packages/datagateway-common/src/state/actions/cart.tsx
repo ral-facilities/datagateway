@@ -19,10 +19,10 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
-import * as log from 'loglevel';
 import { DownloadCart, Investigation } from '../../app.types';
 import { getApiFilter } from '.';
 import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchDownloadCartSuccess = (
   downloadCart: DownloadCart
@@ -63,7 +63,7 @@ export const fetchDownloadCart = (): ThunkResult<Promise<void>> => {
         dispatch(fetchDownloadCartSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDownloadCartFailure(error.message));
       });
   };
@@ -114,7 +114,7 @@ export const addToCart = (
         dispatch(addToCartSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(addToCartFailure(error.message));
       });
   };
@@ -163,7 +163,7 @@ export const removeFromCart = (
         dispatch(removeFromCartSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(removeFromCartFailure(error.message));
       });
   };
@@ -248,7 +248,7 @@ export const fetchAllIds = (
         );
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchAllIdsFailure(error.message));
       });
   };
@@ -289,7 +289,7 @@ export const fetchAllISISInvestigationIds = (
         );
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchAllIdsFailure(error.message));
       });
   };
