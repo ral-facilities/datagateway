@@ -21,8 +21,12 @@ import {
 import chunk from 'lodash.chunk';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 const DownloadCartTable: React.FC = () => {
+  const downloadSettings = React.useContext(DownloadSettingsContext);
+  console.log('Cart values for download settings: ', downloadSettings);
+
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
     {}

@@ -7,6 +7,8 @@ import {
   Datafile,
   Download,
 } from 'datagateway-common';
+import React from 'react';
+import { DownloadSettingsContext, DownloadSettings } from '../ConfigProvider';
 
 // TODO: get URLs from settings or something...
 const topcatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
