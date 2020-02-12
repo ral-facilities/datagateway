@@ -2,32 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 import * as log from 'loglevel';
-
-// Configure the datagateway download settings.
-// const configureApp = async (): Promise<React.Context<DownloadSettings>> => {
-//     const downloadSettings = await axios
-//       .get<DownloadSettings>('/datagateway-download-settings.json')
-//       .then(res => {
-//         const settings = res.data;
-//         console.log('Download settings: ', settings);
-
-//         // TODO: Check for an invalid settings.json, check specific settings exist
-//         //       (facilityName, idsUrl, apiUrl, downloadApiUrl).
-//         return React.createContext(settings);
-//       })
-//       .catch(error => {
-//         log.error(
-//           `Error loading datagateway-download-settings.json: ${error.message}`
-//         );
-//         return React.createContext({});
-//       });
-
-//     return downloadSettings;
-//   };
-
-interface ConfigProviderProps {
-  children: React.ReactNode;
-}
+import { Preloader } from 'datagateway-common';
 
 export interface DownloadSettings {
   facilityName: string;
@@ -44,17 +19,20 @@ export const DownloadSettingsContext = React.createContext<DownloadSettings>({
 });
 
 class ConfigProvider extends React.Component<
-  ConfigProviderProps,
-  DownloadSettings
+  { children: React.ReactNode },
+  { loading: boolean; settings: DownloadSettings }
 > {
-  public constructor(props: ConfigProviderProps) {
+  public constructor(props: { children: React.ReactNode }) {
     super(props);
 
     this.state = {
-      facilityName: '',
-      apiUrl: '',
-      idsUrl: '',
-      downloadApiUrl: '',
+      loading: true,
+      settings: {
+        facilityName: '',
+        apiUrl: '',
+        idsUrl: '',
+        downloadApiUrl: '',
+      },
     };
   }
 
@@ -63,6 +41,7 @@ class ConfigProvider extends React.Component<
   }
 
   private updateConfigurationState = async () => {
+    let updatedState = this.state;
     const settings = await axios
       .get<DownloadSettings>('/datagateway-download-settings.json')
       .then(res => {
@@ -77,18 +56,27 @@ class ConfigProvider extends React.Component<
         log.error(
           `Error loading datagateway-download-settings.json: ${error.message}`
         );
-
-        return this.state;
+        return null;
       });
 
-    this.setState(settings);
+    if (settings !== null) {
+      updatedState = {
+        loading: false,
+        settings: settings,
+      };
+      this.setState(updatedState);
+    }
   };
 
   public render(): React.ReactElement {
     return (
-      <DownloadSettingsContext.Provider value={this.state}>
-        {this.props.children}
-      </DownloadSettingsContext.Provider>
+      // We pass the download settings that has been loaded
+      // for all child components to consume, if required.
+      <Preloader loading={this.state.loading}>
+        <DownloadSettingsContext.Provider value={this.state.settings}>
+          {this.props.children}
+        </DownloadSettingsContext.Provider>
+      </Preloader>
     );
   }
 }

@@ -7,13 +7,6 @@ import {
   Datafile,
   Download,
 } from 'datagateway-common';
-import React from 'react';
-import { DownloadSettingsContext, DownloadSettings } from '../ConfigProvider';
-
-// TODO: get URLs from settings or something...
-// const downloadApiUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat';
-// const apiUrl = 'http://scigateway-preprod.esc.rl.ac.uk:5000';
-// const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
 
 export const fetchDownloadCartItems: (
   facilityName: string,
