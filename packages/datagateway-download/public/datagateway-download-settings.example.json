@@ -1,0 +1,18 @@
+{
+  "facilityName": "Generic",
+  "apiUrl": "example.api.url",
+  "downloadApiUrl": "example.download.api.url",
+  "idsUrl": "example.ids.url",
+  "accessMethods": [
+    {
+      "type": "example.type.https",
+      "idsUrl": "example.ids.url",
+      "displayName": "example.https"
+    },
+    {
+      "type": "example.type.globus",
+      "idsUrl": "example.ids.url",
+      "displayName": "example.globus"
+    }
+  ]
+}

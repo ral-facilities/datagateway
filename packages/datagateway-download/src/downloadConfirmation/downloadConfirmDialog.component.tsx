@@ -125,7 +125,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // TODO: Access methods should be configurable and not defined in the component.
   const settings = React.useContext(DownloadSettingsContext);
   // const facilityName = 'LILS';
-  const defaultAccessMethod = 'https';
+  // const defaultAccessMethod = 'https';
+  // Set the default access method as the first access method
+  // defined in the configuration.
+  const defaultAccessMethod = settings.accessMethods[0].type;
 
   const { totalSize } = props;
   const { isTwoLevel } = props;
@@ -138,6 +141,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // Submit values.
   const [downloadName, setDownloadName] = React.useState<string>('');
+
+  // TODO: Pass in the first item in the accessMethods array.
+  // const [accessMethod, setAccessMethod] = React.useState<string>(
+  //   defaultAccessMethod
+  // );
   const [accessMethod, setAccessMethod] = React.useState<string>(
     defaultAccessMethod
   );
@@ -188,7 +196,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         setShowDownloadTime(false);
       }
     }
-  }, [props.open, isTwoLevel, totalSize]);
+  }, [props.open, isTwoLevel, totalSize, defaultAccessMethod]);
 
   const getDefaultFileName = (): string => {
     const now = new Date();
@@ -239,14 +247,16 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
-      if (accessMethod === defaultAccessMethod) {
+      // TODO: This will allow for anything else if the default was not http/https.
+      // if (accessMethod === defaultAccessMethod) {
+      if (accessMethod.match(/https|http/)) {
         const downloadInfo = await getDownload(
           settings.facilityName,
           downloadId,
           settings.downloadApiUrl
         );
 
-        // Download the file as long as it is available for immediate download.
+        // Download the file as long as it is available for instant download.
         if (downloadInfo != null && downloadInfo.status === 'COMPLETE')
           downloadPreparedCart(
             downloadInfo.preparedId,
@@ -314,22 +324,34 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     }}
                   >
                     {/* TODO: Values need to be retrieved from an object from settings. */}
-                    <MenuItem id="confirm-access-method-https" value="https">
+                    {/* <MenuItem id="confirm-access-method-https" value="https">
                       HTTPS
                     </MenuItem>
                     <MenuItem id="confirm-access-method-globus" value="globus">
                       Globus
-                    </MenuItem>
+                    </MenuItem> */}
+                    {settings.accessMethods.map((method, index) => (
+                      <MenuItem
+                        key={index}
+                        id={`confirm-access-method-${method.type}`}
+                        value={method.type}
+                      >
+                        {/* The display name will be shown as the menu item, if defined in the settings,
+                        otherwise we show the type. */}
+                        {method.displayName
+                          ? method.displayName
+                          : method.type.toUpperCase()}
+                      </MenuItem>
+                    ))}
                   </Select>
 
-                  {/* Provide some information on the selected access method. */}
-                  <Typography style={{ paddingTop: '20px' }}>
+                  {/* <Typography style={{ paddingTop: '20px' }}>
                     <b>Access Method Information:</b>
-                  </Typography>
+                  </Typography> */}
 
                   {/* Depending on the type of access method that has been selected,
                   show specific access information. */}
-                  {(() => {
+                  {/* {(() => {
                     let accessMethodInfo;
                     if (accessMethod === defaultAccessMethod)
                       accessMethodInfo = 'HTTPS is the default access method.';
@@ -341,7 +363,25 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         {accessMethodInfo}
                       </Typography>
                     );
-                  })()}
+                  })()} */}
+
+                  {/* Provide some information on the selected access method. */}
+                  {settings.accessMethods
+                    .filter(
+                      method =>
+                        method.type === accessMethod && method.description
+                    )
+                    .map((method, index) => (
+                      <span key={index} style={{ paddingTop: '20px' }}>
+                        <Typography>
+                          <b>Access Method Information:</b>
+                        </Typography>
+
+                        <Typography id="confirm-access-method-information">
+                          {method.description}
+                        </Typography>
+                      </span>
+                    ))}
                 </FormControl>
               </Grid>
 

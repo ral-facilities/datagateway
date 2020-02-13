@@ -9,14 +9,25 @@ export interface DownloadSettings {
   apiUrl: string;
   downloadApiUrl: string;
   idsUrl: string;
+  accessMethods: {
+    type: string;
+    idsUrl: string;
+    displayName?: string;
+    description?: string;
+  }[];
 }
 
-export const DownloadSettingsContext = React.createContext<DownloadSettings>({
+const initialConfiguration = {
   facilityName: '',
   apiUrl: '',
   downloadApiUrl: '',
   idsUrl: '',
-});
+  accessMethods: [],
+};
+
+export const DownloadSettingsContext = React.createContext<DownloadSettings>(
+  initialConfiguration
+);
 
 class ConfigProvider extends React.Component<
   { children: React.ReactNode },
@@ -27,12 +38,7 @@ class ConfigProvider extends React.Component<
 
     this.state = {
       loading: true,
-      settings: {
-        facilityName: '',
-        apiUrl: '',
-        idsUrl: '',
-        downloadApiUrl: '',
-      },
+      settings: initialConfiguration,
     };
   }
 
@@ -41,15 +47,56 @@ class ConfigProvider extends React.Component<
   }
 
   private updateConfigurationState = async () => {
-    let updatedState = this.state;
+    // let updatedState = this.state;
     const settings = await axios
       .get<DownloadSettings>('/datagateway-download-settings.json')
       .then(res => {
         const settings = res.data;
         console.log('Download settings: ', settings);
 
-        // TODO: Check for an invalid settings.json, check specific settings exist
-        //       (facilityName, idsUrl, apiUrl, downloadApiUrl).
+        if (typeof settings !== 'object') {
+          throw Error('Invalid format');
+        }
+
+        // Ensure the facility name exists.
+        if (!('facilityName' in settings)) {
+          throw new Error('facilityName is undefined in settings');
+        }
+
+        // Ensure all API related URLs are present.
+        if (
+          !(
+            'idsUrl' in settings &&
+            'apiUrl' in settings &&
+            'downloadApiUrl' in settings
+          )
+        ) {
+          throw new Error(
+            'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+          );
+        }
+
+        // Ensure access methods are present in the configuration.
+        if (!('accessMethods' in settings)) {
+          throw new Error('accessMethods is undefined in settings');
+        } else {
+          // Check to ensure at least one access method has been defined.
+          if (settings['accessMethods'].length < 1) {
+            throw new Error(
+              'At least one access method should be defined under accessMethods in settings'
+            );
+          } else {
+            // Check all defined access methods to ensure type and idsUrl have been stated.
+            for (let i = 0; i < settings['accessMethods'].length; i++) {
+              const method = settings['accessMethods'][i];
+              if (!(method['type'] && method['idsUrl']))
+                throw new Error(
+                  `An access method (${i}) defined in settings does not contain type or idsUrl`
+                );
+            }
+          }
+        }
+
         return settings;
       })
       .catch(error => {
@@ -60,11 +107,14 @@ class ConfigProvider extends React.Component<
       });
 
     if (settings !== null) {
-      updatedState = {
+      // updatedState = {
+      //   loading: false,
+      //   settings: settings,
+      // };
+      this.setState({
         loading: false,
         settings: settings,
-      };
-      this.setState(updatedState);
+      });
     }
   };
 
