@@ -8,6 +8,12 @@ import jsrsasign from 'jsrsasign';
 
 import singleSpaReact from 'single-spa-react';
 
+import {
+  MicroFrontendMessageId,
+  RequestPluginRerenderType,
+  RegisterRouteType,
+} from 'datagateway-common';
+
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
   let el = document.getElementById('datagateway-download');
@@ -37,10 +43,10 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener('daaas-frontend', e => {
+document.addEventListener(MicroFrontendMessageId, e => {
   // attempt to re-render the plugin if the corresponding div is present
   const action = (e as CustomEvent).detail;
-  if (action.type === 'daaas:api:plugin_rerender') {
+  if (action.type === RequestPluginRerenderType) {
     render();
   }
 });
@@ -108,9 +114,9 @@ if (
 serviceWorker.unregister();
 
 document.dispatchEvent(
-  new CustomEvent('daaas-frontend', {
+  new CustomEvent(MicroFrontendMessageId, {
     detail: {
-      type: 'daaas:api:register_route',
+      type: RegisterRouteType,
       payload: {
         section: 'Test',
         link: '/download',

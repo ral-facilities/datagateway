@@ -1,8 +1,10 @@
 import { Filter, Order, Entity, DownloadCart } from '../../app.types';
 
 // parent app actions
-export const RegisterRouteType = 'daaas:api:register_route';
-export const RequestPluginRerenderType = 'daaas:api:plugin_rerender';
+export const MicroFrontendMessageId = 'scigateway';
+export const CustomFrontendMessageType = `${MicroFrontendMessageId}:api:`;
+export const RegisterRouteType = `${MicroFrontendMessageId}:api:register_route`;
+export const RequestPluginRerenderType = `${MicroFrontendMessageId}:api:plugin_rerender`;
 
 // internal actions
 export const SortTableType = 'datagateway_common:sort_table';
