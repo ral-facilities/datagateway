@@ -53,7 +53,7 @@ class ConfigProvider extends React.Component<
       .get<DownloadSettings>('/datagateway-download-settings.json')
       .then(res => {
         const settings = res.data;
-        // console.log('Download settings: ', settings);
+        console.log('Download settings: ', settings);
 
         if (typeof settings !== 'object') {
           throw Error('Invalid format');

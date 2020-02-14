@@ -11,6 +11,7 @@ import {
   getCartDatafileCount,
 } from './downloadCartApi';
 import { act } from 'react-dom/test-utils';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 jest.mock('./downloadCartApi');
 jest.useFakeTimers();
@@ -68,6 +69,26 @@ describe('Download cart table component', () => {
     Promise.resolve(7)
   );
 
+  // Create our mocked datagateway-download settings file.
+  const mockedSettings = {
+    facilityName: 'LILS',
+    apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
+    downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+    idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+    accessMethods: {
+      https: {
+        idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+        displayName: 'HTTPS',
+        description: 'Example description for HTTPS access method.',
+      },
+      globus: {
+        idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+        displayName: 'Globus',
+        description: 'Example description for Globus access method.',
+      },
+    },
+  };
+
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
@@ -90,7 +111,11 @@ describe('Download cart table component', () => {
   });
 
   it('fetches the download cart on load', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -101,7 +126,11 @@ describe('Download cart table component', () => {
   });
 
   it('calculates sizes once cart items have been fetched', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -122,7 +151,11 @@ describe('Download cart table component', () => {
   });
 
   it('calculates total file count once cart items have been fetched', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -135,8 +168,13 @@ describe('Download cart table component', () => {
     );
   });
 
+  // TODO: What is the issue here?
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     expect(wrapper.find('button#downloadCartButton').prop('disabled')).toBe(
       true
@@ -171,7 +209,11 @@ describe('Download cart table component', () => {
   });
 
   it('removes all items from cart when Remove All button is clicked', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -190,7 +232,11 @@ describe('Download cart table component', () => {
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -215,7 +261,16 @@ describe('Download cart table component', () => {
     });
 
     expect(removeDownloadCartItem).toHaveBeenCalled();
-    expect(removeDownloadCartItem).toHaveBeenCalledWith(2, 'investigation');
+    // TODO: Needs to accept more calls.
+    // expect((removeDownloadCartItem as jest.Mock).mock.calls).toEqual([
+    //   [2, 'investigation', 'LILS', mockedSettings.downloadApiUrl],
+    // ]);
+    expect(removeDownloadCartItem).toHaveBeenCalledWith(
+      2,
+      'investigation',
+      'LILS',
+      mockedSettings.downloadApiUrl
+    );
     expect(
       wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
     ).toBe(false);
@@ -223,7 +278,11 @@ describe('Download cart table component', () => {
   });
 
   it('sorts data when headers are clicked', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -265,7 +324,11 @@ describe('Download cart table component', () => {
   });
 
   it('filters data when text fields are typed into', async () => {
-    const wrapper = mount(<DownloadCartTable />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadCartTable />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();

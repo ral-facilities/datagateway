@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 import {
   fetchDownloadCartItems,
@@ -19,6 +18,13 @@ import { DownloadCartItem } from 'datagateway-common';
 jest.mock('loglevel');
 
 describe('Download Cart API functions test', () => {
+  const settings = {
+    facilityName: 'LILS',
+    apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
+    downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+    idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  };
+
   describe('fetchDownloadCartItems', () => {
     it('returns cartItems upon successful response', async () => {
       const downloadCartMockData = {
@@ -51,7 +57,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await fetchDownloadCartItems();
+      const returnData = await fetchDownloadCartItems(
+        settings.facilityName,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBe(downloadCartMockData.cartItems);
       expect(axios.get).toHaveBeenCalled();
@@ -70,7 +79,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await fetchDownloadCartItems();
+      const returnData = await fetchDownloadCartItems(
+        settings.facilityName,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();
@@ -93,7 +105,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeAllDownloadCartItems();
+      const returnData = await removeAllDownloadCartItems(
+        settings.facilityName,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
@@ -112,7 +127,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeAllDownloadCartItems();
+      const returnData = await removeAllDownloadCartItems(
+        settings.facilityName,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
@@ -135,7 +153,12 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeDownloadCartItem(1, 'datafile');
+      const returnData = await removeDownloadCartItem(
+        1,
+        'datafile',
+        settings.facilityName,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
@@ -154,7 +177,12 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeDownloadCartItem(1, 'investigation');
+      const returnData = await removeDownloadCartItem(
+        1,
+        'investigation',
+        settings.facilityName,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
@@ -177,7 +205,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel();
+      const isTwoLevel = await getIsTwoLevel(settings.idsUrl);
 
       expect(isTwoLevel).toBe(true);
       expect(axios.get).toHaveBeenCalled();
@@ -193,7 +221,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel();
+      const isTwoLevel = await getIsTwoLevel(settings.idsUrl);
 
       expect(isTwoLevel).toBe(false);
       expect(axios.get).toHaveBeenCalled();
@@ -223,7 +251,8 @@ describe('Download Cart API functions test', () => {
         'LILS',
         'https',
         'test@email.com',
-        'test-file'
+        'test-file',
+        settings.downloadApiUrl
       );
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -252,7 +281,8 @@ describe('Download Cart API functions test', () => {
         'LILS',
         'globus',
         'test@email.com',
-        'test-file'
+        'test-file',
+        settings.downloadApiUrl
       );
       const params = new URLSearchParams();
       params.append('sessionId', '');
@@ -304,7 +334,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const download = await getDownload('LILS', 1);
+      const download = await getDownload('LILS', 1, settings.downloadApiUrl);
 
       expect(download).not.toBe(null);
       expect(axios.get).toHaveBeenCalled();
@@ -327,7 +357,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const download = await getDownload('LILS', 1);
+      const download = await getDownload('LILS', 1, settings.downloadApiUrl);
 
       expect(download).toBe(null);
       expect(axios.get).toHaveBeenCalled();
@@ -351,7 +381,7 @@ describe('Download Cart API functions test', () => {
       jest.spyOn(document, 'createElement');
       jest.spyOn(document.body, 'appendChild');
 
-      await downloadPreparedCart('test-id', 'test-file.zip');
+      await downloadPreparedCart('test-id', 'test-file.zip', settings.idsUrl);
 
       expect(document.createElement).toHaveBeenCalledWith('a');
 
@@ -377,7 +407,13 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getSize(1, 'datafile');
+      const returnData = await getSize(
+        1,
+        'datafile',
+        settings.facilityName,
+        settings.apiUrl,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBe(1);
       expect(axios.get).toHaveBeenCalled();
@@ -396,7 +432,13 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getSize(1, 'datafile');
+      const returnData = await getSize(
+        1,
+        'datafile',
+        settings.facilityName,
+        settings.apiUrl,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
@@ -417,7 +459,13 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getSize(1, 'dataset');
+      const returnData = await getSize(
+        1,
+        'dataset',
+        settings.facilityName,
+        settings.apiUrl,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
@@ -441,7 +489,13 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getSize(1, 'investigation');
+      const returnData = await getSize(
+        1,
+        'investigation',
+        settings.facilityName,
+        settings.apiUrl,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
@@ -463,7 +517,7 @@ describe('Download Cart API functions test', () => {
 
   describe('getDatafileCount', () => {
     it('returns 1 upon request for datafile entityType', async () => {
-      const returnData = await getDatafileCount(1, 'datafile');
+      const returnData = await getDatafileCount(1, 'datafile', settings.apiUrl);
 
       expect(returnData).toBe(1);
     });
@@ -475,7 +529,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(1, 'dataset');
+      const returnData = await getDatafileCount(1, 'dataset', settings.apiUrl);
 
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
@@ -501,7 +555,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(1, 'dataset');
+      const returnData = await getDatafileCount(1, 'dataset', settings.apiUrl);
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
@@ -529,7 +583,11 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(2, 'investigation');
+      const returnData = await getDatafileCount(
+        2,
+        'investigation',
+        settings.apiUrl
+      );
 
       expect(returnData).toBe(5);
       expect(axios.get).toHaveBeenCalled();
@@ -556,7 +614,11 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(2, 'investigation');
+      const returnData = await getDatafileCount(
+        2,
+        'investigation',
+        settings.apiUrl
+      );
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
@@ -625,7 +687,7 @@ describe('Download Cart API functions test', () => {
         },
       ];
 
-      const returnData = await getCartDatafileCount(cartItems);
+      const returnData = await getCartDatafileCount(cartItems, settings.apiUrl);
 
       expect(returnData).toBe(3);
       expect(axios.get).toHaveBeenCalledTimes(3);
@@ -690,7 +752,12 @@ describe('Download Cart API functions test', () => {
         },
       ];
 
-      const returnData = await getCartSize(cartItems);
+      const returnData = await getCartSize(
+        cartItems,
+        settings.facilityName,
+        settings.apiUrl,
+        settings.downloadApiUrl
+      );
 
       expect(returnData).toBe(3);
       expect(axios.get).toHaveBeenCalledTimes(4);

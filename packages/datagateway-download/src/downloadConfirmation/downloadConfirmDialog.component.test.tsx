@@ -7,6 +7,27 @@ import { flushPromises } from '../setupTests';
 
 import axios from 'axios';
 import { MenuItem } from '@material-ui/core';
+import { DownloadSettingsContext } from '../ConfigProvider';
+
+// Create our mocked datagateway-download settings file.
+const mockedSettings = {
+  facilityName: 'LILS',
+  apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
+  downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+  idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  accessMethods: {
+    https: {
+      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      displayName: 'HTTPS',
+      description: 'Example description for HTTPS access method.',
+    },
+    globus: {
+      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      displayName: 'Globus',
+      description: 'Example description for Globus access method.',
+    },
+  },
+};
 
 describe('DownloadConfirmDialog', () => {
   let mount;
@@ -45,12 +66,15 @@ describe('DownloadConfirmDialog', () => {
     open: boolean
   ): ReactWrapper => {
     return mount(
-      <DownloadConfirmDialog
-        totalSize={size}
-        isTwoLevel={isTwoLevel}
-        open={open}
-        setClose={jest.fn()}
-      />
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadConfirmDialog
+          totalSize={size}
+          isTwoLevel={isTwoLevel}
+          open={open}
+          setClose={jest.fn()}
+          clearCart={jest.fn()}
+        />
+      </DownloadSettingsContext.Provider>
     );
   };
 
@@ -112,6 +136,12 @@ describe('DownloadConfirmDialog', () => {
       })
     );
 
+    // Wait for the settings to load/preloader to disappear.
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
     // Ensure the close button is present.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
 
@@ -150,6 +180,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('successfully loads submit successful view after submitting download request with custom values', async () => {
+    console.log('custom values');
     const wrapper = createWrapper(100, false, true);
 
     (axios.post as jest.Mock).mockImplementation(() =>
@@ -162,6 +193,12 @@ describe('DownloadConfirmDialog', () => {
         },
       })
     );
+
+    // Wait for the settings to load/preloader to disappear.
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     // Fill in the custom download name, access method and email address.
     expect(wrapper.exists('input#confirm-download-name')).toBe(true);
@@ -305,17 +342,20 @@ describe('DownloadConfirmDialog', () => {
     expect(axios.get).not.toHaveBeenCalled();
   });
 
-  it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
+  it.only('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
     let openDialog = true;
     const closeFunction = jest.fn();
 
     const wrapper = mount(
+      // <DownloadSettingsContext.Provider value={mockedSettings}>
       <DownloadConfirmDialog
         totalSize={1}
         isTwoLevel={false}
         open={openDialog}
         setClose={closeFunction}
+        clearCart={jest.fn()}
       />
+      // {/* </DownloadSettingsContext.Provider> */}
     );
 
     // Ensure the close button is present.
@@ -325,6 +365,7 @@ describe('DownloadConfirmDialog', () => {
     expect(wrapper.prop('open')).toBe(true);
 
     // Close the download confirmation dialog.
+    // TODO: Cannot set the prop on the root.
     wrapper.setProps({ open: false });
     expect(wrapper.prop('open')).toBe(false);
 
@@ -342,12 +383,15 @@ describe('renders the estimated download speed/time table with varying values', 
 
   const timeWrapper = (size: number): ReactWrapper => {
     return timeMount(
-      <DownloadConfirmDialog
-        totalSize={size}
-        isTwoLevel={false}
-        open={true}
-        setClose={jest.fn()}
-      />
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadConfirmDialog
+          totalSize={size}
+          isTwoLevel={false}
+          open={true}
+          setClose={jest.fn()}
+          clearCart={jest.fn()}
+        />
+      </DownloadSettingsContext.Provider>
     );
   };
 

@@ -66,6 +66,7 @@ const DownloadCartTable: React.FC = () => {
   }, [settings.idsUrl]);
 
   React.useEffect(() => {
+    // console.log(settings);
     if (settings.facilityName && settings.apiUrl && settings.downloadApiUrl)
       fetchDownloadCartItems(
         settings.facilityName,
