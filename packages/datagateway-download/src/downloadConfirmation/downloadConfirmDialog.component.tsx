@@ -128,7 +128,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // const defaultAccessMethod = 'https';
   // Set the default access method as the first access method
   // defined in the configuration.
-  const defaultAccessMethod = settings.accessMethods[0].type;
+  const defaultAccessMethod = Object.keys(settings.accessMethods)[0];
 
   const { totalSize } = props;
   const { isTwoLevel } = props;
@@ -261,7 +261,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           downloadPreparedCart(
             downloadInfo.preparedId,
             downloadInfo.fileName,
-            settings.idsUrl
+
+            // Use the idsUrl that has been defined for this access method.
+            settings.accessMethods[accessMethod].idsUrl
           );
       }
 
@@ -323,66 +325,47 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       setAccessMethod(e.target.value as string);
                     }}
                   >
-                    {/* TODO: Values need to be retrieved from an object from settings. */}
-                    {/* <MenuItem id="confirm-access-method-https" value="https">
-                      HTTPS
-                    </MenuItem>
-                    <MenuItem id="confirm-access-method-globus" value="globus">
-                      Globus
-                    </MenuItem> */}
-                    {settings.accessMethods.map((method, index) => (
-                      <MenuItem
-                        key={index}
-                        id={`confirm-access-method-${method.type}`}
-                        value={method.type}
-                      >
-                        {/* The display name will be shown as the menu item, if defined in the settings,
-                        otherwise we show the type. */}
-                        {method.displayName
-                          ? method.displayName
-                          : method.type.toUpperCase()}
-                      </MenuItem>
-                    ))}
+                    {/* Access methods from settings as items for selection */}
+                    {Object.entries(settings.accessMethods).map(
+                      ([type, methodInfo], index) => (
+                        <MenuItem
+                          key={index}
+                          id={`confirm-access-method-${type}`}
+                          value={type}
+                        >
+                          {/* The display name will be shown as the menu item,
+                          if defined in the settings, otherwise we show the type. */}
+                          {methodInfo.displayName
+                            ? methodInfo.displayName
+                            : type.toUpperCase()}
+                        </MenuItem>
+                      )
+                    )}
                   </Select>
-
-                  {/* <Typography style={{ paddingTop: '20px' }}>
-                    <b>Access Method Information:</b>
-                  </Typography> */}
-
-                  {/* Depending on the type of access method that has been selected,
-                  show specific access information. */}
-                  {/* {(() => {
-                    let accessMethodInfo;
-                    if (accessMethod === defaultAccessMethod)
-                      accessMethodInfo = 'HTTPS is the default access method.';
-                    else if (accessMethod === 'globus')
-                      accessMethodInfo = 'Globus is a special access method.';
-
-                    return (
-                      <Typography id="confirm-access-method-information">
-                        {accessMethodInfo}
-                      </Typography>
-                    );
-                  })()} */}
-
-                  {/* Provide some information on the selected access method. */}
-                  {settings.accessMethods
-                    .filter(
-                      method =>
-                        method.type === accessMethod && method.description
-                    )
-                    .map((method, index) => (
-                      <span key={index} style={{ paddingTop: '20px' }}>
-                        <Typography>
-                          <b>Access Method Information:</b>
-                        </Typography>
-
-                        <Typography id="confirm-access-method-information">
-                          {method.description}
-                        </Typography>
-                      </span>
-                    ))}
                 </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                {/* Depending on the type of access method that has been selected,
+                  show specific access information. */}
+                {Object.entries(settings.accessMethods)
+                  .filter(
+                    ([type, methodInfo]) =>
+                      type === accessMethod && methodInfo.description
+                  )
+                  .map(([type, methodInfo], index) => (
+                    <span key={index} style={{ paddingTop: '20px' }}>
+                      <Typography>
+                        <b>Access Method Information:</b>
+                      </Typography>
+
+                      <Typography
+                        id={`confirm-access-method-${type}-description`}
+                      >
+                        {methodInfo.description}
+                      </Typography>
+                    </span>
+                  ))}
               </Grid>
 
               {/* Get the size of the download  */}

@@ -5,14 +5,16 @@
   "idsUrl": "example.ids.url",
   "accessMethods": [
     {
-      "type": "example.type.https",
+      "type": "https",
       "idsUrl": "example.ids.url",
-      "displayName": "example.https"
+      "displayName": "HTTPS",
+      "description": "Example description for HTTPS access method."
     },
     {
-      "type": "example.type.globus",
+      "type": "globus",
       "idsUrl": "example.ids.url",
-      "displayName": "example.globus"
+      "displayName": "Globus",
+      "description": "Example description for Globus access method."
     }
   ]
 }

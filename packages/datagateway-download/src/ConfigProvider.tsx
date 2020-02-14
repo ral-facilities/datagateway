@@ -9,12 +9,14 @@ export interface DownloadSettings {
   apiUrl: string;
   downloadApiUrl: string;
   idsUrl: string;
+
   accessMethods: {
-    type: string;
-    idsUrl: string;
-    displayName?: string;
-    description?: string;
-  }[];
+    [type: string]: {
+      idsUrl: string;
+      displayName?: string;
+      description?: string;
+    };
+  };
 }
 
 const initialConfiguration = {
@@ -22,7 +24,7 @@ const initialConfiguration = {
   apiUrl: '',
   downloadApiUrl: '',
   idsUrl: '',
-  accessMethods: [],
+  accessMethods: {},
 };
 
 export const DownloadSettingsContext = React.createContext<DownloadSettings>(
@@ -47,12 +49,11 @@ class ConfigProvider extends React.Component<
   }
 
   private updateConfigurationState = async () => {
-    // let updatedState = this.state;
     const settings = await axios
       .get<DownloadSettings>('/datagateway-download-settings.json')
       .then(res => {
         const settings = res.data;
-        console.log('Download settings: ', settings);
+        // console.log('Download settings: ', settings);
 
         if (typeof settings !== 'object') {
           throw Error('Invalid format');
@@ -81,17 +82,23 @@ class ConfigProvider extends React.Component<
           throw new Error('accessMethods is undefined in settings');
         } else {
           // Check to ensure at least one access method has been defined.
-          if (settings['accessMethods'].length < 1) {
+          if (Object.entries(settings['accessMethods']).length < 1) {
             throw new Error(
               'At least one access method should be defined under accessMethods in settings'
             );
           } else {
             // Check all defined access methods to ensure type and idsUrl have been stated.
-            for (let i = 0; i < settings['accessMethods'].length; i++) {
-              const method = settings['accessMethods'][i];
-              if (!(method['type'] && method['idsUrl']))
+            // for (let i = 0; i < Object.entries(settings['accessMethods']).length; i++) {
+            //   const method = settings['accessMethods'][i];
+            //   if (!(method['type'] && method['idsUrl']))
+            //     throw new Error(
+            //       `An access method (${i}) defined in settings does not contain type or idsUrl`
+            //     );
+            // }
+            for (const method in settings['accessMethods']) {
+              if (!settings['accessMethods'][method].idsUrl)
                 throw new Error(
-                  `An access method (${i}) defined in settings does not contain type or idsUrl`
+                  `Access method ${method}, defined in settings, does not contain an idsUrl`
                 );
             }
           }
@@ -107,10 +114,6 @@ class ConfigProvider extends React.Component<
       });
 
     if (settings !== null) {
-      // updatedState = {
-      //   loading: false,
-      //   settings: settings,
-      // };
       this.setState({
         loading: false,
         settings: settings,
