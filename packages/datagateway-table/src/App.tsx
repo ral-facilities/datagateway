@@ -14,6 +14,7 @@ import {
   DGCommonMiddleware,
   listenToMessages,
   RegisterRouteType,
+  MicroFrontendMessageId,
 } from 'datagateway-common';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
@@ -72,7 +73,7 @@ const registerRouteAction = {
 };
 
 document.dispatchEvent(
-  new CustomEvent('daaas-frontend', { detail: registerRouteAction })
+  new CustomEvent(MicroFrontendMessageId, { detail: registerRouteAction })
 );
 
 function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
