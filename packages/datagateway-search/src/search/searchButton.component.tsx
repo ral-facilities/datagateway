@@ -5,6 +5,9 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { format } from 'date-fns';
+import { toggleRequestSent } from '../state/actions/actions';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action, AnyAction } from 'redux';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -13,7 +16,15 @@ interface SearchButtonStoreProps {
   investigation: boolean;
   startDate: MaterialUiPickersDate;
   endDate: MaterialUiPickersDate;
+  requestSent: boolean;
 }
+
+interface SearchButtonDispatchProps {
+  toggleRequestSent: (requestSent: boolean) => Action;
+}
+
+type SearchButtonCombinedProps = SearchButtonStoreProps &
+  SearchButtonDispatchProps;
 
 interface QueryParameters {
   text?: string;
@@ -28,8 +39,6 @@ interface RequestParameters {
 }
 
 type LuceneParameters = QueryParameters | RequestParameters;
-
-type SearchButtonCombinedProps = SearchButtonStoreProps;
 
 class SearchButton extends React.Component<SearchButtonCombinedProps> {
   public constructor(props: SearchButtonCombinedProps) {
@@ -106,11 +115,13 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   public async fetchLuceneResults(
     queryParams: LuceneParameters
   ): Promise<void> {
+    let requestSent = true;
+    this.props.toggleRequestSent(requestSent);
+    console.log(requestSent);
     const response = await axios.get(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       { params: queryParams }
     );
-
     const ids = response.data.map((x: { id: number; score: number }) => x.id);
     console.log(ids);
   }
@@ -131,6 +142,13 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   }
 }
 
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): SearchButtonDispatchProps => ({
+  toggleRequestSent: (requestSent: boolean) =>
+    dispatch(toggleRequestSent(requestSent)),
+});
+
 const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
   return {
     searchText: state.dgsearch.searchText,
@@ -139,7 +157,8 @@ const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
     investigation: state.dgsearch.checkBox.investigation,
     startDate: state.dgsearch.selectDate.startDate,
     endDate: state.dgsearch.selectDate.endDate,
+    requestSent: state.dgsearch.requestSent,
   };
 };
 
-export default connect(mapStateToProps)(SearchButton);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchButton);

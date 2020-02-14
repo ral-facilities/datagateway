@@ -7,6 +7,7 @@ import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
+import PageTable from './pageSearchTable.component';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
@@ -15,6 +16,9 @@ import {
   StylesProvider,
 } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
+
+import { Switch, Route, RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -67,7 +71,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
       return (
         <div
           style={{
-            padding: 15,
+            padding: 10,
             margin: 10,
           }}
           className="App"
@@ -76,28 +80,41 @@ class App extends React.Component<{}, { hasError: boolean }> {
             <StylesProvider generateClassName={generateClassName}>
               <Grid
                 container
-                direction="column"
+                direction="row"
                 justify="flex-start"
                 alignItems="flex-start"
               >
-                <Grid item>
-                  <Header />
+                <Grid
+                  item
+                  direction="column"
+                  justify="flex-start"
+                  alignItems="flex-start"
+                >
+                  <Grid item>
+                    <Header />
+                  </Grid>
+
+                  <Grid item>
+                    <SearchTextBox />
+                  </Grid>
+
+                  <Grid item>
+                    <SelectDates />
+                  </Grid>
+
+                  <Grid item>
+                    <CheckboxesGroup />
+                  </Grid>
+
+                  <Grid item>
+                    <SearchButton />
+                  </Grid>
                 </Grid>
 
                 <Grid item>
-                  <SearchTextBox />
-                </Grid>
-
-                <Grid item>
-                  <SelectDates />
-                </Grid>
-
-                <Grid item>
-                  <CheckboxesGroup />
-                </Grid>
-
-                <Grid item>
-                  <SearchButton />
+                  <Grid item>
+                    <PageTable />
+                  </Grid>
                 </Grid>
               </Grid>
             </StylesProvider>

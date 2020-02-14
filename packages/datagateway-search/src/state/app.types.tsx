@@ -1,6 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { DGCommonState } from 'datagateway-common';
 
 export interface DGSearchState {
   searchText: string;
@@ -14,11 +15,12 @@ export interface DGSearchState {
     datafile: boolean;
     investigation: boolean;
   };
+  requestSent: boolean;
 }
 
-export interface StateType {
+export type StateType = {
   dgsearch: DGSearchState;
-}
+} & DGCommonState;
 
 export interface ActionType<T> {
   type: string;

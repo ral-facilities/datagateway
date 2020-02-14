@@ -7,9 +7,11 @@ import {
   SelectStartDateType,
   SelectEndDateType,
   SearchTextType,
+  ToggleRequestSentType,
   TogglePayload,
   SelectDatePayload,
   SearchTextPayload,
+  CheckRequestSentPayload,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -24,6 +26,7 @@ export const initialState: DGSearchState = {
     datafile: true,
     investigation: true,
   },
+  requestSent: false,
 };
 
 export function handleSearchText(
@@ -101,6 +104,16 @@ export function selectEndDate(
   };
 }
 
+export function toggleRequestSent(
+  state: DGSearchState,
+  payload: CheckRequestSentPayload
+): DGSearchState {
+  return {
+    ...state,
+    requestSent: payload.requestSent,
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [ToggleDatasetType]: handleToggleDataset,
   [ToggleDatafileType]: handleToggleDatafile,
@@ -108,6 +121,7 @@ const DGSearchReducer = createReducer(initialState, {
   [SelectStartDateType]: selectStartDate,
   [SelectEndDateType]: selectEndDate,
   [SearchTextType]: handleSearchText,
+  [ToggleRequestSentType]: toggleRequestSent,
 });
 
 export default DGSearchReducer;

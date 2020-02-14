@@ -7,6 +7,7 @@ export const ToggleInvestigationType =
   'datagateway_search:toggle_investigation';
 export const SelectStartDateType = 'datagateway_search:select_startdate';
 export const SelectEndDateType = 'datagateway_search:select_enddate';
+export const ToggleRequestSentType = 'datagateway_search:request_sent';
 
 export interface TogglePayload {
   toggleOption: boolean;
@@ -18,4 +19,8 @@ export interface SelectDatePayload {
 
 export interface SearchTextPayload {
   searchText: string;
+}
+
+export interface CheckRequestSentPayload {
+  requestSent: boolean;
 }

@@ -5,9 +5,11 @@ import {
   SelectStartDateType,
   SelectEndDateType,
   SearchTextType,
+  ToggleRequestSentType,
   TogglePayload,
   SelectDatePayload,
   SearchTextPayload,
+  CheckRequestSentPayload,
 } from './actions.types';
 import { ActionType } from '../app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -63,5 +65,14 @@ export const selectEndDate = (
   type: SelectEndDateType,
   payload: {
     date,
+  },
+});
+
+export const toggleRequestSent = (
+  requestSent: boolean
+): ActionType<CheckRequestSentPayload> => ({
+  type: ToggleRequestSentType,
+  payload: {
+    requestSent,
   },
 });
