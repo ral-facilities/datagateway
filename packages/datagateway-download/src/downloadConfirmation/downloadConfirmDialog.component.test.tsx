@@ -1,13 +1,12 @@
-import React from 'react';
-import { createMount } from '@material-ui/core/test-utils';
-import DownloadConfirmDialog from './downloadConfirmDialog.component';
-import { ReactWrapper } from 'enzyme';
-import { act } from 'react-dom/test-utils';
-import { flushPromises } from '../setupTests';
-
-import axios from 'axios';
 import { MenuItem } from '@material-ui/core';
+import { createMount } from '@material-ui/core/test-utils';
+import axios from 'axios';
+import { ReactWrapper } from 'enzyme';
+import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { flushPromises } from '../setupTests';
+import DownloadConfirmDialog from './downloadConfirmDialog.component';
 
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
@@ -180,7 +179,6 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('successfully loads submit successful view after submitting download request with custom values', async () => {
-    console.log('custom values');
     const wrapper = createWrapper(100, false, true);
 
     (axios.post as jest.Mock).mockImplementation(() =>

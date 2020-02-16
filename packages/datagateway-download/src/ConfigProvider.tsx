@@ -1,8 +1,7 @@
-import React from 'react';
 import axios from 'axios';
-
-import * as log from 'loglevel';
 import { Preloader } from 'datagateway-common';
+import * as log from 'loglevel';
+import React from 'react';
 
 export interface DownloadSettings {
   facilityName: string;
@@ -53,7 +52,7 @@ class ConfigProvider extends React.Component<
       .get<DownloadSettings>('/datagateway-download-settings.json')
       .then(res => {
         const settings = res.data;
-        console.log('Download settings: ', settings);
+        // console.log('Download settings: ', settings);
 
         if (typeof settings !== 'object') {
           throw Error('Invalid format');
