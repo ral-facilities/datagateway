@@ -14,15 +14,6 @@ import { Link } from 'react-router-dom';
 // import DatasetTable from './table/datasetTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 
-// this is where tabs and checking if a request has been sent is handled
-
-// class PageTable extends React.Component {
-//   public render(): React.ReactNode {
-//     return <DatafileSearchTable />;
-//   }
-// }
-// export default PageTable;
-
 interface SearchTableStoreProps {
   requestSent: boolean;
 }
@@ -57,38 +48,45 @@ function a11yProps(index: any) {
   };
 }
 
-const PageTable = (props: SearchTableStoreProps): any => {
+const SearchPageTable = (props: SearchTableStoreProps): any => {
+  const { requestSent } = props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 
-  //   if (this.props.requestSent) {
-  return (
-    <div>
-      <AppBar position="static">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="simple tabs example"
-        >
-          <Tab label="Datafiles" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        <DatafileSearchTable />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-    </div>
-  );
+  if (props.requestSent) {
+    return (
+      <div>
+        <AppBar position="static">
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            aria-label="simple tabs example"
+          >
+            <Tab label="Datafile" {...a11yProps(0)} />
+            <Tab label="Dataset" {...a11yProps(1)} />
+            <Tab label="Investigation" {...a11yProps(2)} />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          <DatafileSearchTable />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          Dataset table goes here
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          Investigation table goes here
+        </TabPanel>
+      </div>
+    );
+  } else
+    return (
+      <Box color="primary.main">
+        <h1>Search</h1>Fill out form to the left and then click search.
+      </Box>
+    );
 };
 // };
 
@@ -98,4 +96,4 @@ const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   };
 };
 
-export default connect(mapStateToProps)(PageTable);
+export default connect(mapStateToProps)(SearchPageTable);

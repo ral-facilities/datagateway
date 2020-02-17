@@ -7,7 +7,7 @@ import SelectDates from './search/datePicker.component';
 import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
-import PageTable from './pageSearchTable.component';
+import SearchPageTable from './pageSearchTable.component';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
@@ -113,7 +113,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
 
                 <Grid item>
                   <Grid item>
-                    <PageTable />
+                    <SearchPageTable />
                   </Grid>
                 </Grid>
               </Grid>

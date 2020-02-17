@@ -49,7 +49,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   }
 
   public urlParamsBuilder = (datasearchtype: string): LuceneParameters => {
-    // let stringStartDate = '0000001010000';
     let stringStartDate = '';
     if (this.props.startDate !== null) {
       stringStartDate = format(this.props.startDate, 'yyyy-MM-dd');
@@ -61,7 +60,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
         '0000';
     }
 
-    // let stringEndDate = '9000012312359';
     let stringEndDate = '';
     if (this.props.endDate !== null) {
       stringEndDate = format(this.props.endDate, 'yyyy-MM-dd');
