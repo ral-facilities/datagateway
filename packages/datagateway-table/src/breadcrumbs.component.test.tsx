@@ -11,7 +11,7 @@ import { StateType } from './state/app.types';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createLocation } from 'history';
-
+import { flushPromises } from './setupTests';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
 import { ReactWrapper } from 'enzyme';
@@ -72,9 +72,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
       </MemoryRouter>
     );
   };
-
-  // Ensure that we can flush all promises before updating a wrapper.
-  const flushPromises = (): Promise<void> => new Promise(setImmediate);
 
   beforeEach(() => {
     mount = createMount();

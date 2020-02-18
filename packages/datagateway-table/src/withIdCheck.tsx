@@ -32,7 +32,7 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-function withIdCheck(checkingFunction: () => Promise<boolean>) {
+function withIdCheck(checkingPromise: Promise<boolean>) {
   return function WithIdCheck<T>(
     Component: React.ComponentType<T>
   ): React.ComponentType<T> {
@@ -42,7 +42,7 @@ function withIdCheck(checkingFunction: () => Promise<boolean>) {
       const [valid, setValid] = React.useState<boolean>(false);
 
       React.useEffect(() => {
-        checkingFunction()
+        checkingPromise
           .then(valid => {
             setValid(valid);
           })

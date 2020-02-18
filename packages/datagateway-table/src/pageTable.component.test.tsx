@@ -27,8 +27,16 @@ import ISISFacilityCyclesTable from './isis/tables/isisFacilityCyclesTable.compo
 import ISISInvestigationsTable from './isis/tables/isisInvestigationsTable.component';
 import ISISDatasetsTable from './isis/tables/isisDatasetsTable.component';
 import ISISDatafilesTable from './isis/tables/isisDatafilesTable.component';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInvestigationId,
+  checkProposalName,
+} from './idCheckFunctions';
+import { flushPromises } from './setupTests';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('loglevel');
+jest.mock('./idCheckFunctions');
 
 // The generic routes to test.
 const genericRoutes = {
@@ -80,6 +88,18 @@ describe('PageTable', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+
+    (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
+
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
+
+    (checkProposalName as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
   });
 
   it('renders PageTable correctly', () => {
@@ -102,11 +122,34 @@ describe('PageTable', () => {
     expect(wrapper.exists(DatasetTable)).toBe(true);
   });
 
-  it('renders DatafileTable for generic datafiles route', () => {
+  it('renders DatafileTable for generic datafiles route', async () => {
     const wrapper = createWrapper(genericRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     // Expect the DatafileTable component to be present.
     expect(wrapper.exists(DatafileTable)).toBe(true);
+  });
+
+  it('does not render DatafileTable for incorrect generic datafiles route', async () => {
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(genericRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the DatafileTable component not to be present.
+    expect(wrapper.exists(DatafileTable)).toBe(false);
   });
 
   it('renders ISISInstrumentsTable for ISIS instruments route', () => {
@@ -130,18 +173,67 @@ describe('PageTable', () => {
     expect(wrapper.exists(ISISInvestigationsTable)).toBe(true);
   });
 
-  it('renders ISISDatasetsTable for ISIS datasets route', () => {
+  it('renders ISISDatasetsTable for ISIS datasets route', async () => {
     const wrapper = createWrapper(ISISRoutes['datasets']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     // Expect the ISISDatasetsTable component to be present.
     expect(wrapper.exists(ISISDatasetsTable)).toBe(true);
   });
 
-  it('renders ISISDatafilesTable for ISIS datafiles route', () => {
+  it('does not render ISISDatasetsTable for incorrect ISIS datasets route', async () => {
+    (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(ISISRoutes['datasets']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatasetsTable component not to be present.
+    expect(wrapper.exists(ISISDatasetsTable)).toBe(false);
+  });
+
+  it('renders ISISDatafilesTable for ISIS datafiles route', async () => {
     const wrapper = createWrapper(ISISRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     // Expect the ISISDatafilesTable component to be present.
     expect(wrapper.exists(ISISDatafilesTable)).toBe(true);
+  });
+
+  it('does not render ISISDatafilesTable for incorrect ISIS datafiles route', async () => {
+    (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(ISISRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatafilesTable component not to be present.
+    expect(wrapper.exists(ISISDatafilesTable)).toBe(false);
   });
 
   it('renders DLSProposalTable for DLS proposal route', () => {
@@ -158,17 +250,66 @@ describe('PageTable', () => {
     expect(wrapper.exists(DLSVisitsTable)).toBe(true);
   });
 
-  it('renders DLSDatasetsTable for DLS datasets route', () => {
+  it('renders DLSDatasetsTable for DLS datasets route', async () => {
     const wrapper = createWrapper(DLSRoutes['datasets']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     // Expect the DLSDatasetsTable component to be present.
     expect(wrapper.exists(DLSDatasetsTable)).toBe(true);
   });
 
-  it('renders DLSDatafilesTable for DLS datafiles route', () => {
+  it('does not render DLSDatasetsTable for incorrect DLS datasets route', async () => {
+    (checkProposalName as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(DLSRoutes['datasets']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the DLSDatasetsTable component not to be present.
+    expect(wrapper.exists(DLSDatasetsTable)).toBe(false);
+  });
+
+  it('renders DLSDatafilesTable for DLS datafiles route', async () => {
     const wrapper = createWrapper(DLSRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     // Expect the DLSDatafilesTable component to be present.
     expect(wrapper.exists(DLSDatafilesTable)).toBe(true);
+  });
+
+  it('does not render DLSDatafilesTable for incorrect DLS datafiles route', async () => {
+    (checkProposalName as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(DLSRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the DLSDatafilesTable component not to be present.
+    expect(wrapper.exists(DLSDatafilesTable)).toBe(false);
   });
 });

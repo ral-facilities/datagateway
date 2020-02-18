@@ -54,7 +54,7 @@ class PageTable extends React.PureComponent {
             proposalName: string;
             investigationId: string;
           }>) => {
-            const SafeDLSDatasetsTable = withIdCheck(() =>
+            const SafeDLSDatasetsTable = withIdCheck(
               checkProposalName(
                 match.params.proposalName,
                 parseInt(match.params.investigationId)
@@ -78,7 +78,7 @@ class PageTable extends React.PureComponent {
             investigationId: string;
             datasetId: string;
           }>) => {
-            const SafeDLSDatafilesTable = withIdCheck(() =>
+            const SafeDLSDatafilesTable = withIdCheck(
               Promise.all([
                 checkProposalName(
                   match.params.proposalName,
@@ -132,7 +132,7 @@ class PageTable extends React.PureComponent {
             facilityCycleId: string;
             investigationId: string;
           }>) => {
-            const SafeISISDatasetsTable = withIdCheck(() =>
+            const SafeISISDatasetsTable = withIdCheck(
               checkInstrumentAndFacilityCycleId(
                 parseInt(match.params.instrumentId),
                 parseInt(match.params.facilityCycleId),
@@ -160,7 +160,7 @@ class PageTable extends React.PureComponent {
             datasetId: string;
           }>) => {
             {
-              const SafeISISDatafilesTable = withIdCheck(() =>
+              const SafeISISDatafilesTable = withIdCheck(
                 Promise.all([
                   checkInstrumentAndFacilityCycleId(
                     parseInt(match.params.instrumentId),
@@ -202,7 +202,7 @@ class PageTable extends React.PureComponent {
             investigationId: string;
             datasetId: string;
           }>) => {
-            const SafeDatafileTable = withIdCheck(() =>
+            const SafeDatafileTable = withIdCheck(
               checkInvestigationId(
                 parseInt(match.params.investigationId),
                 parseInt(match.params.datasetId)
