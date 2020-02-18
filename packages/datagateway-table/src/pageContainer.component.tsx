@@ -35,12 +35,14 @@ class PageContainer extends React.Component<{ entityCount: number }> {
         </Grid>
 
         {/* Hold the table for remainder of the page */}
-        <Grid item xs={12} aria-label="container-table">
-          {/* Place table in Paper component which adjusts for the height
-             of the AppBar (64px) on parent application and the breadcrumbs component (31px). */}
-          <Paper style={{ height: 'calc(100vh - 95px)', width: '100%' }}>
-            <PageTable />
-          </Paper>
+        <Grid
+          item
+          xs={12}
+          aria-label="container-table"
+          style={{ height: 'calc(100vh - 96px)' }}
+        >
+          {/* adjust for the height of the AppBar (64px) on parent application and the breadcrumbs component (32px). */}
+          <PageTable />
         </Grid>
       </Grid>
     );
