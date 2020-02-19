@@ -19,9 +19,10 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import axios from 'axios';
-import * as log from 'loglevel';
 import { DownloadCart, Investigation } from '../../app.types';
 import { getApiFilter } from '.';
+import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchDownloadCartSuccess = (
   downloadCart: DownloadCart
@@ -55,15 +56,14 @@ export const fetchDownloadCart = (): ThunkResult<Promise<void>> => {
     await axios
       .get(`${downloadApiUrl}/user/cart/LILS`, {
         params: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
+          sessionId: readSciGatewayToken().sessionId,
         },
       })
       .then(response => {
         dispatch(fetchDownloadCartSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDownloadCartFailure(error.message));
       });
   };
@@ -101,8 +101,7 @@ export const addToCart = (
     const { downloadApiUrl } = getState().dgcommon.urls;
 
     const params = new URLSearchParams();
-    // TODO: get session ID from somewhere else (extract from JWT)
-    params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+    params.append('sessionId', readSciGatewayToken().sessionId || '');
     params.append(
       'items',
       `${entityType} ${entityIds.join(`, ${entityType} `)}`
@@ -115,7 +114,7 @@ export const addToCart = (
         dispatch(addToCartSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(addToCartFailure(error.message));
       });
   };
@@ -156,8 +155,7 @@ export const removeFromCart = (
     await axios
       .delete(`${downloadApiUrl}/user/cart/LILS/cartItems`, {
         params: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
+          sessionId: readSciGatewayToken().sessionId,
           items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,
         },
       })
@@ -165,7 +163,7 @@ export const removeFromCart = (
         dispatch(removeFromCartSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(removeFromCartFailure(error.message));
       });
   };
@@ -238,7 +236,7 @@ export const fetchAllIds = (
       .get<{ ID: number }[]>(`${apiUrl}/${entityType}s`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -250,7 +248,7 @@ export const fetchAllIds = (
         );
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchAllIdsFailure(error.message));
       });
   };
@@ -278,9 +276,7 @@ export const fetchAllISISInvestigationIds = (
         {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
         }
       )
@@ -293,7 +289,7 @@ export const fetchAllISISInvestigationIds = (
         );
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchAllIdsFailure(error.message));
       });
   };

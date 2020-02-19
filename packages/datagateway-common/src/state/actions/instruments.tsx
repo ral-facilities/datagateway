@@ -17,10 +17,11 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import axios from 'axios';
 import { getApiFilter } from '.';
-import * as log from 'loglevel';
 import { Instrument } from '../../app.types';
 import { Action } from 'redux';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchInstrumentsSuccess = (
   instruments: Instrument[],
@@ -73,14 +74,14 @@ export const fetchInstruments = (
       .get(`${apiUrl}/instruments`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchInstrumentsSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInstrumentsFailure(error.message));
       });
   };
@@ -128,14 +129,14 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
       .get(`${apiUrl}/instruments/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchInstrumentCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInstrumentCountFailure(error.message));
       });
   };
@@ -180,14 +181,14 @@ export const fetchInstrumentDetails = (
       .get(`${apiUrl}/instruments`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchInstrumentDetailsSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInstrumentDetailsFailure(error.message));
       });
   };

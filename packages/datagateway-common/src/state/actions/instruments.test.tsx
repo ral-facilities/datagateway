@@ -16,16 +16,17 @@ import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
 import { Instrument } from '../../app.types';
+import handleICATError from '../../handleICATError';
 
-jest.mock('loglevel');
+jest.mock('../../handleICATError');
 
 describe('Instrument actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -100,9 +101,10 @@ describe('Instrument actions', () => {
     expect(actions[0]).toEqual(fetchInstrumentsRequest(1));
     expect(actions[1]).toEqual(fetchInstrumentsFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('fetchInstruments applies skip and limit when specified via optional parameters', async () => {
@@ -185,9 +187,10 @@ describe('Instrument actions', () => {
       fetchInstrumentCountFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchInstrumentDetailsRequest and fetchInstrumentDetailsSuccess actions upon successful fetchInstrumentDetails action', async () => {
@@ -246,8 +249,9 @@ describe('Instrument actions', () => {
       fetchInstrumentDetailsFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 });

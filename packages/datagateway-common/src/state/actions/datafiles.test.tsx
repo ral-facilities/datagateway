@@ -22,10 +22,10 @@ import axios from 'axios';
 import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
-import * as log from 'loglevel';
 import { Datafile } from '../../app.types';
+import handleICATError from '../../handleICATError';
 
-jest.mock('loglevel');
+jest.mock('../../handleICATError');
 
 describe('Datafile actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
@@ -60,6 +60,7 @@ describe('Datafile actions', () => {
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -133,9 +134,10 @@ describe('Datafile actions', () => {
     expect(actions[0]).toEqual(fetchDatafilesRequest(1));
     expect(actions[1]).toEqual(fetchDatafilesFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchDatafileCountRequest and fetchDatafileCountSuccess actions upon successful fetchDatafileCount action', async () => {
@@ -206,9 +208,10 @@ describe('Datafile actions', () => {
       fetchDatafileCountFailure('Test error message', 1)
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchDatasetDatafilesCountRequest and fetchDatasetDatafilesCountSuccess actions upon successful fetchDatasetDatafilesCount action', async () => {
@@ -271,9 +274,11 @@ describe('Datafile actions', () => {
       fetchDatasetDatafilesCountFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith(
+      { message: 'Test error message' },
+      false
+    );
   });
 
   it('dispatches downloadDatafileRequest and clicks on IDS link upon downloadDatafile action', async () => {
@@ -346,9 +351,10 @@ describe('Datafile actions', () => {
       fetchDatafileDetailsFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('fetchDatafiles applies skip and limit when specified via optional parameters', async () => {
