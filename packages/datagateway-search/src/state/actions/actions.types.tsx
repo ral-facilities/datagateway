@@ -8,6 +8,7 @@ export const ToggleInvestigationType =
 export const SelectStartDateType = 'datagateway_search:select_startdate';
 export const SelectEndDateType = 'datagateway_search:select_enddate';
 export const ToggleRequestSentType = 'datagateway_search:request_sent';
+export const StoreLuceneResultsType = 'datagateway_search:store_luceneresults';
 
 export interface TogglePayload {
   toggleOption: boolean;
@@ -23,4 +24,20 @@ export interface SearchTextPayload {
 
 export interface CheckRequestSentPayload {
   requestSent: boolean;
+}
+
+// export interface LuceneSearchResultPayload {
+//   searchData: SearchResultType;
+// }
+// interface SearchResult {
+//   // object: {
+//   //   ID: number;
+//   //   searchScore: number;
+//   // };
+//   ID: number;
+// }
+
+// export type SearchResultType = SearchResult | null;
+export interface SearchResultPayload {
+  searchData: number;
 }

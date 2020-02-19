@@ -27,6 +27,7 @@ export const initialState: DGSearchState = {
     investigation: true,
   },
   requestSent: false,
+  searchData: null,
 };
 
 export function handleSearchText(
