@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`withIdCheck renders component when checkingPromise resolves to be true 1`] = `
+<Test
+  message="test"
+/>
+`;
+
+exports[`withIdCheck renders error when checkingPromise does not resolve to be true 1`] = `
+<WithStyles(ForwardRef(Grid))
+  className="WithIdCheckComponent-container-13"
+  container={true}
+  direction="column"
+  item={true}
+  justify="center"
+>
+  <WithStyles(ForwardRef(Grid))
+    alignItems="center"
+    container={true}
+    item={true}
+    justify="center"
+  >
+    <BugReportIcon
+      className="WithIdCheckComponent-bugIcon-14"
+    />
+    <WithStyles(ForwardRef(Typography))
+      className="WithIdCheckComponent-titleText-15"
+      variant="h1"
+    >
+      Oops!
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    container={true}
+    item={true}
+    justify="center"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="WithIdCheckComponent-message-16"
+      variant="body1"
+    >
+      We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL or navigate back via the breadcrumbs.
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+</WithStyles(ForwardRef(Grid))>
+`;
+
+exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
+<WithStyles(ForwardRef(Grid))
+  className="WithIdCheckComponent-container-9"
+  container={true}
+  direction="column"
+  item={true}
+  justify="center"
+>
+  <WithStyles(ForwardRef(Grid))
+    alignItems="center"
+    container={true}
+    item={true}
+    justify="center"
+  >
+    <BugReportIcon
+      className="WithIdCheckComponent-bugIcon-10"
+    />
+    <WithStyles(ForwardRef(Typography))
+      className="WithIdCheckComponent-titleText-11"
+      variant="h1"
+    >
+      Oops!
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    container={true}
+    item={true}
+    justify="center"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="WithIdCheckComponent-message-12"
+      variant="body1"
+    >
+      We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL or navigate back via the breadcrumbs.
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+</WithStyles(ForwardRef(Grid))>
+`;
+
+exports[`withIdCheck renders loading indicator when loading 1`] = `
+<WithStyles(ForwardRef(Grid))
+  alignItems="center"
+  className="WithIdCheckComponent-container-1"
+  container={true}
+  direction="column"
+  item={true}
+  justify="center"
+>
+  <WithStyles(ForwardRef(CircularProgress)) />
+  <WithStyles(ForwardRef(Typography))
+    variant="body1"
+  >
+    Verifying URL
+  </WithStyles(ForwardRef(Typography))>
+</WithStyles(ForwardRef(Grid))>
+`;
