@@ -11,6 +11,15 @@ describe('ISIS - Datafiles Table', () => {
     cy.get('#datagateway-table').should('be.visible');
   });
 
+  it('should not load incorrect URL', () => {
+    cy.visit(
+      '/browse/instrument/2/facilityCycle/14/investigation/88/dataset/118/datafile'
+    );
+
+    cy.contains('Oops!').should('be.visible');
+    cy.get('[role="grid"]').should('not.exist');
+  });
+
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');

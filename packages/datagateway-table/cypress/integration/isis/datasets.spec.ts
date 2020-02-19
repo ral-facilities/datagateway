@@ -9,6 +9,13 @@ describe('ISIS - Datasets Table', () => {
     cy.get('#datagateway-table').should('be.visible');
   });
 
+  it('should not load incorrect URL', () => {
+    cy.visit('/browse/instrument/2/facilityCycle/15/investigation/87/dataset');
+
+    cy.contains('Oops!').should('be.visible');
+    cy.get('[role="grid"]').should('not.exist');
+  });
+
   it('should be able to click a dataset to see its datafiles', () => {
     cy.get('[role="gridcell"] a')
       .first()

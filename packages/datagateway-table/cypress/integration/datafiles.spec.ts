@@ -9,6 +9,13 @@ describe('Datafiles Table', () => {
     cy.get('#datagateway-table').should('be.visible');
   });
 
+  it('should not load incorrect URL', () => {
+    cy.visit('/browse/investigation/2/dataset/25/datafile');
+
+    cy.contains('Oops!').should('be.visible');
+    cy.get('[role="grid"]').should('not.exist');
+  });
+
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 
