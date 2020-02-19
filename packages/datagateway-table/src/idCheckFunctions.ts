@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { Dataset, Investigation } from 'datagateway-common';
+import { handleICATError, Dataset, Investigation } from 'datagateway-common';
 
 let apiUrl = '';
 
@@ -21,8 +21,7 @@ export const checkInvestigationId = (
       return response.data.INVESTIGATION_ID === investigationId;
     })
     .catch(error => {
-      //   handleICATError(error);
-      console.log('error');
+      handleICATError(error);
       return false;
     });
 };
@@ -52,7 +51,7 @@ export const checkInstrumentAndFacilityCycleId = (
       return response.data.length > 0;
     })
     .catch(error => {
-      //   handleICATError(error);
+      handleICATError(error);
       return false;
     });
 };
@@ -71,7 +70,7 @@ export const checkProposalName = (
       return response.data.NAME === proposalName;
     })
     .catch(error => {
-      //   handleICATError(error);
+      handleICATError(error);
       return false;
     });
 };
