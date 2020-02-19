@@ -14,7 +14,6 @@ import {
 } from '.';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
 import { DownloadCart } from '../../app.types';
 import {
   fetchAllIds,
@@ -25,8 +24,9 @@ import {
 } from './cart';
 import { initialState } from '../reducers/dgcommon.reducer';
 import { StateType } from '../app.types';
+import handleICATError from '../../handleICATError';
 
-jest.mock('loglevel');
+jest.mock('../../handleICATError');
 
 describe('Cart actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
@@ -52,6 +52,7 @@ describe('Cart actions', () => {
     (axios.get as jest.Mock).mockClear();
     (axios.post as jest.Mock).mockClear();
     (axios.delete as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -93,9 +94,10 @@ describe('Cart actions', () => {
         fetchDownloadCartFailure('Test error message')
       );
 
-      expect(log.error).toHaveBeenCalled();
-      const mockLog = (log.error as jest.Mock).mock;
-      expect(mockLog.calls[0][0]).toEqual('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -135,9 +137,10 @@ describe('Cart actions', () => {
       expect(actions[0]).toEqual(addToCartRequest());
       expect(actions[1]).toEqual(addToCartFailure('Test error message'));
 
-      expect(log.error).toHaveBeenCalled();
-      const mockLog = (log.error as jest.Mock).mock;
-      expect(mockLog.calls[0][0]).toEqual('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -178,9 +181,10 @@ describe('Cart actions', () => {
       expect(actions[0]).toEqual(removeFromCartRequest());
       expect(actions[1]).toEqual(removeFromCartFailure('Test error message'));
 
-      expect(log.error).toHaveBeenCalled();
-      const mockLog = (log.error as jest.Mock).mock;
-      expect(mockLog.calls[0][0]).toEqual('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -296,9 +300,10 @@ describe('Cart actions', () => {
       expect(actions[0]).toEqual(fetchAllIdsRequest(1));
       expect(actions[1]).toEqual(fetchAllIdsFailure('Test error message'));
 
-      expect(log.error).toHaveBeenCalled();
-      const mockLog = (log.error as jest.Mock).mock;
-      expect(mockLog.calls[0][0]).toEqual('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -379,9 +384,10 @@ describe('Cart actions', () => {
       expect(actions[0]).toEqual(fetchAllIdsRequest(1));
       expect(actions[1]).toEqual(fetchAllIdsFailure('Test error message'));
 
-      expect(log.error).toHaveBeenCalled();
-      const mockLog = (log.error as jest.Mock).mock;
-      expect(mockLog.calls[0][0]).toEqual('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 });

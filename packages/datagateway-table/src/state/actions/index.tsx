@@ -15,6 +15,7 @@ import { fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
+import jsrsasign from 'jsrsasign';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
@@ -109,23 +110,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
-          // TODO: get info from correct places when authorisation is sorted out in parent app
-          axios
-            .post(`${settings['apiUrl']}/sessions`, {
-              username: 'user',
-              password: 'password',
-            })
-            .then(response => {
-              window.localStorage.setItem(
-                'daaas:token',
-                response.data.sessionID
-              );
-            })
-            .catch(error => {
-              log.error(`Can't contact API: ${error.message}`);
-            });
-
-          // TODO: replace with getting from daaas:token when supported
           const splitUrl = settings.downloadApiUrl.split('/');
           const icatUrl = `${splitUrl
             .slice(0, splitUrl.length - 1)
@@ -144,12 +128,38 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
               }
             )
             .then(response => {
-              window.localStorage.setItem(
-                'icat:token',
-                response.data.sessionId
-              );
+              axios
+                .get(`${settings['apiUrl']}/sessions`, {
+                  headers: {
+                    Authorization: `Bearer ${response.data.sessionId}`,
+                  },
+                })
+                .then(() => {
+                  const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+                  const payload = {
+                    sessionId: response.data.sessionId,
+                    username: 'dev',
+                  };
+                  const jwt = jsrsasign.KJUR.jws.JWS.sign(
+                    'HS256',
+                    jwtHeader,
+                    payload,
+                    'shh'
+                  );
+
+                  window.localStorage.setItem('scigateway:token', jwt);
+                })
+                .catch(error => {
+                  log.error(
+                    `datagateway-api cannot verify ICAT session id: ${error.message}.
+                     This is likely caused if datagateway-api is pointing to a
+                     different ICAT than the one used by the IDS/TopCAT`
+                  );
+                });
             })
-            .catch(error => log.error("Can't log in to ICAT"));
+            .catch(error =>
+              log.error(`Can't log in to ICAT: ${error.message}`)
+            );
         }
 
         if ('ui-strings' in settings) {

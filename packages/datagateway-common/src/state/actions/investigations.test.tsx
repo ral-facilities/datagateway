@@ -22,11 +22,11 @@ import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
 import { Investigation } from '../../app.types';
 import { fetchInvestigationDatasetsCountRequest } from './datasets';
+import handleICATError from '../../handleICATError';
 
-jest.mock('loglevel');
+jest.mock('../../handleICATError');
 
 describe('Investigation actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
@@ -95,6 +95,7 @@ describe('Investigation actions', () => {
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -226,9 +227,10 @@ describe('Investigation actions', () => {
       fetchInvestigationsFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchInvestigationsRequest and fetchInvestigationsSuccess actions upon successful fetchISISInvestigations action', async () => {
@@ -319,9 +321,11 @@ describe('Investigation actions', () => {
       fetchInvestigationSizeFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith(
+      { message: 'Test error message' },
+      false
+    );
   });
 
   it('fetchISISInvestigations action applies filters and sort state to request params', async () => {
@@ -381,9 +385,10 @@ describe('Investigation actions', () => {
       fetchInvestigationsFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchInvestigationDetailsRequest and fetchInvestigationDetailsSuccess actions upon successful fetchInvestigationDetails action', async () => {
@@ -455,9 +460,10 @@ describe('Investigation actions', () => {
       fetchInvestigationDetailsFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchInvestigationCountRequest and fetchInvestigationCountSuccess actions upon successful fetchInvestigationCount action', async () => {
@@ -526,9 +532,10 @@ describe('Investigation actions', () => {
       fetchInvestigationCountFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchInvestigationCountRequest and fetchInvestigationCountSuccess actions upon successful fetchISISInvestigationCount action', async () => {
@@ -594,8 +601,9 @@ describe('Investigation actions', () => {
       fetchInvestigationCountFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 });

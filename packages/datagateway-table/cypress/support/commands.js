@@ -24,30 +24,58 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import jsrsasign from 'jsrsasign';
+
+const parseJwt = token => {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const payload = decodeURIComponent(
+    atob(base64).replace(/(.)/g, function(m, p) {
+      var code = p
+        .charCodeAt(0)
+        .toString(16)
+        .toUpperCase();
+      return '%' + ('00' + code).slice(-2);
+    })
+  );
+  return payload;
+};
+
+export const readSciGatewayToken = () => {
+  const token = window.localStorage.getItem('scigateway:token');
+  let sessionId = null;
+  let username = null;
+  if (token) {
+    const parsedToken = JSON.parse(parseJwt(token));
+    if (parsedToken.sessionId) sessionId = parsedToken.sessionId;
+    if (parsedToken.username) username = parsedToken.username;
+  }
+
+  return {
+    sessionId,
+    username,
+  };
+};
+
 Cypress.Commands.add('login', (username, password) => {
   return cy.readFile('server/e2e-settings.json').then(settings => {
     cy.request('POST', `${settings.apiUrl}/sessions`, {
       username: username,
       password: password,
     }).then(response => {
-      window.localStorage.setItem('daaas:token', response.body.sessionID);
-    });
+      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+      const payload = {
+        sessionId: response.body.sessionID,
+        username: 'test',
+      };
+      const jwt = jsrsasign.KJUR.jws.JWS.sign(
+        'HS256',
+        jwtHeader,
+        payload,
+        'shh'
+      );
 
-    // TODO: replace with getting from daaas:token when supported
-    const splitUrl = settings.downloadApiUrl.split('/');
-    const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
-    cy.request({
-      method: 'POST',
-      url: `${icatUrl}/session`,
-      body: {
-        json: JSON.stringify({
-          plugin: 'simple',
-          credentials: [{ username: 'root' }, { password: 'pw' }],
-        }),
-      },
-      form: true,
-    }).then(response => {
-      window.localStorage.setItem('icat:token', response.body.sessionId);
+      window.localStorage.setItem('scigateway:token', jwt);
     });
   });
 });
@@ -59,7 +87,7 @@ Cypress.Commands.add('clearDownloadCart', () => {
       method: 'DELETE',
       url: `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
       qs: {
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         items: '*',
       },
     });

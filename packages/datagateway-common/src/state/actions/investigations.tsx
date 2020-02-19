@@ -24,9 +24,10 @@ import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchInvestigationDatasetsCount } from './datasets';
-import * as log from 'loglevel';
 import { Investigation } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[],
@@ -106,8 +107,7 @@ export const fetchInvestigationSize = (
       await axios
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
-            // TODO: Get session ID from somewhere else (extract from JWT)
-            sessionId: window.localStorage.getItem('icat:token'),
+            sessionId: readSciGatewayToken().sessionId,
             facilityName: 'LILS',
             entityType: 'investigation',
             entityId: investigationId,
@@ -119,7 +119,7 @@ export const fetchInvestigationSize = (
           );
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchInvestigationSizeFailure(error.message));
         });
     }
@@ -170,7 +170,7 @@ export const fetchInvestigations = (
       .get(`${apiUrl}/investigations`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -184,7 +184,7 @@ export const fetchInvestigations = (
         }
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
   };
@@ -231,9 +231,7 @@ export const fetchISISInvestigations = ({
         {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
         }
       )
@@ -251,7 +249,7 @@ export const fetchISISInvestigations = ({
         }
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
   };
@@ -319,14 +317,14 @@ export const fetchInvestigationDetails = (
       .get(`${apiUrl}/investigations`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchInvestigationDetailsSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationDetailsFailure(error.message));
       });
   };
@@ -367,14 +365,14 @@ export const fetchInvestigationCount = (
       .get(`${apiUrl}/investigations/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });
   };
@@ -399,9 +397,7 @@ export const fetchISISInvestigationCount = (
         {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
         }
       )
@@ -409,7 +405,7 @@ export const fetchISISInvestigationCount = (
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });
   };

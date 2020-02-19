@@ -26,9 +26,10 @@ import { Action } from 'redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { source } from '../middleware/dgcommon.middleware';
-import * as log from 'loglevel';
 import { Datafile } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchDatafilesSuccess = (
   datafiles: Datafile[],
@@ -83,14 +84,14 @@ export const fetchDatafiles = (
       .get(`${apiUrl}/datafiles`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchDatafilesSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatafilesFailure(error.message));
       });
   };
@@ -141,14 +142,14 @@ export const fetchDatafileCount = (
       .get(`${apiUrl}/datafiles/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchDatafileCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatafileCountFailure(error.message));
       });
   };
@@ -216,9 +217,7 @@ export const fetchDatasetDatafilesCount = (
         .get(`${apiUrl}/datafiles/count`, {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
           cancelToken: source.token,
         })
@@ -232,7 +231,7 @@ export const fetchDatasetDatafilesCount = (
           );
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchDatasetDatafilesCountFailure(error.message));
         });
     }
@@ -280,14 +279,14 @@ export const fetchDatafileDetails = (
       .get(`${apiUrl}/datafiles`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchDatafileDetailsSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatafileDetailsFailure(error.message));
       });
   };
@@ -325,9 +324,8 @@ export const downloadDatafile = (
 
     const { idsUrl } = getState().dgcommon.urls;
 
-    // TODO: get ICAT session id properly when auth is sorted
     const params = {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       datafileIds: datafileId,
       compress: false,
       outname: filename,
