@@ -4,6 +4,7 @@ import {
   Dataset,
   Investigation,
   ConfigureURLsType,
+  readSciGatewayToken,
 } from 'datagateway-common';
 import { Middleware, Dispatch, AnyAction } from 'redux';
 
@@ -27,7 +28,7 @@ export const checkInvestigationId = (
   return axios
     .get(`${apiUrl}/datasets/${datasetId}`, {
       headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
     .then((response: AxiosResponse<Dataset>) => {
@@ -56,7 +57,7 @@ export const checkInstrumentAndFacilityCycleId = (
           },
         },
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       }
     )
@@ -76,7 +77,7 @@ export const checkProposalName = (
   return axios
     .get(`${apiUrl}/investigations/${investigationId}`, {
       headers: {
-        Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
     .then((response: AxiosResponse<Investigation>) => {
