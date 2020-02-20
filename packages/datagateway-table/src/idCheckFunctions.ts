@@ -1,11 +1,24 @@
 import axios, { AxiosResponse } from 'axios';
-import { handleICATError, Dataset, Investigation } from 'datagateway-common';
+import {
+  handleICATError,
+  Dataset,
+  Investigation,
+  ConfigureURLsType,
+} from 'datagateway-common';
+import { Middleware, Dispatch, AnyAction } from 'redux';
 
 let apiUrl = '';
 
-export function setApiUrl(newApiUrl: string): void {
-  apiUrl = newApiUrl;
-}
+// this is so that idCheckFunctions have access to the apiUrl
+export const saveApiUrlMiddleware: Middleware = (() => (
+  next: Dispatch<AnyAction>
+) => (action: AnyAction): AnyAction => {
+  if (action.type === ConfigureURLsType) {
+    apiUrl = action.payload.urls.apiUrl;
+  }
+
+  return next(action);
+}) as Middleware;
 
 export const checkInvestigationId = (
   investigationId: number,

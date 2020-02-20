@@ -2,14 +2,7 @@ import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
 import thunk, { ThunkDispatch } from 'redux-thunk';
-import {
-  createStore,
-  applyMiddleware,
-  compose,
-  AnyAction,
-  Middleware,
-  Dispatch,
-} from 'redux';
+import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
 import { Provider, connect } from 'react-redux';
 import { createLogger } from 'redux-logger';
@@ -22,12 +15,11 @@ import {
   listenToMessages,
   RegisterRouteType,
   MicroFrontendMessageId,
-  ConfigureURLsType,
 } from 'datagateway-common';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Preloader } from 'datagateway-common';
-import { setApiUrl } from './idCheckFunctions';
+import { saveApiUrlMiddleware } from './idCheckFunctions';
 
 import {
   createGenerateClassName,
@@ -45,23 +37,12 @@ const generateClassName = createGenerateClassName({
     process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
 });
 
-// this is so that idCheckFunctions have access to the apiUrl
-const saveApiUrl: Middleware = (() => (next: Dispatch<AnyAction>) => (
-  action: AnyAction
-): AnyAction => {
-  if (action.type === ConfigureURLsType) {
-    setApiUrl(action.payload.urls.apiUrl);
-  }
-
-  return next(action);
-}) as Middleware;
-
 const history = createBrowserHistory();
 const middleware = [
   thunk,
   routerMiddleware(history),
   DGCommonMiddleware,
-  saveApiUrl,
+  saveApiUrlMiddleware,
 ];
 
 if (process.env.NODE_ENV === `development`) {

@@ -2,9 +2,11 @@ import {
   checkInvestigationId,
   checkProposalName,
   checkInstrumentAndFacilityCycleId,
+  saveApiUrlMiddleware,
 } from './idCheckFunctions';
 import axios from 'axios';
-import { handleICATError } from 'datagateway-common';
+import { handleICATError, ConfigureURLsType } from 'datagateway-common';
+import configureStore from 'redux-mock-store';
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -20,6 +22,32 @@ describe('ID check functions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
     (handleICATError as jest.Mock).mockClear();
+  });
+
+  it('saveApiUrlMiddleware sets apiUrl on ConfigureUrls action', async () => {
+    const store = configureStore()({});
+
+    await checkInvestigationId(1, 2);
+    expect(axios.get).toHaveBeenCalledWith('/datasets/2', {
+      headers: { Authorization: 'Bearer null' },
+    });
+    (axios.get as jest.Mock).mockClear();
+
+    saveApiUrlMiddleware(store)(store.dispatch)({
+      type: ConfigureURLsType,
+      payload: { urls: { apiUrl: '/test' } },
+    });
+
+    await checkInvestigationId(1, 2);
+    expect(axios.get).toHaveBeenCalledWith('/test/datasets/2', {
+      headers: { Authorization: 'Bearer null' },
+    });
+
+    // reset apiUrl for other tests
+    saveApiUrlMiddleware(store)(store.dispatch)({
+      type: ConfigureURLsType,
+      payload: { urls: { apiUrl: '' } },
+    });
   });
 
   describe('checkInvestigationId', () => {
