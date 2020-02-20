@@ -17,6 +17,7 @@ import ISISFacilityCyclesTable from './isis/tables/isisFacilityCyclesTable.compo
 import ISISInvestigationsTable from './isis/tables/isisInvestigationsTable.component';
 import ISISDatasetsTable from './isis/tables/isisDatasetsTable.component';
 import ISISDatafilesTable from './isis/tables/isisDatafilesTable.component';
+import DLSMyDataTable from './dls/tables/dlsMyDataTable.component';
 
 class PageTable extends React.Component {
   public render(): React.ReactNode {
@@ -29,6 +30,7 @@ class PageTable extends React.Component {
             <Link to="/browse/investigation">Browse investigations</Link>
           )}
         />
+        <Route path="/my-data" component={DLSMyDataTable} />
         <Route exact path="/browse/proposal/" component={DLSProposalsTable} />
         <Route
           exact
