@@ -8,10 +8,14 @@ import {
   SelectEndDateType,
   SearchTextType,
   ToggleRequestSentType,
+  StoreLuceneDatasetType,
+  StoreLuceneDatafileType,
+  StoreLuceneInvestigationType,
   TogglePayload,
   SelectDatePayload,
   SearchTextPayload,
   CheckRequestSentPayload,
+  LuceneResultTypePayload,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -27,7 +31,11 @@ export const initialState: DGSearchState = {
     investigation: true,
   },
   requestSent: false,
-  searchData: null,
+  searchData: {
+    dataset: null,
+    datafile: null,
+    investigation: null,
+  },
 };
 
 export function handleSearchText(
@@ -115,6 +123,45 @@ export function toggleRequestSent(
   };
 }
 
+export function storeDatasetLuceneResults(
+  state: DGSearchState,
+  payload: LuceneResultTypePayload
+): DGSearchState {
+  return {
+    ...state,
+    searchData: {
+      ...state.searchData,
+      dataset: payload.searchData,
+    },
+  };
+}
+
+export function storeDatafileLuceneResults(
+  state: DGSearchState,
+  payload: LuceneResultTypePayload
+): DGSearchState {
+  return {
+    ...state,
+    searchData: {
+      ...state.searchData,
+      datafile: payload.searchData,
+    },
+  };
+}
+
+export function storeInvestigationLuceneResults(
+  state: DGSearchState,
+  payload: LuceneResultTypePayload
+): DGSearchState {
+  return {
+    ...state,
+    searchData: {
+      ...state.searchData,
+      investigation: payload.searchData,
+    },
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [ToggleDatasetType]: handleToggleDataset,
   [ToggleDatafileType]: handleToggleDatafile,
@@ -123,6 +170,9 @@ const DGSearchReducer = createReducer(initialState, {
   [SelectEndDateType]: selectEndDate,
   [SearchTextType]: handleSearchText,
   [ToggleRequestSentType]: toggleRequestSent,
+  [StoreLuceneDatasetType]: storeDatasetLuceneResults,
+  [StoreLuceneDatafileType]: storeDatafileLuceneResults,
+  [StoreLuceneInvestigationType]: storeInvestigationLuceneResults,
 });
 
 export default DGSearchReducer;

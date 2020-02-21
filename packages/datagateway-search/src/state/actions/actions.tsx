@@ -6,21 +6,40 @@ import {
   SelectEndDateType,
   SearchTextType,
   ToggleRequestSentType,
-  StoreLuceneResultsType,
-  // SearchResultType,
+  StoreLuceneDatasetType,
+  StoreLuceneDatafileType,
+  StoreLuceneInvestigationType,
   TogglePayload,
   SelectDatePayload,
   SearchTextPayload,
   CheckRequestSentPayload,
-  LuceneSearchResultPayload,
+  LuceneResultTypePayload,
 } from './actions.types';
 import { ActionType } from '../app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
-export const storeLuceneResults = (
-  searchData: SearchResultType
-): ActionType<LuceneSearchResultPayload> => ({
-  type: StoreLuceneResultsType,
+export const storeDatasetLucene = (
+  searchData: any
+): ActionType<LuceneResultTypePayload> => ({
+  type: StoreLuceneDatasetType,
+  payload: {
+    searchData,
+  },
+});
+
+export const storeDatafileLucene = (
+  searchData: any
+): ActionType<LuceneResultTypePayload> => ({
+  type: StoreLuceneDatafileType,
+  payload: {
+    searchData,
+  },
+});
+
+export const storeInvestigationLucene = (
+  searchData: any
+): ActionType<LuceneResultTypePayload> => ({
+  type: StoreLuceneInvestigationType,
   payload: {
     searchData,
   },

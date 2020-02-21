@@ -7,9 +7,10 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { format } from 'date-fns';
 import {
   toggleRequestSent,
-  storeLuceneResults,
+  storeDatasetLucene,
+  storeDatafileLucene,
+  storeInvestigationLucene,
 } from '../state/actions/actions';
-import { SearchResultPayload } from '../state/actions/actions.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 
@@ -21,13 +22,16 @@ interface SearchButtonStoreProps {
   startDate: MaterialUiPickersDate;
   endDate: MaterialUiPickersDate;
   requestSent: boolean;
-  // searchData?: SearchResultType;
-  searchData: number;
+  luceneDatafile: any;
+  luceneDataset: any;
+  luceneInvestigation: any;
 }
 
 interface SearchButtonDispatchProps {
   toggleRequestSent: (requestSent: boolean) => Action;
-  storeLuceneResults: (searchData: number) => Action;
+  storeDatasetLucene: (luceneData: any) => Action;
+  storeDatafileLucene: (luceneData: any) => Action;
+  storeInvestigationLucene: (luceneData: any) => Action;
 }
 
 type SearchButtonCombinedProps = SearchButtonStoreProps &
@@ -102,44 +106,37 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     return queryParams;
   };
 
-  public handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  public handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     if (this.props.dataset === true) {
       let datasetParams = this.urlParamsBuilder('Dataset');
-      this.fetchLuceneResults(datasetParams);
+      const luceneResults = await this.fetchLuceneResults(datasetParams);
+      console.log('dataset', luceneResults);
+      this.props.storeDatasetLucene(luceneResults);
     }
     if (this.props.datafile === true) {
       let datafileParams = this.urlParamsBuilder('Datafile');
-      this.fetchLuceneResults(datafileParams);
+      const luceneResults = await this.fetchLuceneResults(datafileParams);
+      console.log('datafile', luceneResults);
+      this.props.storeDatafileLucene(luceneResults);
     }
     if (this.props.investigation === true) {
       let investigationParams = this.urlParamsBuilder('Investigation');
-      this.fetchLuceneResults(investigationParams);
+      const luceneResults = await this.fetchLuceneResults(investigationParams);
+      console.log('invest', luceneResults);
+      this.props.storeInvestigationLucene(luceneResults);
     }
   };
 
   public async fetchLuceneResults(
     queryParams: LuceneParameters
-  ): Promise<void> {
+  ): Promise<any[]> {
     let requestSent = true;
     this.props.toggleRequestSent(requestSent);
     const response = await axios.get(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       { params: queryParams }
     );
-    // const searchIDs = response.data.map(
-    //   (x: { id: number; score: number }) => x.id
-    // );
-    // const luceneScores = response.data.map(
-    //   (x: { id: number; score: number }) => x.score
-    // );
-    // const searchData = response.data;
-    let searchData = 35;
-    this.props.storeLuceneResults(searchData);
-    // console.log(response);
-    console.log(searchData);
-    //    SEND SEARCH DATA TO STORE
-
-    // console.log(searchIDs);
+    return response.data;
   }
 
   public render(): React.ReactNode {
@@ -163,8 +160,12 @@ const mapDispatchToProps = (
 ): SearchButtonDispatchProps => ({
   toggleRequestSent: (requestSent: boolean) =>
     dispatch(toggleRequestSent(requestSent)),
-  storeLuceneResults: (searchData: number) =>
-    dispatch(storeLuceneResults(searchData)),
+  storeDatasetLucene: (luceneData: any) =>
+    dispatch(storeDatasetLucene(luceneData)),
+  storeDatafileLucene: (luceneData: any) =>
+    dispatch(storeDatafileLucene(luceneData)),
+  storeInvestigationLucene: (luceneData: any) =>
+    dispatch(storeInvestigationLucene(luceneData)),
 });
 
 const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
@@ -176,7 +177,9 @@ const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
     startDate: state.dgsearch.selectDate.startDate,
     endDate: state.dgsearch.selectDate.endDate,
     requestSent: state.dgsearch.requestSent,
-    searchData: state.dgsearch.searchData,
+    luceneDataset: state.dgsearch.searchData.dataset,
+    luceneDatafile: state.dgsearch.searchData.datafile,
+    luceneInvestigation: state.dgsearch.searchData.investigation,
   };
 };
 
