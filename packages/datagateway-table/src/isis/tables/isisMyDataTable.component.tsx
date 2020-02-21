@@ -169,7 +169,7 @@ const ISISMyDataTable = (
               );
               if (facilityCycle)
                 return tableLink(
-                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilitycycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
+                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
                   investigationData.TITLE
                 );
             }
@@ -217,7 +217,7 @@ const ISISMyDataTable = (
               );
               if (facilityCycle)
                 return tableLink(
-                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilitycycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
+                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
                   investigationData.TITLE
                 );
             }
