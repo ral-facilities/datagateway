@@ -201,7 +201,7 @@ export const fetchAllIdsRequest = (
 export const fetchAllIds = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   additionalFilters?: {
-    filterType: 'where' | 'distinct';
+    filterType: 'where' | 'distinct' | 'include';
     filterValue: string;
   }[]
 ): ThunkResult<Promise<void>> => {
