@@ -26,42 +26,42 @@ import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
-// import useAfterMountEffect from '../utils';
+import useAfterMountEffect from '../state/utils';
 
 interface DatafileSearchTableProps {
-  // datasetId: string;
+  datasetId: string;
 }
 
 interface DatafileSearchTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  // filters: {
-  //   [column: string]: Filter;
-  // };
+  filters: {
+    [column: string]: Filter;
+  };
   data: Entity[];
   // totalDataCount: number;
   loading: boolean;
   // error: string | null;
   // cartItems: DownloadCartItem[];
-  // allIds: number[];
+  allIds: number[];
 }
 
-// interface DatafileSearchTableDispatchProps {
-//   sortTable: (column: string, order: Order | null) => Action;
-//   filterTable: (column: string, filter: Filter | null) => Action;
-//   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
-//   fetchCount: (datasetId: number) => Promise<void>;
-//   downloadData: (datafileId: number, filename: string) => Promise<void>;
-//   addToCart: (entityIds: number[]) => Promise<void>;
-//   removeFromCart: (entityIds: number[]) => Promise<void>;
-//   fetchAllIds: () => Promise<void>;
-//   clearTable: () => Action;
-// }
+interface DatafileSearchTableDispatchProps {
+  //   sortTable: (column: string, order: Order | null) => Action;
+  //   filterTable: (column: string, filter: Filter | null) => Action;
+  fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
+  //   fetchCount: (datasetId: number) => Promise<void>;
+  //   downloadData: (datafileId: number, filename: string) => Promise<void>;
+  //   addToCart: (entityIds: number[]) => Promise<void>;
+  //   removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
+  //   clearTable: () => Action;
+}
 
 type DatafileSearchTableCombinedProps = DatafileSearchTableProps &
-  DatafileSearchTableStoreProps;
-// DatafileSearchTableDispatchProps;
+  DatafileSearchTableStoreProps &
+DatafileSearchTableDispatchProps;
 
 const DatafileSearchTable = (
   props: DatafileSearchTableCombinedProps
@@ -69,19 +69,19 @@ const DatafileSearchTable = (
   const {
     data,
     // totalDataCount,
-    // fetchData,
+    fetchData,
     // fetchCount,
     sort,
     // sortTable,
-    // filters,
+    filters,
     // filterTable,
-    // datasetId,
+    datasetId,
     // downloadData,
     // cartItems,
     // addToCart,
     // removeFromCart,
     // clearTable,
-    // allIds,
+    allIds,
     // fetchAllIds,
     loading,
   } = props;
@@ -102,11 +102,13 @@ const DatafileSearchTable = (
   //   clearTable();
   // }, [clearTable]);
 
-  // useAfterMountEffect(() => {
-  //   fetchCount(parseInt(datasetId));
-  //   fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  //   fetchAllIds();
-  // }, [fetchCount, fetchData, fetchAllIds, sort, filters, datasetId]);
+  useAfterMountEffect(() => {
+  // fetchCount(parseInt(datasetId));
+  fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
+  // fetchAllIds();
+  }, 
+  // [fetchCount, fetchData, fetchAllIds, sort, filters, datasetId]
+  [ fetchData, fetchAllIds, sort, filters, datasetId]);
 
   // const textFilter = (label: string, dataKey: string): React.ReactElement => (
   //   <TextColumnFilter
@@ -130,10 +132,17 @@ const DatafileSearchTable = (
       data={[
         {
           ID: 4,
-          NAME: 'bongo',
+          NAME: 'data',
           MOD_TIME: '9:00 1.1.20',
           CREATE_TIME: '8:00 1.1.20',
           INVESTIGATION_ID: 24,
+        },
+        {
+          ID: 5,
+          NAME: 'data2',
+          MOD_TIME: '11:00 2.11.20',
+          CREATE_TIME: '8:00 1.1.19',
+          INVESTIGATION_ID: 22,
         },
       ]}
       // ^^ test data
@@ -143,7 +152,7 @@ const DatafileSearchTable = (
       sort={sort}
       onSort={sortTable}
       // selectedRows={selectedRows}
-      // allIds={allIds}
+      allIds={allIds}
       // onCheck={addToCart}
       // onUncheck={removeFromCart}
       // detailsPanel={({ rowData }) => {
@@ -190,16 +199,16 @@ const DatafileSearchTable = (
   );
 };
 
-// const mapDispatchToProps = (
-//   dispatch: ThunkDispatch<StateType, null, AnyAction>,
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
 //   ownProps: DatafileSearchTableProps
 // ): DatafileSearchTableDispatchProps => ({
 //   sortTable: (column: string, order: Order | null) =>
 //     dispatch(sortTable(column, order)),
 //   filterTable: (column: string, filter: Filter | null) =>
 //     dispatch(filterTable(column, filter)),
-//   fetchData: (datasetId: number, offsetParams: IndexRange) =>
-//     dispatch(fetchDatafiles(datasetId, offsetParams)),
+  fetchData: (datasetId: number, offsetParams: IndexRange) =>
+    dispatch(fetchDatafiles(datasetId, offsetParams)),
 //   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
 //   downloadData: (datafileId: number, filename: string) =>
 //     dispatch(downloadDatafile(datafileId, filename)),
@@ -218,8 +227,9 @@ const DatafileSearchTable = (
 //         },
 //       ])
 //     ),
-//   clearTable: () => dispatch(clearTable()),
-// });
+//   // clearTable: () => dispatch(clearTable()),
+ }
+);
 
 const mapStateToProps = (
   state: StateType,
@@ -227,13 +237,13 @@ const mapStateToProps = (
 ): DatafileSearchTableStoreProps => {
   return {
     sort: state.dgcommon.sort,
-    // filters: state.dgcommon.filters,
+    filters: state.dgcommon.filters,
     data: state.dgcommon.data,
     // totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     // error: state.dgcommon.error,
     // cartItems: state.dgcommon.cartItems,
-    // allIds: state.dgcommon.allIds,
+    allIds: state.dgsearch.searchData.datafile,
   };
 };
 

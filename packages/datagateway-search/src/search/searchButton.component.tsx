@@ -110,19 +110,16 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     if (this.props.dataset === true) {
       let datasetParams = this.urlParamsBuilder('Dataset');
       const luceneResults = await this.fetchLuceneResults(datasetParams);
-      console.log('dataset', luceneResults);
       this.props.storeDatasetLucene(luceneResults);
     }
     if (this.props.datafile === true) {
       let datafileParams = this.urlParamsBuilder('Datafile');
       const luceneResults = await this.fetchLuceneResults(datafileParams);
-      console.log('datafile', luceneResults);
       this.props.storeDatafileLucene(luceneResults);
     }
     if (this.props.investigation === true) {
       let investigationParams = this.urlParamsBuilder('Investigation');
       const luceneResults = await this.fetchLuceneResults(investigationParams);
-      console.log('invest', luceneResults);
       this.props.storeInvestigationLucene(luceneResults);
     }
   };
