@@ -96,6 +96,8 @@ Cypress.Commands.add('seedDownloadCart', () => {
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
 
+  console.log('Download cart items: ', items);
+
   cy.request({
     method: 'POST',
     url:
@@ -124,11 +126,6 @@ Cypress.Commands.add('addCartItem', cartItem => {
   });
 });
 
-// Cypress.Commands.add('clearDownloads', () => {
-//  // TODO: get all downloads and store ids
-//  // TODO: call request to set all downloads with the ids to deleted = true
-// });
-
 // Cypress.Commands.add('setDownload', (downloadId, showDownload) => {
 //   // TODO: get url and facility from settings
 
@@ -145,7 +142,20 @@ Cypress.Commands.add('addCartItem', cartItem => {
 // });
 
 Cypress.Commands.add('seedDownloads', () => {
+  let i = 1;
   for (var info of downloadsInfo) {
+    // Seed a single cart item as items are cleared after each download.
+    cy.request({
+      method: 'POST',
+      url:
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
+      body: {
+        sessionId: window.localStorage.getItem('icat:token'),
+        items: `investigation ${i}`,
+      },
+      form: true,
+    });
+
     console.log('Info: ', info);
     cy.request({
       method: 'POST',
@@ -161,6 +171,39 @@ Cypress.Commands.add('seedDownloads', () => {
       console.log(response);
     });
   }
+});
+
+Cypress.Commands.add('clearDownloads', () => {
+  // TODO: get all downloads and store ids
+  // TODO: call request to set all downloads with the ids to deleted = true
+
+  // TODO: get url and facility from settings
+  cy.request({
+    method: 'GET',
+    url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+    qs: {
+      facilityName: 'LILS',
+      sessionId: window.localStorage.getItem('icat:token'),
+      queryOffset: 'where download.isDeleted = false',
+    },
+  }).then(response => {
+    const downloads = response.body;
+    for (let i in downloads) {
+      const download = downloads[i];
+      console.log('Deleting download with ID: ', download.id);
+
+      cy.request({
+        method: 'PUT',
+        url: `https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/${download.id}/isDeleted`,
+        body: {
+          sessionId: window.localStorage.getItem('icat:token'),
+          facilityName: 'LILS',
+          value: 'true',
+        },
+        form: true,
+      });
+    }
+  });
 });
 
 // Delete a test download file in the Windows download

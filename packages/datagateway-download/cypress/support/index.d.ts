@@ -9,7 +9,7 @@ declare namespace Cypress {
     addCartItem(cartItem: string): Cypress.Chainable<Cypress.Response>;
 
     seedDownloads(): Cypress.Chainable<Cypress.Response>;
-    // clearDownloads(): Cypress.Chainable<Cypress.Response>;
+    clearDownloads(): Cypress.Chainable<Cypress.Response>;
     // setDownload(
     //   downloadId: number,
     //   showDownload: boolean

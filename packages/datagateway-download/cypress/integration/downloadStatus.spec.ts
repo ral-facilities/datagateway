@@ -2,12 +2,17 @@ describe('Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
     cy.login('download-e2e-tests', 'pw');
-    // cy.seedDownloadCart();
-    // cy.seedDownloads();
+
+    // Seed the initial downloads.
+    cy.clearDownloads();
   });
 
   beforeEach(() => {
-    // Cypress.currentTest.retries(2);
+    // TODO: Re-enable this.
+    Cypress.currentTest.retries(2);
+
+    cy.seedDownloads();
+
     cy.server();
     cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.visit('/');
@@ -20,13 +25,13 @@ describe('Download Status', () => {
       });
   });
 
-  // afterEach(() => {
-  //   // cy.clearDownloads();
+  afterEach(() => {
+    cy.clearDownloads();
 
-  //   // Ensure to clear sessionStorage to prevent the app
-  //   // storing tab data.
-  //   sessionStorage.clear();
-  // });
+    // Ensure to clear sessionStorage to prevent the app
+    // storing tab data.
+    sessionStorage.clear();
+  });
 
   it('should load correctly and display download status table', () => {
     cy.title().should('equal', 'DataGateway Download');
