@@ -32,9 +32,9 @@ export const initialState: DGSearchState = {
   },
   requestSent: false,
   searchData: {
-    dataset: null,
-    datafile: null,
-    investigation: null,
+    dataset: [],
+    datafile: [],
+    investigation: [],
   },
 };
 

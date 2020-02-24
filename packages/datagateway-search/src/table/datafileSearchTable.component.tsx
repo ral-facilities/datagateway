@@ -29,59 +29,62 @@ import { Action, AnyAction } from 'redux';
 import useAfterMountEffect from '../state/utils';
 
 interface DatafileSearchTableProps {
-  datasetId: string;
+  // luceneData: number[];
+  // luceneData: string;
 }
 
 interface DatafileSearchTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
-  data: Entity[];
+  // filters: {
+  //   [column: string]: Filter;
+  // };
+  // data: Entity[];
   // totalDataCount: number;
   loading: boolean;
   // error: string | null;
   // cartItems: DownloadCartItem[];
-  allIds: number[];
+  // allIds: number[];
+  luceneData: number[];
 }
 
 interface DatafileSearchTableDispatchProps {
   //   sortTable: (column: string, order: Order | null) => Action;
   //   filterTable: (column: string, filter: Filter | null) => Action;
-  fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
+  fetchData: (luceneData: number[], offsetParams: IndexRange) => Promise<void>;
   //   fetchCount: (datasetId: number) => Promise<void>;
   //   downloadData: (datafileId: number, filename: string) => Promise<void>;
   //   addToCart: (entityIds: number[]) => Promise<void>;
   //   removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: () => Promise<void>;
+  // fetchAllIds: () => Promise<void>;
   //   clearTable: () => Action;
 }
 
 type DatafileSearchTableCombinedProps = DatafileSearchTableProps &
   DatafileSearchTableStoreProps &
-DatafileSearchTableDispatchProps;
+  DatafileSearchTableDispatchProps;
 
 const DatafileSearchTable = (
   props: DatafileSearchTableCombinedProps
 ): React.ReactElement => {
   const {
-    data,
+    // data,
     // totalDataCount,
     fetchData,
     // fetchCount,
     sort,
     // sortTable,
-    filters,
+    // filters,
     // filterTable,
-    datasetId,
+    // datasetId,
     // downloadData,
     // cartItems,
     // addToCart,
     // removeFromCart,
     // clearTable,
-    allIds,
+    // allIds,
+    luceneData,
     // fetchAllIds,
     loading,
   } = props;
@@ -102,13 +105,14 @@ const DatafileSearchTable = (
   //   clearTable();
   // }, [clearTable]);
 
-  useAfterMountEffect(() => {
-  // fetchCount(parseInt(datasetId));
-  fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  // fetchAllIds();
-  }, 
-  // [fetchCount, fetchData, fetchAllIds, sort, filters, datasetId]
-  [ fetchData, fetchAllIds, sort, filters, datasetId]);
+  // useAfterMountEffect(() => {
+  //  fetchCount(parseInt(datasetId));
+  //   fetchData(props.luceneData, { startIndex: 0, stopIndex: 49 });
+  //
+  //  fetchAllIds();},
+
+  //  [fetchCount, fetchData, fetchAllIds, sort, filters, datasetId]);
+  //
 
   // const textFilter = (label: string, dataKey: string): React.ReactElement => (
   //   <TextColumnFilter
@@ -152,7 +156,7 @@ const DatafileSearchTable = (
       sort={sort}
       onSort={sortTable}
       // selectedRows={selectedRows}
-      allIds={allIds}
+      // allIds={allIds}
       // onCheck={addToCart}
       // onUncheck={removeFromCart}
       // detailsPanel={({ rowData }) => {
@@ -201,35 +205,37 @@ const DatafileSearchTable = (
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
-//   ownProps: DatafileSearchTableProps
-// ): DatafileSearchTableDispatchProps => ({
-//   sortTable: (column: string, order: Order | null) =>
-//     dispatch(sortTable(column, order)),
-//   filterTable: (column: string, filter: Filter | null) =>
-//     dispatch(filterTable(column, filter)),
-  fetchData: (datasetId: number, offsetParams: IndexRange) =>
-    dispatch(fetchDatafiles(datasetId, offsetParams)),
-//   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
-//   downloadData: (datafileId: number, filename: string) =>
-//     dispatch(downloadDatafile(datafileId, filename)),
-//   addToCart: (entityIds: number[]) =>
-//     dispatch(addToCart('datafile', entityIds)),
-//   removeFromCart: (entityIds: number[]) =>
-//     dispatch(removeFromCart('datafile', entityIds)),
-//   fetchAllIds: () =>
-//     dispatch(
-//       fetchAllIds('datafile', [
-//         {
-//           filterType: 'where',
-//           filterValue: JSON.stringify({
-//             DATASET_ID: { eq: parseInt(ownProps.datasetId) },
-//           }),
-//         },
-//       ])
-//     ),
-//   // clearTable: () => dispatch(clearTable()),
- }
-);
+  ownProps: DatafileSearchTableProps
+): DatafileSearchTableDispatchProps => ({
+  // sortTable: (column: string, order: Order | null) =>
+  // dispatch(sortTable(column, order)),
+  //   filterTable: (column: string, filter: Filter | null) =>
+  //     dispatch(filterTable(column, filter)),
+  fetchData: (luceneData: number[], offsetParams?: IndexRange) =>
+    // for (let i = 0; i < luceneData.length, i++; ) {
+    //   let luceneID = luceneData[i];
+    dispatch(fetchDatafiles(1, offsetParams)),
+  // }
+  // //   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
+  //   downloadData: (datafileId: number, filename: string) =>
+  //     dispatch(downloadDatafile(datafileId, filename)),
+  //   addToCart: (entityIds: number[]) =>
+  //     dispatch(addToCart('datafile', entityIds)),
+  //   removeFromCart: (entityIds: number[]) =>
+  //     dispatch(removeFromCart('datafile', entityIds)),
+  // fetchAllIds: () =>
+  //   dispatch(
+  //     fetchAllIds('datafile', [
+  //       {
+  //         filterType: 'where',
+  //         filterValue: JSON.stringify({
+  //           DATASET_ID: { eq: ownProps.luceneData },
+  //         }),
+  //       },
+  //     ])
+  //   ),
+  // clearTable: () => dispatch(clearTable()),
+});
 
 const mapStateToProps = (
   state: StateType,
@@ -237,14 +243,18 @@ const mapStateToProps = (
 ): DatafileSearchTableStoreProps => {
   return {
     sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
-    data: state.dgcommon.data,
+    // filters: state.dgcommon.filters,
+    // data: state.dgcommon.data,
+    luceneData: state.dgsearch.searchData.datafile,
     // totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     // error: state.dgcommon.error,
     // cartItems: state.dgcommon.cartItems,
-    allIds: state.dgsearch.searchData.datafile,
+    // allIds: state.dgcommon.allIds,
   };
 };
 
-export default connect(mapStateToProps)(DatafileSearchTable);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DatafileSearchTable);

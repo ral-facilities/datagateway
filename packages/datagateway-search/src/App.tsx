@@ -3,11 +3,7 @@ import './App.css';
 import Header from './search/Header.component';
 import * as log from 'loglevel';
 import Grid from '@material-ui/core/Grid';
-import SelectDates from './search/datePicker.component';
-import CheckboxesGroup from './search/checkBoxes.component';
-import SearchButton from './search/searchButton.component';
-import SearchTextBox from './search/searchTextBox.component';
-import SearchPageTable from './pageSearchTable.component';
+import SearchPageContainer from './searchPageContainer.component';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
@@ -78,45 +74,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
         >
           <Provider store={store}>
             <StylesProvider generateClassName={generateClassName}>
-              <Grid
-                container
-                direction="row"
-                justify="flex-start"
-                alignItems="flex-start"
-              >
-                <Grid
-                  item
-                  direction="column"
-                  justify="flex-start"
-                  alignItems="flex-start"
-                >
-                  <Grid item>
-                    <Header />
-                  </Grid>
-
-                  <Grid item>
-                    <SearchTextBox />
-                  </Grid>
-
-                  <Grid item>
-                    <SelectDates />
-                  </Grid>
-
-                  <Grid item>
-                    <CheckboxesGroup />
-                  </Grid>
-
-                  <Grid item>
-                    <SearchButton />
-                  </Grid>
-                </Grid>
-
-                <Grid item>
-                  <Grid item>
-                    <SearchPageTable />
-                  </Grid>
-                </Grid>
-              </Grid>
+              <SearchPageContainer />
             </StylesProvider>
           </Provider>
         </div>

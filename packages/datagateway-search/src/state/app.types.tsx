@@ -17,9 +17,9 @@ export interface DGSearchState {
   };
   requestSent: boolean;
   searchData: {
-    dataset: any;
-    datafile: any;
-    investigation: any;
+    dataset: number[];
+    datafile: number[];
+    investigation: number[];
   };
 }
 
