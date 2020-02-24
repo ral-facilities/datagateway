@@ -10,15 +10,12 @@ import { connect } from 'react-redux';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-// import InvestigationSearchTable from './table/investigationSearchTable.component';
+import InvestigationSearchTable from './table/investigationSearchTable.component';
 // import DatasetTable from './table/datasetTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 
 interface SearchTableStoreProps {
   requestSent: boolean;
-  luceneDatafile: any;
-  luceneDataset: any;
-  luceneInvestigation: any;
 }
 
 interface TabPanelProps {
@@ -52,12 +49,7 @@ function a11yProps(index: any) {
 }
 
 const SearchPageTable = (props: SearchTableStoreProps): any => {
-  const {
-    requestSent,
-    luceneDatafile,
-    luceneDataset,
-    luceneInvestigation,
-  } = props;
+  const { requestSent } = props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -79,14 +71,13 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          {/* <DatafileSearchTable /> */}
           <DatafileSearchTable />
         </TabPanel>
         <TabPanel value={value} index={1}>
           Dataset table goes here
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Investigation table goes here
+          <InvestigationSearchTable />
         </TabPanel>
       </div>
     );
@@ -102,9 +93,6 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
     requestSent: state.dgsearch.requestSent,
-    luceneDataset: state.dgsearch.searchData.dataset,
-    luceneDatafile: state.dgsearch.searchData.datafile,
-    luceneInvestigation: state.dgsearch.searchData.investigation,
   };
 };
 
