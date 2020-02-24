@@ -5,6 +5,7 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { format } from 'date-fns';
+import { readSciGatewayToken } from 'datagateway-common';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -81,7 +82,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     }
 
     const queryParams = {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       query,
       maxCount: 300,
     };

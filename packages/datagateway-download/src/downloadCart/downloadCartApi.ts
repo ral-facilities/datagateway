@@ -6,6 +6,8 @@ import {
   DownloadCartItem,
   Datafile,
   Download,
+  readSciGatewayToken,
+  handleICATError,
 } from 'datagateway-common';
 
 export const fetchDownloadCartItems: (
@@ -18,15 +20,14 @@ export const fetchDownloadCartItems: (
   return axios
     .get<DownloadCart>(`${downloadApiUrl}/user/cart/${facilityName}`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
       },
     })
     .then(response => {
       return response.data.cartItems;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
       return [];
     });
 };
@@ -38,15 +39,12 @@ export const removeAllDownloadCartItems: (
   return axios
     .delete(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         items: '*',
       },
     })
     .then(() => {})
-    .catch(error => {
-      log.error(error.message);
-    });
+    .catch(handleICATError);
 };
 
 export const removeDownloadCartItem: (
@@ -63,15 +61,12 @@ export const removeDownloadCartItem: (
   return axios
     .delete(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         items: `${entityType} ${entityId}`,
       },
     })
     .then(() => {})
-    .catch(error => {
-      log.error(error.message);
-    });
+    .catch(handleICATError);
 };
 
 export const getIsTwoLevel: (idsUrl: string) => Promise<boolean> = (
@@ -83,7 +78,7 @@ export const getIsTwoLevel: (idsUrl: string) => Promise<boolean> = (
       return response.data;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error, false);
       return false;
     });
 };
@@ -103,9 +98,8 @@ export const submitCart: (
 ) => {
   const params = new URLSearchParams();
 
-  // TODO: get session ID from somewhere else (extract from JWT)
   // Construct the form parameters.
-  params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('transport', transport);
   params.append('email', emailAddress);
   params.append('fileName', fileName);
@@ -126,7 +120,7 @@ export const submitCart: (
       return downloadId;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
       return -1;
     });
 };
@@ -143,8 +137,7 @@ export const getDownload: (
   return axios
     .get<Download[]>(`${downloadApiUrl}/user/downloads`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         facilityName: facilityName,
         queryOffset: `where download.id = ${downloadId}`,
       },
@@ -154,7 +147,7 @@ export const getDownload: (
       return download;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
       return null;
     });
 };
@@ -167,7 +160,7 @@ export const downloadPreparedCart: (
   // We need to set the preparedId and outname query parameters
   // for the IDS download.
   const params = {
-    sessionId: window.localStorage.getItem('icat:token'),
+    sessionId: readSciGatewayToken().sessionId,
     preparedId: preparedId,
     outname: fileName,
   };
@@ -203,8 +196,7 @@ export const getSize: (
     return axios
       .get<Datafile>(`${apiUrl}/datafiles/${entityId}`, {
         headers: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -212,16 +204,14 @@ export const getSize: (
         return size;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   } else {
     return axios
       .get<number>(`${downloadApiUrl}/user/getSize`, {
         params: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          sessionId: window.localStorage.getItem('icat:token'),
-          // facilityName: 'LILS',
+          sessionId: readSciGatewayToken().sessionId,
           facilityName: facilityName,
           entityType: entityType,
           entityId: entityId,
@@ -231,7 +221,7 @@ export const getSize: (
         return response.data;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   }
@@ -259,15 +249,14 @@ export const getDatafileCount: (
           },
         },
         headers: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         return response.data;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   } else {
@@ -282,15 +271,14 @@ export const getDatafileCount: (
           },
         },
         headers: {
-          // TODO: get session ID from somewhere else (extract from JWT)
-          Authorization: `Bearer ${window.localStorage.getItem('icat:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         return response.data;
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error, false);
         return -1;
       });
   }

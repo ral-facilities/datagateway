@@ -8,6 +8,7 @@ import './index.css';
 import App from './App';
 import * as log from 'loglevel';
 import axios from 'axios';
+import jsrsasign from 'jsrsasign';
 
 const pluginName = 'datagateway-search';
 
@@ -19,41 +20,59 @@ const render = (): void => {
 };
 
 render();
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 if (process.env.NODE_ENV === `development`) {
   log.setDefaultLevel(log.levels.DEBUG);
+
+  // TODO: get urls from settings file
+  const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat';
+  const apiUrl = 'https://scigateway-preprod.esc.rl.ac.uk:5000/';
   axios
-    .post('/sessions', { username: 'user', password: 'password' })
+    .post(
+      `${icatUrl}/session`,
+      `json=${JSON.stringify({
+        plugin: 'simple',
+        credentials: [{ username: 'root' }, { password: 'pw' }],
+      })}`,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    )
     .then(response => {
-      window.localStorage.setItem('daaas:token', response.data.sessionID);
+      axios
+        .get(`${apiUrl}/sessions`, {
+          headers: {
+            Authorization: `Bearer ${response.data.sessionId}`,
+          },
+        })
+        .then(() => {
+          const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+          const payload = {
+            sessionId: response.data.sessionId,
+            username: 'dev',
+          };
+          const jwt = jsrsasign.KJUR.jws.JWS.sign(
+            'HS256',
+            jwtHeader,
+            payload,
+            'shh'
+          );
+
+          window.localStorage.setItem('scigateway:token', jwt);
+        })
+        .catch(error => {
+          log.error(
+            `datagateway-api cannot verify ICAT session id: ${error.message}.
+               This is likely caused if datagateway-api is pointing to a
+               different ICAT than the one used by the IDS/TopCAT`
+          );
+        });
     })
-    .catch((error: { message: any }) => {
-      log.error(`Can't contact API.`);
-    });
+    .catch(error => log.error(`Can't log in to ICAT: ${error.message}`));
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
-// TODO: if it's still needed, get icatUrl from settings file
-const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session/';
-
-// TODO: get ICAT session ID from daaas:token
-const icatCreds = {
-  plugin: 'simple',
-  credentials: [{ username: 'root' }, { password: 'pw' }],
-};
-
-axios
-  .post(icatUrl, `json=${JSON.stringify(icatCreds)}`, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  })
-  .then(response => {
-    window.localStorage.setItem('icat:token', response.data.sessionId);
-  })
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  .catch((error: { message: any }) => {
-    log.error(`Token was not retrieved.`);
-  });
-/* eslint-enable @typescript-eslint/no-explicit-any */
 window.addEventListener('single-spa:routing-event', () => {
   render();
 });

@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
+import jsrsasign from 'jsrsasign';
+
 import singleSpaReact from 'single-spa-react';
 
 import {
@@ -72,7 +74,7 @@ if (
   render();
 
   if (process.env.NODE_ENV === `development`) {
-    // TODO: replace with getting from daaas:token when supported
+    // TODO: get url from settings file
     const icatUrl = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat`;
     axios
       .post(
@@ -88,9 +90,21 @@ if (
         }
       )
       .then(response => {
-        window.localStorage.setItem('icat:token', response.data.sessionId);
+        const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+        const payload = {
+          sessionId: response.data.sessionId,
+          username: 'dev',
+        };
+        const jwt = jsrsasign.KJUR.jws.JWS.sign(
+          'HS256',
+          jwtHeader,
+          payload,
+          'shh'
+        );
+
+        window.localStorage.setItem('scigateway:token', jwt);
       })
-      .catch(error => console.error("Can't log in to ICAT"));
+      .catch(error => console.error(`Can't log in to ICAT: ${error.message}`));
   }
 }
 
