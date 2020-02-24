@@ -142,14 +142,18 @@ describe('Investigation actions', () => {
     });
   });
 
-  it('fetchInvestigations action sends fetchDatasetCount actions when specified via optional parameters', async () => {
-    const asyncAction = fetchInvestigations({ getDatasetCount: true });
+  it('fetchInvestigations action sends fetchDatasetCount actions and fetchInvestigationSize when specified via optional parameters', async () => {
+    const asyncAction = fetchInvestigations({
+      getDatasetCount: true,
+      getSize: true,
+    });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData, 1));
     expect(actions[2]).toEqual(fetchInvestigationDatasetsCountRequest(1));
     expect(actions[3]).toEqual(fetchInvestigationDatasetsCountRequest(1));
+    expect(actions[4]).toEqual(fetchInvestigationSizeRequest());
   });
 
   it('fetchInvestigations applies skip and limit when specified via optional parameters', async () => {
