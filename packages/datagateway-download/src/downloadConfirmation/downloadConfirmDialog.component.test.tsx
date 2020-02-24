@@ -340,20 +340,20 @@ describe('DownloadConfirmDialog', () => {
     expect(axios.get).not.toHaveBeenCalled();
   });
 
-  it.only('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
+  it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
     let openDialog = true;
     const closeFunction = jest.fn();
 
     const wrapper = mount(
-      // <DownloadSettingsContext.Provider value={mockedSettings}>
-      <DownloadConfirmDialog
-        totalSize={1}
-        isTwoLevel={false}
-        open={openDialog}
-        setClose={closeFunction}
-        clearCart={jest.fn()}
-      />
-      // {/* </DownloadSettingsContext.Provider> */}
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadConfirmDialog
+          totalSize={1}
+          isTwoLevel={false}
+          open={openDialog}
+          setClose={closeFunction}
+          clearCart={jest.fn()}
+        />
+      </DownloadSettingsContext.Provider>
     );
 
     // Ensure the close button is present.
@@ -364,7 +364,19 @@ describe('DownloadConfirmDialog', () => {
 
     // Close the download confirmation dialog.
     // TODO: Cannot set the prop on the root.
-    wrapper.setProps({ open: false });
+    // wrapper.setProps({ open: false });
+    wrapper.setProps({
+      children: (
+        <DownloadConfirmDialog
+          totalSize={1}
+          isTwoLevel={false}
+          // Set open prop to false to close the dialog.
+          open={false}
+          setClose={closeFunction}
+          clearCart={jest.fn()}
+        />
+      ),
+    });
     expect(wrapper.prop('open')).toBe(false);
 
     // Click the close button and ensure the close function has been called.
