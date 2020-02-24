@@ -97,7 +97,7 @@ class ConfigProvider extends React.Component<
             for (const method in settings['accessMethods']) {
               if (!settings['accessMethods'][method].idsUrl)
                 throw new Error(
-                  `Access method ${method}, defined in settings, does not contain an idsUrl`
+                  `Access method ${method}, defined in settings, does not contain a idsUrl`
                 );
             }
           }
