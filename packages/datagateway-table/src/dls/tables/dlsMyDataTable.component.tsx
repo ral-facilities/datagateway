@@ -87,7 +87,7 @@ const DLSMyDataTable = (
     clearTable();
     sortTable('STARTDATE', 'desc');
     filterTable('STARTDATE', {
-      endDate: `${new Date().toISOString().split('T')[0]}`,
+      endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
     });
   }, [clearTable, sortTable, filterTable]);
 
