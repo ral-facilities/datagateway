@@ -129,31 +129,40 @@ export const fetchDatasetSize = (
 interface FetchDatasetsParams {
   getDatafileCount?: boolean;
   getSize?: boolean;
+  offsetParams?: IndexRange;
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[];
 }
 
-export const fetchDatasets = ({
-  investigationId,
-  offsetParams,
-  optionalParams,
-}: {
-  investigationId: number;
-  offsetParams?: IndexRange;
-  optionalParams?: FetchDatasetsParams;
-}): ThunkResult<Promise<void>> => {
+export const fetchDatasets = (
+  optionalParams?: FetchDatasetsParams
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchDatasetsRequest(timestamp));
 
     let params = getApiFilter(getState);
-    params.append(
-      'where',
-      JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
-    );
-    if (offsetParams) {
-      params.append('skip', JSON.stringify(offsetParams.startIndex));
+
+    if (optionalParams && optionalParams.additionalFilters) {
+      optionalParams.additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
+    if (optionalParams && optionalParams.offsetParams) {
+      params.append(
+        'skip',
+        JSON.stringify(optionalParams.offsetParams.startIndex)
+      );
       params.append(
         'limit',
-        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+        JSON.stringify(
+          optionalParams.offsetParams.stopIndex -
+            optionalParams.offsetParams.startIndex +
+            1
+        )
       );
     }
     const { apiUrl } = getState().dgcommon.urls;
@@ -224,18 +233,24 @@ export const fetchDatasetCountRequest = (
 });
 
 export const fetchDatasetCount = (
-  investigationId: number
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[]
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchDatasetCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+
+    if (additionalFilters) {
+      additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
     params.delete('order');
-    params.append(
-      'where',
-      JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
-    );
     const { apiUrl } = getState().dgcommon.urls;
 
     await axios

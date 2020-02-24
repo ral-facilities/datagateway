@@ -59,23 +59,43 @@ export const fetchDatafilesRequest = (
   },
 });
 
+interface FetchDatafilesParams {
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[];
+  offsetParams?: IndexRange;
+}
+
 export const fetchDatafiles = (
-  datasetId: number,
-  offsetParams?: IndexRange
+  optionalParams: FetchDatafilesParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchDatafilesRequest(timestamp));
 
     let params = getApiFilter(getState);
-    params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
+
+    if (optionalParams && optionalParams.additionalFilters) {
+      optionalParams.additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
     const { apiUrl } = getState().dgcommon.urls;
 
-    if (offsetParams) {
-      params.append('skip', JSON.stringify(offsetParams.startIndex));
+    if (optionalParams && optionalParams.offsetParams) {
+      params.append(
+        'skip',
+        JSON.stringify(optionalParams.offsetParams.startIndex)
+      );
       params.append(
         'limit',
-        JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+        JSON.stringify(
+          optionalParams.offsetParams.stopIndex -
+            optionalParams.offsetParams.startIndex +
+            1
+        )
       );
     }
 
@@ -126,15 +146,22 @@ export const fetchDatafileCountRequest = (
 });
 
 export const fetchDatafileCount = (
-  datasetId: number
+  additionalFilters?: {
+    filterType: string;
+    filterValue: string;
+  }[]
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     const timestamp = Date.now();
     dispatch(fetchDatafileCountRequest(timestamp));
 
     let params = getApiFilter(getState);
+    if (additionalFilters) {
+      additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
     params.delete('order');
-    params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
     const { apiUrl } = getState().dgcommon.urls;
 
     await axios

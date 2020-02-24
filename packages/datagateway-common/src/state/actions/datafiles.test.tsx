@@ -70,7 +70,14 @@ describe('Datafile actions', () => {
       })
     );
 
-    const asyncAction = fetchDatafiles(1);
+    const asyncAction = fetchDatafiles({
+      additionalFilters: [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+        },
+      ],
+    });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafilesRequest(1));
@@ -93,7 +100,14 @@ describe('Datafile actions', () => {
       })
     );
 
-    const asyncAction = fetchDatafiles(1);
+    const asyncAction = fetchDatafiles({
+      additionalFilters: [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+        },
+      ],
+    });
     const getState = (): Partial<StateType> => ({
       dgcommon: {
         ...initialState,
@@ -127,7 +141,7 @@ describe('Datafile actions', () => {
       })
     );
 
-    const asyncAction = fetchDatafiles(1);
+    const asyncAction = fetchDatafiles();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafilesRequest(1));
@@ -145,7 +159,12 @@ describe('Datafile actions', () => {
       })
     );
 
-    const asyncAction = fetchDatafileCount(1);
+    const asyncAction = fetchDatafileCount([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+      },
+    ]);
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest(1));
@@ -167,7 +186,12 @@ describe('Datafile actions', () => {
       })
     );
 
-    const asyncAction = fetchDatafileCount(1);
+    const asyncAction = fetchDatafileCount([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+      },
+    ]);
     const getState = (): Partial<StateType> => ({
       dgcommon: {
         ...initialState,
@@ -198,7 +222,7 @@ describe('Datafile actions', () => {
       })
     );
 
-    const asyncAction = fetchDatafileCount(1);
+    const asyncAction = fetchDatafileCount();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatafileCountRequest(1));
@@ -352,7 +376,15 @@ describe('Datafile actions', () => {
   });
 
   it('fetchDatafiles applies skip and limit when specified via optional parameters', async () => {
-    const asyncAction = fetchDatafiles(1, { startIndex: 0, stopIndex: 49 });
+    const asyncAction = fetchDatafiles({
+      offsetParams: { startIndex: 0, stopIndex: 49 },
+      additionalFilters: [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+        },
+      ],
+    });
 
     const getState = (): Partial<StateType> => ({
       dgcommon: {
