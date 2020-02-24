@@ -52,7 +52,6 @@ class ConfigProvider extends React.Component<
       .get<DownloadSettings>('/datagateway-download-settings.json')
       .then(res => {
         const settings = res.data;
-        // console.log('Download settings: ', settings);
 
         if (typeof settings !== 'object') {
           throw Error('Invalid format');
@@ -86,14 +85,7 @@ class ConfigProvider extends React.Component<
               'At least one access method should be defined under accessMethods in settings'
             );
           } else {
-            // Check all defined access methods to ensure type and idsUrl have been stated.
-            // for (let i = 0; i < Object.entries(settings['accessMethods']).length; i++) {
-            //   const method = settings['accessMethods'][i];
-            //   if (!(method['type'] && method['idsUrl']))
-            //     throw new Error(
-            //       `An access method (${i}) defined in settings does not contain type or idsUrl`
-            //     );
-            // }
+            // Check all defined access methods to ensure idsUrl has been stated.
             for (const method in settings['accessMethods']) {
               if (!settings['accessMethods'][method].idsUrl)
                 throw new Error(

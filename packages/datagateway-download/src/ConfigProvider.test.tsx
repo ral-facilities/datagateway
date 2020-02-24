@@ -17,7 +17,6 @@ const ConfigTest: React.FC = (): React.ReactElement => {
 };
 
 describe('ConfigProvider', () => {
-  // TODO: Use shallow?
   let mount;
 
   beforeEach(() => {
@@ -63,31 +62,24 @@ describe('ConfigProvider', () => {
 
     // Create the wrapper and wait for it to load.
     const wrapper = createWrapper();
+
+    // Preloader is in a loading state when ConfigProvider is
+    // loading the configuration.
+    expect(wrapper.find('Preloader').prop('loading')).toBe(true);
+
     await act(async () => {
       await flushPromises();
       wrapper.update();
     });
 
-    // console.log(wrapper.find('#settings').text());
+    expect(wrapper.find('Preloader').prop('loading')).toBe(false);
+    expect(wrapper.exists('#settings')).toBe(true);
     expect(wrapper.find('#settings').text()).toEqual(
       JSON.stringify(settingsResult)
     );
   });
 
   it('logs an error if facilityName is not defined in the settings', async () => {
-    // const settingsResult = {
-    //   idsUrl: 'ids',
-    //   apiUrl: 'api',
-    //   downloadApiUrl: 'download-api',
-    //   accessMethods: {
-    //     https: {
-    //       idsUrl: 'https-ids',
-    //       displayName: 'HTTPS',
-    //       description: 'HTTP description',
-    //     },
-    //   },
-    // };
-
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
@@ -112,7 +104,6 @@ describe('ConfigProvider', () => {
       wrapper.update();
     });
 
-    // console.log(wrapper.find('#settings'));
     // Expect the wrapper to be empty (with no settings)
     // and the appropriate error to have been logged.
     expect(wrapper.exists('#settings')).toBe(false);
@@ -125,17 +116,6 @@ describe('ConfigProvider', () => {
   });
 
   it('logs an error if any of the API URLs are not defined in the settings', async () => {
-    // const settingsResult = {
-    //   facilityName: 'Generic',
-    //   accessMethods: {
-    //     https: {
-    //       idsUrl: 'https-ids',
-    //       displayName: 'HTTPS',
-    //       description: 'HTTP description',
-    //     },
-    //   },
-    // };
-
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
         data: {
@@ -158,8 +138,8 @@ describe('ConfigProvider', () => {
       wrapper.update();
     });
 
-    // console.log(wrapper.find('#settings'));
     expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
@@ -186,8 +166,8 @@ describe('ConfigProvider', () => {
       wrapper.update();
     });
 
-    // console.log(wrapper.find('#settings'));
     expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
@@ -225,8 +205,9 @@ describe('ConfigProvider', () => {
       wrapper.update();
     });
 
-    // console.log(wrapper.find('#settings'));
     expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
+
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading datagateway-download-settings.json: Access method globus, defined in settings, does not contain a idsUrl'
@@ -253,8 +234,9 @@ describe('ConfigProvider', () => {
       wrapper.update();
     });
 
-    // console.log(wrapper.find('#settings'));
     expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
+
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading datagateway-download-settings.json: At least one access method should be defined under accessMethods in settings'
@@ -275,8 +257,8 @@ describe('ConfigProvider', () => {
       wrapper.update();
     });
 
-    // console.log(wrapper.find('#settings'));
     expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
@@ -284,7 +266,22 @@ describe('ConfigProvider', () => {
     );
   });
 
-  // it(
-  //   'logs an error if fails to load a settings.json and is still in a loading state'
-  // );
+  it('logs an error if fails to load a settings.json and is still in a loading state', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
+
+    // Create the wrapper and wait for it to load.
+    const wrapper = createWrapper();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-download-settings.json: undefined'
+    );
+  });
 });
