@@ -167,13 +167,17 @@ const ISISMyDataTable = (
                   facilitycycle.STARTDATE <= investigationData.STARTDATE &&
                   facilitycycle.ENDDATE >= investigationData.STARTDATE
               );
-              if (facilityCycle)
+              if (facilityCycle) {
                 return tableLink(
                   `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
                   investigationData.TITLE
                 );
+              } else {
+                return investigationData.TITLE;
+              }
             }
           },
+          filterComponent: textFilter,
         },
         {
           label: 'DOI',
@@ -215,11 +219,14 @@ const ISISMyDataTable = (
                   facilitycycle.STARTDATE <= investigationData.STARTDATE &&
                   facilitycycle.ENDDATE >= investigationData.STARTDATE
               );
-              if (facilityCycle)
+              if (facilityCycle) {
                 return tableLink(
                   `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
-                  investigationData.TITLE
+                  investigationData.NAME
                 );
+              } else {
+                return investigationData.NAME;
+              }
             }
           },
           filterComponent: textFilter,
