@@ -7,7 +7,8 @@ export const ToggleInvestigationType =
   'datagateway_search:toggle_investigation';
 export const SelectStartDateType = 'datagateway_search:select_startdate';
 export const SelectEndDateType = 'datagateway_search:select_enddate';
-export const ToggleRequestSentType = 'datagateway_search:request_sent';
+export const ToggleLuceneRequestReceivedType =
+  'datagateway_search:lucene_request_received';
 export const StoreLuceneDatasetType =
   'datagateway_search:store_lucene_results_dataset';
 export const StoreLuceneDatafileType =
@@ -27,8 +28,8 @@ export interface SearchTextPayload {
   searchText: string;
 }
 
-export interface CheckRequestSentPayload {
-  requestSent: boolean;
+export interface CheckRequestReceivedPayload {
+  requestReceived: boolean;
 }
 
 export interface LuceneResultTypePayload {

@@ -15,7 +15,7 @@ import InvestigationSearchTable from './table/investigationSearchTable.component
 import DatafileSearchTable from './table/datafileSearchTable.component';
 
 interface SearchTableStoreProps {
-  requestSent: boolean;
+  requestReceived: boolean;
 }
 
 interface TabPanelProps {
@@ -49,14 +49,14 @@ function a11yProps(index: any) {
 }
 
 const SearchPageTable = (props: SearchTableStoreProps): any => {
-  const { requestSent } = props;
+  const { requestReceived } = props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 
-  if (props.requestSent) {
+  if (props.requestReceived) {
     return (
       <div>
         <AppBar position="static">
@@ -92,7 +92,7 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
 
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
-    requestSent: state.dgsearch.requestSent,
+    requestReceived: state.dgsearch.requestReceived,
   };
 };
 

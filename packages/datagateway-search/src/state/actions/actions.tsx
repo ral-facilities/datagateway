@@ -5,14 +5,14 @@ import {
   SelectStartDateType,
   SelectEndDateType,
   SearchTextType,
-  ToggleRequestSentType,
+  ToggleLuceneRequestReceivedType,
   StoreLuceneDatasetType,
   StoreLuceneDatafileType,
   StoreLuceneInvestigationType,
   TogglePayload,
   SelectDatePayload,
   SearchTextPayload,
-  CheckRequestSentPayload,
+  CheckRequestReceivedPayload,
   LuceneResultTypePayload,
 } from './actions.types';
 import { ActionType } from '../app.types';
@@ -99,11 +99,11 @@ export const selectEndDate = (
   },
 });
 
-export const toggleRequestSent = (
-  requestSent: boolean
-): ActionType<CheckRequestSentPayload> => ({
-  type: ToggleRequestSentType,
+export const toggleLuceneRequestReceived = (
+  requestReceived: boolean
+): ActionType<CheckRequestReceivedPayload> => ({
+  type: ToggleLuceneRequestReceivedType,
   payload: {
-    requestSent,
+    requestReceived,
   },
 });
