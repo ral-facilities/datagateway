@@ -198,6 +198,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
                     const d = new Date(props.cellData);
+
+                    // TODO: d.toISOString().slice(0, 10)
                     return `${d.getFullYear()}-${(
                       '0' +
                       (d.getMonth() + 1)

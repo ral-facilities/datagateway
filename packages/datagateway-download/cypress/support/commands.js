@@ -26,24 +26,36 @@
 
 const downloadsInfo = [
   {
-    transport: 'https',
-    email: 'user1@test.com',
-    fileName: 'test-file-1',
+    availability: 'COMPLETE',
+    submitDetails: {
+      transport: 'https',
+      email: 'user1@test.com',
+      fileName: 'test-file-1',
+    },
   },
   {
-    transport: 'globus',
-    email: 'user2@test.com',
-    fileName: 'test-file-2',
+    availability: 'RESTORING',
+    submitDetails: {
+      transport: 'globus',
+      email: 'user2@test.com',
+      fileName: 'test-file-2',
+    },
   },
   {
-    transport: 'http',
-    email: '',
-    fileName: 'test-file-3',
+    availability: 'PREPARING',
+    submitDetails: {
+      transport: 'http',
+      email: '',
+      fileName: 'test-file-3',
+    },
   },
   {
-    transport: 'globus',
-    email: '',
-    fileName: 'test-file-4',
+    availability: 'EXPIRED',
+    submitDetails: {
+      transport: 'globus',
+      email: '',
+      fileName: 'test-file-4',
+    },
   },
 ];
 
@@ -156,13 +168,14 @@ Cypress.Commands.add('seedDownloads', () => {
       form: true,
     });
 
-    console.log('Info: ', info);
+    // Submit each download request.
+    console.log('Info: ', info.submitDetails);
     cy.request({
       method: 'POST',
       url:
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
       body: {
-        ...info,
+        ...info.submitDetails,
         sessionId: window.localStorage.getItem('icat:token'),
         zipType: 'ZIP',
       },
@@ -171,6 +184,36 @@ Cypress.Commands.add('seedDownloads', () => {
       console.log(response);
     });
   }
+
+  // Change the status of the download on the server for tests.
+  cy.request({
+    method: 'GET',
+    url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+    qs: {
+      sessionId: window.localStorage.getItem('icat:token'),
+      facilityName: 'LILS',
+      queryOffset: 'where download.isDeleted = false',
+    },
+  }).then(response => {
+    const downloads = response.body;
+    for (let i in downloads) {
+      const download = downloads[i];
+      cy.request({
+        method: 'PUT',
+        url: `https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/${download.id}/status`,
+        body: {
+          sessionId: window.localStorage.getItem('icat:token'),
+          facilityName: 'LILS',
+          value: downloadsInfo[i].availability,
+        },
+        form: true,
+      }).then(() => {
+        console.log(
+          `Changed status of download ${download.id} to ${downloadsInfo[i].availability}`
+        );
+      });
+    }
+  });
 });
 
 Cypress.Commands.add('clearDownloads', () => {

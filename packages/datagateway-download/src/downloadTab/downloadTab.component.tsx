@@ -34,6 +34,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
   const { children, value, index, ...other } = props;
 
   return (
+    // TODO: Should be div or Box? Not a typography component?
     <Typography
       component="div"
       role="tabpanel"

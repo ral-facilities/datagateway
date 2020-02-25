@@ -30,7 +30,7 @@ describe('Download Confirmation', () => {
   });
 
   afterEach(() => {
-    cy.clearDownloadCart();
+    // cy.clearDownloadCart();
 
     // Clear the session storage to avoid storing the current tab information.
     sessionStorage.clear();
