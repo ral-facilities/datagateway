@@ -153,6 +153,8 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
           color="primary"
           onClick={this.handleClick}
           aria-label="submit search button"
+          size="large"
+          fullWidth={true}
         >
           Search
         </Button>

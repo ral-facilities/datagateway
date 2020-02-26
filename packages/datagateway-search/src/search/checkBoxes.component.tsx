@@ -74,7 +74,9 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
         component="fieldset"
         className={classes.formControl}
       >
-        <FormLabel component="legend">Please select at least one</FormLabel>
+        <FormLabel 
+        component="legend"
+        >Please select at least one</FormLabel>
         <FormGroup>
           <FormControlLabel
             control={

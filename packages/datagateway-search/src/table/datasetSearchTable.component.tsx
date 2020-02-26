@@ -189,18 +189,18 @@ const mapDispatchToProps = (
         ],
       })
     ),
-  // fetchCount: (luceneData: number[]) =>
-  //   dispatch(
-  //     fetchDatasetCount([
-  //       {
-  //         filterType: 'where',
-  //         filterValue: JSON.stringify({
-  //           ID: { in: luceneData },
-  //         }),
-  //       },
-  //     ])
-  //   ),
-  fetchCount: () => dispatch(fetchDatasetCount()),
+  fetchCount: (luceneData: number[]) =>
+    dispatch(
+      fetchDatasetCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            ID: { in: luceneData },
+          }),
+        },
+      ])
+    ),
+  // fetchCount: () => dispatch(fetchDatasetCount()),
   clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>

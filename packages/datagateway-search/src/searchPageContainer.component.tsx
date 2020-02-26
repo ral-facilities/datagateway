@@ -32,7 +32,7 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
             <Paper
               style={{
                 height: 'calc(100vh)',
-                width: 'calc(80vw)',
+                width: 'calc(70vw)',
               }}
             >
               <SearchPageTable />

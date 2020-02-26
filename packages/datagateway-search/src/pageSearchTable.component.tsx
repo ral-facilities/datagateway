@@ -32,6 +32,7 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      border={0}
       {...other}
     >
       {value === index && <Box p={3}>{children}</Box>}
@@ -61,6 +62,8 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
+            // indicatorColor="primary"
+            // textColor="primary"
           >
             <Tab label="Datafile" {...a11yProps(0)} />
             <Tab label="Dataset" {...a11yProps(1)} />
@@ -80,8 +83,13 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
     );
   } else
     return (
-      <Box color="primary.main">
-        <h1>Search</h1>Fill out form to the left and then click search.
+      <Box 
+      color="primary.main"
+      px={3}
+      py={1}
+      >
+        <h2>Search</h2>
+        Fill out form to the left and then click search.
       </Box>
     );
 };
