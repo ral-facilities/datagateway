@@ -31,7 +31,7 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
         label="Search Text"
         type="search"
         margin="normal"
-        value={searchText} // redundant?
+        value={searchText}
         onChange={sendSearchText}
         inputProps={{ 'aria-label': 'search text input' }}
       />

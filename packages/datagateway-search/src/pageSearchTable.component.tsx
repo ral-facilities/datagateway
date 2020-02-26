@@ -11,11 +11,14 @@ import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import InvestigationSearchTable from './table/investigationSearchTable.component';
-// import DatasetTable from './table/datasetTable.component';
+import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 
 interface SearchTableStoreProps {
   requestReceived: boolean;
+  datafile: number[];
+  dataset: number[];
+  investigation: number[];
 }
 
 interface TabPanelProps {
@@ -49,7 +52,6 @@ function a11yProps(index: any) {
 }
 
 const SearchPageTable = (props: SearchTableStoreProps): any => {
-  const { requestReceived } = props;
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -74,7 +76,7 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
           <DatafileSearchTable />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Dataset table goes here
+          <DatasetSearchTable />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <InvestigationSearchTable />
@@ -93,6 +95,9 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
     requestReceived: state.dgsearch.requestReceived,
+    datafile: state.dgsearch.searchData.datafile,
+    dataset: state.dgsearch.searchData.dataset,
+    investigation: state.dgsearch.searchData.investigation,
   };
 };
 

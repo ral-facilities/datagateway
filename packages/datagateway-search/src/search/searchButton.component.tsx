@@ -98,6 +98,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
       query.upper = stringEndDate;
     }
 
+    // TODO add in readscigatewaytoken
     const queryParams = {
       sessionId: window.localStorage.getItem('icat:token'),
       query,
@@ -110,29 +111,32 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     if (this.props.dataset === true) {
       let datasetParams = this.urlParamsBuilder('Dataset');
       const luceneResults = await this.fetchLuceneResults(datasetParams);
-
       const luceneResultIds = luceneResults.map(result => result.id);
       this.props.storeDatasetLucene(luceneResultIds);
+
+      this.props.toggleLuceneRequestReceived(true);
     }
     if (this.props.datafile === true) {
       let datafileParams = this.urlParamsBuilder('Datafile');
       const luceneResults = await this.fetchLuceneResults(datafileParams);
       const luceneResultIds = luceneResults.map(result => result.id);
       this.props.storeDatafileLucene(luceneResultIds);
+
+      this.props.toggleLuceneRequestReceived(true);
     }
     if (this.props.investigation === true) {
       let investigationParams = this.urlParamsBuilder('Investigation');
       const luceneResults = await this.fetchLuceneResults(investigationParams);
       const luceneResultIds = luceneResults.map(result => result.id);
       this.props.storeInvestigationLucene(luceneResultIds);
+
+      this.props.toggleLuceneRequestReceived(true);
     }
   };
 
   public async fetchLuceneResults(
     queryParams: LuceneParameters
   ): Promise<any[]> {
-    let requestReceived = true;
-    this.props.toggleLuceneRequestReceived(requestReceived);
     const response = await axios.get(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       { params: queryParams }

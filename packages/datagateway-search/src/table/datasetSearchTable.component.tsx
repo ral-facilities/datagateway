@@ -4,29 +4,34 @@ import {
   Table,
   TextColumnFilter,
   DateColumnFilter,
-  // investigationLink,
+  datasetLink,
   Order,
   Filter,
-  Investigation,
+  Dataset,
   Entity,
   DownloadCartItem,
-  fetchInvestigations,
+  fetchDatasets,
   addToCart,
   removeFromCart,
-  fetchInvestigationCount,
-  fetchAllIds,
+  fetchDatasetCount,
+  //   fetchAllIds,
   sortTable,
   filterTable,
   clearTable,
 } from 'datagateway-common';
+import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
-import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../state/utils';
 
-interface InvestigationTableProps {
+interface DatasetTableProps {
+  //   investigationId: string;
+}
+
+interface DatasetTableStoreProps {
   sort: {
     [column: string]: Order;
   };
@@ -42,40 +47,42 @@ interface InvestigationTableProps {
   luceneData: number[];
 }
 
-interface InvestigationTableDispatchProps {
+interface DatasetTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
+  fetchData: (luceneData: number[], offsetParams?: IndexRange) => Promise<void>;
+  //   fetchCount: (datasetId: number) => Promise<void>;
+  clearTable: () => Action;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchData: (luceneData: number[], offsetParams: IndexRange) => Promise<void>;
-  // fetchCount: ( luceneData: number[]) => Promise<void>;
-  fetchAllIds: (luceneData: number[]) => Promise<void>;
-  clearTable: () => Action;
+  //   fetchAllIds: () => Promise<void>;
 }
 
-type InvestigationTableCombinedProps = InvestigationTableProps &
-  InvestigationTableDispatchProps;
+type DatasetTableCombinedProps = DatasetTableProps &
+  DatasetTableStoreProps &
+  DatasetTableDispatchProps;
 
-const InvestigationSearchTable = (
-  props: InvestigationTableCombinedProps
+const DatasetSearchTable = (
+  props: DatasetTableCombinedProps
 ): React.ReactElement => {
   const {
     data,
     totalDataCount,
     fetchData,
     // fetchCount,
-    clearTable,
     sort,
     sortTable,
     filters,
     filterTable,
+    // investigationId,
     cartItems,
     addToCart,
     removeFromCart,
+    clearTable,
     allIds,
-    fetchAllIds,
-    luceneData,
+    // fetchAllIds,
     loading,
+    luceneData,
   } = props;
 
   const selectedRows = React.useMemo(
@@ -83,12 +90,30 @@ const InvestigationSearchTable = (
       cartItems
         .filter(
           cartItem =>
-            cartItem.entityType === 'investigation' &&
+            cartItem.entityType === 'dataset' &&
             allIds.includes(cartItem.entityId)
         )
         .map(cartItem => cartItem.entityId),
     [cartItems, allIds]
   );
+
+  React.useEffect(() => {
+    clearTable();
+  }, [clearTable, luceneData]);
+
+  useAfterMountEffect(() => {
+    // fetchCount(parseInt(luceneData));
+    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
+    // fetchAllIds();
+  }, [
+    //   fetchCount,
+    fetchData,
+    //   fetchAllIds,
+    sort,
+    filters,
+    //  investigationId
+    luceneData,
+  ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -106,23 +131,6 @@ const InvestigationSearchTable = (
     />
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable, luceneData]);
-
-  useAfterMountEffect(() => {
-    // fetchCount();
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
-    fetchAllIds(luceneData);
-  }, [
-    // fetchCount,
-    fetchData,
-    fetchAllIds,
-    sort,
-    filters,
-    luceneData,
-  ]);
-
   return (
     <Table
       loading={loading}
@@ -136,76 +144,45 @@ const InvestigationSearchTable = (
       onCheck={addToCart}
       onUncheck={removeFromCart}
       detailsPanel={({ rowData }) => {
-        const investigationData = rowData as Investigation;
+        const datasetData = rowData as Dataset;
         return (
           <div>
             <Typography>
-              <b>Proposal:</b> {investigationData.RB_NUMBER}
+              <b>Name:</b> {datasetData.NAME}
             </Typography>
             <Typography>
-              <b>Title:</b> {investigationData.TITLE}
-            </Typography>
-            <Typography>
-              <b>Start Date:</b> {investigationData.STARTDATE}
-            </Typography>
-            <Typography>
-              <b>End Date:</b> {investigationData.ENDDATE}
+              <b>Description:</b> {datasetData.NAME}
             </Typography>
           </div>
         );
       }}
       columns={[
         {
-          label: 'Title',
-          dataKey: 'TITLE',
-          // cellContentRenderer: (props: TableCellProps) => {
-          //   const investigationData = props.rowData as Investigation;
-          //   return investigationLink(
-          //     investigationData.ID,
-          //     investigationData.TITLE
-          //   );
-          // },
+          label: 'Name',
+          dataKey: 'NAME',
+          //   cellContentRenderer: props => {
+          //     const datasetData = props.rowData as Dataset;
+          //     return datasetLink(
+          //       investigationId,
+          //       datasetData.ID,
+          //       datasetData.NAME
+          //     );
+          //   },
           filterComponent: textFilter,
         },
         {
-          label: 'Visit ID',
-          dataKey: 'VISIT_ID',
-          filterComponent: textFilter,
+          label: 'Datafile Count',
+          dataKey: 'DATAFILE_COUNT',
         },
         {
-          label: 'RB Number',
-          dataKey: 'RB_NUMBER',
-          filterComponent: textFilter,
-        },
-        {
-          label: 'DOI',
-          dataKey: 'DOI',
-          filterComponent: textFilter,
-        },
-        {
-          label: 'Dataset Count',
-          dataKey: 'DATASET_COUNT',
-        },
-        {
-          label: 'Instrument',
-          dataKey: 'INSTRUMENT.NAME',
-          filterComponent: textFilter,
-        },
-        {
-          label: 'Start Date',
-          dataKey: 'STARTDATE',
+          label: 'Create Time',
+          dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
-          },
         },
         {
-          label: 'End Date',
-          dataKey: 'ENDDATE',
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
-          },
         },
       ]}
     />
@@ -213,15 +190,16 @@ const InvestigationSearchTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): InvestigationTableDispatchProps => ({
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: DatasetTableProps
+): DatasetTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (luceneData: number[], offsetParams?: IndexRange) =>
     dispatch(
-      fetchInvestigations({
+      fetchDatasets({
         offsetParams,
         additionalFilters: [
           {
@@ -233,16 +211,35 @@ const mapDispatchToProps = (
         ],
       })
     ),
-  // fetchCount: () => dispatch(fetchInvestigationCount()),
+  //   fetchCount: (investigationId: number) =>
+  //     dispatch(
+  //       fetchDatasetCount([
+  //         {
+  //           filterType: 'where',
+  //           filterValue: JSON.stringify({
+  //             INVESTIGATION_ID: { eq: investigationId },
+  //           }),
+  //         },
+  //       ])
+  //     ),
   clearTable: () => dispatch(clearTable()),
-  addToCart: (entityIds: number[]) =>
-    dispatch(addToCart('investigation', entityIds)),
+  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('investigation', entityIds)),
-  fetchAllIds: () => dispatch(fetchAllIds('investigation')),
+    dispatch(removeFromCart('dataset', entityIds)),
+  //   fetchAllIds: () =>
+  //     dispatch(
+  //       fetchAllIds('dataset', [
+  //         {
+  //           filterType: 'where',
+  //           filterValue: JSON.stringify({
+  //             INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+  //           }),
+  //         },
+  //       ])
+  //     ),
 });
 
-const mapStateToProps = (state: StateType): InvestigationTableProps => {
+const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
   return {
     sort: state.dgcommon.sort,
     filters: state.dgcommon.filters,
@@ -252,11 +249,8 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
-    luceneData: state.dgsearch.searchData.investigation,
+    luceneData: state.dgsearch.searchData.datafile,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvestigationSearchTable);
+export default connect(mapStateToProps, mapDispatchToProps)(DatasetSearchTable);

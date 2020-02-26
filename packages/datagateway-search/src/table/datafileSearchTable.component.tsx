@@ -47,13 +47,14 @@ interface DatafileSearchTableStoreProps {
   cartItems: DownloadCartItem[];
   allIds: number[];
   luceneData: number[];
+  requestReceived: boolean;
 }
 
 interface DatafileSearchTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (luceneData: number[], offsetParams: IndexRange) => Promise<void>;
-  // fetchCount: (datasetId: number) => Promise<void>;
+  // fetchCount: (luceneData: number[]) => Promise<void>;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
@@ -87,6 +88,7 @@ const DatafileSearchTable = (
     luceneData,
     fetchAllIds,
     loading,
+    requestReceived,
   } = props;
 
   const selectedRows = React.useMemo(
@@ -103,10 +105,13 @@ const DatafileSearchTable = (
 
   React.useEffect(() => {
     clearTable();
-  }, [clearTable]);
+  }, [clearTable, luceneData]);
 
   useAfterMountEffect(() => {
     // fetchCount(luceneData);
+
+    // if luceneData has changed- resend all of this
+
     fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
 
     fetchAllIds(luceneData);
@@ -117,6 +122,7 @@ const DatafileSearchTable = (
     sort,
     filters,
     // datasetId
+    luceneData,
   ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -229,7 +235,8 @@ const mapDispatchToProps = (
         ],
       })
     ),
-  // fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
+  // fetchCount: (luceneData: number[]) =>
+  //   dispatch(fetchDatafileCount(luceneData)),
   downloadData: (datafileId: number, filename: string) =>
     dispatch(downloadDatafile(datafileId, filename)),
   addToCart: (entityIds: number[]) =>
@@ -265,6 +272,7 @@ const mapStateToProps = (
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    requestReceived: state.dgsearch.requestReceived,
   };
 };
 

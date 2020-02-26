@@ -1,8 +1,6 @@
 import React from 'react';
 import './App.css';
-import Header from './search/Header.component';
 import * as log from 'loglevel';
-import Grid from '@material-ui/core/Grid';
 import SearchPageContainer from './searchPageContainer.component';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
@@ -12,9 +10,6 @@ import {
   StylesProvider,
 } from '@material-ui/core/styles';
 import { Provider } from 'react-redux';
-
-import { Switch, Route, RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
