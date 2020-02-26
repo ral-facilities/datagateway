@@ -957,7 +957,7 @@ describe('Add/remove from cart functionality', () => {
       });
     });
 
-    describe.only('in ISIS my data table', () => {
+    describe('in ISIS my data table', () => {
       beforeEach(() => {
         cy.visit('/my-data/ISIS');
       });
