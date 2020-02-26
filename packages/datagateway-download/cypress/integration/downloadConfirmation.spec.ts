@@ -77,6 +77,15 @@ describe('Download Confirmation', () => {
   });
 
   it('should be able to submit a download request and start immediate download with default values (HTTPS)', () => {
+    // Stub our download request; requires setting an empty response
+    // and the response status to 204 (so the response is not handled).
+    cy.route({
+      method: 'HEAD',
+      url: '**/getData**',
+      response: {},
+      status: 204,
+    }).as('downloadFile');
+
     // Ensure our access method is HTTPS before starting an immediate download.
     cy.contains('[aria-label="confirm-access-method"]', 'HTTPS').should(
       'exist'
@@ -84,6 +93,7 @@ describe('Download Confirmation', () => {
 
     // Click on the download button.
     cy.get('#download-confirmation-download').click();
+    cy.wait('@downloadFile');
 
     // Ensure the correct message and download details are shown.
     cy.contains(
@@ -103,7 +113,7 @@ describe('Download Confirmation', () => {
   });
 
   it('should be able to submit a download request with altered access method (Globus)', () => {
-    // Ensure our access method is HTTPS before starting an immediate download.
+    // Ensure our access method is Globus before starting an immediate download.
     cy.get('[aria-label="confirm-access-method"]')
       .should('exist')
       .click();
@@ -176,9 +186,26 @@ describe('Download Confirmation', () => {
   });
 
   // This needs to be implemented once the tab has been included into the code.
-  // it('should be able to link to the downloads status tab upon successful download confirmation', () => {
+  it('should be able to link to the downloads status tab upon successful download confirmation', () => {
+    cy.get('[aria-label="confirm-access-method"]')
+      .should('exist')
+      .click();
 
-  // });
+    cy.contains('#confirm-access-method-globus', 'Globus')
+      .should('exist')
+      .click();
+
+    cy.get('#download-confirmation-download').click();
+
+    cy.get('#download-confirmation-success').should('exist');
+
+    // Click on the download status link and expect the download
+    // status panel to have been displayed.
+    cy.contains('#download-confirmation-status-link', 'View My Downloads')
+      .should('exist')
+      .click();
+    cy.get('[aria-label="Download status panel"]').should('exist');
+  });
 
   it('should be able to close the download confirmation dialog', () => {
     cy.get('[aria-label="download-confirmation-close"]').should('exist');

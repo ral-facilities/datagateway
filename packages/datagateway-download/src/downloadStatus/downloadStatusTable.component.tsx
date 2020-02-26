@@ -36,7 +36,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   const { refreshTable, setRefreshTable, setLastChecked } = props;
 
-  console.log('Data loaded: ', dataLoaded);
+  // console.log('Data loaded: ', dataLoaded);
 
   React.useEffect(() => {
     if (!dataLoaded || refreshTable) {
@@ -88,11 +88,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   );
 
   // Handle filtering for both text and date filters.
-  console.log('Filters: ', filters);
+  // console.log('Filters: ', filters);
   const sortedAndFilteredData = React.useMemo(() => {
-    console.log(data.length);
+    // console.log(data.length);
     const filteredData = data.filter(item => {
-      console.log('Current item: ', item);
+      // console.log('Current item: ', item);
       for (let [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (tableValue !== undefined && typeof tableValue === 'string') {
@@ -127,7 +127,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     });
 
     function sortDownloadItems(a: Download, b: Download): number {
-      console.log('Sort items: ', sort);
+      // console.log('Sort items: ', sort);
       for (let [sortColumn, sortDirection] of Object.entries(sort)) {
         if (sortDirection === 'asc') {
           if (a[sortColumn] > b[sortColumn]) {

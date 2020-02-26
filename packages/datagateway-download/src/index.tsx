@@ -44,7 +44,7 @@ document.addEventListener('scigateway', e => {
     // not updating after the size of the page has been altered.
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('resize'));
-      console.log('resize done');
+      // console.log('resize done');
     }, 125);
 
     render();

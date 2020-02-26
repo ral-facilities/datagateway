@@ -59,13 +59,19 @@ const downloadsInfo = [
   },
 ];
 
-Cypress.Commands.add('login', (username, password) => {
+Cypress.Commands.add('login', (username, password, noRootCredentials) => {
   // cy.request('POST', `http://scigateway-preprod.esc.rl.ac.uk:5000/sessions`, {
   //   username: username,
   //   password: password,
   // }).then(response => {
   //   window.localStorage.setItem('daaas:token', response.body.sessionID);
   // });
+
+  let credentials = !noRootCredentials
+    ? [{ username: 'root' }, { password: 'pw' }]
+    : [{ username: username }, { password: password }];
+  // console.log('rootCredentials: ', noRootCredentials);
+  // console.log(username, password);
 
   // TODO: replace with getting from daaas:token when supported
   cy.request({
@@ -74,7 +80,7 @@ Cypress.Commands.add('login', (username, password) => {
     body: {
       json: JSON.stringify({
         plugin: 'simple',
-        credentials: [{ username: username }, { password: password }],
+        credentials: credentials,
       }),
     },
     form: true,
@@ -108,7 +114,7 @@ Cypress.Commands.add('seedDownloadCart', () => {
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
 
-  console.log('Download cart items: ', items);
+  // console.log('Download cart items: ', items);
 
   cy.request({
     method: 'POST',
@@ -138,21 +144,6 @@ Cypress.Commands.add('addCartItem', cartItem => {
   });
 });
 
-// Cypress.Commands.add('setDownload', (downloadId, showDownload) => {
-//   // TODO: get url and facility from settings
-
-//   cy.request({
-//     method: 'PUT',
-//     url: `https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/${downloadId}/isDeleted`,
-//     body: {
-//       sessionId: window.localStorage.getItem('icat:token'),
-//       facilityName: 'LILS',
-//       value: showDownload,
-//     },
-//     form: true,
-//   });
-// });
-
 Cypress.Commands.add('seedDownloads', () => {
   let i = 1;
   for (var info of downloadsInfo) {
@@ -169,7 +160,7 @@ Cypress.Commands.add('seedDownloads', () => {
     });
 
     // Submit each download request.
-    console.log('Info: ', info.submitDetails);
+    // console.log('Info: ', info.submitDetails);
     cy.request({
       method: 'POST',
       url:
@@ -180,8 +171,6 @@ Cypress.Commands.add('seedDownloads', () => {
         zipType: 'ZIP',
       },
       form: true,
-    }).then(response => {
-      console.log(response);
     });
   }
 
@@ -207,11 +196,13 @@ Cypress.Commands.add('seedDownloads', () => {
           value: downloadsInfo[i].availability,
         },
         form: true,
-      }).then(() => {
-        console.log(
-          `Changed status of download ${download.id} to ${downloadsInfo[i].availability}`
-        );
       });
+
+      // .then(() => {
+      // console.log(
+      // `Changed status of download ${download.id} to ${downloadsInfo[i].availability}`
+      // );
+      // });
     }
   });
 });
@@ -233,7 +224,7 @@ Cypress.Commands.add('clearDownloads', () => {
     const downloads = response.body;
     for (let i in downloads) {
       const download = downloads[i];
-      console.log('Deleting download with ID: ', download.id);
+      // console.log('Deleting download with ID: ', download.id);
 
       cy.request({
         method: 'PUT',

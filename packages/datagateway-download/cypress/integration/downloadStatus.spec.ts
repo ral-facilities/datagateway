@@ -1,7 +1,7 @@
 describe('Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
-    cy.login('download-e2e-tests', 'pw');
+    cy.login('download-e2e-tests', 'pw', true);
 
     // Seed the initial downloads.
     cy.clearDownloads();
@@ -9,7 +9,7 @@ describe('Download Status', () => {
 
   beforeEach(() => {
     // TODO: Re-enable this.
-    // Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login('download-e2e-tests', 'pw');
@@ -30,8 +30,6 @@ describe('Download Status', () => {
   });
 
   afterEach(() => {
-    // cy.clearDownloads();
-
     // Ensure to clear sessionStorage to prevent the app
     // storing tab data.
     sessionStorage.clear();
@@ -226,7 +224,7 @@ describe('Download Status', () => {
 
   // We are not clicking and proceeding to download the item in this test
   // but instead checking that the link exists and it is possible to be clicked.
-  it('should have download link for an item', () => {
+  it('should have a download link for an item', () => {
     cy.contains('[aria-colindex="1"]', 'test-file-1')
       .should('be.visible')
       .and('not.be.disabled');
