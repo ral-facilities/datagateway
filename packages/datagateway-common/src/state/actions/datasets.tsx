@@ -32,9 +32,10 @@ import { batch } from 'react-redux';
 import axios from 'axios';
 import { getApiFilter } from '.';
 import { fetchDatasetDatafilesCount } from './datafiles';
-import * as log from 'loglevel';
 import { IndexRange } from 'react-virtualized';
 import { Dataset } from '../../app.types';
+import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchDatasetsSuccess = (
   datasets: Dataset[],
@@ -108,8 +109,7 @@ export const fetchDatasetSize = (
       await axios
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
-            // TODO: Get session ID from somewhere else (extract from JWT)
-            sessionId: window.localStorage.getItem('icat:token'),
+            sessionId: readSciGatewayToken().sessionId,
             facilityName: 'LILS',
             entityType: 'dataset',
             entityId: datasetId,
@@ -119,7 +119,7 @@ export const fetchDatasetSize = (
           dispatch(fetchDatasetSizeSuccess(datasetId, response.data));
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchDatasetSizeFailure(error.message));
         });
     }
@@ -171,7 +171,7 @@ export const fetchDatasets = (
       .get(`${apiUrl}/datasets`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -197,7 +197,7 @@ export const fetchDatasets = (
         }
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatasetsFailure(error.message));
       });
   };
@@ -257,14 +257,14 @@ export const fetchDatasetCount = (
       .get(`${apiUrl}/datasets/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchDatasetCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatasetCountFailure(error.message));
       });
   };
@@ -302,9 +302,8 @@ export const downloadDataset = (
 
     const { idsUrl } = getState().dgcommon.urls;
 
-    // TODO: get ICAT session id properly when auth is sorted
     const params = {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       datasetIds: datasetId,
       compress: false,
       zip: true,
@@ -388,9 +387,7 @@ export const fetchInvestigationDatasetsCount = (
         .get(`${apiUrl}/datasets/count`, {
           params,
           headers: {
-            Authorization: `Bearer ${window.localStorage.getItem(
-              'daaas:token'
-            )}`,
+            Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
           },
           cancelToken: source.token,
         })
@@ -404,7 +401,7 @@ export const fetchInvestigationDatasetsCount = (
           );
         })
         .catch(error => {
-          log.error(error.message);
+          handleICATError(error, false);
           dispatch(fetchInvestigationDatasetsCountFailure(error.message));
         });
     }
@@ -450,14 +447,14 @@ export const fetchDatasetDetails = (
       .get(`${apiUrl}/datasets`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchDatasetDetailsSuccess(response.data));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchDatasetDetailsFailure(error.message));
       });
   };

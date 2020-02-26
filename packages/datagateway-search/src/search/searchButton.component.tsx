@@ -13,6 +13,7 @@ import {
 } from '../state/actions/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
+import { readSciGatewayToken } from 'datagateway-common';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -100,7 +101,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
 
     // TODO add in readscigatewaytoken
     const queryParams = {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       query,
       maxCount: 300,
     };

@@ -86,6 +86,7 @@
   },
   "devDependencies": {
     "@types/enzyme": "^3.10.3",
+    "@types/jsrsasign": "^8.0.2",
     "@types/loglevel": "^1.6.3",
     "@types/react-redux": "^7.1.1",
     "@types/react-router": "^5.0.3",
@@ -115,6 +116,7 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.5.0",
     "express": "^4.17.1",
+    "jsrsasign": "^8.0.12",
     "lint-staged": "^9.2.1",
     "prettier": "^1.18.2",
     "react-scripts-rewired": "3.0.1--latest1",

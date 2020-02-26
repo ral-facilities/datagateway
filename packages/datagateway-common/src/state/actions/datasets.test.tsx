@@ -26,12 +26,11 @@ import { StateType, EntityCache } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
 import { Dataset } from '../../app.types';
-
 import { fetchDatasetDatafilesCountRequest } from './datafiles';
+import handleICATError from '../../handleICATError';
 
-jest.mock('loglevel');
+jest.mock('../../handleICATError');
 
 describe('Dataset actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
@@ -77,6 +76,7 @@ describe('Dataset actions', () => {
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -164,9 +164,10 @@ describe('Dataset actions', () => {
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
     expect(actions[1]).toEqual(fetchDatasetsFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('fetchDataset action sends fetchDatasetSize actions when specified via optional parameters', async () => {
@@ -238,9 +239,11 @@ describe('Dataset actions', () => {
     expect(actions[0]).toEqual(fetchDatasetSizeRequest());
     expect(actions[1]).toEqual(fetchDatasetSizeFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith(
+      { message: 'Test error message' },
+      false
+    );
   });
 
   it('dispatches fetchDatasetCountRequest and fetchDatasetCountSuccess actions upon successful fetchDatasetCount action', async () => {
@@ -319,9 +322,10 @@ describe('Dataset actions', () => {
     expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
     expect(actions[1]).toEqual(fetchDatasetCountFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('fetchDatasets applies skip and limit when specified via optional parameters', async () => {
@@ -406,9 +410,10 @@ describe('Dataset actions', () => {
       fetchDatasetDetailsFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon successful fetchInvestigationDatasetsCount action', async () => {
@@ -471,9 +476,11 @@ describe('Dataset actions', () => {
       fetchInvestigationDatasetsCountFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith(
+      { message: 'Test error message' },
+      false
+    );
   });
 
   it('dispatches downloadDatasetRequest and clicks on IDS link upon downloadDataset action', async () => {

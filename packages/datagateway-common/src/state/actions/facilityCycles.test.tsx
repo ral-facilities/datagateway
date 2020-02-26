@@ -12,16 +12,17 @@ import { StateType } from '../app.types';
 import { initialState } from '../reducers/dgcommon.reducer';
 import axios from 'axios';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
 import { FacilityCycle } from '../../app.types';
+import handleICATError from '../../handleICATError';
 
-jest.mock('loglevel');
+jest.mock('../../handleICATError');
 
 describe('FacilityCycle actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -104,9 +105,10 @@ describe('FacilityCycle actions', () => {
       fetchFacilityCyclesFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchFacilityCycleCountRequest and fetchFacilityCycleCountSuccess actions upon successful fetchFacilityCycleCount action', async () => {
@@ -171,9 +173,10 @@ describe('FacilityCycle actions', () => {
       fetchFacilityCycleCountFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('fetchFacilityCycles applies skip and limit when specified via optional parameters', async () => {

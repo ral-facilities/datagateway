@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 import {
   fetchDownloadCartItems,
@@ -13,12 +12,23 @@ import {
   getDownload,
   downloadPreparedCart,
 } from './downloadCartApi';
-import * as log from 'loglevel';
-import { DownloadCartItem } from 'datagateway-common';
+import { DownloadCartItem, handleICATError } from 'datagateway-common';
 
-jest.mock('loglevel');
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    handleICATError: jest.fn(),
+  };
+});
 
 describe('Download Cart API functions test', () => {
+  afterEach(() => {
+    (handleICATError as jest.Mock).mockClear();
+  });
+
   describe('fetchDownloadCartItems', () => {
     it('returns cartItems upon successful response', async () => {
       const downloadCartMockData = {
@@ -80,8 +90,10 @@ describe('Download Cart API functions test', () => {
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS',
         { params: { sessionId: null } }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -122,8 +134,10 @@ describe('Download Cart API functions test', () => {
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: '*' } }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -164,8 +178,10 @@ describe('Download Cart API functions test', () => {
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: 'investigation 1' } }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -200,8 +216,13 @@ describe('Download Cart API functions test', () => {
       expect(axios.get).toHaveBeenCalledWith(
         'https://scigateway-preprod.esc.rl.ac.uk:8181/ids/isTwoLevel'
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        false
+      );
     });
   });
 
@@ -267,8 +288,10 @@ describe('Download Cart API functions test', () => {
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
         params
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -341,8 +364,10 @@ describe('Download Cart API functions test', () => {
           },
         }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -406,8 +431,13 @@ describe('Download Cart API functions test', () => {
           headers: { Authorization: 'Bearer null' },
         }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        false
+      );
     });
 
     it('returns a number upon successful response for non-datafile entityType', async () => {
@@ -456,8 +486,13 @@ describe('Download Cart API functions test', () => {
           },
         }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        false
+      );
     });
   });
 
@@ -518,8 +553,13 @@ describe('Download Cart API functions test', () => {
           headers: { Authorization: 'Bearer null' },
         }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        false
+      );
     });
 
     it('returns a number upon successful response for investigation entityType', async () => {
@@ -574,8 +614,13 @@ describe('Download Cart API functions test', () => {
           headers: { Authorization: 'Bearer null' },
         }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'Test error message',
+        },
+        false
+      );
     });
   });
 
@@ -629,8 +674,13 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toBe(3);
       expect(axios.get).toHaveBeenCalledTimes(3);
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('simulating a failed response');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'simulating a failed response',
+        },
+        false
+      );
     });
   });
 
@@ -694,8 +744,13 @@ describe('Download Cart API functions test', () => {
 
       expect(returnData).toBe(3);
       expect(axios.get).toHaveBeenCalledTimes(4);
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('simulating a failed response');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith(
+        {
+          message: 'simulating a failed response',
+        },
+        false
+      );
     });
   });
 });

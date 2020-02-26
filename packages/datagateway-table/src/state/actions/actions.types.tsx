@@ -1,10 +1,6 @@
 import { ApplicationStrings } from '../app.types';
 
-// // parent app actions
-export const RegisterRouteType = 'daaas:api:register_route';
-export const RequestPluginRerenderType = 'daaas:api:plugin_rerender';
-
-// // internal actions
+// internal actions
 export const ConfigureStringsType = 'datagateway_table:configure_strings';
 export const ConfigureFeatureSwitchesType =
   'datagateway_table:configure_feature_switches';

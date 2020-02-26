@@ -24,6 +24,39 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import jsrsasign from 'jsrsasign';
+
+const parseJwt = token => {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const payload = decodeURIComponent(
+    atob(base64).replace(/(.)/g, function(m, p) {
+      var code = p
+        .charCodeAt(0)
+        .toString(16)
+        .toUpperCase();
+      return '%' + ('00' + code).slice(-2);
+    })
+  );
+  return payload;
+};
+
+export const readSciGatewayToken = () => {
+  const token = window.localStorage.getItem('scigateway:token');
+  let sessionId = null;
+  let username = null;
+  if (token) {
+    const parsedToken = JSON.parse(parseJwt(token));
+    if (parsedToken.sessionId) sessionId = parsedToken.sessionId;
+    if (parsedToken.username) username = parsedToken.username;
+  }
+
+  return {
+    sessionId,
+    username,
+  };
+};
+
 Cypress.Commands.add('login', (username, password) => {
   return cy
     .request('POST', 'http://scigateway-preprod.esc.rl.ac.uk:5000', {
@@ -31,6 +64,18 @@ Cypress.Commands.add('login', (username, password) => {
       password: password,
     })
     .then(response => {
-      window.localStorage.setItem('daaas:token', response.body.sessionID);
+      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+      const payload = {
+        sessionId: response.body.sessionID,
+        username: 'test',
+      };
+      const jwt = jsrsasign.KJUR.jws.JWS.sign(
+        'HS256',
+        jwtHeader,
+        payload,
+        'shh'
+      );
+
+      window.localStorage.setItem('scigateway:token', jwt);
     });
 });
