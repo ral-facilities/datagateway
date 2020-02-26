@@ -77,15 +77,6 @@ describe('Download Confirmation', () => {
   });
 
   it('should be able to submit a download request and start immediate download with default values (HTTPS)', () => {
-    // Stub our download request; requires setting an empty response
-    // and the response status to 204 (so the response is not handled).
-    cy.route({
-      method: 'HEAD',
-      url: '**/getData**',
-      response: {},
-      status: 204,
-    }).as('downloadFile');
-
     // Ensure our access method is HTTPS before starting an immediate download.
     cy.contains('[aria-label="confirm-access-method"]', 'HTTPS').should(
       'exist'
@@ -93,7 +84,6 @@ describe('Download Confirmation', () => {
 
     // Click on the download button.
     cy.get('#download-confirmation-download').click();
-    cy.wait('@downloadFile');
 
     // Ensure the correct message and download details are shown.
     cy.contains(

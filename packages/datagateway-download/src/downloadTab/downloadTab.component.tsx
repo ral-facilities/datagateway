@@ -76,9 +76,10 @@ const DownloadTabs: React.FC = () => {
 
   // Set the initial tab.
   const [selectedTab, setSelectedTab] = React.useState(getTab());
-  const [refreshDownloads, setRefreshDownloads] = React.useState(true);
+  const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [lastChecked, setLastChecked] = React.useState('');
 
+  // TODO: We are not using the event here?
   const handleChange = (event: React.ChangeEvent<{}>, setTab: number): void => {
     // Set the tab in the session storage.
     sessionStorage.setItem('downloadStatusTab', setTab.toString());

@@ -172,45 +172,26 @@ export const downloadPreparedCart: (
     outname: fileName,
   };
 
-  const dataUrl = `${idsUrl}/getData?${Object.entries(params)
+  // Create our IDS link from the query parameters.
+  const link = document.createElement('a');
+  link.href = `${idsUrl}/getData?${Object.entries(params)
     .map(([key, value]) => `${key}=${value}`)
     .join('&')}`;
 
-  // Wrap the link under an XHR so it can be watched.
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState === 4 && this.status === 200) {
-      console.log('DONE');
-      // Create our IDS link from the query parameters.
-      const link = document.createElement('a');
-      // link.href = `${idsUrl}/getData?${Object.entries(params)
-      //   .map(([key, value]) => `${key}=${value}`)
-      //   .join('&')}`;
-      link.href = dataUrl;
+  // We trigger an immediate download which will begin in a new tab.
+  link.style.display = 'none';
+  link.target = '_blank';
+  // TODO: How would I access this from an e2e test?
+  // link.id = 'ids-download';
+  document.body.appendChild(link);
 
-      // We trigger an immediate download which will begin in a new tab.
-      link.style.display = 'none';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
-  };
-  xhttp.open('HEAD', dataUrl, true);
-  xhttp.send();
+  // Prevent the link from being clicked if this is an e2e test.
+  if (process.env.REACT_APP_E2E_TESTING) {
+    return;
+  }
 
-  // // Create our IDS link from the query parameters.
-  // const link = document.createElement('a');
-  // link.href = `${idsUrl}/getData?${Object.entries(params)
-  //   .map(([key, value]) => `${key}=${value}`)
-  //   .join('&')}`;
-
-  // // We trigger an immediate download which will begin in a new tab.
-  // link.style.display = 'none';
-  // link.target = '_blank';
-  // document.body.appendChild(link);
-  // link.click();
-  // link.remove();
+  link.click();
+  link.remove();
 };
 
 export const downloadDeleted: (

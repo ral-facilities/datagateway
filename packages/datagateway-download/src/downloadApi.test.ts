@@ -347,7 +347,7 @@ describe('Download Cart API functions test', () => {
   });
 
   describe('downloadPreparedCart', () => {
-    it('opens a link to download test-file upon successful response for a download request', async () => {
+    it('opens a link to download "test-file" upon successful response for a download request', async () => {
       jest.spyOn(document, 'createElement');
       jest.spyOn(document.body, 'appendChild');
 

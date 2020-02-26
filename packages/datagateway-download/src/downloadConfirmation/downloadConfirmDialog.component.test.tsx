@@ -403,6 +403,8 @@ describe('renders the estimated download speed/time table with varying values', 
         isTwoLevel={false}
         open={true}
         setClose={jest.fn()}
+        setStatus={jest.fn()}
+        clearCart={jest.fn()}
       />
     );
   };

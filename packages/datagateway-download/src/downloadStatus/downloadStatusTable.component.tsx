@@ -39,24 +39,33 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   // console.log('Data loaded: ', dataLoaded);
 
   React.useEffect(() => {
+    console.log('dataLoaded: ', dataLoaded, ' refreshTable: ', refreshTable);
     if (!dataLoaded || refreshTable) {
       // Clear the current contents, this will make sure
       // there is visually a refresh of the table.
       setData([]);
-      setDataLoaded(false);
 
-      // NOTE: facilityName needs to be passed in from a configuration?
-      fetchDownloads('LILS').then(downloads => {
-        setData(downloads);
-        setDataLoaded(true);
-
-        // Set the refresh status to false, so does not refresh unless specified
-        // via a click of the refresh button.
+      // Handle a refresh of the table.
+      if (refreshTable && dataLoaded) {
+        setDataLoaded(false);
         setRefreshTable(false);
-        setLastChecked();
-      });
+      }
+
+      // TODO: facilityName needs to be passed in from a
+      //       configuration file.
+      // TODO: Causes a second fetchDownloads request to be called
+      //       since refreshTable is still true.
+      if (!dataLoaded) {
+        fetchDownloads('LILS').then(downloads => {
+          setData(downloads);
+          setDataLoaded(true);
+
+          // Set the time at which we set the download data.
+          setLastChecked();
+        });
+      }
     }
-  }, [refreshTable, dataLoaded, setLastChecked, setRefreshTable]);
+  }, [dataLoaded, refreshTable, setRefreshTable, setLastChecked]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
