@@ -224,15 +224,18 @@ describe('Download Status', () => {
     });
   });
 
-  // it.only('should be able to download an item', () => {
-  //   cy.route('GET', '**/getData/**', '').as('downloadFile');
+  // We are not clicking and proceeding to download the item in this test
+  // but instead checking that the link exists and it is possible to be clicked.
+  it('should have download link for an item', () => {
+    cy.contains('[aria-colindex="1"]', 'test-file-1')
+      .should('be.visible')
+      .and('not.be.disabled');
 
-  //   cy.contains('[aria-colindex="1"]', 'test-file-1').should('be.visible');
-  //   cy.get('[aria-label="Download test-file-1"]').click({
-  //     force: true,
-  //   });
-  //   // cy.wait('@downloadFile');
-  // });
+    cy.get('a[aria-label="Download test-file-1"]').should('not.be.empty');
+    cy.get('a[aria-label="Download test-file-1"]')
+      .should('have.prop', 'href')
+      .and('contain', 'getData');
+  });
 
   it('should be able to remove a download', () => {
     cy.route('PUT', '**/topcat/user/download/*/isDeleted').as(
