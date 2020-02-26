@@ -4,16 +4,16 @@ import {
   Table,
   TextColumnFilter,
   DateColumnFilter,
-  // investigationLink,
   Order,
   Filter,
   Investigation,
   Entity,
   DownloadCartItem,
   fetchInvestigations,
+  fetchInvestigationCount,
   addToCart,
   removeFromCart,
-  fetchInvestigationCount,
+  investigationLink,
   fetchAllIds,
   sortTable,
   filterTable,
@@ -48,7 +48,7 @@ interface InvestigationTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchData: (luceneData: number[], offsetParams: IndexRange) => Promise<void>;
-  // fetchCount: ( luceneData: number[]) => Promise<void>;
+  fetchCount: (luceneData: number[]) => Promise<void>;
   fetchAllIds: (luceneData: number[]) => Promise<void>;
   clearTable: () => Action;
 }
@@ -63,7 +63,7 @@ const InvestigationSearchTable = (
     data,
     totalDataCount,
     fetchData,
-    // fetchCount,
+    fetchCount,
     clearTable,
     sort,
     sortTable,
@@ -111,17 +111,10 @@ const InvestigationSearchTable = (
   }, [clearTable, luceneData]);
 
   useAfterMountEffect(() => {
-    // fetchCount();
+    fetchCount(luceneData);
     fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
     fetchAllIds(luceneData);
-  }, [
-    // fetchCount,
-    fetchData,
-    fetchAllIds,
-    sort,
-    filters,
-    luceneData,
-  ]);
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   return (
     <Table
@@ -158,13 +151,13 @@ const InvestigationSearchTable = (
         {
           label: 'Title',
           dataKey: 'TITLE',
-          // cellContentRenderer: (props: TableCellProps) => {
-          //   const investigationData = props.rowData as Investigation;
-          //   return investigationLink(
-          //     investigationData.ID,
-          //     investigationData.TITLE
-          //   );
-          // },
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            return investigationLink(
+              investigationData.ID,
+              investigationData.TITLE
+            );
+          },
           filterComponent: textFilter,
         },
         {
@@ -174,7 +167,7 @@ const InvestigationSearchTable = (
         },
         {
           label: 'RB Number',
-          dataKey: 'RB_NUMBER',
+          dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
@@ -185,10 +178,23 @@ const InvestigationSearchTable = (
         {
           label: 'Dataset Count',
           dataKey: 'DATASET_COUNT',
+          disableSort: true,
         },
         {
           label: 'Instrument',
-          dataKey: 'INSTRUMENT.NAME',
+          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
+          cellContentRenderer: (props: TableCellProps) => {
+            const investigationData = props.rowData as Investigation;
+            if (
+              investigationData.INVESTIGATIONINSTRUMENT &&
+              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+            ) {
+              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+                .FULLNAME;
+            } else {
+              return '';
+            }
+          },
           filterComponent: textFilter,
         },
         {
@@ -223,6 +229,7 @@ const mapDispatchToProps = (
     dispatch(
       fetchInvestigations({
         offsetParams,
+        getDatasetCount: true,
         additionalFilters: [
           {
             filterType: 'where',
@@ -230,10 +237,16 @@ const mapDispatchToProps = (
               ID: { in: luceneData },
             }),
           },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify({
+              INVESTIGATIONINSTRUMENT: 'INSTRUMENT',
+            }),
+          },
         ],
       })
     ),
-  // fetchCount: () => dispatch(fetchInvestigationCount()),
+  fetchCount: () => dispatch(fetchInvestigationCount()),
   clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) =>
     dispatch(addToCart('investigation', entityIds)),

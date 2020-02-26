@@ -2,7 +2,6 @@ import React from 'react';
 import { Typography, IconButton } from '@material-ui/core';
 import {
   Table,
-  TableActionProps,
   formatBytes,
   TextColumnFilter,
   DateColumnFilter,
@@ -28,11 +27,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import useAfterMountEffect from '../state/utils';
 
-interface DatafileSearchTableProps {
-  // luceneData: number[];
-  // luceneData: string;
-}
-
 interface DatafileSearchTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -54,7 +48,7 @@ interface DatafileSearchTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (luceneData: number[], offsetParams: IndexRange) => Promise<void>;
-  // fetchCount: (luceneData: number[]) => Promise<void>;
+  fetchCount: (luceneData: number[]) => Promise<void>;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
@@ -62,8 +56,7 @@ interface DatafileSearchTableDispatchProps {
   clearTable: () => Action;
 }
 
-type DatafileSearchTableCombinedProps = DatafileSearchTableProps &
-  DatafileSearchTableStoreProps &
+type DatafileSearchTableCombinedProps = DatafileSearchTableStoreProps &
   DatafileSearchTableDispatchProps;
 
 const DatafileSearchTable = (
@@ -73,12 +66,11 @@ const DatafileSearchTable = (
     data,
     totalDataCount,
     fetchData,
-    // fetchCount,
+    fetchCount,
     sort,
     sortTable,
     filters,
     filterTable,
-    // datasetId,
     downloadData,
     cartItems,
     addToCart,
@@ -108,22 +100,10 @@ const DatafileSearchTable = (
   }, [clearTable, luceneData]);
 
   useAfterMountEffect(() => {
-    // fetchCount(luceneData);
-
-    // if luceneData has changed- resend all of this
-
+    fetchCount(luceneData);
     fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
-
     fetchAllIds(luceneData);
-  }, [
-    // fetchCount,
-    fetchData,
-    fetchAllIds,
-    sort,
-    filters,
-    // datasetId
-    luceneData,
-  ]);
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -144,22 +124,6 @@ const DatafileSearchTable = (
   return (
     <Table
       loading={false}
-      // data={[
-      //   {
-      //     ID: 4,
-      //     NAME: 'data',
-      //     MOD_TIME: '9:00 1.1.20',
-      //     CREATE_TIME: '8:00 1.1.20',
-      //     INVESTIGATION_ID: 24,
-      //   },
-      //   {
-      //     ID: 5,
-      //     NAME: 'data2',
-      //     MOD_TIME: '11:00 2.11.20',
-      //     CREATE_TIME: '8:00 1.1.19',
-      //     INVESTIGATION_ID: 22,
-      //   },
-      // ]}
       data={data}
       loadMoreRows={params => fetchData(luceneData, params)}
       totalRowCount={totalDataCount}
@@ -214,8 +178,7 @@ const DatafileSearchTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>,
-  ownProps: DatafileSearchTableProps
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DatafileSearchTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -235,8 +198,17 @@ const mapDispatchToProps = (
         ],
       })
     ),
-  // fetchCount: (luceneData: number[]) =>
-  //   dispatch(fetchDatafileCount(luceneData)),
+  fetchCount: (luceneData: number[]) =>
+    dispatch(
+      fetchDatafileCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            ID: { in: luceneData },
+          }),
+        },
+      ])
+    ),
   downloadData: (datafileId: number, filename: string) =>
     dispatch(downloadDatafile(datafileId, filename)),
   addToCart: (entityIds: number[]) =>
@@ -244,7 +216,6 @@ const mapDispatchToProps = (
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('datafile', entityIds)),
   fetchAllIds: (luceneData: number[]) =>
-    // ??? const{luceneData} = props;
     dispatch(
       fetchAllIds('datafile', [
         {
@@ -258,10 +229,7 @@ const mapDispatchToProps = (
   clearTable: () => dispatch(clearTable()),
 });
 
-const mapStateToProps = (
-  state: StateType,
-  ownProps: DatafileSearchTableProps
-): DatafileSearchTableStoreProps => {
+const mapStateToProps = (state: StateType): DatafileSearchTableStoreProps => {
   return {
     sort: state.dgcommon.sort,
     filters: state.dgcommon.filters,

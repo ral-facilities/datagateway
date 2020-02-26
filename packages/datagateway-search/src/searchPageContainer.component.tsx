@@ -1,9 +1,8 @@
 import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-import Container from '@material-ui/core/Container';
 
-import { Grid, Typography, Paper } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 
 import SearchPageTable from './pageSearchTable.component';
 import SearchBoxContainer from './searchBoxContainer.component';
@@ -15,7 +14,7 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
 
   public render(): React.ReactElement {
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: 'calc(100vw)' }}>
         <Grid
           container
           direction="row"
@@ -33,7 +32,7 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
             <Paper
               style={{
                 height: 'calc(100vh)',
-                width: 'calc(60vw)',
+                width: 'calc(80vw)',
               }}
             >
               <SearchPageTable />

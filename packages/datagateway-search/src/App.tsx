@@ -5,6 +5,11 @@ import SearchPageContainer from './searchPageContainer.component';
 import thunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
+import { createLogger } from 'redux-logger';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { createBrowserHistory } from 'history';
+import { DGCommonMiddleware } from 'datagateway-common';
 import {
   createGenerateClassName,
   StylesProvider,
@@ -16,9 +21,11 @@ const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-const middleware = [thunk];
+const history = createBrowserHistory();
+const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
+
 const store = createStore(
-  AppReducer,
+  AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))
 );
 
@@ -30,6 +37,12 @@ const generateClassName = createGenerateClassName({
   disableGlobal:
     process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
 });
+
+if (process.env.NODE_ENV === `development`) {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const logger = (createLogger as any)();
+  middleware.push(logger);
+}
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -68,9 +81,11 @@ class App extends React.Component<{}, { hasError: boolean }> {
           className="App"
         >
           <Provider store={store}>
-            <StylesProvider generateClassName={generateClassName}>
-              <SearchPageContainer />
-            </StylesProvider>
+            <ConnectedRouter history={history}>
+              <StylesProvider generateClassName={generateClassName}>
+                <SearchPageContainer />
+              </StylesProvider>
+            </ConnectedRouter>
           </Provider>
         </div>
       );

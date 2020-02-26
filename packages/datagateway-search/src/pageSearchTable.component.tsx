@@ -2,14 +2,9 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-
-import { Switch, Route, RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
-
 import InvestigationSearchTable from './table/investigationSearchTable.component';
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
@@ -31,7 +26,7 @@ function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
   return (
-    <Typography
+    <Box
       component="div"
       role="tabpanel"
       hidden={value !== index}
@@ -40,7 +35,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
+    </Box>
   );
 }
 
@@ -90,7 +85,6 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
       </Box>
     );
 };
-// };
 
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {

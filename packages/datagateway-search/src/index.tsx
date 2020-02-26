@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === `development`) {
 
   // TODO: get urls from settings file
   const icatUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat';
-  const apiUrl = 'https://scigateway-preprod.esc.rl.ac.uk:5000/';
+  const apiUrl = 'http://scigateway-preprod.esc.rl.ac.uk:5000';
   axios
     .post(
       `${icatUrl}/session`,

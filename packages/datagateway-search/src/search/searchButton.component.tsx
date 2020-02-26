@@ -99,12 +99,12 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
       query.upper = stringEndDate;
     }
 
-    // TODO add in readscigatewaytoken
     const queryParams = {
       sessionId: readSciGatewayToken().sessionId,
       query,
       maxCount: 300,
     };
+
     return queryParams;
   };
 

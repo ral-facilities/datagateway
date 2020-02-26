@@ -4,7 +4,6 @@ import {
   Table,
   TextColumnFilter,
   DateColumnFilter,
-  datasetLink,
   Order,
   Filter,
   Dataset,
@@ -14,10 +13,11 @@ import {
   addToCart,
   removeFromCart,
   fetchDatasetCount,
-  //   fetchAllIds,
+  fetchAllIds,
   sortTable,
   filterTable,
   clearTable,
+  fetchInvestigationCount,
 } from 'datagateway-common';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
@@ -26,10 +26,6 @@ import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../state/utils';
-
-interface DatasetTableProps {
-  //   investigationId: string;
-}
 
 interface DatasetTableStoreProps {
   sort: {
@@ -51,15 +47,14 @@ interface DatasetTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
   fetchData: (luceneData: number[], offsetParams?: IndexRange) => Promise<void>;
-  //   fetchCount: (datasetId: number) => Promise<void>;
+  fetchCount: (luceneData: number[]) => Promise<void>;
   clearTable: () => Action;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  //   fetchAllIds: () => Promise<void>;
+  fetchAllIds: (luceneData: number[]) => Promise<void>;
 }
 
-type DatasetTableCombinedProps = DatasetTableProps &
-  DatasetTableStoreProps &
+type DatasetTableCombinedProps = DatasetTableStoreProps &
   DatasetTableDispatchProps;
 
 const DatasetSearchTable = (
@@ -69,18 +64,17 @@ const DatasetSearchTable = (
     data,
     totalDataCount,
     fetchData,
-    // fetchCount,
+    fetchCount,
     sort,
     sortTable,
     filters,
     filterTable,
-    // investigationId,
     cartItems,
     addToCart,
     removeFromCart,
     clearTable,
     allIds,
-    // fetchAllIds,
+    fetchAllIds,
     loading,
     luceneData,
   } = props;
@@ -102,18 +96,10 @@ const DatasetSearchTable = (
   }, [clearTable, luceneData]);
 
   useAfterMountEffect(() => {
-    // fetchCount(parseInt(luceneData));
+    fetchCount(luceneData);
     fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
-    // fetchAllIds();
-  }, [
-    //   fetchCount,
-    fetchData,
-    //   fetchAllIds,
-    sort,
-    filters,
-    //  investigationId
-    luceneData,
-  ]);
+    fetchAllIds(luceneData);
+  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -160,19 +146,12 @@ const DatasetSearchTable = (
         {
           label: 'Name',
           dataKey: 'NAME',
-          //   cellContentRenderer: props => {
-          //     const datasetData = props.rowData as Dataset;
-          //     return datasetLink(
-          //       investigationId,
-          //       datasetData.ID,
-          //       datasetData.NAME
-          //     );
-          //   },
           filterComponent: textFilter,
         },
         {
           label: 'Datafile Count',
           dataKey: 'DATAFILE_COUNT',
+          disableSort: true,
         },
         {
           label: 'Create Time',
@@ -190,8 +169,7 @@ const DatasetSearchTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>,
-  ownProps: DatasetTableProps
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DatasetTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
@@ -211,32 +189,33 @@ const mapDispatchToProps = (
         ],
       })
     ),
-  //   fetchCount: (investigationId: number) =>
-  //     dispatch(
-  //       fetchDatasetCount([
-  //         {
-  //           filterType: 'where',
-  //           filterValue: JSON.stringify({
-  //             INVESTIGATION_ID: { eq: investigationId },
-  //           }),
-  //         },
-  //       ])
-  //     ),
+  // fetchCount: (luceneData: number[]) =>
+  //   dispatch(
+  //     fetchDatasetCount([
+  //       {
+  //         filterType: 'where',
+  //         filterValue: JSON.stringify({
+  //           ID: { in: luceneData },
+  //         }),
+  //       },
+  //     ])
+  //   ),
+  fetchCount: () => dispatch(fetchDatasetCount()),
   clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
-  //   fetchAllIds: () =>
-  //     dispatch(
-  //       fetchAllIds('dataset', [
-  //         {
-  //           filterType: 'where',
-  //           filterValue: JSON.stringify({
-  //             INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
-  //           }),
-  //         },
-  //       ])
-  //     ),
+  fetchAllIds: (luceneData: number[]) =>
+    dispatch(
+      fetchAllIds('dataset', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            ID: { in: luceneData },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
