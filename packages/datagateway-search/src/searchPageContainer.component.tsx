@@ -1,10 +1,12 @@
 import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
+import { Switch, Route, RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { Grid, Paper } from '@material-ui/core';
 
-import SearchPageTable from './pageSearchTable.component';
+import SearchPageTable from './searchPageTable';
 import SearchBoxContainer from './searchBoxContainer.component';
 
 class SearchPageContainer extends React.Component<{ entityCount: number }> {
@@ -14,32 +16,39 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
 
   public render(): React.ReactElement {
     return (
-      <div style={{ width: 'calc(100vw)' }}>
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="flex-start"
-          spacing={3}
-        >
-          <Grid item aria-label="container-search-filters">
-            <Paper style={{ height: '100%', width: '100%' }}>
-              <SearchBoxContainer />
-            </Paper>
-          </Grid>
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={() => <Link to="/search/data">Search data</Link>}
+        />
+        <div style={{ width: 'calc(100vw)' }}>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+            spacing={2}
+          >
+            <Grid item aria-label="container-search-filters">
+              <Paper style={{ height: '100%', width: '100%' }}>
+                <SearchBoxContainer />
+              </Paper>
+            </Grid>
 
-          <Grid item aria-label="container-search-table">
-            <Paper
-              style={{
-                height: 'calc(100vh)',
-                width: 'calc(70vw)',
-              }}
-            >
-              <SearchPageTable />
-            </Paper>
+            <Grid item aria-label="container-search-table">
+              <Paper
+                style={{
+                  height: 'calc(90vh)',
+                  width: 'calc(70vw)',
+                }}
+              >
+                <SearchPageTable />
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div>
+      </Switch>
     );
   }
 }

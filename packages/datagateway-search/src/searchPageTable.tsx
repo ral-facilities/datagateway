@@ -3,6 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import { Paper } from '@material-ui/core';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import InvestigationSearchTable from './table/investigationSearchTable.component';
@@ -62,6 +63,7 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
+
             // indicatorColor="primary"
             // textColor="primary"
           >
@@ -71,23 +73,43 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
           </Tabs>
         </AppBar>
         <TabPanel value={value} index={0}>
-          <DatafileSearchTable />
+          <Paper
+            style={{
+              height: 'calc(80vh)',
+              width: 'calc(70vw)',
+            }}
+            elevation={0}
+          >
+            <DatafileSearchTable />
+          </Paper>
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <DatasetSearchTable />
+          <Paper
+            style={{
+              height: 'calc(80vh)',
+              width: 'calc(70vw)',
+            }}
+            elevation={0}
+          >
+            <DatasetSearchTable />
+          </Paper>
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <InvestigationSearchTable />
+          <Paper
+            style={{
+              height: 'calc(80vh)',
+              width: 'calc(70vw)',
+            }}
+            elevation={0}
+          >
+            <InvestigationSearchTable />
+          </Paper>
         </TabPanel>
       </div>
     );
   } else
     return (
-      <Box 
-      color="primary.main"
-      px={3}
-      py={1}
-      >
+      <Box color="primary.main" px={3} py={1}>
         <h2>Search</h2>
         Fill out form to the left and then click search.
       </Box>

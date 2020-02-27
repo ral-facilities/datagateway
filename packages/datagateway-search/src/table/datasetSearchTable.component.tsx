@@ -179,6 +179,7 @@ const mapDispatchToProps = (
     dispatch(
       fetchDatasets({
         offsetParams,
+        getDatafileCount: true,
         additionalFilters: [
           {
             filterType: 'where',

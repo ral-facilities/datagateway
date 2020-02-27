@@ -38,6 +38,12 @@ describe('Search Button component tests', () => {
         datafile: true,
         investigation: true,
       },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
     };
 
     mockStore = configureStore([thunk]);
@@ -103,6 +109,75 @@ describe('Search Button component tests', () => {
             lower: '201311110000',
             text: 'hello',
             upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for request if date and search text properties are not in use', () => {
+    state.dgsearch = {
+      searchText: '',
+      text: '',
+      selectDate: {
+        startDate: null,
+        endDate: null,
+      },
+      checkBox: {
+        dataset: true,
+        datafile: true,
+        investigation: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Investigation',
+          },
+          sessionId: null,
+        },
+      }
+    );
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+          },
+          sessionId: null,
+        },
+      }
+    );
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Dataset',
           },
           sessionId: null,
         },

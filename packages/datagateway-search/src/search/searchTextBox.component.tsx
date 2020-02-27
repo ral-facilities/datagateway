@@ -8,8 +8,6 @@ import { StateType } from '../state/app.types';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 
-
-
 interface SearchTextStoreProps {
   searchText: string;
 }

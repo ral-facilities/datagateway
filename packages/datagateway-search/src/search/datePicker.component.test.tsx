@@ -35,6 +35,12 @@ describe('DatePicker component tests', () => {
         datafile: true,
         investigation: false,
       },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
     };
 
     mockStore = configureStore([thunk]);
