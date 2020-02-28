@@ -8,8 +8,12 @@ import {
   createStyles,
   Grid,
   CircularProgress,
+  Link,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
+import { withRouter, RouteComponentProps } from 'react-router';
+import { Link as RouterLink } from 'react-router-dom';
+import { compose } from 'redux';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -37,7 +41,8 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
     Component: React.ComponentType<T>
   ): React.ComponentType<T> {
     const WithIdCheckComponent: React.FC<T &
-      WithStyles<typeof styles>> = props => {
+      WithStyles<typeof styles> &
+      RouteComponentProps> = props => {
       const [loading, setLoading] = React.useState<boolean>(true);
       const [valid, setValid] = React.useState<boolean>(false);
 
@@ -54,7 +59,14 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
           });
       }, []);
 
-      const { classes, ...componentProps } = props;
+      const {
+        classes,
+        history,
+        location,
+        match,
+        staticContext,
+        ...componentProps
+      } = props;
 
       if (loading) {
         return (
@@ -92,7 +104,17 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
                 <Typography variant="body1" className={classes.message}>
                   We&apos;re sorry, it seems as though the URL you requested is
                   attempting to fetch incorrect data. Please double check your
-                  URL or navigate back via the breadcrumbs.
+                  URL, navigate back via the breadcrumbs or{' '}
+                  <Link
+                    component={RouterLink}
+                    to={props.location.pathname
+                      .split('/')
+                      .slice(0, 3)
+                      .join('/')}
+                  >
+                    go back to the top level
+                  </Link>
+                  .
                 </Typography>
               </Grid>
             </Grid>
@@ -101,8 +123,10 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
       }
     };
 
-    // @ts-ignore
-    return withStyles(styles)(WithIdCheckComponent);
+    return compose<React.ComponentType<T>>(
+      withRouter,
+      withStyles(styles)
+    )(WithIdCheckComponent);
   };
 }
 

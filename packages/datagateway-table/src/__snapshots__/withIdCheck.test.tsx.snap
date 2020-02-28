@@ -39,7 +39,28 @@ exports[`withIdCheck renders error when checkingPromise does not resolve to be t
       className="WithIdCheckComponent-message-16"
       variant="body1"
     >
-      We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL or navigate back via the breadcrumbs.
+      We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or
+       
+      <WithStyles(ForwardRef(Link))
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        to="/browse/investigation"
+      >
+        go back to the top level
+      </WithStyles(ForwardRef(Link))>
+      .
     </WithStyles(ForwardRef(Typography))>
   </WithStyles(ForwardRef(Grid))>
 </WithStyles(ForwardRef(Grid))>
@@ -78,7 +99,28 @@ exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
       className="WithIdCheckComponent-message-12"
       variant="body1"
     >
-      We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL or navigate back via the breadcrumbs.
+      We're sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or
+       
+      <WithStyles(ForwardRef(Link))
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        to="/browse/investigation"
+      >
+        go back to the top level
+      </WithStyles(ForwardRef(Link))>
+      .
     </WithStyles(ForwardRef(Typography))>
   </WithStyles(ForwardRef(Grid))>
 </WithStyles(ForwardRef(Grid))>
