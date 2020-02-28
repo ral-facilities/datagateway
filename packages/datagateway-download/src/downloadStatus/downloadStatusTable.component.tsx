@@ -59,6 +59,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         fetchDownloads('LILS').then(downloads => {
           setData(downloads);
           setDataLoaded(true);
+          console.log('FINISHED');
 
           // Set the time at which we set the download data.
           setLastChecked();
@@ -258,6 +259,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       {isDownloadable ? (
                         <IconButton
                           component="a"
+                          // TODO: Should we be contructing this URL in here?
                           // Construct a link to download the prepared cart.
                           href={`${idsUrl}/getData?sessionId=${window.localStorage.getItem(
                             'icat:token'
@@ -285,7 +287,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                           // Set the button to be disabled if the transport type is not "https" (cover http?).
                           disabled={!isDownloadable}
                         >
-                          <GetApp color={clicked ? 'primary' : 'inherit'} />
+                          <GetApp />
                         </IconButton>
                       )}
                     </div>

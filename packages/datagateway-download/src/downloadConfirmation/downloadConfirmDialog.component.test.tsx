@@ -308,14 +308,15 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
-    let openDialog = true;
+    // let openDialog = true;
     const closeFunction = jest.fn();
 
     const wrapper = mount(
       <DownloadConfirmDialog
         totalSize={1}
         isTwoLevel={false}
-        open={openDialog}
+        // open={openDialog}
+        open={true}
         setStatus={jest.fn()}
         setClose={closeFunction}
         clearCart={jest.fn()}
@@ -341,7 +342,7 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('calls the clearCart function when the Download Confirmation Dialog has been closed after a successful submission', async () => {
-    let openDialog = true;
+    // let openDialog = true;
     const clearCartFunction = jest.fn();
 
     (axios.post as jest.Mock).mockImplementation(() =>
@@ -356,7 +357,8 @@ describe('DownloadConfirmDialog', () => {
       <DownloadConfirmDialog
         totalSize={1}
         isTwoLevel={false}
-        open={openDialog}
+        // open={openDialog}
+        open={true}
         setStatus={jest.fn()}
         setClose={jest.fn()}
         clearCart={clearCartFunction}
