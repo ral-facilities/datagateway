@@ -59,7 +59,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         fetchDownloads('LILS').then(downloads => {
           setData(downloads);
           setDataLoaded(true);
-          console.log('FINISHED');
+          // console.log('FINISHED');
 
           // Set the time at which we set the download data.
           setLastChecked();

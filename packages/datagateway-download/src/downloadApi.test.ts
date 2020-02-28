@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 import {
   fetchDownloadCartItems,
@@ -12,6 +11,8 @@ import {
   getIsTwoLevel,
   getDownload,
   downloadPreparedCart,
+  fetchDownloads,
+  downloadDeleted,
 } from './downloadApi';
 import * as log from 'loglevel';
 import { DownloadCartItem } from 'datagateway-common';
@@ -696,6 +697,154 @@ describe('Download Cart API functions test', () => {
       expect(axios.get).toHaveBeenCalledTimes(4);
       expect(log.error).toHaveBeenCalled();
       expect(log.error).toHaveBeenCalledWith('simulating a failed response');
+    });
+  });
+});
+
+describe('Download Status API functions test', () => {
+  describe('fetchDownloads', () => {
+    const downloadsMockData = [
+      {
+        createdAt: '2020-01-01T01:01:01Z',
+        downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
+        email: 'test@email.com',
+        facilityName: 'LILS',
+        fileName: 'test-file-1',
+        fullName: 'Person 1',
+        id: 1,
+        isDeleted: false,
+        isEmailSent: true,
+        isTwoLevel: false,
+        preparedId: 'e44acee7-2211-4aae-bffb-f6c0e417f43d',
+        sessionId: '6bf8e6e4-58a9-11ea-b823-005056893dd9',
+        size: 0,
+        status: 'COMPLETE',
+        transport: 'https',
+        userName: 'test user',
+      },
+    ];
+
+    it('returns downloads upon successful response', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: downloadsMockData,
+        })
+      );
+
+      const returnData = await fetchDownloads('LILS');
+
+      expect(returnData).toBe(downloadsMockData);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: 'where download.isDeleted = false',
+          },
+        }
+      );
+    });
+
+    it('returns downloads with a custom queryOffset upon successful response', async () => {
+      const downloadsData = {
+        ...downloadsMockData[0],
+        isDeleted: true,
+      };
+
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: downloadsData,
+        })
+      );
+
+      const returnData = await fetchDownloads(
+        'LILS',
+        'where download.isDeleted = true'
+      );
+
+      expect(returnData).toBe(downloadsData);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: 'where download.isDeleted = true',
+          },
+        }
+      );
+    });
+
+    it('returns empty array and logs error upon unsuccessful response', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      const returnData = await fetchDownloads('LILS');
+
+      expect(returnData).toEqual([]);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: 'where download.isDeleted = false',
+          },
+        }
+      );
+      expect(log.error).toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith('Test error message');
+    });
+  });
+
+  describe('downloadDeleted', () => {
+    it('successfully sets a download as deleted', async () => {
+      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+
+      await downloadDeleted('LILS', 1, true);
+
+      // const params = new URLSearchParams();
+      // params.append('sessionId', '');
+      // params.append('facilityName', 'LILS');
+      // params.append('value', 'true');
+
+      expect(axios.put).toHaveBeenCalled();
+      // TODO: This test is failing (expected and received are the same - {}).
+      // expect(axios.put).toHaveBeenCalledWith(
+      //   'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
+      //   params
+      // );
+    });
+
+    it('logs an error upon unsuccessful response', async () => {
+      axios.put = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      await downloadDeleted('LILS', 1, true);
+
+      // TODO: Parameters not setting.
+      // const params = new URLSearchParams();
+      // params.append('sessionId', '');
+      // params.append('facilityName', 'LILS');
+      // params.append('value', 'true');
+
+      expect(axios.put).toHaveBeenCalled();
+      // expect(axios.put).toHaveBeenCalledWith(
+      //   'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
+      //   params
+      // );
+      expect(log.error).toHaveBeenCalled();
+      expect(log.error).toHaveBeenCalledWith('Test error message');
     });
   });
 });

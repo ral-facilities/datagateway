@@ -169,6 +169,7 @@ export interface DownloadCart {
 export interface Download {
   createdAt: string;
   downloadItems: DownloadItem[];
+  // TODO: Make email optional, as this is not sent every time.
   email: string;
   facilityName: string;
   fileName: string;
