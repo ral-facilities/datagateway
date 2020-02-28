@@ -19,7 +19,7 @@ import { ActionType } from '../app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 export const storeDatasetLucene = (
-  searchData: any
+  searchData: number[]
 ): ActionType<LuceneResultTypePayload> => ({
   type: StoreLuceneDatasetType,
   payload: {
@@ -28,7 +28,7 @@ export const storeDatasetLucene = (
 });
 
 export const storeDatafileLucene = (
-  searchData: any
+  searchData: number[]
 ): ActionType<LuceneResultTypePayload> => ({
   type: StoreLuceneDatafileType,
   payload: {
@@ -37,7 +37,7 @@ export const storeDatafileLucene = (
 });
 
 export const storeInvestigationLucene = (
-  searchData: any
+  searchData: number[]
 ): ActionType<LuceneResultTypePayload> => ({
   type: StoreLuceneInvestigationType,
   payload: {

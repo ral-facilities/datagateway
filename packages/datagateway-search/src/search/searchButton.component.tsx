@@ -137,6 +137,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
 
   public async fetchLuceneResults(
     queryParams: LuceneParameters
+    // eslint-disable-next-line
   ): Promise<any[]> {
     const response = await axios.get(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',

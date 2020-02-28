@@ -35,10 +35,10 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
         margin="normal"
         value={searchText}
         onChange={sendSearchText}
-        inputProps={{ 'aria-label': 'search text input' }}
         fullWidth
         variant="outlined"
         InputProps={{
+          'aria-label': 'search text input',
           endAdornment: (
             <InputAdornment position="start">
               <SearchIcon />

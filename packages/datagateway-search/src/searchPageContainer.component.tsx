@@ -1,7 +1,7 @@
 import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-import { Switch, Route, RouteComponentProps } from 'react-router';
+import { Switch, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { Grid, Paper } from '@material-ui/core';

@@ -19,7 +19,8 @@ interface SearchTableStoreProps {
 
 interface TabPanelProps {
   children?: React.ReactNode;
-  index: any;
+  index: number;
+  // eslint-disable-next-line
   value: any;
 }
 
@@ -41,13 +42,14 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-function a11yProps(index: any) {
+function a11yProps(index: number) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 
+// eslint-disable-next-line
 const SearchPageTable = (props: SearchTableStoreProps): any => {
   const [value, setValue] = React.useState(0);
 
@@ -63,9 +65,6 @@ const SearchPageTable = (props: SearchTableStoreProps): any => {
             value={value}
             onChange={handleChange}
             aria-label="simple tabs example"
-
-            // indicatorColor="primary"
-            // textColor="primary"
           >
             <Tab label="Datafile" {...a11yProps(0)} />
             <Tab label="Dataset" {...a11yProps(1)} />

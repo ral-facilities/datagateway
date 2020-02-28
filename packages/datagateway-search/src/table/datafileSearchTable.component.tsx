@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, IconButton } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import {
   Table,
   formatBytes,
@@ -71,7 +71,7 @@ const DatafileSearchTable = (
     sortTable,
     filters,
     filterTable,
-    downloadData,
+    // downloadData,
     cartItems,
     addToCart,
     removeFromCart,
@@ -80,7 +80,6 @@ const DatafileSearchTable = (
     luceneData,
     fetchAllIds,
     loading,
-    requestReceived,
   } = props;
 
   const selectedRows = React.useMemo(
@@ -123,7 +122,7 @@ const DatafileSearchTable = (
 
   return (
     <Table
-      loading={false}
+      loading={loading}
       data={data}
       loadMoreRows={params => fetchData(luceneData, params)}
       totalRowCount={totalDataCount}

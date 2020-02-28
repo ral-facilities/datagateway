@@ -17,7 +17,6 @@ import {
   sortTable,
   filterTable,
   clearTable,
-  fetchInvestigationCount,
 } from 'datagateway-common';
 import { AnyAction } from 'redux';
 import { StateType } from '../state/app.types';
@@ -201,7 +200,6 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  // fetchCount: () => dispatch(fetchDatasetCount()),
   clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>

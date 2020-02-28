@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import InvestigationSearchTable from './investigationSearchTable.component';
-import { initialState as dGSearchInitialState } from '../state/reducers/dgsearch.reducer';
+import { initialState } from '../state/reducers/dgsearch.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../state/app.types';
 import {
@@ -32,13 +32,13 @@ describe('ISIS Investigations table component', () => {
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'InvestigationTable' });
+    shallow = createShallow({ untilSelector: 'InvestigationSearchTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
-        dgtable: dgTableInitialState,
+        dgsearch: initialState,
         dgcommon: dGCommonInitialState,
       })
     );
@@ -87,7 +87,7 @@ describe('ISIS Investigations table component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <ISISInvestigationsTable
+      <InvestigationSearchTable
         store={mockStore(state)}
         instrumentId="4"
         facilityCycleId="5"
@@ -101,7 +101,7 @@ describe('ISIS Investigations table component', () => {
     mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -115,7 +115,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -136,7 +136,7 @@ describe('ISIS Investigations table component', () => {
   it('sends fetchInvestigations action when loadMoreRows is called', () => {
     const testStore = mockStore(state);
     const wrapper = shallow(
-      <ISISInvestigationsTable
+      <InvestigationSearchTable
         instrumentId="4"
         facilityCycleId="5"
         store={testStore}
@@ -153,7 +153,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -175,7 +175,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -199,7 +199,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -217,7 +217,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -245,7 +245,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -280,7 +280,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -298,7 +298,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -326,7 +326,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );
@@ -381,7 +381,7 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
         </MemoryRouter>
       </Provider>
     );

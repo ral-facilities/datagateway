@@ -33,5 +33,5 @@ export interface CheckRequestReceivedPayload {
 }
 
 export interface LuceneResultTypePayload {
-  searchData: any;
+  searchData: number[];
 }
