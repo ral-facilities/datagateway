@@ -11,7 +11,6 @@ import {
   Datafile,
   filterTable,
   sortTable,
-  downloadDatafileRequest,
   addToCartRequest,
   removeFromCartRequest,
   fetchDatafileCountRequest,
@@ -109,30 +108,6 @@ describe('Datafile search table component', () => {
     wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
-  });
-
-  it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by Name"] input')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -258,21 +233,6 @@ describe('Datafile search table component', () => {
 
     expect(selectAllCheckbox.prop('checked')).toEqual(false);
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
-  });
-
-  it('sends downloadData action on click of download button', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper.find('button[aria-label="Download"]').simulate('click');
-
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
   });
 
   it("doesn't display download button for datafiles with no location", () => {

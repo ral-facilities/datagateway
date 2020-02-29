@@ -27,16 +27,16 @@ describe('Search Button component tests', () => {
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
     state.dgsearch = {
-      searchText: 'hello',
+      searchText: '',
       text: '',
       selectDate: {
-        startDate: new Date('2013-11-11'),
-        endDate: new Date('2016-11-11'),
+        startDate: null,
+        endDate: null,
       },
       checkBox: {
-        dataset: true,
+        dataset: false,
         datafile: true,
-        investigation: true,
+        investigation: false,
       },
       requestReceived: false,
       searchData: {
@@ -58,7 +58,26 @@ describe('Search Button component tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('builds correct parameters for request if date and search text properties are in use', () => {
+  it('builds correct parameters for datafile request if date and search text properties are in use', () => {
+    state.dgsearch = {
+      searchText: 'hello',
+      text: '',
+      selectDate: {
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        dataset: false,
+        datafile: true,
+        investigation: false,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+    };
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -75,21 +94,6 @@ describe('Search Button component tests', () => {
         params: {
           maxCount: 300,
           query: {
-            target: 'Investigation',
-            lower: '201311110000',
-            text: 'hello',
-            upper: '201611112359',
-          },
-          sessionId: null,
-        },
-      }
-    );
-    expect(axios.get).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
-      {
-        params: {
-          maxCount: 300,
-          query: {
             target: 'Datafile',
             lower: '201311110000',
             text: 'hello',
@@ -99,6 +103,39 @@ describe('Search Button component tests', () => {
         },
       }
     );
+  });
+
+  it('builds correct parameters for dataset request if date and search text properties are in use', () => {
+    state.dgsearch = {
+      searchText: 'hello',
+      text: '',
+      selectDate: {
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        dataset: true,
+        datafile: false,
+        investigation: false,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -116,17 +153,17 @@ describe('Search Button component tests', () => {
     );
   });
 
-  it('builds correct parameters for request if date and search text properties are not in use', () => {
+  it('builds correct parameters for investigation request if date and search text properties are in use', () => {
     state.dgsearch = {
-      searchText: '',
+      searchText: 'hello',
       text: '',
       selectDate: {
-        startDate: null,
-        endDate: null,
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
       },
       checkBox: {
-        dataset: true,
-        datafile: true,
+        dataset: false,
+        datafile: false,
         investigation: true,
       },
       requestReceived: false,
@@ -154,11 +191,47 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Investigation',
+            lower: '201311110000',
+            text: 'hello',
+            upper: '201611112359',
           },
           sessionId: null,
         },
       }
     );
+  });
+
+  it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
+    state.dgsearch = {
+      searchText: '',
+      text: '',
+      selectDate: {
+        startDate: null,
+        endDate: null,
+      },
+      checkBox: {
+        dataset: false,
+        datafile: true,
+        investigation: false,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -171,6 +244,38 @@ describe('Search Button component tests', () => {
         },
       }
     );
+  });
+  it('builds correct parameters for dataset request if date and search text properties are not in use', () => {
+    state.dgsearch = {
+      searchText: '',
+      text: '',
+      selectDate: {
+        startDate: null,
+        endDate: null,
+      },
+      checkBox: {
+        dataset: true,
+        datafile: false,
+        investigation: false,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -178,6 +283,50 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+  it('builds correct parameters for investigation request if date and search text properties are not in use', () => {
+    state.dgsearch = {
+      searchText: '',
+      text: '',
+      selectDate: {
+        startDate: null,
+        endDate: null,
+      },
+      checkBox: {
+        dataset: false,
+        datafile: false,
+        investigation: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Investigation',
           },
           sessionId: null,
         },

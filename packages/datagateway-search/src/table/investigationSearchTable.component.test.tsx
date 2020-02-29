@@ -8,7 +8,6 @@ import {
   fetchInvestigationsRequest,
   filterTable,
   sortTable,
-  fetchInvestigationDetailsRequest,
   fetchInvestigationCountRequest,
   removeFromCartRequest,
   addToCartRequest,
@@ -17,11 +16,10 @@ import {
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
-describe('ISIS Investigations table component', () => {
+describe('Investigation Search Table component', () => {
   let shallow;
   let mount;
   let mockStore;
@@ -148,28 +146,6 @@ describe('ISIS Investigations table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
-  it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    const filterInput = wrapper.find('[aria-label="Filter by Title"] input');
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(testStore.getActions()[1]).toEqual(filterTable('TITLE', 'test'));
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', null));
-  });
-
   it('sends filterTable action on date filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
@@ -293,35 +269,6 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    const detailsPanelWrapper = shallow(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
-
-    mount(
-      wrapper.find(Table).prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-        detailsPanelResize: jest.fn(),
-      })
-    );
-
-    expect(testStore.getActions()[1]).toEqual(
-      fetchInvestigationDetailsRequest()
-    );
-  });
-
   it('renders title, visit ID, RB number and DOI as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -360,44 +307,24 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
-    state.dgcommon.data[0] = {
-      ...state.dgcommon.data[0],
-      INVESTIGATIONINSTRUMENT: [
-        {
-          ID: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
-        },
-      ],
-      STUDYINVESTIGATION: [
-        {
-          ID: 6,
-          STUDY_ID: 7,
-          INVESTIGATION_ID: 1,
-        },
-      ],
-    };
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('renders fine with incomplete data', () => {
+    // this can happen when navigating between tables and the previous table's state still exists
+    state.dgcommon.data = [
+      {
+        ID: 1,
+        NAME: 'test',
+        TITLE: 'test',
+      },
+    ];
 
-    expect(
-      wrapper
-        .find('[aria-colindex=6]')
-        .find('p')
-        .text()
-    ).toEqual('');
-
-    expect(
-      wrapper
-        .find('[aria-colindex=8]')
-        .find('p')
-        .text()
-    ).toEqual('');
+    expect(() =>
+      mount(
+        <Provider store={mockStore(state)}>
+          <MemoryRouter>
+            <InvestigationSearchTable />
+          </MemoryRouter>
+        </Provider>
+      )
+    ).not.toThrowError();
   });
 });

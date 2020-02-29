@@ -20,11 +20,10 @@ interface SearchTableStoreProps {
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
-  // eslint-disable-next-line
-  value: any;
+  value: number;
 }
 
-function TabPanel(props: TabPanelProps) {
+function TabPanel(props: TabPanelProps): React.ReactElement {
   const { children, value, index, ...other } = props;
 
   return (
@@ -42,7 +41,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-function a11yProps(index: number) {
+function a11yProps(index: number): React.ReactFragment {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
@@ -50,10 +49,13 @@ function a11yProps(index: number) {
 }
 
 // eslint-disable-next-line
-const SearchPageTable = (props: SearchTableStoreProps): any => {
+const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleChange = (
+    event: React.ChangeEvent<{}>,
+    newValue: number
+  ): void => {
     setValue(newValue);
   };
 

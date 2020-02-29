@@ -107,30 +107,6 @@ describe('Dataset table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
   });
 
-  it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    const filterInput = wrapper
-      .find('[aria-label="Filter by Name"] input')
-      .first();
-    filterInput.instance().value = 'test';
-    filterInput.simulate('change');
-
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
-
-    filterInput.instance().value = '';
-    filterInput.simulate('change');
-
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
-  });
-
   it('sends filterTable action on date filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(

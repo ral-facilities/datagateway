@@ -3,6 +3,7 @@ import './App.css';
 import * as log from 'loglevel';
 import SearchPageContainer from './searchPageContainer.component';
 import thunk from 'redux-thunk';
+import { loadUrls } from 'datagateway-common';
 import { applyMiddleware, createStore, compose } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
 import { createLogger } from 'redux-logger';
@@ -28,6 +29,15 @@ const store = createStore(
   AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))
 );
+
+store.dispatch(
+  loadUrls({
+    apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
+    idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+    downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+  })
+);
+// this loading in of the urls should be removed when loading urls from settings.json issue is fixed
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgws',

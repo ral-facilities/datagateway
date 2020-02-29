@@ -7,7 +7,7 @@ import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 
-const SearchBoxContainer = () => {
+const SearchBoxContainer = (): React.ReactElement => {
   return (
     <Grid
       item

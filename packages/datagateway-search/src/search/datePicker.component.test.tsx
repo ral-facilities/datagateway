@@ -51,8 +51,6 @@ describe('DatePicker component tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  // test clicking and typing
-
   it('sends selectStartDate action when user types number into Start Date input', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
