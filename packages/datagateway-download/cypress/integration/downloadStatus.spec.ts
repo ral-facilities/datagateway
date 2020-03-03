@@ -8,7 +8,6 @@ describe('Download Status', () => {
   });
 
   beforeEach(() => {
-    // TODO: Re-enable this.
     Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
@@ -46,7 +45,6 @@ describe('Download Status', () => {
     cy.get('[aria-label="Refresh download status table"]').should('exist');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
       'have.text',
-      // 'LILS_2019-12-16_17-15-13'
       'test-file-1'
     );
     cy.get('[aria-label="Refresh download status table"]').click();
@@ -59,10 +57,8 @@ describe('Download Status', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
 
-      // TODO: Update download name with new test entries.
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        // 'LILS_2018-11-30_0-0-0'
         'test-file-1'
       );
     });
@@ -82,11 +78,6 @@ describe('Download Status', () => {
         'test-file-4'
       );
 
-      // cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
-      //   'have.text',
-      //   // TODO: Change time as this will not work.
-      //   '2020-01-31 09:53:49'
-      // );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
         'Expired'
@@ -110,14 +101,9 @@ describe('Download Status', () => {
         'test-file-1'
       );
 
-      // cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
-      //   'have.text',
-      //   // TODO: Change time as this will not work.
-      //   '2019-12-16 17:15:13'
-      // );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
-        'Available'
+        'Complete'
       );
     });
 
@@ -127,7 +113,6 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        //'LILS_2019-12-16_17-15-13'
         'test-file-1'
       );
     });
@@ -139,18 +124,11 @@ describe('Download Status', () => {
         .find('input')
         .type('file');
 
-      // TODO: Rowcount will be unstable until we can clear and seed downloads.
       cy.get('[aria-rowcount="4"]').should('exist');
 
-      // cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
-      //   'have.text',
-      //   // TODO: Change time as this will not work.
-      //   '2020-01-31 09:53:49'
-      // );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
-        // TODO: Change time as this will not work.
-        'Available'
+        'Complete'
       );
     });
 
@@ -181,7 +159,6 @@ describe('Download Status', () => {
       // There should be results for this time period.
       cy.get('[aria-rowcount="0"]').should('exist');
 
-      // TODO: Check with only a start date and test all time periods are shown.
       let currDate = new Date();
 
       cy.get('[aria-label="Requested Date date filter from"]').clear();
@@ -197,15 +174,12 @@ describe('Download Status', () => {
         'test-file-1'
       );
 
-      // cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
-      //   'have.text',
-      //   // TODO: Change time as this will not work.
-      //   '2020-01-31 09:53:40'
-      // );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
         'have.text',
         'https'
       );
+
+      cy.get('[aria-rowcount="4"]').should('exist');
     });
 
     it('multiple columns', () => {
@@ -215,20 +189,19 @@ describe('Download Status', () => {
 
       cy.get('[aria-label="Filter by Availability"]')
         .find('input')
-        .type('RESTORING');
+        .type('restoring');
 
-      // TODO: Rowcount will be unstable until we can clear and seed downloads.
       cy.get('[aria-rowcount="1"]').should('exist');
     });
   });
 
-  // We are not clicking and proceeding to download the item in this test
-  // but instead checking that the link exists and it is possible to be clicked.
   it('should have a download link for an item', () => {
     cy.contains('[aria-colindex="1"]', 'test-file-1')
       .should('be.visible')
       .and('not.be.disabled');
 
+    // We are not clicking and proceeding to download the item in this test
+    // but instead checking that the link exists and it is possible to be clicked.
     cy.get('a[aria-label="Download test-file-1"]').should('not.be.empty');
     cy.get('a[aria-label="Download test-file-1"]')
       .should('have.prop', 'href')
@@ -239,7 +212,6 @@ describe('Download Status', () => {
     cy.route('PUT', '**/topcat/user/download/*/isDeleted').as(
       'removeFromDownloads'
     );
-    // cy.setDownload(17, false);
 
     cy.contains('[aria-colindex="1"]', 'test-file-4').should('be.visible');
     cy.get('[aria-label="Remove test-file-4 from downloads"]').click({
@@ -247,6 +219,5 @@ describe('Download Status', () => {
     });
     cy.wait('@removeFromDownloads');
     cy.contains('test-file-4').should('not.be.visible');
-    // cy.setDownload(17, false);
   });
 });

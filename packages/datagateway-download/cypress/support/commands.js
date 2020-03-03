@@ -70,8 +70,6 @@ Cypress.Commands.add('login', (username, password, noRootCredentials) => {
   let credentials = !noRootCredentials
     ? [{ username: 'root' }, { password: 'pw' }]
     : [{ username: username }, { password: password }];
-  // console.log('rootCredentials: ', noRootCredentials);
-  // console.log(username, password);
 
   // TODO: replace with getting from daaas:token when supported
   cy.request({
@@ -113,8 +111,6 @@ Cypress.Commands.add('seedDownloadCart', () => {
     .fill()
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
-
-  // console.log('Download cart items: ', items);
 
   cy.request({
     method: 'POST',
@@ -160,7 +156,6 @@ Cypress.Commands.add('seedDownloads', () => {
     });
 
     // Submit each download request.
-    // console.log('Info: ', info.submitDetails);
     cy.request({
       method: 'POST',
       url:
@@ -197,20 +192,11 @@ Cypress.Commands.add('seedDownloads', () => {
         },
         form: true,
       });
-
-      // .then(() => {
-      // console.log(
-      // `Changed status of download ${download.id} to ${downloadsInfo[i].availability}`
-      // );
-      // });
     }
   });
 });
 
 Cypress.Commands.add('clearDownloads', () => {
-  // TODO: get all downloads and store ids
-  // TODO: call request to set all downloads with the ids to deleted = true
-
   // TODO: get url and facility from settings
   cy.request({
     method: 'GET',
@@ -224,7 +210,6 @@ Cypress.Commands.add('clearDownloads', () => {
     const downloads = response.body;
     for (let i in downloads) {
       const download = downloads[i];
-      // console.log('Deleting download with ID: ', download.id);
 
       cy.request({
         method: 'PUT',
@@ -239,16 +224,3 @@ Cypress.Commands.add('clearDownloads', () => {
     }
   });
 });
-
-// Delete a test download file in the Windows download
-// folder given the file name.
-// Cypress.Commands.add('deleteTestDownload', fileName => {
-//   if (Cypress.platform === 'win32') {
-//     cy.exec('echo %USERPROFILE%').then(result => {
-//       cy.readFile(`${result.stdout}\\Downloads\\${fileName}`);
-//       cy.exec(`del ${result.stdout}\\Downloads\\${fileName}`)
-//         .its('code')
-//         .should('eq', 0);
-//     });
-//   }
-// });
