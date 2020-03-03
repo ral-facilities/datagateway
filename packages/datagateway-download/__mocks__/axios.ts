@@ -2,6 +2,8 @@ export default {
   get: jest.fn(path => {
     if (path.includes('/topcat/user/cart/')) {
       return Promise.resolve({ data: { cartItems: [] } });
+    } else if (path.includes('/topcat/user/downloads')) {
+      return Promise.resolve({ data: [] });
     } else {
       return Promise.resolve({ data: {} });
     }

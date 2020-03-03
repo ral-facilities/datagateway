@@ -31,11 +31,10 @@ describe('Download Status Table', () => {
   let shallow;
   let mount;
 
-  // TODO: Simplify the mock data.
   const downloadItems: Download[] = [
     {
       createdAt: '2020-02-26T15:05:29Z',
-      downloadItems: [{ entityId: 1, entityType: 'investigation', id: 6130 }],
+      downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
       email: 'test1@email.com',
       facilityName: 'LILS',
       fileName: 'test-file-1',
@@ -46,14 +45,14 @@ describe('Download Status Table', () => {
       isTwoLevel: false,
       preparedId: 'e44acee7-2211-4aae-bffb-f6c0e417f43d',
       sessionId: '6bf8e6e4-58a9-11ea-b823-005056893dd9',
-      size: 0,
+      size: 1000,
       status: 'COMPLETE',
       transport: 'https',
-      userName: 'simple/root',
+      userName: 'test user',
     },
     {
       createdAt: '2020-02-26T15:05:35Z',
-      downloadItems: [{ entityId: 1, entityType: 'investigation', id: 6131 }],
+      downloadItems: [{ entityId: 2, entityType: 'investigation', id: 2 }],
       email: 'test2@email.com',
       facilityName: 'LILS',
       fileName: 'test-file-2',
@@ -64,14 +63,14 @@ describe('Download Status Table', () => {
       isTwoLevel: false,
       preparedId: '10d5e2b9-4c1c-4be5-8bda-8520694dd85a',
       sessionId: '6f1e3fd6-58a9-11ea-9a26-005056893dd9',
-      size: 0,
+      size: 2000,
       status: 'PREPARING',
       transport: 'globus',
-      userName: 'simple/root',
+      userName: 'test user',
     },
     {
       createdAt: '2020-02-26T15:57:20Z',
-      downloadItems: [{ entityId: 1, entityType: 'investigation', id: 6132 }],
+      downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
       email: 'test3@email.com',
       facilityName: 'LILS',
       fileName: 'test-file-3',
@@ -82,14 +81,14 @@ describe('Download Status Table', () => {
       isTwoLevel: false,
       preparedId: '5e3249a5-aec6-4dd0-b602-c4a8d27f75e2',
       sessionId: 'aa6c65de-58b0-11ea-82d6-005056893dd9',
-      size: 0,
+      size: 3000,
       status: 'RESTORING',
       transport: 'https',
-      userName: 'simple/root',
+      userName: 'test user',
     },
     {
       createdAt: '2020-02-26T15:57:28Z',
-      downloadItems: [{ entityId: 1, entityType: 'investigation', id: 6134 }],
+      downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
       email: 'test4@email.com',
       facilityName: 'LILS',
       fileName: 'test-file-4',
@@ -100,10 +99,10 @@ describe('Download Status Table', () => {
       isTwoLevel: false,
       preparedId: '6a226aaf-12be-48d8-86d0-9fea9e5fa8e2',
       sessionId: 'aeda386c-58b0-11ea-9a26-005056893dd9',
-      size: 0,
+      size: 4000,
       status: 'EXPIRED',
       transport: 'globus',
-      userName: 'simple/root',
+      userName: 'test user',
     },
   ];
 
@@ -156,20 +155,8 @@ describe('Download Status Table', () => {
   // TODO: Should this be in the downloadTab test?
   // TODO: Also include a refresh button test in download tab.
   it('refreshes the tables when the refresh button has been clicked', async () => {
-    // const refreshTableFunction = jest.fn();
-
-    // We only need to modify the refresh prop we pass to the DownloadStatusTable.
-
-    // Allow for the wrapper to be created and the data to be loaded.
-    // const wrapper = mount(
-    //   <DownloadStatusTable
-    //     refreshTable={false}
-    //     setRefreshTable={refreshTableFunction}
-    //     setLastChecked={jest.fn()}
-    //   />
-    // );
-
-    // const wrapper = mount(<RefreshHOC refreshTable={false} />);
+    // Use our RefreshHOC and only modify the refresh prop
+    // we pass on to the DownloadStatusTable.
     const wrapper = mount(<RefreshHOC refresh={false} />);
 
     await act(async () => {
@@ -192,30 +179,6 @@ describe('Download Status Table', () => {
 
     // Expect the downloads to have been fetched twice (on load and on refresh).
     expect(fetchDownloads).toHaveBeenCalledTimes(2);
-
-    // act(() => {
-    //   console.log('set props');
-    //   wrapper.setProps({ refreshTable: true });
-    // });
-
-    // await act(async () => {
-    //   console.log('set props');
-
-    //   // TODO: Settings props with a callback works.
-    //   // wrapper.setProps({ refreshTable: true }, () =>
-    //   //   wrapper.setProps({ refreshTable: false })
-    //   // );
-    //   wrapper.setProps({ refreshTable: true });
-    //   await flushPromises();
-    //   wrapper.update();
-    // });
-
-    // expect(refreshTableFunction).toHaveBeenCalledWith(false);
-
-    // expect(wrapper.prop('refreshTable')).toBe(true);
-
-    // expect(fetchDownloads).toHaveBeenCalledTimes(2);
-    // expect(refreshTableFunction).toHaveBeenCalled();
   });
 
   it('should have a link for a download item', async () => {
@@ -246,14 +209,13 @@ describe('Download Status Table', () => {
         .prop('disabled')
     ).toBe(true);
 
-    // console.log(
-    //   wrapper
-    //     .find('IconButton')
-    //     .at(0)
-    //     .props().href
-    // );
-
-    // TODO: Test to see if the href matches with what we expect it to be.
+    // Check to see if the href contains the correct call.
+    expect(
+      wrapper
+        .find('a[aria-label="Download test-file-3"]')
+        .at(0)
+        .props().href
+    ).toContain('/getData');
 
     wrapper.find('a[aria-label="Download test-file-3"]').simulate('click');
 
@@ -443,7 +405,7 @@ describe('Download Status Table', () => {
     );
 
     // TODO: Catch 'return false' lines in sortAndFilteredData method.
-    // TODO: Adjust dates for mock data.
+    // TODO: Adjust dates for mock data (from download mock data).
     dateFromFilterInput.instance().value = '2020-01-01';
     dateFromFilterInput.simulate('change');
 

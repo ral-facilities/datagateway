@@ -810,17 +810,16 @@ describe('Download Status API functions test', () => {
 
       await downloadDeleted('LILS', 1, true);
 
-      // const params = new URLSearchParams();
-      // params.append('sessionId', '');
-      // params.append('facilityName', 'LILS');
-      // params.append('value', 'true');
+      const params = new URLSearchParams();
+      params.append('facilityName', 'LILS');
+      params.append('sessionId', '');
+      params.append('value', 'true');
 
       expect(axios.put).toHaveBeenCalled();
-      // TODO: This test is failing (expected and received are the same - {}).
-      // expect(axios.put).toHaveBeenCalledWith(
-      //   'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
-      //   params
-      // );
+      expect(axios.put).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
+        params
+      );
     });
 
     it('logs an error upon unsuccessful response', async () => {
@@ -832,17 +831,16 @@ describe('Download Status API functions test', () => {
 
       await downloadDeleted('LILS', 1, true);
 
-      // TODO: Parameters not setting.
-      // const params = new URLSearchParams();
-      // params.append('sessionId', '');
-      // params.append('facilityName', 'LILS');
-      // params.append('value', 'true');
+      const params = new URLSearchParams();
+      params.append('facilityName', 'LILS');
+      params.append('sessionId', '');
+      params.append('value', 'true');
 
       expect(axios.put).toHaveBeenCalled();
-      // expect(axios.put).toHaveBeenCalledWith(
-      //   'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
-      //   params
-      // );
+      expect(axios.put).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
+        params
+      );
       expect(log.error).toHaveBeenCalled();
       expect(log.error).toHaveBeenCalledWith('Test error message');
     });

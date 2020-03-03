@@ -50,8 +50,8 @@
     "start-server-and-test": "^1.9.1"
   },
   "scripts": {
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
+    "cy:open": "cypress open --env REACT_APP_E2E_TESTING=true",
+    "cy:run": "cypress run --env REACT_APP_E2E_TESTING=true",
     "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src",
     "serve:build": "yarn build & serve -l 5001 build",
     "start": "craco start",

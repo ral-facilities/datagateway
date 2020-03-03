@@ -34,9 +34,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
   const { children, value, index, ...other } = props;
 
   return (
-    // TODO: Should be div or Box? Not a typography component?
-    <Typography
-      component="div"
+    <div
       role="tabpanel"
       hidden={value !== index}
       id={`tabpanel-${index}`}
@@ -44,7 +42,7 @@ function TabPanel(props: TabPanelProps): React.ReactElement {
       {...other}
     >
       {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
+    </div>
   );
 }
 
@@ -65,7 +63,6 @@ const DownloadTabs: React.FC = () => {
   // (e.g. opening/closing the navigation drawer).
   const getTab = (): number => {
     let savedTab = sessionStorage.getItem('downloadStatusTab');
-    // console.log('Saved tab in sessionStorage: ', savedTab);
 
     // If the tab has not been saved, then set it to the initial cart view (0).
     if (!savedTab) sessionStorage.setItem('downloadStatusTab', '0');
@@ -79,14 +76,11 @@ const DownloadTabs: React.FC = () => {
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [lastChecked, setLastChecked] = React.useState('');
 
-  // TODO: We are not using the event here?
   const handleChange = (event: React.ChangeEvent<{}>, setTab: number): void => {
     // Set the tab in the session storage.
     sessionStorage.setItem('downloadStatusTab', setTab.toString());
     setSelectedTab(setTab);
   };
-
-  // console.log('Refresh status: ', refreshDownloads);
 
   return (
     <Paper className={classes.root}>

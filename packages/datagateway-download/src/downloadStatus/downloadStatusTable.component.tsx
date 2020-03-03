@@ -36,10 +36,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   const { refreshTable, setRefreshTable, setLastChecked } = props;
 
-  // console.log('Data loaded: ', dataLoaded);
-
   React.useEffect(() => {
-    // console.log('dataLoaded: ', dataLoaded, ' refreshTable: ', refreshTable);
     if (!dataLoaded || refreshTable) {
       // Clear the current contents, this will make sure
       // there is visually a refresh of the table.
@@ -53,13 +50,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
       // TODO: facilityName needs to be passed in from a
       //       configuration file.
-      // TODO: Causes a second fetchDownloads request to be called
-      //       since refreshTable is still true.
       if (!dataLoaded) {
         fetchDownloads('LILS').then(downloads => {
           setData(downloads);
           setDataLoaded(true);
-          // console.log('FINISHED');
+          // console.log('Done: ', downloads);
 
           // Set the time at which we set the download data.
           setLastChecked();
@@ -89,7 +84,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     <TextColumnFilter
       label={label}
       onChange={(value: string) => {
-        console.log(label, dataKey, value);
         if (value) {
           // We convert the input value to uppercase to match the table value.
           setFilters({ ...filters, [dataKey]: value.toUpperCase() });
@@ -116,11 +110,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   );
 
   // Handle filtering for both text and date filters.
-  // console.log('Filters: ', filters);
   const sortedAndFilteredData = React.useMemo(() => {
-    // console.log(data.length);
+    // console.log(data);
     const filteredData = data.filter(item => {
-      // console.log('Current item: ', item);
       for (let [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (tableValue !== undefined && typeof tableValue === 'string') {
@@ -155,7 +147,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     });
 
     function sortDownloadItems(a: Download, b: Download): number {
-      // console.log('Sort items: ', sort);
       for (let [sortColumn, sortDirection] of Object.entries(sort)) {
         if (sortDirection === 'asc') {
           if (a[sortColumn] > b[sortColumn]) {
@@ -177,6 +168,15 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     return filteredData.sort(sortDownloadItems);
   }, [data, sort, filters]);
 
+  // TODO: Prepared ID can be html issue?
+  // Construct a link to download the prepared cart.
+  const getDataUrl = (preparedId: string, fileName: string): string => {
+    // TODO: Get idsUrl from the settings.
+    return `${idsUrl}/getData?sessionId=${window.localStorage.getItem(
+      'icat:token'
+    )}&preparedId=${preparedId}&outname=${fileName}`;
+  };
+
   return (
     <Grid container direction="column">
       <Grid item>
@@ -197,27 +197,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 label: 'Availability',
                 dataKey: 'status',
                 cellContentRenderer: (props: TableCellProps) => {
-                  // TODO: Re-work so we can get the status of each element?
-                  //       Filtering works with the actual table value and not what we display.
                   if (props.cellData) {
                     let status: string = props.cellData;
-                    // switch (props.cellData) {
-                    //   case 'COMPLETE':
-                    //     return 'Available';
-
-                    //   case 'RESTORING':
-                    //     return 'Restoring from Tape';
-
-                    //   case 'PREPARING':
-                    //     return 'Preparing';
-
-                    //   case 'EXPIRED':
-                    //     return 'Expired';
-
-                    //   default:
-                    //     return 'N/A';
-                    // }
-
                     return (
                       status.substring(0, 1).toUpperCase() +
                       status.substring(1).toLowerCase()
@@ -231,17 +212,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 dataKey: 'createdAt',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
-                    const d = new Date(props.cellData);
-
-                    // TODO: d.toISOString().slice(0, 10)
-                    return `${d.getFullYear()}-${(
-                      '0' +
-                      (d.getMonth() + 1)
-                    ).slice(-2)}-${('0' + d.getDate()).slice(-2)} ${(
-                      '0' + d.getHours()
-                    ).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${(
-                      '0' + d.getSeconds()
-                    ).slice(-2)}`;
+                    const date = new Date(props.cellData).toISOString();
+                    return `${date.slice(0, 10)} ${date.slice(11, 19)}`;
                   }
                 },
                 filterComponent: dateFilter,
@@ -283,13 +255,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       {isDownloadable ? (
                         <IconButton
                           component="a"
-                          // TODO: Should we be contructing this URL in here?
-                          // Construct a link to download the prepared cart.
-                          href={`${idsUrl}/getData?sessionId=${window.localStorage.getItem(
-                            'icat:token'
-                          )}&preparedId=${downloadItem.preparedId}&outname=${
+                          href={getDataUrl(
+                            downloadItem.preparedId,
                             downloadItem.fileName
-                          }`}
+                          )}
                           target="_blank"
                           aria-label={`Download ${downloadItem.fileName}`}
                           key="download"
