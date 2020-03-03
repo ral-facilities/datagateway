@@ -856,8 +856,10 @@ describe('Download Status API functions test', () => {
           },
         }
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 
@@ -898,8 +900,10 @@ describe('Download Status API functions test', () => {
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
         params
       );
-      expect(log.error).toHaveBeenCalled();
-      expect(log.error).toHaveBeenCalledWith('Test error message');
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
     });
   });
 });

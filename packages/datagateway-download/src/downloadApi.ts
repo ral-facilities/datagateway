@@ -115,7 +115,7 @@ export const fetchDownloads: (
     .get<Download[]>(`${topcatUrl}/user/downloads`, {
       params: {
         // TODO: get session ID from somewhere else (extract from JWT)
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         facilityName: facilityName,
         queryOffset: !queryOffset
           ? 'where download.isDeleted = false'
@@ -126,7 +126,7 @@ export const fetchDownloads: (
       return response.data;
     })
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
       return [];
     });
 };
@@ -197,14 +197,14 @@ export const downloadDeleted: (
   const params = new URLSearchParams();
   params.append('facilityName', facilityName);
   // TODO: get session ID from somewhere else (extract from JWT)
-  params.append('sessionId', window.localStorage.getItem('icat:token') || '');
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', JSON.stringify(deleted));
 
   return axios
     .put(`${topcatUrl}/user/download/${downloadId}/isDeleted`, params)
     .then(() => {})
     .catch(error => {
-      log.error(error.message);
+      handleICATError(error);
     });
 };
 
