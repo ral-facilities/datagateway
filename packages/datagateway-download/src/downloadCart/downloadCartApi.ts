@@ -182,19 +182,23 @@ export const downloadPreparedCart: (
 export const getSize: (
   entityId: number,
   entityType: string,
-  facilityName: string,
-  apiUrl: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    apiUrl: string;
+    downloadApiUrl: string;
+  }
 ) => Promise<number> = (
   entityId: number,
   entityType: string,
-  facilityName: string,
-  apiUrl: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    apiUrl: string;
+    downloadApiUrl: string;
+  }
 ) => {
   if (entityType === 'datafile') {
     return axios
-      .get<Datafile>(`${apiUrl}/datafiles/${entityId}`, {
+      .get<Datafile>(`${settings.apiUrl}/datafiles/${entityId}`, {
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
@@ -209,10 +213,10 @@ export const getSize: (
       });
   } else {
     return axios
-      .get<number>(`${downloadApiUrl}/user/getSize`, {
+      .get<number>(`${settings.downloadApiUrl}/user/getSize`, {
         params: {
           sessionId: readSciGatewayToken().sessionId,
-          facilityName: facilityName,
+          facilityName: settings.facilityName,
           entityType: entityType,
           entityId: entityId,
         },
@@ -306,25 +310,27 @@ export const getCartDatafileCount: (
 
 export const getCartSize: (
   cartItems: DownloadCartItem[],
-  facilityName: string,
-  apiUrl: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    apiUrl: string;
+    downloadApiUrl: string;
+  }
 ) => Promise<number> = (
   cartItems: DownloadCartItem[],
-  facilityName: string,
-  apiUrl: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    apiUrl: string;
+    downloadApiUrl: string;
+  }
 ) => {
   const getSizePromises: Promise<number>[] = [];
   cartItems.forEach(cartItem =>
     getSizePromises.push(
-      getSize(
-        cartItem.entityId,
-        cartItem.entityType,
-        facilityName,
-        apiUrl,
-        downloadApiUrl
-      )
+      getSize(cartItem.entityId, cartItem.entityType, {
+        facilityName: settings.facilityName,
+        apiUrl: settings.apiUrl,
+        downloadApiUrl: settings.downloadApiUrl,
+      })
     )
   );
 

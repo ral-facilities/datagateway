@@ -168,7 +168,6 @@ describe('Download cart table component', () => {
     );
   });
 
-  // TODO: What is the issue here?
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
     const wrapper = mount(
       <DownloadSettingsContext.Provider value={mockedSettings}>
@@ -261,10 +260,6 @@ describe('Download cart table component', () => {
     });
 
     expect(removeDownloadCartItem).toHaveBeenCalled();
-    // TODO: Needs to accept more calls.
-    // expect((removeDownloadCartItem as jest.Mock).mock.calls).toEqual([
-    //   [2, 'investigation', 'LILS', mockedSettings.downloadApiUrl],
-    // ]);
     expect(removeDownloadCartItem).toHaveBeenCalledWith(
       2,
       'investigation',

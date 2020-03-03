@@ -58,7 +58,6 @@ const DownloadCartTable: React.FC = () => {
   }, [data, sizesFinished]);
 
   React.useEffect(() => {
-    // console.log(settings.idsUrl);
     const checkTwoLevel = async (): Promise<void> =>
       setIsTwoLevel(await getIsTwoLevel(settings.idsUrl));
 
@@ -66,7 +65,6 @@ const DownloadCartTable: React.FC = () => {
   }, [settings.idsUrl]);
 
   React.useEffect(() => {
-    // console.log(settings);
     if (settings.facilityName && settings.apiUrl && settings.downloadApiUrl)
       fetchDownloadCartItems(
         settings.facilityName,
@@ -93,13 +91,11 @@ const DownloadCartTable: React.FC = () => {
 
         const chunkIndexOffset = chunkIndex * chunkSize;
         chunk.forEach((cartItem, index) => {
-          const promise = getSize(
-            cartItem.entityId,
-            cartItem.entityType,
-            settings.facilityName,
-            settings.apiUrl,
-            settings.downloadApiUrl
-          ).then(size => {
+          const promise = getSize(cartItem.entityId, cartItem.entityType, {
+            facilityName: settings.facilityName,
+            apiUrl: settings.apiUrl,
+            downloadApiUrl: settings.downloadApiUrl,
+          }).then(size => {
             updatedData[chunkIndexOffset + index].size = size;
           });
           chunkPromises.push(promise);

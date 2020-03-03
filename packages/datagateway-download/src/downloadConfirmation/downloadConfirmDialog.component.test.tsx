@@ -363,8 +363,6 @@ describe('DownloadConfirmDialog', () => {
     expect(wrapper.prop('open')).toBe(true);
 
     // Close the download confirmation dialog.
-    // TODO: Cannot set the prop on the root.
-    // wrapper.setProps({ open: false });
     wrapper.setProps({
       children: (
         <DownloadConfirmDialog

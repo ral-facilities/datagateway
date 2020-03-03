@@ -121,11 +121,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 ) => {
   const { classes, setClose, clearCart } = props;
 
-  // TODO: Temporary facilityName until we load it from settings.
-  // TODO: Access methods should be configurable and not defined in the component.
+  // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
-  // const facilityName = 'LILS';
-  // const defaultAccessMethod = 'https';
+
   // Set the default access method as the first access method
   // defined in the configuration.
   const defaultAccessMethod = Object.keys(settings.accessMethods)[0];
@@ -141,11 +139,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // Submit values.
   const [downloadName, setDownloadName] = React.useState<string>('');
-
-  // TODO: Pass in the first item in the accessMethods array.
-  // const [accessMethod, setAccessMethod] = React.useState<string>(
-  //   defaultAccessMethod
-  // );
   const [accessMethod, setAccessMethod] = React.useState<string>(
     defaultAccessMethod
   );
@@ -247,8 +240,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
-      // TODO: This will allow for anything else if the default was not http/https.
-      // if (accessMethod === defaultAccessMethod) {
       if (accessMethod.match(/https|http/)) {
         const downloadInfo = await getDownload(
           settings.facilityName,
