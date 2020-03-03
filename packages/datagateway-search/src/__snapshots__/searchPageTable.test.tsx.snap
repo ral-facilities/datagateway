@@ -24,7 +24,7 @@ exports[`SearchPageTable - Tests renders SearchPageTable on button click 1`] = `
           "entries": Array [
             Object {
               "hash": "",
-              "key": "4xybgj",
+              "key": "ic4mjv",
               "pathname": "/",
               "search": "",
               "state": undefined,
@@ -38,7 +38,7 @@ exports[`SearchPageTable - Tests renders SearchPageTable on button click 1`] = `
           "listen": [Function],
           "location": Object {
             "hash": "",
-            "key": "4xybgj",
+            "key": "ic4mjv",
             "pathname": "/",
             "search": "",
             "state": undefined,
@@ -67,7 +67,7 @@ exports[`SearchPageTable - Tests renders SearchPageTable on button click 1`] = `
               location={
                 Object {
                   "hash": "",
-                  "key": "4xybgj",
+                  "key": "ic4mjv",
                   "pathname": "/",
                   "search": "",
                   "state": undefined,
