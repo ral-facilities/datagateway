@@ -1,106 +1,21 @@
+import { ActionType, ThunkResult, ApplicationStrings } from '../app.types';
 import {
-  ActionType,
-  StateType,
-  ThunkResult,
-  ApplicationStrings,
-} from '../app.types';
-import {
-  SortTablePayload,
-  SortTableType,
-  FilterTablePayload,
-  FilterTableType,
-  ClearTableType,
   ConfigureStringsType,
   ConfigureStringsPayload,
   FeatureSwitches,
   FeatureSwitchesPayload,
   ConfigureFeatureSwitchesType,
-  URLs,
-  ConfigureUrlsPayload,
-  ConfigureURLsType,
   BreadcrumbSettings,
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
-  ConfigureFacilityNamePayload,
-  ConfigureFacilityNameType,
 } from './actions.types';
-import { Filter, Order } from 'datagateway-common';
+import { loadUrls, loadFacilityName } from 'datagateway-common';
+import { fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
-import { fetchDownloadCart } from './cart';
-
-export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-  const sort = getState().dgtable.sort;
-  const filters = getState().dgtable.filters;
-
-  let searchParams = new URLSearchParams();
-
-  for (let [key, value] of Object.entries(sort)) {
-    searchParams.append('order', JSON.stringify(`${key} ${value}`));
-  }
-
-  // sort by ID first to guarantee order
-  searchParams.append('order', JSON.stringify(`ID asc`));
-
-  for (let [column, filter] of Object.entries(filters)) {
-    if (typeof filter === 'object') {
-      if ('startDate' in filter && filter.startDate) {
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
-        );
-      }
-      if ('endDate' in filter && filter.endDate) {
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
-        );
-      }
-    } else {
-      searchParams.append(
-        'where',
-        JSON.stringify({ [column]: { like: filter } })
-      );
-    }
-  }
-
-  return searchParams;
-};
-
-export * from './investigations';
-export * from './datasets';
-export * from './datafiles';
-export * from './instruments';
-export * from './facilityCycles';
-export * from './cart';
-
-export const sortTable = (
-  column: string,
-  order: Order | null
-): ActionType<SortTablePayload> => ({
-  type: SortTableType,
-  payload: {
-    column,
-    order,
-  },
-});
-
-export const filterTable = (
-  column: string,
-  filter: Filter | null
-): ActionType<FilterTablePayload> => ({
-  type: FilterTableType,
-  payload: {
-    column,
-    filter,
-  },
-});
-
-export const clearTable = (): Action => ({
-  type: ClearTableType,
-});
+import jsrsasign from 'jsrsasign';
 
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
@@ -128,28 +43,12 @@ export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
   };
 };
 
-export const loadFacilityName = (
-  name: string
-): ActionType<ConfigureFacilityNamePayload> => ({
-  type: ConfigureFacilityNameType,
-  payload: {
-    facilityName: name,
-  },
-});
-
 export const loadFeatureSwitches = (
   featureSwitches: FeatureSwitches
 ): ActionType<FeatureSwitchesPayload> => ({
   type: ConfigureFeatureSwitchesType,
   payload: {
     switches: featureSwitches,
-  },
-});
-
-export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
-  type: ConfigureURLsType,
-  payload: {
-    urls,
   },
 });
 
@@ -211,23 +110,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
-          // TODO: get info from correct places when authorisation is sorted out in parent app
-          axios
-            .post(`${settings['apiUrl']}/sessions`, {
-              username: 'user',
-              password: 'password',
-            })
-            .then(response => {
-              window.localStorage.setItem(
-                'daaas:token',
-                response.data.sessionID
-              );
-            })
-            .catch(error => {
-              log.error(`Can't contact API: ${error.message}`);
-            });
-
-          // TODO: replace with getting from daaas:token when supported
           const splitUrl = settings.downloadApiUrl.split('/');
           const icatUrl = `${splitUrl
             .slice(0, splitUrl.length - 1)
@@ -246,12 +128,38 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
               }
             )
             .then(response => {
-              window.localStorage.setItem(
-                'icat:token',
-                response.data.sessionId
-              );
+              axios
+                .get(`${settings['apiUrl']}/sessions`, {
+                  headers: {
+                    Authorization: `Bearer ${response.data.sessionId}`,
+                  },
+                })
+                .then(() => {
+                  const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+                  const payload = {
+                    sessionId: response.data.sessionId,
+                    username: 'dev',
+                  };
+                  const jwt = jsrsasign.KJUR.jws.JWS.sign(
+                    'HS256',
+                    jwtHeader,
+                    payload,
+                    'shh'
+                  );
+
+                  window.localStorage.setItem('scigateway:token', jwt);
+                })
+                .catch(error => {
+                  log.error(
+                    `datagateway-api cannot verify ICAT session id: ${error.message}.
+                     This is likely caused if datagateway-api is pointing to a
+                     different ICAT than the one used by the IDS/TopCAT`
+                  );
+                });
             })
-            .catch(error => log.error("Can't log in to ICAT"));
+            .catch(error =>
+              log.error(`Can't log in to ICAT: ${error.message}`)
+            );
         }
 
         if ('ui-strings' in settings) {

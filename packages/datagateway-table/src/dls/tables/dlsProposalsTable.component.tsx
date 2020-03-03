@@ -7,19 +7,17 @@ import {
   Filter,
   Investigation,
   Entity,
+  fetchInvestigations,
+  fetchInvestigationCount,
+  sortTable,
+  filterTable,
+  clearTable,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  sortTable,
-  filterTable,
-  fetchInvestigations,
-  fetchInvestigationCount,
-  clearTable,
-} from '../../state/actions';
 import useAfterMountEffect from '../../utils';
 
 interface DLSProposalsTableStoreProps {
@@ -148,12 +146,12 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSProposalsTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
   };
 };
 

@@ -10,10 +10,12 @@ import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
-import DGTableMiddleware, {
+import {
+  DGCommonMiddleware,
   listenToMessages,
-} from './state/middleware/dgtable.middleware';
-import { RegisterRouteType } from './state/actions/actions.types';
+  RegisterRouteType,
+  MicroFrontendMessageId,
+} from 'datagateway-common';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Preloader } from 'datagateway-common';
@@ -35,7 +37,7 @@ const generateClassName = createGenerateClassName({
 });
 
 const history = createBrowserHistory();
-const middleware = [thunk, routerMiddleware(history), DGTableMiddleware];
+const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -71,7 +73,7 @@ const registerRouteAction = {
 };
 
 document.dispatchEvent(
-  new CustomEvent('daaas-frontend', { detail: registerRouteAction })
+  new CustomEvent(MicroFrontendMessageId, { detail: registerRouteAction })
 );
 
 function mapPreloaderStateToProps(state: StateType): { loading: boolean } {

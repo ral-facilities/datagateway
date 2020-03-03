@@ -1,36 +1,11 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { Order, Filter, Entity, DownloadCartItem } from 'datagateway-common';
-import {
-  FeatureSwitches,
-  URLs,
-  BreadcrumbSettings,
-} from './actions/actions.types';
-import { RouterState } from 'connected-react-router';
+import { DGCommonState } from 'datagateway-common';
+import { FeatureSwitches, BreadcrumbSettings } from './actions/actions.types';
 
 export interface DGTableState {
-  facilityName: string;
-  sort: {
-    [column: string]: Order;
-  };
-  filters: {
-    [column: string]: Filter;
-  };
-  data: Entity[];
-  totalDataCount: number;
-  investigationCache: EntityCache;
-  datasetCache: EntityCache;
-  cartItems: DownloadCartItem[];
-  allIds: number[];
-  loading: boolean;
-  downloading: boolean;
-  error: string | null;
-  dataTimestamp: number;
-  countTimestamp: number;
-  allIdsTimestamp: number;
   res?: ApplicationStrings;
   features: FeatureSwitches;
-  urls: URLs;
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
 }
@@ -50,10 +25,9 @@ export interface ApplicationStrings {
   [section: string]: AppStrings;
 }
 
-export interface StateType {
+export type StateType = {
   dgtable: DGTableState;
-  router: RouterState;
-}
+} & DGCommonState;
 
 export interface ActionType<T> {
   type: string;

@@ -24,6 +24,8 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import jsrsasign from 'jsrsasign';
+
 const downloadsInfo = [
   {
     availability: 'COMPLETE',
@@ -59,19 +61,57 @@ const downloadsInfo = [
   },
 ];
 
-Cypress.Commands.add('login', (username, password, noRootCredentials) => {
-  // cy.request('POST', `http://scigateway-preprod.esc.rl.ac.uk:5000/sessions`, {
-  //   username: username,
-  //   password: password,
-  // }).then(response => {
-  //   window.localStorage.setItem('daaas:token', response.body.sessionID);
-  // });
+const parseJwt = token => {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const payload = decodeURIComponent(
+    atob(base64).replace(/(.)/g, function(m, p) {
+      var code = p
+        .charCodeAt(0)
+        .toString(16)
+        .toUpperCase();
+      return '%' + ('00' + code).slice(-2);
+    })
+  );
+  return payload;
+};
 
+export const readSciGatewayToken = () => {
+  const token = window.localStorage.getItem('scigateway:token');
+  let sessionId = null;
+  let username = null;
+  if (token) {
+    const parsedToken = JSON.parse(parseJwt(token));
+    if (parsedToken.sessionId) sessionId = parsedToken.sessionId;
+    if (parsedToken.username) username = parsedToken.username;
+  }
+
+  return {
+    sessionId,
+    username,
+  };
+};
+
+Cypress.Commands.add('login', (username, password, noRootCredentials) => {
   let credentials = !noRootCredentials
     ? [{ username: 'root' }, { password: 'pw' }]
     : [{ username: username }, { password: password }];
 
   // TODO: replace with getting from daaas:token when supported
+  // cy.request({
+  //   method: 'POST',
+  //   url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',
+  //   body: {
+  //     json: JSON.stringify({
+  //       plugin: 'simple',
+  //       credentials: credentials,
+  //     }),
+  //   },
+  //   form: true,
+  // }).then(response => {
+  //   window.localStorage.setItem('daaas:token', response.body.sessionId);
+  //   window.localStorage.setItem('icat:token', response.body.sessionId);
+
   cy.request({
     method: 'POST',
     url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',
@@ -83,8 +123,14 @@ Cypress.Commands.add('login', (username, password, noRootCredentials) => {
     },
     form: true,
   }).then(response => {
-    window.localStorage.setItem('daaas:token', response.body.sessionId);
-    window.localStorage.setItem('icat:token', response.body.sessionId);
+    const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+    const payload = {
+      sessionId: response.body.sessionId,
+      username: 'test',
+    };
+    const jwt = jsrsasign.KJUR.jws.JWS.sign('HS256', jwtHeader, payload, 'shh');
+
+    window.localStorage.setItem('scigateway:token', jwt);
   });
 });
 
@@ -96,7 +142,7 @@ Cypress.Commands.add('clearDownloadCart', () => {
     url:
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
     qs: {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       items: '*',
     },
   });
@@ -117,7 +163,7 @@ Cypress.Commands.add('seedDownloadCart', () => {
     url:
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
     body: {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       items,
     },
     form: true,
@@ -133,7 +179,7 @@ Cypress.Commands.add('addCartItem', cartItem => {
     url:
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
     body: {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       items: cartItem,
     },
     form: true,
@@ -149,7 +195,7 @@ Cypress.Commands.add('seedDownloads', () => {
       url:
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
       body: {
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         items: `investigation ${i}`,
       },
       form: true,
@@ -162,7 +208,7 @@ Cypress.Commands.add('seedDownloads', () => {
         'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
       body: {
         ...info.submitDetails,
-        sessionId: window.localStorage.getItem('icat:token'),
+        sessionId: readSciGatewayToken().sessionId,
         zipType: 'ZIP',
       },
       form: true,
@@ -174,7 +220,7 @@ Cypress.Commands.add('seedDownloads', () => {
     method: 'GET',
     url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
     qs: {
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       facilityName: 'LILS',
       queryOffset: 'where download.isDeleted = false',
     },
@@ -186,7 +232,7 @@ Cypress.Commands.add('seedDownloads', () => {
         method: 'PUT',
         url: `https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/${download.id}/status`,
         body: {
-          sessionId: window.localStorage.getItem('icat:token'),
+          sessionId: readSciGatewayToken().sessionId,
           facilityName: 'LILS',
           value: downloadsInfo[i].availability,
         },
@@ -203,7 +249,7 @@ Cypress.Commands.add('clearDownloads', () => {
     url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
     qs: {
       facilityName: 'LILS',
-      sessionId: window.localStorage.getItem('icat:token'),
+      sessionId: readSciGatewayToken().sessionId,
       queryOffset: 'where download.isDeleted = false',
     },
   }).then(response => {
@@ -215,7 +261,7 @@ Cypress.Commands.add('clearDownloads', () => {
         method: 'PUT',
         url: `https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/${download.id}/isDeleted`,
         body: {
-          sessionId: window.localStorage.getItem('icat:token'),
+          sessionId: readSciGatewayToken().sessionId,
           facilityName: 'LILS',
           value: 'true',
         },

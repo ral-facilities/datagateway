@@ -4,8 +4,15 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
+import jsrsasign from 'jsrsasign';
 
 import singleSpaReact from 'single-spa-react';
+
+import {
+  MicroFrontendMessageId,
+  RequestPluginRerenderType,
+  RegisterRouteType,
+} from 'datagateway-common';
 
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
@@ -36,17 +43,16 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener('scigateway', e => {
+document.addEventListener(MicroFrontendMessageId, e => {
   // attempt to re-render the plugin if the corresponding div is present
   const action = (e as CustomEvent).detail;
-  if (action.type === 'scigateway:api:plugin_rerender') {
+  if (action.type === RequestPluginRerenderType) {
     // This is a temporary fix for the current issue with the tab indicator
     // not updating after the size of the page has been altered.
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('resize'));
       // console.log('resize done');
     }, 125);
-
     render();
   }
 });
@@ -75,6 +81,7 @@ if (
 
   if (process.env.NODE_ENV === `development`) {
     // TODO: replace with getting from scigateway:token when supported; extract icat token from JWT.
+    // TODO: get url from settings file
     const icatUrl = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat`;
     axios
       .post(
@@ -90,9 +97,21 @@ if (
         }
       )
       .then(response => {
-        window.localStorage.setItem('icat:token', response.data.sessionId);
+        const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+        const payload = {
+          sessionId: response.data.sessionId,
+          username: 'dev',
+        };
+        const jwt = jsrsasign.KJUR.jws.JWS.sign(
+          'HS256',
+          jwtHeader,
+          payload,
+          'shh'
+        );
+
+        window.localStorage.setItem('scigateway:token', jwt);
       })
-      .catch(error => console.error("Can't log in to ICAT"));
+      .catch(error => console.error(`Can't log in to ICAT: ${error.message}`));
   }
 }
 
@@ -102,9 +121,9 @@ if (
 serviceWorker.unregister();
 
 document.dispatchEvent(
-  new CustomEvent('scigateway', {
+  new CustomEvent(MicroFrontendMessageId, {
     detail: {
-      type: 'scigateway:api:register_route',
+      type: RegisterRouteType,
       payload: {
         section: 'Test',
         link: '/download',

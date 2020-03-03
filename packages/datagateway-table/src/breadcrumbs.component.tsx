@@ -1,6 +1,6 @@
 import React from 'react';
 import { StateType } from './state/app.types';
-import { EntityTypes } from 'datagateway-common';
+import { EntityTypes, readSciGatewayToken } from 'datagateway-common';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
@@ -416,10 +416,7 @@ class PageBreadcrumbs extends React.Component<
     entityName = await axios
       .get(requestUrl, {
         headers: {
-          // NOTE: Authorisation is specified as daaas token, however if this
-          //       is subject to change, it might be worth referencing the token
-          //       name which is stored elsewhere.
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
@@ -513,7 +510,7 @@ class PageBreadcrumbs extends React.Component<
 }
 
 const mapStateToProps = (state: StateType): PageBreadcrumbsProps => ({
-  apiUrl: state.dgtable.urls.apiUrl,
+  apiUrl: state.dgcommon.urls.apiUrl,
   location: state.router.location.pathname,
   breadcrumbSettings: state.dgtable.breadcrumbSettings,
 });

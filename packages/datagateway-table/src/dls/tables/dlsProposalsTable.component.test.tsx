@@ -1,16 +1,17 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DLSProposalsTable from './dlsProposalsTable.component';
-import { initialState } from '../../state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
   fetchInvestigationsRequest,
   filterTable,
   sortTable,
-  clearTable,
   fetchInvestigationCountRequest,
-} from '../../state/actions';
+  dGCommonInitialState,
+  clearTable,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
@@ -31,8 +32,13 @@ describe('DLS Proposals table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
-    state.dgtable.data = [
+    state = JSON.parse(
+      JSON.stringify({
+        dgtable: dgTableInitialState,
+        dgcommon: dGCommonInitialState,
+      })
+    );
+    state.dgcommon.data = [
       {
         ID: 1,
         TITLE: 'Test 1',

@@ -7,20 +7,18 @@ import {
   Filter,
   Entity,
   Instrument,
-} from 'datagateway-common';
-import { StateType } from '../../state/app.types';
-import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
-import { ThunkDispatch } from 'redux-thunk';
-import {
   sortTable,
   filterTable,
   fetchInstruments,
   fetchInstrumentDetails,
   fetchInstrumentCount,
   clearTable,
-} from '../../state/actions';
+} from 'datagateway-common';
+import { StateType } from '../../state/app.types';
+import { connect } from 'react-redux';
+import { Action, AnyAction } from 'redux';
+import { TableCellProps, IndexRange } from 'react-virtualized';
+import { ThunkDispatch } from 'redux-thunk';
 import InstrumentDetailsPanel from '../detailsPanels/instrumentDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 
@@ -135,12 +133,12 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
   };
 };
 

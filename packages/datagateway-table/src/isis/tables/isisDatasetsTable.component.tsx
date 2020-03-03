@@ -11,20 +11,18 @@ import {
   Dataset,
   DownloadCartItem,
   formatBytes,
-} from 'datagateway-common';
-import { IconButton } from '@material-ui/core';
-import {
-  sortTable,
-  filterTable,
   fetchDatasets,
   fetchDatasetCount,
-  clearTable,
   fetchDatasetDetails,
   downloadDataset,
   addToCart,
   removeFromCart,
   fetchAllIds,
-} from '../../state/actions';
+  sortTable,
+  filterTable,
+  clearTable,
+} from 'datagateway-common';
+import { IconButton } from '@material-ui/core';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -254,14 +252,14 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
-    cartItems: state.dgtable.cartItems,
-    allIds: state.dgtable.allIds,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
+    cartItems: state.dgcommon.cartItems,
+    allIds: state.dgcommon.allIds,
   };
 };
 

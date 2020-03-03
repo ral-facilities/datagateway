@@ -3,31 +3,31 @@ import log from 'loglevel';
 import {
   RegisterRouteType,
   RequestPluginRerenderType,
+  MicroFrontendMessageId,
+  CustomFrontendMessageType,
 } from '../actions/actions.types';
 import axios from 'axios';
 
 const CancelToken = axios.CancelToken;
 export let source = CancelToken.source();
 
-const microFrontendMessageId = 'daaas-frontend';
-
 const broadcastMessage = (action: AnyAction): void => {
   document.dispatchEvent(
-    new CustomEvent(microFrontendMessageId, { detail: action })
+    new CustomEvent(MicroFrontendMessageId, { detail: action })
   );
 };
 
 type microFrontendMessageType = CustomEvent<AnyAction>;
 
 export const listenToMessages = (dispatch: Dispatch): void => {
-  document.addEventListener(microFrontendMessageId, event => {
+  document.addEventListener(MicroFrontendMessageId, event => {
     const pluginMessage = event as microFrontendMessageType;
 
     if (
       pluginMessage.detail &&
       pluginMessage.detail.type &&
-      (pluginMessage.detail.type.startsWith('daaas:api:') ||
-        pluginMessage.detail.type.startsWith('datagateway_table:api:'))
+      (pluginMessage.detail.type.startsWith(CustomFrontendMessageType) ||
+        pluginMessage.detail.type.startsWith('datagateway_common:api:'))
     ) {
       // this is a valid message, so process it
       switch (pluginMessage.detail.type) {
@@ -53,7 +53,7 @@ export const listenToMessages = (dispatch: Dispatch): void => {
   });
 };
 
-const DGTableMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
+const DGCommonMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
   action: AnyAction
 ): AnyAction => {
   if (action.payload && action.payload.broadcast) {
@@ -67,4 +67,4 @@ const DGTableMiddleware: Middleware = (() => (next: Dispatch<AnyAction>) => (
   return next(action);
 }) as Middleware;
 
-export default DGTableMiddleware;
+export default DGCommonMiddleware;

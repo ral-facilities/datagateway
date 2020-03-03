@@ -1,18 +1,19 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DLSDatafilesTable from './dlsDatafilesTable.component';
-import { initialState } from '../../state/reducers/dgtable.reducer';
+import { initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
   fetchDatafilesRequest,
   filterTable,
   sortTable,
-  clearTable,
   fetchDatafileCountRequest,
   removeFromCartRequest,
   addToCartRequest,
-} from '../../state/actions';
+  dGCommonInitialState,
+  clearTable,
+} from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
@@ -33,8 +34,13 @@ describe('DLS datafiles table component', () => {
     mount = createMount();
 
     mockStore = configureStore([thunk]);
-    state = JSON.parse(JSON.stringify({ dgtable: initialState }));
-    state.dgtable.data = [
+    state = JSON.parse(
+      JSON.stringify({
+        dgtable: dgTableInitialState,
+        dgcommon: dGCommonInitialState,
+      })
+    );
+    state.dgcommon.data = [
       {
         ID: 1,
         NAME: 'Test 1',
@@ -44,7 +50,7 @@ describe('DLS datafiles table component', () => {
         DATASET_ID: 1,
       },
     ];
-    state.dgtable.allIds = [1];
+    state.dgcommon.allIds = [1];
   });
 
   afterEach(() => {
@@ -187,7 +193,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'datafile',
@@ -215,7 +221,7 @@ describe('DLS datafiles table component', () => {
   });
 
   it('selected rows only considers relevant cart items', () => {
-    state.dgtable.cartItems = [
+    state.dgcommon.cartItems = [
       {
         entityId: 1,
         entityType: 'dataset',
@@ -257,7 +263,7 @@ describe('DLS datafiles table component', () => {
     );
     const detailsPanelWrapper = shallow(
       wrapper.prop('detailsPanel')({
-        rowData: state.dgtable.data[0],
+        rowData: state.dgcommon.data[0],
       })
     );
     expect(detailsPanelWrapper).toMatchSnapshot();

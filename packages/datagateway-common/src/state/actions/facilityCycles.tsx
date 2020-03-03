@@ -13,9 +13,10 @@ import {
 import { ActionType, ThunkResult } from '../app.types';
 import axios from 'axios';
 import { getApiFilter } from '.';
-import * as log from 'loglevel';
-import { FacilityCycle } from 'datagateway-common';
+import { FacilityCycle } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
+import { readSciGatewayToken } from '../../parseTokens';
+import handleICATError from '../../handleICATError';
 
 export const fetchFacilityCyclesSuccess = (
   facilityCycles: FacilityCycle[],
@@ -55,7 +56,7 @@ export const fetchFacilityCycles = (
     dispatch(fetchFacilityCyclesRequest(timestamp));
 
     let params = getApiFilter(getState);
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     if (offsetParams) {
       params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -69,14 +70,14 @@ export const fetchFacilityCycles = (
       .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchFacilityCyclesSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchFacilityCyclesFailure(error.message));
       });
   };
@@ -120,20 +121,20 @@ export const fetchFacilityCycleCount = (
 
     let params = getApiFilter(getState);
     params.delete('order');
-    const { apiUrl } = getState().dgtable.urls;
+    const { apiUrl } = getState().dgcommon.urls;
 
     await axios
       .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles/count`, {
         params,
         headers: {
-          Authorization: `Bearer ${window.localStorage.getItem('daaas:token')}`,
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
       .then(response => {
         dispatch(fetchFacilityCycleCountSuccess(response.data, timestamp));
       })
       .catch(error => {
-        log.error(error.message);
+        handleICATError(error);
         dispatch(fetchFacilityCycleCountFailure(error.message));
       });
   };

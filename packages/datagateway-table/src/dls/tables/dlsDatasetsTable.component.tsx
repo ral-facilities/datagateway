@@ -8,18 +8,16 @@ import {
   Entity,
   DateColumnFilter,
   DownloadCartItem,
-} from 'datagateway-common';
-import {
   sortTable,
   filterTable,
   fetchDatasets,
   fetchDatasetDetails,
   fetchDatasetCount,
-  clearTable,
   addToCart,
   removeFromCart,
   fetchAllIds,
-} from '../../state/actions';
+  clearTable,
+} from 'datagateway-common';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
@@ -220,14 +218,14 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
   return {
-    sort: state.dgtable.sort,
-    filters: state.dgtable.filters,
-    data: state.dgtable.data,
-    totalDataCount: state.dgtable.totalDataCount,
-    loading: state.dgtable.loading,
-    error: state.dgtable.error,
-    cartItems: state.dgtable.cartItems,
-    allIds: state.dgtable.allIds,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    error: state.dgcommon.error,
+    cartItems: state.dgcommon.cartItems,
+    allIds: state.dgcommon.allIds,
   };
 };
 

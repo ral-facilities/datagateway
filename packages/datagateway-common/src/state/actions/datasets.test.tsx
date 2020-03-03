@@ -17,22 +17,20 @@ import {
   fetchDatasetDetailsRequest,
   fetchDatasetDetailsSuccess,
   fetchDatasetDetailsFailure,
-  fetchDatasetDatafilesCountRequest,
-} from '.';
-import { StateType, EntityCache } from '../app.types';
-import { initialState } from '../reducers/dgtable.reducer';
-import axios from 'axios';
-import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import * as log from 'loglevel';
-import { Dataset } from 'datagateway-common';
-import {
   fetchDatasetSize,
   fetchDatasetSizeRequest,
   fetchDatasetSizeSuccess,
   fetchDatasetSizeFailure,
-} from './datasets';
+} from '.';
+import { StateType, EntityCache } from '../app.types';
+import { initialState } from '../reducers/dgcommon.reducer';
+import axios from 'axios';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
+import { Dataset } from '../../app.types';
+import { fetchDatasetDatafilesCountRequest } from './datafiles';
+import handleICATError from '../../handleICATError';
 
-jest.mock('loglevel');
+jest.mock('../../handleICATError');
 
 describe('Dataset actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
@@ -78,6 +76,7 @@ describe('Dataset actions', () => {
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -101,7 +100,7 @@ describe('Dataset actions', () => {
   it('fetchDatasets action applies filters and sort state to request params', async () => {
     const asyncAction = fetchDatasets({ investigationId: 1 });
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
         filters: { column1: '1', column2: '2' },
@@ -152,9 +151,10 @@ describe('Dataset actions', () => {
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
     expect(actions[1]).toEqual(fetchDatasetsFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('fetchDataset action sends fetchDatasetSize actions when specified via optional parameters', async () => {
@@ -200,7 +200,7 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasetSize(1);
 
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         datasetCache: mockDatasetCache,
@@ -227,9 +227,11 @@ describe('Dataset actions', () => {
     expect(actions[0]).toEqual(fetchDatasetSizeRequest());
     expect(actions[1]).toEqual(fetchDatasetSizeFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith(
+      { message: 'Test error message' },
+      false
+    );
   });
 
   it('dispatches fetchDatasetCountRequest and fetchDatasetCountSuccess actions upon successful fetchDatasetCount action', async () => {
@@ -263,7 +265,7 @@ describe('Dataset actions', () => {
 
     const asyncAction = fetchDatasetCount(1);
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         filters: { column1: '1', column2: '2' },
       },
@@ -298,9 +300,35 @@ describe('Dataset actions', () => {
     expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
     expect(actions[1]).toEqual(fetchDatasetCountFailure('Test error message'));
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
+  });
+
+  it('fetchDatasets applies skip and limit when specified via optional parameters', async () => {
+    const asyncAction = fetchDatasets({
+      investigationId: 1,
+      offsetParams: { startIndex: 0, stopIndex: 49 },
+    });
+
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+      },
+    });
+    await asyncAction(dispatch, getState, null);
+
+    const params = new URLSearchParams();
+    params.append('order', JSON.stringify('ID asc'));
+    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
+
+    expect(axios.get).toHaveBeenCalledWith('/datasets', {
+      headers: { Authorization: 'Bearer null' },
+      params,
+    });
   });
 
   it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsSuccess actions upon successful fetchDatasetDetails action', async () => {
@@ -355,9 +383,10 @@ describe('Dataset actions', () => {
       fetchDatasetDetailsFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('dispatches fetchInvestigationDatasetsCountRequest and fetchInvestigationDatasetsCountSuccess actions upon successful fetchInvestigationDatasetsCount action', async () => {
@@ -387,7 +416,7 @@ describe('Dataset actions', () => {
 
     // Set up the state for calling fetchInvestigationDatasetsCountSuccess with investigation cache.
     const getState = (): Partial<StateType> => ({
-      dgtable: {
+      dgcommon: {
         ...initialState,
         data: mockData,
         investigationCache: mockInvestigationCache,
@@ -420,9 +449,11 @@ describe('Dataset actions', () => {
       fetchInvestigationDatasetsCountFailure('Test error message')
     );
 
-    expect(log.error).toHaveBeenCalled();
-    const mockLog = (log.error as jest.Mock).mock;
-    expect(mockLog.calls[0][0]).toEqual('Test error message');
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith(
+      { message: 'Test error message' },
+      false
+    );
   });
 
   it('dispatches downloadDatasetRequest and clicks on IDS link upon downloadDataset action', async () => {
