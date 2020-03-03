@@ -9,24 +9,29 @@ import { Download } from 'datagateway-common';
 jest.mock('../downloadApi');
 jest.useFakeTimers();
 
-// const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
-//   refresh: boolean;
-// }): React.ReactElement => {
-//   const [refreshTable, setRefreshTable] = React.useState(false);
+const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
+  refresh: boolean;
+}): React.ReactElement => {
+  const [refreshTable, setRefreshTable] = React.useState(false);
 
-//   return (
-//     <DownloadStatusTable
-//       refreshTable={props.refresh}
-//       setRefreshTable={setRefreshTable}
-//       setLastChecked={jest.fn()}
-//     />
-//   );
-// };
+  React.useEffect(() => {
+    setRefreshTable(props.refresh);
+  }, [props.refresh]);
+
+  return (
+    <DownloadStatusTable
+      refreshTable={refreshTable}
+      setRefreshTable={setRefreshTable}
+      setLastChecked={jest.fn()}
+    />
+  );
+};
 
 describe('Download Status Table', () => {
   let shallow;
   let mount;
 
+  // TODO: Simplify the mock data.
   const downloadItems: Download[] = [
     {
       createdAt: '2020-02-26T15:05:29Z',
@@ -148,64 +153,70 @@ describe('Download Status Table', () => {
     expect(fetchDownloads).toHaveBeenCalled();
   });
 
-  // // TODO: Should this be in the downloadTab test?
-  // // TODO: Also include a refresh button test in download tab.
-  // it.only('refreshes the tables when the refresh button has been clicked', async () => {
-  //   // const refreshTableFunction = jest.fn();
+  // TODO: Should this be in the downloadTab test?
+  // TODO: Also include a refresh button test in download tab.
+  it('refreshes the tables when the refresh button has been clicked', async () => {
+    // const refreshTableFunction = jest.fn();
 
-  //   // We only need to modify the refresh prop we pass to the DownloadStatusTable.
+    // We only need to modify the refresh prop we pass to the DownloadStatusTable.
 
-  //   // Allow for the wrapper to be created and the data to be loaded.
-  //   // const wrapper = mount(
-  //   //   <DownloadStatusTable
-  //   //     refreshTable={false}
-  //   //     setRefreshTable={refreshTableFunction}
-  //   //     setLastChecked={jest.fn()}
-  //   //   />
-  //   // );
+    // Allow for the wrapper to be created and the data to be loaded.
+    // const wrapper = mount(
+    //   <DownloadStatusTable
+    //     refreshTable={false}
+    //     setRefreshTable={refreshTableFunction}
+    //     setLastChecked={jest.fn()}
+    //   />
+    // );
 
-  //   const wrapper = mount(<RefreshHOC refreshTable={false} />);
+    // const wrapper = mount(<RefreshHOC refreshTable={false} />);
+    const wrapper = mount(<RefreshHOC refresh={false} />);
 
-  //   await act(async () => {
-  //     await flushPromises();
-  //     wrapper.update();
-  //   });
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
-  //   // Set the refresh prop to false.
-  //   expect(wrapper.prop('refreshTable')).toBe(false);
+    // Set the refresh prop to false.
+    expect(wrapper.prop('refresh')).toBe(false);
 
-  //   await act(async () => {
-  //     wrapper.setProps({ refreshTable: true });
-  //     await flushPromises();
-  //     wrapper.update();
-  //   });
+    await act(async () => {
+      // Set the refresh prop to true.
+      wrapper.setProps({ refresh: true });
 
-  //   expect(fetchDownloads).toHaveBeenCalledTimes(2);
+      await flushPromises();
+      wrapper.update();
+    });
 
-  //   // act(() => {
-  //   //   console.log('set props');
-  //   //   wrapper.setProps({ refreshTable: true });
-  //   // });
+    expect(wrapper.prop('refresh')).toBe(true);
 
-  //   // await act(async () => {
-  //   //   console.log('set props');
+    // Expect the downloads to have been fetched twice (on load and on refresh).
+    expect(fetchDownloads).toHaveBeenCalledTimes(2);
 
-  //   //   // TODO: Settings props with a callback works.
-  //   //   // wrapper.setProps({ refreshTable: true }, () =>
-  //   //   //   wrapper.setProps({ refreshTable: false })
-  //   //   // );
-  //   //   wrapper.setProps({ refreshTable: true });
-  //   //   await flushPromises();
-  //   //   wrapper.update();
-  //   // });
+    // act(() => {
+    //   console.log('set props');
+    //   wrapper.setProps({ refreshTable: true });
+    // });
 
-  //   // expect(refreshTableFunction).toHaveBeenCalledWith(false);
+    // await act(async () => {
+    //   console.log('set props');
 
-  //   // expect(wrapper.prop('refreshTable')).toBe(true);
+    //   // TODO: Settings props with a callback works.
+    //   // wrapper.setProps({ refreshTable: true }, () =>
+    //   //   wrapper.setProps({ refreshTable: false })
+    //   // );
+    //   wrapper.setProps({ refreshTable: true });
+    //   await flushPromises();
+    //   wrapper.update();
+    // });
 
-  //   // expect(fetchDownloads).toHaveBeenCalledTimes(2);
-  //   // expect(refreshTableFunction).toHaveBeenCalled();
-  // });
+    // expect(refreshTableFunction).toHaveBeenCalledWith(false);
+
+    // expect(wrapper.prop('refreshTable')).toBe(true);
+
+    // expect(fetchDownloads).toHaveBeenCalledTimes(2);
+    // expect(refreshTableFunction).toHaveBeenCalled();
+  });
 
   it('should have a link for a download item', async () => {
     const wrapper = mount(
@@ -391,7 +402,26 @@ describe('Download Status Table', () => {
       wrapper.exists('[aria-label="Remove test-file-4 from downloads"]')
     ).toBe(false);
 
-    // TODO: Needs more tests?
+    accessMethodFilterInput.instance().value = '';
+    accessMethodFilterInput.simulate('change');
+
+    // Test varying download availabilities.
+    const availabilityFilterInput = wrapper.find(
+      '[aria-label="Filter by Availability"] input'
+    );
+
+    availabilityFilterInput.instance().value = 'complete';
+    availabilityFilterInput.simulate('change');
+
+    expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
+    expect(
+      wrapper.exists('[aria-label="Remove test-file-1 from downloads"]')
+    ).toBe(true);
+
+    availabilityFilterInput.instance().value = '';
+    availabilityFilterInput.simulate('change');
+
+    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
   });
 
   it('filters data when date filter is altered', async () => {
@@ -429,6 +459,15 @@ describe('Download Status Table', () => {
     expect(wrapper.exists('[aria-rowcount=0]')).toBe(true);
 
     dateToFilterInput.instance().value = new Date().toISOString().slice(0, 10);
+    dateToFilterInput.simulate('change');
+
+    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
+
+    // Test when both date inputs are empty.
+    dateFromFilterInput.instance().value = '';
+    dateFromFilterInput.simulate('change');
+
+    dateToFilterInput.instance().value = '';
     dateToFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);

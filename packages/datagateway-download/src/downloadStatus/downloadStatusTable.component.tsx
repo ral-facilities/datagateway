@@ -39,7 +39,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   // console.log('Data loaded: ', dataLoaded);
 
   React.useEffect(() => {
-    console.log('dataLoaded: ', dataLoaded, ' refreshTable: ', refreshTable);
+    // console.log('dataLoaded: ', dataLoaded, ' refreshTable: ', refreshTable);
     if (!dataLoaded || refreshTable) {
       // Clear the current contents, this will make sure
       // there is visually a refresh of the table.
@@ -82,11 +82,29 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     />
   );
 
+  const availabilityFilter = (
+    label: string,
+    dataKey: string
+  ): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      onChange={(value: string) => {
+        console.log(label, dataKey, value);
+        if (value) {
+          // We convert the input value to uppercase to match the table value.
+          setFilters({ ...filters, [dataKey]: value.toUpperCase() });
+        } else {
+          const { [dataKey]: value, ...restOfFilters } = filters;
+          setFilters(restOfFilters);
+        }
+      }}
+    />
+  );
+
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
       onChange={(value: { startDate?: string; endDate?: string } | null) => {
-        // filterTable(dataKey, value)
         if (value) {
           setFilters({ ...filters, [dataKey]: value });
         } else {
@@ -182,25 +200,31 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   // TODO: Re-work so we can get the status of each element?
                   //       Filtering works with the actual table value and not what we display.
                   if (props.cellData) {
-                    switch (props.cellData) {
-                      case 'COMPLETE':
-                        return 'Available';
+                    let status: string = props.cellData;
+                    // switch (props.cellData) {
+                    //   case 'COMPLETE':
+                    //     return 'Available';
 
-                      case 'RESTORING':
-                        return 'Restoring from Tape';
+                    //   case 'RESTORING':
+                    //     return 'Restoring from Tape';
 
-                      case 'PREPARING':
-                        return 'Preparing';
+                    //   case 'PREPARING':
+                    //     return 'Preparing';
 
-                      case 'EXPIRED':
-                        return 'Expired';
+                    //   case 'EXPIRED':
+                    //     return 'Expired';
 
-                      default:
-                        return 'N/A';
-                    }
+                    //   default:
+                    //     return 'N/A';
+                    // }
+
+                    return (
+                      status.substring(0, 1).toUpperCase() +
+                      status.substring(1).toLowerCase()
+                    );
                   }
                 },
-                filterComponent: textFilter,
+                filterComponent: availabilityFilter,
               },
               {
                 label: 'Requested Date',
