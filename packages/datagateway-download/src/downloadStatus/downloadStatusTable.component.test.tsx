@@ -43,8 +43,8 @@ describe('Download Status Table', () => {
       isDeleted: false,
       isEmailSent: true,
       isTwoLevel: false,
-      preparedId: 'e44acee7-2211-4aae-bffb-f6c0e417f43d',
-      sessionId: '6bf8e6e4-58a9-11ea-b823-005056893dd9',
+      preparedId: 'test-prepared-id',
+      sessionId: 'test-session-id',
       size: 1000,
       status: 'COMPLETE',
       transport: 'https',
@@ -61,8 +61,8 @@ describe('Download Status Table', () => {
       isDeleted: false,
       isEmailSent: true,
       isTwoLevel: false,
-      preparedId: '10d5e2b9-4c1c-4be5-8bda-8520694dd85a',
-      sessionId: '6f1e3fd6-58a9-11ea-9a26-005056893dd9',
+      preparedId: 'test-prepared-id',
+      sessionId: 'test-session-id',
       size: 2000,
       status: 'PREPARING',
       transport: 'globus',
@@ -79,8 +79,8 @@ describe('Download Status Table', () => {
       isDeleted: false,
       isEmailSent: true,
       isTwoLevel: false,
-      preparedId: '5e3249a5-aec6-4dd0-b602-c4a8d27f75e2',
-      sessionId: 'aa6c65de-58b0-11ea-82d6-005056893dd9',
+      preparedId: 'test-prepared-id',
+      sessionId: 'test-session-id',
       size: 3000,
       status: 'RESTORING',
       transport: 'https',
@@ -97,8 +97,8 @@ describe('Download Status Table', () => {
       isDeleted: false,
       isEmailSent: true,
       isTwoLevel: false,
-      preparedId: '6a226aaf-12be-48d8-86d0-9fea9e5fa8e2',
-      sessionId: 'aeda386c-58b0-11ea-9a26-005056893dd9',
+      preparedId: 'test-prepared-id',
+      sessionId: 'test-session-id',
       size: 4000,
       status: 'EXPIRED',
       transport: 'globus',
@@ -152,8 +152,6 @@ describe('Download Status Table', () => {
     expect(fetchDownloads).toHaveBeenCalled();
   });
 
-  // TODO: Should this be in the downloadTab test?
-  // TODO: Also include a refresh button test in download tab.
   it('refreshes the tables when the refresh button has been clicked', async () => {
     // Use our RefreshHOC and only modify the refresh prop
     // we pass on to the DownloadStatusTable.
@@ -404,8 +402,6 @@ describe('Download Status Table', () => {
       '[aria-label="Requested Date date filter from"]'
     );
 
-    // TODO: Catch 'return false' lines in sortAndFilteredData method.
-    // TODO: Adjust dates for mock data (from download mock data).
     dateFromFilterInput.instance().value = '2020-01-01';
     dateFromFilterInput.simulate('change');
 

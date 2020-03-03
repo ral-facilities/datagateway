@@ -168,7 +168,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     return filteredData.sort(sortDownloadItems);
   }, [data, sort, filters]);
 
-  // TODO: Prepared ID can be html issue?
   // Construct a link to download the prepared cart.
   const getDataUrl = (preparedId: string, fileName: string): string => {
     // TODO: Get idsUrl from the settings.

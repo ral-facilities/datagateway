@@ -169,8 +169,6 @@ export interface DownloadCart {
 export interface Download {
   createdAt: string;
   downloadItems: DownloadItem[];
-  // TODO: Make email optional, as this is not sent every time.
-  email: string;
   facilityName: string;
   fileName: string;
   fullName: string;
@@ -184,8 +182,9 @@ export interface Download {
   status: 'PREPARING' | 'RESTORING' | 'PAUSED' | 'COMPLETE' | 'EXPIRED';
   transport: string;
   userName: string;
+  email?: string;
 
-  [key: string]: string | number | boolean | DownloadItem[];
+  [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
 export interface SubmitCart {

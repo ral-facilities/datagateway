@@ -97,21 +97,6 @@ Cypress.Commands.add('login', (username, password, noRootCredentials) => {
     ? [{ username: 'root' }, { password: 'pw' }]
     : [{ username: username }, { password: password }];
 
-  // TODO: replace with getting from daaas:token when supported
-  // cy.request({
-  //   method: 'POST',
-  //   url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',
-  //   body: {
-  //     json: JSON.stringify({
-  //       plugin: 'simple',
-  //       credentials: credentials,
-  //     }),
-  //   },
-  //   form: true,
-  // }).then(response => {
-  //   window.localStorage.setItem('daaas:token', response.body.sessionId);
-  //   window.localStorage.setItem('icat:token', response.body.sessionId);
-
   cy.request({
     method: 'POST',
     url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',

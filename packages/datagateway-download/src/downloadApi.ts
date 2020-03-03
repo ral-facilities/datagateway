@@ -114,7 +114,6 @@ export const fetchDownloads: (
   return axios
     .get<Download[]>(`${topcatUrl}/user/downloads`, {
       params: {
-        // TODO: get session ID from somewhere else (extract from JWT)
         sessionId: readSciGatewayToken().sessionId,
         facilityName: facilityName,
         queryOffset: !queryOffset
@@ -174,8 +173,6 @@ export const downloadPreparedCart: (
   // We trigger an immediate download which will begin in a new tab.
   link.style.display = 'none';
   link.target = '_blank';
-  // TODO: How would I access this from an e2e test?
-  // link.id = 'ids-download';
   document.body.appendChild(link);
 
   // Prevent the link from being clicked if this is an e2e test.
@@ -196,7 +193,6 @@ export const downloadDeleted: (
 ) => {
   const params = new URLSearchParams();
   params.append('facilityName', facilityName);
-  // TODO: get session ID from somewhere else (extract from JWT)
   params.append('sessionId', readSciGatewayToken().sessionId || '');
   params.append('value', JSON.stringify(deleted));
 
