@@ -16,6 +16,7 @@ export interface Investigation {
   SAMPLE?: Sample[];
   PUBLICATION?: Publication[];
   STUDYINVESTIGATION?: StudyInvestigation[];
+  FACILITY?: Facility;
 }
 
 export interface Dataset {
@@ -60,6 +61,8 @@ export interface Instrument {
   TYPE?: string;
   URL?: string;
   INSTRUMENTSCIENTIST?: InstrumentScientist[];
+  FACILITY_ID: number;
+  FACILITY?: Facility;
 }
 
 export interface InvestigationUser {
@@ -94,6 +97,8 @@ export interface FacilityCycle {
   DESCRIPTION?: string;
   STARTDATE?: string;
   ENDDATE?: string;
+  FACILITY_ID: number;
+  FACILITY?: Facility;
 }
 
 export interface DatasetType {
@@ -141,6 +146,16 @@ interface ParameterType {
   NAME: string;
   UNITS: string;
   VALUETYPE: string;
+}
+
+interface Facility {
+  ID: number;
+  NAME: string;
+  FULLNAME?: string;
+  URL?: string;
+  DESCRIPTION?: string;
+  DAYSUNTILRELEASE?: number;
+  FACILITYCYCLE?: FacilityCycle[];
 }
 
 export interface DownloadCartItem {

@@ -138,7 +138,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                   const jwtHeader = { alg: 'HS256', typ: 'JWT' };
                   const payload = {
                     sessionId: response.data.sessionId,
-                    username: 'dev',
+                    username: 'Robert499',
                   };
                   const jwt = jsrsasign.KJUR.jws.JWS.sign(
                     'HS256',

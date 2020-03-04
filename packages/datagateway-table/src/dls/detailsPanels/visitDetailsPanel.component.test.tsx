@@ -161,7 +161,7 @@ describe('Visit details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });
 
-  it('calls fetchDetails on load', () => {
+  it('calls fetchDetails on load if INVESTIGATIONUSER, SAMPLE or PUBLICATIONS are missing', () => {
     mount(
       <VisitsDetailsPanel
         rowData={rowData}
@@ -170,8 +170,45 @@ describe('Visit details panel component', () => {
       />
     );
 
-    expect(fetchDetails).toHaveBeenCalled();
+    expect(fetchDetails).toHaveBeenCalledTimes(1);
     expect(fetchDetails).toHaveBeenCalledWith(1);
+    fetchDetails.mockClear();
+
+    rowData.INVESTIGATIONUSER = [];
+    mount(
+      <VisitsDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+
+    expect(fetchDetails).toHaveBeenCalledTimes(1);
+    expect(fetchDetails).toHaveBeenCalledWith(1);
+    fetchDetails.mockClear();
+
+    rowData.SAMPLE = [];
+    mount(
+      <VisitsDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+
+    expect(fetchDetails).toHaveBeenCalledTimes(1);
+    expect(fetchDetails).toHaveBeenCalledWith(1);
+    fetchDetails.mockClear();
+
+    rowData.PUBLICATION = [];
+    mount(
+      <VisitsDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+    expect(fetchDetails).not.toHaveBeenCalled();
   });
 
   it('gracefully handles InvestigationUsers without Users', () => {

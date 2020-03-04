@@ -20,11 +20,9 @@ const InvestigationDetailsPanel = (
 
   React.useEffect(() => {
     if (
-      !(
-        investigationData.INVESTIGATIONUSER ||
-        investigationData.SAMPLE ||
-        investigationData.PUBLICATION
-      )
+      !investigationData.INVESTIGATIONUSER ||
+      !investigationData.SAMPLE ||
+      !investigationData.PUBLICATION
     ) {
       fetchDetails(investigationData.ID);
     }
