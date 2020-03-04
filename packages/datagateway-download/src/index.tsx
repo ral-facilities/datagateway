@@ -49,9 +49,9 @@ document.addEventListener(MicroFrontendMessageId, e => {
   if (action.type === RequestPluginRerenderType) {
     // This is a temporary fix for the current issue with the tab indicator
     // not updating after the size of the page has been altered.
+    // This is issue is being tracked by material-ui (https://github.com/mui-org/material-ui/issues/9337).
     setTimeout(() => {
       window.dispatchEvent(new CustomEvent('resize'));
-      // console.log('resize done');
     }, 125);
     render();
   }

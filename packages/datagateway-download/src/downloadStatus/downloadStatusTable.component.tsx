@@ -28,7 +28,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
-    // [column: string]: string;
     [column: string]: string | { startDate?: string; endDate?: string };
   }>({});
   const [data, setData] = React.useState<Download[]>([]);

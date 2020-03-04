@@ -199,10 +199,6 @@ export type DownloadCartTableItem = DownloadCartItem & {
   [key: string]: string | number | DownloadCartItem[];
 };
 
-// export type DownloadStatusTableItem = Download & {
-//   [key: string]: string | number | Download;
-// }
-
 export type ICATEntity =
   | Investigation
   | Dataset
@@ -210,7 +206,7 @@ export type ICATEntity =
   | Instrument
   | FacilityCycle;
 
-export type Entity = ICATEntity | DownloadCartTableItem | Download; // | DownloadStatusTableItem;
+export type Entity = ICATEntity | DownloadCartTableItem | Download;
 
 export const EntityTypes: string[] = [
   'investigation',

@@ -97,7 +97,7 @@ const DownloadTabs: React.FC = () => {
 
       <TabPanel value={selectedTab} index={0} aria-label="Download cart panel">
         {/* Provide a link to the status table for the download confirmation dialog to use */}
-        <DownloadCartTable statusLink={() => setSelectedTab(1)} />
+        <DownloadCartTable statusTabRedirect={() => setSelectedTab(1)} />
       </TabPanel>
 
       <TabPanel

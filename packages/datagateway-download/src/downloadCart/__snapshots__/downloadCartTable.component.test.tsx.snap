@@ -127,8 +127,8 @@ exports[`Download cart table component renders correctly 1`] = `
     clearCart={[Function]}
     isTwoLevel={false}
     open={false}
+    redirectToStatusTab={[MockFunction]}
     setClose={[Function]}
-    setStatus={[MockFunction]}
     totalSize={0}
   />
 </div>

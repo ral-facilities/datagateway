@@ -30,7 +30,7 @@ exports[`DownloadTab renders correctly 1`] = `
     value={0}
   >
     <DownloadCartTable
-      statusLink={[Function]}
+      statusTabRedirect={[Function]}
     />
   </TabPanel>
   <TabPanel

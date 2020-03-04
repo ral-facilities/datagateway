@@ -5,8 +5,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
   clearCart={[MockFunction]}
   isTwoLevel={true}
   open={true}
+  redirectToStatusTab={[MockFunction]}
   setClose={[MockFunction]}
-  setStatus={[MockFunction]}
   totalSize={100}
 >
   <DownloadConfirmDialog
@@ -18,8 +18,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
     clearCart={[MockFunction]}
     isTwoLevel={true}
     open={true}
+    redirectToStatusTab={[MockFunction]}
     setClose={[MockFunction]}
-    setStatus={[MockFunction]}
     totalSize={100}
   >
     <WithStyles(ForwardRef(Dialog))
@@ -3721,8 +3721,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
   clearCart={[MockFunction]}
   isTwoLevel={false}
   open={true}
+  redirectToStatusTab={[MockFunction]}
   setClose={[MockFunction]}
-  setStatus={[MockFunction]}
   totalSize={100}
 >
   <DownloadConfirmDialog
@@ -3734,8 +3734,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
     clearCart={[MockFunction]}
     isTwoLevel={false}
     open={true}
+    redirectToStatusTab={[MockFunction]}
     setClose={[MockFunction]}
-    setStatus={[MockFunction]}
     totalSize={100}
   >
     <WithStyles(ForwardRef(Dialog))

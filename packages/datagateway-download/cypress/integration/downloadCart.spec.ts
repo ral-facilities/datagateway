@@ -1,7 +1,7 @@
 describe('Download Cart', () => {
   before(() => {
     // Ensure the download cart is cleared before running tests.
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.clearDownloadCart();
   });
 
@@ -10,7 +10,7 @@ describe('Download Cart', () => {
     cy.server();
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
 
     cy.seedDownloadCart().then(() => {
       cy.visit('/');

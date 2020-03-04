@@ -1,7 +1,7 @@
 describe('Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
-    cy.login('download-e2e-tests', 'pw', true);
+    cy.login('download-e2e-tests', 'pw');
 
     // Seed the initial downloads.
     cy.clearDownloads();

@@ -23,7 +23,7 @@ import chunk from 'lodash.chunk';
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 
 interface DownloadCartTableProps {
-  statusLink: () => void;
+  statusTabRedirect: () => void;
 }
 
 const DownloadCartTable: React.FC<DownloadCartTableProps> = (
@@ -309,7 +309,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         totalSize={totalSize}
         isTwoLevel={isTwoLevel}
         open={showConfirmation}
-        setStatus={props.statusLink}
+        redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}
         clearCart={() => setData([])}
       />

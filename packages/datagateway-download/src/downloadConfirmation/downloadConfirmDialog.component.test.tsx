@@ -49,7 +49,7 @@ describe('DownloadConfirmDialog', () => {
         totalSize={size}
         isTwoLevel={isTwoLevel}
         open={open}
-        setStatus={jest.fn()}
+        redirectToStatusTab={jest.fn()}
         setClose={jest.fn()}
         clearCart={jest.fn()}
       />
@@ -308,16 +308,14 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
-    // let openDialog = true;
     const closeFunction = jest.fn();
 
     const wrapper = mount(
       <DownloadConfirmDialog
         totalSize={1}
         isTwoLevel={false}
-        // open={openDialog}
         open={true}
-        setStatus={jest.fn()}
+        redirectToStatusTab={jest.fn()}
         setClose={closeFunction}
         clearCart={jest.fn()}
       />
@@ -357,9 +355,8 @@ describe('DownloadConfirmDialog', () => {
       <DownloadConfirmDialog
         totalSize={1}
         isTwoLevel={false}
-        // open={openDialog}
         open={true}
-        setStatus={jest.fn()}
+        redirectToStatusTab={jest.fn()}
         setClose={jest.fn()}
         clearCart={clearCartFunction}
       />
@@ -405,7 +402,7 @@ describe('renders the estimated download speed/time table with varying values', 
         isTwoLevel={false}
         open={true}
         setClose={jest.fn()}
-        setStatus={jest.fn()}
+        redirectToStatusTab={jest.fn()}
         clearCart={jest.fn()}
       />
     );

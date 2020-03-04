@@ -1,7 +1,7 @@
 describe('Download Confirmation', () => {
   before(() => {
     // Ensure the download cart is cleared before running tests.
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.clearDownloadCart();
   });
 
@@ -13,7 +13,7 @@ describe('Download Confirmation', () => {
     cy.server();
     cy.route('GET', '**/ids/isTwoLevel').as('fetchIsTwoLevel');
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
 
     // Ensure the cart is clear before running tests.
     cy.clearDownloadCart();
