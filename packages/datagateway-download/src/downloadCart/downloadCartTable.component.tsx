@@ -229,8 +229,10 @@ const DownloadCartTable: React.FC = () => {
                             removeDownloadCartItem(
                               cartItem.entityId,
                               cartItem.entityType,
-                              settings.facilityName,
-                              settings.downloadApiUrl
+                              {
+                                facilityName: settings.facilityName,
+                                downloadApiUrl: settings.downloadApiUrl,
+                              }
                             ).then(() =>
                               setData(
                                 data.filter(

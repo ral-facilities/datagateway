@@ -228,24 +228,20 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName(fileName);
     }
 
-    const downloadId = await submitCart(
-      settings.facilityName,
-      accessMethod,
-      emailAddress,
-      fileName,
-      settings.downloadApiUrl
-    );
+    const downloadId = await submitCart(accessMethod, emailAddress, fileName, {
+      facilityName: settings.facilityName,
+      downloadApiUrl: settings.downloadApiUrl,
+    });
 
     // Ensure that we have received a downloadId.
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
       if (accessMethod.match(/https|http/)) {
-        const downloadInfo = await getDownload(
-          settings.facilityName,
-          downloadId,
-          settings.downloadApiUrl
-        );
+        const downloadInfo = await getDownload(downloadId, {
+          facilityName: settings.facilityName,
+          downloadApiUrl: settings.downloadApiUrl,
+        });
 
         // Download the file as long as it is available for instant download.
         if (downloadInfo != null && downloadInfo.status === 'COMPLETE')

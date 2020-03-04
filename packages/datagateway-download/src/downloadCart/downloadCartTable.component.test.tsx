@@ -260,12 +260,10 @@ describe('Download cart table component', () => {
     });
 
     expect(removeDownloadCartItem).toHaveBeenCalled();
-    expect(removeDownloadCartItem).toHaveBeenCalledWith(
-      2,
-      'investigation',
-      'LILS',
-      mockedSettings.downloadApiUrl
-    );
+    expect(removeDownloadCartItem).toHaveBeenCalledWith(2, 'investigation', {
+      facilityName: mockedSettings.facilityName,
+      downloadApiUrl: mockedSettings.downloadApiUrl,
+    });
     expect(
       wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
     ).toBe(false);

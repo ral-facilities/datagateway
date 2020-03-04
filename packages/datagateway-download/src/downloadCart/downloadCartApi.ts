@@ -50,21 +50,28 @@ export const removeAllDownloadCartItems: (
 export const removeDownloadCartItem: (
   entityId: number,
   entityType: string,
-  facilityName: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
 ) => Promise<void> = (
   entityId: number,
   entityType: string,
-  facilityName: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
 ) => {
   return axios
-    .delete(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        items: `${entityType} ${entityId}`,
-      },
-    })
+    .delete(
+      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      {
+        params: {
+          sessionId: readSciGatewayToken().sessionId,
+          items: `${entityType} ${entityId}`,
+        },
+      }
+    )
     .then(() => {})
     .catch(handleICATError);
 };
@@ -84,17 +91,21 @@ export const getIsTwoLevel: (idsUrl: string) => Promise<boolean> = (
 };
 
 export const submitCart: (
-  facilityName: string,
   transport: string,
   emailAddress: string,
   fileName: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
 ) => Promise<number> = (
-  facilityName: string,
   transport: string,
   emailAddress: string,
   fileName: string,
-  downloadApiUrl: string
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
 ) => {
   const params = new URLSearchParams();
 
@@ -109,7 +120,7 @@ export const submitCart: (
 
   return axios
     .post<SubmitCart>(
-      `${downloadApiUrl}/user/cart/${facilityName}/submit`,
+      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/submit`,
       params
     )
     .then(response => {
@@ -126,19 +137,17 @@ export const submitCart: (
 };
 
 export const getDownload: (
-  facilityName: string,
   downloadId: number,
-  downloadApiUrl: string
+  settings: { facilityName: string; downloadApiUrl: string }
 ) => Promise<Download | null> = (
-  facilityName: string,
   downloadId: number,
-  downloadApiUrl: string
+  settings: { facilityName: string; downloadApiUrl: string }
 ) => {
   return axios
-    .get<Download[]>(`${downloadApiUrl}/user/downloads`, {
+    .get<Download[]>(`${settings.downloadApiUrl}/user/downloads`, {
       params: {
         sessionId: readSciGatewayToken().sessionId,
-        facilityName: facilityName,
+        facilityName: settings.facilityName,
         queryOffset: `where download.id = ${downloadId}`,
       },
     })
