@@ -54,7 +54,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         fetchDownloads('LILS').then(downloads => {
           setData(downloads);
           setDataLoaded(true);
-          // console.log('Done: ', downloads);
 
           // Set the time at which we set the download data.
           setLastChecked();
@@ -111,7 +110,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   // Handle filtering for both text and date filters.
   const sortedAndFilteredData = React.useMemo(() => {
-    // console.log(data);
     const filteredData = data.filter(item => {
       for (let [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
@@ -148,19 +146,25 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
     function sortDownloadItems(a: Download, b: Download): number {
       for (let [sortColumn, sortDirection] of Object.entries(sort)) {
-        if (sortDirection === 'asc') {
-          if (a[sortColumn] > b[sortColumn]) {
-            return 1;
-          } else if (a[sortColumn] < b[sortColumn]) {
-            return -1;
-          }
-        } else {
-          if (a[sortColumn] > b[sortColumn]) {
-            return -1;
-          } else if (a[sortColumn] < b[sortColumn]) {
-            return 1;
+        const aColumnValue = a[sortColumn];
+        const bColumnValue = b[sortColumn];
+
+        if (aColumnValue && bColumnValue) {
+          if (sortDirection === 'asc') {
+            if (aColumnValue > bColumnValue) {
+              return 1;
+            } else if (aColumnValue < bColumnValue) {
+              return -1;
+            }
+          } else {
+            if (aColumnValue > bColumnValue) {
+              return -1;
+            } else if (aColumnValue < bColumnValue) {
+              return 1;
+            }
           }
         }
+        return 0;
       }
       return 0;
     }
