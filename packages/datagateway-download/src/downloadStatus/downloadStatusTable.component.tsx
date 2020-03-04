@@ -148,23 +148,21 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       for (let [sortColumn, sortDirection] of Object.entries(sort)) {
         const aColumnValue = a[sortColumn];
         const bColumnValue = b[sortColumn];
+        if (!aColumnValue || !bColumnValue) return 0;
 
-        if (aColumnValue && bColumnValue) {
-          if (sortDirection === 'asc') {
-            if (aColumnValue > bColumnValue) {
-              return 1;
-            } else if (aColumnValue < bColumnValue) {
-              return -1;
-            }
-          } else {
-            if (aColumnValue > bColumnValue) {
-              return -1;
-            } else if (aColumnValue < bColumnValue) {
-              return 1;
-            }
+        if (sortDirection === 'asc') {
+          if (aColumnValue > bColumnValue) {
+            return 1;
+          } else if (aColumnValue < bColumnValue) {
+            return -1;
+          }
+        } else {
+          if (aColumnValue > bColumnValue) {
+            return -1;
+          } else if (aColumnValue < bColumnValue) {
+            return 1;
           }
         }
-        return 0;
       }
       return 0;
     }

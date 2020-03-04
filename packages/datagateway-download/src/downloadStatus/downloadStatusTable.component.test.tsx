@@ -33,7 +33,7 @@ describe('Download Status Table', () => {
 
   const downloadItems: Download[] = [
     {
-      createdAt: '2020-02-26T15:05:29Z',
+      createdAt: '2020-02-25T15:05:29Z',
       downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
       email: 'test1@email.com',
       facilityName: 'LILS',
@@ -69,7 +69,7 @@ describe('Download Status Table', () => {
       userName: 'test user',
     },
     {
-      createdAt: '2020-02-26T15:57:20Z',
+      createdAt: '2020-02-27T15:57:20Z',
       downloadItems: [{ entityId: 3, entityType: 'investigation', id: 3 }],
       email: 'test3@email.com',
       facilityName: 'LILS',
@@ -87,7 +87,7 @@ describe('Download Status Table', () => {
       userName: 'test user',
     },
     {
-      createdAt: '2020-02-26T15:57:28Z',
+      createdAt: '2020-02-28T15:57:28Z',
       downloadItems: [{ entityId: 4, entityType: 'investigation', id: 4 }],
       email: 'test4@email.com',
       facilityName: 'LILS',
@@ -416,10 +416,18 @@ describe('Download Status Table', () => {
 
     expect(wrapper.exists('[aria-rowcount=0]')).toBe(true);
 
-    dateToFilterInput.instance().value = new Date().toISOString().slice(0, 10);
+    dateFromFilterInput.instance().value = '2020-02-26';
+    dateFromFilterInput.simulate('change');
+    dateToFilterInput.instance().value = '2020-02-27';
     dateToFilterInput.simulate('change');
 
-    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
+    expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
+    expect(
+      wrapper.exists('[aria-label="Remove test-file-1 from downloads"]')
+    ).toBe(false);
+    expect(
+      wrapper.exists('[aria-label="Remove test-file-4 from downloads"]')
+    ).toBe(false);
 
     // Test when both date inputs are empty.
     dateFromFilterInput.instance().value = '';
