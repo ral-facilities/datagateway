@@ -17,6 +17,7 @@
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-scripts": "3.0.1",
+    "react-virtualized": "^9.21.1",
     "single-spa-react": "^2.10.2",
     "typescript": "3.5.3"
   },
@@ -51,19 +52,19 @@
     "start-server-and-test": "^1.9.1"
   },
   "scripts": {
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
-    "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src",
-    "serve:build": "yarn build & serve -l 5001 build",
     "start": "craco start",
     "build": "craco build",
+    "serve:build": "yarn build & serve -l 5001 build",
     "test": "craco test --env=jsdom --coverage --watchAll=false",
     "test:watch": "craco test --env=jsdom --watch",
-    "eject": "react-scripts eject",
     "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false craco build",
     "e2e:serve": "yarn build:e2e && node ./server/e2e-test-server.js",
     "e2e:interactive": "start-server-and-test e2e:serve http://localhost:3000 cy:open",
     "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "lint:js": "eslint --ext=tsx --ext=js --ext=jsx --fix ./src && yarn build",
+    "eject": "react-scripts eject",
     "pre-commit": "lint-staged"
   },
   "browserslist": {

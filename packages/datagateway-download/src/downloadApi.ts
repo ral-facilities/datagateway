@@ -107,6 +107,29 @@ export const submitCart: (
     });
 };
 
+export const fetchDownloads: (
+  facilityName: string,
+  queryOffset?: string
+) => Promise<Download[]> = (facilityName: string, queryOffset?: string) => {
+  return axios
+    .get<Download[]>(`${topcatUrl}/user/downloads`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: facilityName,
+        queryOffset: !queryOffset
+          ? 'where download.isDeleted = false'
+          : queryOffset,
+      },
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      handleICATError(error);
+      return [];
+    });
+};
+
 export const getDownload: (
   facilityName: string,
   downloadId: number
@@ -151,8 +174,34 @@ export const downloadPreparedCart: (
   link.style.display = 'none';
   link.target = '_blank';
   document.body.appendChild(link);
-  link.click();
-  link.remove();
+
+  // Prevent the link from being clicked if this is an e2e test.
+  if (!process.env.REACT_APP_E2E_TESTING) {
+    link.click();
+    link.remove();
+  }
+};
+
+export const downloadDeleted: (
+  facilityName: string,
+  downloadId: number,
+  deleted: boolean
+) => Promise<void> = (
+  facilityName: string,
+  downloadId: number,
+  deleted: boolean
+) => {
+  const params = new URLSearchParams();
+  params.append('facilityName', facilityName);
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('value', JSON.stringify(deleted));
+
+  return axios
+    .put(`${topcatUrl}/user/download/${downloadId}/isDeleted`, params)
+    .then(() => {})
+    .catch(error => {
+      handleICATError(error);
+    });
 };
 
 export const getSize: (

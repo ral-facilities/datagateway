@@ -1,13 +1,16 @@
-import axios from "axios";
+import axios from 'axios';
 
 export default {
   get: jest.fn(path => {
     if (path.includes('/topcat/user/cart/')) {
       return Promise.resolve({ data: { cartItems: [] } });
+    } else if (path.includes('/topcat/user/downloads')) {
+      return Promise.resolve({ data: [] });
     } else {
       return Promise.resolve({ data: {} });
     }
   }),
   post: jest.fn(() => Promise.resolve({ data: {} })),
+  put: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
 };

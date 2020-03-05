@@ -49,7 +49,9 @@ describe('DownloadConfirmDialog', () => {
         totalSize={size}
         isTwoLevel={isTwoLevel}
         open={open}
+        redirectToStatusTab={jest.fn()}
         setClose={jest.fn()}
+        clearCart={jest.fn()}
       />
     );
   };
@@ -306,15 +308,16 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
-    let openDialog = true;
     const closeFunction = jest.fn();
 
     const wrapper = mount(
       <DownloadConfirmDialog
         totalSize={1}
         isTwoLevel={false}
-        open={openDialog}
+        open={true}
+        redirectToStatusTab={jest.fn()}
         setClose={closeFunction}
+        clearCart={jest.fn()}
       />
     );
 
@@ -335,6 +338,58 @@ describe('DownloadConfirmDialog', () => {
 
     expect(closeFunction).toHaveBeenCalled();
   });
+
+  it('calls the clearCart function when the Download Confirmation Dialog has been closed after a successful submission', async () => {
+    // let openDialog = true;
+    const clearCartFunction = jest.fn();
+
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          downloadId: '1',
+        },
+      })
+    );
+
+    const wrapper = mount(
+      <DownloadConfirmDialog
+        totalSize={1}
+        isTwoLevel={false}
+        open={true}
+        redirectToStatusTab={jest.fn()}
+        setClose={jest.fn()}
+        clearCart={clearCartFunction}
+      />
+    );
+
+    // Click on the download button and ensure the successful confirmation is present.
+    expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
+
+    await act(async () => {
+      wrapper.find('button#download-confirmation-download').simulate('click');
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#download-confirmation-success')).toBe(true);
+
+    // Ensure the close button is present.
+    expect(wrapper.exists('[aria-label="download-confirmation-close"]')).toBe(
+      true
+    );
+    expect(wrapper.prop('open')).toBe(true);
+
+    // Close the download confirmation dialog.
+    wrapper.setProps({ open: false });
+    expect(wrapper.prop('open')).toBe(false);
+
+    // Click the close button and ensure the close function has been called.
+    wrapper
+      .find('button[aria-label="download-confirmation-close"]')
+      .simulate('click');
+
+    expect(clearCartFunction).toHaveBeenCalled();
+  });
 });
 
 describe('renders the estimated download speed/time table with varying values', () => {
@@ -347,6 +402,8 @@ describe('renders the estimated download speed/time table with varying values', 
         isTwoLevel={false}
         open={true}
         setClose={jest.fn()}
+        redirectToStatusTab={jest.fn()}
+        clearCart={jest.fn()}
       />
     );
   };

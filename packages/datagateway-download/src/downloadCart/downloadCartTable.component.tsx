@@ -17,12 +17,18 @@ import {
   getSize,
   getCartDatafileCount,
   getIsTwoLevel,
-} from './downloadCartApi';
+} from '../downloadApi';
 import chunk from 'lodash.chunk';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 
-const DownloadCartTable: React.FC = () => {
+interface DownloadCartTableProps {
+  statusTabRedirect: () => void;
+}
+
+const DownloadCartTable: React.FC<DownloadCartTableProps> = (
+  props: DownloadCartTableProps
+) => {
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{ [column: string]: string }>(
     {}
@@ -32,7 +38,7 @@ const DownloadCartTable: React.FC = () => {
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
 
-  // TODO: work these out via API calls
+  // TODO: Determine fileCountMax and totalSizeMax from settings.
   const [fileCount, setFileCount] = React.useState<number>(-1);
   const [fileCountMax, setFileCountMax] = React.useState<number>(-1);
   const [totalSizeMax, setTotalSizeMax] = React.useState<number>(-1);
@@ -204,6 +210,7 @@ const DownloadCartTable: React.FC = () => {
                       aria-label={`Remove ${cartItem.name} from cart`}
                       key="remove"
                       size="small"
+                      // Remove the download when clicked.
                       onClick={() => {
                         setIsDeleting(true);
                         setTimeout(
@@ -271,6 +278,7 @@ const DownloadCartTable: React.FC = () => {
                 onClick={() =>
                   removeAllDownloadCartItems().then(() => setData([]))
                 }
+                disabled={fileCount <= 0 || totalSize <= 0}
               >
                 Remove All
               </Button>
@@ -301,6 +309,7 @@ const DownloadCartTable: React.FC = () => {
         totalSize={totalSize}
         isTwoLevel={isTwoLevel}
         open={showConfirmation}
+        redirectToStatusTab={props.statusTabRedirect}
         setClose={() => setShowConfirmation(false)}
         clearCart={() => setData([])}
       />

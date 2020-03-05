@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DownloadTab renders correctly 1`] = `
+<WithStyles(ForwardRef(Paper))
+  className="makeStyles-root-1"
+>
+  <WithStyles(ForwardRef(Tabs))
+    centered={true}
+    indicatorColor="primary"
+    onChange={[Function]}
+    textColor="primary"
+    value={0}
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="tabpanel-0"
+      aria-label="Cart tab"
+      id="tab-0"
+      label="Cart"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="tabpanel-1"
+      aria-label="Downloads tab"
+      id="tab-1"
+      label="Downloads"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <TabPanel
+    aria-label="Download cart panel"
+    index={0}
+    value={0}
+  >
+    <DownloadCartTable
+      statusTabRedirect={[Function]}
+    />
+  </TabPanel>
+  <TabPanel
+    aria-label="Download status panel"
+    index={1}
+    value={0}
+  >
+    <WithStyles(ForwardRef(Grid))
+      container={true}
+      spacing={1}
+    >
+      <WithStyles(ForwardRef(Grid))
+        aria-label="Last updated time"
+        item={true}
+        xs={12}
+      >
+        <WithStyles(ForwardRef(Typography))
+          component="h3"
+          style={
+            Object {
+              "alignItems": "center",
+              "display": "inline-flex",
+              "float": "right",
+            }
+          }
+          variant="subtitle1"
+        >
+          <BlackTooltip
+            enterDelay={500}
+            title="Refresh Downloads"
+          >
+            <WithStyles(ForwardRef(IconButton))
+              aria-label="Refresh download status table"
+              color="secondary"
+              onClick={[Function]}
+            >
+              <RefreshIcon />
+            </WithStyles(ForwardRef(IconButton))>
+          </BlackTooltip>
+          <p
+            style={
+              Object {
+                "paddingLeft": "10px ",
+              }
+            }
+          >
+            <b>
+              Last checked: 
+            </b>
+             
+          </p>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <DownloadStatusTable
+          refreshTable={false}
+          setLastChecked={[Function]}
+          setRefreshTable={[Function]}
+        />
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </TabPanel>
+</WithStyles(ForwardRef(Paper))>
+`;
