@@ -20,7 +20,7 @@ coverage:
         threshold: 5 
     patch:
       default:
-        target: 90
+        target: 75
 flags:
   common:
     paths:
