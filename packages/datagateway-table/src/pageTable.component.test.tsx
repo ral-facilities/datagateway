@@ -27,6 +27,8 @@ import ISISFacilityCyclesTable from './isis/tables/isisFacilityCyclesTable.compo
 import ISISInvestigationsTable from './isis/tables/isisInvestigationsTable.component';
 import ISISDatasetsTable from './isis/tables/isisDatasetsTable.component';
 import ISISDatafilesTable from './isis/tables/isisDatafilesTable.component';
+import ISISMyDataTable from './isis/tables/isisMyDataTable.component';
+import DLSMyDataTable from './dls/tables/dlsMyDataTable.component';
 import {
   checkInstrumentAndFacilityCycleId,
   checkInvestigationId,
@@ -53,6 +55,7 @@ const ISISRoutes = {
   datasets: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset',
   datafiles:
     '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile',
+  mydata: '/my-data/ISIS',
 };
 
 // The DLS routes to test.
@@ -62,6 +65,7 @@ const DLSRoutes = {
   datasets: '/browse/proposal/INVESTIGATION 1/investigation/1/dataset',
   datafiles:
     '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
+  mydata: '/my-data/DLS',
 };
 
 describe('PageTable', () => {
@@ -151,6 +155,13 @@ describe('PageTable', () => {
     // Expect the DatafileTable component not to be present.
     expect(wrapper.exists(DatafileTable)).toBe(false);
   });
+  
+  it('renders ISISMyDataTable for ISIS my data route', () => {
+    const wrapper = createWrapper(ISISRoutes['mydata']);
+
+    // Expect the ISISMyDataTable component to be present.
+    expect(wrapper.exists(ISISMyDataTable)).toBe(true);
+  });
 
   it('renders ISISInstrumentsTable for ISIS instruments route', () => {
     const wrapper = createWrapper(ISISRoutes['instruments']);
@@ -235,6 +246,12 @@ describe('PageTable', () => {
     // Expect the ISISDatafilesTable component not to be present.
     expect(wrapper.exists(ISISDatafilesTable)).toBe(false);
   });
+    
+  it('renders DLSMyDataTable for DLS my data route', () => {
+    const wrapper = createWrapper(DLSRoutes['mydata']);
+
+    // Expect the DLSMyDataTable component to be present.
+    expect(wrapper.exists(DLSMyDataTable)).toBe(true);  
 
   it('renders DLSProposalTable for DLS proposal route', () => {
     const wrapper = createWrapper(DLSRoutes['proposals']);
