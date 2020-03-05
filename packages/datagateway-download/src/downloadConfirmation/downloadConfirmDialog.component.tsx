@@ -15,6 +15,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  FormHelperText,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Mark from './mark.component';
@@ -24,6 +25,7 @@ import {
   submitCart,
   getDownload,
   downloadPreparedCart,
+  getDownloadTypeStatus,
 } from '../downloadCart/downloadCartApi';
 
 import {
@@ -125,6 +127,20 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const facilityName = 'LILS';
   const defaultAccessMethod = 'https';
 
+  const [loadedStatus, setLoadedStatus] = React.useState<boolean>(false);
+  let accessMethods: {
+    [type: string]: { disabled: boolean | undefined; message: string };
+  } = {
+    https: {
+      disabled: undefined,
+      message: '',
+    },
+    globus: {
+      disabled: undefined,
+      message: '',
+    },
+  };
+
   const { totalSize } = props;
   const { isTwoLevel } = props;
 
@@ -164,7 +180,31 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   };
 
   useEffect(() => {
+    async function getStatus(): Promise<void> {
+      for (let method in accessMethods) {
+        // TODO: Get download type status currently returns 404.
+        const data = await getDownloadTypeStatus(method, 'LILS');
+        console.log('Type status: ', data);
+
+        if (data) {
+          accessMethods[method] = {
+            disabled: data.disabled,
+            message: data.message,
+          };
+        }
+      }
+
+      console.log('Loaded accessMethods: ', accessMethods);
+    }
+
     if (props.open) {
+      console.log('Loaded status: ', loadedStatus);
+
+      if (!loadedStatus)
+        // Get the status of all the available access methods.
+        getStatus();
+      setLoadedStatus(true);
+
       // Reset checkmark view.
       setIsSubmitted(false);
       setIsSubmitSuccessful(false);
@@ -186,7 +226,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         setShowDownloadTime(false);
       }
     }
-  }, [props.open, isTwoLevel, totalSize]);
+  }, [props.open, accessMethods, isTwoLevel, totalSize, loadedStatus]);
 
   const getDefaultFileName = (): string => {
     const now = new Date();
@@ -285,8 +325,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               </Grid>
 
               {/* Select the access method */}
+              {/* TODO: Grey out the access method if the request for it failed (if it is undefined).
+                    Show a push notification (or maybe a message underneath highlighting that
+                    following access method is not available). */}
               <Grid item xs={12}>
-                <FormControl style={{ minWidth: 120 }}>
+                <FormControl style={{ minWidth: 120 }} error={false}>
                   <InputLabel id="confirm-access-method-label">
                     Access Method
                   </InputLabel>
@@ -308,6 +351,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       Globus
                     </MenuItem>
                   </Select>
+                  <FormHelperText>Error</FormHelperText>
 
                   {/* Provide some information on the selected access method. */}
                   <Typography style={{ paddingTop: '20px' }}>

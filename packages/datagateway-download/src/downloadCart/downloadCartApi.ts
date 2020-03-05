@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import * as log from 'loglevel';
 import {
   DownloadCart,
@@ -153,6 +153,29 @@ export const downloadPreparedCart: (
   document.body.appendChild(link);
   link.click();
   link.remove();
+};
+
+export const getDownloadTypeStatus: (
+  transportType: string,
+  facilityName: string
+) => Promise<{ disabled: boolean; message: string } | null> = (
+  transportType: string,
+  facilityName: string
+) => {
+  return axios
+    .get(`${topcatUrl}/user/downloadType/${transportType}/status`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: facilityName,
+      },
+    })
+    .then((response: AxiosResponse<{ disabled: boolean; message: string }>) => {
+      return response.data;
+    })
+    .catch(error => {
+      handleICATError(error);
+      return null;
+    });
 };
 
 export const getSize: (
