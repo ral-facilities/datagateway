@@ -155,7 +155,7 @@ describe('PageTable', () => {
     // Expect the DatafileTable component not to be present.
     expect(wrapper.exists(DatafileTable)).toBe(false);
   });
-  
+
   it('renders ISISMyDataTable for ISIS my data route', () => {
     const wrapper = createWrapper(ISISRoutes['mydata']);
 
@@ -246,12 +246,13 @@ describe('PageTable', () => {
     // Expect the ISISDatafilesTable component not to be present.
     expect(wrapper.exists(ISISDatafilesTable)).toBe(false);
   });
-    
+
   it('renders DLSMyDataTable for DLS my data route', () => {
     const wrapper = createWrapper(DLSRoutes['mydata']);
 
     // Expect the DLSMyDataTable component to be present.
-    expect(wrapper.exists(DLSMyDataTable)).toBe(true);  
+    expect(wrapper.exists(DLSMyDataTable)).toBe(true);
+  });
 
   it('renders DLSProposalTable for DLS proposal route', () => {
     const wrapper = createWrapper(DLSRoutes['proposals']);
