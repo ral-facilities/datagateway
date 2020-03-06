@@ -3,6 +3,7 @@
 exports[`DownloadTab renders correctly 1`] = `
 <WithStyles(ForwardRef(Paper))
   className="makeStyles-root-1"
+  square={true}
 >
   <WithStyles(ForwardRef(Tabs))
     centered={true}

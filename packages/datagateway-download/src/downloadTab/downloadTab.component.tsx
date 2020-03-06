@@ -83,7 +83,7 @@ const DownloadTabs: React.FC = () => {
   };
 
   return (
-    <Paper className={classes.root}>
+    <Paper square className={classes.root}>
       <Tabs
         value={selectedTab}
         onChange={handleChange}
