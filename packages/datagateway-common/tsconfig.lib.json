@@ -34,7 +34,7 @@
     "webpack",
     "jest",
     "src/setupTests.ts",
-    "**/*.test.tsx"
+    "**/*.test.*"
   ],
   "include": ["src"]
 }
