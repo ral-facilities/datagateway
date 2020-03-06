@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Download Status Table renders correctly 1`] = `
+<div
+  className="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <WithStyles(ForwardRef(Paper))
+      style={
+        Object {
+          "height": "calc(100vh - 110px)",
+        }
+      }
+    >
+      <WithStyles(VirtualizedTable)
+        actions={
+          Array [
+            [Function],
+            [Function],
+          ]
+        }
+        actionsWidth={100}
+        columns={
+          Array [
+            Object {
+              "dataKey": "fileName",
+              "filterComponent": [Function],
+              "label": "Download Name",
+            },
+            Object {
+              "dataKey": "transport",
+              "filterComponent": [Function],
+              "label": "Access Method",
+            },
+            Object {
+              "cellContentRenderer": [Function],
+              "dataKey": "status",
+              "filterComponent": [Function],
+              "label": "Availability",
+            },
+            Object {
+              "cellContentRenderer": [Function],
+              "dataKey": "createdAt",
+              "filterComponent": [Function],
+              "label": "Requested Date",
+            },
+          ]
+        }
+        data={Array []}
+        loading={true}
+        onSort={[Function]}
+        sort={Object {}}
+      />
+    </WithStyles(ForwardRef(Paper))>
+  </WithStyles(ForwardRef(Grid))>
+</div>
+`;

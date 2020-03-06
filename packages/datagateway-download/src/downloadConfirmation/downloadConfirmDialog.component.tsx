@@ -20,11 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Mark from './mark.component';
 
 import { formatBytes } from 'datagateway-common';
-import {
-  submitCart,
-  getDownload,
-  downloadPreparedCart,
-} from '../downloadCart/downloadCartApi';
+import { submitCart, getDownload, downloadPreparedCart } from '../downloadApi';
 
 import {
   Theme,
@@ -110,8 +106,7 @@ interface DownloadConfirmDialogProps
   isTwoLevel: boolean;
   open: boolean;
 
-  // TODO: pass in the function to call to redirect to the status tab.
-  // setStatus: () => void;
+  redirectToStatusTab: () => void;
   setClose: () => void;
   clearCart: () => void;
 }
@@ -119,7 +114,7 @@ interface DownloadConfirmDialogProps
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { classes, setClose, clearCart } = props;
+  const { classes, redirectToStatusTab, setClose, clearCart } = props;
 
   // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
@@ -463,8 +458,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               style={{ paddingBottom: '25px' }}
             >
               <Grid item xs>
-                {/* TODO: When closing the animation renders again? 
-                Maybe set a fixed width for the dialog and not render it? */}
                 {isSubmitSuccessful ? (
                   <Mark size={100} colour="#3E863E" visible={props.open} />
                 ) : (
@@ -539,13 +532,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {isSubmitSuccessful && (
                 <Grid item xs>
-                  {/* TODO: Button needs to call a function that has been passed in
-                        which allow for the tab to be changed to the status page. */}
                   <Button
                     id="download-confirmation-status-link"
                     variant="outlined"
                     color="primary"
-                    href="/"
+                    onClick={redirectToStatusTab}
                   >
                     View My Downloads
                   </Button>

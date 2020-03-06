@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { Grid, Typography, Paper } from '@material-ui/core';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
+import { Route } from 'react-router';
 
 class PageContainer extends React.Component<{ entityCount: number }> {
   public constructor(props: { entityCount: number }) {
@@ -16,7 +17,8 @@ class PageContainer extends React.Component<{ entityCount: number }> {
       <Grid container>
         {/* Hold the breadcrumbs at top left of the page. */}
         <Grid item xs aria-label="container-breadcrumbs">
-          <PageBreadcrumbs />
+          {/* don't show breadcrumbs on /my-data - only on browse */}
+          <Route path="/browse" component={PageBreadcrumbs} />
         </Grid>
 
         {/* The table entity count takes up an xs of 2, where the breadcrumbs 

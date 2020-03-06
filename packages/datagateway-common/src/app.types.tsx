@@ -16,6 +16,7 @@ export interface Investigation {
   SAMPLE?: Sample[];
   PUBLICATION?: Publication[];
   STUDYINVESTIGATION?: StudyInvestigation[];
+  FACILITY?: Facility;
 }
 
 export interface Dataset {
@@ -60,6 +61,8 @@ export interface Instrument {
   TYPE?: string;
   URL?: string;
   INSTRUMENTSCIENTIST?: InstrumentScientist[];
+  FACILITY_ID: number;
+  FACILITY?: Facility;
 }
 
 export interface InvestigationUser {
@@ -94,6 +97,8 @@ export interface FacilityCycle {
   DESCRIPTION?: string;
   STARTDATE?: string;
   ENDDATE?: string;
+  FACILITY_ID: number;
+  FACILITY?: Facility;
 }
 
 export interface DatasetType {
@@ -143,6 +148,16 @@ interface ParameterType {
   VALUETYPE: string;
 }
 
+interface Facility {
+  ID: number;
+  NAME: string;
+  FULLNAME?: string;
+  URL?: string;
+  DESCRIPTION?: string;
+  DAYSUNTILRELEASE?: number;
+  FACILITYCYCLE?: FacilityCycle[];
+}
+
 export interface DownloadCartItem {
   entityId: number;
   entityType: 'investigation' | 'dataset' | 'datafile';
@@ -169,7 +184,6 @@ export interface DownloadCart {
 export interface Download {
   createdAt: string;
   downloadItems: DownloadItem[];
-  email: string;
   facilityName: string;
   fileName: string;
   fullName: string;
@@ -182,9 +196,10 @@ export interface Download {
   size: number;
   status: 'PREPARING' | 'RESTORING' | 'PAUSED' | 'COMPLETE' | 'EXPIRED';
   transport: string;
-  username: string;
+  userName: string;
+  email?: string;
 
-  [key: string]: string | number | boolean | DownloadItem[];
+  [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
 export interface SubmitCart {
@@ -206,7 +221,7 @@ export type ICATEntity =
   | Instrument
   | FacilityCycle;
 
-export type Entity = ICATEntity | DownloadCartTableItem;
+export type Entity = ICATEntity | DownloadCartTableItem | Download;
 
 export const EntityTypes: string[] = [
   'investigation',

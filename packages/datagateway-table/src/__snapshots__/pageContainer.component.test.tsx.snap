@@ -9,7 +9,18 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
     item={true}
     xs={true}
   >
-    <Connect(PageBreadcrumbs) />
+    <Route
+      component={
+        Object {
+          "$$typeof": Symbol(react.memo),
+          "WrappedComponent": [Function],
+          "compare": null,
+          "displayName": "Connect(PageBreadcrumbs)",
+          "type": [Function],
+        }
+      }
+      path="/browse"
+    />
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
     aria-label="container-table-count"

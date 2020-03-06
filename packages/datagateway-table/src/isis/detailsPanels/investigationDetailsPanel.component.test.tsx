@@ -142,7 +142,7 @@ describe('Investigation details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });
 
-  it('calls fetchDetails on load', () => {
+  it('calls fetchDetails on load if INVESTIGATIONUSER, SAMPLE or PUBLICATIONS are missing', () => {
     mount(
       <InvestigationsDetailsPanel
         rowData={rowData}
@@ -151,8 +151,45 @@ describe('Investigation details panel component', () => {
       />
     );
 
-    expect(fetchDetails).toHaveBeenCalled();
+    expect(fetchDetails).toHaveBeenCalledTimes(1);
     expect(fetchDetails).toHaveBeenCalledWith(1);
+    fetchDetails.mockClear();
+
+    rowData.INVESTIGATIONUSER = [];
+    mount(
+      <InvestigationsDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+
+    expect(fetchDetails).toHaveBeenCalledTimes(1);
+    expect(fetchDetails).toHaveBeenCalledWith(1);
+    fetchDetails.mockClear();
+
+    rowData.SAMPLE = [];
+    mount(
+      <InvestigationsDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+
+    expect(fetchDetails).toHaveBeenCalledTimes(1);
+    expect(fetchDetails).toHaveBeenCalledWith(1);
+    fetchDetails.mockClear();
+
+    rowData.PUBLICATION = [];
+    mount(
+      <InvestigationsDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+    expect(fetchDetails).not.toHaveBeenCalled();
   });
 
   it('gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users', () => {

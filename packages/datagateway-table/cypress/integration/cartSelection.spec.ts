@@ -899,9 +899,67 @@ describe('Add/remove from cart functionality', () => {
       });
     });
 
-    describe('in ISIS table', () => {
+    describe('in ISIS browse table', () => {
       beforeEach(() => {
         cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
+      });
+
+      it('individually', () => {
+        cy.get('[aria-label="select row 0"]').click();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="select all rows"]')
+          .should('have.attr', 'data-indeterminate')
+          .and('eq', 'false');
+        cy.get('[aria-label="select all rows"]').should('be.checked');
+      });
+
+      it('and unselect them individually', () => {
+        cy.get('[aria-label="select row 0"]').click();
+        cy.get('[aria-label="select row 0"]').should('be.checked');
+
+        cy.get('[aria-label="select row 0"]').click();
+        cy.get('[aria-label="select row 0"]').should('not.be.checked');
+        cy.get('[aria-label="select all rows"]')
+          .should('have.attr', 'data-indeterminate')
+          .and('eq', 'false');
+        cy.get('[aria-label="select all rows"]').should('not.be.checked');
+      });
+
+      it('by all items', () => {
+        cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+        cy.get('[aria-label="select all rows"]').check();
+        cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+          'be.checked'
+        );
+        cy.get(`[aria-label="select row 0"]`).should('be.checked');
+        cy.get('[aria-label="select all rows"]')
+          .should('have.attr', 'data-indeterminate')
+          .and('eq', 'false');
+      });
+
+      it('and unselect all items', () => {
+        cy.get(`[aria-label="select row 0"]`).should('be.visible');
+
+        cy.get('[aria-label="select all rows"]').check();
+        cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+          'be.checked'
+        );
+
+        cy.get('[aria-label="select all rows"]').uncheck();
+        cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+          'not.be.checked'
+        );
+        cy.get('[aria-label="select all rows"]')
+          .should('have.attr', 'data-indeterminate')
+          .and('eq', 'false');
+        cy.get(`[aria-label="select row 0"]`).should('not.be.checked');
+      });
+    });
+
+    describe('in ISIS my data table', () => {
+      beforeEach(() => {
+        cy.visit('/my-data/ISIS');
       });
 
       it('individually', () => {
