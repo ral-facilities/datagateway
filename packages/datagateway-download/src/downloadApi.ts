@@ -136,6 +136,34 @@ export const submitCart: (
     });
 };
 
+export const fetchDownloads: (
+  facilityName: string,
+  downloadApiUrl: string,
+  queryOffset?: string
+) => Promise<Download[]> = (
+  facilityName: string,
+  downloadApiUrl: string,
+  queryOffset?: string
+) => {
+  return axios
+    .get<Download[]>(`${downloadApiUrl}/user/downloads`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: facilityName,
+        queryOffset: !queryOffset
+          ? 'where download.isDeleted = false'
+          : queryOffset,
+      },
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      handleICATError(error);
+      return [];
+    });
+};
+
 export const getDownload: (
   downloadId: number,
   settings: { facilityName: string; downloadApiUrl: string }
@@ -184,8 +212,43 @@ export const downloadPreparedCart: (
   link.style.display = 'none';
   link.target = '_blank';
   document.body.appendChild(link);
-  link.click();
-  link.remove();
+
+  // Prevent the link from being clicked if this is an e2e test.
+  if (!process.env.REACT_APP_E2E_TESTING) {
+    link.click();
+    link.remove();
+  }
+};
+
+export const downloadDeleted: (
+  downloadId: number,
+  deleted: boolean,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => Promise<void> = (
+  downloadId: number,
+  deleted: boolean,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => {
+  const params = new URLSearchParams();
+  params.append('facilityName', settings.facilityName);
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('value', JSON.stringify(deleted));
+
+  return axios
+    .put(
+      `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
+      params
+    )
+    .then(() => {})
+    .catch(error => {
+      handleICATError(error);
+    });
 };
 
 export const getSize: (

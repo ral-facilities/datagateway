@@ -175,12 +175,21 @@ export const fetchInvestigations = (
       })
       .then(response => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
-        if (optionalParams && optionalParams.getDatasetCount) {
-          batch(() => {
-            response.data.forEach((investigation: Investigation) => {
-              dispatch(fetchInvestigationDatasetsCount(investigation.ID));
+        if (optionalParams) {
+          if (optionalParams.getDatasetCount) {
+            batch(() => {
+              response.data.forEach((investigation: Investigation) => {
+                dispatch(fetchInvestigationDatasetsCount(investigation.ID));
+              });
             });
-          });
+          }
+          if (optionalParams.getSize) {
+            batch(() => {
+              response.data.forEach((investigation: Investigation) => {
+                dispatch(fetchInvestigationSize(investigation.ID));
+              });
+            });
+          }
         }
       })
       .catch(error => {

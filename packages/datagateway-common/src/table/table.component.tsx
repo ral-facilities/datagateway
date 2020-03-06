@@ -30,7 +30,7 @@ const rowHeight = 30;
 const headerHeight = 120;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
-const actionsColumnWidth = 70;
+const actionsColumnDefaultWidth = 70;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -101,6 +101,7 @@ interface VirtualizedTableProps {
   onSort: (column: string, order: Order | null) => void;
   detailsPanel?: React.ComponentType<DetailsPanelProps>;
   actions?: React.ComponentType<TableActionProps>[];
+  actionsWidth?: number;
   selectedRows?: number[];
   onCheck?: (selectedIds: number[]) => void;
   onUncheck?: (selectedIds: number[]) => void;
@@ -119,6 +120,7 @@ const VirtualizedTable = (
 
   const {
     actions,
+    actionsWidth,
     classes,
     columns,
     data,
@@ -159,6 +161,9 @@ const VirtualizedTable = (
   };
 
   React.useEffect(detailsPanelResize, [tableRef, expandedIndex]);
+
+  // Select the width to use for the actions column if it was passed as a prop.
+  const actionsColumnWidth = actionsWidth || actionsColumnDefaultWidth;
 
   return (
     <AutoSizer>

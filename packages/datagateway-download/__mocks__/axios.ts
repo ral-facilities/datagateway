@@ -25,10 +25,13 @@ export default {
           },
         },
       });
+    } else if (path.includes('/topcat/user/downloads')) {
+      return Promise.resolve({ data: [] });
     } else {
       return Promise.resolve({ data: {} });
     }
   }),
   post: jest.fn(() => Promise.resolve({ data: {} })),
+  put: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
 };

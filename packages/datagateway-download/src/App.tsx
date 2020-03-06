@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
 
-import DownloadCartTable from './downloadCart/downloadCartTable.component';
+import DownloadTabs from './downloadTab/downloadTab.component';
 
 import {
   createGenerateClassName,
@@ -51,7 +51,7 @@ class App extends Component<{}, { hasError: boolean }> {
       <div className="App">
         <StylesProvider generateClassName={generateClassName}>
           <ConfigProvider>
-            <DownloadCartTable />
+            <DownloadTabs />
           </ConfigProvider>
         </StylesProvider>
       </div>

@@ -13,7 +13,7 @@ const ActionCell = (props: CellRendererProps): React.ReactElement => {
 
   return (
     <TableCell
-      size="small"
+      size="medium"
       padding="checkbox"
       component="div"
       className={className}
