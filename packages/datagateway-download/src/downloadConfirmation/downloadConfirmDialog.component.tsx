@@ -117,6 +117,10 @@ interface DownloadConfirmDialogProps
   clearCart: () => void;
 }
 
+interface DownloadConfirmAccessMethod {
+  [type: string]: { disabled: boolean | undefined; message: string };
+}
+
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
@@ -127,19 +131,32 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const facilityName = 'LILS';
   const defaultAccessMethod = 'https';
 
+  // TODO: Temporary access methods definition until the settings can be merged in.
+  // TODO: This needs to be kept in a state to preserve it between renders.
   const [loadedStatus, setLoadedStatus] = React.useState<boolean>(false);
-  let accessMethods: {
-    [type: string]: { disabled: boolean | undefined; message: string };
-  } = {
+  // let accessMethods: {[type: string]: { disabled: boolean | undefined; message: string }} = {
+  //   https: {
+  //     disabled: undefined,
+  //     message: '',
+  //   },
+  //   globus: {
+  //     disabled: undefined,
+  //     message: '',
+  //   },
+  // };
+
+  const [accessMethods, setAccessMethods] = React.useState<
+    DownloadConfirmAccessMethod
+  >({
     https: {
-      disabled: undefined,
+      disabled: true,
       message: '',
     },
     globus: {
-      disabled: undefined,
+      disabled: true,
       message: '',
     },
-  };
+  });
 
   const { totalSize } = props;
   const { isTwoLevel } = props;
@@ -155,6 +172,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [accessMethod, setAccessMethod] = React.useState<string>(
     defaultAccessMethod
   );
+  // const [methodDisabled, setMethodDisabled] = React.useState<boolean>(false);
   const [emailAddress, setEmailAddress] = React.useState<string>('');
 
   // Email validation.
@@ -179,31 +197,68 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (isSubmitSuccessful) clearCart();
   };
 
+  // Broadcast a SciGateway notification for any error encountered.
+  // const broadcastError = (errorMessage: string): void => {
+  //   document.dispatchEvent(
+  //     new CustomEvent('scigateway', {
+  //       detail: {
+  //         type: 'scigateway:api:notification',
+  //         payload: {
+  //           severity: 'error',
+  //           message: errorMessage,
+  //         },
+  //       },
+  //     })
+  //   );
+  // };
+
   useEffect(() => {
     async function getStatus(): Promise<void> {
+      // TODO: Check to ensure that the states are not being separately updated.
+      //       Currently using callback function in order to resolve this (what about Promise.all?)
+      //       Have a look at setState asynchronous.
       for (let method in accessMethods) {
-        // TODO: Get download type status currently returns 404.
         const data = await getDownloadTypeStatus(method, 'LILS');
-        console.log('Type status: ', data);
+        console.log(method, ' Type status: ', data);
 
         if (data) {
-          accessMethods[method] = {
-            disabled: data.disabled,
-            message: data.message,
-          };
+          // setAccessMethods({
+          //   ...accessMethods,
+          //   [method]: { disabled: data.disabled, message: data.message },
+          // });
+          setAccessMethods(prevState => {
+            return {
+              ...prevState,
+              [method]: { disabled: data.disabled, message: data.message },
+            };
+          });
+          // } else {
+          //   setAccessMethods({
+          //     ...accessMethods,
+          //     [method]: { disabled: undefined, message: '' },
+          //   });
+        } else {
+          setAccessMethods(prevState => {
+            return {
+              ...prevState,
+              [method]: { disabled: undefined, message: '' },
+            };
+          });
         }
       }
 
-      console.log('Loaded accessMethods: ', accessMethods);
+      // TODO: Why does printing the access methods here give an incomplete version? Due to asynchronous?
+      // TODO: Once all the requests have been complete evaluate if there are any status requests which failed.
+      //       If only some failed then show the appropriate SciGateway messages. If all failed then show one message indicating.
+      //       Is placing it here after the request good or will the access methods not have been updated yet?
     }
 
     if (props.open) {
-      console.log('Loaded status: ', loadedStatus);
-
       if (!loadedStatus)
         // Get the status of all the available access methods.
         getStatus();
       setLoadedStatus(true);
+      console.log('Loaded accessMethods: ', accessMethods);
 
       // Reset checkmark view.
       setIsSubmitted(false);
@@ -289,6 +344,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     setIsSubmitted(true);
   };
 
+  // console.log('dialog rerendered');
+
   return (
     <Dialog
       onClose={dialogClose}
@@ -329,7 +386,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     Show a push notification (or maybe a message underneath highlighting that
                     following access method is not available). */}
               <Grid item xs={12}>
-                <FormControl style={{ minWidth: 120 }} error={false}>
+                <FormControl
+                  style={{ minWidth: 120 }}
+                  error={accessMethods[accessMethod].disabled}
+                >
                   <InputLabel id="confirm-access-method-label">
                     Access Method
                   </InputLabel>
@@ -343,15 +403,64 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       setAccessMethod(e.target.value as string);
                     }}
                   >
+                    {/* TODO: Show placeholder in which users can select from in the event all are undefined. */}
                     {/* TODO: Values need to be retrieved from an object from settings. */}
-                    <MenuItem id="confirm-access-method-https" value="https">
+                    {/* TODO: Disable any access methods for which we cannot
+                    retrieve the status of. */}
+                    {/* TODO: Temporarily specified the keys of the access methods;
+                          this code will change to add in the disabled prop to the loop
+                          which creates the menu items (from settings branch). */}
+                    {/* Access methods are only disabled when do not receive an appropriate response from the API
+                    (so they are set as undefined). */}
+                    <MenuItem
+                      disabled={accessMethods['https'].disabled === undefined}
+                      // disabled
+                      id="confirm-access-method-https"
+                      value="https"
+                    >
                       HTTPS
                     </MenuItem>
-                    <MenuItem id="confirm-access-method-globus" value="globus">
+
+                    {/* {(() => {
+                      console.log(
+                        'globus disabled: ',
+                        accessMethods['globus'].disabled
+                      );
+                    })()} */}
+
+                    <MenuItem
+                      disabled={accessMethods['globus'].disabled === undefined}
+                      // disabled
+                      id="confirm-access-method-globus"
+                      value="globus"
+                    >
                       Globus
                     </MenuItem>
                   </Select>
-                  <FormHelperText>Error</FormHelperText>
+
+                  {/* TODO: Is it possible to avoid putting an immediate function here? */}
+                  {(() => {
+                    const method = accessMethods[accessMethod];
+                    if (method.disabled) {
+                      if (method.message) {
+                        return (
+                          <FormHelperText>{method.message}</FormHelperText>
+                        );
+                      } else {
+                        return (
+                          <FormHelperText>
+                            This access method is currently disabled.
+                          </FormHelperText>
+                        );
+                      }
+                    } else {
+                      return (
+                        <FormHelperText>
+                          Select an access method for download.
+                        </FormHelperText>
+                      );
+                    }
+                  })()}
 
                   {/* Provide some information on the selected access method. */}
                   <Typography style={{ paddingTop: '20px' }}>
@@ -458,7 +567,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           <DialogActions>
             <Button
               id="download-confirmation-download"
-              disabled={!emailValid}
+              disabled={!emailValid || accessMethods[accessMethod].disabled}
               onClick={processDownload}
               color="primary"
               variant="contained"
