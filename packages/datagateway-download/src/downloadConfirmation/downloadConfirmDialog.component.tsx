@@ -132,7 +132,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const defaultAccessMethod = 'https';
 
   // TODO: Temporary access methods definition until the settings can be merged in.
-  const [loadedStatus, setLoadedStatus] = React.useState<boolean>(false);
+  const [loadedStatus, setLoadedStatus] = React.useState(false);
   const [accessMethods, setAccessMethods] = React.useState<
     DownloadConfirmAccessMethod
   >({
@@ -145,38 +145,34 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       message: '',
     },
   });
+  const [methodsUnavailable, setMethodsUnavailable] = React.useState(false);
 
   const { totalSize } = props;
   const { isTwoLevel } = props;
 
   // Download speed/time table.
-  const [showDownloadTime, setShowDownloadTime] = React.useState<boolean>(true);
-  const [timeAtOne, setTimeAtOne] = React.useState<number>(-1);
-  const [timeAtThirty, setTimeAtThirty] = React.useState<number>(-1);
-  const [timeAtHundred, setTimeAtHundred] = React.useState<number>(-1);
+  const [showDownloadTime, setShowDownloadTime] = React.useState(true);
+  const [timeAtOne, setTimeAtOne] = React.useState(-1);
+  const [timeAtThirty, setTimeAtThirty] = React.useState(-1);
+  const [timeAtHundred, setTimeAtHundred] = React.useState(-1);
 
   // Submit values.
-  const [downloadName, setDownloadName] = React.useState<string>('');
-  const [accessMethod, setAccessMethod] = React.useState<string>(
-    defaultAccessMethod
-  );
-  // const [methodDisabled, setMethodDisabled] = React.useState<boolean>(false);
-  const [emailAddress, setEmailAddress] = React.useState<string>('');
+  const [downloadName, setDownloadName] = React.useState('');
+  // TODO: In the event one access method does not work, select next available.
+  const [accessMethod, setAccessMethod] = React.useState(defaultAccessMethod);
+  // const [methodDisabled, setMethodDisabled] = React.useState(false);
+  const [emailAddress, setEmailAddress] = React.useState('');
 
   // Email validation.
   const emailHelpText = 'Send me download status messages via email.';
   const emailErrorText = 'Please ensure the email you have entered is valid.';
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  const [emailValid, setEmailValid] = React.useState<boolean>(true);
-  const [emailHelperText, setEmailHelperText] = React.useState<string>(
-    emailHelpText
-  );
+  const [emailValid, setEmailValid] = React.useState(true);
+  const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
 
   // Download button.
-  const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
-  const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState<boolean>(
-    false
-  );
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState(false);
 
   // Hide the confirmation dialog and clear the download cart
   // when the dialog is closed.
@@ -241,6 +237,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           );
         }
       } else {
+        setMethodsUnavailable(true);
         broadcastError(
           'Download access methods are unavailable. Please try again later.'
         );
@@ -382,7 +379,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               <Grid item xs={12}>
                 <FormControl
                   style={{ minWidth: 120 }}
-                  error={accessMethods[accessMethod].disabled}
+                  // TODO: Set error when no access methods selected?
+                  //       Allow for none to be selected?
+                  error={
+                    accessMethods[accessMethod].disabled || methodsUnavailable
+                  }
                 >
                   <InputLabel id="confirm-access-method-label">
                     Access Method
@@ -391,10 +392,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     labelId="confirm-access-method"
                     id="confirm-access-method"
                     aria-label="confirm-access-method"
-                    defaultValue={`${defaultAccessMethod}`}
+                    // TODO: Works when all are undefined, but what should happen when only one/several
+                    //       access methods are available? (select the next available by default?)
+                    defaultValue={`${
+                      methodsUnavailable && !methodsUnavailable
+                        ? defaultAccessMethod
+                        : ''
+                    }`}
                     onChange={e => {
                       // Material UI select is not a real select element, so needs casting.
-                      setAccessMethod(e.target.value as string);
+                      if (!methodsUnavailable)
+                        setAccessMethod(e.target.value as string);
                     }}
                   >
                     {/* TODO: Show placeholder in which users can select from in the event all are undefined. */}
@@ -406,6 +414,15 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           which creates the menu items (from settings branch). */}
                     {/* Access methods are only disabled when do not receive an appropriate response from the API
                     (so they are set as undefined). */}
+                    {/* {(() => {
+                      if (methodsUnavailable)
+                        return (
+                          <MenuItem value="">
+                            <em>Access Methods</em>
+                          </MenuItem>
+                        );
+                    })()} */}
+
                     <MenuItem
                       disabled={accessMethods['https'].disabled === undefined}
                       id="confirm-access-method-https"
@@ -426,7 +443,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   {/* TODO: Is it possible to avoid putting an immediate function here? */}
                   {(() => {
                     const method = accessMethods[accessMethod];
-                    if (method.disabled) {
+                    if (methodsUnavailable) {
+                      return (
+                        <FormHelperText>
+                          Access methods unavailable.
+                        </FormHelperText>
+                      );
+                    } else if (method.disabled) {
                       if (method.message) {
                         return (
                           <FormHelperText>{method.message}</FormHelperText>
@@ -552,7 +575,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
           <DialogActions>
             <Button
               id="download-confirmation-download"
-              disabled={!emailValid || accessMethods[accessMethod].disabled}
+              disabled={
+                !emailValid ||
+                accessMethods[accessMethod].disabled ||
+                methodsUnavailable
+              }
               onClick={processDownload}
               color="primary"
               variant="contained"
