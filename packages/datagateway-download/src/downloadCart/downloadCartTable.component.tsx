@@ -281,12 +281,12 @@ const DownloadCartTable: React.FC = () => {
                 id="downloadCartButton"
                 variant="contained"
                 color="primary"
-                disabled={
-                  fileCount <= 0 ||
-                  totalSize <= 0 ||
-                  (fileCountMax !== -1 && fileCount > fileCountMax) ||
-                  (totalSizeMax !== -1 && totalSize > totalSizeMax)
-                }
+                // disabled={
+                //   fileCount <= 0 ||
+                //   totalSize <= 0 ||
+                //   (fileCountMax !== -1 && fileCount > fileCountMax) ||
+                //   (totalSizeMax !== -1 && totalSize > totalSizeMax)
+                // }
               >
                 Download Cart
               </Button>

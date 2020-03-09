@@ -132,19 +132,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const defaultAccessMethod = 'https';
 
   // TODO: Temporary access methods definition until the settings can be merged in.
-  // TODO: This needs to be kept in a state to preserve it between renders.
   const [loadedStatus, setLoadedStatus] = React.useState<boolean>(false);
-  // let accessMethods: {[type: string]: { disabled: boolean | undefined; message: string }} = {
-  //   https: {
-  //     disabled: undefined,
-  //     message: '',
-  //   },
-  //   globus: {
-  //     disabled: undefined,
-  //     message: '',
-  //   },
-  // };
-
   const [accessMethods, setAccessMethods] = React.useState<
     DownloadConfirmAccessMethod
   >({
@@ -198,45 +186,37 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   };
 
   // Broadcast a SciGateway notification for any error encountered.
-  // const broadcastError = (errorMessage: string): void => {
-  //   document.dispatchEvent(
-  //     new CustomEvent('scigateway', {
-  //       detail: {
-  //         type: 'scigateway:api:notification',
-  //         payload: {
-  //           severity: 'error',
-  //           message: errorMessage,
-  //         },
-  //       },
-  //     })
-  //   );
-  // };
+  const broadcastError = (errorMessage: string): void => {
+    document.dispatchEvent(
+      new CustomEvent('scigateway', {
+        detail: {
+          type: 'scigateway:api:notification',
+          payload: {
+            severity: 'error',
+            message: errorMessage,
+          },
+        },
+      })
+    );
+  };
 
   useEffect(() => {
     async function getStatus(): Promise<void> {
       // TODO: Check to ensure that the states are not being separately updated.
       //       Currently using callback function in order to resolve this (what about Promise.all?)
       //       Have a look at setState asynchronous.
+      let statusResults = [];
       for (let method in accessMethods) {
         const data = await getDownloadTypeStatus(method, 'LILS');
         console.log(method, ' Type status: ', data);
 
         if (data) {
-          // setAccessMethods({
-          //   ...accessMethods,
-          //   [method]: { disabled: data.disabled, message: data.message },
-          // });
           setAccessMethods(prevState => {
             return {
               ...prevState,
               [method]: { disabled: data.disabled, message: data.message },
             };
           });
-          // } else {
-          //   setAccessMethods({
-          //     ...accessMethods,
-          //     [method]: { disabled: undefined, message: '' },
-          //   });
         } else {
           setAccessMethods(prevState => {
             return {
@@ -245,12 +225,27 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             };
           });
         }
+
+        // TODO: Temporarily push to a separate array to report information.
+        if (!data) statusResults.push(method);
       }
 
       // TODO: Why does printing the access methods here give an incomplete version? Due to asynchronous?
       // TODO: Once all the requests have been complete evaluate if there are any status requests which failed.
       //       If only some failed then show the appropriate SciGateway messages. If all failed then show one message indicating.
       //       Is placing it here after the request good or will the access methods not have been updated yet?
+      if (statusResults.length < Object.keys(accessMethods).length) {
+        for (const method of statusResults) {
+          broadcastError(
+            `Access method ${method.toUpperCase()} is currently unavailable. If required, use an alternative method.`
+          );
+        }
+      } else {
+        broadcastError(
+          'Download access methods are unavailable. Please try again later.'
+        );
+      }
+      console.log(statusResults);
     }
 
     if (props.open) {
@@ -258,7 +253,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         // Get the status of all the available access methods.
         getStatus();
       setLoadedStatus(true);
-      console.log('Loaded accessMethods: ', accessMethods);
 
       // Reset checkmark view.
       setIsSubmitted(false);
@@ -414,23 +408,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     (so they are set as undefined). */}
                     <MenuItem
                       disabled={accessMethods['https'].disabled === undefined}
-                      // disabled
                       id="confirm-access-method-https"
                       value="https"
                     >
                       HTTPS
                     </MenuItem>
 
-                    {/* {(() => {
-                      console.log(
-                        'globus disabled: ',
-                        accessMethods['globus'].disabled
-                      );
-                    })()} */}
-
                     <MenuItem
                       disabled={accessMethods['globus'].disabled === undefined}
-                      // disabled
                       id="confirm-access-method-globus"
                       value="globus"
                     >
