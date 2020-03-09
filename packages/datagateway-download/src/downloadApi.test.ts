@@ -70,10 +70,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await fetchDownloadCartItems(
-        settings.facilityName,
-        settings.downloadApiUrl
-      );
+      const returnData = await fetchDownloadCartItems({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
 
       expect(returnData).toBe(downloadCartMockData.cartItems);
       expect(axios.get).toHaveBeenCalled();
@@ -92,10 +92,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await fetchDownloadCartItems(
-        settings.facilityName,
-        settings.downloadApiUrl
-      );
+      const returnData = await fetchDownloadCartItems({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
 
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();
@@ -120,10 +120,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeAllDownloadCartItems(
-        settings.facilityName,
-        settings.downloadApiUrl
-      );
+      const returnData = await removeAllDownloadCartItems({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
@@ -142,10 +142,10 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await removeAllDownloadCartItems(
-        settings.facilityName,
-        settings.downloadApiUrl
-      );
+      const returnData = await removeAllDownloadCartItems({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
 
       expect(returnData).toBeUndefined();
       expect(axios.delete).toHaveBeenCalled();
@@ -220,7 +220,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel(settings.idsUrl);
+      const isTwoLevel = await getIsTwoLevel({ idsUrl: settings.idsUrl });
 
       expect(isTwoLevel).toBe(true);
       expect(axios.get).toHaveBeenCalled();
@@ -236,7 +236,7 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel(settings.idsUrl);
+      const isTwoLevel = await getIsTwoLevel({ idsUrl: settings.idsUrl });
 
       expect(isTwoLevel).toBe(false);
       expect(axios.get).toHaveBeenCalled();
@@ -415,7 +415,9 @@ describe('Download Cart API functions test', () => {
       jest.spyOn(document, 'createElement');
       jest.spyOn(document.body, 'appendChild');
 
-      await downloadPreparedCart('test-id', 'test-file.zip', settings.idsUrl);
+      await downloadPreparedCart('test-id', 'test-file.zip', {
+        idsUrl: settings.idsUrl,
+      });
 
       expect(document.createElement).toHaveBeenCalledWith('a');
 
@@ -553,7 +555,9 @@ describe('Download Cart API functions test', () => {
 
   describe('getDatafileCount', () => {
     it('returns 1 upon request for datafile entityType', async () => {
-      const returnData = await getDatafileCount(1, 'datafile', settings.apiUrl);
+      const returnData = await getDatafileCount(1, 'datafile', {
+        apiUrl: settings.apiUrl,
+      });
 
       expect(returnData).toBe(1);
     });
@@ -565,7 +569,9 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(1, 'dataset', settings.apiUrl);
+      const returnData = await getDatafileCount(1, 'dataset', {
+        apiUrl: settings.apiUrl,
+      });
 
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
@@ -591,7 +597,9 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(1, 'dataset', settings.apiUrl);
+      const returnData = await getDatafileCount(1, 'dataset', {
+        apiUrl: settings.apiUrl,
+      });
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
@@ -624,11 +632,9 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(
-        2,
-        'investigation',
-        settings.apiUrl
-      );
+      const returnData = await getDatafileCount(2, 'investigation', {
+        apiUrl: settings.apiUrl,
+      });
 
       expect(returnData).toBe(5);
       expect(axios.get).toHaveBeenCalled();
@@ -655,11 +661,9 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const returnData = await getDatafileCount(
-        2,
-        'investigation',
-        settings.apiUrl
-      );
+      const returnData = await getDatafileCount(2, 'investigation', {
+        apiUrl: settings.apiUrl,
+      });
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
@@ -733,7 +737,9 @@ describe('Download Cart API functions test', () => {
         },
       ];
 
-      const returnData = await getCartDatafileCount(cartItems, settings.apiUrl);
+      const returnData = await getCartDatafileCount(cartItems, {
+        apiUrl: settings.apiUrl,
+      });
 
       expect(returnData).toBe(3);
       expect(axios.get).toHaveBeenCalledTimes(3);
@@ -852,10 +858,10 @@ describe('Download Status API functions test', () => {
         })
       );
 
-      const returnData = await fetchDownloads(
-        settings.facilityName,
-        settings.downloadApiUrl
-      );
+      const returnData = await fetchDownloads({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
 
       expect(returnData).toBe(downloadsMockData);
       expect(axios.get).toHaveBeenCalled();
@@ -884,8 +890,10 @@ describe('Download Status API functions test', () => {
       );
 
       const returnData = await fetchDownloads(
-        settings.facilityName,
-        settings.downloadApiUrl,
+        {
+          facilityName: settings.facilityName,
+          downloadApiUrl: settings.downloadApiUrl,
+        },
         'where download.isDeleted = true'
       );
 
@@ -910,10 +918,10 @@ describe('Download Status API functions test', () => {
         })
       );
 
-      const returnData = await fetchDownloads(
-        settings.facilityName,
-        settings.downloadApiUrl
-      );
+      const returnData = await fetchDownloads({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
 
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();

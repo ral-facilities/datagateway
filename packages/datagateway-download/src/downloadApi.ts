@@ -10,19 +10,22 @@ import {
   handleICATError,
 } from 'datagateway-common';
 
-export const fetchDownloadCartItems: (
-  facilityName: string,
-  downloadApiUrl: string
-) => Promise<DownloadCartItem[]> = (
-  facilityName: string,
-  downloadApiUrl: string
-) => {
+export const fetchDownloadCartItems: (settings: {
+  facilityName: string;
+  downloadApiUrl: string;
+}) => Promise<DownloadCartItem[]> = (settings: {
+  facilityName: string;
+  downloadApiUrl: string;
+}) => {
   return axios
-    .get<DownloadCart>(`${downloadApiUrl}/user/cart/${facilityName}`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-      },
-    })
+    .get<DownloadCart>(
+      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}`,
+      {
+        params: {
+          sessionId: readSciGatewayToken().sessionId,
+        },
+      }
+    )
     .then(response => {
       return response.data.cartItems;
     })
@@ -32,17 +35,23 @@ export const fetchDownloadCartItems: (
     });
 };
 
-export const removeAllDownloadCartItems: (
-  facilityName: string,
-  downloadApiUrl: string
-) => Promise<void> = (facilityName: string, downloadApiUrl: string) => {
+export const removeAllDownloadCartItems: (settings: {
+  facilityName: string;
+  downloadApiUrl: string;
+}) => Promise<void> = (settings: {
+  facilityName: string;
+  downloadApiUrl: string;
+}) => {
   return axios
-    .delete(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-        items: '*',
-      },
-    })
+    .delete(
+      `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      {
+        params: {
+          sessionId: readSciGatewayToken().sessionId,
+          items: '*',
+        },
+      }
+    )
     .then(() => {})
     .catch(handleICATError);
 };
@@ -76,11 +85,11 @@ export const removeDownloadCartItem: (
     .catch(handleICATError);
 };
 
-export const getIsTwoLevel: (idsUrl: string) => Promise<boolean> = (
-  idsUrl: string
-) => {
+export const getIsTwoLevel: (settings: {
+  idsUrl: string;
+}) => Promise<boolean> = (settings: { idsUrl: string }) => {
   return axios
-    .get<boolean>(`${idsUrl}/isTwoLevel`)
+    .get<boolean>(`${settings.idsUrl}/isTwoLevel`)
     .then(response => {
       return response.data;
     })
@@ -137,19 +146,17 @@ export const submitCart: (
 };
 
 export const fetchDownloads: (
-  facilityName: string,
-  downloadApiUrl: string,
+  settings: { facilityName: string; downloadApiUrl: string },
   queryOffset?: string
 ) => Promise<Download[]> = (
-  facilityName: string,
-  downloadApiUrl: string,
+  settings: { facilityName: string; downloadApiUrl: string },
   queryOffset?: string
 ) => {
   return axios
-    .get<Download[]>(`${downloadApiUrl}/user/downloads`, {
+    .get<Download[]>(`${settings.downloadApiUrl}/user/downloads`, {
       params: {
         sessionId: readSciGatewayToken().sessionId,
-        facilityName: facilityName,
+        facilityName: settings.facilityName,
         queryOffset: !queryOffset
           ? 'where download.isDeleted = false'
           : queryOffset,
@@ -192,8 +199,12 @@ export const getDownload: (
 export const downloadPreparedCart: (
   preparedId: string,
   fileName: string,
-  idsUrl: string
-) => void = (preparedId: string, fileName: string, idsUrl: string) => {
+  settings: { idsUrl: string }
+) => void = (
+  preparedId: string,
+  fileName: string,
+  settings: { idsUrl: string }
+) => {
   // We need to set the preparedId and outname query parameters
   // for the IDS download.
   const params = {
@@ -204,7 +215,7 @@ export const downloadPreparedCart: (
 
   // Create our IDS link from the query parameters.
   const link = document.createElement('a');
-  link.href = `${idsUrl}/getData?${Object.entries(params)
+  link.href = `${settings.idsUrl}/getData?${Object.entries(params)
     .map(([key, value]) => `${key}=${value}`)
     .join('&')}`;
 
@@ -306,17 +317,17 @@ export const getSize: (
 export const getDatafileCount: (
   entityId: number,
   entityType: string,
-  apiUrl: string
+  settings: { apiUrl: string }
 ) => Promise<number> = (
   entityId: number,
   entityType: string,
-  apiUrl: string
+  settings: { apiUrl: string }
 ) => {
   if (entityType === 'datafile') {
     return Promise.resolve(1);
   } else if (entityType === 'dataset') {
     return axios
-      .get<number>(`${apiUrl}/datafiles/count`, {
+      .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
           where: {
             DATASET_ID: {
@@ -337,7 +348,7 @@ export const getDatafileCount: (
       });
   } else {
     return axios
-      .get<number>(`${apiUrl}/datafiles/count`, {
+      .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
           include: '"DATASET"',
           where: {
@@ -362,12 +373,17 @@ export const getDatafileCount: (
 
 export const getCartDatafileCount: (
   cartItems: DownloadCartItem[],
-  apiUrl: string
-) => Promise<number> = (cartItems: DownloadCartItem[], apiUrl: string) => {
+  settings: { apiUrl: string }
+) => Promise<number> = (
+  cartItems: DownloadCartItem[],
+  settings: { apiUrl: string }
+) => {
   const getDatafileCountPromises: Promise<number>[] = [];
   cartItems.forEach(cartItem =>
     getDatafileCountPromises.push(
-      getDatafileCount(cartItem.entityId, cartItem.entityType, apiUrl)
+      getDatafileCount(cartItem.entityId, cartItem.entityType, {
+        apiUrl: settings.apiUrl,
+      })
     )
   );
 

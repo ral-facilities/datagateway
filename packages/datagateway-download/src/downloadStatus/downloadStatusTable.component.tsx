@@ -50,15 +50,16 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       }
 
       if (!dataLoaded) {
-        fetchDownloads(settings.facilityName, settings.downloadApiUrl).then(
-          downloads => {
-            setData(downloads);
-            setDataLoaded(true);
+        fetchDownloads({
+          facilityName: settings.facilityName,
+          downloadApiUrl: settings.downloadApiUrl,
+        }).then(downloads => {
+          setData(downloads);
+          setDataLoaded(true);
 
-            // Set the time at which we set the download data.
-            setLastChecked();
-          }
-        );
+          // Set the time at which we set the download data.
+          setLastChecked();
+        });
       }
     }
   }, [

@@ -245,7 +245,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             downloadInfo.fileName,
 
             // Use the idsUrl that has been defined for this access method.
-            settings.accessMethods[accessMethod].idsUrl
+            { idsUrl: settings.accessMethods[accessMethod].idsUrl }
           );
       }
 
