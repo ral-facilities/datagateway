@@ -160,7 +160,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [downloadName, setDownloadName] = React.useState('');
   // TODO: In the event one access method does not work, select next available.
   const [accessMethod, setAccessMethod] = React.useState(defaultAccessMethod);
-  // const [methodDisabled, setMethodDisabled] = React.useState(false);
   const [emailAddress, setEmailAddress] = React.useState('');
 
   // Email validation.
@@ -335,8 +334,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     setIsSubmitted(true);
   };
 
-  // console.log('dialog rerendered');
-
   return (
     <Dialog
       onClose={dialogClose}
@@ -395,9 +392,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     // TODO: Works when all are undefined, but what should happen when only one/several
                     //       access methods are available? (select the next available by default?)
                     defaultValue={`${
-                      methodsUnavailable && !methodsUnavailable
-                        ? defaultAccessMethod
-                        : ''
+                      methodsUnavailable ? '' : defaultAccessMethod
                     }`}
                     onChange={e => {
                       // Material UI select is not a real select element, so needs casting.
@@ -408,10 +403,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     {/* TODO: Show placeholder in which users can select from in the event all are undefined. */}
                     {/* TODO: Values need to be retrieved from an object from settings. */}
                     {/* TODO: Disable any access methods for which we cannot
-                    retrieve the status of. */}
+                              retrieve the status of. */}
                     {/* TODO: Temporarily specified the keys of the access methods;
                           this code will change to add in the disabled prop to the loop
                           which creates the menu items (from settings branch). */}
+
                     {/* Access methods are only disabled when do not receive an appropriate response from the API
                     (so they are set as undefined). */}
                     {/* {(() => {
@@ -423,21 +419,49 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         );
                     })()} */}
 
-                    <MenuItem
-                      disabled={accessMethods['https'].disabled === undefined}
-                      id="confirm-access-method-https"
-                      value="https"
-                    >
-                      HTTPS
-                    </MenuItem>
+                    {/* TODO: MenuItems displayed in the dropdown the list should be sorted by the 
+                          disabled/undefined access methods. */}
+                    {Object.entries(accessMethods)
+                      .sort(
+                        ([typeA, methodInfoA], [typeB, methodInfoB]) =>
+                          +(
+                            methodInfoB.disabled ||
+                            methodInfoB.disabled === undefined ||
+                            -1
+                          ) -
+                          +(
+                            methodInfoA.disabled ||
+                            methodInfoA.disabled === undefined ||
+                            -1
+                          )
+                      )
+                      .map(([type, methodInfo], index) => (
+                        <MenuItem
+                          key={index}
+                          id={`confirm-access-method-${type}`}
+                          value={type}
+                          // TODO: Add in disabled prop.
+                          disabled={methodInfo.disabled === undefined}
+                        >
+                          {type.toUpperCase()}
+                        </MenuItem>
+                      ))}
 
-                    <MenuItem
-                      disabled={accessMethods['globus'].disabled === undefined}
-                      id="confirm-access-method-globus"
-                      value="globus"
-                    >
-                      Globus
-                    </MenuItem>
+                    {/* // <MenuItem
+                    //   disabled={accessMethods['https'].disabled === undefined}
+                    //   id="confirm-access-method-https"
+                    //   value="https"
+                    // >
+                    //   HTTPS
+                    // </MenuItem>
+
+                    // <MenuItem
+                    //   disabled={accessMethods['globus'].disabled === undefined}
+                    //   id="confirm-access-method-globus"
+                    //   value="globus"
+                    // >
+                    //   Globus
+                    // </MenuItem> */}
                   </Select>
 
                   {/* TODO: Is it possible to avoid putting an immediate function here? */}
@@ -446,7 +470,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     if (methodsUnavailable) {
                       return (
                         <FormHelperText>
-                          Access methods unavailable.
+                          Access methods currently unavailable.
                         </FormHelperText>
                       );
                     } else if (method.disabled) {
