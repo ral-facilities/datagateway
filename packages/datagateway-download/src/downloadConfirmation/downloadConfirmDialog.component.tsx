@@ -422,19 +422,22 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     {/* TODO: MenuItems displayed in the dropdown the list should be sorted by the 
                           disabled/undefined access methods. */}
                     {Object.entries(accessMethods)
-                      .sort(
-                        ([typeA, methodInfoA], [typeB, methodInfoB]) =>
-                          +(
-                            methodInfoB.disabled ||
-                            methodInfoB.disabled === undefined ||
-                            -1
-                          ) -
-                          +(
-                            methodInfoA.disabled ||
-                            methodInfoA.disabled === undefined ||
-                            -1
-                          )
-                      )
+                      .sort(([typeA, methodInfoA], [typeB, methodInfoB]) => {
+                        console.log(typeA, typeB);
+                        let res =
+                          (methodInfoA.disabled !== undefined
+                            ? methodInfoA.disabled === false
+                              ? -1
+                              : 0
+                            : 1) -
+                          (methodInfoB.disabled !== undefined
+                            ? methodInfoB.disabled === false
+                              ? -1
+                              : 0
+                            : 1);
+                        console.log(res);
+                        return res;
+                      })
                       .map(([type, methodInfo], index) => (
                         <MenuItem
                           key={index}
