@@ -155,6 +155,7 @@ export const downloadPreparedCart: (
   link.remove();
 };
 
+// TODO: Create interface for response?
 export const getDownloadTypeStatus: (
   transportType: string,
   facilityName: string
@@ -169,9 +170,16 @@ export const getDownloadTypeStatus: (
         facilityName: facilityName,
       },
     })
-    .then((response: AxiosResponse<{ disabled: boolean; message: string }>) => {
-      return response.data;
-    })
+    .then(
+      (
+        response: AxiosResponse<{
+          disabled: boolean;
+          message: string;
+        }>
+      ) => {
+        return response.data;
+      }
+    )
     .catch(error => {
       handleICATError(error);
       return null;
