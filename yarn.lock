@@ -12828,9 +12828,9 @@ simple-swizzle@^0.2.2:
     is-arrayish "^0.3.1"
 
 single-spa-react@^2.10.2:
-  version "2.10.4"
-  resolved "https://registry.yarnpkg.com/single-spa-react/-/single-spa-react-2.10.4.tgz#164af9ebe02a7df50cb3a040b50e821dd7b0d052"
-  integrity sha512-PN5Un1gX2f4gsZKpu/bx+3RPix1lHYGDvSXD6wf4td6SB2ESuv4RFkiLMeBrW4VtcW+pUWDxjbKrqZb1lm6IiQ==
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/single-spa-react/-/single-spa-react-2.11.1.tgz#3c86208435a2990ad5ad2bca86f38f3843f360ac"
+  integrity sha512-go3ejn0RP6UHeaJhHdC6COAgiGK8akPzSQTaMNB3rggRf1GEXCcOJErfD/O+8Xrv8LDJw/FwLUSfOeafWt6X4w==
 
 sisteransi@^1.0.3:
   version "1.0.4"
