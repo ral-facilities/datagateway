@@ -134,7 +134,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // TODO: The default one is now chosen after sorting,
   //       set the initial value of accessMethod to be the first selected item.
-  const defaultAccessMethod = 'https';
+  // const defaultAccessMethod = 'https';
 
   // TODO: Temporary access methods definition until the settings can be merged in.
   const [requestStatus, setRequestStatus] = React.useState(false);
@@ -171,7 +171,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Submit values.
   const [downloadName, setDownloadName] = React.useState('');
   // TODO: In the event one access method does not work, select next available.
-  const [accessMethod, setAccessMethod] = React.useState(defaultAccessMethod);
+  // const [accessMethod, setAccessMethod] = React.useState(defaultAccessMethod);
+  const [accessMethod, setAccessMethod] = React.useState('');
   const [emailAddress, setEmailAddress] = React.useState('');
 
   // Email validation.
@@ -231,8 +232,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
     console.log('Sorted methods: ', sorted);
     setSortedMethods(sorted);
+    // Set the selected access method to be the first one in the sorted list.
+    setAccessMethod(sorted[0][0]);
     setIsSorted(true);
-  }, [accessMethods, setSortedMethods, setIsSorted]);
+  }, [accessMethods, setSortedMethods, setAccessMethod, setIsSorted]);
 
   useEffect(() => {
     async function getStatus(): Promise<void> {
@@ -443,7 +446,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       // If we are using HTTPS then start the download using
       // the download ID we received.
       // TODO: Convert to checking if the access method matches http/https.
-      if (accessMethod === defaultAccessMethod) {
+      if (accessMethod.match(/https|http/)) {
         const downloadInfo = await getDownload(facilityName, downloadId);
 
         // Download the file as long as it is available for immediate download.
@@ -473,7 +476,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             <div style={{ textAlign: 'center', padding: '25px' }}>
               {/* TODO: Bad performance without disableShrink property? */}
               <CircularProgress disableShrink />
-              <Typography style={{ paddingTop: '10px' }}>Loading...</Typography>
+              <Typography style={{ paddingTop: '10px' }}>
+                Loading Confirmation...
+              </Typography>
             </div>
           </DialogContent>
         ) : (
@@ -630,7 +635,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     {(() => {
                       let accessMethodInfo;
                       // TODO: Convert to http/https check.
-                      if (accessMethod === defaultAccessMethod)
+                      if (accessMethod.match(/https|http/))
                         accessMethodInfo =
                           'HTTPS is the default access method.';
                       else if (accessMethod === 'globus')

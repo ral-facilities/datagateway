@@ -281,6 +281,7 @@ const DownloadCartTable: React.FC = () => {
                 id="downloadCartButton"
                 variant="contained"
                 color="primary"
+                // TODO: Revert back to original.
                 // disabled={
                 //   fileCount <= 0 ||
                 //   totalSize <= 0 ||
