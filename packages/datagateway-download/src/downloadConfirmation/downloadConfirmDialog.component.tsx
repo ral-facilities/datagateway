@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -132,10 +132,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // TODO: Access methods should be configurable and not defined in the component.
   const facilityName = 'LILS';
 
-  // TODO: The default one is now chosen after sorting,
-  //       set the initial value of accessMethod to be the first selected item.
-  // const defaultAccessMethod = 'https';
-
   // TODO: Temporary access methods definition until the settings can be merged in.
   const [requestStatus, setRequestStatus] = React.useState(false);
   const [loadedStatus, setLoadedStatus] = React.useState(false);
@@ -158,6 +154,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   >([]);
   const [isSorted, setIsSorted] = React.useState(false);
   const [methodsUnavailable, setMethodsUnavailable] = React.useState(false);
+  const [showDialog, setShowDialog] = React.useState(false);
 
   const { totalSize } = props;
   const { isTwoLevel } = props;
@@ -170,9 +167,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   // Submit values.
   const [downloadName, setDownloadName] = React.useState('');
-  // TODO: In the event one access method does not work, select next available.
-  // const [accessMethod, setAccessMethod] = React.useState(defaultAccessMethod);
-  const [accessMethod, setAccessMethod] = React.useState('');
+  const [selectedMethod, setSelectedMethod] = React.useState('');
   const [emailAddress, setEmailAddress] = React.useState('');
 
   // Email validation.
@@ -185,8 +180,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Download button.
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState(false);
-
-  const [showDialog, setShowDialog] = React.useState(false);
 
   // Hide the confirmation dialog and clear the download cart
   // when the dialog is closed.
@@ -210,10 +203,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     );
   };
 
-  const sortMethods = useCallback(() => {
+  // Sort access methods into a sorted array used for
+  // rendering the select dropdown list.
+  const sortMethods = React.useCallback(() => {
     const sorted = Object.entries(accessMethods).sort(
-      ([typeA, methodInfoA], [typeB, methodInfoB]) => {
-        console.log(typeA, typeB);
+      ([, methodInfoA], [, methodInfoB]) => {
         let res =
           (methodInfoA.disabled !== undefined
             ? methodInfoA.disabled === false
@@ -225,69 +219,60 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               ? -1
               : 0
             : 1);
-        console.log(res);
         return res;
       }
     );
 
-    console.log('Sorted methods: ', sorted);
+    // Set the sorted, selected access method
+    // and set it to have been sorted.
     setSortedMethods(sorted);
-    // Set the selected access method to be the first one in the sorted list.
-    setAccessMethod(sorted[0][0]);
+    setSelectedMethod(sorted[0][0]);
     setIsSorted(true);
-  }, [accessMethods, setSortedMethods, setAccessMethod, setIsSorted]);
+  }, [accessMethods, setSortedMethods, setSelectedMethod, setIsSorted]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function getStatus(): Promise<void> {
-      // TODO: Check to ensure that the states are not being separately updated.
-      //       Currently using callback function in order to resolve this (what about Promise.all?)
-      //       Have a look at setState asynchronous.
-
-      let statusResults: string[] = [];
+      let statusErrors: string[] = [];
       Promise.all(
         Object.entries(accessMethods).map(([method]) =>
           getDownloadTypeStatus(method, 'LILS')
         )
       ).then(methodStatus => {
-        console.log(methodStatus);
-
-        Object.entries(accessMethods).forEach(([key, value], index) => {
-          console.log('Method status: ', key, index);
+        // Loop through all the current access methods and match that
+        // to the status information we received for each.
+        Object.entries(accessMethods).forEach(([method], index) => {
           const status = methodStatus[index];
           if (status) {
             setAccessMethods(prevState => {
               return {
                 ...prevState,
-                [key]: { disabled: status.disabled, message: status.message },
+                [method]: {
+                  disabled: status.disabled,
+                  message: status.message,
+                },
               };
             });
           } else {
             setAccessMethods(prevState => {
               return {
                 ...prevState,
-                [key]: { disabled: undefined, message: '' },
+                [method]: { disabled: undefined, message: '' },
               };
             });
 
             // Push the method type to display an error.
-            statusResults.push(key);
+            statusErrors.push(method);
           }
-
-          // TODO: Temporarily push to a separate array to report information.
-          // if (!data) {
-          //   statusResults.push(method);
-          // }
         });
 
-        console.log('Status errors: ', statusResults);
-        if (statusResults.length < Object.keys(accessMethods).length) {
-          for (const method of statusResults) {
+        // Broadcast errors depending on the result of the status requests.
+        if (statusErrors.length < Object.keys(accessMethods).length) {
+          for (const method of statusErrors) {
             broadcastError(
               `Access method ${method.toUpperCase()} is currently unavailable. If required, use an alternative method.`
             );
           }
         } else {
-          // TODO: Does not set initially; set after loaded.
           setMethodsUnavailable(true);
           broadcastError(
             'Download access methods are unavailable. Please try again later.'
@@ -297,53 +282,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         // Set the status information to have been loaded.
         setLoadedStatus(true);
       });
-
-      // for (let method in accessMethods) {
-      //   const data = await getDownloadTypeStatus(method, 'LILS');
-      //   console.log(method, ' Type status: ', data);
-
-      //   if (data) {
-      //     setAccessMethods(prevState => {
-      //       return {
-      //         ...prevState,
-      //         [method]: { disabled: data.disabled, message: data.message },
-      //       };
-      //     });
-      //   } else {
-      //     setAccessMethods(prevState => {
-      //       return {
-      //         ...prevState,
-      //         [method]: { disabled: undefined, message: '' },
-      //       };
-      //     });
-      //   }
-
-      //   // TODO: Temporarily push to a separate array to report information.
-      //   if (!data) {
-      //     statusResults.push(method);
-      //   }
-      // }
-
-      // TODO: Why does printing the access methods here give an incomplete version? Due to asynchronous?
-      // TODO: Once all the requests have been complete evaluate if there are any status requests which failed.
-      //       If only some failed then show the appropriate SciGateway messages. If all failed then show one message indicating.
-      //       Is placing it here after the request good or will the access methods not have been updated yet?
-      // console.log('Status errors: ', statusResults);
-      // if (statusResults.length < Object.keys(accessMethods).length) {
-      //   for (const method of statusResults) {
-      //     broadcastError(
-      //       `Access method ${method.toUpperCase()} is currently unavailable. If required, use an alternative method.`
-      //     );
-      //   }
-      // } else {
-      //   // TODO: Does not set initially; set after loaded.
-      //   setMethodsUnavailable(true);
-      //   broadcastError(
-      //     'Download access methods are unavailable. Please try again later.'
-      //   );
-      // }
-
-      // setLoadedStatus(true);
     }
 
     if (props.open) {
@@ -351,18 +289,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         // Get the status of all the available access methods.
         getStatus();
         setRequestStatus(true);
-      }
-
-      // TODO: Set loadedStatus to be true only after the access methods have been sorted.
-      // TODO: Sort the access methods once the status has been loaded.
-      //       Only sort once? We do not request again.
-      if (loadedStatus && !isSorted) {
-        console.log('Loaded status information: ', loadedStatus);
-        console.log('Loaded: ', accessMethods);
-        sortMethods();
-
-        // Show the dialog.
-        setShowDialog(true);
+      } else {
+        if (loadedStatus && !isSorted) {
+          sortMethods();
+          setShowDialog(true);
+        }
       }
 
       // Reset checkmark view.
@@ -371,8 +302,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
       // Reset all fields for next time dialog is opened.
       setDownloadName('');
-      // TODO: This should no longer be set here and be set after sorting.
-      // setAccessMethod(defaultAccessMethod);
       setEmailAddress('');
 
       if (!isTwoLevel) {
@@ -436,7 +365,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
     const downloadId = await submitCart(
       facilityName,
-      accessMethod,
+      selectedMethod,
       emailAddress,
       fileName
     );
@@ -445,8 +374,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
-      // TODO: Convert to checking if the access method matches http/https.
-      if (accessMethod.match(/https|http/)) {
+      if (selectedMethod.match(/https|http/)) {
         const downloadInfo = await getDownload(facilityName, downloadId);
 
         // Download the file as long as it is available for immediate download.
@@ -470,12 +398,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       aria-label="download-confirm-dialog"
     >
       {!isSubmitted ? (
-        // TODO: Is it possible to have a circular progress and then set this when status has loaded?
         !showDialog ? (
           <DialogContent>
             <div style={{ textAlign: 'center', padding: '25px' }}>
-              {/* TODO: Bad performance without disableShrink property? */}
-              <CircularProgress disableShrink />
+              <CircularProgress />
               <Typography style={{ paddingTop: '10px' }}>
                 Loading Confirmation...
               </Typography>
@@ -512,16 +438,12 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 </Grid>
 
                 {/* Select the access method */}
-                {/* TODO: Grey out the access method if the request for it failed (if it is undefined).
-                    Show a push notification (or maybe a message underneath highlighting that
-                    following access method is not available). */}
                 <Grid item xs={12}>
                   <FormControl
                     style={{ minWidth: 120 }}
-                    // TODO: Set error when no access methods selected?
-                    //       Allow for none to be selected?
                     error={
-                      accessMethods[accessMethod].disabled || methodsUnavailable
+                      accessMethods[selectedMethod].disabled ||
+                      methodsUnavailable
                     }
                   >
                     <InputLabel id="confirm-access-method-label">
@@ -531,73 +453,31 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       labelId="confirm-access-method"
                       id="confirm-access-method"
                       aria-label="confirm-access-method"
-                      // TODO: Works when all are undefined, but what should happen when only one/several
-                      //       access methods are available? (select the next available by default?)
-                      // TODO: Prevent null error when indexing sortedMethod here
-                      //       (getting the first element access method name in the sorted list).
-                      // TODO: sortMethods[0][0] should be set as the accessMethod value after sorting.
                       defaultValue={`${
-                        methodsUnavailable ? '' : sortedMethods[0][0]
+                        methodsUnavailable ? '' : selectedMethod
                       }`}
                       onChange={e => {
-                        // Material UI select is not a real select element, so needs casting.
                         if (!methodsUnavailable)
-                          setAccessMethod(e.target.value as string);
+                          // Material UI select is not a real select element, so needs casting.
+
+                          setSelectedMethod(e.target.value as string);
                       }}
                     >
-                      {/* TODO: Show placeholder in which users can select from in the event all are undefined. */}
                       {/* TODO: Values need to be retrieved from an object from settings. */}
-                      {/* TODO: Disable any access methods for which we cannot
-                              retrieve the status of. */}
-                      {/* TODO: Temporarily specified the keys of the access methods;
-                          this code will change to add in the disabled prop to the loop
-                          which creates the menu items (from settings branch). */}
-
-                      {/* Access methods are only disabled when do not receive an appropriate response from the API
-                    (so they are set as undefined). */}
-                      {/* {(() => {
-                      if (methodsUnavailable)
-                        return (
-                          <MenuItem value="">
-                            <em>Access Methods</em>
-                          </MenuItem>
-                        );
-                    })()} */}
-
-                      {/* TODO: MenuItems displayed in the dropdown the list should be sorted by the 
-                          disabled/undefined access methods. */}
                       {sortedMethods.map(([type, methodInfo], index) => (
                         <MenuItem
                           key={index}
                           id={`confirm-access-method-${type}`}
                           value={type}
-                          // TODO: Add in disabled prop.
                           disabled={methodInfo.disabled === undefined}
                         >
                           {type.toUpperCase()}
                         </MenuItem>
                       ))}
-
-                      {/* // <MenuItem
-                    //   disabled={accessMethods['https'].disabled === undefined}
-                    //   id="confirm-access-method-https"
-                    //   value="https"
-                    // >
-                    //   HTTPS
-                    // </MenuItem>
-
-                    // <MenuItem
-                    //   disabled={accessMethods['globus'].disabled === undefined}
-                    //   id="confirm-access-method-globus"
-                    //   value="globus"
-                    // >
-                    //   Globus
-                    // </MenuItem> */}
                     </Select>
 
-                    {/* TODO: Is it possible to avoid putting an immediate function here? */}
                     {(() => {
-                      const method = accessMethods[accessMethod];
+                      const method = accessMethods[selectedMethod];
                       if (methodsUnavailable) {
                         return (
                           <FormHelperText>
@@ -634,11 +514,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   show specific access information. */}
                     {(() => {
                       let accessMethodInfo;
-                      // TODO: Convert to http/https check.
-                      if (accessMethod.match(/https|http/))
+                      if (selectedMethod.match(/https|http/))
                         accessMethodInfo =
                           'HTTPS is the default access method.';
-                      else if (accessMethod === 'globus')
+                      else if (selectedMethod === 'globus')
                         accessMethodInfo = 'Globus is a special access method.';
 
                       return (
@@ -734,7 +613,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 id="download-confirmation-download"
                 disabled={
                   !emailValid ||
-                  accessMethods[accessMethod].disabled ||
+                  accessMethods[selectedMethod].disabled ||
                   methodsUnavailable
                 }
                 onClick={processDownload}
@@ -825,7 +704,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         {downloadName}
                       </Typography>
                       <Typography id="confirm-success-access-method">
-                        {accessMethod.toUpperCase()}
+                        {selectedMethod.toUpperCase()}
                       </Typography>
                       {emailAddress && (
                         <Typography id="confirm-success-email-address">
