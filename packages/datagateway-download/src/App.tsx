@@ -7,6 +7,7 @@ import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
+import ConfigProvider from './ConfigProvider';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
@@ -49,7 +50,9 @@ class App extends Component<{}, { hasError: boolean }> {
     return (
       <div className="App">
         <StylesProvider generateClassName={generateClassName}>
-          <DownloadTabs />
+          <ConfigProvider>
+            <DownloadTabs />
+          </ConfigProvider>
         </StylesProvider>
       </div>
     );

@@ -263,7 +263,10 @@ describe('Download Status Table', () => {
     });
 
     expect(downloadDeleted).toHaveBeenCalled();
-    expect(downloadDeleted).toHaveBeenCalledWith('LILS', 1, true);
+    expect(downloadDeleted).toHaveBeenCalledWith(1, true, {
+      downloadApiUrl: '',
+      facilityName: '',
+    });
     expect(
       wrapper.exists('[aria-label="Remove test-file-1 from downloads"]')
     ).toBe(false);

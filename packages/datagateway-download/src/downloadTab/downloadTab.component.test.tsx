@@ -3,6 +3,27 @@ import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DownloadTabs from './downloadTab.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
+import { DownloadSettingsContext } from '../ConfigProvider';
+
+// Create our mocked datagateway-download settings file.
+const mockedSettings = {
+  facilityName: 'LILS',
+  apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
+  downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+  idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  accessMethods: {
+    https: {
+      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      displayName: 'HTTPS',
+      description: 'Example description for HTTPS access method.',
+    },
+    globus: {
+      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      displayName: 'Globus',
+      description: 'Example description for Globus access method.',
+    },
+  },
+};
 
 describe('DownloadTab', () => {
   let shallow;
@@ -26,7 +47,11 @@ describe('DownloadTab', () => {
   });
 
   it('renders the previously used tab based on sessionStorage', async () => {
-    let wrapper = mount(<DownloadTabs />);
+    let wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadTabs />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -56,7 +81,11 @@ describe('DownloadTab', () => {
     expect(sessionStorage.getItem('downloadStatusTab')).toEqual('1');
 
     // Recreate the wrapper and expect it to show the download tab.
-    wrapper = mount(<DownloadTabs />);
+    wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadTabs />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();
@@ -71,7 +100,11 @@ describe('DownloadTab', () => {
   });
 
   it('shows the appropriate table when clicking between tabs', async () => {
-    const wrapper = mount(<DownloadTabs />);
+    const wrapper = mount(
+      <DownloadSettingsContext.Provider value={mockedSettings}>
+        <DownloadTabs />
+      </DownloadSettingsContext.Provider>
+    );
 
     await act(async () => {
       await flushPromises();

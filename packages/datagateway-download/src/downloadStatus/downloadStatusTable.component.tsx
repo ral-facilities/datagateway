@@ -13,8 +13,7 @@ import { fetchDownloads, downloadDeleted } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
 import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
-
-const idsUrl = 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -25,6 +24,9 @@ interface DownloadStatusTableProps {
 const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   props: DownloadStatusTableProps
 ) => {
+  // Load the settings for use.
+  const settings = React.useContext(DownloadSettingsContext);
+
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
@@ -47,10 +49,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         setRefreshTable(false);
       }
 
-      // TODO: facilityName needs to be passed in from a
-      //       configuration file.
       if (!dataLoaded) {
-        fetchDownloads('LILS').then(downloads => {
+        fetchDownloads({
+          facilityName: settings.facilityName,
+          downloadApiUrl: settings.downloadApiUrl,
+        }).then(downloads => {
           setData(downloads);
           setDataLoaded(true);
 
@@ -59,7 +62,14 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         });
       }
     }
-  }, [dataLoaded, refreshTable, setRefreshTable, setLastChecked]);
+  }, [
+    dataLoaded,
+    refreshTable,
+    setRefreshTable,
+    setLastChecked,
+    settings.facilityName,
+    settings.downloadApiUrl,
+  ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -169,10 +179,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     return filteredData.sort(sortDownloadItems);
   }, [data, sort, filters]);
 
-  // Construct a link to download the prepared cart.
   const getDataUrl = (preparedId: string, fileName: string): string => {
-    // TODO: Get idsUrl from the settings.
-    return `${idsUrl}/getData?sessionId=${window.localStorage.getItem(
+    // Construct a link to download the prepared cart.
+    return `${settings.idsUrl}/getData?sessionId=${window.localStorage.getItem(
       'icat:token'
     )}&preparedId=${preparedId}&outname=${fileName}`;
   };
@@ -235,7 +244,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
                 const downloadItem = rowData as Download;
-                // const isDownloadable = downloadItem.transport === 'https';
                 const isDownloadable = downloadItem.transport.match(
                   /https|http/
                 )
@@ -303,12 +311,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       setIsDeleting(true);
                       setTimeout(
                         () =>
-                          downloadDeleted(
-                            // TODO: Get the facilityName from configuration file.
-                            'LILS',
-                            downloadItem.id,
-                            true
-                          ).then(() =>
+                          downloadDeleted(downloadItem.id, true, {
+                            facilityName: settings.facilityName,
+                            downloadApiUrl: settings.downloadApiUrl,
+                          }).then(() =>
                             setData(
                               data.filter(item => item.id !== downloadItem.id)
                             )
