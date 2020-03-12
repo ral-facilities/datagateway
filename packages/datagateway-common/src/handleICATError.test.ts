@@ -29,6 +29,7 @@ describe('handleICATError', () => {
       },
       name: 'Test error name',
       message: 'Test error message',
+      toJSON: jest.fn(),
     };
   });
 
