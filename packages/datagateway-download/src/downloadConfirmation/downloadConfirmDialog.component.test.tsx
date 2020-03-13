@@ -8,6 +8,20 @@ import { flushPromises } from '../setupTests';
 import axios from 'axios';
 import { MenuItem } from '@material-ui/core';
 
+const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
+  // Update the wrapper with the loading dialog.
+  await act(async () => {
+    await flushPromises();
+    wrapper.update();
+  });
+
+  // Update the wrapper with the download confirmation dialog.
+  await act(async () => {
+    await flushPromises();
+    wrapper.update();
+  });
+};
+
 describe('DownloadConfirmDialog', () => {
   let mount;
 
@@ -22,6 +36,13 @@ describe('DownloadConfirmDialog', () => {
     _global.Date.parse = d.parse;
     _global.Date.UTC = d.UTC;
     _global.Date.now = d.now;
+
+    // Axios GET responses download submission.
+    (axios.get as jest.Mock).mockImplementation(() => {
+      return Promise.resolve({
+        data: { disabled: false, message: '' },
+      });
+    });
   });
 
   beforeEach(() => {
@@ -50,38 +71,59 @@ describe('DownloadConfirmDialog', () => {
         isTwoLevel={isTwoLevel}
         open={open}
         setClose={jest.fn()}
+        clearCart={jest.fn()}
       />
     );
   };
 
-  it('renders correctly', () => {
+  it('renders correctly', async () => {
     // Pass in a size of 100 bytes and for the dialog to be open when mounted.
     const wrapper = createWrapper(100, false, true);
+    await updateDialogWrapper(wrapper);
 
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('does not load the download speed/time table when isTwoLevel is true', () => {
+  it('does not load the download speed/time table when isTwoLevel is true', async () => {
     // Set isTwoLevel to true as a prop.
     const wrapper = createWrapper(100, true, true);
+    await updateDialogWrapper(wrapper);
 
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('loads the submit successful view when download button is clicked', async () => {
+  it('prevents a download if there are no available access methods', async () => {
+    // Override default requests and return access method status'
+    // as being disabled for both access methods.
+    (axios.get as jest.Mock)
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: { disabled: true, message: 'Disabled method 1 for test' },
+        })
+      )
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          data: { disabled: true, message: 'Disabled method 2 for test' },
+        })
+      );
+
     const wrapper = createWrapper(100, false, true);
+    await updateDialogWrapper(wrapper);
 
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({
-        data: {
-          facilityName: 'LILS',
-          userName: 'test user',
-          cartItems: [],
-          downloadId: '1',
-        },
-      })
-    );
+    // Ensure the download button is present.
+    expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
+    expect(
+      wrapper.find('button#download-confirmation-download').prop('disabled')
+    ).toBe(true);
+  });
 
+  // it('prevents the submission of download request with a disabled access method');
+  // TODO: Add in click with access method with and without a custom message.
+  // it('broadcasts an error for disabled access methods');
+
+  it('loads the submit successful view when download button is clicked', async () => {
+    // TODO: Shorten the amount of data we return?
+    // Axios GET responses download submission.
     (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: [
@@ -112,6 +154,21 @@ describe('DownloadConfirmDialog', () => {
       })
     );
 
+    // Axios POST response for submitting download request.
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'LILS',
+          userName: 'test user',
+          cartItems: [],
+          downloadId: '1',
+        },
+      })
+    );
+
+    const wrapper = createWrapper(100, false, true);
+    await updateDialogWrapper(wrapper);
+
     // Ensure the close button is present.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
 
@@ -124,6 +181,28 @@ describe('DownloadConfirmDialog', () => {
     // The success message should exist.
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
 
+    // Expect our status requests to have been called.
+    expect(axios.get).toHaveBeenCalledTimes(3);
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloadType/https/status',
+      {
+        params: {
+          sessionId: null,
+          facilityName: 'LILS',
+        },
+      }
+    );
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloadType/globus/status',
+      {
+        params: {
+          sessionId: null,
+          facilityName: 'LILS',
+        },
+      }
+    );
+
+    // Expect the posting of the download request.
     const params = new URLSearchParams();
     params.append('sessionId', '');
     params.append('transport', 'https');
@@ -136,7 +215,8 @@ describe('DownloadConfirmDialog', () => {
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
       params
     );
-    expect(axios.get).toHaveBeenCalled();
+
+    // Expect fetching of the submitted download requested.
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
       {
@@ -150,8 +230,6 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('successfully loads submit successful view after submitting download request with custom values', async () => {
-    const wrapper = createWrapper(100, false, true);
-
     (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
@@ -162,6 +240,9 @@ describe('DownloadConfirmDialog', () => {
         },
       })
     );
+
+    const wrapper = createWrapper(100, false, true);
+    await updateDialogWrapper(wrapper);
 
     // Fill in the custom download name, access method and email address.
     expect(wrapper.exists('input#confirm-download-name')).toBe(true);
@@ -185,6 +266,7 @@ describe('DownloadConfirmDialog', () => {
     // Ensure the close button is present.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
 
+    // Update wrapper after clicking download to show success.
     await act(async () => {
       wrapper.find('button#download-confirmation-download').simulate('click');
       await flushPromises();
@@ -205,11 +287,11 @@ describe('DownloadConfirmDialog', () => {
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
       params
     );
-    expect(axios.get).not.toHaveBeenCalled();
   });
 
   it('prevents the submission of a download request with an invalid email', async () => {
     const wrapper = createWrapper(100, false, true);
+    await updateDialogWrapper(wrapper);
 
     // Ensure the download button is present.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
@@ -247,7 +329,7 @@ describe('DownloadConfirmDialog', () => {
     ).toBe(false);
 
     // Simulate removing an email address completely,
-    // thus, emptying the text field.
+    // resulting in emptying the text field.
     await act(async () => {
       wrapper
         .find('input#confirm-download-email')
@@ -266,8 +348,6 @@ describe('DownloadConfirmDialog', () => {
   });
 
   it('loads the submit unsuccessful view when download button is clicked', async () => {
-    const wrapper = createWrapper(100, false, true);
-
     // We omit the downloadId which will cause the unsuccessful view to be shown.
     (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
@@ -278,6 +358,9 @@ describe('DownloadConfirmDialog', () => {
         },
       })
     );
+
+    const wrapper = createWrapper(100, false, true);
+    await updateDialogWrapper(wrapper);
 
     // Ensure the download button is present.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
@@ -302,10 +385,9 @@ describe('DownloadConfirmDialog', () => {
       'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
       params
     );
-    expect(axios.get).not.toHaveBeenCalled();
   });
 
-  it('closes the Download Confirmation Dialog and successfully calls the setClose function', () => {
+  it('closes the Download Confirmation Dialog and successfully calls the setClose function', async () => {
     let openDialog = true;
     const closeFunction = jest.fn();
 
@@ -315,8 +397,10 @@ describe('DownloadConfirmDialog', () => {
         isTwoLevel={false}
         open={openDialog}
         setClose={closeFunction}
+        clearCart={jest.fn()}
       />
     );
+    await updateDialogWrapper(wrapper);
 
     // Ensure the close button is present.
     expect(wrapper.exists('[aria-label="download-confirmation-close"]')).toBe(
@@ -337,7 +421,7 @@ describe('DownloadConfirmDialog', () => {
   });
 });
 
-describe('renders the estimated download speed/time table with varying values', () => {
+describe('DownloadConfirmDialog - renders the estimated download speed/time table with varying values', () => {
   let timeMount;
 
   const timeWrapper = (size: number): ReactWrapper => {
@@ -347,9 +431,19 @@ describe('renders the estimated download speed/time table with varying values', 
         isTwoLevel={false}
         open={true}
         setClose={jest.fn()}
+        clearCart={jest.fn()}
       />
     );
   };
+
+  beforeAll(() => {
+    // Axios GET responses download submission.
+    (axios.get as jest.Mock).mockImplementation(() => {
+      return Promise.resolve({
+        data: { disabled: false, message: '' },
+      });
+    });
+  });
 
   beforeEach(() => {
     timeMount = createMount();
@@ -382,9 +476,10 @@ describe('renders the estimated download speed/time table with varying values', 
     return fileSize;
   };
 
-  it('renders for multiple days, hours, minutes and seconds', () => {
+  it('renders for multiple days, hours, minutes and seconds', async () => {
     // Test for 2 seconds, 2 minutes, 2 hours and 2 days.
     const wrapper = timeWrapper(timeToSize(2, 2, 2, 2));
+    await updateDialogWrapper(wrapper);
 
     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
     expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
@@ -392,8 +487,9 @@ describe('renders the estimated download speed/time table with varying values', 
     );
   });
 
-  it('renders for a single day, hour, minute and second', () => {
+  it('renders for a single day, hour, minute and second', async () => {
     const wrapper = timeWrapper(timeToSize(1, 1, 1, 1));
+    await updateDialogWrapper(wrapper);
 
     expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
     expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
@@ -402,8 +498,9 @@ describe('renders the estimated download speed/time table with varying values', 
   });
 
   describe('estimated download table renders for single time measurements', () => {
-    it('renders for a single day', () => {
+    it('renders for a single day', async () => {
       const wrapper = timeWrapper(timeToSize(0, 0, 0, 1));
+      await updateDialogWrapper(wrapper);
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
       expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
@@ -411,8 +508,9 @@ describe('renders the estimated download speed/time table with varying values', 
       );
     });
 
-    it('renders for a single hour', () => {
+    it('renders for a single hour', async () => {
       const wrapper = timeWrapper(timeToSize(0, 0, 1, 0));
+      await updateDialogWrapper(wrapper);
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
       expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
@@ -420,8 +518,9 @@ describe('renders the estimated download speed/time table with varying values', 
       );
     });
 
-    it('renders for a single minute', () => {
+    it('renders for a single minute', async () => {
       const wrapper = timeWrapper(timeToSize(0, 1, 0, 0));
+      await updateDialogWrapper(wrapper);
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
       expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
@@ -429,8 +528,9 @@ describe('renders the estimated download speed/time table with varying values', 
       );
     });
 
-    it('renders for a single second', () => {
+    it('renders for a single second', async () => {
       const wrapper = timeWrapper(timeToSize(1, 0, 0, 0));
+      await updateDialogWrapper(wrapper);
 
       expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
       expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(

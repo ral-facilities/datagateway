@@ -2,6 +2,7 @@
 
 exports[`DownloadConfirmDialog does not load the download speed/time table when isTwoLevel is true 1`] = `
 <WithStyles(DownloadConfirmDialog)
+  clearCart={[MockFunction]}
   isTwoLevel={true}
   open={true}
   setClose={[MockFunction]}
@@ -10,9 +11,10 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
   <DownloadConfirmDialog
     classes={
       Object {
-        "tableContent": "DownloadConfirmDialog-tableContent-328",
+        "tableContent": "DownloadConfirmDialog-tableContent-340",
       }
     }
+    clearCart={[MockFunction]}
     isTwoLevel={true}
     open={true}
     setClose={[MockFunction]}
@@ -401,7 +403,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                       >
                         <div>
                           <div
-                            class="MuiDialogTitle-root Component-root-373"
+                            class="MuiDialogTitle-root Component-root-430"
                             id="download-confirm-dialog-title"
                           >
                             <h6
@@ -411,7 +413,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                             </h6>
                             <button
                               aria-label="download-confirmation-close"
-                              class="MuiButtonBase-root MuiIconButton-root Component-closeButton-374"
+                              class="MuiButtonBase-root MuiIconButton-root Component-closeButton-431"
                               tabindex="0"
                               type="button"
                             >
@@ -436,7 +438,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                             </button>
                           </div>
                           <div
-                            class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-427"
+                            class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-385"
                           >
                             <div
                               class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
@@ -522,6 +524,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     </svg>
                                   </div>
                                   <p
+                                    class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                  >
+                                    Select an access method for download.
+                                  </p>
+                                  <p
                                     class="MuiTypography-root MuiTypography-body1"
                                     style="padding-top: 20px;"
                                   >
@@ -589,7 +596,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                             </div>
                           </div>
                           <div
-                            class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-614 MuiDialogActions-spacing"
+                            class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-638 MuiDialogActions-spacing"
                           >
                             <button
                               class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
@@ -820,20 +827,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                   <Component
                                     classes={
                                       Object {
-                                        "closeButton": "Component-closeButton-374",
-                                        "root": "Component-root-373",
+                                        "closeButton": "Component-closeButton-431",
+                                        "root": "Component-root-430",
                                       }
                                     }
                                     id="download-confirm-dialog-title"
                                     onClose={[Function]}
                                   >
                                     <WithStyles(ForwardRef(DialogTitle))
-                                      className="Component-root-373"
+                                      className="Component-root-430"
                                       disableTypography={true}
                                       id="download-confirm-dialog-title"
                                     >
                                       <ForwardRef(DialogTitle)
-                                        className="Component-root-373"
+                                        className="Component-root-430"
                                         classes={
                                           Object {
                                             "root": "MuiDialogTitle-root",
@@ -843,7 +850,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                         id="download-confirm-dialog-title"
                                       >
                                         <div
-                                          className="MuiDialogTitle-root Component-root-373"
+                                          className="MuiDialogTitle-root Component-root-430"
                                           id="download-confirm-dialog-title"
                                         >
                                           <WithStyles(ForwardRef(Typography))
@@ -895,12 +902,12 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                           </WithStyles(ForwardRef(Typography))>
                                           <WithStyles(ForwardRef(IconButton))
                                             aria-label="download-confirmation-close"
-                                            className="Component-closeButton-374"
+                                            className="Component-closeButton-431"
                                             onClick={[Function]}
                                           >
                                             <ForwardRef(IconButton)
                                               aria-label="download-confirmation-close"
-                                              className="Component-closeButton-374"
+                                              className="Component-closeButton-431"
                                               classes={
                                                 Object {
                                                   "colorInherit": "MuiIconButton-colorInherit",
@@ -919,7 +926,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                               <WithStyles(ForwardRef(ButtonBase))
                                                 aria-label="download-confirmation-close"
                                                 centerRipple={true}
-                                                className="MuiIconButton-root Component-closeButton-374"
+                                                className="MuiIconButton-root Component-closeButton-431"
                                                 disabled={false}
                                                 focusRipple={true}
                                                 onClick={[Function]}
@@ -927,7 +934,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                 <ForwardRef(ButtonBase)
                                                   aria-label="download-confirmation-close"
                                                   centerRipple={true}
-                                                  className="MuiIconButton-root Component-closeButton-374"
+                                                  className="MuiIconButton-root Component-closeButton-431"
                                                   classes={
                                                     Object {
                                                       "disabled": "Mui-disabled",
@@ -941,7 +948,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                 >
                                                   <button
                                                     aria-label="download-confirmation-close"
-                                                    className="MuiButtonBase-root MuiIconButton-root Component-closeButton-374"
+                                                    className="MuiButtonBase-root MuiIconButton-root Component-closeButton-431"
                                                     disabled={false}
                                                     onBlur={[Function]}
                                                     onClick={[Function]}
@@ -1037,7 +1044,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                   <WithStyles(ForwardRef(DialogContent))
                                     classes={
                                       Object {
-                                        "root": "WithStyles(ForwardRef(DialogContent))-root-427",
+                                        "root": "WithStyles(ForwardRef(DialogContent))-root-385",
                                       }
                                     }
                                   >
@@ -1045,12 +1052,12 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                       classes={
                                         Object {
                                           "dividers": "MuiDialogContent-dividers",
-                                          "root": "MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-427",
+                                          "root": "MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-385",
                                         }
                                       }
                                     >
                                       <div
-                                        className="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-427"
+                                        className="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-385"
                                       >
                                         <WithStyles(ForwardRef(Grid))
                                           container={true}
@@ -1712,6 +1719,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                     className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                                                   >
                                                     <WithStyles(ForwardRef(FormControl))
+                                                      error={false}
                                                       style={
                                                         Object {
                                                           "minWidth": 120,
@@ -1727,6 +1735,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             "root": "MuiFormControl-root",
                                                           }
                                                         }
+                                                        error={false}
                                                         style={
                                                           Object {
                                                             "minWidth": 120,
@@ -1891,16 +1900,18 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     "autoWidth": false,
                                                                     "children": Array [
                                                                       <ForwardRef(WithStyles)
+                                                                        disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
                                                                       </ForwardRef(WithStyles)>,
                                                                       <ForwardRef(WithStyles)
+                                                                        disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
-                                                                        Globus
+                                                                        GLOBUS
                                                                       </ForwardRef(WithStyles)>,
                                                                     ],
                                                                     "classes": Object {
@@ -2004,16 +2015,18 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       "autoWidth": false,
                                                                       "children": Array [
                                                                         <ForwardRef(WithStyles)
+                                                                          disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
                                                                         </ForwardRef(WithStyles)>,
                                                                         <ForwardRef(WithStyles)
+                                                                          disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
-                                                                          Globus
+                                                                          GLOBUS
                                                                         </ForwardRef(WithStyles)>,
                                                                       ],
                                                                       "classes": Object {
@@ -2118,16 +2131,18 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         "autoWidth": false,
                                                                         "children": Array [
                                                                           <ForwardRef(WithStyles)
+                                                                            disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
                                                                           </ForwardRef(WithStyles)>,
                                                                           <ForwardRef(WithStyles)
+                                                                            disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
-                                                                            Globus
+                                                                            GLOBUS
                                                                           </ForwardRef(WithStyles)>,
                                                                         ],
                                                                         "classes": Object {
@@ -2240,16 +2255,18 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           "autoWidth": false,
                                                                           "children": Array [
                                                                             <ForwardRef(WithStyles)
+                                                                              disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
                                                                             </ForwardRef(WithStyles)>,
                                                                             <ForwardRef(WithStyles)
+                                                                              disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
-                                                                              Globus
+                                                                              GLOBUS
                                                                             </ForwardRef(WithStyles)>,
                                                                           ],
                                                                           "classes": Object {
@@ -2589,7 +2606,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                             >
                                                                                               <div>
                                                                                                 <div
-                                                                                                  class="MuiDialogTitle-root Component-root-373"
+                                                                                                  class="MuiDialogTitle-root Component-root-430"
                                                                                                   id="download-confirm-dialog-title"
                                                                                                 >
                                                                                                   <h6
@@ -2599,7 +2616,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                   </h6>
                                                                                                   <button
                                                                                                     aria-label="download-confirmation-close"
-                                                                                                    class="MuiButtonBase-root MuiIconButton-root Component-closeButton-374"
+                                                                                                    class="MuiButtonBase-root MuiIconButton-root Component-closeButton-431"
                                                                                                     tabindex="0"
                                                                                                     type="button"
                                                                                                   >
@@ -2624,7 +2641,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                   </button>
                                                                                                 </div>
                                                                                                 <div
-                                                                                                  class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-427"
+                                                                                                  class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-385"
                                                                                                 >
                                                                                                   <div
                                                                                                     class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
@@ -2710,6 +2727,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           </svg>
                                                                                                         </div>
                                                                                                         <p
+                                                                                                          class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                                                                        >
+                                                                                                          Select an access method for download.
+                                                                                                        </p>
+                                                                                                        <p
                                                                                                           class="MuiTypography-root MuiTypography-body1"
                                                                                                           style="padding-top: 20px;"
                                                                                                         >
@@ -2777,7 +2799,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                   </div>
                                                                                                 </div>
                                                                                                 <div
-                                                                                                  class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-614 MuiDialogActions-spacing"
+                                                                                                  class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-638 MuiDialogActions-spacing"
                                                                                                 >
                                                                                                   <button
                                                                                                     class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
@@ -2821,6 +2843,28 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                               </WithStyles(ForwardRef(Input))>
                                                             </ForwardRef(Select)>
                                                           </WithStyles(ForwardRef(Select))>
+                                                          <WithStyles(ForwardRef(FormHelperText))>
+                                                            <ForwardRef(FormHelperText)
+                                                              classes={
+                                                                Object {
+                                                                  "contained": "MuiFormHelperText-contained",
+                                                                  "disabled": "Mui-disabled",
+                                                                  "error": "Mui-error",
+                                                                  "filled": "MuiFormHelperText-filled",
+                                                                  "focused": "Mui-focused",
+                                                                  "marginDense": "MuiFormHelperText-marginDense",
+                                                                  "required": "Mui-required",
+                                                                  "root": "MuiFormHelperText-root",
+                                                                }
+                                                              }
+                                                            >
+                                                              <p
+                                                                className="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                              >
+                                                                Select an access method for download.
+                                                              </p>
+                                                            </ForwardRef(FormHelperText)>
+                                                          </WithStyles(ForwardRef(FormHelperText))>
                                                           <WithStyles(ForwardRef(Typography))
                                                             style={
                                                               Object {
@@ -3539,20 +3583,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                   <WithStyles(ForwardRef(DialogActions))
                                     classes={
                                       Object {
-                                        "root": "WithStyles(ForwardRef(DialogActions))-root-614",
+                                        "root": "WithStyles(ForwardRef(DialogActions))-root-638",
                                       }
                                     }
                                   >
                                     <ForwardRef(DialogActions)
                                       classes={
                                         Object {
-                                          "root": "MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-614",
+                                          "root": "MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-638",
                                           "spacing": "MuiDialogActions-spacing",
                                         }
                                       }
                                     >
                                       <div
-                                        className="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-614 MuiDialogActions-spacing"
+                                        className="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-638 MuiDialogActions-spacing"
                                       >
                                         <WithStyles(ForwardRef(Button))
                                           color="primary"
@@ -3714,6 +3758,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
 
 exports[`DownloadConfirmDialog renders correctly 1`] = `
 <WithStyles(DownloadConfirmDialog)
+  clearCart={[MockFunction]}
   isTwoLevel={false}
   open={true}
   setClose={[MockFunction]}
@@ -3725,6 +3770,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
         "tableContent": "DownloadConfirmDialog-tableContent-1",
       }
     }
+    clearCart={[MockFunction]}
     isTwoLevel={false}
     open={true}
     setClose={[MockFunction]}
@@ -4113,7 +4159,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                       >
                         <div>
                           <div
-                            class="MuiDialogTitle-root Component-root-46"
+                            class="MuiDialogTitle-root Component-root-91"
                             id="download-confirm-dialog-title"
                           >
                             <h6
@@ -4123,7 +4169,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                             </h6>
                             <button
                               aria-label="download-confirmation-close"
-                              class="MuiButtonBase-root MuiIconButton-root Component-closeButton-47"
+                              class="MuiButtonBase-root MuiIconButton-root Component-closeButton-92"
                               tabindex="0"
                               type="button"
                             >
@@ -4148,7 +4194,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                             </button>
                           </div>
                           <div
-                            class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-100"
+                            class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-46"
                           >
                             <div
                               class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
@@ -4233,6 +4279,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       />
                                     </svg>
                                   </div>
+                                  <p
+                                    class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                  >
+                                    Select an access method for download.
+                                  </p>
                                   <p
                                     class="MuiTypography-root MuiTypography-body1"
                                     style="padding-top: 20px;"
@@ -4349,7 +4400,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                             </div>
                           </div>
                           <div
-                            class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-287 MuiDialogActions-spacing"
+                            class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-299 MuiDialogActions-spacing"
                           >
                             <button
                               class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
@@ -4580,20 +4631,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                   <Component
                                     classes={
                                       Object {
-                                        "closeButton": "Component-closeButton-47",
-                                        "root": "Component-root-46",
+                                        "closeButton": "Component-closeButton-92",
+                                        "root": "Component-root-91",
                                       }
                                     }
                                     id="download-confirm-dialog-title"
                                     onClose={[Function]}
                                   >
                                     <WithStyles(ForwardRef(DialogTitle))
-                                      className="Component-root-46"
+                                      className="Component-root-91"
                                       disableTypography={true}
                                       id="download-confirm-dialog-title"
                                     >
                                       <ForwardRef(DialogTitle)
-                                        className="Component-root-46"
+                                        className="Component-root-91"
                                         classes={
                                           Object {
                                             "root": "MuiDialogTitle-root",
@@ -4603,7 +4654,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                         id="download-confirm-dialog-title"
                                       >
                                         <div
-                                          className="MuiDialogTitle-root Component-root-46"
+                                          className="MuiDialogTitle-root Component-root-91"
                                           id="download-confirm-dialog-title"
                                         >
                                           <WithStyles(ForwardRef(Typography))
@@ -4655,12 +4706,12 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                           </WithStyles(ForwardRef(Typography))>
                                           <WithStyles(ForwardRef(IconButton))
                                             aria-label="download-confirmation-close"
-                                            className="Component-closeButton-47"
+                                            className="Component-closeButton-92"
                                             onClick={[Function]}
                                           >
                                             <ForwardRef(IconButton)
                                               aria-label="download-confirmation-close"
-                                              className="Component-closeButton-47"
+                                              className="Component-closeButton-92"
                                               classes={
                                                 Object {
                                                   "colorInherit": "MuiIconButton-colorInherit",
@@ -4679,7 +4730,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                               <WithStyles(ForwardRef(ButtonBase))
                                                 aria-label="download-confirmation-close"
                                                 centerRipple={true}
-                                                className="MuiIconButton-root Component-closeButton-47"
+                                                className="MuiIconButton-root Component-closeButton-92"
                                                 disabled={false}
                                                 focusRipple={true}
                                                 onClick={[Function]}
@@ -4687,7 +4738,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                 <ForwardRef(ButtonBase)
                                                   aria-label="download-confirmation-close"
                                                   centerRipple={true}
-                                                  className="MuiIconButton-root Component-closeButton-47"
+                                                  className="MuiIconButton-root Component-closeButton-92"
                                                   classes={
                                                     Object {
                                                       "disabled": "Mui-disabled",
@@ -4701,7 +4752,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                 >
                                                   <button
                                                     aria-label="download-confirmation-close"
-                                                    className="MuiButtonBase-root MuiIconButton-root Component-closeButton-47"
+                                                    className="MuiButtonBase-root MuiIconButton-root Component-closeButton-92"
                                                     disabled={false}
                                                     onBlur={[Function]}
                                                     onClick={[Function]}
@@ -4797,7 +4848,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                   <WithStyles(ForwardRef(DialogContent))
                                     classes={
                                       Object {
-                                        "root": "WithStyles(ForwardRef(DialogContent))-root-100",
+                                        "root": "WithStyles(ForwardRef(DialogContent))-root-46",
                                       }
                                     }
                                   >
@@ -4805,12 +4856,12 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       classes={
                                         Object {
                                           "dividers": "MuiDialogContent-dividers",
-                                          "root": "MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-100",
+                                          "root": "MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-46",
                                         }
                                       }
                                     >
                                       <div
-                                        className="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-100"
+                                        className="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-46"
                                       >
                                         <WithStyles(ForwardRef(Grid))
                                           container={true}
@@ -5472,6 +5523,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                     className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                                                   >
                                                     <WithStyles(ForwardRef(FormControl))
+                                                      error={false}
                                                       style={
                                                         Object {
                                                           "minWidth": 120,
@@ -5487,6 +5539,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             "root": "MuiFormControl-root",
                                                           }
                                                         }
+                                                        error={false}
                                                         style={
                                                           Object {
                                                             "minWidth": 120,
@@ -5651,16 +5704,18 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     "autoWidth": false,
                                                                     "children": Array [
                                                                       <ForwardRef(WithStyles)
+                                                                        disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
                                                                       </ForwardRef(WithStyles)>,
                                                                       <ForwardRef(WithStyles)
+                                                                        disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
-                                                                        Globus
+                                                                        GLOBUS
                                                                       </ForwardRef(WithStyles)>,
                                                                     ],
                                                                     "classes": Object {
@@ -5764,16 +5819,18 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       "autoWidth": false,
                                                                       "children": Array [
                                                                         <ForwardRef(WithStyles)
+                                                                          disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
                                                                         </ForwardRef(WithStyles)>,
                                                                         <ForwardRef(WithStyles)
+                                                                          disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
-                                                                          Globus
+                                                                          GLOBUS
                                                                         </ForwardRef(WithStyles)>,
                                                                       ],
                                                                       "classes": Object {
@@ -5878,16 +5935,18 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         "autoWidth": false,
                                                                         "children": Array [
                                                                           <ForwardRef(WithStyles)
+                                                                            disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
                                                                           </ForwardRef(WithStyles)>,
                                                                           <ForwardRef(WithStyles)
+                                                                            disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
-                                                                            Globus
+                                                                            GLOBUS
                                                                           </ForwardRef(WithStyles)>,
                                                                         ],
                                                                         "classes": Object {
@@ -6000,16 +6059,18 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           "autoWidth": false,
                                                                           "children": Array [
                                                                             <ForwardRef(WithStyles)
+                                                                              disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
                                                                             </ForwardRef(WithStyles)>,
                                                                             <ForwardRef(WithStyles)
+                                                                              disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
-                                                                              Globus
+                                                                              GLOBUS
                                                                             </ForwardRef(WithStyles)>,
                                                                           ],
                                                                           "classes": Object {
@@ -6349,7 +6410,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                             >
                                                                                               <div>
                                                                                                 <div
-                                                                                                  class="MuiDialogTitle-root Component-root-46"
+                                                                                                  class="MuiDialogTitle-root Component-root-91"
                                                                                                   id="download-confirm-dialog-title"
                                                                                                 >
                                                                                                   <h6
@@ -6359,7 +6420,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                   </h6>
                                                                                                   <button
                                                                                                     aria-label="download-confirmation-close"
-                                                                                                    class="MuiButtonBase-root MuiIconButton-root Component-closeButton-47"
+                                                                                                    class="MuiButtonBase-root MuiIconButton-root Component-closeButton-92"
                                                                                                     tabindex="0"
                                                                                                     type="button"
                                                                                                   >
@@ -6384,7 +6445,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                   </button>
                                                                                                 </div>
                                                                                                 <div
-                                                                                                  class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-100"
+                                                                                                  class="MuiDialogContent-root WithStyles(ForwardRef(DialogContent))-root-46"
                                                                                                 >
                                                                                                   <div
                                                                                                     class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2"
@@ -6469,6 +6530,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                             />
                                                                                                           </svg>
                                                                                                         </div>
+                                                                                                        <p
+                                                                                                          class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                                                                        >
+                                                                                                          Select an access method for download.
+                                                                                                        </p>
                                                                                                         <p
                                                                                                           class="MuiTypography-root MuiTypography-body1"
                                                                                                           style="padding-top: 20px;"
@@ -6585,7 +6651,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                   </div>
                                                                                                 </div>
                                                                                                 <div
-                                                                                                  class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-287 MuiDialogActions-spacing"
+                                                                                                  class="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-299 MuiDialogActions-spacing"
                                                                                                 >
                                                                                                   <button
                                                                                                     class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
@@ -6629,6 +6695,28 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                               </WithStyles(ForwardRef(Input))>
                                                             </ForwardRef(Select)>
                                                           </WithStyles(ForwardRef(Select))>
+                                                          <WithStyles(ForwardRef(FormHelperText))>
+                                                            <ForwardRef(FormHelperText)
+                                                              classes={
+                                                                Object {
+                                                                  "contained": "MuiFormHelperText-contained",
+                                                                  "disabled": "Mui-disabled",
+                                                                  "error": "Mui-error",
+                                                                  "filled": "MuiFormHelperText-filled",
+                                                                  "focused": "Mui-focused",
+                                                                  "marginDense": "MuiFormHelperText-marginDense",
+                                                                  "required": "Mui-required",
+                                                                  "root": "MuiFormHelperText-root",
+                                                                }
+                                                              }
+                                                            >
+                                                              <p
+                                                                className="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                              >
+                                                                Select an access method for download.
+                                                              </p>
+                                                            </ForwardRef(FormHelperText)>
+                                                          </WithStyles(ForwardRef(FormHelperText))>
                                                           <WithStyles(ForwardRef(Typography))
                                                             style={
                                                               Object {
@@ -7555,20 +7643,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                   <WithStyles(ForwardRef(DialogActions))
                                     classes={
                                       Object {
-                                        "root": "WithStyles(ForwardRef(DialogActions))-root-287",
+                                        "root": "WithStyles(ForwardRef(DialogActions))-root-299",
                                       }
                                     }
                                   >
                                     <ForwardRef(DialogActions)
                                       classes={
                                         Object {
-                                          "root": "MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-287",
+                                          "root": "MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-299",
                                           "spacing": "MuiDialogActions-spacing",
                                         }
                                       }
                                     >
                                       <div
-                                        className="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-287 MuiDialogActions-spacing"
+                                        className="MuiDialogActions-root WithStyles(ForwardRef(DialogActions))-root-299 MuiDialogActions-spacing"
                                       >
                                         <WithStyles(ForwardRef(Button))
                                           color="primary"

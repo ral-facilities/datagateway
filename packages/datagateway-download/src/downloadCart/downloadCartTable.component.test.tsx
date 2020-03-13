@@ -11,6 +11,7 @@ import {
   getCartDatafileCount,
 } from './downloadCartApi';
 import { act } from 'react-dom/test-utils';
+import axios from 'axios';
 
 jest.mock('./downloadCartApi');
 jest.useFakeTimers();
@@ -151,9 +152,28 @@ describe('Download cart table component', () => {
       false
     );
 
-    act(() => {
-      wrapper.find('button#downloadCartButton').simulate('click');
+    (axios.get as jest.Mock).mockImplementation(() => {
+      return Promise.resolve({
+        data: { disabled: false, message: '' },
+      });
     });
+
+    // Update the wrapper with the loading dialog.
+    await act(async () => {
+      wrapper.find('button#downloadCartButton').simulate('click');
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Update the wrapper with the download confirmation dialog.
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // act(() => {
+    //   wrapper.find('button#downloadCartButton').simulate('click');
+    // });
 
     expect(wrapper.exists('[aria-labelledby="downloadCartConfirmation"]')).toBe(
       true
