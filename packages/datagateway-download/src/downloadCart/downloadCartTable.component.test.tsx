@@ -11,7 +11,6 @@ import {
   getCartDatafileCount,
 } from './downloadCartApi';
 import { act } from 'react-dom/test-utils';
-import axios from 'axios';
 
 jest.mock('./downloadCartApi');
 jest.useFakeTimers();
@@ -136,6 +135,7 @@ describe('Download cart table component', () => {
     );
   });
 
+  // TODO: If I place a axios response here for status call, why is it undefined?
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
     const wrapper = mount(<DownloadCartTable />);
 
@@ -152,15 +152,10 @@ describe('Download cart table component', () => {
       false
     );
 
-    (axios.get as jest.Mock).mockImplementation(() => {
-      return Promise.resolve({
-        data: { disabled: false, message: '' },
-      });
-    });
+    wrapper.find('button#downloadCartButton').simulate('click');
 
     // Update the wrapper with the loading dialog.
     await act(async () => {
-      wrapper.find('button#downloadCartButton').simulate('click');
       await flushPromises();
       wrapper.update();
     });
@@ -170,10 +165,6 @@ describe('Download cart table component', () => {
       await flushPromises();
       wrapper.update();
     });
-
-    // act(() => {
-    //   wrapper.find('button#downloadCartButton').simulate('click');
-    // });
 
     expect(wrapper.exists('[aria-labelledby="downloadCartConfirmation"]')).toBe(
       true
