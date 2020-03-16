@@ -7,6 +7,17 @@ import { flushPromises } from '../setupTests';
 
 import axios from 'axios';
 import { MenuItem } from '@material-ui/core';
+import { handleICATError } from 'datagateway-common';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    handleICATError: jest.fn(),
+  };
+});
 
 const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
   // Update the wrapper with the loading dialog.
@@ -54,6 +65,7 @@ describe('DownloadConfirmDialog', () => {
 
     (axios.get as jest.Mock).mockClear();
     (axios.post as jest.Mock).mockClear();
+    (handleICATError as jest.Mock).mockClear();
   });
 
   afterAll(() => {
@@ -150,26 +162,32 @@ describe('DownloadConfirmDialog', () => {
     ).toBe(true);
   });
 
-  // TODO: An enabled access method and an undefined access method.
-  // TODO: Check errors are broadcasted?
-
-  // TODO: Maybe mock the getDownloadTypeStatus function?
-  it.skip('prevent download of an access method where the status was not fetched', async () => {
-    // Return a response where one of the status requests
-    // has not been successful.
+  it('prevent download of an access method where the status was not fetched', async () => {
+    // Return a response where one of the status requests has not been successful.
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
           data: { disabled: true, message: '' },
         })
       )
-      // TODO: Why is there an error in the getDownloadTypeStatus
-      //       when this mocks the response? (because the function is still called but we only mock the axios response
-      //       the reject is still caught - we need to mock the whole function getDownloadTypeStatus).
-      .mockImplementationOnce(() => Promise.reject());
+      .mockImplementationOnce(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
 
     const wrapper = createWrapper(100, false, true);
     await updateDialogWrapper(wrapper);
+
+    // Ensure the access method for which we did not receive a status response has been disabled.
+    expect(wrapper.exists('[role="button"]#confirm-access-method')).toBe(true);
+    wrapper.find('[role="button"]#confirm-access-method').simulate('click');
+    expect(
+      wrapper
+        .find(MenuItem)
+        .at(1)
+        .prop('disabled')
+    ).toBe(true);
 
     // Ensure the download button is present and it is disabled.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
@@ -177,17 +195,13 @@ describe('DownloadConfirmDialog', () => {
       wrapper.find('button#download-confirmation-download').prop('disabled')
     ).toBe(true);
 
-    // Ensure the access method for which we did not receive a status response has been disabled.
-    // expect(
-    //   wrapper
-    //     .find(MenuItem)
-    //     .at(1)
-    //     .prop('disabled')
-    // ).toBe(true);
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('loads the submit successful view when download button is clicked', async () => {
-    // TODO: Shorten the amount of data we return?
     // Axios GET responses download submission.
     (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({

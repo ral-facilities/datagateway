@@ -155,7 +155,6 @@ export const downloadPreparedCart: (
   link.remove();
 };
 
-// TODO: Create interface for response?
 export const getDownloadTypeStatus: (
   transportType: string,
   facilityName: string
@@ -181,7 +180,7 @@ export const getDownloadTypeStatus: (
       }
     )
     .catch(error => {
-      handleICATError(error);
+      if (error) handleICATError(error);
       return null;
     });
 };
