@@ -525,6 +525,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                   </div>
                                   <p
                                     class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                    id="confirm-access-method-help"
                                   >
                                     Select an access method for download.
                                   </p>
@@ -2728,6 +2729,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                         </div>
                                                                                                         <p
                                                                                                           class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                                                                          id="confirm-access-method-help"
                                                                                                         >
                                                                                                           Select an access method for download.
                                                                                                         </p>
@@ -2843,7 +2845,9 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                               </WithStyles(ForwardRef(Input))>
                                                             </ForwardRef(Select)>
                                                           </WithStyles(ForwardRef(Select))>
-                                                          <WithStyles(ForwardRef(FormHelperText))>
+                                                          <WithStyles(ForwardRef(FormHelperText))
+                                                            id="confirm-access-method-help"
+                                                          >
                                                             <ForwardRef(FormHelperText)
                                                               classes={
                                                                 Object {
@@ -2857,9 +2861,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   "root": "MuiFormHelperText-root",
                                                                 }
                                                               }
+                                                              id="confirm-access-method-help"
                                                             >
                                                               <p
                                                                 className="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                                id="confirm-access-method-help"
                                                               >
                                                                 Select an access method for download.
                                                               </p>
@@ -4281,6 +4287,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                   </div>
                                   <p
                                     class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                    id="confirm-access-method-help"
                                   >
                                     Select an access method for download.
                                   </p>
@@ -6532,6 +6539,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                         </div>
                                                                                                         <p
                                                                                                           class="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                                                                          id="confirm-access-method-help"
                                                                                                         >
                                                                                                           Select an access method for download.
                                                                                                         </p>
@@ -6695,7 +6703,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                               </WithStyles(ForwardRef(Input))>
                                                             </ForwardRef(Select)>
                                                           </WithStyles(ForwardRef(Select))>
-                                                          <WithStyles(ForwardRef(FormHelperText))>
+                                                          <WithStyles(ForwardRef(FormHelperText))
+                                                            id="confirm-access-method-help"
+                                                          >
                                                             <ForwardRef(FormHelperText)
                                                               classes={
                                                                 Object {
@@ -6709,9 +6719,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   "root": "MuiFormHelperText-root",
                                                                 }
                                                               }
+                                                              id="confirm-access-method-help"
                                                             >
                                                               <p
                                                                 className="MuiFormHelperText-root MuiFormHelperText-filled"
+                                                                id="confirm-access-method-help"
                                                               >
                                                                 Select an access method for download.
                                                               </p>
