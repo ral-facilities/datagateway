@@ -100,29 +100,25 @@ describe('Download Confirmation', () => {
     // cy.deleteTestDownload('LILS_2020-1-1_1-1-1.zip');
   });
 
-  it('should be able to submit a download request with altered access method (Globus)', () => {
+  it('should not be able to submit a download request with a disabled access method (Globus)', () => {
     // Ensure our access method is HTTPS before starting an immediate download.
     cy.get('[aria-label="confirm-access-method"]')
       .should('exist')
       .click();
 
-    cy.contains('#confirm-access-method-globus', 'Globus')
+    // TODO: Rename back to 'Globus'.
+    cy.contains('#confirm-access-method-globus', 'GLOBUS')
       .should('exist')
       .click();
 
-    // Click on the download button.
-    cy.get('#download-confirmation-download').click();
-
-    // Ensure the correct message and download details are shown.
+    // Ensure the globus access method has the disabled message.
     cy.contains(
-      '#download-confirmation-success',
-      'Successfully submitted download request'
+      '#confirm-access-method-help',
+      'GLOBUS has been disabled for testing'
     ).should('exist');
 
-    cy.contains('#confirm-success-download-name', 'LILS_2020-1-1_1-1-1').should(
-      'exist'
-    );
-    cy.contains('#confirm-success-access-method', 'GLOBUS').should('exist');
+    // The download button should be disabled.
+    cy.get('#download-confirmation-download').should('be.disabled');
   });
 
   it('should show download confirmation unsuccessful if no download information was received', () => {
@@ -143,15 +139,6 @@ describe('Download Confirmation', () => {
     // Set download name.
     cy.get('#confirm-download-name').type('test-file-name');
 
-    // Set access method.
-    cy.get('[aria-label="confirm-access-method"]')
-      .should('exist')
-      .click();
-
-    cy.contains('#confirm-access-method-globus', 'Globus')
-      .should('exist')
-      .click();
-
     // Set email address.
     cy.get('#confirm-download-email').type('test@email.com');
 
@@ -167,7 +154,7 @@ describe('Download Confirmation', () => {
     cy.contains('#confirm-success-download-name', 'test-file-name').should(
       'exist'
     );
-    cy.contains('#confirm-success-access-method', 'GLOBUS').should('exist');
+    cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
     cy.contains('#confirm-success-email-address', 'test@email.com').should(
       'exist'
     );

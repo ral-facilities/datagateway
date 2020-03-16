@@ -122,7 +122,6 @@ interface DownloadConfirmAccessMethod {
   [type: string]: { disabled: boolean | undefined; message: string };
 }
 
-// TODO: Do some renaming of variables/methods and clean-up code.
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
@@ -148,7 +147,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     },
   });
 
-  // TODO: Make interface for this type.
+  // Sorting and loading status.
   const [sortedMethods, setSortedMethods] = React.useState<
     [string, { disabled: boolean | undefined; message: string }][]
   >([]);
@@ -476,34 +475,22 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       ))}
                     </Select>
 
-                    {(() => {
-                      const method = accessMethods[selectedMethod];
-                      if (methodsUnavailable) {
-                        return (
-                          <FormHelperText>
-                            Access methods currently unavailable.
-                          </FormHelperText>
-                        );
-                      } else if (method.disabled) {
-                        if (method.message) {
-                          return (
-                            <FormHelperText>{method.message}</FormHelperText>
-                          );
+                    <FormHelperText id="confirm-access-method-help">
+                      {(() => {
+                        const method = accessMethods[selectedMethod];
+                        if (methodsUnavailable) {
+                          return 'Access methods currently unavailable.';
+                        } else if (method.disabled) {
+                          if (method.message) {
+                            return method.message;
+                          } else {
+                            return 'This access method is currently disabled.';
+                          }
                         } else {
-                          return (
-                            <FormHelperText>
-                              This access method is currently disabled.
-                            </FormHelperText>
-                          );
+                          return 'Select an access method for download.';
                         }
-                      } else {
-                        return (
-                          <FormHelperText>
-                            Select an access method for download.
-                          </FormHelperText>
-                        );
-                      }
-                    })()}
+                      })()}
+                    </FormHelperText>
 
                     {/* Provide some information on the selected access method. */}
                     <Typography style={{ paddingTop: '20px' }}>
