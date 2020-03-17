@@ -54,7 +54,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           facilityName: settings.facilityName,
           downloadApiUrl: settings.downloadApiUrl,
         }).then(downloads => {
-          setData(downloads);
+          setData([...downloads].reverse());
           setDataLoaded(true);
 
           // Set the time at which we set the download data.
