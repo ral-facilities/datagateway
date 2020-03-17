@@ -64,6 +64,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
           <div>
             <WithStyles(ForwardRef(Paper))
               elevation={0}
+              square={true}
             >
               <ForwardRef(Paper)
                 classes={
@@ -98,9 +99,10 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                   }
                 }
                 elevation={0}
+                square={true}
               >
                 <div
-                  className="MuiPaper-root MuiPaper-elevation0 MuiPaper-rounded"
+                  className="MuiPaper-root MuiPaper-elevation0"
                 >
                   <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
                     aria-label="breadcrumb"
@@ -1367,6 +1369,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1412,6 +1415,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1451,6 +1455,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1484,6 +1489,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1506,6 +1512,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1557,6 +1564,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1602,6 +1610,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1635,6 +1644,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1657,6 +1667,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1696,6 +1707,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"
@@ -1729,6 +1741,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
 <div>
   <WithStyles(ForwardRef(Paper))
     elevation={0}
+    square={true}
   >
     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
       aria-label="breadcrumb"

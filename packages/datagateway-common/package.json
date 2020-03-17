@@ -35,7 +35,7 @@
     "@material-ui/icons": "^4.5.1",
     "@types/enzyme": "^3.10.3",
     "@types/jest": "^24.0.16",
-    "@types/node": "^12.6.8",
+    "@types/node": "^13.9.0",
     "@types/react": "^16.8.23",
     "@types/react-router-dom": "^4.3.4",
     "@types/react-virtualized": "^9.21.2",
@@ -69,7 +69,7 @@
     "test": "react-scripts test --env=jsdom --coverage --watchAll=false",
     "prepare": "yarn tsc",
     "test:watch": "react-scripts test --env=jsdom --watch",
-    "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src",
+    "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src && yarn build",
     "tsc": "tsc -p tsconfig.lib.json",
     "eject": "react-scripts eject",
     "pre-commit": "lint-staged"

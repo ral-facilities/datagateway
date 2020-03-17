@@ -1,7 +1,7 @@
 coverage:
   status:
     project: 
-      default: off
+      default: false
       common:
         flags: common
         target: auto

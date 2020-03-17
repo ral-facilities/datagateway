@@ -448,7 +448,7 @@ class PageBreadcrumbs extends React.Component<
     const hierarchyKeys = Object.keys(breadcrumbState.currentHierarchy);
     return (
       <div>
-        <Paper elevation={0}>
+        <Paper square elevation={0}>
           {/* // Ensure that there is a path to render, otherwise do not show any breadcrumb. */}
           {this.currentPathnames.length > 0 ? (
             <StyledBreadcrumbs aria-label="breadcrumb" separator="">
