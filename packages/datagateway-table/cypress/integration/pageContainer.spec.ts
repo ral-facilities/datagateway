@@ -6,7 +6,7 @@ describe('PageContainer Component', () => {
   });
 
   it('should load correctly', () => {
-    cy.title().should('equal', 'DataGateway Table');
+    cy.title().should('equal', 'DataGateway DataView');
 
     cy.get('[aria-label="container-breadcrumbs"]').should('exist');
 

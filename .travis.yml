@@ -24,7 +24,7 @@ jobs:
       after_success:
         - |
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-common/*' -F common &&
-          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-table/*' -F table &&
+          bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-dataview/*' -F dataview &&
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-search/*' -F search &&
           bash <(curl -s https://codecov.io/bash) -s 'packages/datagateway-download/*' -F download
     - stage: E2E Tests
@@ -32,5 +32,5 @@ jobs:
       script: yarn workspace datagateway-download run e2e
     - name: 'datagateway-search'
       script: yarn workspace datagateway-search run e2e
-    - name: 'datagateway-table'
-      script: yarn workspace datagateway-table run e2e
+    - name: 'datagateway-dataview'
+      script: yarn workspace datagateway-dataview run e2e

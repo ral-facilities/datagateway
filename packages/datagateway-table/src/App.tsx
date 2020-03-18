@@ -65,8 +65,8 @@ const registerRouteAction = {
   payload: {
     section: 'Data',
     link: '/browse/investigation',
-    plugin: 'datagateway-table',
-    displayName: 'DataGateway Table',
+    plugin: 'datagateway-dataview',
+    displayName: 'DataGateway DataView',
     order: 0,
     helpText: 'TODO: write some help text for the user tour',
   },
@@ -92,7 +92,7 @@ class App extends React.Component<{}, { hasError: boolean }> {
 
   public componentDidCatch(error: Error | null): void {
     this.setState({ hasError: true });
-    log.error(`datagateway_table failed with error: ${error}`);
+    log.error(`datagateway_dataview failed with error: ${error}`);
   }
 
   public render(): React.ReactNode {

@@ -12,7 +12,7 @@ describe('Breadcrumbs Component', () => {
   });
 
   it('should load correctly and display current breadcrumb', () => {
-    cy.title().should('equal', 'DataGateway Table');
+    cy.title().should('equal', 'DataGateway DataView');
 
     // Check that the base Investigations breadcrumb exists.
     cy.get('[aria-label="Breadcrumb-base"]').contains('Investigations');

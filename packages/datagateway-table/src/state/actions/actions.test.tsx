@@ -179,7 +179,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-table-settings.json: facilityName is undefined in settings'
+      'Error loading datagateway-dataview-settings.json: facilityName is undefined in settings'
     );
   });
 
@@ -198,7 +198,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-table-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+      'Error loading datagateway-dataview-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
     );
   });
 
@@ -211,7 +211,9 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      expect.stringContaining(`Error loading datagateway-table-settings.json: `)
+      expect.stringContaining(
+        `Error loading datagateway-dataview-settings.json: `
+      )
     );
   });
 
@@ -228,7 +230,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-table-settings.json: Invalid format'
+      'Error loading datagateway-dataview-settings.json: Invalid format'
     );
   });
 

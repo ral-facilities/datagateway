@@ -5,8 +5,8 @@ describe('Datafiles Table', () => {
   });
 
   it('should load correctly', () => {
-    cy.title().should('equal', 'DataGateway Table');
-    cy.get('#datagateway-table').should('be.visible');
+    cy.title().should('equal', 'DataGateway DataView');
+    cy.get('#datagateway-dataview').should('be.visible');
   });
 
   it('should be able to resize a column', () => {

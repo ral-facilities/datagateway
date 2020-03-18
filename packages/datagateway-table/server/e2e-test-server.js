@@ -4,7 +4,7 @@ var serveStatic = require('serve-static');
 
 var app = express();
 
-app.get('/datagateway-table-settings.json', function(req, res) {
+app.get('/datagateway-dataview-settings.json', function(req, res) {
   res.sendFile(path.resolve('./server/e2e-settings.json'));
 });
 

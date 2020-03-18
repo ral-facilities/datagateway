@@ -36,7 +36,7 @@ describe('App', () => {
     const mockLog = (log.error as jest.Mock).mock;
 
     expect(mockLog.calls[0][0]).toEqual(
-      `datagateway_table failed with error: ${error}`
+      `datagateway_dataview failed with error: ${error}`
     );
   });
 });

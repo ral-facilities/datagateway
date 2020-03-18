@@ -1,4 +1,4 @@
-# datagateway-table
+# datagateway-dataview
 
 TODO: project description
 

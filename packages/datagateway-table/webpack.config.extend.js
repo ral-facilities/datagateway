@@ -5,7 +5,7 @@ module.exports = (webpackConfig, env, { paths }) => {
   };
 
   if (env === 'production' && !process.env.REACT_APP_E2E_TESTING) {
-    webpackConfig.output.library = 'datagateway-table';
+    webpackConfig.output.library = 'datagateway-dataview';
     webpackConfig.output.libraryTarget = 'window';
 
     webpackConfig.output.filename = '[name].js';

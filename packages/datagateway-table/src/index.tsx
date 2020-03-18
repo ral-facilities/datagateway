@@ -14,7 +14,7 @@ import {
   RequestPluginRerenderType,
 } from 'datagateway-common';
 
-const pluginName = 'datagateway-table';
+const pluginName = 'datagateway-dataview';
 
 const render = (): void => {
   let el = document.getElementById(pluginName);

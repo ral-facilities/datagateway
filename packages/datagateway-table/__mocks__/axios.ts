@@ -2,13 +2,13 @@ import axios from 'axios';
 
 export default {
   get: jest.fn(path => {
-    if (path === '/datagateway-table-settings.json') {
+    if (path === '/datagateway-dataview-settings.json') {
       return Promise.resolve({
         data: {
-          'facilityName': 'Generic',
-          'idsUrl': 'ids',
-          'apiUrl': 'api',
-          'downloadApiUrl': 'download',
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download',
           'ui-strings': '/res/default.json',
         },
       });

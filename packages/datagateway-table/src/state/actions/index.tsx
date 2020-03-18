@@ -64,7 +64,7 @@ export const loadBreadcrumbSettings = (
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async dispatch => {
     await axios
-      .get('/datagateway-table-settings.json')
+      .get('/datagateway-dataview-settings.json')
       .then(res => {
         const settings = res.data;
 
@@ -176,7 +176,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
       })
       .catch(error => {
         log.error(
-          `Error loading datagateway-table-settings.json: ${error.message}`
+          `Error loading datagateway-dataview-settings.json: ${error.message}`
         );
       });
   };
