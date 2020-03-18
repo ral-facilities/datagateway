@@ -21,7 +21,7 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import Mark from './mark.component';
 
-import { formatBytes } from 'datagateway-common';
+import { formatBytes, MicroFrontendMessageId } from 'datagateway-common';
 import {
   submitCart,
   getDownload,
@@ -118,7 +118,6 @@ interface DownloadConfirmDialogProps
   clearCart: () => void;
 }
 
-// TODO: Sort out types.
 interface DownloadConfirmAccessMethod {
   [type: string]: {
     idsUrl: string;
@@ -129,7 +128,6 @@ interface DownloadConfirmAccessMethod {
   };
 }
 
-// TODO: Clean up code; access/status methods, use settings
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
@@ -139,33 +137,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const settings = React.useContext(DownloadSettingsContext);
 
   // Sorting and loading status.
-  // TODO: Recompute this if there is a change to the access methods, not every time component is loaded.
-  // TODO: Sort out types.
   const [statusMethods, setStatusMethods] = React.useState<
     DownloadConfirmAccessMethod
-  >(
-    Object.keys(settings.accessMethods)
-      .map(key => {
-        return { method: key, methodInfo: settings.accessMethods[key] };
-      })
-      .reduce(
-        (obj, item) => ({
-          ...obj,
-          [item.method]: {
-            ...settings.accessMethods[item.method],
-
-            // Set disabled to be true by default.
-            disabled: true,
-            message: '',
-          },
-        }),
-        {}
-      )
-  );
+  >({});
   const [requestStatus, setRequestStatus] = React.useState(false);
   const [loadedStatus, setLoadedStatus] = React.useState(false);
 
-  // TODO: Sort out types.
+  // Create a sorted access methods array to use internally.
   const [sortedMethods, setSortedMethods] = React.useState<
     [
       string,
@@ -180,8 +158,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   >([]);
   const [isSorted, setIsSorted] = React.useState(false);
   const [methodsUnavailable, setMethodsUnavailable] = React.useState(false);
-  const [showDialog, setShowDialog] = React.useState(false);
 
+  // Size and two-level.
   const { totalSize } = props;
   const { isTwoLevel } = props;
 
@@ -207,6 +185,8 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState(false);
 
+  const [showDialog, setShowDialog] = React.useState(false);
+
   // Hide the confirmation dialog and clear the download cart
   // when the dialog is closed.
   const dialogClose = (): void => {
@@ -217,7 +197,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Broadcast a SciGateway notification for any error encountered.
   const broadcastError = (errorMessage: string): void => {
     document.dispatchEvent(
-      new CustomEvent('scigateway', {
+      new CustomEvent(MicroFrontendMessageId, {
         detail: {
           type: 'scigateway:api:notification',
           payload: {
@@ -256,34 +236,34 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     setIsSorted(true);
   }, [statusMethods, setSortedMethods, setSelectedMethod, setIsSorted]);
 
-  // TODO: Uncomment once this is removed from top.
-  // React.useEffect(() => {
-  //   // Set the status method object when the access methods settings is updated.
-  //   setStatusMethods(
-  //     Object.keys(settings.accessMethods)
-  //       .map(key => {
-  //         return { method: key, methodInfo: settings.accessMethods[key] };
-  //       })
-  //       .reduce(
-  //         (obj, item) => ({
-  //           ...obj,
-  //           [item.method]: {
-  //             ...settings.accessMethods[item.method],
-  //             disabled: true,
-  //             message: '',
-  //           },
-  //         }),
-  //         {}
-  //       )
-  //   );
-  // }, [settings.accessMethods]);
+  React.useEffect(() => {
+    // Set the status method object when the access methods settings is updated.
+    setStatusMethods(
+      Object.keys(settings.accessMethods)
+        .map(key => {
+          return { method: key, methodInfo: settings.accessMethods[key] };
+        })
+        .reduce(
+          (obj, item) => ({
+            ...obj,
+            [item.method]: {
+              ...settings.accessMethods[item.method],
+
+              // Set disabled to be true by default.
+              disabled: true,
+              message: '',
+            },
+          }),
+          {}
+        )
+    );
+  }, [settings.accessMethods]);
 
   React.useEffect(() => {
     async function getStatus(): Promise<void> {
       let statusErrors: string[] = [];
       Promise.all(
         Object.entries(statusMethods).map(([method]) =>
-          // getDownloadTypeStatus(method, 'LILS')
           getDownloadTypeStatus(method, {
             facilityName: settings.facilityName,
             downloadApiUrl: settings.downloadApiUrl,
@@ -517,7 +497,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   <FormControl
                     style={{ minWidth: 120 }}
                     error={
-                      // TODO: statusMethods stores this information.
                       statusMethods[selectedMethod].disabled ||
                       methodsUnavailable
                     }
@@ -535,7 +514,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       onChange={e => {
                         if (!methodsUnavailable)
                           // Material UI select is not a real select element, so needs casting.
-
                           setSelectedMethod(e.target.value as string);
                       }}
                     >
@@ -547,7 +525,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                           value={type}
                           disabled={methodInfo.disabled === undefined}
                         >
-                          {/* TODO: sortedMethods needs to contain the remainder of access method information/status method info. */}
                           {/* The display name will be shown as the menu item,
                           if defined in the settings, otherwise we show the type. */}
                           {methodInfo.displayName
@@ -559,7 +536,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
                     <FormHelperText id="confirm-access-method-help">
                       {(() => {
-                        // TODO: statusMethods stores this information.
                         const method = statusMethods[selectedMethod];
                         if (methodsUnavailable) {
                           return 'Access methods currently unavailable.';
@@ -578,7 +554,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 </Grid>
 
                 <Grid item xs={12}>
-                  {/* TODO: Should reference from the loaded information and not settings */}
                   {/* Depending on the type of access method that has been selected,
                   show specific access information. */}
                   {Object.entries(settings.accessMethods)
@@ -685,7 +660,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 id="download-confirmation-download"
                 disabled={
                   !emailValid ||
-                  // TODO: statusMethods stores this information.
                   statusMethods[selectedMethod].disabled ||
                   methodsUnavailable
                 }
@@ -807,5 +781,4 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
 };
 
-// TODO: Pass in facilityName as prop to DownloadConfirmDialog to get customisable download name.
 export default withStyles(dialogContentStyles)(DownloadConfirmDialog);

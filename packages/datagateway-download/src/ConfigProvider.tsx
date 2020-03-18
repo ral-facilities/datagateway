@@ -3,8 +3,6 @@ import { Preloader } from 'datagateway-common';
 import * as log from 'loglevel';
 import React from 'react';
 
-// TODO: Should disabled/message properties be available in the settings?
-// TODO: Sort out types.
 export interface DownloadSettingsAccessMethod {
   [type: string]: {
     idsUrl: string;

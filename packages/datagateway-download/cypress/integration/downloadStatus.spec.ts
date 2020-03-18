@@ -8,7 +8,7 @@ describe('Download Status', () => {
   });
 
   beforeEach(() => {
-    // Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login('download-e2e-tests', 'pw');

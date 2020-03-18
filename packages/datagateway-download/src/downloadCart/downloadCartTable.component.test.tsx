@@ -170,7 +170,6 @@ describe('Download cart table component', () => {
     );
   });
 
-  // TODO: If I place a axios response here for status call, why is it undefined?
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
     const wrapper = mount(
       <DownloadSettingsContext.Provider value={mockedSettings}>

@@ -405,7 +405,6 @@ describe('DownloadConfirmDialog', () => {
     );
   });
 
-  // TODO: Why does this not require updating the wrapper for preloader?
   it('prevents the submission of a download request with an invalid email', async () => {
     const wrapper = createWrapper(100, false, true);
     await updateDialogWrapper(wrapper);
@@ -464,7 +463,6 @@ describe('DownloadConfirmDialog', () => {
     ).toEqual('');
   });
 
-  // TODO: Why does this not require updating the wrapper for preloader?
   it('loads the submit unsuccessful view when download button is clicked', async () => {
     // We omit the downloadId which will cause the unsuccessful view to be shown.
     (axios.post as jest.Mock).mockImplementation(() =>

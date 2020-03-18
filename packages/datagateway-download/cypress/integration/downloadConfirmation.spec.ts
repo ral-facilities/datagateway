@@ -155,14 +155,6 @@ describe('Download Confirmation', () => {
 
   // This needs to be implemented once the tab has been included into the code.
   it('should be able to link to the downloads status tab upon successful download confirmation', () => {
-    // cy.get('[aria-label="confirm-access-method"]')
-    //   .should('exist')
-    //   .click();
-
-    // cy.contains('#confirm-access-method-globus', 'Globus')
-    //   .should('exist')
-    //   .click();
-
     cy.get('#download-confirmation-download').click();
 
     cy.get('#download-confirmation-success').should('exist');
