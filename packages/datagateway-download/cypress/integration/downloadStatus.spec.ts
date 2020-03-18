@@ -1,4 +1,4 @@
-describe.only('Download Status', () => {
+describe('Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
     cy.login('download-e2e-tests', 'pw');
@@ -41,183 +41,183 @@ describe.only('Download Status', () => {
     cy.get('[aria-label="Download status panel"]').should('exist');
   });
 
-  // it('should refresh the table when clicking the refresh downloads button', () => {
-  //   cy.get('[aria-label="Refresh download status table"]').should('exist');
-  //   cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-  //     'have.text',
-  //     'test-file-1'
-  //   );
-  //   cy.get('[aria-label="Refresh download status table"]').click();
-  // });
+  it('should refresh the table when clicking the refresh downloads button', () => {
+    cy.get('[aria-label="Refresh download status table"]').should('exist');
+    cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
+      'have.text',
+      'test-file-4'
+    );
+    cy.get('[aria-label="Refresh download status table"]').click();
+  });
 
-  // describe('should be able to sort download items by', () => {
-  //   it('ascending order', () => {
-  //     cy.contains('[role="button"]', 'Download Name').click();
+  describe('should be able to sort download items by', () => {
+    it('ascending order', () => {
+      cy.contains('[role="button"]', 'Download Name').click();
 
-  //     cy.get('[aria-sort="ascending"]').should('exist');
-  //     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
+      cy.get('[aria-sort="ascending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
 
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-  //       'have.text',
-  //       'test-file-1'
-  //     );
-  //   });
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
+        'have.text',
+        'test-file-1'
+      );
+    });
 
-  //   it('descending order', () => {
-  //     cy.contains('[role="button"]', 'Download Name').click();
-  //     cy.contains('[role="button"]', 'Download Name').click();
+    it('descending order', () => {
+      cy.contains('[role="button"]', 'Download Name').click();
+      cy.contains('[role="button"]', 'Download Name').click();
 
-  //     cy.get('[aria-sort="descending"]').should('exist');
-  //     cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-  //       'not.have.css',
-  //       'opacity',
-  //       '0'
-  //     );
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-  //       'have.text',
-  //       'test-file-4'
-  //     );
+      cy.get('[aria-sort="descending"]').should('exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'not.have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
+        'have.text',
+        'test-file-4'
+      );
 
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
-  //       'have.text',
-  //       'Expired'
-  //     );
-  //   });
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+        'have.text',
+        'Expired'
+      );
+    });
 
-  //   it('no order', () => {
-  //     cy.contains('[role="button"]', 'Download Name').click();
-  //     cy.contains('[role="button"]', 'Download Name').click();
-  //     cy.contains('[role="button"]', 'Download Name').click();
+    it('no order', () => {
+      cy.contains('[role="button"]', 'Download Name').click();
+      cy.contains('[role="button"]', 'Download Name').click();
+      cy.contains('[role="button"]', 'Download Name').click();
 
-  //     cy.get('[aria-sort="ascending"]').should('not.exist');
-  //     cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-  //     cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-  //       'have.css',
-  //       'opacity',
-  //       '0'
-  //     );
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-  //       'have.text',
-  //       'test-file-1'
-  //     );
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
+        'have.text',
+        'test-file-4'
+      );
 
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
-  //       'have.text',
-  //       'Complete'
-  //     );
-  //   });
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+        'have.text',
+        'Expired'
+      );
+    });
 
-  //   it('multiple columns', () => {
-  //     cy.contains('[role="button"]', 'Requested Date').click();
-  //     cy.contains('[role="button"]', 'Availability').click();
+    it('multiple columns', () => {
+      cy.contains('[role="button"]', 'Requested Date').click();
+      cy.contains('[role="button"]', 'Availability').click();
 
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-  //       'have.text',
-  //       'test-file-1'
-  //     );
-  //   });
-  // });
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
+        'have.text',
+        'test-file-1'
+      );
+    });
+  });
 
-  // describe('should be able to filter download items by', () => {
-  //   it('text', () => {
-  //     cy.get('[aria-label="Filter by Download Name"]')
-  //       .find('input')
-  //       .type('file');
+  describe('should be able to filter download items by', () => {
+    it('text', () => {
+      cy.get('[aria-label="Filter by Download Name"]')
+        .find('input')
+        .type('file');
 
-  //     cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowcount="4"]').should('exist');
 
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
-  //       'have.text',
-  //       'Complete'
-  //     );
-  //   });
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+        'have.text',
+        'Expired'
+      );
+    });
 
-  //   it('date between', () => {
-  //     cy.get('[aria-label="Requested Date date filter from"]').type(
-  //       '2020-01-31'
-  //     );
+    it('date between', () => {
+      cy.get('[aria-label="Requested Date date filter from"]').type(
+        '2020-01-31'
+      );
 
-  //     cy.get('[aria-label="Requested Date date filter to"]')
-  //       .parent()
-  //       .find('button')
-  //       .click();
+      cy.get('[aria-label="Requested Date date filter to"]')
+        .parent()
+        .find('button')
+        .click();
 
-  //     cy.get('.MuiPickersDay-day[tabindex="0"]')
-  //       .first()
-  //       .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]')
+        .first()
+        .click();
 
-  //     cy.contains('OK').click();
+      cy.contains('OK').click();
 
-  //     let date = new Date();
-  //     date.setDate(1);
+      let date = new Date();
+      date.setDate(1);
 
-  //     cy.get('[aria-label="Requested Date date filter to"]').should(
-  //       'have.value',
-  //       date.toISOString().slice(0, 10)
-  //     );
+      cy.get('[aria-label="Requested Date date filter to"]').should(
+        'have.value',
+        date.toISOString().slice(0, 10)
+      );
 
-  //     // There should be results for this time period.
-  //     cy.get('[aria-rowcount="0"]').should('exist');
+      // There should be results for this time period.
+      cy.get('[aria-rowcount="0"]').should('exist');
 
-  //     let currDate = new Date();
+      let currDate = new Date();
 
-  //     cy.get('[aria-label="Requested Date date filter from"]').clear();
-  //     cy.get('[aria-label="Requested Date date filter to"]').clear();
-  //     cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-label="Requested Date date filter from"]').clear();
+      cy.get('[aria-label="Requested Date date filter to"]').clear();
+      cy.get('[aria-rowcount="4"]').should('exist');
 
-  //     cy.get('[aria-label="Requested Date date filter from"]').type(
-  //       currDate.toISOString().slice(0, 10)
-  //     );
+      cy.get('[aria-label="Requested Date date filter from"]').type(
+        currDate.toISOString().slice(0, 10)
+      );
 
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
-  //       'have.text',
-  //       'test-file-1'
-  //     );
+      cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
+        'have.text',
+        'test-file-4'
+      );
 
-  //     cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-  //       'have.text',
-  //       'https'
-  //     );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
+        'have.text',
+        'globus'
+      );
 
-  //     cy.get('[aria-rowcount="4"]').should('exist');
-  //   });
+      cy.get('[aria-rowcount="4"]').should('exist');
+    });
 
-  //   it('multiple columns', () => {
-  //     cy.get('[aria-label="Filter by Access Method')
-  //       .find('input')
-  //       .type('globus');
+    it('multiple columns', () => {
+      cy.get('[aria-label="Filter by Access Method')
+        .find('input')
+        .type('globus');
 
-  //     cy.get('[aria-label="Filter by Availability"]')
-  //       .find('input')
-  //       .type('restoring');
+      cy.get('[aria-label="Filter by Availability"]')
+        .find('input')
+        .type('restoring');
 
-  //     cy.get('[aria-rowcount="1"]').should('exist');
-  //   });
-  // });
+      cy.get('[aria-rowcount="1"]').should('exist');
+    });
+  });
 
-  // it('should have a download link for an item', () => {
-  //   cy.contains('[aria-colindex="1"]', 'test-file-1')
-  //     .should('be.visible')
-  //     .and('not.be.disabled');
+  it('should have a download link for an item', () => {
+    cy.contains('[aria-colindex="1"]', 'test-file-1')
+      .should('be.visible')
+      .and('not.be.disabled');
 
-  //   // We are not clicking and proceeding to download the item in this test
-  //   // but instead checking that the link exists and it is possible to be clicked.
-  //   cy.get('a[aria-label="Download test-file-1"]').should('not.be.empty');
-  //   cy.get('a[aria-label="Download test-file-1"]')
-  //     .should('have.prop', 'href')
-  //     .and('contain', 'getData');
-  // });
+    // We are not clicking and proceeding to download the item in this test
+    // but instead checking that the link exists and it is possible to be clicked.
+    cy.get('a[aria-label="Download test-file-1"]').should('not.be.empty');
+    cy.get('a[aria-label="Download test-file-1"]')
+      .should('have.prop', 'href')
+      .and('contain', 'getData');
+  });
 
-  // it.only('should be able to remove a download', () => {
-  //   cy.route('PUT', '**/topcat/user/download/*/isDeleted').as(
-  //     'removeFromDownloads'
-  //   );
+  it('should be able to remove a download', () => {
+    cy.route('PUT', '**/topcat/user/download/*/isDeleted').as(
+      'removeFromDownloads'
+    );
 
-  //   cy.contains('[aria-colindex="1"]', 'test-file-4').should('be.visible');
-  //   cy.get('[aria-label="Remove test-file-4 from downloads"]').click({
-  //     force: true,
-  //   });
-  //   cy.wait('@removeFromDownloads');
-  //   cy.contains('test-file-4').should('not.be.visible');
-  // });
+    cy.contains('[aria-colindex="1"]', 'test-file-4').should('be.visible');
+    cy.get('[aria-label="Remove test-file-4 from downloads"]').click({
+      force: true,
+    });
+    cy.wait('@removeFromDownloads');
+    cy.contains('test-file-4').should('not.be.visible');
+  });
 });
