@@ -1,6 +1,15 @@
 import React from 'react';
-import { Entity, Investigation, formatBytes } from 'datagateway-common';
+import {
+  Entity,
+  Investigation,
+  formatBytes,
+  fetchInvestigationSize,
+} from 'datagateway-common';
 import { Typography, Tabs, Tab, Button } from '@material-ui/core';
+import { ThunkDispatch } from 'redux-thunk';
+import { connect } from 'react-redux';
+import { StateType } from '../../state/app.types';
+import { AnyAction } from 'redux';
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
@@ -8,8 +17,20 @@ interface VisitDetailsPanelProps {
   fetchDetails: (investigationId: number) => Promise<void>;
 }
 
+interface VisitDetailsPanelDispatchProps {
+  fetchSize: (datasetId: number) => Promise<void>;
+}
+
+interface VisitDetailsPanelStoreProps {
+  data: Entity[];
+}
+
+type VisitDetailsPanelCombinedProps = VisitDetailsPanelProps &
+  VisitDetailsPanelStoreProps &
+  VisitDetailsPanelDispatchProps;
+
 const VisitDetailsPanel = (
-  props: VisitDetailsPanelProps
+  props: VisitDetailsPanelCombinedProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize, fetchDetails } = props;
   const [value, setValue] = React.useState<
@@ -107,7 +128,8 @@ const VisitDetailsPanel = (
           ) : (
             <Button
               onClick={() => {
-                // TODO
+                const { fetchSize } = props;
+                fetchSize(investigationData.ID);
               }}
               variant="outlined"
               color="primary"
@@ -176,4 +198,17 @@ const VisitDetailsPanel = (
   );
 };
 
-export default VisitDetailsPanel;
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): VisitDetailsPanelDispatchProps => ({
+  fetchSize: (investigationId: number) =>
+    dispatch(fetchInvestigationSize(investigationId)),
+});
+
+const mapStateToProps = (state: StateType): VisitDetailsPanelStoreProps => {
+  return {
+    data: state.dgcommon.data,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(VisitDetailsPanel);

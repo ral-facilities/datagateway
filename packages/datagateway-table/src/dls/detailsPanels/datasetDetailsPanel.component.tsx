@@ -1,6 +1,15 @@
 import React from 'react';
-import { Entity, Dataset, formatBytes } from 'datagateway-common';
+import {
+  Entity,
+  Dataset,
+  formatBytes,
+  fetchDatasetSize,
+} from 'datagateway-common';
 import { Typography, Tabs, Tab, Button } from '@material-ui/core';
+import { ThunkDispatch } from 'redux-thunk';
+import { connect } from 'react-redux';
+import { StateType } from '../../state/app.types';
+import { AnyAction } from 'redux';
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
@@ -8,8 +17,20 @@ interface DatasetDetailsPanelProps {
   fetchDetails: (datasetId: number) => Promise<void>;
 }
 
+interface DatasetDetailsPanelDispatchProps {
+  fetchSize: (datasetId: number) => Promise<void>;
+}
+
+interface DatasetDetailsPanelStoreProps {
+  data: Entity[];
+}
+
+type VisitDetailsPanelCombinedProps = DatasetDetailsPanelProps &
+  DatasetDetailsPanelStoreProps &
+  DatasetDetailsPanelDispatchProps;
+
 const DatasetDetailsPanel = (
-  props: DatasetDetailsPanelProps
+  props: VisitDetailsPanelCombinedProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize, fetchDetails } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
@@ -73,7 +94,8 @@ const DatasetDetailsPanel = (
           ) : (
             <Button
               onClick={() => {
-                // TODO
+                const { fetchSize } = props;
+                fetchSize(datasetData.ID);
               }}
               variant="outlined"
               color="primary"
@@ -103,4 +125,20 @@ const DatasetDetailsPanel = (
   );
 };
 
-export default DatasetDetailsPanel;
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): DatasetDetailsPanelDispatchProps => ({
+  fetchSize: (investigationId: number) =>
+    dispatch(fetchDatasetSize(investigationId)),
+});
+
+const mapStateToProps = (state: StateType): DatasetDetailsPanelStoreProps => {
+  return {
+    data: state.dgcommon.data,
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DatasetDetailsPanel);
