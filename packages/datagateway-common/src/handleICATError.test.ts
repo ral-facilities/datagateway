@@ -2,6 +2,10 @@ import { AxiosError } from 'axios';
 import * as log from 'loglevel';
 import handleICATError from './handleICATError';
 import { AnyAction } from 'redux';
+import {
+  NotificationType,
+  InvalidateTokenType,
+} from './state/actions/actions.types';
 
 jest.mock('loglevel');
 
@@ -39,7 +43,7 @@ describe('handleICATError', () => {
     expect(log.error).toHaveBeenCalledWith('Test error message');
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
-      type: 'scigateway:api:notification',
+      type: NotificationType,
       payload: { severity: 'error', message: 'Test error message' },
     });
   });
@@ -58,7 +62,7 @@ describe('handleICATError', () => {
     expect(log.error).toHaveBeenCalledWith('Test error message');
     expect(events.length).toBe(2);
     expect(events[1].detail).toEqual({
-      type: 'scigateway:api:invalidate_token',
+      type: InvalidateTokenType,
     });
   });
 
@@ -72,7 +76,7 @@ describe('handleICATError', () => {
     expect(log.error).toHaveBeenCalledWith('Test error message');
     expect(events.length).toBe(2);
     expect(events[1].detail).toEqual({
-      type: 'scigateway:api:invalidate_token',
+      type: InvalidateTokenType,
     });
 
     (log.error as jest.Mock).mockClear();
@@ -87,7 +91,7 @@ describe('handleICATError', () => {
     expect(log.error).toHaveBeenCalledWith('Test error message');
     expect(events.length).toBe(2);
     expect(events[1].detail).toEqual({
-      type: 'scigateway:api:invalidate_token',
+      type: InvalidateTokenType,
     });
   });
 });

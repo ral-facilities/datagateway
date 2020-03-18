@@ -9,10 +9,7 @@ import App from './App';
 import singleSpaReact from 'single-spa-react';
 import * as log from 'loglevel';
 
-import {
-  MicroFrontendMessageId,
-  RequestPluginRerenderType,
-} from 'datagateway-common';
+import { RequestPluginRerenderType, MicroFrontendId } from 'datagateway-common';
 
 const pluginName = 'datagateway-dataview';
 
@@ -43,7 +40,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener(MicroFrontendMessageId, e => {
+document.addEventListener(MicroFrontendId, e => {
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {
     render();

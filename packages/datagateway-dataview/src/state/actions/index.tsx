@@ -10,7 +10,11 @@ import {
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
 } from './actions.types';
-import { loadUrls, loadFacilityName } from 'datagateway-common';
+import {
+  loadUrls,
+  loadFacilityName,
+  MicroFrontendToken,
+} from 'datagateway-common';
 import { fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
@@ -147,7 +151,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                     'shh'
                   );
 
-                  window.localStorage.setItem('scigateway:token', jwt);
+                  window.localStorage.setItem(MicroFrontendToken, jwt);
                 })
                 .catch(error => {
                   log.error(

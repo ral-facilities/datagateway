@@ -1,5 +1,10 @@
 import { AxiosError } from 'axios';
 import * as log from 'loglevel';
+import {
+  NotificationType,
+  InvalidateTokenType,
+} from './state/actions/actions.types';
+import { MicroFrontendId } from './app.types';
 
 const handleICATError = (
   error: AxiosError,
@@ -8,9 +13,9 @@ const handleICATError = (
   log.error(error.message);
   if (broadcast) {
     document.dispatchEvent(
-      new CustomEvent('scigateway', {
+      new CustomEvent(MicroFrontendId, {
         detail: {
-          type: 'scigateway:api:notification',
+          type: NotificationType,
           payload: {
             severity: 'error',
             message: error.message,
@@ -28,9 +33,9 @@ const handleICATError = (
         error.response.data.message.toUpperCase().includes('SESSION')))
   ) {
     document.dispatchEvent(
-      new CustomEvent('scigateway', {
+      new CustomEvent(MicroFrontendId, {
         detail: {
-          type: 'scigateway:api:invalidate_token',
+          type: InvalidateTokenType,
         },
       })
     );
