@@ -139,7 +139,25 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Sorting and loading status.
   const [statusMethods, setStatusMethods] = React.useState<
     DownloadConfirmAccessMethod
-  >({});
+  >(
+    Object.keys(settings.accessMethods)
+      .map(key => {
+        return { method: key, methodInfo: settings.accessMethods[key] };
+      })
+      .reduce(
+        (obj, item) => ({
+          ...obj,
+          [item.method]: {
+            ...settings.accessMethods[item.method],
+
+            // Set disabled to be true by default.
+            disabled: true,
+            message: '',
+          },
+        }),
+        {}
+      )
+  );
   const [requestStatus, setRequestStatus] = React.useState(false);
   const [loadedStatus, setLoadedStatus] = React.useState(false);
 
@@ -235,29 +253,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     setSelectedMethod(sorted[0][0]);
     setIsSorted(true);
   }, [statusMethods, setSortedMethods, setSelectedMethod, setIsSorted]);
-
-  React.useEffect(() => {
-    // Set the status method object when the access methods settings is updated.
-    setStatusMethods(
-      Object.keys(settings.accessMethods)
-        .map(key => {
-          return { method: key, methodInfo: settings.accessMethods[key] };
-        })
-        .reduce(
-          (obj, item) => ({
-            ...obj,
-            [item.method]: {
-              ...settings.accessMethods[item.method],
-
-              // Set disabled to be true by default.
-              disabled: true,
-              message: '',
-            },
-          }),
-          {}
-        )
-    );
-  }, [settings.accessMethods]);
 
   React.useEffect(() => {
     async function getStatus(): Promise<void> {
