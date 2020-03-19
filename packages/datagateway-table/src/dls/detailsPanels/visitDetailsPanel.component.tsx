@@ -21,12 +21,7 @@ interface VisitDetailsPanelDispatchProps {
   fetchSize: (datasetId: number) => Promise<void>;
 }
 
-interface VisitDetailsPanelStoreProps {
-  data: Entity[];
-}
-
 type VisitDetailsPanelCombinedProps = VisitDetailsPanelProps &
-  VisitDetailsPanelStoreProps &
   VisitDetailsPanelDispatchProps;
 
 const VisitDetailsPanel = (
@@ -205,10 +200,4 @@ const mapDispatchToProps = (
     dispatch(fetchInvestigationSize(investigationId)),
 });
 
-const mapStateToProps = (state: StateType): VisitDetailsPanelStoreProps => {
-  return {
-    data: state.dgcommon.data,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(VisitDetailsPanel);
+export default connect(null, mapDispatchToProps)(VisitDetailsPanel);
