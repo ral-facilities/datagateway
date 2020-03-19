@@ -25,7 +25,7 @@ import {
   StylesProvider,
 } from '@material-ui/core/styles';
 
-import PageContainer from './pageContainer.component';
+import PageContainer from './page/pageContainer.component';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
