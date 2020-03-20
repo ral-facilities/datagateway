@@ -8,6 +8,10 @@ app.use(
   serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
 );
 
+app.get('/datagateway-download-settings.json', function(req, res) {
+  res.sendFile(path.resolve('./server/e2e-settings.json'));
+});
+
 app.get('/*', function(req, res) {
   res.sendFile(path.resolve('./build/index.html'));
 });

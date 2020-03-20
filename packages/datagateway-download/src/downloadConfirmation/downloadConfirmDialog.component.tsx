@@ -20,11 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Mark from './mark.component';
 
 import { formatBytes } from 'datagateway-common';
-import {
-  submitCart,
-  getDownload,
-  downloadPreparedCart,
-} from '../downloadCart/downloadCartApi';
+import { submitCart, getDownload, downloadPreparedCart } from '../downloadApi';
 
 import {
   Theme,
@@ -33,6 +29,7 @@ import {
   WithStyles,
   StyleRules,
 } from '@material-ui/core/styles';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -109,8 +106,7 @@ interface DownloadConfirmDialogProps
   isTwoLevel: boolean;
   open: boolean;
 
-  // TODO: pass in the function to call to redirect to the status tab.
-  // setStatus: () => void;
+  redirectToStatusTab: () => void;
   setClose: () => void;
   clearCart: () => void;
 }
@@ -118,12 +114,14 @@ interface DownloadConfirmDialogProps
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { classes, setClose, clearCart } = props;
+  const { classes, redirectToStatusTab, setClose, clearCart } = props;
 
-  // TODO: Temporary facilityName until we load it from settings.
-  // TODO: Access methods should be configurable and not defined in the component.
-  const facilityName = 'LILS';
-  const defaultAccessMethod = 'https';
+  // Load the settings for use.
+  const settings = React.useContext(DownloadSettingsContext);
+
+  // Set the default access method as the first access method
+  // defined in the configuration.
+  const defaultAccessMethod = Object.keys(settings.accessMethods)[0];
 
   const { totalSize } = props;
   const { isTwoLevel } = props;
@@ -186,11 +184,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         setShowDownloadTime(false);
       }
     }
-  }, [props.open, isTwoLevel, totalSize]);
+  }, [props.open, isTwoLevel, totalSize, defaultAccessMethod]);
 
   const getDefaultFileName = (): string => {
     const now = new Date();
-    let defaultName = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
+    let defaultName = `${
+      settings.facilityName
+    }_${now.getFullYear()}-${now.getMonth() +
       1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
 
     return defaultName;
@@ -223,23 +223,30 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       setDownloadName(fileName);
     }
 
-    const downloadId = await submitCart(
-      facilityName,
-      accessMethod,
-      emailAddress,
-      fileName
-    );
+    const downloadId = await submitCart(accessMethod, emailAddress, fileName, {
+      facilityName: settings.facilityName,
+      downloadApiUrl: settings.downloadApiUrl,
+    });
 
     // Ensure that we have received a downloadId.
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
-      if (accessMethod === defaultAccessMethod) {
-        const downloadInfo = await getDownload(facilityName, downloadId);
+      if (accessMethod.match(/https|http/)) {
+        const downloadInfo = await getDownload(downloadId, {
+          facilityName: settings.facilityName,
+          downloadApiUrl: settings.downloadApiUrl,
+        });
 
-        // Download the file as long as it is available for immediate download.
+        // Download the file as long as it is available for instant download.
         if (downloadInfo != null && downloadInfo.status === 'COMPLETE')
-          downloadPreparedCart(downloadInfo.preparedId, downloadInfo.fileName);
+          downloadPreparedCart(
+            downloadInfo.preparedId,
+            downloadInfo.fileName,
+
+            // Use the idsUrl that has been defined for this access method.
+            { idsUrl: settings.accessMethods[accessMethod].idsUrl }
+          );
       }
 
       setIsSubmitSuccessful(true);
@@ -300,36 +307,47 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       setAccessMethod(e.target.value as string);
                     }}
                   >
-                    {/* TODO: Values need to be retrieved from an object from settings. */}
-                    <MenuItem id="confirm-access-method-https" value="https">
-                      HTTPS
-                    </MenuItem>
-                    <MenuItem id="confirm-access-method-globus" value="globus">
-                      Globus
-                    </MenuItem>
+                    {/* Access methods from settings as items for selection */}
+                    {Object.entries(settings.accessMethods).map(
+                      ([type, methodInfo], index) => (
+                        <MenuItem
+                          key={index}
+                          id={`confirm-access-method-${type}`}
+                          value={type}
+                        >
+                          {/* The display name will be shown as the menu item,
+                          if defined in the settings, otherwise we show the type. */}
+                          {methodInfo.displayName
+                            ? methodInfo.displayName
+                            : type.toUpperCase()}
+                        </MenuItem>
+                      )
+                    )}
                   </Select>
-
-                  {/* Provide some information on the selected access method. */}
-                  <Typography style={{ paddingTop: '20px' }}>
-                    <b>Access Method Information:</b>
-                  </Typography>
-
-                  {/* Depending on the type of access method that has been selected,
-                  show specific access information. */}
-                  {(() => {
-                    let accessMethodInfo;
-                    if (accessMethod === defaultAccessMethod)
-                      accessMethodInfo = 'HTTPS is the default access method.';
-                    else if (accessMethod === 'globus')
-                      accessMethodInfo = 'Globus is a special access method.';
-
-                    return (
-                      <Typography id="confirm-access-method-information">
-                        {accessMethodInfo}
-                      </Typography>
-                    );
-                  })()}
                 </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                {/* Depending on the type of access method that has been selected,
+                  show specific access information. */}
+                {Object.entries(settings.accessMethods)
+                  .filter(
+                    ([type, methodInfo]) =>
+                      type === accessMethod && methodInfo.description
+                  )
+                  .map(([type, methodInfo], index) => (
+                    <span key={index} style={{ paddingTop: '20px' }}>
+                      <Typography>
+                        <b>Access Method Information:</b>
+                      </Typography>
+
+                      <Typography
+                        id={`confirm-access-method-${type}-description`}
+                      >
+                        {methodInfo.description}
+                      </Typography>
+                    </span>
+                  ))}
               </Grid>
 
               {/* Get the size of the download  */}
@@ -440,8 +458,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               style={{ paddingBottom: '25px' }}
             >
               <Grid item xs>
-                {/* TODO: When closing the animation renders again? 
-                Maybe set a fixed width for the dialog and not render it? */}
                 {isSubmitSuccessful ? (
                   <Mark size={100} colour="#3E863E" visible={props.open} />
                 ) : (
@@ -516,13 +532,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {isSubmitSuccessful && (
                 <Grid item xs>
-                  {/* TODO: Button needs to call a function that has been passed in
-                        which allow for the tab to be changed to the status page. */}
                   <Button
                     id="download-confirmation-status-link"
                     variant="outlined"
                     color="primary"
-                    href="/"
+                    onClick={redirectToStatusTab}
                   >
                     View My Downloads
                   </Button>
