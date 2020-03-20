@@ -20,7 +20,7 @@ class PageContainer extends React.Component<
     super(props);
 
     this.state = {
-      toggleCard: false,
+      toggleCard: true,
     };
   }
 
