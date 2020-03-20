@@ -1,31 +1,16 @@
 import React from 'react';
-import {
-  Entity,
-  Dataset,
-  formatBytes,
-  fetchDatasetSize,
-} from 'datagateway-common';
+import { Entity, Dataset, formatBytes } from 'datagateway-common';
 import { Typography, Tabs, Tab, Button } from '@material-ui/core';
-import { ThunkDispatch } from 'redux-thunk';
-import { connect } from 'react-redux';
-import { StateType } from '../../state/app.types';
-import { AnyAction } from 'redux';
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize: () => void;
   fetchDetails: (datasetId: number) => Promise<void>;
-}
-
-interface DatasetDetailsPanelDispatchProps {
   fetchSize: (datasetId: number) => Promise<void>;
 }
 
-type VisitDetailsPanelCombinedProps = DatasetDetailsPanelProps &
-  DatasetDetailsPanelDispatchProps;
-
 const DatasetDetailsPanel = (
-  props: VisitDetailsPanelCombinedProps
+  props: DatasetDetailsPanelProps
 ): React.ReactElement => {
   const { rowData, detailsPanelResize, fetchDetails } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
@@ -120,11 +105,4 @@ const DatasetDetailsPanel = (
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DatasetDetailsPanelDispatchProps => ({
-  fetchSize: (investigationId: number) =>
-    dispatch(fetchDatasetSize(investigationId)),
-});
-
-export default connect(null, mapDispatchToProps)(DatasetDetailsPanel);
+export default DatasetDetailsPanel;

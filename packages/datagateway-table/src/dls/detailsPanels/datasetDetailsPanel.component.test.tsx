@@ -1,6 +1,6 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatasetsDetailsPanel from './datasetDetailsPanel.component';
+import DatasetDetailsPanel from './datasetDetailsPanel.component';
 import { Dataset } from 'datagateway-common';
 
 describe('Dataset details panel component', () => {
@@ -9,6 +9,7 @@ describe('Dataset details panel component', () => {
   let rowData: Dataset;
   const detailsPanelResize = jest.fn();
   const fetchDetails = jest.fn();
+  const fetchSize = jest.fn();
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -30,10 +31,11 @@ describe('Dataset details panel component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <DatasetsDetailsPanel
+      <DatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -47,10 +49,11 @@ describe('Dataset details panel component', () => {
     };
 
     const wrapper = shallow(
-      <DatasetsDetailsPanel
+      <DatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -60,10 +63,11 @@ describe('Dataset details panel component', () => {
     const { SIZE, ...rowDataWithoutSize } = rowData;
 
     const wrapper = shallow(
-      <DatasetsDetailsPanel
+      <DatasetDetailsPanel
         rowData={rowDataWithoutSize}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -73,10 +77,11 @@ describe('Dataset details panel component', () => {
     const { SIZE, ...rowDataWithoutSize } = rowData;
 
     const wrapper = mount(
-      <DatasetsDetailsPanel
+      <DatasetDetailsPanel
         rowData={rowDataWithoutSize}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 
@@ -94,10 +99,11 @@ describe('Dataset details panel component', () => {
     };
 
     const wrapper = mount(
-      <DatasetsDetailsPanel
+      <DatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 
@@ -113,10 +119,11 @@ describe('Dataset details panel component', () => {
 
   it('calls fetchDetails on load', () => {
     mount(
-      <DatasetsDetailsPanel
+      <DatasetDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 

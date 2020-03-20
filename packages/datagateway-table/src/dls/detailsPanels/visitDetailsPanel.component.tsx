@@ -1,33 +1,18 @@
 import React from 'react';
-import {
-  Entity,
-  Investigation,
-  formatBytes,
-  fetchInvestigationSize,
-} from 'datagateway-common';
+import { Entity, Investigation, formatBytes } from 'datagateway-common';
 import { Typography, Tabs, Tab, Button } from '@material-ui/core';
-import { ThunkDispatch } from 'redux-thunk';
-import { connect } from 'react-redux';
-import { StateType } from '../../state/app.types';
-import { AnyAction } from 'redux';
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize: () => void;
   fetchDetails: (investigationId: number) => Promise<void>;
-}
-
-interface VisitDetailsPanelDispatchProps {
   fetchSize: (datasetId: number) => Promise<void>;
 }
 
-type VisitDetailsPanelCombinedProps = VisitDetailsPanelProps &
-  VisitDetailsPanelDispatchProps;
-
 const VisitDetailsPanel = (
-  props: VisitDetailsPanelCombinedProps
+  props: VisitDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails } = props;
+  const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
@@ -123,7 +108,6 @@ const VisitDetailsPanel = (
           ) : (
             <Button
               onClick={() => {
-                const { fetchSize } = props;
                 fetchSize(investigationData.ID);
               }}
               variant="outlined"
@@ -193,11 +177,4 @@ const VisitDetailsPanel = (
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): VisitDetailsPanelDispatchProps => ({
-  fetchSize: (investigationId: number) =>
-    dispatch(fetchInvestigationSize(investigationId)),
-});
-
-export default connect(null, mapDispatchToProps)(VisitDetailsPanel);
+export default VisitDetailsPanel;

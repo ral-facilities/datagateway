@@ -11,6 +11,7 @@ import {
   fetchInvestigations,
   fetchInvestigationDetails,
   fetchInvestigationCount,
+  fetchInvestigationSize,
   sortTable,
   filterTable,
   clearTable,
@@ -47,6 +48,7 @@ interface DLSVisitsTableDispatchProps {
   fetchCount: (proposalName: string) => Promise<void>;
   clearTable: () => Action;
   fetchDetails: (investigationId: number) => Promise<void>;
+  fetchSize: (investigationId: number) => Promise<void>;
 }
 
 type DLSVisitsTableCombinedProps = DLSVisitsTableProps &
@@ -109,6 +111,7 @@ const DLSVisitsTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            fetchSize={props.fetchSize}
           />
         );
       }}
@@ -200,6 +203,8 @@ const mapDispatchToProps = (
   clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
+  fetchSize: (investigationId: number) =>
+    dispatch(fetchInvestigationSize(investigationId)),
 });
 
 const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
