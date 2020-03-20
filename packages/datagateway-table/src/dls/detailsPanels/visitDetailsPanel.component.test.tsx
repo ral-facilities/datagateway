@@ -136,8 +136,8 @@ describe('Visit details panel component', () => {
 
     wrapper.find('#visit-details-panel button').simulate('click');
 
-    // TODO: test this calls some action that requests to getSize
-    expect(true);
+    expect(fetchSize).toHaveBeenCalled();
+    expect(fetchSize).toHaveBeenCalledWith(1);
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
