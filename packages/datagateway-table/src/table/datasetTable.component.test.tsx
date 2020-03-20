@@ -1,9 +1,9 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DatasetTable from './datasetTable.component';
-import { initialState } from '../../state/reducers/dgtable.reducer';
+import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../../state/app.types';
+import { StateType } from '../state/app.types';
 import {
   fetchDatasetsRequest,
   filterTable,

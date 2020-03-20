@@ -1,20 +1,18 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatafileTable from './datafileTable.component';
-import { initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
+import InvestigationTable from './investigationTable.component';
+import { initialState } from '../state/reducers/dgtable.reducer';
 import configureStore from 'redux-mock-store';
-import { StateType } from '../../state/app.types';
+import { StateType } from '../state/app.types';
 import {
-  fetchDatafilesRequest,
-  fetchAllIdsRequest,
+  fetchInvestigationsRequest,
   clearTable,
-  Datafile,
   filterTable,
   sortTable,
-  downloadDatafileRequest,
   addToCartRequest,
   removeFromCartRequest,
-  fetchDatafileCountRequest,
+  fetchInvestigationCountRequest,
+  fetchAllIdsRequest,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -22,7 +20,7 @@ import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 import { dGCommonInitialState } from 'datagateway-common';
 
-describe('Datafile table component', () => {
+describe('Investigation table component', () => {
   let shallow;
   let mount;
   let mockStore;
@@ -30,28 +28,29 @@ describe('Datafile table component', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
-
   global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
-    shallow = createShallow({ untilSelector: 'DatafileTable' });
+    shallow = createShallow({ untilSelector: 'InvestigationTable' });
     mount = createMount();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
-      JSON.stringify({
-        dgcommon: dGCommonInitialState,
-        dgtable: dgTableInitialState,
-      })
+      JSON.stringify({ dgcommon: dGCommonInitialState, dgtable: initialState })
     );
     state.dgcommon.data = [
       {
         ID: 1,
-        NAME: 'Test 1',
-        LOCATION: '/test1',
-        FILESIZE: 1,
-        MOD_TIME: '2019-07-23',
-        DATASET_ID: 1,
+        TITLE: 'Test 1',
+        VISIT_ID: '1',
+        RB_NUMBER: '1',
+        DOI: 'doi 1',
+        SIZE: 1,
+        INSTRUMENT: {
+          NAME: 'LARMOR',
+        },
+        STARTDATE: '2019-07-23',
+        ENDDATE: '2019-07-24',
       },
     ];
     state.dgcommon.allIds = [1];
@@ -62,7 +61,7 @@ describe('Datafile table component', () => {
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DatafileTable store={mockStore(state)} />);
+    const wrapper = shallow(<InvestigationTable store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -71,7 +70,7 @@ describe('Datafile table component', () => {
     mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
@@ -80,12 +79,12 @@ describe('Datafile table component', () => {
     expect(testStore.getActions()[0]).toEqual(clearTable());
   });
 
-  it('sends fetchDatafileCount, fetchDatafiles and fetchAllIdsRequest actions when watched store values change', () => {
+  it('sends fetchInvestigationCount, fetchInvestigations and fetchAllIds actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
@@ -97,18 +96,20 @@ describe('Datafile table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+    expect(testStore.getActions()[1]).toEqual(
+      fetchInvestigationCountRequest(1)
+    );
+    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
     expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
   });
 
-  it('sends fetchDatafiles action when loadMoreRows is called', () => {
+  it('sends fetchInvestigations action when loadMoreRows is called', () => {
     const testStore = mockStore(state);
-    const wrapper = shallow(<DatafileTable store={testStore} />);
+    const wrapper = shallow(<InvestigationTable store={testStore} />);
 
     wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
+    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends filterTable action on text filter', () => {
@@ -116,23 +117,23 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by Name"] input')
+      .find('[aria-label="Filter by Title"] input')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[1]).toEqual(filterTable('TITLE', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -140,25 +141,23 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Modified Time date filter to"]'
-    );
+    const filterInput = wrapper.find('[aria-label="End Date date filter to"]');
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('MOD_TIME', { endDate: '2019-08-06' })
+      filterTable('ENDDATE', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[2]).toEqual(filterTable('ENDDATE', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -166,7 +165,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
@@ -176,7 +175,7 @@ describe('Datafile table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[1]).toEqual(sortTable('TITLE', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -184,7 +183,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
@@ -201,7 +200,7 @@ describe('Datafile table component', () => {
     state.dgcommon.cartItems = [
       {
         entityId: 1,
-        entityType: 'datafile',
+        entityType: 'investigation',
         id: 1,
         name: 'test',
         parentEntities: [],
@@ -212,7 +211,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
@@ -228,15 +227,15 @@ describe('Datafile table component', () => {
   it('selected rows only considers relevant cart items', () => {
     state.dgcommon.cartItems = [
       {
-        entityId: 1,
-        entityType: 'dataset',
+        entityId: 2,
+        entityType: 'investigation',
         id: 1,
         name: 'test',
         parentEntities: [],
       },
       {
-        entityId: 2,
-        entityType: 'datafile',
+        entityId: 1,
+        entityType: 'dataset',
         id: 2,
         name: 'test',
         parentEntities: [],
@@ -247,7 +246,7 @@ describe('Datafile table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
@@ -260,42 +259,10 @@ describe('Datafile table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('sends downloadData action on click of download button', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    wrapper.find('button[aria-label="Download"]').simulate('click');
-
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
-  });
-
-  it("doesn't display download button for datafiles with no location", () => {
-    const datafile = state.dgcommon.data[0] as Datafile;
-    const { LOCATION, ...datafileWithoutLocation } = datafile;
-    state.dgcommon.data = [datafileWithoutLocation];
-
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(wrapper.find('button[aria-label="Download"]')).toHaveLength(0);
-  });
-
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
-        <DatafileTable store={mockStore(state)} datasetId="1" />
+        <InvestigationTable store={mockStore(state)} />
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
@@ -306,20 +273,65 @@ describe('Datafile table component', () => {
     expect(detailsPanelWrapper).toMatchSnapshot();
   });
 
-  it('renders file size as bytes', () => {
+  it('renders investigation title as a link', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <DatafileTable datasetId="1" />
+          <InvestigationTable />
         </MemoryRouter>
       </Provider>
     );
 
     expect(
       wrapper
-        .find('[aria-colindex=5]')
+        .find('[aria-colindex=3]')
+        .find('p')
+        .children()
+    ).toMatchSnapshot();
+  });
+
+  it('renders date objects as just the date', () => {
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <InvestigationTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper
+        .find('[aria-colindex=9]')
         .find('p')
         .text()
-    ).toEqual('1 B');
+    ).toEqual('2019-07-23');
+
+    expect(
+      wrapper
+        .find('[aria-colindex=10]')
+        .find('p')
+        .text()
+    ).toEqual('2019-07-24');
+  });
+
+  it('renders fine with incomplete data', () => {
+    // this can happen when navigating between tables and the previous table's state still exists
+    state.dgcommon.data = [
+      {
+        ID: 1,
+        NAME: 'test',
+        TITLE: 'test',
+      },
+    ];
+
+    expect(() =>
+      mount(
+        <Provider store={mockStore(state)}>
+          <MemoryRouter>
+            <InvestigationTable />
+          </MemoryRouter>
+        </Provider>
+      )
+    ).not.toThrowError();
   });
 });

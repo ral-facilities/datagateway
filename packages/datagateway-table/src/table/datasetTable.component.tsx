@@ -20,12 +20,12 @@ import {
   clearTable,
 } from 'datagateway-common';
 import { AnyAction } from 'redux';
-import { StateType } from '../../state/app.types';
+import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import useAfterMountEffect from '../../utils';
+import useAfterMountEffect from '../utils';
 
 interface DatasetTableProps {
   investigationId: string;

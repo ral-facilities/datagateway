@@ -24,10 +24,10 @@ import {
 import { GetApp } from '@material-ui/icons';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { StateType } from '../../state/app.types';
+import { StateType } from '../state/app.types';
 import { Action, AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
-import useAfterMountEffect from '../../utils';
+import useAfterMountEffect from '../utils';
 
 interface DatafileTableProps {
   datasetId: string;

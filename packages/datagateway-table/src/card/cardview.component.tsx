@@ -1,18 +1,8 @@
 import React from 'react';
+import EntityCard from './card.component';
 
-// const useStyles = makeStyles({
-//   root: {
-//     minWidth: 275,
-//   },
-//   bullet: {
-//     display: 'inline-block',
-//     margin: '0 2px',
-
-//   }
-// })
-
-const CardView: React.FC<{}> = (props: {}) => {
-  return <div>Test</div>;
+const CardView: React.FC = (props: {}) => {
+  return <EntityCard />;
 };
 
 export default CardView;

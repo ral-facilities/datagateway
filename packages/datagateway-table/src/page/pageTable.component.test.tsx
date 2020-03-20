@@ -13,9 +13,9 @@ import { initialState as dgTableInitialState } from '../state/reducers/dgtable.r
 import { dGCommonInitialState } from 'datagateway-common';
 import { Link } from 'react-router-dom';
 
-import InvestigationTable from '../table/generic/investigationTable.component';
-import DatasetTable from '../table/generic/datasetTable.component';
-import DatafileTable from '../table/generic/datafileTable.component';
+import InvestigationTable from '../table/investigationTable.component';
+import DatasetTable from '../table/datasetTable.component';
+import DatafileTable from '../table/datafileTable.component';
 
 import DLSProposalsTable from '../table/dls/tables/dlsProposalsTable.component';
 import DLSVisitsTable from '../table/dls/tables/dlsVisitsTable.component';
