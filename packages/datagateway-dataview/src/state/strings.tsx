@@ -4,7 +4,7 @@ export function getAppStrings(
   state: StateType,
   section: string
 ): AppStrings | undefined {
-  return state.dgtable.res ? state.dgtable.res[section] : undefined;
+  return state.dgdataview.res ? state.dgdataview.res[section] : undefined;
 }
 
 export const getString = (res: AppStrings | undefined, key: string): string =>

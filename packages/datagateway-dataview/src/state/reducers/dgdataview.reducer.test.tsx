@@ -1,4 +1,4 @@
-import DGTableReducer, { initialState } from './dgtable.reducer';
+import DGDataViewReducer, { initialState } from './dgdataview.reducer';
 import { StateType } from '../app.types';
 import {
   loadFeatureSwitches,
@@ -7,28 +7,30 @@ import {
   settingsLoaded,
 } from '../actions';
 
-describe('dgtable reducer', () => {
+describe('dgdataview reducer', () => {
   let state: StateType;
 
   beforeEach(() => {
-    // state = { ...dgTableInitialState };
+    // state = { ...dgdataviewInitialState };
     state = JSON.parse(
       JSON.stringify({
-        dgtable: initialState,
+        dgdataview: initialState,
       })
     );
   });
 
   it('should return state for actions it does not care about', () => {
-    const updatedState = DGTableReducer(state, { type: 'irrelevant action' });
+    const updatedState = DGDataViewReducer(state, {
+      type: 'irrelevant action',
+    });
 
     expect(updatedState).toBe(state);
   });
 
   it('should set settingsLoaded to true when SettingsLoaded action is sent', () => {
-    expect(state.dgtable.settingsLoaded).toBe(false);
+    expect(state.dgdataview.settingsLoaded).toBe(false);
 
-    const updatedState = DGTableReducer(state, settingsLoaded());
+    const updatedState = DGDataViewReducer(state, settingsLoaded());
 
     expect(updatedState.settingsLoaded).toBe(true);
   });
@@ -36,7 +38,7 @@ describe('dgtable reducer', () => {
   it('should set res property when configure strings action is sent', () => {
     expect(state).not.toHaveProperty('res');
 
-    const updatedState = DGTableReducer(
+    const updatedState = DGDataViewReducer(
       state,
       configureStrings({ testSection: { testId: 'test' } })
     );
@@ -46,17 +48,17 @@ describe('dgtable reducer', () => {
   });
 
   it('should set feature switches property when configure feature switches action is sent', () => {
-    expect(state.dgtable.features).toEqual({});
+    expect(state.dgdataview.features).toEqual({});
 
-    const updatedState = DGTableReducer(state, loadFeatureSwitches({}));
+    const updatedState = DGDataViewReducer(state, loadFeatureSwitches({}));
 
     expect(updatedState.features).toEqual({});
   });
 
   it('should set breadcrumb settings property when configure breadcrumb settings action is sent', () => {
-    expect(state.dgtable.breadcrumbSettings).toEqual({});
+    expect(state.dgdataview.breadcrumbSettings).toEqual({});
 
-    const updatedState = DGTableReducer(
+    const updatedState = DGDataViewReducer(
       state,
       loadBreadcrumbSettings({
         test: {

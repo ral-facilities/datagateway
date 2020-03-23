@@ -3,7 +3,7 @@ import { AnyAction } from 'redux';
 import { DGCommonState } from 'datagateway-common';
 import { FeatureSwitches, BreadcrumbSettings } from './actions/actions.types';
 
-export interface DGTableState {
+export interface DGDataViewState {
   res?: ApplicationStrings;
   features: FeatureSwitches;
   breadcrumbSettings: BreadcrumbSettings;
@@ -26,7 +26,7 @@ export interface ApplicationStrings {
 }
 
 export type StateType = {
-  dgtable: DGTableState;
+  dgdataview: DGDataViewState;
 } & DGCommonState;
 
 export interface ActionType<T> {
