@@ -6,7 +6,7 @@ import { Grid, Typography, Paper, Switch } from '@material-ui/core';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { Route } from 'react-router';
-import CardView from '../card/card.component';
+import CardView from '../card/cardView.component';
 
 interface PageContainerState {
   toggleCard: boolean;
