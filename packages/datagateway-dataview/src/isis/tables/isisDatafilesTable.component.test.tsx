@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import ISISDatafilesTable from './isisDatafilesTable.component';
-import { initialState as dgTableInitialState } from '../../state/reducers/dgtable.reducer';
+import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
@@ -39,7 +39,7 @@ describe('ISIS datafiles table component', () => {
     mockStore = configureStore([thunk]);
     state = JSON.parse(
       JSON.stringify({
-        dgtable: dgTableInitialState,
+        dgdataview: dgDataViewInitialState,
         dgcommon: dGCommonInitialState,
       })
     );
@@ -94,7 +94,7 @@ describe('ISIS datafiles table component', () => {
     // simulate clearTable action
     testStore = mockStore({
       ...state,
-      dgtable: { ...state.dgtable, sort: {}, filters: {} },
+      dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
     });
     wrapper.setProps({ store: testStore });
 

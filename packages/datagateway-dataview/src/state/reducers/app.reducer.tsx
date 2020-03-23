@@ -1,5 +1,5 @@
 import { combineReducers, Reducer } from 'redux';
-import dGTableReducer from './dgtable.reducer';
+import dGDataViewReducer from './dgdataview.reducer';
 import { dGCommonReducer } from 'datagateway-common';
 import { connectRouter } from 'connected-react-router';
 // history package is part of react-router, which we depend on
@@ -9,7 +9,7 @@ import { History } from 'history';
 const AppReducer = (history: History): Reducer =>
   combineReducers({
     router: connectRouter(history),
-    dgtable: dGTableReducer,
+    dgdataview: dGDataViewReducer,
     dgcommon: dGCommonReducer,
   });
 

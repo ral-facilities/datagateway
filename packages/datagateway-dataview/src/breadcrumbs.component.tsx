@@ -512,7 +512,7 @@ class PageBreadcrumbs extends React.Component<
 const mapStateToProps = (state: StateType): PageBreadcrumbsProps => ({
   apiUrl: state.dgcommon.urls.apiUrl,
   location: state.router.location.pathname,
-  breadcrumbSettings: state.dgtable.breadcrumbSettings,
+  breadcrumbSettings: state.dgdataview.breadcrumbSettings,
 });
 
 export default connect(mapStateToProps)(PageBreadcrumbs);

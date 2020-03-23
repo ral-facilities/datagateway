@@ -78,7 +78,7 @@ document.dispatchEvent(
 
 function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
   return {
-    loading: !state.dgtable.settingsLoaded,
+    loading: !state.dgdataview.settingsLoaded,
   };
 }
 

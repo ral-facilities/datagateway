@@ -1,4 +1,4 @@
-import { DGTableState } from '../app.types';
+import { DGDataViewState } from '../app.types';
 import { createReducer } from 'datagateway-common';
 import {
   FeatureSwitchesPayload,
@@ -10,13 +10,13 @@ import {
   SettingsLoadedType,
 } from '../actions/actions.types';
 
-export const initialState: DGTableState = {
+export const initialState: DGDataViewState = {
   features: {},
   breadcrumbSettings: {},
   settingsLoaded: false,
 };
 
-export function handleSettingsLoaded(state: DGTableState): DGTableState {
+export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
   return {
     ...state,
     settingsLoaded: true,
@@ -24,9 +24,9 @@ export function handleSettingsLoaded(state: DGTableState): DGTableState {
 }
 
 export function handleConfigureStrings(
-  state: DGTableState,
+  state: DGDataViewState,
   payload: ConfigureStringsPayload
-): DGTableState {
+): DGDataViewState {
   return {
     ...state,
     res: payload.res,
@@ -34,9 +34,9 @@ export function handleConfigureStrings(
 }
 
 export function handleConfigureFeatureSwitches(
-  state: DGTableState,
+  state: DGDataViewState,
   payload: FeatureSwitchesPayload
-): DGTableState {
+): DGDataViewState {
   return {
     ...state,
     features: payload.switches,
@@ -46,20 +46,20 @@ export function handleConfigureFeatureSwitches(
 // Reducer for the breadcrumb settings action,
 // in order to add settings to the Redux state.
 export function handleConfigureBreadcrumbSettings(
-  state: DGTableState,
+  state: DGDataViewState,
   payload: ConfigureBreadcrumbSettingsPayload
-): DGTableState {
+): DGDataViewState {
   return {
     ...state,
     breadcrumbSettings: payload.settings,
   };
 }
 
-const DGTableReducer = createReducer(initialState, {
+const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureStringsType]: handleConfigureStrings,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
 });
 
-export default DGTableReducer;
+export default DGDataViewReducer;

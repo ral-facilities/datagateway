@@ -1,7 +1,7 @@
 import { getAppStrings, getString } from './strings';
-import { DGTableState, StateType, AppStrings } from './app.types';
+import { DGDataViewState, StateType, AppStrings } from './app.types';
 import { RouterState } from 'connected-react-router';
-import { initialState as dgTableInitialState } from './reducers/dgtable.reducer';
+import { initialState as dgDataViewInitialState } from './reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 
 describe('strings', () => {
@@ -44,8 +44,8 @@ describe('strings', () => {
       },
     };
 
-    const dgtableState: DGTableState = {
-      ...dgTableInitialState,
+    const dgDataViewState: DGDataViewState = {
+      ...dgDataViewInitialState,
       res: {
         'section-name': testRes,
         'unused-section': otherSection,
@@ -54,7 +54,7 @@ describe('strings', () => {
 
     const state: StateType = {
       router: routerState,
-      dgtable: dgtableState,
+      dgdataview: dgDataViewState,
       dgcommon: dGCommonInitialState,
     };
 
@@ -69,7 +69,7 @@ describe('strings', () => {
     it('returns undefined if res is undefined', () => {
       expect(
         getAppStrings(
-          { ...state, dgtable: { ...state.dgtable, res: undefined } },
+          { ...state, dgdataview: { ...state.dgdataview, res: undefined } },
           'section-name'
         )
       ).toBeUndefined();

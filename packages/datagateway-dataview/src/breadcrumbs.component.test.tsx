@@ -6,7 +6,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { dGCommonInitialState } from 'datagateway-common';
-import { initialState as dgTableInitialState } from './state/reducers/dgtable.reducer';
+import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { StateType } from './state/app.types';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -82,7 +82,7 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgtable: dgTableInitialState,
+        dgdataview: dgDataViewInitialState,
         dgcommon: dGCommonInitialState,
 
         // Initialise our router object to hold location information.
@@ -312,8 +312,8 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
 
     state = JSON.parse(
       JSON.stringify({
-        dgtable: {
-          ...dgTableInitialState,
+        dgdataview: {
+          ...dgDataViewInitialState,
 
           // Set up the breadcrumb settings.
           breadcrumbSettings: {

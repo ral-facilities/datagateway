@@ -4,7 +4,7 @@ import { ReactWrapper } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import { StateType } from './state/app.types';
-import { initialState as dgTableInitialState } from './state/reducers/dgtable.reducer';
+import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 
 import { createShallow } from '@material-ui/core/test-utils';
@@ -36,7 +36,7 @@ describe('PageContainer - Tests', () => {
     state = JSON.parse(
       JSON.stringify({
         dgcommon: { ...dGCommonInitialState, totalDataCount: 101 },
-        dgtable: dgTableInitialState,
+        dgdataview: dgDataViewInitialState,
 
         router: {
           action: 'POP',
