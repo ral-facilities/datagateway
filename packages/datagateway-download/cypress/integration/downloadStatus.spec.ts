@@ -45,7 +45,7 @@ describe('Download Status', () => {
     cy.get('[aria-label="Refresh download status table"]').should('exist');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
       'have.text',
-      'test-file-1'
+      'test-file-4'
     );
     cy.get('[aria-label="Refresh download status table"]').click();
   });
@@ -98,12 +98,12 @@ describe('Download Status', () => {
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-1'
+        'test-file-4'
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
-        'Complete'
+        'Expired'
       );
     });
 
@@ -128,7 +128,7 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
-        'Complete'
+        'Expired'
       );
     });
 
@@ -171,12 +171,12 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-1'
+        'test-file-4'
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
         'have.text',
-        'https'
+        'globus'
       );
 
       cy.get('[aria-rowcount="4"]').should('exist');

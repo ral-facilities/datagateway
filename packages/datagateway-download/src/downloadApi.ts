@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import * as log from 'loglevel';
 import {
   DownloadCart,
@@ -229,6 +229,39 @@ export const downloadPreparedCart: (
     link.click();
     link.remove();
   }
+};
+
+export const getDownloadTypeStatus: (
+  transportType: string,
+  settings: { facilityName: string; downloadApiUrl: string }
+) => Promise<{ disabled: boolean; message: string } | null> = (
+  transportType: string,
+  settings: { facilityName: string; downloadApiUrl: string }
+) => {
+  return axios
+    .get(
+      `${settings.downloadApiUrl}/user/downloadType/${transportType}/status`,
+      {
+        params: {
+          sessionId: readSciGatewayToken().sessionId,
+          facilityName: settings.facilityName,
+        },
+      }
+    )
+    .then(
+      (
+        response: AxiosResponse<{
+          disabled: boolean;
+          message: string;
+        }>
+      ) => {
+        return response.data;
+      }
+    )
+    .catch(error => {
+      if (error) handleICATError(error);
+      return null;
+    });
 };
 
 export const downloadDeleted: (
