@@ -525,14 +525,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                       />
                                     </svg>
                                   </div>
-                                </div>
-                              </div>
-                              <div
-                                class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                              >
-                                <span
-                                  style="padding-top: 20px;"
-                                >
                                   <p
                                     class="MuiFormHelperText-root MuiFormHelperText-filled"
                                     id="confirm-access-method-help"
@@ -2744,14 +2736,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                             />
                                                                                                           </svg>
                                                                                                         </div>
-                                                                                                      </div>
-                                                                                                    </div>
-                                                                                                    <div
-                                                                                                      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                                                                                                    >
-                                                                                                      <span
-                                                                                                        style="padding-top: 20px;"
-                                                                                                      >
                                                                                                         <p
                                                                                                           class="MuiFormHelperText-root MuiFormHelperText-filled"
                                                                                                           id="confirm-access-method-help"
@@ -4433,14 +4417,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       />
                                     </svg>
                                   </div>
-                                </div>
-                              </div>
-                              <div
-                                class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                              >
-                                <span
-                                  style="padding-top: 20px;"
-                                >
                                   <p
                                     class="MuiFormHelperText-root MuiFormHelperText-filled"
                                     id="confirm-access-method-help"
@@ -6700,14 +6676,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                             />
                                                                                                           </svg>
                                                                                                         </div>
-                                                                                                      </div>
-                                                                                                    </div>
-                                                                                                    <div
-                                                                                                      class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
-                                                                                                    >
-                                                                                                      <span
-                                                                                                        style="padding-top: 20px;"
-                                                                                                      >
                                                                                                         <p
                                                                                                           class="MuiFormHelperText-root MuiFormHelperText-filled"
                                                                                                           id="confirm-access-method-help"
