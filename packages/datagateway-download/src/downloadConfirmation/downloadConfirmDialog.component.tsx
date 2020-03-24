@@ -131,7 +131,14 @@ interface DownloadConfirmAccessMethod {
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { classes, redirectToStatusTab, setClose, clearCart } = props;
+  const {
+    totalSize,
+    isTwoLevel,
+    classes,
+    redirectToStatusTab,
+    setClose,
+    clearCart,
+  } = props;
 
   // Load the settings for use.
   const settings = React.useContext(DownloadSettingsContext);
@@ -140,23 +147,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [statusMethods, setStatusMethods] = React.useState<
     DownloadConfirmAccessMethod
   >(
-    Object.keys(settings.accessMethods)
-      .map(key => {
-        return { method: key, methodInfo: settings.accessMethods[key] };
-      })
-      .reduce(
-        (obj, item) => ({
-          ...obj,
-          [item.method]: {
-            ...settings.accessMethods[item.method],
-
-            // Set disabled to be true by default.
-            disabled: true,
-            message: '',
-          },
-        }),
-        {}
-      )
+    (): DownloadConfirmAccessMethod => {
+      // Create an updated status method with disabled and message properties.
+      let defaultStatusMethods: DownloadConfirmAccessMethod = {};
+      for (const method in settings.accessMethods)
+        defaultStatusMethods[method] = {
+          ...settings.accessMethods[method],
+          disabled: true,
+          message: '',
+        };
+      return defaultStatusMethods;
+    }
   );
   const [requestStatus, setRequestStatus] = React.useState(false);
   const [loadedStatus, setLoadedStatus] = React.useState(false);
@@ -176,10 +177,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   >([]);
   const [isSorted, setIsSorted] = React.useState(false);
   const [methodsUnavailable, setMethodsUnavailable] = React.useState(false);
-
-  // Size and two-level.
-  const { totalSize } = props;
-  const { isTwoLevel } = props;
 
   // Download speed/time table.
   const [showDownloadTime, setShowDownloadTime] = React.useState(true);
@@ -258,17 +255,17 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     async function getStatus(): Promise<void> {
       let statusErrors: string[] = [];
       Promise.all(
-        Object.entries(statusMethods).map(([method]) =>
+        Object.keys(statusMethods).map(method =>
           getDownloadTypeStatus(method, {
             facilityName: settings.facilityName,
             downloadApiUrl: settings.downloadApiUrl,
           })
         )
-      ).then(methodStatus => {
+      ).then(methodStatuses => {
         // Loop through all the current access methods and match that
         // to the status information we received for each.
-        Object.entries(statusMethods).forEach(([method], index) => {
-          const status = methodStatus[index];
+        Object.keys(statusMethods).forEach((method, index) => {
+          const status = methodStatuses[index];
           if (status) {
             setStatusMethods(prevState => {
               return {
@@ -303,13 +300,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         if (statusErrors.length < Object.keys(statusMethods).length) {
           for (const method of statusErrors) {
             broadcastError(
-              `Access method ${method.toUpperCase()} is currently unavailable. If required, use an alternative method.`
+              `The status of access method ${method.toUpperCase()} is unable to be fetched. If required, use an alternative method.`
             );
           }
         } else {
           setMethodsUnavailable(true);
           broadcastError(
-            'Download access methods are unavailable. Please try again later.'
+            'Download access method statuses unable to be fetched. Please try again later.'
           );
         }
 
