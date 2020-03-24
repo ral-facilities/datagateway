@@ -143,10 +143,13 @@ describe('Download Cart', () => {
     );
   });
 
-  it('should be able open the download confirmation dialog', () => {
+  it('should be able open and close the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
     cy.contains('Download Cart').click();
 
     cy.get('[aria-label="download-confirm-dialog"]').should('exist');
+    cy.get('[aria-label="download-confirmation-close"]')
+      .should('exist')
+      .click();
   });
 });

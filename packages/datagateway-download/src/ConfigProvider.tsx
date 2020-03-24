@@ -3,19 +3,21 @@ import { Preloader } from 'datagateway-common';
 import * as log from 'loglevel';
 import React from 'react';
 
+export interface DownloadSettingsAccessMethod {
+  [type: string]: {
+    idsUrl: string;
+    displayName?: string;
+    description?: string;
+  };
+}
+
 export interface DownloadSettings {
   facilityName: string;
   apiUrl: string;
   downloadApiUrl: string;
   idsUrl: string;
 
-  accessMethods: {
-    [type: string]: {
-      idsUrl: string;
-      displayName?: string;
-      description?: string;
-    };
-  };
+  accessMethods: DownloadSettingsAccessMethod;
 }
 
 const initialConfiguration = {
