@@ -8,7 +8,8 @@ import {
   Typography,
   Chip,
   Divider,
-  Grid,
+  GridList,
+  GridListTile,
 } from '@material-ui/core';
 import {
   Entity,
@@ -69,6 +70,17 @@ const useCardStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+// const useCardViewStyles = makeStyles((theme: Theme) =>
+//   createStyles({
+//     root: {
+//       backgroundColor: theme.palette.background.paper,
+//     },
+//     cardList: {
+//       padding: theme.spacing(1),
+//     },
+//   })
+// );
 
 interface EntityCardProps {
   title: string;
@@ -194,6 +206,7 @@ type CardViewCombinedProps = CardViewProps & CardViewDispatchProps;
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // props
   const { data, fetchData } = props;
+  // const classes = useCardViewStyles();
 
   const [fetchedData, setFetchedData] = React.useState(false);
 
@@ -213,21 +226,23 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
   return (
-    <Grid container spacing={8} justify="center">
+    <GridList cols={1}>
       {(data as Investigation[]).map((investigation, index) => {
         return (
-          <EntityCard
-            key={index}
-            title={investigation.TITLE}
-            summary={investigation.SUMMARY}
-            startDate={investigation.STARTDATE}
-            endDate={investigation.ENDDATE}
-            doi={investigation.DOI}
-            visitId={investigation.VISIT_ID}
-          />
+          <GridListTile key={index}>
+            <EntityCard
+              key={index}
+              title={investigation.TITLE}
+              summary={investigation.SUMMARY}
+              startDate={investigation.STARTDATE}
+              endDate={investigation.ENDDATE}
+              doi={investigation.DOI}
+              visitId={investigation.VISIT_ID}
+            />
+          </GridListTile>
         );
       })}
-    </Grid>
+    </GridList>
   );
 };
 

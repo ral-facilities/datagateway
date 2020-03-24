@@ -66,7 +66,9 @@ class PageContainer extends React.Component<
 
         <Grid item xs={12} aria-label="container-table">
           {this.state.toggleCard ? (
-            <CardView />
+            <Paper square>
+              <CardView />
+            </Paper>
           ) : (
             // Place table in Paper component which adjusts for the height
             // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
