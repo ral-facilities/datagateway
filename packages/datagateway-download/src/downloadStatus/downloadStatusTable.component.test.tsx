@@ -299,11 +299,11 @@ describe('Download Status Table', () => {
 
     accessMethodSortLabel.simulate('click');
 
-    expect(firstNameCell.text()).toEqual('test-file-2');
+    expect(firstNameCell.text()).toEqual('test-file-4');
 
     accessMethodSortLabel.simulate('click');
 
-    expect(firstNameCell.text()).toEqual('test-file-1');
+    expect(firstNameCell.text()).toEqual('test-file-3');
 
     // Get the download name sort header.
     const nameSortLabel = wrapper
@@ -320,7 +320,7 @@ describe('Download Status Table', () => {
 
     nameSortLabel.simulate('click');
 
-    expect(firstNameCell.text()).toEqual('test-file-1');
+    expect(firstNameCell.text()).toEqual('test-file-3');
   });
 
   it('filters data when text fields are typed into', async () => {

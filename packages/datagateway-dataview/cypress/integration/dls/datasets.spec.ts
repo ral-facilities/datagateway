@@ -9,6 +9,13 @@ describe('DLS - Datasets Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
+  it('should not load incorrect URL', () => {
+    cy.visit('/browse/proposal/INVESTIGATION%202/investigation/1/dataset');
+
+    cy.contains('Oops!').should('be.visible');
+    cy.get('[role="grid"]').should('not.exist');
+  });
+
   it('should be able to click a dataset to see its datafiles', () => {
     cy.get('[role="gridcell"] a')
       .first()

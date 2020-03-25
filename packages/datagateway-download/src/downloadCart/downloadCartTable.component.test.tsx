@@ -190,8 +190,18 @@ describe('Download cart table component', () => {
       false
     );
 
-    act(() => {
-      wrapper.find('button#downloadCartButton').simulate('click');
+    wrapper.find('button#downloadCartButton').simulate('click');
+
+    // Update the wrapper with the loading dialog.
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Update the wrapper with the download confirmation dialog.
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
     });
 
     expect(wrapper.exists('[aria-labelledby="downloadCartConfirmation"]')).toBe(

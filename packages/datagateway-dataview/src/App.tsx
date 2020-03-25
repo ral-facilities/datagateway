@@ -19,6 +19,7 @@ import {
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Preloader } from 'datagateway-common';
+import { saveApiUrlMiddleware } from './idCheckFunctions';
 
 import {
   createGenerateClassName,
@@ -37,12 +38,20 @@ const generateClassName = createGenerateClassName({
 });
 
 const history = createBrowserHistory();
-const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
+const middleware = [
+  thunk,
+  routerMiddleware(history),
+  DGCommonMiddleware,
+  saveApiUrlMiddleware,
+];
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const logger = (createLogger as any)();
   middleware.push(logger);
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  whyDidYouRender(React);
 }
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
