@@ -25,7 +25,6 @@ class PageContainer extends React.Component<
   }
 
   public handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log(event.target.name, event.target.checked);
     this.setState({ ...this.state, [event.target.name]: event.target.checked });
   };
 
@@ -65,20 +64,15 @@ class PageContainer extends React.Component<
         {/* Hold the table for remainder of the page */}
 
         <Grid item xs={12} aria-label="container-table">
-          {this.state.toggleCard ? (
-            <Paper square>
+          <Paper square style={{ height: 'calc(100vh - 95px)', width: '100%' }}>
+            {this.state.toggleCard ? (
+              // Place table in Paper component which adjusts for the height
+              // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
               <CardView />
-            </Paper>
-          ) : (
-            // Place table in Paper component which adjusts for the height
-            // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
-            <Paper
-              square
-              style={{ height: 'calc(100vh - 95px)', width: '100%' }}
-            >
+            ) : (
               <PageTable />
-            </Paper>
-          )}
+            )}
+          </Paper>
         </Grid>
       </Grid>
     );

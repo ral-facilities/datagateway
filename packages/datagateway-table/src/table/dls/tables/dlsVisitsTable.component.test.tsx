@@ -18,6 +18,7 @@ import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { Button } from '@material-ui/core';
 
 describe('DLS Visits table component', () => {
   let shallow;
@@ -188,7 +189,7 @@ describe('DLS Visits table component', () => {
     expect(testStore.getActions()[1]).toEqual(sortTable('VISIT_ID', 'asc'));
   });
 
-  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
+  it.only('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -211,6 +212,8 @@ describe('DLS Visits table component', () => {
         detailsPanelResize: jest.fn(),
       })
     );
+
+    console.log(wrapper.find(Button).debug());
 
     expect(testStore.getActions()[1]).toEqual(
       fetchInvestigationDetailsRequest()

@@ -8,9 +8,11 @@ import {
   Typography,
   Chip,
   Divider,
-  GridList,
-  GridListTile,
+  List,
+  ListItem,
+  Grid,
 } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 import {
   Entity,
   fetchInvestigations,
@@ -71,16 +73,14 @@ const useCardStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// const useCardViewStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//     root: {
-//       backgroundColor: theme.palette.background.paper,
-//     },
-//     cardList: {
-//       padding: theme.spacing(1),
-//     },
-//   })
-// );
+const useCardViewStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.background.paper,
+      margin: '10px',
+    },
+  })
+);
 
 interface EntityCardProps {
   title: string;
@@ -137,6 +137,8 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
               - title/description
               - tags  */}
           <div>
+            {/* TODO: Title needs to be cut off if it breaks the set width of the column
+                  Show it in a tooltip as well */}
             <Typography component="h5" variant="h5">
               {title}
             </Typography>
@@ -201,48 +203,83 @@ interface CardViewDispatchProps {
 
 type CardViewCombinedProps = CardViewProps & CardViewDispatchProps;
 
+// TODO: CardView needs URL support:
+//        - pagination (?page=)
+//        - searching (?search=)
+//        - sort (?sort=)
 // TODO: Place Cards within a grid view.
 //       Look at how datagateway-search separates search box with results.
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
+  // const maxItems = 10;
+  const [page, setPage] = React.useState(1);
+
   // props
   const { data, fetchData } = props;
-  // const classes = useCardViewStyles();
+  const classes = useCardViewStyles();
 
   const [fetchedData, setFetchedData] = React.useState(false);
+  // const [viewData, setViewData] = React.useState<Investigation[]>([]);
 
   console.log(data);
 
   // TODO: Why is function not working in this component?
   //       This function will not get called on the first render/mount of a component intentionally.
   // useAfterMountEffect(() => {
-  // TODO: fetch the data.
-  // fetchData();
+  //    TODO: fetch the data.
+  //    fetchData();
   // });
+
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    pageNum: number
+  ): void => {
+    setPage(pageNum);
+  };
 
   React.useEffect(() => {
     if (!fetchedData) fetchData();
     setFetchedData(true);
-  }, [fetchData, fetchedData, setFetchedData]);
+
+    // setViewData(data.slice())
+  }, [data, fetchData, fetchedData, setFetchedData]);
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
   return (
-    <GridList cols={1}>
-      {(data as Investigation[]).map((investigation, index) => {
-        return (
-          <GridListTile key={index}>
-            <EntityCard
-              key={index}
-              title={investigation.TITLE}
-              summary={investigation.SUMMARY}
-              startDate={investigation.STARTDATE}
-              endDate={investigation.ENDDATE}
-              doi={investigation.DOI}
-              visitId={investigation.VISIT_ID}
-            />
-          </GridListTile>
-        );
-      })}
-    </GridList>
+    <Grid container direction="column">
+      <Grid item xs>
+        {page}
+      </Grid>
+
+      {/* TODO: Pagination component */}
+      <Grid item xs>
+        <Pagination count={10} page={page} onChange={handlePageChange} />
+      </Grid>
+
+      <Grid item xs>
+        <List>
+          {(data as Investigation[]).map((investigation, index) => {
+            return (
+              // <GridListTile key={index} className={classes.root}>
+              <ListItem
+                key={index}
+                alignItems="flex-start"
+                className={classes.root}
+              >
+                <EntityCard
+                  title={investigation.TITLE}
+                  summary={investigation.SUMMARY}
+                  startDate={investigation.STARTDATE}
+                  endDate={investigation.ENDDATE}
+                  doi={investigation.DOI}
+                  visitId={investigation.VISIT_ID}
+                />
+              </ListItem>
+              // </GridListTile>
+            );
+          })}
+        </List>
+      </Grid>
+    </Grid>
   );
 };
 
