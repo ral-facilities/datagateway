@@ -62,6 +62,7 @@ exports[`Dataset details panel component renders calculate size button when size
        
       <WithStyles(ForwardRef(Button))
         color="primary"
+        id="calculate-size-btn"
         onClick={[Function]}
         size="small"
         variant="outlined"
@@ -135,6 +136,7 @@ exports[`Dataset details panel component renders correctly 1`] = `
        
       <WithStyles(ForwardRef(Button))
         color="primary"
+        id="calculate-size-btn"
         onClick={[Function]}
         size="small"
         variant="outlined"
@@ -214,6 +216,7 @@ exports[`Dataset details panel component renders type tab when present in the da
        
       <WithStyles(ForwardRef(Button))
         color="primary"
+        id="calculate-size-btn"
         onClick={[Function]}
         size="small"
         variant="outlined"

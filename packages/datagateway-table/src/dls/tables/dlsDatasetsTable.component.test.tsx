@@ -10,6 +10,7 @@ import {
   sortTable,
   fetchDatasetDetailsRequest,
   fetchDatasetCountRequest,
+  fetchDatasetSizeRequest,
   removeFromCartRequest,
   addToCartRequest,
   dGCommonInitialState,
@@ -290,6 +291,31 @@ describe('DLS Dataset table component', () => {
     );
 
     expect(testStore.getActions()[1]).toEqual(fetchDatasetDetailsRequest());
+  });
+
+  it('sends off an FetchDatasetSize action when Calculate button is clicked', () => {
+    const { SIZE, ...rowDataWithoutSize } = state.dgcommon.data[0];
+    let newState = state;
+    newState.dgcommon.data[0] = rowDataWithoutSize;
+    const testStore = mockStore(newState);
+
+    let wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DLSDatasetsTable investigationId="1" proposalName="Proposal 1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="Show details"]')
+      .first()
+      .simulate('click');
+
+    const button = wrapper.find('#calculate-size-btn').first();
+    button.simulate('click');
+
+    expect(testStore.getActions()[2]).toEqual(fetchDatasetSizeRequest());
   });
 
   it('renders Dataset title as a link', () => {

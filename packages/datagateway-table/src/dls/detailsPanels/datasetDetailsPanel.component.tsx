@@ -80,6 +80,7 @@ const DatasetDetailsPanel = (
               variant="outlined"
               color="primary"
               size="small"
+              id="calculate-size-btn"
             >
               Calculate
             </Button>
