@@ -210,17 +210,21 @@ type CardViewCombinedProps = CardViewProps & CardViewDispatchProps;
 // TODO: Place Cards within a grid view.
 //       Look at how datagateway-search separates search box with results.
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
-  // const maxItems = 10;
-  const [page, setPage] = React.useState(1);
-
-  // props
+  // Props.
   const { data, fetchData } = props;
   const classes = useCardViewStyles();
 
+  // Card data.
   const [fetchedData, setFetchedData] = React.useState(false);
-  // const [viewData, setViewData] = React.useState<Investigation[]>([]);
+  const [viewData, setViewData] = React.useState<Entity[]>([]);
 
-  console.log(data);
+  // Pagination.
+  // TODO: Data needs to be fetched from the API page by page.
+  const maxPageItems = 10;
+  const [page, setPage] = React.useState(1);
+  const [numPages, setNumPages] = React.useState(-1);
+  const [startIndex, setStartIndex] = React.useState(-1);
+  const [endIndex, setEndIndex] = React.useState(-1);
 
   // TODO: Why is function not working in this component?
   //       This function will not get called on the first render/mount of a component intentionally.
@@ -236,30 +240,50 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     setPage(pageNum);
   };
 
-  React.useEffect(() => {
-    if (!fetchedData) fetchData();
-    setFetchedData(true);
+  React.useEffect(
+    () => {
+      // console.log('Data length: ', data.length);
 
-    // setViewData(data.slice())
-  }, [data, fetchData, fetchedData, setFetchedData]);
+      // Fetch card data.
+      if (!fetchedData) {
+        fetchData();
+        setFetchedData(true);
+      }
+
+      // Calculate the maximum pages needed for pagination.
+      setNumPages(Math.floor((data.length + maxPageItems - 1) / maxPageItems));
+      console.log('Number of pages: ', numPages);
+
+      // Calculate the start/end indexes for the data.
+      setStartIndex(page * maxPageItems - (maxPageItems - 1) - 1);
+      console.log('Start index: ', startIndex);
+
+      // End index not incremented for slice method.
+      setEndIndex(Math.min(startIndex + maxPageItems, data.length));
+      console.log('End index: ', endIndex);
+
+      if (numPages !== -1 && startIndex !== -1 && endIndex !== -1) {
+        console.log(data.slice(startIndex, endIndex));
+        setViewData(data.slice(startIndex, endIndex));
+        // console.log('Current CardView data: ', viewData);
+      }
+    },
+    // TODO: Adding viewData dependency causes a loop?
+    [data, page, numPages, startIndex, endIndex, fetchData, fetchedData]
+  );
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
   return (
     <Grid container direction="column">
-      <Grid item xs>
+      {/* <Grid item xs>
         {page}
-      </Grid>
+      </Grid> */}
 
-      {/* TODO: Pagination component */}
-      <Grid item xs>
-        <Pagination count={10} page={page} onChange={handlePageChange} />
-      </Grid>
-
+      {/* Card data */}
       <Grid item xs>
         <List>
-          {(data as Investigation[]).map((investigation, index) => {
+          {(viewData as Investigation[]).map((investigation, index) => {
             return (
-              // <GridListTile key={index} className={classes.root}>
               <ListItem
                 key={index}
                 alignItems="flex-start"
@@ -274,10 +298,14 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   visitId={investigation.VISIT_ID}
                 />
               </ListItem>
-              // </GridListTile>
             );
           })}
         </List>
+      </Grid>
+
+      {/* TODO: Page jumps up on every other page click on the pagination component. */}
+      <Grid item xs>
+        <Pagination count={numPages} page={page} onChange={handlePageChange} />
       </Grid>
     </Grid>
   );
