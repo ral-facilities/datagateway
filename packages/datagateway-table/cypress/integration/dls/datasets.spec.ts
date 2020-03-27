@@ -220,7 +220,7 @@ describe('DLS - Datasets Table', () => {
         .click();
 
       cy.contains('Calculate').click();
-      cy.contains('10.72 GB').should('be.visible');
+      cy.contains('5.51 GB').should('be.visible');
     });
 
     it('and view the dataset type panel', () => {
