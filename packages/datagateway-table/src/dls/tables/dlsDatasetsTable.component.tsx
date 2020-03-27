@@ -13,7 +13,7 @@ import {
   fetchDatasets,
   fetchDatasetDetails,
   fetchDatasetCount,
-  fetchInvestigationSize,
+  fetchDatasetSize,
   addToCart,
   removeFromCart,
   fetchAllIds,
@@ -217,8 +217,7 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  fetchSize: (investigationId: number) =>
-    dispatch(fetchInvestigationSize(investigationId)),
+  fetchSize: (datasetId: number) => dispatch(fetchDatasetSize(datasetId)),
 });
 
 const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
