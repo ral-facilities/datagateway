@@ -74,7 +74,11 @@ const useStylesArrow = makeStyles((theme: Theme) =>
   })
 );
 
-const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
+const ArrowTooltip = (
+  props: TooltipProps & { percentageWidth?: number }
+): React.ReactElement => {
+  const { percentageWidth } = props;
+
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
@@ -89,16 +93,31 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
         // The 0.2 here means 20% of the viewport width, which is set as
         // the max width for the breadcrumb in the CSS style.
 
-        // Check to ensure whether the tooltip should be visible.
-        if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
+        if (percentageWidth) {
+          // Check to ensure whether the tooltip should be visible given the width provided.
+          console.log('Innerwidth: ', window.innerWidth);
+          console.log('Offsetwidth: ', tooltipElement.current.offsetWidth);
+          console.log(
+            'calculated: ',
+            tooltipElement.current.offsetWidth / window.innerWidth
+          );
+          console.log('maxWidth: ', percentageWidth);
+          console.log('tooltip: ', percentageWidth / 100);
+          if (
+            tooltipElement.current.offsetWidth / window.innerWidth >=
+            percentageWidth / 100
+          )
+            setTooltipVisible(true);
+          else setTooltipVisible(false);
+        } else {
           setTooltipVisible(true);
-        else setTooltipVisible(false);
+        }
       }
     }
     window.addEventListener('resize', updateTooltip);
     updateTooltip();
     return () => window.removeEventListener('resize', updateTooltip);
-  }, [tooltipElement, setTooltipVisible]);
+  }, [tooltipElement, setTooltipVisible, percentageWidth]);
 
   return (
     <Tooltip

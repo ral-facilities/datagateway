@@ -11,6 +11,10 @@ import {
   List,
   ListItem,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import {
@@ -24,6 +28,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
+import ArrowTooltip from '../page/arrowtooltip.component';
 // import useAfterMountEffect from '../utils';
 
 // TODO: Understand CSS flexbox to style this correctly OR use Grid/GridList instead of Card?
@@ -31,7 +36,7 @@ const useCardStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      maxWidth: 800,
+      maxWidth: 900,
       backgroundColor: theme.palette.background.paper,
     },
     // TODO: Automatically size to card size?
@@ -48,9 +53,26 @@ const useCardStyles = makeStyles((theme: Theme) =>
       // Have contents arranged in columns.
       flexDirection: 'column',
 
-      // Give more space to main information.
-      width: 400,
+      // This is the width of the entire title container
+      // (it won't exceed 30% of the viewport width).
+      width: '30vw',
       paddingRight: '10px',
+    },
+
+    // NOTE: Styling specifically for the title as we want
+    //       the text to take up only the width it needs so we
+    //       know when to show the arrow toolip when the text has
+    //       overflowed the maximum width given for the title.
+    title: {
+      display: 'inline-block',
+      whiteSpace: 'nowrap',
+      maxWidth: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+
+      // '& span': {
+      //   display: 'block',
+      // },
     },
 
     further: {
@@ -78,6 +100,10 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
     root: {
       backgroundColor: theme.palette.background.paper,
       margin: '10px',
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
     },
   })
 );
@@ -139,9 +165,14 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           <div>
             {/* TODO: Title needs to be cut off if it breaks the set width of the column
                   Show it in a tooltip as well */}
-            <Typography component="h5" variant="h5">
-              {title}
-            </Typography>
+            {/* TODO: The title needs to link to the next entity (investigation/dataset) - or have it as the whole card? */}
+            {/* TODO: Delay not consistent between cards? */}
+            <ArrowTooltip title={title} enterDelay={500} percentageWidth={30}>
+              <Typography className={classes.title} component="h5" variant="h5">
+                <span>{title}</span>
+              </Typography>
+            </ArrowTooltip>
+
             {/* TODO: Maybe include option to have read more if description is too long? 
                       Similar to collapsible 
             */}
@@ -220,30 +251,14 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   // Pagination.
   // TODO: Data needs to be fetched from the API page by page.
-  const maxPageItems = 10;
+  const [maxResults, setMaxResults] = React.useState(10);
   const [page, setPage] = React.useState(1);
   const [numPages, setNumPages] = React.useState(-1);
   const [startIndex, setStartIndex] = React.useState(-1);
   const [endIndex, setEndIndex] = React.useState(-1);
 
-  // TODO: Why is function not working in this component?
-  //       This function will not get called on the first render/mount of a component intentionally.
-  // useAfterMountEffect(() => {
-  //    TODO: fetch the data.
-  //    fetchData();
-  // });
-
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    pageNum: number
-  ): void => {
-    setPage(pageNum);
-  };
-
   React.useEffect(
     () => {
-      // console.log('Data length: ', data.length);
-
       // Fetch card data.
       if (!fetchedData) {
         fetchData();
@@ -251,33 +266,55 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       }
 
       // Calculate the maximum pages needed for pagination.
-      setNumPages(Math.floor((data.length + maxPageItems - 1) / maxPageItems));
+      setNumPages(~~((data.length + maxResults - 1) / maxResults));
       console.log('Number of pages: ', numPages);
 
       // Calculate the start/end indexes for the data.
-      setStartIndex(page * maxPageItems - (maxPageItems - 1) - 1);
+      setStartIndex(page * maxResults - (maxResults - 1) - 1);
       console.log('Start index: ', startIndex);
 
       // End index not incremented for slice method.
-      setEndIndex(Math.min(startIndex + maxPageItems, data.length));
+      setEndIndex(Math.min(startIndex + maxResults, data.length));
       console.log('End index: ', endIndex);
 
       if (numPages !== -1 && startIndex !== -1 && endIndex !== -1) {
         console.log(data.slice(startIndex, endIndex));
         setViewData(data.slice(startIndex, endIndex));
-        // console.log('Current CardView data: ', viewData);
       }
     },
     // TODO: Adding viewData dependency causes a loop?
-    [data, page, numPages, startIndex, endIndex, fetchData, fetchedData]
+    [
+      data,
+      maxResults,
+      page,
+      numPages,
+      startIndex,
+      endIndex,
+      fetchData,
+      fetchedData,
+    ]
   );
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
   return (
     <Grid container direction="column">
-      {/* <Grid item xs>
-        {page}
-      </Grid> */}
+      <Grid item xs>
+        <FormControl className={classes.formControl}>
+          <InputLabel id="select-max-results-label">Max Results</InputLabel>
+          <Select
+            labelId="select-max-results-label"
+            id="select-max-results"
+            value={maxResults}
+            onChange={e => {
+              setMaxResults(e.target.value as number);
+            }}
+          >
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+            <MenuItem value={30}>30</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
       {/* Card data */}
       <Grid item xs>
@@ -305,7 +342,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
       {/* TODO: Page jumps up on every other page click on the pagination component. */}
       <Grid item xs>
-        <Pagination count={numPages} page={page} onChange={handlePageChange} />
+        <Pagination
+          count={numPages}
+          page={page}
+          onChange={(e, pageNum) => {
+            setPage(pageNum);
+          }}
+        />
       </Grid>
     </Grid>
   );

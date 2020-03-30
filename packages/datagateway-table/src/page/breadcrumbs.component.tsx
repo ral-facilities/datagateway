@@ -58,8 +58,11 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
   }
 
   public render(): React.ReactElement {
+    console.log(this.props.displayName);
+
     return (
       // We give the tooltip component the content (title) as the display content.
+      // Passing the 20 as it is the viewport width we allow text to be shown before displaying the tooltip.
       <ArrowTooltip title={this.props.displayName}>
         <div>
           {this.props.url ? (
@@ -180,6 +183,8 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
           },
         },
       },
+
+      /* Control the width and shortening of text */
       '& span': {
         display: 'block',
         whiteSpace: 'nowrap',
@@ -249,7 +254,7 @@ class PageBreadcrumbs extends React.Component<
           //       as currently it adds an 's' to the word disregarding
           //       the current language the application is being served in.
           displayName:
-            `${baseEntityName}`.charAt(0).toUpperCase() +
+            `${baseEntityName}`[0].toUpperCase() +
             `${baseEntityName}s`.slice(1),
           url: `/${this.currentPathnames.slice(0, 2).join('/')}`,
           isLast: false,
@@ -380,8 +385,7 @@ class PageBreadcrumbs extends React.Component<
             last: {
               // TODO: Internationalisation; display name is pluralised
               //       irrespective of the language the application is being served in.
-              displayName:
-                `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
+              displayName: `${entity}`[0].toUpperCase() + `${entity}s`.slice(1),
             },
           };
         } else {
