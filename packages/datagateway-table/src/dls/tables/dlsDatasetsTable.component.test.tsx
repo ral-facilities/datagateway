@@ -312,8 +312,10 @@ describe('DLS Dataset table component', () => {
       .first()
       .simulate('click');
 
-    const button = wrapper.find('#calculate-size-btn').first();
-    button.simulate('click');
+    wrapper
+      .find('#calculate-size-btn')
+      .first()
+      .simulate('click');
 
     expect(testStore.getActions()[2]).toEqual(fetchDatasetSizeRequest());
   });

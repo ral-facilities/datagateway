@@ -12,7 +12,7 @@ interface DatasetDetailsPanelProps {
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails } = props;
+  const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
 
   const datasetData = rowData as Dataset;
@@ -74,7 +74,6 @@ const DatasetDetailsPanel = (
           ) : (
             <Button
               onClick={() => {
-                const { fetchSize } = props;
                 fetchSize(datasetData.ID);
               }}
               variant="outlined"

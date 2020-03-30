@@ -241,8 +241,10 @@ describe('DLS Visits table component', () => {
       .first()
       .simulate('click');
 
-    const button = wrapper.find('#calculate-size-btn').first();
-    button.simulate('click');
+    wrapper
+      .find('#calculate-size-btn')
+      .first()
+      .simulate('click');
 
     expect(testStore.getActions()[4]).toEqual(fetchInvestigationSizeRequest());
   });
