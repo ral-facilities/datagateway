@@ -6,12 +6,13 @@ interface DatasetDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize: () => void;
   fetchDetails: (datasetId: number) => Promise<void>;
+  fetchSize: (datasetId: number) => Promise<void>;
 }
 
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails } = props;
+  const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
 
   const datasetData = rowData as Dataset;
@@ -73,11 +74,12 @@ const DatasetDetailsPanel = (
           ) : (
             <Button
               onClick={() => {
-                // TODO
+                fetchSize(datasetData.ID);
               }}
               variant="outlined"
               color="primary"
               size="small"
+              id="calculate-size-btn"
             >
               Calculate
             </Button>

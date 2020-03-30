@@ -182,6 +182,7 @@ exports[`Visit details panel component renders calculate size button when size h
        
       <WithStyles(ForwardRef(Button))
         color="primary"
+        id="calculate-size-btn"
         onClick={[Function]}
         size="small"
         variant="outlined"
