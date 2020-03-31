@@ -6,12 +6,13 @@ interface VisitDetailsPanelProps {
   rowData: Entity;
   detailsPanelResize: () => void;
   fetchDetails: (investigationId: number) => Promise<void>;
+  fetchSize: (datasetId: number) => Promise<void>;
 }
 
 const VisitDetailsPanel = (
   props: VisitDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails } = props;
+  const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
@@ -107,11 +108,12 @@ const VisitDetailsPanel = (
           ) : (
             <Button
               onClick={() => {
-                // TODO
+                fetchSize(investigationData.ID);
               }}
               variant="outlined"
               color="primary"
               size="small"
+              id="calculate-size-btn"
             >
               Calculate
             </Button>

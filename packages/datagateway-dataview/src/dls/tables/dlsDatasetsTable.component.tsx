@@ -13,6 +13,7 @@ import {
   fetchDatasets,
   fetchDatasetDetails,
   fetchDatasetCount,
+  fetchDatasetSize,
   addToCart,
   removeFromCart,
   fetchAllIds,
@@ -61,6 +62,7 @@ interface DLSDatasetsTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
+  fetchSize: (investigationId: number) => Promise<void>;
 }
 
 type DLSDatasetsTableCombinedProps = DLSDatasetsTableProps &
@@ -146,6 +148,7 @@ const DLSDatasetsTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            fetchSize={props.fetchSize}
           />
         );
       }}
@@ -214,6 +217,7 @@ const mapDispatchToProps = (
         },
       ])
     ),
+  fetchSize: (datasetId: number) => dispatch(fetchDatasetSize(datasetId)),
 });
 
 const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {

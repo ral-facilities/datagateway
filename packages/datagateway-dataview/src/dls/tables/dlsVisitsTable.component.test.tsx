@@ -10,6 +10,7 @@ import {
   sortTable,
   fetchInvestigationDetailsRequest,
   fetchInvestigationCountRequest,
+  fetchInvestigationSizeRequest,
   dGCommonInitialState,
   clearTable,
 } from 'datagateway-common';
@@ -215,6 +216,33 @@ describe('DLS Visits table component', () => {
     expect(testStore.getActions()[1]).toEqual(
       fetchInvestigationDetailsRequest()
     );
+  });
+
+  it('sends off an FetchInvestigationSize action when Calculate button is clicked', () => {
+    const { SIZE, ...rowDataWithoutSize } = state.dgcommon.data[0];
+    let newState = state;
+    newState.dgcommon.data[0] = rowDataWithoutSize;
+    const testStore = mockStore(newState);
+
+    let wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DLSVisitsTable proposalName="Test 1" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('[aria-label="Show details"]')
+      .first()
+      .simulate('click');
+
+    wrapper
+      .find('#calculate-size-btn')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions()[2]).toEqual(fetchInvestigationSizeRequest());
   });
 
   it('renders visit ID as a links', () => {

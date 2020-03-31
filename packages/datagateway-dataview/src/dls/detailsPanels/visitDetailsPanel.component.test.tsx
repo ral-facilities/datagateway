@@ -1,6 +1,6 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import VisitsDetailsPanel from './visitDetailsPanel.component';
+import VisitDetailsPanel from './visitDetailsPanel.component';
 import { Investigation } from 'datagateway-common';
 
 describe('Visit details panel component', () => {
@@ -9,6 +9,7 @@ describe('Visit details panel component', () => {
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
   const fetchDetails = jest.fn();
+  const fetchSize = jest.fn();
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -46,10 +47,11 @@ describe('Visit details panel component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -96,10 +98,11 @@ describe('Visit details panel component', () => {
     ];
 
     const wrapper = shallow(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -109,10 +112,11 @@ describe('Visit details panel component', () => {
     const { SIZE, ...rowDataWithoutSize } = rowData;
 
     const wrapper = shallow(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowDataWithoutSize}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -122,17 +126,18 @@ describe('Visit details panel component', () => {
     const { SIZE, ...rowDataWithoutSize } = rowData;
 
     const wrapper = mount(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowDataWithoutSize}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 
     wrapper.find('#visit-details-panel button').simulate('click');
 
-    // TODO: test this calls some action that requests to getSize
-    expect(true);
+    expect(fetchSize).toHaveBeenCalled();
+    expect(fetchSize).toHaveBeenCalledWith(1);
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
@@ -144,10 +149,11 @@ describe('Visit details panel component', () => {
     ];
 
     const wrapper = mount(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 
@@ -163,10 +169,11 @@ describe('Visit details panel component', () => {
 
   it('calls fetchDetails on load if INVESTIGATIONUSER, SAMPLE or PUBLICATIONS are missing', () => {
     mount(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 
@@ -176,10 +183,11 @@ describe('Visit details panel component', () => {
 
     rowData.INVESTIGATIONUSER = [];
     mount(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 
@@ -189,10 +197,11 @@ describe('Visit details panel component', () => {
 
     rowData.SAMPLE = [];
     mount(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
 
@@ -202,10 +211,11 @@ describe('Visit details panel component', () => {
 
     rowData.PUBLICATION = [];
     mount(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(fetchDetails).not.toHaveBeenCalled();
@@ -222,10 +232,11 @@ describe('Visit details panel component', () => {
     ];
 
     const wrapper = shallow(
-      <VisitsDetailsPanel
+      <VisitDetailsPanel
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
       />
     );
     expect(wrapper).toMatchSnapshot();

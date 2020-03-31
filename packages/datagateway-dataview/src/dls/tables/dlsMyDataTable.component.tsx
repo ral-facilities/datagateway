@@ -11,6 +11,7 @@ import {
   fetchInvestigations,
   fetchInvestigationDetails,
   fetchInvestigationCount,
+  fetchInvestigationSize,
   sortTable,
   filterTable,
   clearTable,
@@ -44,6 +45,7 @@ interface DLSMyDataTableDispatchProps {
   fetchCount: (username: string) => Promise<void>;
   clearTable: () => Action;
   fetchDetails: (investigationId: number) => Promise<void>;
+  fetchSize: (investigationId: number) => Promise<void>;
 }
 
 type DLSMyDataTableCombinedProps = DLSMyDataTableStoreProps &
@@ -110,6 +112,7 @@ const DLSMyDataTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            fetchSize={props.fetchSize}
           />
         );
       }}
@@ -224,6 +227,8 @@ const mapDispatchToProps = (
   clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
+  fetchSize: (investigationId: number) =>
+    dispatch(fetchInvestigationSize(investigationId)),
 });
 
 const mapStateToProps = (state: StateType): DLSMyDataTableStoreProps => {

@@ -180,6 +180,20 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
+    it('and then calculate file size', () => {
+      // We need to wait for counts to finish, otherwise cypress
+      // might interact with the details panel too quickly and
+      // it re-renders during the test.
+      cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
+        'exist'
+      );
+      cy.get('[aria-label="Show details"]')
+        .first()
+        .click();
+
+      cy.contains('Calculate').click();
+      cy.contains('10.8 GB').should('be.visible');
+    });
     // TODO: Since we only have one investigation, we cannot test
     // showing details when another row is showing details at the moment.
 
