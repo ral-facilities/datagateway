@@ -21,7 +21,7 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import Mark from './mark.component';
 
-import { formatBytes, MicroFrontendMessageId } from 'datagateway-common';
+import { formatBytes, MicroFrontendId } from 'datagateway-common';
 import {
   submitCart,
   getDownload,
@@ -212,7 +212,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   // Broadcast a SciGateway notification for any error encountered.
   const broadcastError = (errorMessage: string): void => {
     document.dispatchEvent(
-      new CustomEvent(MicroFrontendMessageId, {
+      new CustomEvent(MicroFrontendId, {
         detail: {
           type: 'scigateway:api:notification',
           payload: {
