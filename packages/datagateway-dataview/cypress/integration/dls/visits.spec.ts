@@ -191,9 +191,12 @@ describe('DLS - Visits Table', () => {
         .first()
         .click();
 
-      cy.contains('Calculate').click();
+      cy.contains('#calculate-size-btn', 'Calculate')
+        .should('exist')
+        .click();
       cy.contains('10.8 GB').should('be.visible');
     });
+
     // TODO: Since we only have one investigation, we cannot test
     // showing details when another row is showing details at the moment.
 

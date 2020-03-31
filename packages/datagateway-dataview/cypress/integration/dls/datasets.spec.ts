@@ -226,7 +226,9 @@ describe('DLS - Datasets Table', () => {
         .first()
         .click();
 
-      cy.contains('Calculate').click();
+      cy.contains('#calculate-size-btn', 'Calculate')
+        .should('exist')
+        .click();
       cy.contains('5.51 GB').should('be.visible');
     });
 

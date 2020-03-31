@@ -1,4 +1,4 @@
-describe('DLS - Visits Table', () => {
+describe('DLS - MyData Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
     cy.visit('/my-data/DLS');

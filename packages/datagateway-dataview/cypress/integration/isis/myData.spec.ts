@@ -1,4 +1,4 @@
-describe('ISIS - Investigations Table', () => {
+describe('ISIS - MyData Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
     cy.visit('/my-data/ISIS');
