@@ -96,6 +96,8 @@ export const fetchDatasetSize = (
   return async (dispatch, getState) => {
     dispatch(fetchDatasetSizeRequest());
 
+    // Make use of the facility name and download API url for the request.
+    const { facilityName } = getState().dgcommon;
     const { downloadApiUrl } = getState().dgcommon.urls;
     const currentCache = getState().dgcommon.datasetCache[datasetId];
 
@@ -110,7 +112,7 @@ export const fetchDatasetSize = (
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
             sessionId: readSciGatewayToken().sessionId,
-            facilityName: 'LILS',
+            facilityName: facilityName,
             entityType: 'dataset',
             entityId: datasetId,
           },
