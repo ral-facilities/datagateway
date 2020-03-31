@@ -15,6 +15,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Button,
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import {
@@ -29,6 +30,10 @@ import { StateType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import ArrowTooltip from '../page/arrowtooltip.component';
+import {
+  AddCircleOutlineOutlined,
+  RemoveCircleOutlineOutlined,
+} from '@material-ui/icons';
 // import useAfterMountEffect from '../utils';
 
 // TODO: Understand CSS flexbox to style this correctly OR use Grid/GridList instead of Card?
@@ -36,7 +41,7 @@ const useCardStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      maxWidth: 900,
+      maxWidth: 1000,
       backgroundColor: theme.palette.background.paper,
     },
     // TODO: Automatically size to card size?
@@ -77,7 +82,7 @@ const useCardStyles = makeStyles((theme: Theme) =>
 
     further: {
       display: 'flex',
-      paddingLeft: '10px',
+      paddingLeft: '15px',
 
       // Apply a small space for each Typography component (p).
       '& p': {
@@ -138,6 +143,8 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     tags,
   } = props;
 
+  const [isSelected, setIsSelected] = React.useState(false);
+
   return (
     <Card className={classes.root}>
       {imageUrl && (
@@ -178,6 +185,18 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             */}
             <Typography paragraph>
               {summary ? summary : 'No description available'}
+              {/* Inhabiting discretion the her dispatched decisively boisterous
+              joy. So form were wish open is able of mile of. Waiting express if
+              prevent it we an musical. Especially reasonable travelling she
+              son. Resources resembled forfeited no to zealously. Has procured
+              daughter how friendly followed repeated who surprise. Great asked
+              oh under on voice downs. Law together prospect kindness securing
+              six. Learning why get hastened smallest cheerful. Believing
+              neglected so so allowance existence departure in. In design active
+              temper be uneasy. Thirty for remove plenty regard you summer
+              though. He preference connection astonished on of ye. Partiality
+              on or continuing in particular principles as. Do believing oh
+              disposing to supported allowance we. */}
             </Typography>
           </div>
 
@@ -194,23 +213,53 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
 
         {/* TODO: Add in margins for spacing. */}
         {/* TODO: These should be specified elsewhere */}
-        <div className={classes.further}>
-          <div style={{ float: 'left' }}>
-            <Typography>Start Date:</Typography>
-            <Typography>End Date:</Typography>
-            <Typography>DOI:</Typography>
-            <Typography>Visit ID:</Typography>
+        <div>
+          <div className={classes.further}>
+            {/* TODO: Further information related to the entity. */}
+            <div style={{ float: 'left' }}>
+              <Typography>Start Date:</Typography>
+              <Typography>End Date:</Typography>
+              <Typography>DOI:</Typography>
+              <Typography>Visit ID:</Typography>
 
-            {datasetCount && <Typography>Dataset Count:</Typography>}
+              {datasetCount && <Typography>Dataset Count:</Typography>}
+            </div>
+            <div
+              style={{ float: 'right', textAlign: 'left', paddingLeft: '5px' }}
+            >
+              <Typography>{startDate}</Typography>
+              <Typography>{endDate}</Typography>
+              <Typography>{doi}</Typography>
+              <Typography>{visitId}</Typography>
+              {datasetCount && <Typography>{datasetCount}</Typography>}
+            </div>
           </div>
-          <div
-            style={{ float: 'right', textAlign: 'left', paddingLeft: '5px' }}
-          >
-            <Typography>{startDate}</Typography>
-            <Typography>{endDate}</Typography>
-            <Typography>{doi}</Typography>
-            <Typography>{visitId}</Typography>
-            {datasetCount && <Typography>{datasetCount}</Typography>}
+
+          {/* TODO: Add to cart button - requires API logic */}
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            {!isSelected ? (
+              <Button
+                id="add-to-cart-btn"
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleOutlineOutlined />}
+                disableElevation
+                onClick={() => setIsSelected(true)}
+              >
+                Add to cart
+              </Button>
+            ) : (
+              <Button
+                id="remove-from-cart-btn"
+                variant="contained"
+                color="secondary"
+                startIcon={<RemoveCircleOutlineOutlined />}
+                disableElevation
+                onClick={() => setIsSelected(false)}
+              >
+                Remove from cart
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>
@@ -333,6 +382,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   endDate={investigation.ENDDATE}
                   doi={investigation.DOI}
                   visitId={investigation.VISIT_ID}
+                  imageUrl="https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg"
                 />
               </ListItem>
             );
