@@ -193,7 +193,7 @@ describe('DLS - Visits Table', () => {
 
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
-        .click();
+        .click({ force: true });
       cy.contains('10.8 GB').should('be.visible');
     });
 
