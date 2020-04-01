@@ -1,3 +1,7 @@
+// Parent app name and token in localstorage.
+export const MicroFrontendId = 'scigateway';
+export const MicroFrontendToken = `${MicroFrontendId}:token`;
+
 // TODO: type entities properly
 export interface Investigation {
   ID: number;

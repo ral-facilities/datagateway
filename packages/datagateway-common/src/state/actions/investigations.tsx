@@ -88,7 +88,8 @@ export const fetchInvestigationSize = (
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationSizeRequest());
 
-    // We request the size from the download API.
+    // Make use of the facility name and download API url for the request.
+    const { facilityName } = getState().dgcommon;
     const { downloadApiUrl } = getState().dgcommon.urls;
     const currentCache = getState().dgcommon.investigationCache[
       investigationId
@@ -108,7 +109,7 @@ export const fetchInvestigationSize = (
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
             sessionId: readSciGatewayToken().sessionId,
-            facilityName: 'LILS',
+            facilityName: facilityName,
             entityType: 'investigation',
             entityId: investigationId,
           },

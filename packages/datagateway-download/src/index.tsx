@@ -9,9 +9,10 @@ import jsrsasign from 'jsrsasign';
 import singleSpaReact from 'single-spa-react';
 
 import {
-  MicroFrontendMessageId,
   RequestPluginRerenderType,
   RegisterRouteType,
+  MicroFrontendId,
+  MicroFrontendToken,
 } from 'datagateway-common';
 
 function domElementGetter(): HTMLElement {
@@ -43,7 +44,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener(MicroFrontendMessageId, e => {
+document.addEventListener(MicroFrontendId, e => {
   // attempt to re-render the plugin if the corresponding div is present
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {
@@ -108,7 +109,7 @@ if (
           'shh'
         );
 
-        window.localStorage.setItem('scigateway:token', jwt);
+        window.localStorage.setItem(MicroFrontendToken, jwt);
       })
       .catch(error => console.error(`Can't log in to ICAT: ${error.message}`));
   }
@@ -120,7 +121,7 @@ if (
 serviceWorker.unregister();
 
 document.dispatchEvent(
-  new CustomEvent(MicroFrontendMessageId, {
+  new CustomEvent(MicroFrontendId, {
     detail: {
       type: RegisterRouteType,
       payload: {

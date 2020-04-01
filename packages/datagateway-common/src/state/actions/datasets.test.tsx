@@ -177,6 +177,13 @@ describe('Dataset actions', () => {
       })
     );
 
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+        facilityName: 'LILS',
+      },
+    });
+
     const asyncAction = fetchDatasetSize(1);
     await asyncAction(dispatch, getState, null);
 

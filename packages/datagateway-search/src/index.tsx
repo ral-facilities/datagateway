@@ -9,6 +9,7 @@ import App from './App';
 import * as log from 'loglevel';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';
+import { MicroFrontendToken } from 'datagateway-common';
 
 const pluginName = 'datagateway-search';
 
@@ -60,7 +61,7 @@ if (process.env.NODE_ENV === `development`) {
             'shh'
           );
 
-          window.localStorage.setItem('scigateway:token', jwt);
+          window.localStorage.setItem(MicroFrontendToken, jwt);
         })
         .catch(error => {
           log.error(
