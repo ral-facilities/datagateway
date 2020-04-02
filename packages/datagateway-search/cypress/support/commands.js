@@ -59,7 +59,7 @@ export const readSciGatewayToken = () => {
 
 Cypress.Commands.add('login', (username, password) => {
   return cy
-    .request('POST', 'http://scigateway-preprod.esc.rl.ac.uk:5000', {
+    .request('POST', 'http://scigateway-preprod.esc.rl.ac.uk:5000/sessions', {
       username: username,
       password: password,
     })
