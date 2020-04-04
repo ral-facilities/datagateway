@@ -8,23 +8,41 @@ import PageTable from './pageTable.component';
 import { Route } from 'react-router';
 import CardView from '../card/cardView.component';
 
+interface PageContainerProps {
+  entityCount: number;
+  search: string;
+}
+
 interface PageContainerState {
   toggleCard: boolean;
+  params: {
+    view: string | null;
+    page: number | null;
+  };
 }
 
 class PageContainer extends React.Component<
-  { entityCount: number },
+  PageContainerProps,
   PageContainerState
 > {
-  public constructor(props: { entityCount: number }) {
+  public constructor(props: PageContainerProps) {
     super(props);
+    const queryParams = new URLSearchParams(props.search);
 
     this.state = {
       toggleCard: true,
+
+      // Add in query parameters we look out for.
+      params: {
+        view: queryParams.get('view'),
+        page: Number(queryParams.get('page')),
+      },
     };
+
+    console.log('Container state: ', this.state);
   }
 
-  public handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  public handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ ...this.state, [event.target.name]: event.target.checked });
   };
 
@@ -55,7 +73,7 @@ class PageContainer extends React.Component<
         <Grid item xs={12}>
           <Switch
             checked={this.state.toggleCard}
-            onChange={this.handleChange}
+            onChange={this.handleToggleChange}
             name="toggleCard"
             inputProps={{ 'aria-label': 'secondary checkbox' }}
           />
@@ -84,8 +102,11 @@ class PageContainer extends React.Component<
   }
 }
 
-const mapStateToProps = (state: StateType): { entityCount: number } => ({
+const mapStateToProps = (state: StateType): PageContainerProps => ({
   entityCount: state.dgcommon.totalDataCount,
+
+  // TODO: Pass in relevant query parameters required.
+  search: state.router.location.search,
 });
 
 export default connect(mapStateToProps)(PageContainer);

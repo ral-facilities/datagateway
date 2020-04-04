@@ -16,6 +16,8 @@ import {
   Select,
   MenuItem,
   Button,
+  Collapse,
+  Link,
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import {
@@ -37,30 +39,38 @@ import {
 // import useAfterMountEffect from '../utils';
 
 // TODO: Understand CSS flexbox to style this correctly OR use Grid/GridList instead of Card?
-const useCardStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useCardStyles = makeStyles((theme: Theme) => {
+  // NOTE: This is width of the main content
+  //       (this also matches the description shadow width).
+  const mainWidth = '35vw';
+
+  const styles = createStyles({
     root: {
       display: 'flex',
       maxWidth: 1000,
       backgroundColor: theme.palette.background.paper,
     },
+
     // TODO: Automatically size to card size?
     cardImage: {
       width: 150,
       height: 150,
     },
+
     content: {
       display: 'flex',
       flexDirection: 'row',
     },
+
     main: {
       display: 'flex',
       // Have contents arranged in columns.
       flexDirection: 'column',
 
-      // This is the width of the entire title container
-      // (it won't exceed 30% of the viewport width).
-      width: '30vw',
+      // NOTE: You will also have to change the
+      // This is the width of the entire container
+      // (so title won't exceed 30% of the viewport width).
+      width: mainWidth,
       paddingRight: '10px',
     },
 
@@ -70,7 +80,7 @@ const useCardStyles = makeStyles((theme: Theme) =>
     //       overflowed the maximum width given for the title.
     title: {
       display: 'inline-block',
-      whiteSpace: 'nowrap',
+      // whiteSpace: 'nowrap',
       maxWidth: '100%',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
@@ -78,6 +88,31 @@ const useCardStyles = makeStyles((theme: Theme) =>
       // '& span': {
       //   display: 'block',
       // },
+    },
+
+    description: {
+      '& a': {
+        cursor: 'pointer',
+      },
+    },
+
+    shadowVisible: {
+      position: 'absolute',
+      height: 25,
+      width: mainWidth,
+      top: 130,
+      background: 'linear-gradient(rgba(255, 255, 255, 0), #fff)',
+
+      // Transition showing the shadow.
+      visibility: 'visible',
+      opacity: 1,
+      transition: 'visibility 0s, opacity 0.5s linear',
+    },
+
+    shadowInvisible: {
+      visibility: 'hidden',
+      opacity: 0,
+      transition: 'visibility 0s, opacity 0.5s linear',
     },
 
     further: {
@@ -91,14 +126,15 @@ const useCardStyles = makeStyles((theme: Theme) =>
     },
 
     tags: {
-      paddingTop: '20px',
+      paddingTop: '10px',
     },
 
     chip: {
       margin: theme.spacing(0.5),
     },
-  })
-);
+  });
+  return styles;
+});
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -132,7 +168,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
   const {
     title,
-    summary,
+    // summary,
     startDate,
     endDate,
     doi,
@@ -144,6 +180,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   } = props;
 
   const [isSelected, setIsSelected] = React.useState(false);
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
+
+  const handleCollapseChange = (): void => setIsCollapsed(prev => !prev);
 
   return (
     <Card className={classes.root}>
@@ -174,37 +213,68 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   Show it in a tooltip as well */}
             {/* TODO: The title needs to link to the next entity (investigation/dataset) - or have it as the whole card? */}
             {/* TODO: Delay not consistent between cards? */}
-            <ArrowTooltip title={title} enterDelay={500} percentageWidth={30}>
+            <ArrowTooltip
+              // disableFocusListener={isCollapsed}
+              title={title}
+              enterDelay={500}
+              percentageWidth={30}
+            >
               <Typography className={classes.title} component="h5" variant="h5">
-                <span>{title}</span>
+                <span style={{ whiteSpace: isCollapsed ? 'normal' : 'nowrap' }}>
+                  {title}
+                </span>
               </Typography>
             </ArrowTooltip>
 
             {/* TODO: Maybe include option to have read more if description is too long? 
                       Similar to collapsible 
             */}
-            <Typography paragraph>
-              {summary ? summary : 'No description available'}
-              {/* Inhabiting discretion the her dispatched decisively boisterous
-              joy. So form were wish open is able of mile of. Waiting express if
-              prevent it we an musical. Especially reasonable travelling she
-              son. Resources resembled forfeited no to zealously. Has procured
-              daughter how friendly followed repeated who surprise. Great asked
-              oh under on voice downs. Law together prospect kindness securing
-              six. Learning why get hastened smallest cheerful. Believing
-              neglected so so allowance existence departure in. In design active
-              temper be uneasy. Thirty for remove plenty regard you summer
-              though. He preference connection astonished on of ye. Partiality
-              on or continuing in particular principles as. Do believing oh
-              disposing to supported allowance we. */}
-            </Typography>
+            <div className={classes.description}>
+              {/* TODO: collapsedHeight being the minimum description content to
+              show for each card. */}
+              <Collapse in={isCollapsed} collapsedHeight={100}>
+                <Typography variant="body1" paragraph>
+                  {/* {summary ? summary : 'No description available'} */}
+                  Inhabiting discretion the her dispatched decisively boisterous
+                  joy. So form were wish open is able of mile of. Waiting
+                  express if prevent it we an musical. Especially reasonable
+                  travelling she son. Resources resembled forfeited no to
+                  zealously. Has procured daughter how friendly followed
+                  repeated who surprise. Great asked oh under on voice downs.
+                  Law together prospect kindness securing six. Learning why get
+                  hastened smallest cheerful. Believing neglected so so
+                  allowance existence departure in. In design active temper be
+                  uneasy. Thirty for remove plenty regard you summer though. He
+                  preference connection astonished on of ye. Partiality on or
+                  continuing in particular principles as. Do believing oh
+                  disposing to supported allowance we.
+                </Typography>
+              </Collapse>
+
+              <div
+                className={
+                  isCollapsed ? classes.shadowInvisible : classes.shadowVisible
+                }
+              />
+              <Link onClick={handleCollapseChange}>
+                {isCollapsed ? 'Show less' : 'Show more'}
+              </Link>
+            </div>
           </div>
 
-          {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
           {tags && (
             <div className={classes.tags}>
-              <Chip className={classes.chip} label="particle" size="small" />
-              <Chip className={classes.chip} label="experiment" size="small" />
+              <Divider />
+
+              {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
+              <div style={{ paddingTop: '10px' }}>
+                <Chip className={classes.chip} label="particle" size="small" />
+                <Chip
+                  className={classes.chip}
+                  label="experiment"
+                  size="small"
+                />
+              </div>
             </div>
           )}
         </div>
@@ -236,7 +306,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           </div>
 
           {/* TODO: Add to cart button - requires API logic */}
-          <div style={{ padding: '20px', textAlign: 'center' }}>
+          <div style={{ paddingTop: '15px', textAlign: 'center' }}>
             {!isSelected ? (
               <Button
                 id="add-to-cart-btn"
@@ -382,7 +452,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   endDate={investigation.ENDDATE}
                   doi={investigation.DOI}
                   visitId={investigation.VISIT_ID}
-                  imageUrl="https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg"
+                  // imageUrl="https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg"
                 />
               </ListItem>
             );
