@@ -84,10 +84,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
       maxWidth: '100%',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-
-      // '& span': {
-      //   display: 'block',
-      // },
     },
 
     description: {
@@ -168,7 +164,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
   const {
     title,
-    // summary,
+    summary,
     startDate,
     endDate,
     doi,
@@ -180,9 +176,22 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   } = props;
 
   const [isSelected, setIsSelected] = React.useState(false);
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
-  const handleCollapseChange = (): void => setIsCollapsed(prev => !prev);
+  // The default collapsed height for card description is 100px.
+  const defaultCollapsedHeight = 100;
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const descriptionRef = React.useRef<HTMLParagraphElement>(null);
+  const [collapsibleInteraction, setCollapsibleInteraction] = React.useState(
+    false
+  );
+
+  React.useEffect(() => {
+    if (descriptionRef && descriptionRef.current) {
+      console.log('Description height: ', descriptionRef.current.clientHeight);
+      if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
+        setCollapsibleInteraction(true);
+    }
+  }, [setCollapsibleInteraction]);
 
   return (
     <Card className={classes.root}>
@@ -213,11 +222,16 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   Show it in a tooltip as well */}
             {/* TODO: The title needs to link to the next entity (investigation/dataset) - or have it as the whole card? */}
             {/* TODO: Delay not consistent between cards? */}
+            {/* TODO: Any calculations of width/height (offset) done by the arrow
+              toolip begins with with the first wrapping element in the tooltip.
+              This is the Typography component in our case. */}
             <ArrowTooltip
-              // disableFocusListener={isCollapsed}
               title={title}
               enterDelay={500}
+              // TODO: Move to different component.
+              // disableFocusListener={isCollapsed}
               percentageWidth={30}
+              maxEnabledHeight={32}
             >
               <Typography className={classes.title} component="h5" variant="h5">
                 <span style={{ whiteSpace: isCollapsed ? 'normal' : 'nowrap' }}>
@@ -232,33 +246,38 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             <div className={classes.description}>
               {/* TODO: collapsedHeight being the minimum description content to
               show for each card. */}
-              <Collapse in={isCollapsed} collapsedHeight={100}>
-                <Typography variant="body1" paragraph>
-                  {/* {summary ? summary : 'No description available'} */}
-                  Inhabiting discretion the her dispatched decisively boisterous
+              <Collapse
+                in={isCollapsed}
+                collapsedHeight={defaultCollapsedHeight}
+              >
+                <Typography ref={descriptionRef} variant="body1" paragraph>
+                  {summary ? summary : 'No description available'}
+                  {/* Inhabiting discretion the her dispatched decisively boisterous
                   joy. So form were wish open is able of mile of. Waiting
                   express if prevent it we an musical. Especially reasonable
                   travelling she son. Resources resembled forfeited no to
                   zealously. Has procured daughter how friendly followed
                   repeated who surprise. Great asked oh under on voice downs.
-                  Law together prospect kindness securing six. Learning why get
-                  hastened smallest cheerful. Believing neglected so so
-                  allowance existence departure in. In design active temper be
-                  uneasy. Thirty for remove plenty regard you summer though. He
-                  preference connection astonished on of ye. Partiality on or
+                  Preference connection astonished on of ye. Partiality on or
                   continuing in particular principles as. Do believing oh
-                  disposing to supported allowance we.
+                  disposing to supported allowance we. */}
                 </Typography>
               </Collapse>
 
-              <div
-                className={
-                  isCollapsed ? classes.shadowInvisible : classes.shadowVisible
-                }
-              />
-              <Link onClick={handleCollapseChange}>
-                {isCollapsed ? 'Show less' : 'Show more'}
-              </Link>
+              {collapsibleInteraction && (
+                <div>
+                  <div
+                    className={
+                      isCollapsed
+                        ? classes.shadowInvisible
+                        : classes.shadowVisible
+                    }
+                  />
+                  <Link onClick={() => setIsCollapsed(prev => !prev)}>
+                    {isCollapsed ? 'Show less' : 'Show more'}
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 

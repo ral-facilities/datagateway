@@ -63,7 +63,7 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
     return (
       // We give the tooltip component the content (title) as the display content.
       // Passing the 20 as it is the viewport width we allow text to be shown before displaying the tooltip.
-      <ArrowTooltip title={this.props.displayName}>
+      <ArrowTooltip title={this.props.displayName} percentageWidth={20}>
         <div>
           {this.props.url ? (
             <MaterialLink

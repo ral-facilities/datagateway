@@ -75,24 +75,28 @@ const useStylesArrow = makeStyles((theme: Theme) =>
 );
 
 const ArrowTooltip = (
-  props: TooltipProps & { percentageWidth?: number }
+  props: TooltipProps & { percentageWidth?: number; maxEnabledHeight?: number }
 ): React.ReactElement => {
-  const { percentageWidth } = props;
+  const { percentageWidth, maxEnabledHeight } = props;
 
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
-  const [isTooltipVisibile, setTooltipVisible] = React.useState(false);
+  const [isTooltipVisible, setTooltipVisible] = React.useState(false);
 
   useEffect(() => {
     function updateTooltip(): void {
       // Check that the element has been rendered and set the viewable
       // as false before checking to see the element has exceeded maximum width.
       if (tooltipElement !== null && tooltipElement.current !== null) {
-        // The 0.2 here means 20% of the viewport width, which is set as
-        // the max width for the breadcrumb in the CSS style.
+        // TODO: This needs to be generalised since it is very specific at the moment.
+        //       Should move percentageWidth/maxEnabledHeight out of here into a wrapping
+        //       component (e.g. CardTooltip?).
 
+        // We pass in a percentage width (as a prop) of the viewport width,
+        // which is set as the max width the tooltip will allow content which
+        // is wrapped within it until it makes the tooltip visible.
         if (percentageWidth) {
           // Check to ensure whether the tooltip should be visible given the width provided.
           console.log('Innerwidth: ', window.innerWidth);
@@ -109,15 +113,25 @@ const ArrowTooltip = (
           )
             setTooltipVisible(true);
           else setTooltipVisible(false);
-        } else {
-          setTooltipVisible(true);
         }
+
+        if (maxEnabledHeight) {
+          console.log('Offsetheight: ', tooltipElement.current.offsetHeight);
+          if (tooltipElement.current.offsetHeight > maxEnabledHeight) {
+            setTooltipVisible(false);
+            console.log(
+              'Offset height greater than maxEnabledHeight, tooltip no longer visible.'
+            );
+          }
+        }
+
+        if (!percentageWidth && !maxEnabledHeight) setTooltipVisible(true);
       }
     }
     window.addEventListener('resize', updateTooltip);
     updateTooltip();
     return () => window.removeEventListener('resize', updateTooltip);
-  }, [tooltipElement, setTooltipVisible, percentageWidth]);
+  }, [tooltipElement, setTooltipVisible, percentageWidth, maxEnabledHeight]);
 
   return (
     <Tooltip
@@ -140,7 +154,8 @@ const ArrowTooltip = (
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
-      disableHoverListener={!isTooltipVisibile}
+      // TODO: This shouldn't really be calculated inside and should still be possible to be overriden by a prop.
+      disableHoverListener={!isTooltipVisible}
     />
   );
 };

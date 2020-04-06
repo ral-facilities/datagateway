@@ -27,14 +27,28 @@ class PageContainer extends React.Component<
 > {
   public constructor(props: PageContainerProps) {
     super(props);
+
+    // Get all the query parameters.
     const queryParams = new URLSearchParams(props.search);
 
-    this.state = {
-      toggleCard: true,
+    // Allow for query parameter to override the
+    // toggle state in the localStorage.
+    const viewParam = queryParams.get('view');
+    const toggleCard = viewParam
+      ? viewParam === 'card'
+        ? true
+        : false
+      : this.getView() === 'card'
+      ? true
+      : false;
 
-      // Add in query parameters we look out for.
+    this.state = {
+      toggleCard,
+
+      // Add in query parameters we are looking
+      // for in the URL.
       params: {
-        view: queryParams.get('view'),
+        view: viewParam,
         page: Number(queryParams.get('page')),
       },
     };
@@ -42,7 +56,24 @@ class PageContainer extends React.Component<
     console.log('Container state: ', this.state);
   }
 
+  public setDataView = (view: 'table' | 'card'): void =>
+    localStorage.setItem('dataView', view);
+
+  public getView = (): string => {
+    // We store the view into localStorage so the user can
+    // return to the view they were on the next time they open the page.
+    let savedView = localStorage.getItem('dataView');
+
+    // We set to 'table' initially if there is none present.
+    if (!savedView) this.setDataView('table');
+    else return savedView;
+
+    return 'table';
+  };
+
   public handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Set the view in local storage.
+    this.setDataView(event.target.checked ? 'card' : 'table');
     this.setState({ ...this.state, [event.target.name]: event.target.checked });
   };
 
