@@ -24,18 +24,18 @@ const DataCell = (props: CellRendererProps): React.ReactElement => {
   }, rowData);
 
   return (
-    <ArrowTooltip title={cellValue}>
-      <TableCell
-        size="small"
-        component="div"
-        className={className}
-        variant="body"
-      >
+    <TableCell
+      size="small"
+      component="div"
+      className={className}
+      variant="body"
+    >
+      <ArrowTooltip title={cellValue}>
         <Typography className={contentClassName} variant="body2" noWrap>
           {cellContentRenderer ? cellContentRenderer(props) : cellValue}
         </Typography>
-      </TableCell>
-    </ArrowTooltip>
+      </ArrowTooltip>
+    </TableCell>
   );
 };
 
