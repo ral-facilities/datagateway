@@ -60,12 +60,10 @@ const styles = (theme: Theme): StyleRules =>
       height: rowHeight,
     },
     dataCellContent: {
-      '&:hover': {
-        overflow: 'visible',
-        zIndex: 10000,
-        position: 'absolute',
-        backgroundColor: theme.palette.grey[200],
-      },
+      display: 'block',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
     headerTableCell: {
       flex: 1,

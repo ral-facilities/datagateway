@@ -1,6 +1,7 @@
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
 import { TableCell, Typography } from '@material-ui/core';
+import ArrowTooltip from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {
   className: string;
@@ -23,16 +24,18 @@ const DataCell = (props: CellRendererProps): React.ReactElement => {
   }, rowData);
 
   return (
-    <TableCell
-      size="small"
-      component="div"
-      className={className}
-      variant="body"
-    >
-      <Typography className={contentClassName} variant="body2" noWrap>
-        {cellContentRenderer ? cellContentRenderer(props) : cellValue}
-      </Typography>
-    </TableCell>
+    <ArrowTooltip title={cellValue}>
+      <TableCell
+        size="small"
+        component="div"
+        className={className}
+        variant="body"
+      >
+        <Typography className={contentClassName} variant="body2" noWrap>
+          {cellContentRenderer ? cellContentRenderer(props) : cellValue}
+        </Typography>
+      </TableCell>
+    </ArrowTooltip>
   );
 };
 
