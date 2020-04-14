@@ -37,6 +37,7 @@ import {
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
 // import useAfterMountEffect from '../utils';
+import { push } from 'connected-react-router';
 
 // TODO: Understand CSS flexbox to style this correctly OR use Grid/GridList instead of Card?
 const useCardStyles = makeStyles((theme: Theme) => {
@@ -187,7 +188,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
 
   React.useEffect(() => {
     if (descriptionRef && descriptionRef.current) {
-      console.log('Description height: ', descriptionRef.current.clientHeight);
+      // console.log('Description height: ', descriptionRef.current.clientHeight);
       if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
         setCollapsibleInteraction(true);
     }
@@ -358,7 +359,12 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
 
 // TODO: Should be in separate investigation card view.
 // TODO: Will require sort/filters/cartItems?
+
 interface CardViewProps {
+  pageNum: number | null;
+}
+
+interface CardViewStateProps {
   data: Entity[];
 
   // loading: boolean;
@@ -368,9 +374,12 @@ interface CardViewProps {
 interface CardViewDispatchProps {
   fetchData: (offsetParams?: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
+  pushQuery: (newQuery: string) => void;
 }
 
-type CardViewCombinedProps = CardViewProps & CardViewDispatchProps;
+type CardViewCombinedProps = CardViewProps &
+  CardViewStateProps &
+  CardViewDispatchProps;
 
 // TODO: CardView needs URL support:
 //        - pagination (?page=)
@@ -380,7 +389,7 @@ type CardViewCombinedProps = CardViewProps & CardViewDispatchProps;
 //       Look at how datagateway-search separates search box with results.
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // Props.
-  const { data, fetchData } = props;
+  const { pageNum, data, fetchData, pushQuery } = props;
   const classes = useCardViewStyles();
 
   // Card data.
@@ -394,6 +403,21 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [numPages, setNumPages] = React.useState(-1);
   const [startIndex, setStartIndex] = React.useState(-1);
   const [endIndex, setEndIndex] = React.useState(-1);
+
+  const [pageChange, setPageChange] = React.useState(false);
+  // const [loadedResults, setLoadedResults] = React.useState(false);
+
+  React.useEffect(() => {
+    // TODO: 1. allow for page to be changed via query parameter
+    //       2. allow for page to be changed via the pagination component
+    console.log('Got page change: ', page);
+    console.log('Page change: ', pageChange);
+
+    // Set the page num if it was found in the parameters.
+    if (pageNum && !pageChange) setPage(pageNum);
+    // TODO: The pageNum is always behind; is this an issue?
+    console.log('Current pageNum: ', pageNum);
+  }, [page, pageChange, pageNum]);
 
   React.useEffect(
     () => {
@@ -415,9 +439,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       setEndIndex(Math.min(startIndex + maxResults, data.length));
       console.log('End index: ', endIndex);
 
+      console.log('NumPages: ', numPages);
+      console.log('Start: ', startIndex);
+      console.log('End Index: ', endIndex);
       if (numPages !== -1 && startIndex !== -1 && endIndex !== -1) {
         console.log(data.slice(startIndex, endIndex));
         setViewData(data.slice(startIndex, endIndex));
+        // setLoadedResults(true);
       }
     },
     // TODO: Adding viewData dependency causes a loop?
@@ -425,11 +453,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       data,
       maxResults,
       page,
+      pageNum,
       numPages,
       startIndex,
       endIndex,
       fetchData,
       fetchedData,
+      pageChange,
     ]
   );
 
@@ -484,13 +514,24 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         <Pagination
           count={numPages}
           page={page}
-          onChange={(e, pageNum) => {
-            setPage(pageNum);
+          onChange={(e, p) => {
+            setPage(p);
+            setPageChange(true);
+            pushQuery(`?page=${p}`);
           }}
         />
       </Grid>
     </Grid>
   );
+};
+
+const mapStateToProps = (state: StateType): CardViewStateProps => {
+  return {
+    data: state.dgcommon.data,
+
+    // loading: state.dgcommon.loading,
+    // error: state.dgcommon.error,
+  };
 };
 
 // TODO: Should be in a investigation card view component.
@@ -500,15 +541,7 @@ const mapDispatchToProps = (
   fetchData: (offsetParams?: IndexRange) =>
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
+  pushQuery: (newQuery: string) => dispatch(push(newQuery)),
 });
-
-const mapStateToProps = (state: StateType): CardViewProps => {
-  return {
-    data: state.dgcommon.data,
-
-    // loading: state.dgcommon.loading,
-    // error: state.dgcommon.error,
-  };
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardView);

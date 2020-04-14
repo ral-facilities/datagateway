@@ -117,7 +117,7 @@ class PageContainer extends React.Component<
             // Place table in Paper component which adjusts for the height
             // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
             <Paper square>
-              <CardView />
+              <CardView pageNum={this.state.params.page} />
             </Paper>
           ) : (
             <Paper

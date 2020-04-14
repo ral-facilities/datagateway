@@ -99,14 +99,14 @@ const ArrowTooltip = (
         // is wrapped within it until it makes the tooltip visible.
         if (percentageWidth) {
           // Check to ensure whether the tooltip should be visible given the width provided.
-          console.log('Innerwidth: ', window.innerWidth);
-          console.log('Offsetwidth: ', tooltipElement.current.offsetWidth);
-          console.log(
-            'calculated: ',
-            tooltipElement.current.offsetWidth / window.innerWidth
-          );
-          console.log('maxWidth: ', percentageWidth);
-          console.log('tooltip: ', percentageWidth / 100);
+          // console.log('Innerwidth: ', window.innerWidth);
+          // console.log('Offsetwidth: ', tooltipElement.current.offsetWidth);
+          // console.log(
+          // 'calculated: ',
+          // tooltipElement.current.offsetWidth / window.innerWidth
+          // );
+          // console.log('maxWidth: ', percentageWidth);
+          // console.log('tooltip: ', percentageWidth / 100);
           if (
             tooltipElement.current.offsetWidth / window.innerWidth >=
             percentageWidth / 100
@@ -116,12 +116,12 @@ const ArrowTooltip = (
         }
 
         if (maxEnabledHeight) {
-          console.log('Offsetheight: ', tooltipElement.current.offsetHeight);
+          // console.log('Offsetheight: ', tooltipElement.current.offsetHeight);
           if (tooltipElement.current.offsetHeight > maxEnabledHeight) {
             setTooltipVisible(false);
-            console.log(
-              'Offset height greater than maxEnabledHeight, tooltip no longer visible.'
-            );
+            // console.log(
+            // 'Offset height greater than maxEnabledHeight, tooltip no longer visible.'
+            // );
           }
         }
 
