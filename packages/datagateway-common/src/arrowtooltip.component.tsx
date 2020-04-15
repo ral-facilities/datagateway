@@ -90,23 +90,11 @@ const ArrowTooltip = (
       // Check that the element has been rendered and set the viewable
       // as false before checking to see the element has exceeded maximum width.
       if (tooltipElement !== null && tooltipElement.current !== null) {
-        // TODO: This needs to be generalised since it is very specific at the moment.
-        //       Should move percentageWidth/maxEnabledHeight out of here into a wrapping
-        //       component (e.g. CardTooltip?).
-
         // We pass in a percentage width (as a prop) of the viewport width,
         // which is set as the max width the tooltip will allow content which
         // is wrapped within it until it makes the tooltip visible.
         if (percentageWidth) {
           // Check to ensure whether the tooltip should be visible given the width provided.
-          // console.log('Innerwidth: ', window.innerWidth);
-          // console.log('Offsetwidth: ', tooltipElement.current.offsetWidth);
-          // console.log(
-          // 'calculated: ',
-          // tooltipElement.current.offsetWidth / window.innerWidth
-          // );
-          // console.log('maxWidth: ', percentageWidth);
-          // console.log('tooltip: ', percentageWidth / 100);
           if (
             tooltipElement.current.offsetWidth / window.innerWidth >=
             percentageWidth / 100
@@ -116,12 +104,8 @@ const ArrowTooltip = (
         }
 
         if (maxEnabledHeight) {
-          // console.log('Offsetheight: ', tooltipElement.current.offsetHeight);
           if (tooltipElement.current.offsetHeight > maxEnabledHeight) {
             setTooltipVisible(false);
-            // console.log(
-            // 'Offset height greater than maxEnabledHeight, tooltip no longer visible.'
-            // );
           }
         }
 
@@ -154,7 +138,6 @@ const ArrowTooltip = (
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
-      // TODO: This shouldn't really be calculated inside and should still be possible to be overriden by a prop.
       disableHoverListener={!isTooltipVisible}
     />
   );
