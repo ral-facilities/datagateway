@@ -59,12 +59,6 @@ const styles = (theme: Theme): StyleRules =>
       overflow: 'hidden',
       height: rowHeight,
     },
-    dataCellContent: {
-      display: 'block',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-    },
     headerTableCell: {
       flex: 1,
       height: headerHeight,
@@ -360,7 +354,6 @@ const VirtualizedTable = (
                               classes.tableCell,
                               classes.flexContainer
                             )}
-                            contentClassName={classes.dataCellContent}
                           />
                         )}
                       />
