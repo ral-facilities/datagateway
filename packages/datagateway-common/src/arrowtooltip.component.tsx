@@ -109,7 +109,18 @@ const ArrowTooltip = (
           }
         }
 
-        if (!percentageWidth && !maxEnabledHeight) setTooltipVisible(true);
+        if (!percentageWidth && !maxEnabledHeight) {
+          // If props haven't been given, have tooltip appear only when visible
+          // text width is smaller than full text width.
+          if (
+            tooltipElement.current.offsetWidth <
+            tooltipElement.current.scrollWidth
+          ) {
+            setTooltipVisible(true);
+          } else {
+            setTooltipVisible(false);
+          }
+        }
       }
     }
     window.addEventListener('resize', updateTooltip);
