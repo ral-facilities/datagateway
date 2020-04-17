@@ -1,6 +1,10 @@
 import React from 'react';
 import { StateType } from './state/app.types';
-import { EntityTypes, readSciGatewayToken } from 'datagateway-common';
+import {
+  EntityTypes,
+  readSciGatewayToken,
+  ArrowTooltip,
+} from 'datagateway-common';
 import { connect } from 'react-redux';
 
 import axios from 'axios';
@@ -16,7 +20,6 @@ import {
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 
-import ArrowTooltip from './arrowtooltip.component';
 import { BreadcrumbSettings } from './state/actions/actions.types';
 
 interface Breadcrumb {
@@ -60,7 +63,7 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
   public render(): React.ReactElement {
     return (
       // We give the tooltip component the content (title) as the display content.
-      <ArrowTooltip title={this.props.displayName}>
+      <ArrowTooltip title={this.props.displayName} percentageWidth={20}>
         <div>
           {this.props.url ? (
             <MaterialLink
