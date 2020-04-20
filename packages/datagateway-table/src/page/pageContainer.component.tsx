@@ -5,8 +5,10 @@ import { connect } from 'react-redux';
 import { Grid, Typography, Paper, Switch } from '@material-ui/core';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
-import { Route } from 'react-router';
-import CardView from '../card/cardView.component';
+import { Route, RouteComponentProps } from 'react-router';
+import InvestigationCardView from '../card/investigationCardView.component';
+
+import { Switch as RouteSwitch } from 'react-router';
 
 interface PageContainerProps {
   entityCount: number;
@@ -114,12 +116,29 @@ class PageContainer extends React.Component<
 
         <Grid item xs={12} aria-label="container-table">
           {this.state.toggleCard ? (
-            // Place table in Paper component which adjusts for the height
-            // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
-            <Paper square>
-              <CardView pageNum={this.state.params.page} />
-            </Paper>
+            // TODO: Route switching needs to be moved to separate component
+            <RouteSwitch>
+              <Route
+                exact
+                path="/browse/investigation/"
+                render={() => (
+                  <InvestigationCardView pageNum={this.state.params.page} />
+                )}
+              />
+
+              {/* TODO: Create Dataset Card View route */}
+              <Route
+                exact
+                path="/browse/investigation/:investigationId/dataset"
+                render={({
+                  match,
+                }: RouteComponentProps<{ investigationId: string }>) => (
+                  <div>Investigation ID: {match.params.investigationId}</div>
+                )}
+              />
+            </RouteSwitch>
           ) : (
+            // <InvestigationCardView pageNum={this.state.params.page} />
             <Paper
               square
               style={{ height: 'calc(100vh - 95px)', width: '100%' }}

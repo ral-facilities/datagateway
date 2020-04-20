@@ -89,7 +89,7 @@ const ArrowTooltip = (
     function updateTooltip(): void {
       // Check that the element has been rendered and set the viewable
       // as false before checking to see the element has exceeded maximum width.
-      if (tooltipElement !== null && tooltipElement.current !== null) {
+      if (tooltipElement !== null) {
         // TODO: This needs to be generalised since it is very specific at the moment.
         //       Should move percentageWidth/maxEnabledHeight out of here into a wrapping
         //       component (e.g. CardTooltip?).
@@ -108,8 +108,9 @@ const ArrowTooltip = (
           // console.log('maxWidth: ', percentageWidth);
           // console.log('tooltip: ', percentageWidth / 100);
           if (
+            tooltipElement.current &&
             tooltipElement.current.offsetWidth / window.innerWidth >=
-            percentageWidth / 100
+              percentageWidth / 100
           )
             setTooltipVisible(true);
           else setTooltipVisible(false);
@@ -117,7 +118,10 @@ const ArrowTooltip = (
 
         if (maxEnabledHeight) {
           // console.log('Offsetheight: ', tooltipElement.current.offsetHeight);
-          if (tooltipElement.current.offsetHeight > maxEnabledHeight) {
+          if (
+            tooltipElement.current &&
+            tooltipElement.current.offsetHeight > maxEnabledHeight
+          ) {
             setTooltipVisible(false);
             // console.log(
             // 'Offset height greater than maxEnabledHeight, tooltip no longer visible.'
