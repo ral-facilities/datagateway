@@ -14,6 +14,9 @@ import {
   SearchTextPayload,
   CheckRequestReceivedPayload,
   LuceneResultTypePayload,
+  SetDatasetTabType,
+  SetDatafileTabType,
+  SetInvestigationTabType,
 } from './actions.types';
 import { ActionType } from '../app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -105,5 +108,32 @@ export const toggleLuceneRequestReceived = (
   type: ToggleLuceneRequestReceivedType,
   payload: {
     requestReceived,
+  },
+});
+
+export const setDatasetTab = (
+  toggleOption: boolean
+): ActionType<TogglePayload> => ({
+  type: SetDatasetTabType,
+  payload: {
+    toggleOption,
+  },
+});
+
+export const setDatafileTab = (
+  toggleOption: boolean
+): ActionType<TogglePayload> => ({
+  type: SetDatafileTabType,
+  payload: {
+    toggleOption,
+  },
+});
+
+export const setInvestigationTab = (
+  toggleOption: boolean
+): ActionType<TogglePayload> => ({
+  type: SetInvestigationTabType,
+  payload: {
+    toggleOption,
   },
 });

@@ -15,6 +15,10 @@ export const StoreLuceneDatafileType =
   'datagateway_search:store_lucene_results_datafile';
 export const StoreLuceneInvestigationType =
   'datagateway_search:store_lucene_results_investigation';
+export const SetDatasetTabType = 'datagateway_search:set_dataset_tab';
+export const SetDatafileTabType = 'datagateway_search:set_datafile_tab';
+export const SetInvestigationTabType =
+  'datagateway_search:set_investigation_tab';
 
 export interface TogglePayload {
   toggleOption: boolean;

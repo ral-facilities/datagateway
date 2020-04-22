@@ -16,6 +16,9 @@ import {
   SearchTextPayload,
   CheckRequestReceivedPayload,
   LuceneResultTypePayload,
+  SetDatasetTabType,
+  SetDatafileTabType,
+  SetInvestigationTabType,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -29,6 +32,11 @@ export const initialState: DGSearchState = {
     dataset: true,
     datafile: true,
     investigation: true,
+  },
+  tabs: {
+    datasetTab: false,
+    datafileTab: false,
+    investigationTab: false,
   },
   requestReceived: false,
   searchData: {
@@ -162,6 +170,45 @@ export function storeInvestigationLuceneResults(
   };
 }
 
+export function handleSetDatasetTab(
+  state: DGSearchState,
+  payload: TogglePayload
+): DGSearchState {
+  return {
+    ...state,
+    tabs: {
+      ...state.tabs,
+      datasetTab: payload.toggleOption,
+    },
+  };
+}
+
+export function handleSetDatafileTab(
+  state: DGSearchState,
+  payload: TogglePayload
+): DGSearchState {
+  return {
+    ...state,
+    tabs: {
+      ...state.tabs,
+      datafileTab: payload.toggleOption,
+    },
+  };
+}
+
+export function handleSetInvestigationTab(
+  state: DGSearchState,
+  payload: TogglePayload
+): DGSearchState {
+  return {
+    ...state,
+    tabs: {
+      ...state.tabs,
+      investigationTab: payload.toggleOption,
+    },
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [ToggleDatasetType]: handleToggleDataset,
   [ToggleDatafileType]: handleToggleDatafile,
@@ -173,6 +220,9 @@ const DGSearchReducer = createReducer(initialState, {
   [StoreLuceneDatasetType]: storeDatasetLuceneResults,
   [StoreLuceneDatafileType]: storeDatafileLuceneResults,
   [StoreLuceneInvestigationType]: storeInvestigationLuceneResults,
+  [SetDatasetTabType]: handleSetDatasetTab,
+  [SetDatafileTabType]: handleSetDatafileTab,
+  [SetInvestigationTabType]: handleSetInvestigationTab,
 });
 
 export default DGSearchReducer;

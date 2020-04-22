@@ -10,6 +10,9 @@ import {
   storeDatasetLucene,
   storeDatafileLucene,
   storeInvestigationLucene,
+  setDatasetTab,
+  setDatafileTab,
+  setInvestigationTab,
 } from '../state/actions/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
@@ -26,6 +29,9 @@ interface SearchButtonStoreProps {
   luceneDatafile: number[];
   luceneDataset: number[];
   luceneInvestigation: number[];
+  datafileTab: boolean;
+  datasetTab: boolean;
+  investigationTab: boolean;
 }
 
 interface SearchButtonDispatchProps {
@@ -33,6 +39,9 @@ interface SearchButtonDispatchProps {
   storeDatasetLucene: (luceneData: number[]) => Action;
   storeDatafileLucene: (luceneData: number[]) => Action;
   storeInvestigationLucene: (luceneData: number[]) => Action;
+  setDatasetTab: (toggleOption: boolean) => Action;
+  setDatafileTab: (toggleOption: boolean) => Action;
+  setInvestigationTab: (toggleOption: boolean) => Action;
 }
 
 type SearchButtonCombinedProps = SearchButtonStoreProps &
@@ -133,6 +142,10 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
 
       this.props.toggleLuceneRequestReceived(true);
     }
+
+    this.props.setDatasetTab(this.props.dataset);
+    this.props.setDatafileTab(this.props.datafile);
+    this.props.setInvestigationTab(this.props.investigation);
   };
 
   public async fetchLuceneResults(
@@ -175,6 +188,12 @@ const mapDispatchToProps = (
     dispatch(storeDatafileLucene(luceneData)),
   storeInvestigationLucene: (luceneData: number[]) =>
     dispatch(storeInvestigationLucene(luceneData)),
+  setDatasetTab: (toggleOption: boolean) =>
+    dispatch(setDatasetTab(toggleOption)),
+  setDatafileTab: (toggleOption: boolean) =>
+    dispatch(setDatafileTab(toggleOption)),
+  setInvestigationTab: (toggleOption: boolean) =>
+    dispatch(setInvestigationTab(toggleOption)),
 });
 
 const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
@@ -189,6 +208,9 @@ const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
     luceneDataset: state.dgsearch.searchData.dataset,
     luceneDatafile: state.dgsearch.searchData.datafile,
     luceneInvestigation: state.dgsearch.searchData.investigation,
+    datafileTab: state.dgsearch.tabs.datafileTab,
+    datasetTab: state.dgsearch.tabs.datasetTab,
+    investigationTab: state.dgsearch.tabs.investigationTab,
   };
 };
 
