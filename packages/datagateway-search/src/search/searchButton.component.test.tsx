@@ -38,6 +38,11 @@ describe('Search Button component tests', () => {
         datafile: true,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
       requestReceived: false,
       searchData: {
         dataset: [],
@@ -70,6 +75,11 @@ describe('Search Button component tests', () => {
         dataset: false,
         datafile: true,
         investigation: false,
+      },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
       },
       requestReceived: false,
       searchData: {
@@ -117,6 +127,11 @@ describe('Search Button component tests', () => {
         dataset: true,
         datafile: false,
         investigation: false,
+      },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
       },
       requestReceived: false,
       searchData: {
@@ -166,6 +181,11 @@ describe('Search Button component tests', () => {
         datafile: false,
         investigation: true,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
       requestReceived: false,
       searchData: {
         dataset: [],
@@ -214,6 +234,11 @@ describe('Search Button component tests', () => {
         datafile: true,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
       requestReceived: false,
       searchData: {
         dataset: [],
@@ -258,6 +283,11 @@ describe('Search Button component tests', () => {
         datafile: false,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
       requestReceived: false,
       searchData: {
         dataset: [],
@@ -301,6 +331,11 @@ describe('Search Button component tests', () => {
         dataset: false,
         datafile: false,
         investigation: true,
+      },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
       },
       requestReceived: false,
       searchData: {
