@@ -78,10 +78,9 @@ const ArrowTooltip = (
   props: TooltipProps & {
     percentageWidth?: number;
     maxEnabledHeight?: number;
-    enterDelay?: number;
   }
 ): React.ReactElement => {
-  const { percentageWidth, maxEnabledHeight, enterDelay } = props;
+  const { percentageWidth, maxEnabledHeight } = props;
 
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
@@ -141,7 +140,6 @@ const ArrowTooltip = (
     <Tooltip
       ref={tooltipElement}
       classes={classes}
-      enterDelay={enterDelay}
       PopperProps={{
         popperOptions: {
           modifiers: {
