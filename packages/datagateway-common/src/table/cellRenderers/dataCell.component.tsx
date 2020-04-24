@@ -23,7 +23,7 @@ const DataCell = (props: CellRendererProps): React.ReactElement => {
       className={className}
       variant="body"
     >
-      <ArrowTooltip title={cellValue}>
+      <ArrowTooltip title={cellValue} enterDelay={500}>
         <Typography variant="body2" noWrap>
           {cellContentRenderer ? cellContentRenderer(props) : cellValue}
         </Typography>

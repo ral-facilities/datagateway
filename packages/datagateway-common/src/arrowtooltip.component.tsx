@@ -75,9 +75,13 @@ const useStylesArrow = makeStyles((theme: Theme) =>
 );
 
 const ArrowTooltip = (
-  props: TooltipProps & { percentageWidth?: number; maxEnabledHeight?: number }
+  props: TooltipProps & {
+    percentageWidth?: number;
+    maxEnabledHeight?: number;
+    enterDelay?: number;
+  }
 ): React.ReactElement => {
-  const { percentageWidth, maxEnabledHeight } = props;
+  const { percentageWidth, maxEnabledHeight, enterDelay } = props;
 
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
@@ -89,22 +93,26 @@ const ArrowTooltip = (
     function updateTooltip(): void {
       // Check that the element has been rendered and set the viewable
       // as false before checking to see the element has exceeded maximum width.
-      if (tooltipElement !== null && tooltipElement.current !== null) {
+      if (tooltipElement !== null) {
         // We pass in a percentage width (as a prop) of the viewport width,
         // which is set as the max width the tooltip will allow content which
         // is wrapped within it until it makes the tooltip visible.
         if (percentageWidth) {
           // Check to ensure whether the tooltip should be visible given the width provided.
           if (
+            tooltipElement.current &&
             tooltipElement.current.offsetWidth / window.innerWidth >=
-            percentageWidth / 100
+              percentageWidth / 100
           )
             setTooltipVisible(true);
           else setTooltipVisible(false);
         }
 
         if (maxEnabledHeight) {
-          if (tooltipElement.current.offsetHeight > maxEnabledHeight) {
+          if (
+            tooltipElement.current &&
+            tooltipElement.current.offsetHeight > maxEnabledHeight
+          ) {
             setTooltipVisible(false);
           }
         }
@@ -113,8 +121,9 @@ const ArrowTooltip = (
           // If props haven't been given, have tooltip appear only when visible
           // text width is smaller than full text width.
           if (
+            tooltipElement.current &&
             tooltipElement.current.offsetWidth <
-            tooltipElement.current.scrollWidth
+              tooltipElement.current.scrollWidth
           ) {
             setTooltipVisible(true);
           } else {
@@ -132,6 +141,7 @@ const ArrowTooltip = (
     <Tooltip
       ref={tooltipElement}
       classes={classes}
+      enterDelay={enterDelay}
       PopperProps={{
         popperOptions: {
           modifiers: {
