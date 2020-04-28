@@ -18,9 +18,12 @@ interface InvestigationCVDispatchProps {
 }
 
 const InvestigationCardView = (
-  props: InvestigationCVDispatchProps & { pageNum: number | null }
+  props: InvestigationCVDispatchProps & {
+    pageNum: number | null;
+    setPageQuery: (pageKey: string, pageValue: string) => void;
+  }
 ): React.ReactElement => {
-  const { fetchCount, pageNum } = props; // fetchData,
+  const { fetchCount, pageNum, setPageQuery } = props; // fetchData,
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
 
@@ -35,7 +38,7 @@ const InvestigationCardView = (
     // Place table in Paper component which adjusts for the height
     // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
     <Paper square>
-      <CardView pageNum={pageNum} />
+      <CardView pageNum={pageNum} setPageQuery={setPageQuery} />
     </Paper>
   );
 };

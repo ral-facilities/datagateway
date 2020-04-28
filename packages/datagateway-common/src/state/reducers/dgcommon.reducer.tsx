@@ -60,6 +60,7 @@ import {
   ConfigureFacilityNameType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  SaveQueriesType,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
   FetchInvestigationDetailsFailureType,
@@ -90,6 +91,7 @@ import {
   FetchDatasetSizeRequestType,
   FetchDatasetSizeSuccessType,
   FetchDatasetSizeFailureType,
+  SaveQueriesPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
 
@@ -114,6 +116,7 @@ export const initialState: DGCommonState = {
   },
   cartItems: [],
   allIds: [],
+  savedQueries: null,
 };
 
 export function handleSortTable(
@@ -518,6 +521,16 @@ export function handleConfigureUrls(
   };
 }
 
+export function handleSaveQueries(
+  state: DGCommonState,
+  payload: SaveQueriesPayload
+): DGCommonState {
+  return {
+    ...state,
+    savedQueries: payload.queries,
+  };
+}
+
 export function handleFetchAllIdsRequest(
   state: DGCommonState,
   payload: RequestPayload
@@ -555,6 +568,7 @@ const dGCommonReducer = createReducer(initialState, {
   [ClearTableType]: handleClearTable,
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureURLsType]: handleConfigureUrls,
+  [SaveQueriesType]: handleSaveQueries,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

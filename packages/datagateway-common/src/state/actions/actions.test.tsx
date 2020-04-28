@@ -12,6 +12,7 @@ import {
   ClearTableType,
   ConfigureURLsType,
   ConfigureFacilityNameType,
+  // SaveQueriesType,
 } from './actions.types';
 import { StateType } from '../app.types';
 import { RouterState } from 'connected-react-router';
@@ -180,4 +181,7 @@ describe('Actions', () => {
       facilityName: 'Generic',
     });
   });
+
+  // TODO: Implement test for save query.
+  it.skip('given a saveQueries returns a SaveQueriesType with SaveQueriesPayload', () => {});
 });

@@ -25,6 +25,7 @@ export interface DGCommonState {
   countTimestamp: number;
   allIdsTimestamp: number;
   urls: URLs;
+  savedQueries: URLSearchParams | null;
 }
 
 export interface EntityCache {

@@ -73,9 +73,11 @@ const useCardStyles = makeStyles((theme: Theme) => {
       },
     },
 
+    // TODO: The height/top does not completely fade out the next line of the description.
+    //       You can still make out a the top of the sentence even with the fade.
     shadowVisible: {
       position: 'absolute',
-      height: 25,
+      height: 30,
       width: mainWidth,
       top: 130,
       background: 'linear-gradient(rgba(255, 255, 255, 0), #fff)',
@@ -221,14 +223,15 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 <Typography ref={descriptionRef} variant="body1" paragraph>
                   {summary ? summary : 'No description available'}
                   {/* Inhabiting discretion the her dispatched decisively boisterous
-                    joy. So form were wish open is able of mile of. Waiting
-                    express if prevent it we an musical. Especially reasonable
-                    travelling she son. Resources resembled forfeited no to
-                    zealously. Has procured daughter how friendly followed
-                    repeated who surprise. Great asked oh under on voice downs.
-                    Preference connection astonished on of ye. Partiality on or
-                    continuing in particular principles as. Do believing oh
-                    disposing to supported allowance we. */}
+                  joy. So form were wish open is able of mile of. Waiting
+                  express if prevent it we an musical. Especially reasonable
+                  travelling she son. Resources resembled forfeited no to
+                  zealously. Has procured daughter how friendly followed
+                  repeated who surprise. Great asked oh under on voice downs.
+                  Preference connection astonished on of ye. Partiality on or
+                  continuing in particular principles as. Do believing oh
+                  disposing to supported allowance we. Test one two three four
+                  five. */}
                 </Typography>
               </Collapse>
 

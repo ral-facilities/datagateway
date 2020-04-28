@@ -10,6 +10,8 @@ import {
   FilterTablePayload,
   FilterTableType,
   ClearTableType,
+  SaveQueriesPayload,
+  SaveQueriesType,
 } from './actions.types';
 import { Filter, Order } from '../../app.types';
 import { Action } from 'redux';
@@ -98,5 +100,14 @@ export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
   type: ConfigureURLsType,
   payload: {
     urls,
+  },
+});
+
+export const saveQueries = (
+  queries: URLSearchParams | null
+): ActionType<SaveQueriesPayload> => ({
+  type: SaveQueriesType,
+  payload: {
+    queries,
   },
 });

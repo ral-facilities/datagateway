@@ -13,6 +13,7 @@ export const ClearTableType = 'datagateway_common:clear_table';
 export const ConfigureFacilityNameType =
   'datagateway_common:configure_facility_name';
 export const ConfigureURLsType = 'datagateway_common:configure_urls';
+export const SaveQueriesType = 'datagateway_common:save_queries';
 
 export const FetchInvestigationsRequestType =
   'datagateway_common:fetch_investigations_request';
@@ -204,6 +205,10 @@ export interface URLs {
   idsUrl: string;
   apiUrl: string;
   downloadApiUrl: string;
+}
+
+export interface SaveQueriesPayload {
+  queries: URLSearchParams | null;
 }
 
 export interface RequestPayload {

@@ -24,7 +24,7 @@ import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
+// import { push } from 'connected-react-router';
 
 import EntityCard from './card.component';
 
@@ -45,6 +45,7 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
 
 interface CardViewProps {
   pageNum: number | null;
+  setPageQuery: (pageKey: string, pageNum: string) => void;
 }
 
 interface CardViewStateProps {
@@ -52,12 +53,13 @@ interface CardViewStateProps {
 
   // loading: boolean;
   // error: string | null;
+  search: string;
 }
 
 interface CardViewDispatchProps {
   fetchData: (offsetParams?: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
-  pushQuery: (newQuery: string) => void;
+  // pushQuery: (newQuery: string) => void;
 }
 
 type CardViewCombinedProps = CardViewProps &
@@ -72,7 +74,7 @@ type CardViewCombinedProps = CardViewProps &
 //       Look at how datagateway-search separates search box with results.
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // Props.
-  const { pageNum, data, fetchData, pushQuery } = props;
+  const { pageNum, data, fetchData, setPageQuery } = props; // search, pushQuery
   const classes = useCardViewStyles();
 
   // Card data.
@@ -96,6 +98,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     console.log('Page change: ', pageChange);
 
     // Set the page num if it was found in the parameters.
+    console.log('Is page change: ', pageChange);
     if (pageNum && !pageChange) setPage(pageNum);
     // TODO: The pageNum is always behind; is this an issue?
     console.log('Current pageNum: ', pageNum);
@@ -144,6 +147,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       pageChange,
     ]
   );
+
+  // const getURLQueryParams = (): URLSearchParams => new URLSearchParams(search);
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
   return (
@@ -210,9 +215,23 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           page={page}
           onChange={(e, p) => {
             setPage(p);
-            pushQuery(`?page=${p}`);
+
+            // Add the query parameter for the changed view.
+            // const currentParams = getURLQueryParams();
+            // console.log('Current query: ' + currentParams.toString());
+            // const num = p.toString();
+            // if (currentParams.get('page')) {
+            //   currentParams.set('page', num);
+            // } else {
+            //   currentParams.append('page', num);
+            // }
+            // console.log('Final query: ' + currentParams.toString());
+            // pushQuery(`?${currentParams.toString()}`);
+            setPageQuery('page', p.toString());
+
             setPageChange(true);
           }}
+          color="secondary"
         />
       </Grid>
     </Grid>
@@ -225,6 +244,9 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
 
     // loading: state.dgcommon.loading,
     // error: state.dgcommon.error,
+
+    // TODO: Needs to be moved to a query handling component.
+    search: state.router.location.search,
   };
 };
 
@@ -235,7 +257,7 @@ const mapDispatchToProps = (
   fetchData: (offsetParams?: IndexRange) =>
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
-  pushQuery: (newQuery: string) => dispatch(push(newQuery)),
+  // pushQuery: (newQuery: string) => dispatch(push(newQuery)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardView);
