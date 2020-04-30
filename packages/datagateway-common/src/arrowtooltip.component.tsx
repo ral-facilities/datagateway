@@ -74,31 +74,67 @@ const useStylesArrow = makeStyles((theme: Theme) =>
   })
 );
 
-const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
+const ArrowTooltip = (
+  props: TooltipProps & {
+    percentageWidth?: number;
+    maxEnabledHeight?: number;
+  }
+): React.ReactElement => {
+  const { percentageWidth, maxEnabledHeight } = props;
+
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
 
   const tooltipElement: React.RefObject<HTMLElement> = React.createRef();
-  const [isTooltipVisibile, setTooltipVisible] = React.useState(false);
+  const [isTooltipVisible, setTooltipVisible] = React.useState(false);
 
   useEffect(() => {
     function updateTooltip(): void {
       // Check that the element has been rendered and set the viewable
       // as false before checking to see the element has exceeded maximum width.
-      if (tooltipElement !== null && tooltipElement.current !== null) {
-        // The 0.2 here means 20% of the viewport width, which is set as
-        // the max width for the breadcrumb in the CSS style.
+      if (tooltipElement !== null) {
+        // We pass in a percentage width (as a prop) of the viewport width,
+        // which is set as the max width the tooltip will allow content which
+        // is wrapped within it until it makes the tooltip visible.
+        if (percentageWidth) {
+          // Check to ensure whether the tooltip should be visible given the width provided.
+          if (
+            tooltipElement.current &&
+            tooltipElement.current.offsetWidth / window.innerWidth >=
+              percentageWidth / 100
+          )
+            setTooltipVisible(true);
+          else setTooltipVisible(false);
+        }
 
-        // Check to ensure whether the tooltip should be visible.
-        if (tooltipElement.current.offsetWidth / window.innerWidth >= 0.2)
-          setTooltipVisible(true);
-        else setTooltipVisible(false);
+        if (maxEnabledHeight) {
+          if (
+            tooltipElement.current &&
+            tooltipElement.current.offsetHeight > maxEnabledHeight
+          ) {
+            setTooltipVisible(false);
+          }
+        }
+
+        if (!percentageWidth && !maxEnabledHeight) {
+          // If props haven't been given, have tooltip appear only when visible
+          // text width is smaller than full text width.
+          if (
+            tooltipElement.current &&
+            tooltipElement.current.offsetWidth <
+              tooltipElement.current.scrollWidth
+          ) {
+            setTooltipVisible(true);
+          } else {
+            setTooltipVisible(false);
+          }
+        }
       }
     }
     window.addEventListener('resize', updateTooltip);
     updateTooltip();
     return () => window.removeEventListener('resize', updateTooltip);
-  }, [tooltipElement, setTooltipVisible]);
+  }, [tooltipElement, setTooltipVisible, percentageWidth, maxEnabledHeight]);
 
   return (
     <Tooltip
@@ -121,7 +157,7 @@ const ArrowTooltip = (props: TooltipProps): React.ReactElement => {
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
-      disableHoverListener={!isTooltipVisibile}
+      disableHoverListener={!isTooltipVisible}
     />
   );
 };

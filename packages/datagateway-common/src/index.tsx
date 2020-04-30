@@ -34,4 +34,6 @@ export type DGCommonState = StateType;
 export * from './parseTokens';
 export { default as handleICATError } from './handleICATError';
 
+export { default as ArrowTooltip } from './arrowtooltip.component';
+
 // ReactDOM.render(<App />, document.getElementById('root'));

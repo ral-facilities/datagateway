@@ -1,21 +1,15 @@
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
 import { TableCell, Typography } from '@material-ui/core';
+import ArrowTooltip from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {
   className: string;
-  contentClassName: string;
   cellContentRenderer?: TableCellRenderer;
 };
 
 const DataCell = (props: CellRendererProps): React.ReactElement => {
-  const {
-    className,
-    contentClassName,
-    dataKey,
-    rowData,
-    cellContentRenderer,
-  } = props;
+  const { className, dataKey, rowData, cellContentRenderer } = props;
 
   // use . in dataKey name to drill down into nested row data
   const cellValue = dataKey.split('.').reduce(function(prev, curr) {
@@ -29,9 +23,11 @@ const DataCell = (props: CellRendererProps): React.ReactElement => {
       className={className}
       variant="body"
     >
-      <Typography className={contentClassName} variant="body2" noWrap>
-        {cellContentRenderer ? cellContentRenderer(props) : cellValue}
-      </Typography>
+      <ArrowTooltip title={cellValue} enterDelay={500}>
+        <Typography variant="body2" noWrap>
+          {cellContentRenderer ? cellContentRenderer(props) : cellValue}
+        </Typography>
+      </ArrowTooltip>
     </TableCell>
   );
 };

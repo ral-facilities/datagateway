@@ -59,14 +59,6 @@ const styles = (theme: Theme): StyleRules =>
       overflow: 'hidden',
       height: rowHeight,
     },
-    dataCellContent: {
-      '&:hover': {
-        overflow: 'visible',
-        zIndex: 10000,
-        position: 'absolute',
-        backgroundColor: theme.palette.grey[200],
-      },
-    },
     headerTableCell: {
       flex: 1,
       height: headerHeight,
@@ -362,7 +354,6 @@ const VirtualizedTable = (
                               classes.tableCell,
                               classes.flexContainer
                             )}
-                            contentClassName={classes.dataCellContent}
                           />
                         )}
                       />
