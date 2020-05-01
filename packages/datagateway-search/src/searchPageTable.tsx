@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -53,9 +53,23 @@ function a11yProps(index: string): React.ReactFragment {
 
 // eslint-disable-next-line
 const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
-  let newState = 'datafile';
+  let [value, setValue] = React.useState('investigation');
 
-  const [value, setValue] = React.useState(newState);
+  useEffect(() => {
+    let newState = 'investigation';
+    if (!props.investigationTab) {
+      if (props.datasetTab) {
+        newState = 'dataset';
+      } else {
+        if (props.datafileTab) {
+          newState = 'datafile';
+        } else {
+          newState = 'none';
+        }
+      }
+    }
+    setValue(newState);
+  }, [props.investigationTab, props.datasetTab, props.datafileTab]);
 
   const handleChange = (
     event: React.ChangeEvent<{}>,
@@ -73,16 +87,6 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             onChange={handleChange}
             aria-label="simple tabs example"
           >
-            {props.datafileTab ? (
-              <Tab
-                label="Datafile"
-                value="datafile"
-                {...a11yProps('datafile')}
-              />
-            ) : null}
-            {props.datasetTab ? (
-              <Tab label="Dataset" value="dataset" {...a11yProps('dataset')} />
-            ) : null}
             {props.investigationTab ? (
               <Tab
                 label="Investigation"
@@ -90,11 +94,21 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                 {...a11yProps('investigation')}
               />
             ) : null}
+            {props.datasetTab ? (
+              <Tab label="Dataset" value="dataset" {...a11yProps('dataset')} />
+            ) : null}
+            {props.datafileTab ? (
+              <Tab
+                label="Datafile"
+                value="datafile"
+                {...a11yProps('datafile')}
+              />
+            ) : null}
           </Tabs>
         </AppBar>
 
-        {props.datafileTab ? (
-          <TabPanel value={value} index={'datafile'}>
+        {props.investigationTab ? (
+          <TabPanel value={value} index={'investigation'}>
             <Paper
               style={{
                 height: 'calc(80vh)',
@@ -102,7 +116,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
               }}
               elevation={0}
             >
-              <DatafileSearchTable />
+              <InvestigationSearchTable />
             </Paper>
           </TabPanel>
         ) : null}
@@ -119,8 +133,8 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             </Paper>
           </TabPanel>
         ) : null}
-        {props.investigationTab ? (
-          <TabPanel value={value} index={'investigation'}>
+        {props.datafileTab ? (
+          <TabPanel value={value} index={'datafile'}>
             <Paper
               style={{
                 height: 'calc(80vh)',
@@ -128,7 +142,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
               }}
               elevation={0}
             >
-              <InvestigationSearchTable />
+              <DatafileSearchTable />
             </Paper>
           </TabPanel>
         ) : null}
