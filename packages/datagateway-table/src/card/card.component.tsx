@@ -94,6 +94,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       transition: 'visibility 0s, opacity 0.5s linear',
     },
 
+    // TODO: Can we simplyify this and not have three objects?
     further: {
       display: 'flex',
       paddingLeft: '15px',
@@ -102,6 +103,16 @@ const useCardStyles = makeStyles((theme: Theme) => {
       '& p': {
         paddingTop: '5px',
       },
+    },
+
+    furtherLabel: {
+      float: 'left',
+    },
+
+    furtherData: {
+      float: 'right',
+      textAlign: 'left',
+      paddingLeft: '5px',
     },
 
     tags: {
@@ -115,16 +126,27 @@ const useCardStyles = makeStyles((theme: Theme) => {
   return styles;
 });
 
+interface EntityCardDetails {
+  label: string;
+  data: string;
+}
+
 interface EntityCardProps {
   // TODO: Minimum information.
   title: string;
+
+  // TODO: Description is also optional; if the isTitleCard
+  //       flagged only the title will be shown and the the card
+  //       a simple card with an option to view items (?).
   description?: string;
 
-  startDate?: string;
-  endDate?: string;
-  doi?: string;
-  visitId?: string;
-  datasetCount?: number;
+  // TODO: Pass an array of strings.
+  // startDate?: string;
+  // endDate?: string;
+  // doi?: string;
+  // visitId?: string;
+  // datasetCount?: number;
+  furtherInformation?: EntityCardDetails[];
 
   // TODO: optional and no information to create these; tags may be created from instrument information for ISIS.
   imageUrl?: string;
@@ -139,15 +161,17 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const {
     title,
     description,
-    startDate,
-    endDate,
-    doi,
-    visitId,
-    datasetCount,
+    // startDate,
+    // endDate,
+    // doi,
+    // visitId,
+    // datasetCount,
+    furtherInformation,
 
     imageUrl,
     tags,
   } = props;
+  console.log('Further information in card: ', furtherInformation);
 
   const [isSelected, setIsSelected] = React.useState(false);
 
@@ -278,22 +302,24 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         <div>
           <div className={classes.further}>
             {/* TODO: Further information related to the entity. */}
-            <div style={{ float: 'left' }}>
-              <Typography>Start Date:</Typography>
+            <div className={classes.furtherLabel}>
+              {/* <Typography>Start Date:</Typography>
               <Typography>End Date:</Typography>
               <Typography>DOI:</Typography>
               <Typography>Visit ID:</Typography>
 
-              {datasetCount && <Typography>Dataset Count:</Typography>}
+              {datasetCount && <Typography>Dataset Count:</Typography>} */}
+
+              {/* {furtherInformation && furtherInformation.map((info: string, index: number) => (
+  <Typography>{in</Typography>
+            ))} */}
             </div>
-            <div
-              style={{ float: 'right', textAlign: 'left', paddingLeft: '5px' }}
-            >
-              <Typography>{startDate}</Typography>
+            <div className={classes.furtherData}>
+              {/* <Typography>{startDate}</Typography>
               <Typography>{endDate}</Typography>
               <Typography>{doi}</Typography>
               <Typography>{visitId}</Typography>
-              {datasetCount && <Typography>{datasetCount}</Typography>}
+              {datasetCount && <Typography>{datasetCount}</Typography>} */}
             </div>
           </div>
 

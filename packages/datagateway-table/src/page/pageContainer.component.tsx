@@ -14,18 +14,18 @@ import PageTable from './pageTable.component';
 import { Route, RouteComponentProps } from 'react-router';
 
 import { Switch as RouteSwitch } from 'react-router';
-import { push } from 'connected-react-router';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { saveQueries } from 'datagateway-common';
+// import { push } from 'connected-react-router';
+// import { ThunkDispatch } from 'redux-thunk';
+// import { AnyAction } from 'redux';
+// import { saveQueries } from 'datagateway-common';
 
 import InvestigationCardView from '../card/investigationCardView.component';
 import DatasetCardView from '../card/datasetCardView.component';
 
-interface PageContainerDispatchProps {
-  pushQuery: (newQuery: string) => void;
-  saveQuery: (queries: URLSearchParams | null) => void;
-}
+// interface PageContainerDispatchProps {
+// pushQuery: (newQuery: string) => void;
+// saveQuery: (queries: URLSearchParams | null) => void;
+// }
 
 interface PageContainerProps {
   entityCount: number;
@@ -33,8 +33,8 @@ interface PageContainerProps {
   savedQueries: URLSearchParams | null;
 }
 
-type PageContainerCombinedProps = PageContainerDispatchProps &
-  PageContainerProps;
+type PageContainerCombinedProps = PageContainerProps;
+// & PageContainerDispatchProps
 
 interface PageContainerState {
   toggleCard: boolean;
@@ -62,60 +62,60 @@ class PageContainer extends React.Component<
       },
     };
 
-    this.loadURLQueryParams();
+    // this.loadURLQueryParams();
   }
 
-  public loadURLQueryParams = (): void => {
-    // Get all the query parameters.
-    const queryParams = this.getURLQueryParams();
+  // public loadURLQueryParams = (): void => {
+  //   // Get all the query parameters.
+  //   const queryParams = this.getURLQueryParams();
 
-    // Allow for query parameter to override the
-    // toggle state in the localStorage.
-    const viewParam = queryParams.get('view');
-    const toggleCard = viewParam
-      ? viewParam === 'card'
-        ? true
-        : false
-      : this.getView() === 'card'
-      ? true
-      : false;
+  //   // Allow for query parameter to override the
+  //   // toggle state in the localStorage.
+  //   const viewParam = queryParams.get('view');
+  //   const toggleCard = viewParam
+  //     ? viewParam === 'card'
+  //       ? true
+  //       : false
+  //     : this.getView() === 'card'
+  //     ? true
+  //     : false;
 
-    console.log('New page number: ', queryParams.get('page'));
-    this.setState({
-      ...this.state,
-      toggleCard,
-      // savedQueries: null,
+  //   console.log('New page number: ', queryParams.get('page'));
+  //   this.setState({
+  //     ...this.state,
+  //     toggleCard,
+  //     // savedQueries: null,
 
-      // Add in query parameters we are looking
-      // for in the URL.
-      params: {
-        view: viewParam,
-        page: Number(queryParams.get('page')),
-        // results: Number(queryParams.get('results')),
-      },
-    });
+  //     // Add in query parameters we are looking
+  //     // for in the URL.
+  //     params: {
+  //       view: viewParam,
+  //       page: Number(queryParams.get('page')),
+  //       // results: Number(queryParams.get('results')),
+  //     },
+  //   });
 
-    console.log('New state: ', this.state);
-  };
+  //   console.log('New state: ', this.state);
+  // };
 
-  public getURLQueryParams = (): URLSearchParams => {
-    console.log('query: ' + new URLSearchParams(this.props.search).toString());
-    return new URLSearchParams(this.props.search);
-  };
+  // public getURLQueryParams = (): URLSearchParams => {
+  //   console.log('query: ' + new URLSearchParams(this.props.search).toString());
+  //   return new URLSearchParams(this.props.search);
+  // };
 
   // TODO: This should be revised to work using the redux state instead.
-  public setPageQuery = (key: string, value: string): void => {
-    const currentParams = this.getURLQueryParams();
-    if (currentParams.get(key)) {
-      currentParams.set(key, value);
-    } else {
-      currentParams.append(key, value);
-    }
-    console.log('Final query: ', currentParams.toString());
+  // public setPageQuery = (key: string, value: string): void => {
+  //   const currentParams = this.getURLQueryParams();
+  //   if (currentParams.get(key)) {
+  //     currentParams.set(key, value);
+  //   } else {
+  //     currentParams.append(key, value);
+  //   }
+  //   console.log('Final query: ', currentParams.toString());
 
-    this.props.pushQuery(`?${currentParams.toString()}`);
-    this.loadURLQueryParams();
-  };
+  //   this.props.pushQuery(`?${currentParams.toString()}`);
+  //   this.loadURLQueryParams();
+  // };
 
   // public componentDidUpdate(prevProps: PageContainerProps): void {
   //   console.log('Previous props: ', prevProps.search);
@@ -141,24 +141,24 @@ class PageContainer extends React.Component<
     // Set the view in local storage.
     this.storeDataView(viewName);
 
-    // Handle logic for handling queries when changing between views.
-    let newQueryParams = new URLSearchParams('view');
-    console.log(
-      'Current savedQueries: ',
-      this.props.savedQueries ? this.props.savedQueries.toString() : null
-    );
+    // // Handle logic for handling queries when changing between views.
+    // let newQueryParams = new URLSearchParams('view');
+    // console.log(
+    //   'Current savedQueries: ',
+    //   this.props.savedQueries ? this.props.savedQueries.toString() : null
+    // );
 
-    if (!event.target.checked) {
-      console.log('Saved queries: ' + this.getURLQueryParams().toString());
-      this.props.saveQuery(this.getURLQueryParams());
-    } else if (event.target.checked && this.props.savedQueries !== null) {
-      newQueryParams = this.props.savedQueries;
-    }
+    // if (!event.target.checked) {
+    //   console.log('Saved queries: ' + this.getURLQueryParams().toString());
+    //   this.props.saveQuery(this.getURLQueryParams());
+    // } else if (event.target.checked && this.props.savedQueries !== null) {
+    //   newQueryParams = this.props.savedQueries;
+    // }
 
-    // Add the view and push the final query parameters.
-    newQueryParams.set('view', viewName);
-    console.log('Final query: ' + newQueryParams.toString());
-    this.props.pushQuery(`?${newQueryParams.toString()}`);
+    // // Add the view and push the final query parameters.
+    // newQueryParams.set('view', viewName);
+    // console.log('Final query: ' + newQueryParams.toString());
+    // this.props.pushQuery(`?${newQueryParams.toString()}`);
 
     // Set the state with the toggled card option and the saved queries.
     this.setState({
@@ -220,7 +220,7 @@ class PageContainer extends React.Component<
                 render={() => (
                   <InvestigationCardView
                     pageNum={this.state.params.page}
-                    setPageQuery={this.setPageQuery}
+                    // setPageQuery={this.setPageQuery}
                   />
                 )}
               />
@@ -236,7 +236,7 @@ class PageContainer extends React.Component<
                   <DatasetCardView
                     investigationId={match.params.investigationId}
                     pageNum={this.state.params.page}
-                    setPageQuery={this.setPageQuery}
+                    // setPageQuery={this.setPageQuery}
                   />
                 )}
               />
@@ -264,12 +264,12 @@ const mapStateToProps = (state: StateType): PageContainerProps => ({
   savedQueries: state.dgcommon.savedQueries,
 });
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): PageContainerDispatchProps => ({
-  pushQuery: (newQuery: string) => dispatch(push(newQuery)),
-  saveQuery: (queries: URLSearchParams | null) =>
-    dispatch(saveQueries(queries)),
-});
+// const mapDispatchToProps = (
+//   dispatch: ThunkDispatch<StateType, null, AnyAction>
+// ): PageContainerDispatchProps => ({
+//   pushQuery: (newQuery: string) => dispatch(push(newQuery)),
+//   saveQuery: (queries: URLSearchParams | null) =>
+//     dispatch(saveQueries(queries)),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
+export default connect(mapStateToProps)(PageContainer);

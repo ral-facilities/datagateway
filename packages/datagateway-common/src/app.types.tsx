@@ -18,17 +18,6 @@ export interface Investigation {
   PUBLICATION?: Publication[];
   STUDYINVESTIGATION?: StudyInvestigation[];
   FACILITY?: Facility;
-
-  // [key: string]:
-  //   | string
-  //   | number
-  //   | InvestigationInstrument[]
-  //   | InvestigationUser[]
-  //   | Sample[]
-  //   | Publication[]
-  //   | StudyInvestigation[]
-  //   | Facility
-  //   | undefined;
 }
 
 export interface Dataset {
@@ -43,8 +32,6 @@ export interface Dataset {
   SIZE?: number;
   DATAFILE_COUNT?: number;
   DATASETTYPE?: DatasetType;
-
-  // [key: string]: number | string | DatasetType | undefined;
 }
 
 export interface Datafile {
@@ -57,8 +44,6 @@ export interface Datafile {
   LOCATION?: string;
   DESCRIPTION?: string;
   DATAFILEPARAMETER?: DatafileParameter[];
-
-  // [key: string]: number | string | DatafileParameter[] | undefined;
 }
 
 export interface InvestigationInstrument {
@@ -67,8 +52,6 @@ export interface InvestigationInstrument {
   INVESTIGATION_ID: number;
   INSTRUMENT?: Instrument;
   INVESTIGATION?: Investigation;
-
-  // [key: string]: number | Instrument | Investigation | undefined;
 }
 
 export interface Instrument {
@@ -81,8 +64,6 @@ export interface Instrument {
   INSTRUMENTSCIENTIST?: InstrumentScientist[];
   FACILITY_ID: number;
   FACILITY?: Facility;
-
-  // [key: string]: number | string | InstrumentScientist[] | Facility | undefined;
 }
 
 export interface InvestigationUser {
@@ -92,31 +73,23 @@ export interface InvestigationUser {
   ROLE: string;
   USER_?: User;
   INVESTIGATION?: Investigation;
-
-  // [key: string]: number | string | User | Investigation | undefined;
 }
 
 export interface User {
   ID: number;
   NAME: string;
   FULL_NAME?: string;
-
-  // [key: string]: number | string | undefined;
 }
 
 export interface Sample {
   ID: number;
   NAME: string;
   INVESTIGATION_ID: number;
-
-  // [key: string]: number | string;
 }
 
 export interface Publication {
   ID: number;
   FULLREFERENCE: string;
-
-  // [key: string]: number | string;
 }
 
 export interface FacilityCycle {
@@ -127,16 +100,12 @@ export interface FacilityCycle {
   ENDDATE?: string;
   FACILITY_ID: number;
   FACILITY?: Facility;
-
-  // [key: string]: number | string | Facility | undefined;
 }
 
 export interface DatasetType {
   ID: number;
   NAME: string;
   DESCRIPTION?: string;
-
-  // [key: string]: number | string | undefined;
 }
 
 interface StudyInvestigation {
@@ -145,15 +114,11 @@ interface StudyInvestigation {
   INVESTIGATION_ID: number;
   STUDY?: Study;
   INVESTIGATION?: Investigation;
-
-  // [key: string]: number | string | Study | Investigation | undefined;
 }
 
 interface Study {
   ID: number;
   PID: string;
-
-  // [key: string]: number | string;
 }
 
 interface InstrumentScientist {
@@ -162,8 +127,6 @@ interface InstrumentScientist {
   USER_ID: number;
   INSTRUMENT?: Instrument;
   USER_?: User;
-
-  // [key: string]: number | string | Instrument | User | undefined;
 }
 
 interface DatafileParameter {
@@ -177,8 +140,6 @@ interface DatafileParameter {
   PARAMETER_TYPE_ID: number;
   DATAFILE?: Datafile;
   PARAMETERTYPE: ParameterType;
-
-  // [key: string]: number | string | Datafile | ParameterType | undefined;
 }
 
 interface ParameterType {
@@ -186,8 +147,6 @@ interface ParameterType {
   NAME: string;
   UNITS: string;
   VALUETYPE: string;
-
-  // [key: string]: number | string;
 }
 
 interface Facility {
@@ -198,8 +157,6 @@ interface Facility {
   DESCRIPTION?: string;
   DAYSUNTILRELEASE?: number;
   FACILITYCYCLE?: FacilityCycle[];
-
-  // [key: string]: number | string | FacilityCycle[] | undefined;
 }
 
 export interface DownloadCartItem {
@@ -208,16 +165,12 @@ export interface DownloadCartItem {
   id: number;
   name: string;
   parentEntities: DownloadCartItem[];
-
-  // [key: string]: number | string | DownloadCartItem[];
 }
 
 export interface DownloadItem {
   entityId: number;
   entityType: 'investigation' | 'dataset' | 'datafile';
   id: number;
-
-  // [key: string]: number | string;
 }
 
 export interface DownloadCart {
@@ -227,8 +180,6 @@ export interface DownloadCart {
   id: number;
   updatedAt: string;
   userName: string;
-
-  [key: string]: number | string | DownloadCartItem[];
 }
 
 export interface Download {
@@ -257,8 +208,6 @@ export interface SubmitCart {
   facilityName: string;
   downloadId: number;
   userName: string;
-
-  // [key: string]: number | string | DownloadCartItem[];
 }
 
 export type DownloadCartTableItem = DownloadCartItem & {

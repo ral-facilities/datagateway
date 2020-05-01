@@ -21,8 +21,6 @@ import {
 import { StateType } from 'datagateway-common/lib/state/app.types';
 // import { IndexRange } from 'react-virtualized';
 
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 // import { push } from 'connected-react-router';
 
@@ -43,20 +41,27 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface CardDetail {
+interface CardViewDetails {
   dataKey: string;
+
+  // TODO: Pass in a label for the dataKey to be shown under.
+  //       Pass a Link component to wrap the data.
+  label?: string;
   link?: React.ReactNode;
 }
 
 interface CardViewProps {
   // TODO: Props to get title, description of the card represented by data.
-  title: CardDetail;
-  description?: CardDetail;
+  title: CardViewDetails;
+  description?: CardViewDetails;
+
+  // TODO: Further information array.
+  furtherInformation?: CardViewDetails[];
 
   // TODO: Should be moved to redux state.
   pageNum: number | null;
   // maxResults: number | null;
-  setPageQuery: (pageKey: string, pageNum: string) => void;
+  // setPageQuery: (pageKey: string, pageNum: string) => void;
 }
 
 interface CardViewStateProps {
@@ -67,9 +72,8 @@ interface CardViewStateProps {
 // fetchData: (offsetParams?: IndexRange) => Promise<void>;
 // }
 
-type CardViewCombinedProps = CardViewProps &
-  CardViewStateProps &
-  CardViewDispatchProps;
+type CardViewCombinedProps = CardViewProps & CardViewStateProps;
+// & CardViewDispatchProps;
 
 // TODO: CardView needs URL support:
 //        - pagination (?page=)
@@ -81,12 +85,16 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
   // Props.
-  const { pageNum, data, setPageQuery } = props; // search, pushQuery, fetchData,
+  const { pageNum, data } = props; // search, pushQuery, fetchData, setPageQuery
 
   // Get card information.
-  const { title, description } = props;
+  const { title, description, furtherInformation } = props;
   console.log('title datakey: ', title && title.dataKey);
   console.log('description datakey: ', description && description.dataKey);
+  console.log(
+    'further information: ',
+    furtherInformation && furtherInformation
+  );
 
   // Card data.
   // const [fetchedData, setFetchedData] = React.useState(false);
@@ -204,12 +212,21 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                     // description={investigation.SUMMARY}
                     title={data[title.dataKey]}
                     description={description && data[description.dataKey]}
-
+                    // TODO: This needs to be provided as an array of CardDetail items.
                     // startDate={investigation.STARTDATE}
                     // endDate={investigation.ENDDATE}
                     // doi={investigation.DOI}
                     // visitId={investigation.VISIT_ID}
                     // imageUrl="https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg"
+                    furtherInformation={
+                      furtherInformation &&
+                      furtherInformation.map(details => ({
+                        // TODO: Create a separate type just for details label?
+                        // We can say the label is the data key if not defined.
+                        label: details.label ? details.label : details.dataKey,
+                        data: data[details.dataKey],
+                      }))
+                    }
                   />
                 </ListItem>
               );
@@ -240,7 +257,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             // }
             // console.log('Final query: ' + currentParams.toString());
             // pushQuery(`?${currentParams.toString()}`);
-            setPageQuery('page', p.toString());
+            // setPageQuery('page', p.toString());
 
             setPageChange(true);
           }}
@@ -255,20 +272,9 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
     data: state.dgcommon.data,
 
-    // loading: state.dgcommon.loading,
-    // error: state.dgcommon.error,
-
-    // TODO: Needs to be moved to a query handling component.
+    // TODO: Needs to be moved to a query handling component/handled by redux.
     // search: state.router.location.search,
   };
 };
 
-// TODO: Should be in a investigation card view component.
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): CardViewDispatchProps => ({
-  // fetchData: (offsetParams?: IndexRange) =>
-  //   dispatch(fetchInvestigations({ offsetParams })),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(CardView);
+export default connect(mapStateToProps)(CardView);

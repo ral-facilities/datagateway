@@ -25,33 +25,49 @@ interface DatasetCardViewProps {
 
   // TODO: Should be in redux state.
   pageNum: number | null;
-  setPageQuery: (pageKey: string, pageValue: string) => void;
+  // setPageQuery: (pageKey: string, pageValue: string) => void;
 }
 
 type DatasetCVCombinedProps = DatasetCardViewProps & DatasetCVDispatchProps;
 
 const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
-  const { investigationId, fetchCount, pageNum, setPageQuery } = props;
+  const {
+    investigationId,
+    fetchCount,
+    fetchData,
+    pageNum,
+    // setPageQuery,
+  } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
+  const [fetchedData, setFetchedData] = React.useState(false);
 
   React.useEffect(() => {
+    // Fetch the dataset count based on the investigation ID.
     if (!fetchedCount) {
+      console.log('Fetch dataset count');
       fetchCount(parseInt(investigationId));
       setFetchedCount(true);
     }
-  }, [investigationId, fetchedCount, fetchCount]);
+
+    // Fetch the data.
+    if (!fetchedData) {
+      console.log('Fetch dataset data');
+      fetchData(parseInt(investigationId));
+      setFetchedData(true);
+    }
+  }, [investigationId, fetchedCount, fetchCount, fetchedData, fetchData]);
 
   return (
     <Paper square>
       <CardView
         // TODO: Put in the correct dataKeys.
         //       Provide an array of further info and tags.
-        title={{ dataKey: 'TITLE' }}
-        description={{ dataKey: 'SUMMARY' }}
+        title={{ dataKey: 'NAME' }}
+        description={{ dataKey: 'DESCRIPTION' }}
         // TODO: Needs to handled by redux state.
         pageNum={pageNum}
-        setPageQuery={setPageQuery}
+        // setPageQuery={setPageQuery}
       />
     </Paper>
   );
