@@ -76,6 +76,10 @@ const InvestigationCardView = (
             label: 'Visit ID',
             dataKey: 'VISIT_ID',
           },
+          // {
+          //   label: 'Dataset Count',
+          //   dataKey: 'DATASET_COUNT',
+          // },
         ]}
         // TODO: Handle via redux state.
         pageNum={pageNum}

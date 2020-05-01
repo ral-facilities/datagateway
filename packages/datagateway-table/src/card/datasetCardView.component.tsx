@@ -65,6 +65,20 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
         //       Provide an array of further info and tags.
         title={{ dataKey: 'NAME' }}
         description={{ dataKey: 'DESCRIPTION' }}
+        furtherInformation={[
+          {
+            label: 'Created Time',
+            dataKey: 'CREATE_TIME',
+          },
+          {
+            label: 'Modified Time',
+            dataKey: 'MOD_TIME',
+          },
+          // {
+          //   label: 'Datafile Count',
+          //   dataKey: 'DATAFILE_COUNT',
+          // },
+        ]}
         // TODO: Needs to handled by redux state.
         pageNum={pageNum}
         // setPageQuery={setPageQuery}
