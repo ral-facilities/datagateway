@@ -14,12 +14,12 @@ import {
 import { Pagination } from '@material-ui/lab';
 import {
   Entity,
-  fetchInvestigations,
-  fetchInvestigationCount,
-  Investigation,
+  // fetchInvestigations,
+  // fetchInvestigationCount,
+  // Investigation,
 } from 'datagateway-common';
 import { StateType } from 'datagateway-common/lib/state/app.types';
-import { IndexRange } from 'react-virtualized';
+// import { IndexRange } from 'react-virtualized';
 
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
@@ -43,24 +43,29 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
   })
 );
 
+interface CardDetail {
+  dataKey: string;
+  link?: React.ReactNode;
+}
+
 interface CardViewProps {
+  // TODO: Props to get title, description of the card represented by data.
+  title: CardDetail;
+  description?: CardDetail;
+
+  // TODO: Should be moved to redux state.
   pageNum: number | null;
+  // maxResults: number | null;
   setPageQuery: (pageKey: string, pageNum: string) => void;
 }
 
 interface CardViewStateProps {
   data: Entity[];
-
-  // loading: boolean;
-  // error: string | null;
-  search: string;
 }
 
-interface CardViewDispatchProps {
-  fetchData: (offsetParams?: IndexRange) => Promise<void>;
-  fetchCount: () => Promise<void>;
-  // pushQuery: (newQuery: string) => void;
-}
+// interface CardViewDispatchProps {
+// fetchData: (offsetParams?: IndexRange) => Promise<void>;
+// }
 
 type CardViewCombinedProps = CardViewProps &
   CardViewStateProps &
@@ -73,12 +78,18 @@ type CardViewCombinedProps = CardViewProps &
 // TODO: Place Cards within a grid view.
 //       Look at how datagateway-search separates search box with results.
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
-  // Props.
-  const { pageNum, data, fetchData, setPageQuery } = props; // search, pushQuery
   const classes = useCardViewStyles();
 
+  // Props.
+  const { pageNum, data, setPageQuery } = props; // search, pushQuery, fetchData,
+
+  // Get card information.
+  const { title, description } = props;
+  console.log('title datakey: ', title && title.dataKey);
+  console.log('description datakey: ', description && description.dataKey);
+
   // Card data.
-  const [fetchedData, setFetchedData] = React.useState(false);
+  // const [fetchedData, setFetchedData] = React.useState(false);
   const [viewData, setViewData] = React.useState<Entity[]>([]);
 
   // Pagination.
@@ -107,11 +118,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   React.useEffect(
     () => {
       // Fetch card data.
-      console.log('Fetch data page: ', page);
-      if (!fetchedData) {
-        fetchData();
-        setFetchedData(true);
-      }
+      // console.log('Fetch data page: ', page);
+      // if (!fetchedData) {
+      //   fetchData();
+      //   setFetchedData(true);
+      // }
 
       // Calculate the maximum pages needed for pagination.
       setNumPages(~~((data.length + maxResults - 1) / maxResults));
@@ -142,13 +153,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       numPages,
       startIndex,
       endIndex,
-      fetchData,
-      fetchedData,
+      // fetchData,
+      // fetchedData,
       pageChange,
     ]
   );
-
-  // const getURLQueryParams = (): URLSearchParams => new URLSearchParams(search);
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
   return (
@@ -183,7 +192,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         {/* Card data */}
         <Grid item xs>
           <List>
-            {(viewData as Investigation[]).map((investigation, index) => {
+            {viewData.map((data, index) => {
               return (
                 <ListItem
                   key={index}
@@ -191,12 +200,15 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   className={classes.root}
                 >
                   <EntityCard
-                    title={investigation.TITLE}
-                    summary={investigation.SUMMARY}
-                    startDate={investigation.STARTDATE}
-                    endDate={investigation.ENDDATE}
-                    doi={investigation.DOI}
-                    visitId={investigation.VISIT_ID}
+                    // title={investigation.TITLE}
+                    // description={investigation.SUMMARY}
+                    title={data[title.dataKey]}
+                    description={description && data[description.dataKey]}
+
+                    // startDate={investigation.STARTDATE}
+                    // endDate={investigation.ENDDATE}
+                    // doi={investigation.DOI}
+                    // visitId={investigation.VISIT_ID}
                     // imageUrl="https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg"
                   />
                 </ListItem>
@@ -216,6 +228,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           onChange={(e, p) => {
             setPage(p);
 
+            // TODO: Needs to be handled by redux state instead.
             // Add the query parameter for the changed view.
             // const currentParams = getURLQueryParams();
             // console.log('Current query: ' + currentParams.toString());
@@ -246,7 +259,7 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
     // error: state.dgcommon.error,
 
     // TODO: Needs to be moved to a query handling component.
-    search: state.router.location.search,
+    // search: state.router.location.search,
   };
 };
 
@@ -254,10 +267,8 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): CardViewDispatchProps => ({
-  fetchData: (offsetParams?: IndexRange) =>
-    dispatch(fetchInvestigations({ offsetParams })),
-  fetchCount: () => dispatch(fetchInvestigationCount()),
-  // pushQuery: (newQuery: string) => dispatch(push(newQuery)),
+  // fetchData: (offsetParams?: IndexRange) =>
+  //   dispatch(fetchInvestigations({ offsetParams })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardView);

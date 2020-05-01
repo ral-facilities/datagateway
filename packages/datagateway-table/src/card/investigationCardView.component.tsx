@@ -23,22 +23,36 @@ const InvestigationCardView = (
     setPageQuery: (pageKey: string, pageValue: string) => void;
   }
 ): React.ReactElement => {
-  const { fetchCount, pageNum, setPageQuery } = props; // fetchData,
+  const { fetchData, fetchCount, pageNum, setPageQuery } = props; // fetchData,
 
+  const [fetchedData, setFetchedData] = React.useState(false);
   const [fetchedCount, setFetchedCount] = React.useState(false);
 
   React.useEffect(() => {
+    // Fetch count.
     if (!fetchedCount) {
       fetchCount();
       setFetchedCount(true);
     }
-  }, [fetchedCount, fetchCount]);
+
+    // Fetch data.
+    if (!fetchedData) {
+      fetchData();
+      setFetchedData(true);
+    }
+  }, [fetchedData, fetchData, fetchedCount, fetchCount, setFetchedCount]);
 
   return (
     // Place table in Paper component which adjusts for the height
     // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
     <Paper square>
-      <CardView pageNum={pageNum} setPageQuery={setPageQuery} />
+      <CardView
+        title={{ dataKey: 'TITLE' }}
+        description={{ dataKey: 'SUMMARY' }}
+        // TODO: Handle via redux state.
+        pageNum={pageNum}
+        setPageQuery={setPageQuery}
+      />
     </Paper>
   );
 };

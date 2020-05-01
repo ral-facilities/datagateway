@@ -116,25 +116,29 @@ const useCardStyles = makeStyles((theme: Theme) => {
 });
 
 interface EntityCardProps {
+  // TODO: Minimum information.
   title: string;
-  summary?: string;
+  description?: string;
+
   startDate?: string;
   endDate?: string;
-
   doi?: string;
-  visitId: string;
+  visitId?: string;
   datasetCount?: number;
 
-  // TODO: optional and no information to create these
+  // TODO: optional and no information to create these; tags may be created from instrument information for ISIS.
   imageUrl?: string;
   tags?: typeof Chip[];
+
+  // TODO: Give the option to have a simple card which links to other data.
+  // isTitleCard: boolean;
 }
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
   const {
     title,
-    summary,
+    description,
     startDate,
     endDate,
     doi,
@@ -147,6 +151,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
 
   const [isSelected, setIsSelected] = React.useState(false);
 
+  // TODO: Should be configurable from card view?
   // The default collapsed height for card description is 100px.
   const defaultCollapsedHeight = 100;
   const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -156,14 +161,16 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   );
 
   React.useEffect(() => {
+    // Decide if the collapsible should be present depending on
+    // if the description height exceeds the default collapsed height.
     if (descriptionRef && descriptionRef.current) {
-      // console.log('Description height: ', descriptionRef.current.clientHeight);
       if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
         setCollapsibleInteraction(true);
     }
   }, [setCollapsibleInteraction]);
 
   return (
+    // TODO: Fix sizing issue with this.
     <Card id="card" className={classes.root}>
       {imageUrl && (
         <CardMedia
@@ -188,13 +195,8 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 - title/description
                 - tags  */}
           <div>
-            {/* TODO: Title needs to be cut off if it breaks the set width of the column
-                    Show it in a tooltip as well */}
             {/* TODO: The title needs to link to the next entity (investigation/dataset) - or have it as the whole card? */}
             {/* TODO: Delay not consistent between cards? */}
-            {/* TODO: Any calculations of width/height (offset) done by the arrow
-                toolip begins with with the first wrapping element in the tooltip.
-                This is the Typography component in our case. */}
             <ArrowTooltip
               title={title}
               enterDelay={500}
@@ -221,7 +223,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 collapsedHeight={defaultCollapsedHeight}
               >
                 <Typography ref={descriptionRef} variant="body1" paragraph>
-                  {summary ? summary : 'No description available'}
+                  {description ? description : 'No description available'}
                   {/* Inhabiting discretion the her dispatched decisively boisterous
                   joy. So form were wish open is able of mile of. Waiting
                   express if prevent it we an musical. Especially reasonable

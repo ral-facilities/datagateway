@@ -12,13 +12,15 @@ import {
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { Route, RouteComponentProps } from 'react-router';
-import InvestigationCardView from '../card/investigationCardView.component';
 
 import { Switch as RouteSwitch } from 'react-router';
 import { push } from 'connected-react-router';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { saveQueries } from 'datagateway-common';
+
+import InvestigationCardView from '../card/investigationCardView.component';
+import DatasetCardView from '../card/datasetCardView.component';
 
 interface PageContainerDispatchProps {
   pushQuery: (newQuery: string) => void;
@@ -40,6 +42,7 @@ interface PageContainerState {
   params: {
     view: string | null;
     page: number | null;
+    // results: number | null;
   };
 }
 
@@ -55,6 +58,7 @@ class PageContainer extends React.Component<
       params: {
         view: null,
         page: null,
+        // results: null,
       },
     };
 
@@ -87,6 +91,7 @@ class PageContainer extends React.Component<
       params: {
         view: viewParam,
         page: Number(queryParams.get('page')),
+        // results: Number(queryParams.get('results')),
       },
     });
 
@@ -227,7 +232,12 @@ class PageContainer extends React.Component<
                 render={({
                   match,
                 }: RouteComponentProps<{ investigationId: string }>) => (
-                  <div>Investigation ID: {match.params.investigationId}</div>
+                  // <div>Investigation ID: {match.params.investigationId}</div>
+                  <DatasetCardView
+                    investigationId={match.params.investigationId}
+                    pageNum={this.state.params.page}
+                    setPageQuery={this.setPageQuery}
+                  />
                 )}
               />
             </RouteSwitch>
