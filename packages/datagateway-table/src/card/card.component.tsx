@@ -295,6 +295,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           )}
         </div>
 
+        {/* TODO: Divider is optional based on if there is further information. */}
         <Divider orientation={'vertical'} />
 
         {/* TODO: Add in margins for spacing. */}
@@ -303,27 +304,25 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           <div className={classes.further}>
             {/* TODO: Further information related to the entity. */}
             <div className={classes.furtherLabel}>
-              {/* <Typography>Start Date:</Typography>
-              <Typography>End Date:</Typography>
-              <Typography>DOI:</Typography>
-              <Typography>Visit ID:</Typography>
-
-              {datasetCount && <Typography>Dataset Count:</Typography>} */}
-
-              {/* {furtherInformation && furtherInformation.map((info: string, index: number) => (
-  <Typography>{in</Typography>
-            ))} */}
+              {furtherInformation &&
+                furtherInformation.map(
+                  (info: EntityCardDetails, index: number) => (
+                    <Typography key={index}>{`${info.label}:`}</Typography>
+                  )
+                )}
             </div>
             <div className={classes.furtherData}>
-              {/* <Typography>{startDate}</Typography>
-              <Typography>{endDate}</Typography>
-              <Typography>{doi}</Typography>
-              <Typography>{visitId}</Typography>
-              {datasetCount && <Typography>{datasetCount}</Typography>} */}
+              {furtherInformation &&
+                furtherInformation.map(
+                  (info: EntityCardDetails, index: number) => (
+                    <Typography key={index}>{info.data}</Typography>
+                  )
+                )}
             </div>
           </div>
-
           {/* TODO: Add to cart button - requires API logic */}
+          {/* TODO: Button should be located more centrally (positioned in the
+          middle) if there is no further information. */}
           <div style={{ paddingTop: '15px', textAlign: 'center' }}>
             {!isSelected ? (
               <Button
