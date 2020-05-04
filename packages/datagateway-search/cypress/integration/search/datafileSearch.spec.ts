@@ -3,6 +3,12 @@ describe('Datafile search tab', () => {
     cy.login('user', 'password');
 
     cy.visit('/search/data/');
+
+    cy.get('[aria-label="submit search button"]').click();
+
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Datafile')
+      .click();
   });
 
   it('should load correctly', () => {

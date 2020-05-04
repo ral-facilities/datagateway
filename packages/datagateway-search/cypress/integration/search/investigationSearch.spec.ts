@@ -40,6 +40,8 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="submit search button"]').click();
 
+    cy.get('[aria-rowcount="32"]').should('exist');
+
     cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
       'INVESTIGATION 30'
     );
