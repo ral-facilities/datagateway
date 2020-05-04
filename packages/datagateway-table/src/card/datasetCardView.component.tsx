@@ -6,7 +6,12 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
-import { fetchDatasets, fetchDatasetCount } from 'datagateway-common';
+import {
+  fetchDatasets,
+  fetchDatasetCount,
+  Dataset,
+  datasetLink,
+} from 'datagateway-common';
 import { connect } from 'react-redux';
 
 interface DatasetCVDispatchProps {
@@ -63,7 +68,12 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       <CardView
         // TODO: Put in the correct dataKeys.
         //       Provide an array of further info and tags.
-        title={{ dataKey: 'NAME' }}
+        title={{
+          dataKey: 'NAME',
+          link: (dataset: Dataset) => {
+            return datasetLink(investigationId, dataset.ID, dataset.NAME);
+          },
+        }}
         description={{ dataKey: 'DESCRIPTION' }}
         furtherInformation={[
           {

@@ -3,6 +3,8 @@ import { IndexRange } from 'react-virtualized';
 import {
   fetchInvestigationCount,
   fetchInvestigations,
+  Investigation,
+  investigationLink,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
@@ -57,7 +59,14 @@ const InvestigationCardView = (
             of passing data to the card view (how can we achieve this if the data is not Entity[]). */}
       {/* TODO: Add support for pagination here (?), card layout type (buttons), card widths, sort, filtering. */}
       <CardView
-        title={{ dataKey: 'TITLE' }}
+        // TODO: Simplify title usage; need for dataKey/label/link.
+        title={{
+          // Provide both the dataKey (for tooltip) and link to render.
+          dataKey: 'TITLE',
+          link: (investigation: Investigation) => {
+            return investigationLink(investigation.ID, investigation.TITLE);
+          },
+        }}
         description={{ dataKey: 'SUMMARY' }}
         furtherInformation={[
           {
@@ -81,6 +90,12 @@ const InvestigationCardView = (
           //   dataKey: 'DATASET_COUNT',
           // },
         ]}
+        // TODO: Test image.
+        image={{
+          url:
+            'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
+          title: 'Investigation Image',
+        }}
         // TODO: Handle via redux state.
         pageNum={pageNum}
         // setPageQuery={setPageQuery}

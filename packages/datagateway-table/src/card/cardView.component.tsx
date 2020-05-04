@@ -24,7 +24,7 @@ import { StateType } from 'datagateway-common/lib/state/app.types';
 import { connect } from 'react-redux';
 // import { push } from 'connected-react-router';
 
-import EntityCard from './card.component';
+import EntityCard, { EntityImageDetails } from './card.component';
 
 // TODO: Should be in separate investigation card view.
 // TODO: Will require sort/filters/cartItems?
@@ -47,7 +47,8 @@ interface CardViewDetails {
   // TODO: Pass in a label for the dataKey to be shown under.
   //       Pass a Link component to wrap the data.
   label?: string;
-  link?: React.ReactNode;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  link?: (data?: any) => React.ReactNode;
 }
 
 interface CardViewProps {
@@ -57,6 +58,8 @@ interface CardViewProps {
 
   // TODO: Further information array.
   furtherInformation?: CardViewDetails[];
+
+  image?: EntityImageDetails;
 
   // TODO: Should be moved to redux state.
   pageNum: number | null;
@@ -79,8 +82,7 @@ type CardViewCombinedProps = CardViewProps & CardViewStateProps;
 //        - pagination (?page=)
 //        - searching (?search=)
 //        - sort (?sort=)
-// TODO: Place Cards within a grid view.
-//       Look at how datagateway-search separates search box with results.
+// TODO: Look at how datagateway-search creates a search box; style the search-box.
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
@@ -88,7 +90,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const { pageNum, data } = props; // search, pushQuery, fetchData, setPageQuery
 
   // Get card information.
-  const { title, description, furtherInformation } = props;
+  const { title, description, furtherInformation, image } = props;
   console.log('title datakey: ', title && title.dataKey);
   console.log('description datakey: ', description && description.dataKey);
   console.log(
@@ -97,7 +99,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   );
 
   // Card data.
-  // const [fetchedData, setFetchedData] = React.useState(false);
   const [viewData, setViewData] = React.useState<Entity[]>([]);
 
   // Pagination.
@@ -119,19 +120,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     // Set the page num if it was found in the parameters.
     console.log('Is page change: ', pageChange);
     if (pageNum && !pageChange) setPage(pageNum);
+
     // TODO: The pageNum is always behind; is this an issue?
     console.log('Current pageNum: ', pageNum);
   }, [page, pageChange, pageNum]);
 
   React.useEffect(
     () => {
-      // Fetch card data.
-      // console.log('Fetch data page: ', page);
-      // if (!fetchedData) {
-      //   fetchData();
-      //   setFetchedData(true);
-      // }
-
       // Calculate the maximum pages needed for pagination.
       setNumPages(~~((data.length + maxResults - 1) / maxResults));
       console.log('Number of pages: ', numPages);
@@ -161,8 +156,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       numPages,
       startIndex,
       endIndex,
-      // fetchData,
-      // fetchedData,
       pageChange,
     ]
   );
@@ -208,25 +201,22 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   className={classes.root}
                 >
                   <EntityCard
-                    // title={investigation.TITLE}
-                    // description={investigation.SUMMARY}
-                    title={data[title.dataKey]}
+                    title={{
+                      // TODO: Is this the best way to handle label/dataKey?
+                      label: data[title.dataKey],
+                      content: title.link && title.link(data),
+                    }}
                     description={description && data[description.dataKey]}
-                    // TODO: This needs to be provided as an array of CardDetail items.
-                    // startDate={investigation.STARTDATE}
-                    // endDate={investigation.ENDDATE}
-                    // doi={investigation.DOI}
-                    // visitId={investigation.VISIT_ID}
-                    // imageUrl="https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg"
                     furtherInformation={
                       furtherInformation &&
                       furtherInformation.map(details => ({
                         // TODO: Create a separate type just for details label?
-                        // We can say the label is the data key if not defined.
+                        //       We can say the label is the data key if not defined.
                         label: details.label ? details.label : details.dataKey,
                         data: data[details.dataKey],
                       }))
                     }
+                    image={image}
                   />
                 </ListItem>
               );

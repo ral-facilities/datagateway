@@ -126,6 +126,16 @@ const useCardStyles = makeStyles((theme: Theme) => {
   return styles;
 });
 
+export interface EntityCardTitle {
+  label: string;
+  content?: React.ReactNode;
+}
+
+export interface EntityImageDetails {
+  url: string;
+  title?: string;
+}
+
 interface EntityCardDetails {
   label: string;
   data: string;
@@ -133,23 +143,18 @@ interface EntityCardDetails {
 
 interface EntityCardProps {
   // TODO: Minimum information.
-  title: string;
+  // title: string;
+  title: EntityCardTitle;
 
   // TODO: Description is also optional; if the isTitleCard
   //       flagged only the title will be shown and the the card
   //       a simple card with an option to view items (?).
   description?: string;
 
-  // TODO: Pass an array of strings.
-  // startDate?: string;
-  // endDate?: string;
-  // doi?: string;
-  // visitId?: string;
-  // datasetCount?: number;
   furtherInformation?: EntityCardDetails[];
 
   // TODO: optional and no information to create these; tags may be created from instrument information for ISIS.
-  imageUrl?: string;
+  image?: EntityImageDetails;
   tags?: typeof Chip[];
 
   // TODO: Give the option to have a simple card which links to other data.
@@ -161,14 +166,11 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const {
     title,
     description,
-    // startDate,
-    // endDate,
-    // doi,
-    // visitId,
-    // datasetCount,
     furtherInformation,
 
-    imageUrl,
+    // TODO: image, tags need to be clarified as
+    //       to how they will be provided.
+    image,
     tags,
   } = props;
   console.log('Further information in card: ', furtherInformation);
@@ -196,14 +198,12 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   return (
     // TODO: Fix sizing issue with this.
     <Card id="card" className={classes.root}>
-      {imageUrl && (
+      {image && (
         <CardMedia
           component="img"
           className={classes.cardImage}
-          // TODO: Test image.
-          // image="https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg"
-          image={imageUrl}
-          title="Investigation/Dataset image"
+          image={image.url}
+          title={image.title && image.title}
         />
       )}
       {/* TODO: Card content needs to be a flexbox (as a row):
@@ -222,16 +222,17 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             {/* TODO: The title needs to link to the next entity (investigation/dataset) - or have it as the whole card? */}
             {/* TODO: Delay not consistent between cards? */}
             <ArrowTooltip
-              title={title}
+              // disableHover={title.label === null}
+              title={title.label}
               enterDelay={500}
-              // TODO: Move to different component.
+              // TODO: Disable tooltip when collapsed (?)
               // disableFocusListener={isCollapsed}
               percentageWidth={30}
               maxEnabledHeight={32}
             >
               <Typography className={classes.title} component="h5" variant="h5">
                 <span style={{ whiteSpace: isCollapsed ? 'normal' : 'nowrap' }}>
-                  {title}
+                  {title.content ? title.content : title.label}
                 </span>
               </Typography>
             </ArrowTooltip>

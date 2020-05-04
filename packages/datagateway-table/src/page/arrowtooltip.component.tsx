@@ -75,7 +75,10 @@ const useStylesArrow = makeStyles((theme: Theme) =>
 );
 
 const ArrowTooltip = (
-  props: TooltipProps & { percentageWidth?: number; maxEnabledHeight?: number }
+  props: TooltipProps & {
+    percentageWidth?: number;
+    maxEnabledHeight?: number;
+  }
 ): React.ReactElement => {
   const { percentageWidth, maxEnabledHeight } = props;
 
