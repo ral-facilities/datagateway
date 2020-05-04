@@ -9,3 +9,5 @@ function noOp(): void {}
 if (typeof window.URL.createObjectURL === 'undefined') {
   Object.defineProperty(window.URL, 'createObjectURL', { value: noOp });
 }
+
+export const flushPromises = (): Promise<void> => new Promise(setImmediate);

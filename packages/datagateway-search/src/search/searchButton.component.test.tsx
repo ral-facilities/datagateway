@@ -8,6 +8,13 @@ import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import axios from 'axios';
+import {
+  setInvestigationTab,
+  setDatasetTab,
+  setDatafileTab,
+} from '../state/actions/actions';
+import { act } from 'react-dom/test-utils';
+import { flushPromises } from '../setupTests';
 
 jest.mock('loglevel');
 
@@ -367,5 +374,50 @@ describe('Search Button component tests', () => {
         },
       }
     );
+  });
+  it('sends actions to update tabs when user clicks search button', async () => {
+    state.dgsearch = {
+      searchText: 'hello',
+      text: '',
+      selectDate: {
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        dataset: false,
+        datafile: false,
+        investigation: false,
+      },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+    };
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(testStore.getActions()[0]).toEqual(setDatasetTab(false));
+    expect(testStore.getActions()[1]).toEqual(setDatafileTab(false));
+    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(false));
   });
 });
