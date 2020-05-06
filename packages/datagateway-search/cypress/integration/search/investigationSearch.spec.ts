@@ -3,12 +3,6 @@ describe('Investigation search tab', () => {
     cy.login('user', 'password');
 
     cy.visit('/search/data/');
-
-    cy.get('[aria-label="submit search button"]').click();
-
-    cy.get('[aria-label="simple tabs example"]')
-      .contains('Investigation')
-      .click();
   });
 
   it('should load correctly', () => {
@@ -26,6 +20,10 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="submit search button"]').click();
 
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Investigation')
+      .click();
+
     cy.get('[aria-rowcount="4"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -40,6 +38,10 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="submit search button"]').click();
 
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Investigation')
+      .click();
+
     cy.get('[aria-rowcount="32"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -52,6 +54,10 @@ describe('Investigation search tab', () => {
     cy.get('[aria-label="end date input"]').type('2001-12-31');
 
     cy.get('[aria-label="submit search button"]').click();
+
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Investigation')
+      .click();
 
     cy.get('[aria-rowcount="12"]').should('exist');
 
