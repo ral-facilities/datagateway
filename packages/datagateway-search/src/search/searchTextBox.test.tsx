@@ -11,9 +11,7 @@ import { submitSearchText } from '../state/actions/actions';
 
 jest.mock('loglevel');
 
-// Skipping this failing test as the addition of an end adornment to the search text box means the simulate.click is not behaving as desired
-
-describe.skip('Search text box component tests', () => {
+describe('Search text box component tests', () => {
   let shallow;
   let state: StateType;
   let mockStore;
@@ -64,7 +62,7 @@ describe.skip('Search text box component tests', () => {
     );
 
     wrapper
-      .find('[aria-label="search text input"]')
+      .find('[aria-label="search text input"] input')
       .simulate('change', { target: { value: 'test' } });
 
     expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));
