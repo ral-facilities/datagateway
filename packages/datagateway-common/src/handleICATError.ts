@@ -10,7 +10,13 @@ const handleICATError = (
   error: AxiosError,
   broadcast: boolean = true
 ): void => {
-  log.error(error.message);
+  let message;
+  if (error.response && error.response.data.message) {
+    message = error.response.data.message;
+  } else {
+    message = error.message;
+  }
+  log.error(message);
   if (broadcast) {
     document.dispatchEvent(
       new CustomEvent(MicroFrontendId, {
@@ -18,7 +24,7 @@ const handleICATError = (
           type: NotificationType,
           payload: {
             severity: 'error',
-            message: error.message,
+            message: message,
           },
         },
       })
