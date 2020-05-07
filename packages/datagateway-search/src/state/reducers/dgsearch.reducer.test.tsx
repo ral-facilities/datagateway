@@ -5,6 +5,9 @@ import {
   toggleDataset,
   toggleDatafile,
   toggleInvestigation,
+  setDatasetTab,
+  setDatafileTab,
+  setInvestigationTab,
   selectStartDate,
   selectEndDate,
 } from '../actions/actions';
@@ -52,6 +55,30 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, toggleInvestigation(false));
 
     expect(updatedState.checkBox.investigation).toEqual(false);
+  });
+
+  it('should set tabs property when set dataset tab action is sent', () => {
+    expect(state.tabs.datasetTab).toEqual(false);
+
+    const updatedState = DGSearchReducer(state, setDatasetTab(true));
+
+    expect(updatedState.tabs.datasetTab).toEqual(true);
+  });
+
+  it('should set tabs property when set datafile tab action is sent', () => {
+    expect(state.tabs.datafileTab).toEqual(false);
+
+    const updatedState = DGSearchReducer(state, setDatafileTab(true));
+
+    expect(updatedState.tabs.datafileTab).toEqual(true);
+  });
+
+  it('should set tabs property when set investigation tab action is sent', () => {
+    expect(state.tabs.investigationTab).toEqual(false);
+
+    const updatedState = DGSearchReducer(state, setInvestigationTab(true));
+
+    expect(updatedState.tabs.investigationTab).toEqual(true);
   });
 
   it('should set start date property when select start date action is sent', () => {

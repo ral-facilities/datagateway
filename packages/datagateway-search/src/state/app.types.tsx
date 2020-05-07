@@ -21,6 +21,11 @@ export interface DGSearchState {
     datafile: number[];
     investigation: number[];
   };
+  tabs: {
+    datasetTab: boolean;
+    datafileTab: boolean;
+    investigationTab: boolean;
+  };
 }
 
 export type StateType = {

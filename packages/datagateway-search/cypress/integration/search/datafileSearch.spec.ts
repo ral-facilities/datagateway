@@ -20,6 +20,10 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="submit search button"]').click();
 
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Datafile')
+      .click();
+
     cy.get('[aria-rowcount="1"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 4961');

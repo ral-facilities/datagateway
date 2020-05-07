@@ -35,6 +35,11 @@ describe('Search text box component tests', () => {
         datafile: true,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
       requestReceived: false,
       searchData: {
         dataset: [],
