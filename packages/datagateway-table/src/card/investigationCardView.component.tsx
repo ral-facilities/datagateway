@@ -91,11 +91,11 @@ const InvestigationCardView = (
           // },
         ]}
         // TODO: Test image.
-        image={{
-          url:
-            'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
-          title: 'Investigation Image',
-        }}
+        // image={{
+        //   url:
+        //     'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
+        //   title: 'Investigation Image',
+        // }}
         // TODO: Handle via redux state.
         pageNum={pageNum}
         // setPageQuery={setPageQuery}

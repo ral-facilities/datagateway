@@ -14,17 +14,20 @@ import {
 import { Pagination } from '@material-ui/lab';
 import {
   Entity,
+  // updatePage,
   // fetchInvestigations,
   // fetchInvestigationCount,
   // Investigation,
 } from 'datagateway-common';
-import { StateType } from 'datagateway-common/lib/state/app.types';
 // import { IndexRange } from 'react-virtualized';
+
+import EntityCard, { EntityImageDetails } from './card.component';
 
 import { connect } from 'react-redux';
 // import { push } from 'connected-react-router';
-
-import EntityCard, { EntityImageDetails } from './card.component';
+import { StateType } from 'datagateway-common/lib/state/app.types';
+// import { ThunkDispatch } from 'redux-thunk';
+// import { AnyAction } from 'redux';
 
 // TODO: Should be in separate investigation card view.
 // TODO: Will require sort/filters/cartItems?
@@ -69,14 +72,16 @@ interface CardViewProps {
 
 interface CardViewStateProps {
   data: Entity[];
+  // query: URLSearchParams;
 }
 
 // interface CardViewDispatchProps {
-// fetchData: (offsetParams?: IndexRange) => Promise<void>;
+//  pushPage: (query: URLSearchParams, page: number) => void;
 // }
 
 type CardViewCombinedProps = CardViewProps & CardViewStateProps;
-// & CardViewDispatchProps;
+// &
+// CardViewDispatchProps;
 
 // TODO: CardView needs URL support:
 //        - pagination (?page=)
@@ -87,7 +92,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
   // Props.
-  const { pageNum, data } = props; // search, pushQuery, fetchData, setPageQuery
+  // query, pushPage
+  const { pageNum, data } = props; // pushQuery, fetchData, setPageQuery
 
   // Get card information.
   const { title, description, furtherInformation, image } = props;
@@ -248,6 +254,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             // console.log('Final query: ' + currentParams.toString());
             // pushQuery(`?${currentParams.toString()}`);
             // setPageQuery('page', p.toString());
+            // pushPage(query, p);
 
             setPageChange(true);
           }}
@@ -261,10 +268,17 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
     data: state.dgcommon.data,
-
-    // TODO: Needs to be moved to a query handling component/handled by redux.
-    // search: state.router.location.search,
+    // query: state.dgcommon.query,
   };
 };
+
+// const mapDispatchToProps = (
+//   dispatch: ThunkDispatch<StateType, null, AnyAction>
+// ): CardViewDispatchProps => ({
+//   // pushPage: (query: URLSearchParams, page: number) => {
+//   //   dispatch(updatePage(page));
+//   //   dispatch(push(`?${query.toString()}`));
+//   // },
+// });
 
 export default connect(mapStateToProps)(CardView);

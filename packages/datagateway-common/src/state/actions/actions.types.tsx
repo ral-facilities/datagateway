@@ -1,4 +1,5 @@
 import { Filter, Order, Entity, DownloadCart } from '../../app.types';
+import { ViewsType } from '../app.types';
 
 // parent app actions
 export const MicroFrontendMessageId = 'scigateway';
@@ -7,13 +8,17 @@ export const RegisterRouteType = `${MicroFrontendMessageId}:api:register_route`;
 export const RequestPluginRerenderType = `${MicroFrontendMessageId}:api:plugin_rerender`;
 
 // internal actions
-export const SortTableType = 'datagateway_common:sort_table';
-export const FilterTableType = 'datagateway_common:filter_table';
-export const ClearTableType = 'datagateway_common:clear_table';
 export const ConfigureFacilityNameType =
   'datagateway_common:configure_facility_name';
 export const ConfigureURLsType = 'datagateway_common:configure_urls';
-export const SaveQueriesType = 'datagateway_common:save_queries';
+
+export const SortTableType = 'datagateway_common:sort_table';
+export const FilterTableType = 'datagateway_common:filter_table';
+export const ClearTableType = 'datagateway_common:clear_table';
+
+export const UpdateViewType = 'datagateway_common:update_view';
+export const UpdatePageType = 'datagateway_common:update_page';
+// export const SaveQueriesType = 'datagateway_common:save_queries';
 
 export const FetchInvestigationsRequestType =
   'datagateway_common:fetch_investigations_request';
@@ -207,9 +212,17 @@ export interface URLs {
   downloadApiUrl: string;
 }
 
-export interface SaveQueriesPayload {
-  queries: URLSearchParams | null;
+export interface UpdateViewPayload {
+  view: ViewsType;
 }
+
+export interface UpdatePagePayload {
+  page: number | null;
+}
+
+// export interface SaveQueriesPayload {
+//   queries: URLSearchParams | null;
+// }
 
 export interface RequestPayload {
   timestamp: number;

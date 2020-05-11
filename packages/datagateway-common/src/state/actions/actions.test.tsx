@@ -183,5 +183,5 @@ describe('Actions', () => {
   });
 
   // TODO: Implement test for save query.
-  it.skip('given a saveQueries returns a SaveQueriesType with SaveQueriesPayload', () => {});
+  // it.skip('given a saveQueries returns a SaveQueriesType with SaveQueriesPayload', () => {});
 });

@@ -1,4 +1,4 @@
-import { ActionType, StateType } from '../app.types';
+import { ActionType, StateType, ViewsType, ThunkResult } from '../app.types';
 import {
   URLs,
   ConfigureUrlsPayload,
@@ -10,11 +10,16 @@ import {
   FilterTablePayload,
   FilterTableType,
   ClearTableType,
-  SaveQueriesPayload,
-  SaveQueriesType,
+  UpdateViewType,
+  UpdateViewPayload,
+  UpdatePageType,
+  UpdatePagePayload,
+  // SaveQueriesPayload,
+  // SaveQueriesType,
 } from './actions.types';
 import { Filter, Order } from '../../app.types';
 import { Action } from 'redux';
+import { push } from 'connected-react-router';
 
 export * from './investigations';
 export * from './datasets';
@@ -49,6 +54,23 @@ export const clearTable = (): Action => ({
   type: ClearTableType,
 });
 
+// Get the current URL query parameters.
+export const getURLQuery = (getState: () => StateType): URLSearchParams => {
+  const query = getState().dgcommon.query;
+
+  let queryParams = new URLSearchParams();
+
+  // Loop and add all the query parameters which is in use.
+  for (let [q, v] of Object.entries(query)) {
+    console.log(`${q} with value: ${v}`);
+    if (v !== null) queryParams.append(q, v);
+  }
+
+  console.log(`Final URLSearchParams - getURLQuery: ${queryParams.toString()}`);
+  return queryParams;
+};
+
+// TODO: API filters should be part of the query parameters.
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgcommon.sort;
   const filters = getState().dgcommon.filters;
@@ -103,11 +125,34 @@ export const loadUrls = (urls: URLs): ActionType<ConfigureUrlsPayload> => ({
   },
 });
 
-export const saveQueries = (
-  queries: URLSearchParams | null
-): ActionType<SaveQueriesPayload> => ({
-  type: SaveQueriesType,
+export const updateView = (view: ViewsType): ActionType<UpdateViewPayload> => ({
+  type: UpdateViewType,
   payload: {
-    queries,
+    view,
   },
 });
+
+export const updatePage = (
+  page: number | null
+): ActionType<UpdatePagePayload> => ({
+  type: UpdatePageType,
+  payload: {
+    page,
+  },
+});
+
+export const pushPageView = (view: ViewsType): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(updateView(view));
+    dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};
+
+// export const saveQueries = (
+//   queries: URLSearchParams | null
+// ): ActionType<SaveQueriesPayload> => ({
+//   type: SaveQueriesType,
+//   payload: {
+//     queries,
+//   },
+// });

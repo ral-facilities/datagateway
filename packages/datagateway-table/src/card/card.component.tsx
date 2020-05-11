@@ -143,7 +143,6 @@ interface EntityCardDetails {
 
 interface EntityCardProps {
   // TODO: Minimum information.
-  // title: string;
   title: EntityCardTitle;
 
   // TODO: Description is also optional; if the isTitleCard
@@ -196,7 +195,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   }, [setCollapsibleInteraction]);
 
   return (
-    // TODO: Fix sizing issue with this.
+    // TODO: Fix width issue when having an image in the card.
     <Card id="card" className={classes.root}>
       {image && (
         <CardMedia
@@ -211,22 +210,18 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 - has card details area which takes up smaller space */}
       <CardContent className={classes.content}>
         {/* row:
-                - main information
-                - further information; dates, DOI, visit id
-                 */}
+          - main information
+          - further information; dates, DOI, visit id
+        */}
         <div className={classes.main}>
           {/*column:
                 - title/description
                 - tags  */}
           <div>
-            {/* TODO: The title needs to link to the next entity (investigation/dataset) - or have it as the whole card? */}
             {/* TODO: Delay not consistent between cards? */}
             <ArrowTooltip
-              // disableHover={title.label === null}
               title={title.label}
               enterDelay={500}
-              // TODO: Disable tooltip when collapsed (?)
-              // disableFocusListener={isCollapsed}
               percentageWidth={30}
               maxEnabledHeight={32}
             >

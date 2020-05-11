@@ -25,7 +25,15 @@ export interface DGCommonState {
   countTimestamp: number;
   allIdsTimestamp: number;
   urls: URLs;
-  savedQueries: URLSearchParams | null;
+  query: QueryParams;
+  // savedQueries: URLSearchParams | null;
+}
+
+export type ViewsType = 'table' | 'card' | null;
+
+export interface QueryParams {
+  view: ViewsType;
+  page: string | null;
 }
 
 export interface EntityCache {

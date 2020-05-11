@@ -60,7 +60,12 @@ import {
   ConfigureFacilityNameType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
-  SaveQueriesType,
+  UpdateViewType,
+  UpdateViewPayload,
+  UpdatePageType,
+  UpdatePagePayload,
+  // SaveQueriesType,
+  // SaveQueriesPayload,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
   FetchInvestigationDetailsFailureType,
@@ -91,7 +96,6 @@ import {
   FetchDatasetSizeRequestType,
   FetchDatasetSizeSuccessType,
   FetchDatasetSizeFailureType,
-  SaveQueriesPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
 
@@ -116,7 +120,11 @@ export const initialState: DGCommonState = {
   },
   cartItems: [],
   allIds: [],
-  savedQueries: null,
+  query: {
+    view: null,
+    page: null,
+  },
+  // savedQueries: null,
 };
 
 export function handleSortTable(
@@ -201,6 +209,56 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     filters: {},
   };
 }
+
+export function handleUpdateView(
+  state: DGCommonState,
+  payload: UpdateViewPayload
+): DGCommonState {
+  // const updatedQuery = state.query;
+  // if (updatedQuery.get('view')) {
+  //   updatedQuery.set('view', payload.view);
+  // } else {
+  //   updatedQuery.append('view', payload.view);
+  // }
+
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      view: payload.view,
+    },
+  };
+}
+
+export function handleUpdatePage(
+  state: DGCommonState,
+  payload: UpdatePagePayload
+): DGCommonState {
+  // const updatedQuery = state.query;
+  // if (updatedQuery.get('page')) {
+  //   updatedQuery.set('page', payload.page.toString());
+  // } else {
+  //   updatedQuery.append('page', payload.page.toString());
+  // }
+
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      page: payload.page ? payload.page.toString() : null,
+    },
+  };
+}
+
+// export function handleSaveQueries(
+//   state: DGCommonState,
+//   payload: SaveQueriesPayload
+// ): DGCommonState {
+//   return {
+//     ...state,
+//     savedQueries: payload.queries,
+//   };
+// }
 
 export function handleFetchDataRequest(
   state: DGCommonState,
@@ -521,16 +579,6 @@ export function handleConfigureUrls(
   };
 }
 
-export function handleSaveQueries(
-  state: DGCommonState,
-  payload: SaveQueriesPayload
-): DGCommonState {
-  return {
-    ...state,
-    savedQueries: payload.queries,
-  };
-}
-
 export function handleFetchAllIdsRequest(
   state: DGCommonState,
   payload: RequestPayload
@@ -563,12 +611,14 @@ export function handleFetchAllIdsSuccess(
 }
 // remove things I want
 const dGCommonReducer = createReducer(initialState, {
+  [ConfigureFacilityNameType]: handleConfigureFacilityName,
+  [ConfigureURLsType]: handleConfigureUrls,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
-  [ConfigureFacilityNameType]: handleConfigureFacilityName,
-  [ConfigureURLsType]: handleConfigureUrls,
-  [SaveQueriesType]: handleSaveQueries,
+  [UpdateViewType]: handleUpdateView,
+  [UpdatePageType]: handleUpdatePage,
+  // [SaveQueriesType]: handleSaveQueries,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

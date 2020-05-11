@@ -14,36 +14,32 @@ import PageTable from './pageTable.component';
 import { Route, RouteComponentProps } from 'react-router';
 
 import { Switch as RouteSwitch } from 'react-router';
-// import { push } from 'connected-react-router';
-// import { ThunkDispatch } from 'redux-thunk';
-// import { AnyAction } from 'redux';
-// import { saveQueries } from 'datagateway-common';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { pushPageView } from 'datagateway-common';
 
 import InvestigationCardView from '../card/investigationCardView.component';
 import DatasetCardView from '../card/datasetCardView.component';
+import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
 
-// interface PageContainerDispatchProps {
-// pushQuery: (newQuery: string) => void;
-// saveQuery: (queries: URLSearchParams | null) => void;
-// }
+interface PageContainerDispatchProps {
+  pushView: (view: ViewsType) => Promise<void>;
+  // saveQuery: (queries: URLSearchParams | null) => void;
+}
 
 interface PageContainerProps {
   entityCount: number;
-  search: string;
-  savedQueries: URLSearchParams | null;
+  query: QueryParams;
+  // savedQueries: URLSearchParams | null;
 }
 
-type PageContainerCombinedProps = PageContainerProps;
-// & PageContainerDispatchProps
+type PageContainerCombinedProps = PageContainerProps &
+  PageContainerDispatchProps;
 
 interface PageContainerState {
   toggleCard: boolean;
+  // page: number | null;
   // savedQueries: URLSearchParams | null;
-  params: {
-    view: string | null;
-    page: number | null;
-    // results: number | null;
-  };
 }
 
 class PageContainer extends React.Component<
@@ -53,16 +49,30 @@ class PageContainer extends React.Component<
   public constructor(props: PageContainerCombinedProps) {
     super(props);
 
-    this.state = {
-      toggleCard: false,
-      params: {
-        view: null,
-        page: null,
-        // results: null,
-      },
-    };
+    // Allow for query parameter to override the
+    // toggle state in the localStorage.
+    const viewParam = this.props.query.view;
+    const toggleCard = viewParam
+      ? viewParam === 'card'
+        ? true
+        : false
+      : this.getView() === 'card'
+      ? true
+      : false;
 
-    // this.loadURLQueryParams();
+    // If the view query parameter was not found and the previously
+    // stored view is in localstorage, update our current query with the view.
+    if (toggleCard && !viewParam) this.props.pushView('card');
+
+    this.state = {
+      toggleCard,
+      // page: Number(this.props.query.get('page')),
+    };
+  }
+
+  public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
+    console.log('Previous page: ', prevProps.query.toString());
+    console.log('Current page: ', this.props.query.toString());
   }
 
   // public loadURLQueryParams = (): void => {
@@ -159,6 +169,7 @@ class PageContainer extends React.Component<
     // newQueryParams.set('view', viewName);
     // console.log('Final query: ' + newQueryParams.toString());
     // this.props.pushQuery(`?${newQueryParams.toString()}`);
+    this.props.pushView(viewName);
 
     // Set the state with the toggled card option and the saved queries.
     this.setState({
@@ -193,6 +204,7 @@ class PageContainer extends React.Component<
         </Grid>
 
         {/* Toggle between the table and card view */}
+        {/* TODO: Prevent toggle on routes which are not investigation/dataset. */}
         <Grid item xs={12}>
           <FormControlLabel
             value="start"
@@ -219,7 +231,7 @@ class PageContainer extends React.Component<
                 path="/browse/investigation/"
                 render={() => (
                   <InvestigationCardView
-                    pageNum={this.state.params.page}
+                    pageNum={Number(this.props.query.page)}
                     // setPageQuery={this.setPageQuery}
                   />
                 )}
@@ -232,17 +244,15 @@ class PageContainer extends React.Component<
                 render={({
                   match,
                 }: RouteComponentProps<{ investigationId: string }>) => (
-                  // <div>Investigation ID: {match.params.investigationId}</div>
                   <DatasetCardView
                     investigationId={match.params.investigationId}
-                    pageNum={this.state.params.page}
+                    pageNum={Number(this.props.query.page)}
                     // setPageQuery={this.setPageQuery}
                   />
                 )}
               />
             </RouteSwitch>
           ) : (
-            // <InvestigationCardView pageNum={this.state.params.page} />
             <Paper
               square
               style={{ height: 'calc(100vh - 95px)', width: '100%' }}
@@ -258,18 +268,16 @@ class PageContainer extends React.Component<
 
 const mapStateToProps = (state: StateType): PageContainerProps => ({
   entityCount: state.dgcommon.totalDataCount,
-
-  // TODO: Pass in relevant query parameters required.
-  search: state.router.location.search,
-  savedQueries: state.dgcommon.savedQueries,
+  query: state.dgcommon.query,
+  // savedQueries: state.dgcommon.savedQueries,
 });
 
-// const mapDispatchToProps = (
-//   dispatch: ThunkDispatch<StateType, null, AnyAction>
-// ): PageContainerDispatchProps => ({
-//   pushQuery: (newQuery: string) => dispatch(push(newQuery)),
-//   saveQuery: (queries: URLSearchParams | null) =>
-//     dispatch(saveQueries(queries)),
-// });
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): PageContainerDispatchProps => ({
+  pushView: (view: ViewsType) => dispatch(pushPageView(view)),
+  // saveQuery: (queries: URLSearchParams | null) =>
+  //   dispatch(saveQueries(queries)),
+});
 
-export default connect(mapStateToProps)(PageContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
