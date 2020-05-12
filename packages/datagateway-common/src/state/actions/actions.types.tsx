@@ -1,5 +1,5 @@
 import { Filter, Order, Entity, DownloadCart } from '../../app.types';
-import { ViewsType } from '../app.types';
+import { ViewsType, QueryParams } from '../app.types';
 
 // parent app actions
 export const MicroFrontendMessageId = 'scigateway';
@@ -18,7 +18,9 @@ export const ClearTableType = 'datagateway_common:clear_table';
 
 export const UpdateViewType = 'datagateway_common:update_view';
 export const UpdatePageType = 'datagateway_common:update_page';
-// export const SaveQueriesType = 'datagateway_common:save_queries';
+export const SaveQueriesType = 'datagateway_common:save_queries';
+export const RestoreQueriesType = 'datagateway_common:restore_queries';
+export const ResetQueryType = 'datagateway_common:reset_queries';
 
 export const FetchInvestigationsRequestType =
   'datagateway_common:fetch_investigations_request';
@@ -220,9 +222,9 @@ export interface UpdatePagePayload {
   page: number | null;
 }
 
-// export interface SaveQueriesPayload {
-//   queries: URLSearchParams | null;
-// }
+export interface SaveQueriesPayload {
+  queries: QueryParams;
+}
 
 export interface RequestPayload {
   timestamp: number;

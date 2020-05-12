@@ -26,14 +26,14 @@ export interface DGCommonState {
   allIdsTimestamp: number;
   urls: URLs;
   query: QueryParams;
-  // savedQueries: URLSearchParams | null;
+  savedQueries: QueryParams | null;
 }
 
 export type ViewsType = 'table' | 'card' | null;
 
 export interface QueryParams {
   view: ViewsType;
-  page: string | null;
+  page: number | null;
 }
 
 export interface EntityCache {

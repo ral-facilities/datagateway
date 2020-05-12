@@ -1,4 +1,10 @@
-import { ActionType, StateType, ViewsType, ThunkResult } from '../app.types';
+import {
+  ActionType,
+  StateType,
+  ViewsType,
+  ThunkResult,
+  QueryParams,
+} from '../app.types';
 import {
   URLs,
   ConfigureUrlsPayload,
@@ -14,6 +20,10 @@ import {
   UpdateViewPayload,
   UpdatePageType,
   UpdatePagePayload,
+  SaveQueriesPayload,
+  SaveQueriesType,
+  RestoreQueriesType,
+  ResetQueryType,
   // SaveQueriesPayload,
   // SaveQueriesType,
 } from './actions.types';
@@ -141,6 +151,23 @@ export const updatePage = (
   },
 });
 
+export const updateSaveQueries = (
+  queries: QueryParams
+): ActionType<SaveQueriesPayload> => ({
+  type: SaveQueriesType,
+  payload: {
+    queries,
+  },
+});
+
+export const restoreSaveQueries = (): Action => ({
+  type: RestoreQueriesType,
+});
+
+export const resetQuery = (): Action => ({
+  type: ResetQueryType,
+});
+
 export const pushPageView = (view: ViewsType): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(updateView(view));
@@ -148,11 +175,29 @@ export const pushPageView = (view: ViewsType): ThunkResult<Promise<void>> => {
   };
 };
 
-// export const saveQueries = (
-//   queries: URLSearchParams | null
-// ): ActionType<SaveQueriesPayload> => ({
-//   type: SaveQueriesType,
-//   payload: {
-//     queries,
-//   },
-// });
+export const pushPageNum = (
+  page: number | null
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(updatePage(page));
+    dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};
+
+export const saveQueries = (): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    // Save the current queries.
+    dispatch(updateSaveQueries(getState().dgcommon.query));
+
+    // Reset the queries in state.
+    dispatch(resetQuery());
+  };
+};
+
+export const restoreQueries = (): ThunkResult<Promise<void>> => {
+  return async dispatch => {
+    // Update the current query params with the saved ones.
+    dispatch(restoreSaveQueries());
+    // dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};

@@ -96,8 +96,17 @@ import {
   FetchDatasetSizeRequestType,
   FetchDatasetSizeSuccessType,
   FetchDatasetSizeFailureType,
+  SaveQueriesType,
+  SaveQueriesPayload,
+  RestoreQueriesType,
+  ResetQueryType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
+
+const initialQuery = {
+  view: null,
+  page: null,
+};
 
 export const initialState: DGCommonState = {
   facilityName: '',
@@ -120,11 +129,8 @@ export const initialState: DGCommonState = {
   },
   cartItems: [],
   allIds: [],
-  query: {
-    view: null,
-    page: null,
-  },
-  // savedQueries: null,
+  query: initialQuery,
+  savedQueries: null,
 };
 
 export function handleSortTable(
@@ -214,13 +220,6 @@ export function handleUpdateView(
   state: DGCommonState,
   payload: UpdateViewPayload
 ): DGCommonState {
-  // const updatedQuery = state.query;
-  // if (updatedQuery.get('view')) {
-  //   updatedQuery.set('view', payload.view);
-  // } else {
-  //   updatedQuery.append('view', payload.view);
-  // }
-
   return {
     ...state,
     query: {
@@ -234,31 +233,41 @@ export function handleUpdatePage(
   state: DGCommonState,
   payload: UpdatePagePayload
 ): DGCommonState {
-  // const updatedQuery = state.query;
-  // if (updatedQuery.get('page')) {
-  //   updatedQuery.set('page', payload.page.toString());
-  // } else {
-  //   updatedQuery.append('page', payload.page.toString());
-  // }
-
   return {
     ...state,
     query: {
       ...state.query,
-      page: payload.page ? payload.page.toString() : null,
+      page: payload.page,
     },
   };
 }
 
-// export function handleSaveQueries(
-//   state: DGCommonState,
-//   payload: SaveQueriesPayload
-// ): DGCommonState {
-//   return {
-//     ...state,
-//     savedQueries: payload.queries,
-//   };
-// }
+export function handleSaveQueries(
+  state: DGCommonState,
+  payload: SaveQueriesPayload
+): DGCommonState {
+  return {
+    ...state,
+    savedQueries: payload.queries,
+  };
+}
+
+export function handleRestoreQueries(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    // TODO: Handling the null on savedQueries?
+    // Restores any saved queries, if there are none, then resets the query.
+    query: state.savedQueries ? state.savedQueries : initialQuery,
+    savedQueries: null,
+  };
+}
+
+export function handleResetQuery(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    query: initialQuery,
+  };
+}
 
 export function handleFetchDataRequest(
   state: DGCommonState,
@@ -618,7 +627,9 @@ const dGCommonReducer = createReducer(initialState, {
   [ClearTableType]: handleClearTable,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
-  // [SaveQueriesType]: handleSaveQueries,
+  [SaveQueriesType]: handleSaveQueries,
+  [RestoreQueriesType]: handleRestoreQueries,
+  [ResetQueryType]: handleResetQuery,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
