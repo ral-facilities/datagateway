@@ -16,13 +16,19 @@ import { Route, RouteComponentProps } from 'react-router';
 import { Switch as RouteSwitch } from 'react-router';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { pushPageView, saveQueries, restoreQueries } from 'datagateway-common';
+import {
+  loadURLQuery,
+  pushPageView,
+  saveQueries,
+  restoreQueries,
+} from 'datagateway-common';
 
 import InvestigationCardView from '../card/investigationCardView.component';
 import DatasetCardView from '../card/datasetCardView.component';
 import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
 
 interface PageContainerDispatchProps {
+  loadQuery: () => Promise<void>;
   pushView: (view: ViewsType) => Promise<void>;
   saveQuery: () => Promise<void>;
   restoreQuery: () => Promise<void>;
@@ -39,8 +45,6 @@ type PageContainerCombinedProps = PageContainerProps &
 
 interface PageContainerState {
   toggleCard: boolean;
-  // page: number | null;
-  // savedQueries: URLSearchParams | null;
 }
 
 class PageContainer extends React.Component<
@@ -50,31 +54,42 @@ class PageContainer extends React.Component<
   public constructor(props: PageContainerCombinedProps) {
     super(props);
 
+    // Load the current URL query parameters.
+    this.props.loadQuery();
+
     // Allow for query parameter to override the
     // toggle state in the localStorage.
-    const viewParam = this.props.query.view;
-    const toggleCard = viewParam
-      ? viewParam === 'card'
+    this.state = {
+      toggleCard: this.getToggle(),
+    };
+  }
+
+  public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
+    // console.log('update toggle: ', this.getToggle());
+    // console.log('update view: ', this.props.query.view);
+
+    // If the view query parameter was not found and the previously
+    // stored view is in localstorage, update our current query with the view.
+    if (this.getToggle() && !this.props.query.view) this.props.pushView('card');
+
+    // Keep the query parameter for view and the state in sync, by getting the latest update.
+    if (prevProps.query.view !== this.props.query.view) {
+      this.setState({
+        ...this.state,
+        toggleCard: this.getToggle(),
+      });
+    }
+  }
+
+  public getToggle = (): boolean => {
+    return this.props.query.view
+      ? this.props.query.view === 'card'
         ? true
         : false
       : this.getView() === 'card'
       ? true
       : false;
-
-    // If the view query parameter was not found and the previously
-    // stored view is in localstorage, update our current query with the view.
-    if (toggleCard && !viewParam) this.props.pushView('card');
-
-    this.state = {
-      toggleCard,
-      // page: Number(this.props.query.get('page')),
-    };
-  }
-
-  public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
-    console.log('Previous page: ', prevProps.query.toString());
-    console.log('Current page: ', this.props.query.toString());
-  }
+  };
 
   public storeDataView = (view: 'table' | 'card'): void =>
     localStorage.setItem('dataView', view);
@@ -103,16 +118,13 @@ class PageContainer extends React.Component<
       this.props.restoreQuery();
     }
 
-    // // Add the view and push the final query parameters.
-    // newQueryParams.set('view', viewName);
-    // console.log('Final query: ' + newQueryParams.toString());
-    // this.props.pushQuery(`?${newQueryParams.toString()}`);
+    // Add the view and push the final query parameters.
     this.props.pushView(viewName);
 
     // Set the state with the toggled card option and the saved queries.
     this.setState({
       ...this.state,
-      [event.target.name]: event.target.checked,
+      toggleCard: event.target.checked,
     });
   };
 
@@ -167,10 +179,7 @@ class PageContainer extends React.Component<
                 exact
                 path="/browse/investigation/"
                 render={() => (
-                  <InvestigationCardView
-                    pageNum={Number(this.props.query.page)}
-                    // setPageQuery={this.setPageQuery}
-                  />
+                  <InvestigationCardView pageNum={this.props.query.page} />
                 )}
               />
 
@@ -183,8 +192,7 @@ class PageContainer extends React.Component<
                 }: RouteComponentProps<{ investigationId: string }>) => (
                   <DatasetCardView
                     investigationId={match.params.investigationId}
-                    pageNum={Number(this.props.query.page)}
-                    // setPageQuery={this.setPageQuery}
+                    pageNum={this.props.query.page}
                   />
                 )}
               />
@@ -212,6 +220,7 @@ const mapStateToProps = (state: StateType): PageContainerProps => ({
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): PageContainerDispatchProps => ({
+  loadQuery: () => dispatch(loadURLQuery()),
   pushView: (view: ViewsType) => dispatch(pushPageView(view)),
   saveQuery: () => dispatch(saveQueries()),
   restoreQuery: () => dispatch(restoreQueries()),

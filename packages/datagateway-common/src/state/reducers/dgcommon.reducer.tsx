@@ -100,6 +100,8 @@ import {
   SaveQueriesPayload,
   RestoreQueriesType,
   ResetQueryType,
+  UpdateQueriesType,
+  UpdateQueriesPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
 
@@ -239,6 +241,16 @@ export function handleUpdatePage(
       ...state.query,
       page: payload.page,
     },
+  };
+}
+
+export function handleUpdateQueries(
+  state: DGCommonState,
+  payload: UpdateQueriesPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: payload.queries,
   };
 }
 
@@ -627,6 +639,7 @@ const dGCommonReducer = createReducer(initialState, {
   [ClearTableType]: handleClearTable,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
+  [UpdateQueriesType]: handleUpdateQueries,
   [SaveQueriesType]: handleSaveQueries,
   [RestoreQueriesType]: handleRestoreQueries,
   [ResetQueryType]: handleResetQuery,

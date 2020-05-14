@@ -24,6 +24,8 @@ import {
   SaveQueriesType,
   RestoreQueriesType,
   ResetQueryType,
+  UpdateQueriesPayload,
+  UpdateQueriesType,
   // SaveQueriesPayload,
   // SaveQueriesType,
 } from './actions.types';
@@ -63,6 +65,32 @@ export const filterTable = (
 export const clearTable = (): Action => ({
   type: ClearTableType,
 });
+
+export const updateQueryParams = (
+  queries: QueryParams
+): ActionType<UpdateQueriesPayload> => ({
+  type: UpdateQueriesType,
+  payload: {
+    queries,
+  },
+});
+
+export const loadURLQuery = (): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    // Get the URLSearchParams object from the search query.
+    const query = new URLSearchParams(getState().router.location.search);
+    console.log('loading search: ', query.toString());
+
+    const page = query.get('page');
+    console.log(`load URL Query: ${page}`);
+    const params: QueryParams = {
+      view: query.get('view') as ViewsType,
+      page: page ? Number(page) : null,
+    };
+
+    dispatch(updateQueryParams(params));
+  };
+};
 
 // Get the current URL query parameters.
 export const getURLQuery = (getState: () => StateType): URLSearchParams => {
