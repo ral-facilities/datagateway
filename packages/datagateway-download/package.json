@@ -16,7 +16,7 @@
     "loglevel": "^1.6.3",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
-    "react-scripts": "3.0.1",
+    "react-scripts": "3.4.1",
     "react-virtualized": "^9.21.1",
     "single-spa-react": "^2.10.2",
     "typescript": "3.5.3"
