@@ -36,6 +36,7 @@ interface PageContainerDispatchProps {
 
 interface PageContainerProps {
   entityCount: number;
+  path: string;
   query: QueryParams;
   savedQueries: QueryParams | null;
 }
@@ -65,8 +66,13 @@ class PageContainer extends React.Component<
   }
 
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
-    // console.log('update toggle: ', this.getToggle());
-    // console.log('update view: ', this.props.query.view);
+    console.log('update toggle: ', this.getToggle());
+    console.log('update view: ', this.props.query.view);
+
+    // // TODO: Ensure if the location changes, then we update the query parameters.
+    if (prevProps.path !== this.props.path) {
+      this.props.loadQuery();
+    }
 
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
@@ -208,6 +214,7 @@ class PageContainer extends React.Component<
 
 const mapStateToProps = (state: StateType): PageContainerProps => ({
   entityCount: state.dgcommon.totalDataCount,
+  path: state.router.location.pathname,
   query: state.dgcommon.query,
   savedQueries: state.dgcommon.savedQueries,
 });

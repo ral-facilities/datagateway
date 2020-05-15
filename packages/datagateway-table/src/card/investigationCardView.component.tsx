@@ -5,6 +5,7 @@ import {
   fetchInvestigations,
   Investigation,
   investigationLink,
+  Entity,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
@@ -22,10 +23,17 @@ interface InvestigationCVDispatchProps {
   fetchCount: () => Promise<void>;
 }
 
+interface InvestigationCVStateProps {
+  data: Entity[];
+}
+
+type InvestigationCVCombinedProps = InvestigationCVDispatchProps &
+  InvestigationCVStateProps;
+
 const InvestigationCardView = (
-  props: InvestigationCVDispatchProps
+  props: InvestigationCVCombinedProps
 ): React.ReactElement => {
-  const { fetchData, fetchCount } = props;
+  const { data, fetchData, fetchCount } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedData, setFetchedData] = React.useState(false);
@@ -56,7 +64,8 @@ const InvestigationCardView = (
             of passing data to the card view (how can we achieve this if the data is not Entity[]). */}
       {/* TODO: Add support for pagination here (?), card layout type (buttons), card widths, sort, filtering. */}
       <CardView
-        // TODO: Simplify title usage; need for dataKey/label/link.
+        data={data}
+        // TODO: Simplify title usage; look at the need for dataKey, label and link.
         title={{
           // Provide both the dataKey (for tooltip) and link to render.
           dataKey: 'TITLE',
@@ -98,7 +107,11 @@ const InvestigationCardView = (
   );
 };
 
-// const mapStateToProps = (state: StateType)
+const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
+  return {
+    data: state.dgcommon.data,
+  };
+};
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
@@ -108,4 +121,7 @@ const mapDispatchToProps = (
   fetchCount: () => dispatch(fetchInvestigationCount()),
 });
 
-export default connect(null, mapDispatchToProps)(InvestigationCardView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InvestigationCardView);

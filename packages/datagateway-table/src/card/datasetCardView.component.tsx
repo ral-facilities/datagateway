@@ -11,6 +11,7 @@ import {
   fetchDatasetCount,
   Dataset,
   datasetLink,
+  Entity,
 } from 'datagateway-common';
 import { connect } from 'react-redux';
 
@@ -25,14 +26,20 @@ interface DatasetCVDispatchProps {
   // removeFromCart: (entityIds: number[]) => Promise<void>;
 }
 
+interface DatasetCVStateProps {
+  data: Entity[];
+}
+
 interface DatasetCardViewProps {
   investigationId: string;
 }
 
-type DatasetCVCombinedProps = DatasetCardViewProps & DatasetCVDispatchProps;
+type DatasetCVCombinedProps = DatasetCardViewProps &
+  DatasetCVDispatchProps &
+  DatasetCVStateProps;
 
 const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
-  const { investigationId, fetchCount, fetchData } = props;
+  const { investigationId, data, fetchCount, fetchData } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedData, setFetchedData] = React.useState(false);
@@ -56,6 +63,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
   return (
     <Paper square>
       <CardView
+        data={data}
         // TODO: Put in the correct dataKeys.
         //       Provide an array of further info and tags.
         title={{
@@ -84,7 +92,11 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
   );
 };
 
-// const mapStateToProps = (state: StateType)
+const mapStateToProps = (state: StateType): DatasetCVStateProps => {
+  return {
+    data: state.dgcommon.data,
+  };
+};
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
@@ -98,4 +110,4 @@ const mapDispatchToProps = (
   // removeFromCart: (entityIds: number[]) => dispatch(removeFromCart('dataset', entityIds)),
 });
 
-export default connect(null, mapDispatchToProps)(DatasetCardView);
+export default connect(mapStateToProps, mapDispatchToProps)(DatasetCardView);

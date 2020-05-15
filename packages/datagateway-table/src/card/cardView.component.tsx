@@ -48,6 +48,8 @@ interface CardViewDetails {
 }
 
 interface CardViewProps {
+  data: Entity[];
+
   // TODO: Props to get title, description of the card represented by data.
   title: CardViewDetails;
   description?: CardViewDetails;
@@ -59,7 +61,7 @@ interface CardViewProps {
 }
 
 interface CardViewStateProps {
-  data: Entity[];
+  // data: Entity[];
   query: QueryParams;
 }
 
@@ -97,7 +99,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // Pagination.
   // TODO: Data needs to be fetched from the API page by page.
   const [maxResults, setMaxResults] = React.useState(10);
-  const [page, setPage] = React.useState(1);
+
+  // TODO: This page is not reset when component is changed.
+  const [page, setPage] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
   const [startIndex, setStartIndex] = React.useState(-1);
   const [endIndex, setEndIndex] = React.useState(-1);
@@ -108,13 +112,22 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     // TODO: 1. allow for page to be changed via query parameter
     //       2. allow for page to be changed via the pagination component
     console.log('Got page change: ', page);
+    console.log('Current pageNum: ', query.page);
     console.log('Page change: ', pageChange);
 
-    // Set the page num if it was found in the parameters.
-    console.log('Is page change: ', pageChange);
-    if (query.page && !pageChange) setPage(query.page);
-    console.log('Current pageNum: ', query.page);
+    // Set the page number if it was found in the parameters.
+    if (!pageChange) {
+      if (query.page) {
+        setPage(query.page);
+      } else {
+        // TODO: Workaround for issue where page remains same on pagination on investigation/dataset.
+        // If this is not a page change and there is no page query parameter,
+        // then default the initial page (we treat this as the initial page load).
+        setPage(1);
+      }
+    }
 
+    // Ensure the max results change according to the query parameter.
     if (query.results && maxResults !== query.results) {
       setMaxResults(query.results);
     }
@@ -236,7 +249,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
-    data: state.dgcommon.data,
+    // data: state.dgcommon.data,
     query: state.dgcommon.query,
   };
 };
