@@ -34,6 +34,7 @@ export type ViewsType = 'table' | 'card' | null;
 export interface QueryParams {
   view: ViewsType;
   page: number | null;
+  results: number | null;
 }
 
 export interface EntityCache {

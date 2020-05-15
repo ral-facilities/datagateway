@@ -1,4 +1,4 @@
-import { DGCommonState } from '../app.types';
+import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
 import {
   SortTablePayload,
@@ -64,8 +64,12 @@ import {
   UpdateViewPayload,
   UpdatePageType,
   UpdatePagePayload,
-  // SaveQueriesType,
-  // SaveQueriesPayload,
+  SaveQueriesType,
+  SaveQueriesPayload,
+  RestoreQueriesType,
+  ResetQueryType,
+  UpdateQueriesType,
+  UpdateQueriesPayload,
   FetchInvestigationDetailsRequestType,
   FetchInvestigationDetailsSuccessType,
   FetchInvestigationDetailsFailureType,
@@ -96,18 +100,15 @@ import {
   FetchDatasetSizeRequestType,
   FetchDatasetSizeSuccessType,
   FetchDatasetSizeFailureType,
-  SaveQueriesType,
-  SaveQueriesPayload,
-  RestoreQueriesType,
-  ResetQueryType,
-  UpdateQueriesType,
-  UpdateQueriesPayload,
+  UpdateResultsPayload,
+  UpdateResultsType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
 
-const initialQuery = {
+const initialQuery: QueryParams = {
   view: null,
   page: null,
+  results: null,
 };
 
 export const initialState: DGCommonState = {
@@ -240,6 +241,19 @@ export function handleUpdatePage(
     query: {
       ...state.query,
       page: payload.page,
+    },
+  };
+}
+
+export function handleUpdateResults(
+  state: DGCommonState,
+  payload: UpdateResultsPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      results: payload.results,
     },
   };
 }
@@ -639,6 +653,7 @@ const dGCommonReducer = createReducer(initialState, {
   [ClearTableType]: handleClearTable,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
+  [UpdateResultsType]: handleUpdateResults,
   [UpdateQueriesType]: handleUpdateQueries,
   [SaveQueriesType]: handleSaveQueries,
   [RestoreQueriesType]: handleRestoreQueries,

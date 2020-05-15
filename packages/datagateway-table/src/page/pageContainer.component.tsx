@@ -178,12 +178,8 @@ class PageContainer extends React.Component<
               <Route
                 exact
                 path="/browse/investigation/"
-                render={() => (
-                  <InvestigationCardView pageNum={this.props.query.page} />
-                )}
+                render={() => <InvestigationCardView />}
               />
-
-              {/* TODO: Create Dataset Card View route */}
               <Route
                 exact
                 path="/browse/investigation/:investigationId/dataset"
@@ -192,7 +188,6 @@ class PageContainer extends React.Component<
                 }: RouteComponentProps<{ investigationId: string }>) => (
                   <DatasetCardView
                     investigationId={match.params.investigationId}
-                    pageNum={this.props.query.page}
                   />
                 )}
               />

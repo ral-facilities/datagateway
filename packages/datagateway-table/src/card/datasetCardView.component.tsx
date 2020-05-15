@@ -27,22 +27,12 @@ interface DatasetCVDispatchProps {
 
 interface DatasetCardViewProps {
   investigationId: string;
-
-  // TODO: Should be in redux state.
-  pageNum: number | null;
-  // setPageQuery: (pageKey: string, pageValue: string) => void;
 }
 
 type DatasetCVCombinedProps = DatasetCardViewProps & DatasetCVDispatchProps;
 
 const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
-  const {
-    investigationId,
-    fetchCount,
-    fetchData,
-    pageNum,
-    // setPageQuery,
-  } = props;
+  const { investigationId, fetchCount, fetchData } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedData, setFetchedData] = React.useState(false);
@@ -89,9 +79,6 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
           //   dataKey: 'DATAFILE_COUNT',
           // },
         ]}
-        // TODO: Needs to handled by redux state.
-        pageNum={pageNum}
-        // setPageQuery={setPageQuery}
       />
     </Paper>
   );

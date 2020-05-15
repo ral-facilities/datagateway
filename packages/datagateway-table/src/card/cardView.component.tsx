@@ -12,16 +12,15 @@ import {
   Box,
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-
 // import { IndexRange } from 'react-virtualized';
 
 import EntityCard, { EntityImageDetails } from './card.component';
 
 import { connect } from 'react-redux';
-import { StateType } from 'datagateway-common/lib/state/app.types';
+import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { Entity, pushPageNum } from 'datagateway-common';
+import { Entity, pushPageNum, pushPageResults } from 'datagateway-common';
 
 // TODO: Should be in separate investigation card view.
 // TODO: Will require sort/filters/cartItems?
@@ -57,19 +56,16 @@ interface CardViewProps {
   furtherInformation?: CardViewDetails[];
 
   image?: EntityImageDetails;
-
-  // TODO: Should be moved to redux state.
-  pageNum: number | null;
-  // maxResults: number | null;
-  // setPageQuery: (pageKey: string, pageNum: string) => void;
 }
 
 interface CardViewStateProps {
   data: Entity[];
+  query: QueryParams;
 }
 
 interface CardViewDispatchProps {
   pushPage: (page: number) => Promise<void>;
+  pushResults: (results: number) => Promise<void>;
 }
 
 type CardViewCombinedProps = CardViewProps &
@@ -77,7 +73,6 @@ type CardViewCombinedProps = CardViewProps &
   CardViewDispatchProps;
 
 // TODO: CardView needs URL support:
-//        - pagination (?page=)
 //        - searching (?search=)
 //        - sort (?sort=)
 // TODO: Look at how datagateway-search creates a search box; style the search-box.
@@ -85,7 +80,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
   // Props.
-  const { pageNum, data, pushPage } = props; // fetchData, setPageQuery
+  const { data, query, pushPage, pushResults } = props;
 
   // Get card information.
   const { title, description, furtherInformation, image } = props;
@@ -117,11 +112,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
     // Set the page num if it was found in the parameters.
     console.log('Is page change: ', pageChange);
-    if (pageNum && !pageChange) setPage(pageNum);
+    if (query.page && !pageChange) setPage(query.page);
+    console.log('Current pageNum: ', query.page);
 
-    // TODO: The pageNum is always behind; is this an issue?
-    console.log('Current pageNum: ', pageNum);
-  }, [page, pageChange, pageNum]);
+    if (query.results && maxResults !== query.results) {
+      setMaxResults(query.results);
+    }
+  }, [page, pageChange, query, maxResults]);
 
   React.useEffect(
     () => {
@@ -146,16 +143,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       }
     },
     // TODO: Adding viewData dependency causes a loop?
-    [
-      data,
-      maxResults,
-      page,
-      pageNum,
-      numPages,
-      startIndex,
-      endIndex,
-      pageChange,
-    ]
+    [data, maxResults, page, query, numPages, startIndex, endIndex, pageChange]
   );
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
@@ -179,7 +167,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 labelId="select-max-results-label"
                 id="select-max-results"
                 value={maxResults}
-                onChange={e => setMaxResults(e.target.value as number)}
+                onChange={e => {
+                  setMaxResults(e.target.value as number);
+                  pushResults(e.target.value as number);
+                }}
               >
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={20}>20</MenuItem>
@@ -246,6 +237,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
     data: state.dgcommon.data,
+    query: state.dgcommon.query,
   };
 };
 
@@ -253,6 +245,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): CardViewDispatchProps => ({
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardView);

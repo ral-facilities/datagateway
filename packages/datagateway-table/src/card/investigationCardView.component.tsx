@@ -23,12 +23,9 @@ interface InvestigationCVDispatchProps {
 }
 
 const InvestigationCardView = (
-  props: InvestigationCVDispatchProps & {
-    pageNum: number | null;
-    // setPageQuery: (pageKey: string, pageValue: string) => void;
-  }
+  props: InvestigationCVDispatchProps
 ): React.ReactElement => {
-  const { fetchData, fetchCount, pageNum } = props; // fetchData, setPageQuery
+  const { fetchData, fetchCount } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedData, setFetchedData] = React.useState(false);
@@ -96,9 +93,6 @@ const InvestigationCardView = (
         //     'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
         //   title: 'Investigation Image',
         // }}
-        // TODO: Handle via redux state.
-        pageNum={pageNum}
-        // setPageQuery={setPageQuery}
       />
     </Paper>
   );

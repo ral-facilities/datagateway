@@ -18,6 +18,7 @@ export const ClearTableType = 'datagateway_common:clear_table';
 
 export const UpdateViewType = 'datagateway_common:update_view';
 export const UpdatePageType = 'datagateway_common:update_page';
+export const UpdateResultsType = 'datagateway_common:update_results';
 
 export const UpdateQueriesType = 'datagateway_common:update_queries';
 export const SaveQueriesType = 'datagateway_common:save_queries';
@@ -222,6 +223,10 @@ export interface UpdateViewPayload {
 
 export interface UpdatePagePayload {
   page: number | null;
+}
+
+export interface UpdateResultsPayload {
+  results: number | null;
 }
 
 export interface UpdateQueriesPayload {

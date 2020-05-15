@@ -20,14 +20,14 @@ import {
   UpdateViewPayload,
   UpdatePageType,
   UpdatePagePayload,
+  UpdateResultsPayload,
+  UpdateResultsType,
+  UpdateQueriesPayload,
+  UpdateQueriesType,
   SaveQueriesPayload,
   SaveQueriesType,
   RestoreQueriesType,
   ResetQueryType,
-  UpdateQueriesPayload,
-  UpdateQueriesType,
-  // SaveQueriesPayload,
-  // SaveQueriesType,
 } from './actions.types';
 import { Filter, Order } from '../../app.types';
 import { Action } from 'redux';
@@ -82,10 +82,12 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     console.log('loading search: ', query.toString());
 
     const page = query.get('page');
-    console.log(`load URL Query: ${page}`);
+    const results = query.get('results');
+    // console.log(`load URL Query: ${page}`);
     const params: QueryParams = {
       view: query.get('view') as ViewsType,
       page: page ? Number(page) : null,
+      results: results ? Number(results) : null,
     };
 
     dispatch(updateQueryParams(params));
@@ -95,7 +97,6 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
 // Get the current URL query parameters.
 export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   const query = getState().dgcommon.query;
-
   let queryParams = new URLSearchParams();
 
   // Loop and add all the query parameters which is in use.
@@ -103,7 +104,6 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
     console.log(`${q} with value: ${v}`);
     if (v !== null) queryParams.append(q, v);
   }
-
   console.log(`Final URLSearchParams - getURLQuery: ${queryParams.toString()}`);
   return queryParams;
 };
@@ -179,6 +179,15 @@ export const updatePage = (
   },
 });
 
+export const updateResults = (
+  results: number | null
+): ActionType<UpdateResultsPayload> => ({
+  type: UpdateResultsType,
+  payload: {
+    results,
+  },
+});
+
 export const updateSaveQueries = (
   queries: QueryParams
 ): ActionType<SaveQueriesPayload> => ({
@@ -208,6 +217,15 @@ export const pushPageNum = (
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(updatePage(page));
+    dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};
+
+export const pushPageResults = (
+  results: number | null
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(updateResults(results));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
 };
