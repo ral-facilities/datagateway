@@ -28,6 +28,7 @@ interface DatasetCVDispatchProps {
 
 interface DatasetCVStateProps {
   data: Entity[];
+  totalDataCount: number;
 }
 
 interface DatasetCardViewProps {
@@ -39,10 +40,10 @@ type DatasetCVCombinedProps = DatasetCardViewProps &
   DatasetCVStateProps;
 
 const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
-  const { investigationId, data, fetchCount, fetchData } = props;
+  const { investigationId, totalDataCount, fetchCount, fetchData } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [fetchedData, setFetchedData] = React.useState(false);
+  // const [fetchedData, setFetchedData] = React.useState(false);
 
   React.useEffect(() => {
     // Fetch the dataset count based on the investigation ID.
@@ -51,19 +52,13 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       fetchCount(parseInt(investigationId));
       setFetchedCount(true);
     }
-
-    // Fetch the data.
-    if (!fetchedData) {
-      console.log('Fetch dataset data');
-      fetchData(parseInt(investigationId));
-      setFetchedData(true);
-    }
-  }, [investigationId, fetchedCount, fetchCount, fetchedData, fetchData]);
+  }, [investigationId, fetchedCount, fetchCount]); // fetchedData, fetchData
 
   return (
     <Paper square>
       <CardView
-        data={data}
+        totalDataCount={totalDataCount}
+        loadData={params => fetchData(parseInt(investigationId), params)}
         // TODO: Put in the correct dataKeys.
         //       Provide an array of further info and tags.
         title={{
@@ -95,6 +90,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
 const mapStateToProps = (state: StateType): DatasetCVStateProps => {
   return {
     data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
   };
 };
 

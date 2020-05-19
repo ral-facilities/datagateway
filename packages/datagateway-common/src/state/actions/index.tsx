@@ -28,6 +28,7 @@ import {
   SaveQueriesType,
   RestoreQueriesType,
   ResetQueryType,
+  ClearDataType,
 } from './actions.types';
 import { Filter, Order } from '../../app.types';
 import { Action } from 'redux';
@@ -64,6 +65,10 @@ export const filterTable = (
 
 export const clearTable = (): Action => ({
   type: ClearTableType,
+});
+
+export const clearData = (): Action => ({
+  type: ClearDataType,
 });
 
 export const updateQueryParams = (

@@ -102,6 +102,7 @@ import {
   FetchDatasetSizeFailureType,
   UpdateResultsPayload,
   UpdateResultsType,
+  ClearDataType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
 
@@ -216,6 +217,13 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     error: null,
     sort: {},
     filters: {},
+  };
+}
+
+export function handleClearData(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    data: [],
   };
 }
 
@@ -651,6 +659,7 @@ const dGCommonReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
+  [ClearDataType]: handleClearData,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
   [UpdateResultsType]: handleUpdateResults,

@@ -16,15 +16,13 @@ import { Paper } from '@material-ui/core';
 import CardView from './cardView.component';
 
 interface InvestigationCVDispatchProps {
-  fetchData: (
-    getDatasetCount?: boolean,
-    offsetParams?: IndexRange
-  ) => Promise<void>;
+  fetchData: (offsetParams?: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
 }
 
 interface InvestigationCVStateProps {
   data: Entity[];
+  totalDataCount: number;
 }
 
 type InvestigationCVCombinedProps = InvestigationCVDispatchProps &
@@ -33,10 +31,8 @@ type InvestigationCVCombinedProps = InvestigationCVDispatchProps &
 const InvestigationCardView = (
   props: InvestigationCVCombinedProps
 ): React.ReactElement => {
-  const { data, fetchData, fetchCount } = props;
-
+  const { totalDataCount, fetchData, fetchCount } = props;
   const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [fetchedData, setFetchedData] = React.useState(false);
 
   React.useEffect(() => {
     // Fetch count.
@@ -44,15 +40,7 @@ const InvestigationCardView = (
       fetchCount();
       setFetchedCount(true);
     }
-
-    // Fetch data.
-    if (!fetchedData) {
-      // TODO: The offsetParams (startIndex, stopIndex) needs to be
-      //       changed for pagination when fetching data.
-      fetchData();
-      setFetchedData(true);
-    }
-  }, [fetchedData, fetchData, fetchedCount, fetchCount, setFetchedCount]);
+  }, [fetchedCount, fetchCount, setFetchedCount]); // fetchedData, fetchData,
 
   return (
     // Place table in Paper component which adjusts for the height
@@ -64,7 +52,8 @@ const InvestigationCardView = (
             of passing data to the card view (how can we achieve this if the data is not Entity[]). */}
       {/* TODO: Add support for pagination here (?), card layout type (buttons), card widths, sort, filtering. */}
       <CardView
-        data={data}
+        totalDataCount={totalDataCount}
+        loadData={fetchData}
         // TODO: Simplify title usage; look at the need for dataKey, label and link.
         title={{
           // Provide both the dataKey (for tooltip) and link to render.
@@ -110,14 +99,15 @@ const InvestigationCardView = (
 const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
   return {
     data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
   };
 };
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): InvestigationCVDispatchProps => ({
-  fetchData: (getDatasetCount?: boolean, offsetParams?: IndexRange) =>
-    dispatch(fetchInvestigations({ getDatasetCount, offsetParams })),
+  fetchData: (offsetParams?: IndexRange) =>
+    dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
 });
 

@@ -19,8 +19,14 @@ import EntityCard, { EntityImageDetails } from './card.component';
 import { connect } from 'react-redux';
 import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { Entity, pushPageNum, pushPageResults } from 'datagateway-common';
+import { AnyAction, Action } from 'redux';
+import {
+  Entity,
+  pushPageNum,
+  pushPageResults,
+  clearData,
+} from 'datagateway-common';
+import { IndexRange } from 'react-virtualized';
 
 // TODO: Should be in separate investigation card view.
 // TODO: Will require sort/filters/cartItems?
@@ -48,7 +54,9 @@ interface CardViewDetails {
 }
 
 interface CardViewProps {
-  data: Entity[];
+  // data: Entity[];
+  totalDataCount: number;
+  loadData: (offsetParams: IndexRange) => Promise<void>;
 
   // TODO: Props to get title, description of the card represented by data.
   title: CardViewDetails;
@@ -61,13 +69,14 @@ interface CardViewProps {
 }
 
 interface CardViewStateProps {
-  // data: Entity[];
+  data: Entity[];
   query: QueryParams;
 }
 
 interface CardViewDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
+  clearData: () => Action;
 }
 
 type CardViewCombinedProps = CardViewProps &
@@ -82,16 +91,25 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
   // Props.
-  const { data, query, pushPage, pushResults } = props;
+  const {
+    data,
+    totalDataCount,
+    query,
+    loadData,
+    pushPage,
+    pushResults,
+    clearData,
+  } = props;
+  console.log('count: ', totalDataCount);
 
   // Get card information.
   const { title, description, furtherInformation, image } = props;
-  console.log('title datakey: ', title && title.dataKey);
-  console.log('description datakey: ', description && description.dataKey);
-  console.log(
-    'further information: ',
-    furtherInformation && furtherInformation
-  );
+  // console.log('title datakey: ', title && title.dataKey);
+  // console.log('description datakey: ', description && description.dataKey);
+  // console.log(
+  //   'further information: ',
+  //   furtherInformation && furtherInformation
+  // );
 
   // Card data.
   const [viewData, setViewData] = React.useState<Entity[]>([]);
@@ -103,10 +121,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // TODO: This page is not reset when component is changed.
   const [page, setPage] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
-  const [startIndex, setStartIndex] = React.useState(-1);
-  const [endIndex, setEndIndex] = React.useState(-1);
+  // const [startIndex, setStartIndex] = React.useState(-1);
+  // const [stopIndex, setStopIndex] = React.useState(-1);
 
   const [pageChange, setPageChange] = React.useState(false);
+  const [loadedData, setLoadedData] = React.useState(false);
 
   React.useEffect(() => {
     // TODO: 1. allow for page to be changed via query parameter
@@ -133,30 +152,59 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
   }, [page, pageChange, query, maxResults]);
 
+  // TODO: Request data based on page change.
+
   React.useEffect(
     () => {
-      // Calculate the maximum pages needed for pagination.
-      setNumPages(~~((data.length + maxResults - 1) / maxResults));
-      console.log('Number of pages: ', numPages);
+      if (totalDataCount > 0) {
+        if (!loadedData) {
+          // TODO: Replace data.length with the total data count.
+          // Calculate the maximum pages needed for pagination.
+          setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
+          console.log('Number of pages: ', numPages);
 
-      // Calculate the start/end indexes for the data.
-      setStartIndex(page * maxResults - (maxResults - 1) - 1);
-      console.log('Start index: ', startIndex);
+          // Calculate the start/end indexes for the data.
+          const startIndex = page * maxResults - (maxResults - 1) - 1;
+          console.log('startIndex: ', startIndex);
+          // setStartIndex(page * maxResults - (maxResults - 1) - 1);
 
-      // End index not incremented for slice method.
-      setEndIndex(Math.min(startIndex + maxResults, data.length));
-      console.log('End index: ', endIndex);
+          // End index not incremented for slice method.
+          const stopIndex =
+            Math.min(startIndex + maxResults, totalDataCount) - 1;
+          // setStopIndex(Math.min(startIndex + maxResults, totalDataCount));
+          console.log('stopIndex: ', stopIndex);
 
-      console.log('NumPages: ', numPages);
-      console.log('Start: ', startIndex);
-      console.log('End Index: ', endIndex);
-      if (numPages !== -1 && startIndex !== -1 && endIndex !== -1) {
-        console.log(data.slice(startIndex, endIndex));
-        setViewData(data.slice(startIndex, endIndex));
+          // console.log('NumPages: ', numPages);
+          // console.log('Start: ', startIndex);
+          // console.log('End Index: ', stopIndex);
+          if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
+            // console.log(data.slice(startIndex, stopIndex));
+            // setViewData(data.slice(startIndex, stopIndex));
+            // Clear data in the state before loading new data.
+            clearData();
+            loadData({ startIndex, stopIndex });
+            setLoadedData(true);
+          }
+        } else {
+          setViewData(data);
+        }
       }
     },
     // TODO: Adding viewData dependency causes a loop?
-    [data, maxResults, page, query, numPages, startIndex, endIndex, pageChange]
+    [
+      data,
+      maxResults,
+      page,
+      query,
+      numPages,
+      // startIndex,
+      // stopIndex,
+      pageChange,
+      loadData,
+      loadedData,
+      totalDataCount,
+      clearData,
+    ]
   );
 
   // TODO: We would need to customise the read the array of Entity objects as Investigation.
@@ -239,6 +287,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             // Add the query parameter for the changed view.
             pushPage(p);
             setPageChange(true);
+            setLoadedData(false);
           }}
           color="secondary"
         />
@@ -249,7 +298,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
-    // data: state.dgcommon.data,
+    data: state.dgcommon.data,
     query: state.dgcommon.query,
   };
 };
@@ -259,6 +308,7 @@ const mapDispatchToProps = (
 ): CardViewDispatchProps => ({
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  clearData: () => dispatch(clearData()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardView);
