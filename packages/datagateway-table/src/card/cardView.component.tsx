@@ -55,7 +55,7 @@ interface CardViewDetails {
 
 interface CardViewProps {
   // data: Entity[];
-  totalDataCount: number;
+  // totalDataCount: number;
   loadData: (offsetParams: IndexRange) => Promise<void>;
 
   // TODO: Props to get title, description of the card represented by data.
@@ -70,6 +70,7 @@ interface CardViewProps {
 
 interface CardViewStateProps {
   data: Entity[];
+  totalDataCount: number;
   query: QueryParams;
 }
 
@@ -121,8 +122,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // TODO: This page is not reset when component is changed.
   const [page, setPage] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
-  // const [startIndex, setStartIndex] = React.useState(-1);
-  // const [stopIndex, setStopIndex] = React.useState(-1);
 
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
@@ -150,15 +149,20 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     if (query.results && maxResults !== query.results) {
       setMaxResults(query.results);
     }
-  }, [page, pageChange, query, maxResults]);
+  }, [page, pageChange, query, maxResults, setLoadedData]);
 
-  // TODO: Request data based on page change.
+  // TODO: Work-around for the pagination, start/stop index
+  //       working incorrectly due to the totalDataCount being updated later on.
+  React.useEffect(() => {
+    setLoadedData(false);
+  }, [totalDataCount]);
 
   React.useEffect(
     () => {
+      console.log('Total Data Count: ', totalDataCount);
+      console.log('Max results: ', maxResults);
       if (totalDataCount > 0) {
         if (!loadedData) {
-          // TODO: Replace data.length with the total data count.
           // Calculate the maximum pages needed for pagination.
           setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
           console.log('Number of pages: ', numPages);
@@ -166,17 +170,12 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           // Calculate the start/end indexes for the data.
           const startIndex = page * maxResults - (maxResults - 1) - 1;
           console.log('startIndex: ', startIndex);
-          // setStartIndex(page * maxResults - (maxResults - 1) - 1);
 
           // End index not incremented for slice method.
           const stopIndex =
             Math.min(startIndex + maxResults, totalDataCount) - 1;
-          // setStopIndex(Math.min(startIndex + maxResults, totalDataCount));
           console.log('stopIndex: ', stopIndex);
 
-          // console.log('NumPages: ', numPages);
-          // console.log('Start: ', startIndex);
-          // console.log('End Index: ', stopIndex);
           if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
             // console.log(data.slice(startIndex, stopIndex));
             // setViewData(data.slice(startIndex, stopIndex));
@@ -197,8 +196,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       page,
       query,
       numPages,
-      // startIndex,
-      // stopIndex,
       pageChange,
       loadData,
       loadedData,
@@ -231,6 +228,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 onChange={e => {
                   setMaxResults(e.target.value as number);
                   pushResults(e.target.value as number);
+                  setLoadedData(false);
                 }}
               >
                 <MenuItem value={10}>10</MenuItem>
@@ -299,6 +297,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
     data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
   };
 };

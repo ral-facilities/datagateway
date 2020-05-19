@@ -5,7 +5,7 @@ import {
   fetchInvestigations,
   Investigation,
   investigationLink,
-  Entity,
+  // Entity,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
@@ -20,18 +20,18 @@ interface InvestigationCVDispatchProps {
   fetchCount: () => Promise<void>;
 }
 
-interface InvestigationCVStateProps {
-  data: Entity[];
-  totalDataCount: number;
-}
+// interface InvestigationCVStateProps {
+//   data: Entity[];
+//   totalDataCount: number;
+// }
 
-type InvestigationCVCombinedProps = InvestigationCVDispatchProps &
-  InvestigationCVStateProps;
+type InvestigationCVCombinedProps = InvestigationCVDispatchProps;
+// & InvestigationCVStateProps;
 
 const InvestigationCardView = (
   props: InvestigationCVCombinedProps
 ): React.ReactElement => {
-  const { totalDataCount, fetchData, fetchCount } = props;
+  const { fetchData, fetchCount } = props; // totalDataCount
   const [fetchedCount, setFetchedCount] = React.useState(false);
 
   React.useEffect(() => {
@@ -52,7 +52,7 @@ const InvestigationCardView = (
             of passing data to the card view (how can we achieve this if the data is not Entity[]). */}
       {/* TODO: Add support for pagination here (?), card layout type (buttons), card widths, sort, filtering. */}
       <CardView
-        totalDataCount={totalDataCount}
+        // totalDataCount={totalDataCount}
         loadData={fetchData}
         // TODO: Simplify title usage; look at the need for dataKey, label and link.
         title={{
@@ -96,12 +96,12 @@ const InvestigationCardView = (
   );
 };
 
-const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
-  return {
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-  };
-};
+// const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
+//   return {
+//     data: state.dgcommon.data,
+//     totalDataCount: state.dgcommon.totalDataCount,
+//   };
+// };
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
@@ -111,7 +111,4 @@ const mapDispatchToProps = (
   fetchCount: () => dispatch(fetchInvestigationCount()),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvestigationCardView);
+export default connect(null, mapDispatchToProps)(InvestigationCardView);
