@@ -149,7 +149,6 @@ interface EntityCardProps {
   //       flagged only the title will be shown and the the card
   //       a simple card with an option to view items (?).
   description?: string;
-
   furtherInformation?: EntityCardDetails[];
 
   // TODO: optional and no information to create these; tags may be created from instrument information for ISIS.
@@ -158,6 +157,10 @@ interface EntityCardProps {
 
   // TODO: Give the option to have a simple card which links to other data.
   // isTitleCard: boolean;
+
+  selected: boolean;
+  onSelect: () => void;
+  onDeselect: () => void;
 }
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
@@ -171,6 +174,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     //       to how they will be provided.
     image,
     tags,
+
+    selected,
+    onSelect,
+    onDeselect,
   } = props;
   console.log('Further information in card: ', furtherInformation);
 
@@ -186,13 +193,17 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   );
 
   React.useEffect(() => {
+    // Set the button selected based on if it is flagged
+    // by the CardView.
+    setIsSelected(selected);
+
     // Decide if the collapsible should be present depending on
     // if the description height exceeds the default collapsed height.
     if (descriptionRef && descriptionRef.current) {
       if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
         setCollapsibleInteraction(true);
     }
-  }, [setCollapsibleInteraction]);
+  }, [selected, setCollapsibleInteraction]);
 
   return (
     // TODO: Fix width issue when having an image in the card.
@@ -327,7 +338,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 color="primary"
                 startIcon={<AddCircleOutlineOutlined />}
                 disableElevation
-                onClick={() => setIsSelected(true)}
+                onClick={() => {
+                  onSelect();
+                  setIsSelected(true);
+                }}
               >
                 Add to cart
               </Button>
@@ -338,7 +352,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 color="secondary"
                 startIcon={<RemoveCircleOutlineOutlined />}
                 disableElevation
-                onClick={() => setIsSelected(false)}
+                onClick={() => {
+                  onDeselect();
+                  setIsSelected(false);
+                }}
               >
                 Remove from cart
               </Button>

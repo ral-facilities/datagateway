@@ -11,7 +11,10 @@ import {
   fetchDatasetCount,
   Dataset,
   datasetLink,
-  // Entity,
+  Entity,
+  DownloadCartItem,
+  addToCart,
+  removeFromCart,
 } from 'datagateway-common';
 import { connect } from 'react-redux';
 
@@ -21,43 +24,71 @@ interface DatasetCVDispatchProps {
     offsetParams?: IndexRange
   ) => Promise<void>;
   fetchCount: (investigationId: number) => Promise<void>;
-
-  // addToCart: (entityIds: number[]) => Promise<void>;
-  // removeFromCart: (entityIds: number[]) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
 }
 
-// interface DatasetCVStateProps {
-//   data: Entity[];
-//   totalDataCount: number;
-// }
+interface DatasetCVStateProps {
+  data: Entity[];
+  totalDataCount: number;
+  cartItems: DownloadCartItem[];
+}
 
 interface DatasetCardViewProps {
   investigationId: string;
 }
 
-type DatasetCVCombinedProps = DatasetCardViewProps & DatasetCVDispatchProps;
-// & DatasetCVStateProps;
+type DatasetCVCombinedProps = DatasetCardViewProps &
+  DatasetCVDispatchProps &
+  DatasetCVStateProps;
 
 const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
-  const { investigationId, fetchData, fetchCount } = props; // totalDataCount
-
+  const {
+    investigationId,
+    data,
+    totalDataCount,
+    cartItems,
+    fetchData,
+    fetchCount,
+    addToCart,
+    removeFromCart,
+  } = props;
   const [fetchedCount, setFetchedCount] = React.useState(false);
-  // const [fetchedData, setFetchedData] = React.useState(false);
+  const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
+
+  const selectedCards = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'dataset' &&
+            datasetIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, datasetIds]
+  );
 
   React.useEffect(() => {
+    // TODO: React.useMemo?
+    setDatasetIds(data.map(dataset => dataset.ID));
+
     // Fetch the dataset count based on the investigation ID.
     if (!fetchedCount) {
       console.log('Fetch dataset count');
       fetchCount(parseInt(investigationId));
       setFetchedCount(true);
     }
-  }, [investigationId, fetchedCount, fetchCount]);
+  }, [investigationId, data, fetchedCount, fetchCount]);
 
   return (
     <Paper square>
       <CardView
-        // totalDataCount={totalDataCount}
+        data={data}
+        totalDataCount={totalDataCount}
         loadData={params => fetchData(parseInt(investigationId), params)}
+        selectedCards={selectedCards}
+        onSelect={addToCart}
+        onDeselect={removeFromCart}
         // TODO: Put in the correct dataKeys.
         //       Provide an array of further info and tags.
         title={{
@@ -86,12 +117,13 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
   );
 };
 
-// const mapStateToProps = (state: StateType): DatasetCVStateProps => {
-//   return {
-//     data: state.dgcommon.data,
-//     totalDataCount: state.dgcommon.totalDataCount,
-//   };
-// };
+const mapStateToProps = (state: StateType): DatasetCVStateProps => {
+  return {
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    cartItems: state.dgcommon.cartItems,
+  };
+};
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
@@ -100,9 +132,9 @@ const mapDispatchToProps = (
     dispatch(fetchDatasets({ investigationId, offsetParams })),
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
-
-  // addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
-  // removeFromCart: (entityIds: number[]) => dispatch(removeFromCart('dataset', entityIds)),
+  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('dataset', entityIds)),
 });
 
-export default connect(null, mapDispatchToProps)(DatasetCardView);
+export default connect(mapStateToProps, mapDispatchToProps)(DatasetCardView);

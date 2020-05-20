@@ -12,7 +12,6 @@ import {
   Box,
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-// import { IndexRange } from 'react-virtualized';
 
 import EntityCard, { EntityImageDetails } from './card.component';
 
@@ -28,7 +27,6 @@ import {
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 
-// TODO: Should be in separate investigation card view.
 // TODO: Will require sort/filters/cartItems?
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,23 +52,24 @@ interface CardViewDetails {
 }
 
 interface CardViewProps {
-  // data: Entity[];
-  // totalDataCount: number;
+  data: Entity[];
+  totalDataCount: number;
   loadData: (offsetParams: IndexRange) => Promise<void>;
+  selectedCards: number[];
+  onSelect: (selectedIds: number[]) => void;
+  onDeselect: (selectedIds: number[]) => void;
 
-  // TODO: Props to get title, description of the card represented by data.
+  // Props to get title, description of the card
+  // represented by data.
   title: CardViewDetails;
   description?: CardViewDetails;
-
-  // TODO: Further information array.
   furtherInformation?: CardViewDetails[];
-
   image?: EntityImageDetails;
 }
 
 interface CardViewStateProps {
-  data: Entity[];
-  totalDataCount: number;
+  // data: Entity[];
+  // totalDataCount: number;
   query: QueryParams;
 }
 
@@ -87,7 +86,7 @@ type CardViewCombinedProps = CardViewProps &
 // TODO: CardView needs URL support:
 //        - searching (?search=)
 //        - sort (?sort=)
-// TODO: Look at how datagateway-search creates a search box; style the search-box.
+// TODO: Look at how datagateway-search creates a search/filter box; style the box.
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
@@ -97,38 +96,30 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     totalDataCount,
     query,
     loadData,
+    selectedCards,
+    onSelect,
+    onDeselect,
     pushPage,
     pushResults,
     clearData,
   } = props;
-  console.log('count: ', totalDataCount);
 
   // Get card information.
   const { title, description, furtherInformation, image } = props;
-  // console.log('title datakey: ', title && title.dataKey);
-  // console.log('description datakey: ', description && description.dataKey);
-  // console.log(
-  //   'further information: ',
-  //   furtherInformation && furtherInformation
-  // );
 
   // Card data.
   const [viewData, setViewData] = React.useState<Entity[]>([]);
 
   // Pagination.
-  // TODO: Data needs to be fetched from the API page by page.
-  const [maxResults, setMaxResults] = React.useState(10);
-
   // TODO: This page is not reset when component is changed.
   const [page, setPage] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
+  const [maxResults, setMaxResults] = React.useState(-1);
 
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
 
   React.useEffect(() => {
-    // TODO: 1. allow for page to be changed via query parameter
-    //       2. allow for page to be changed via the pagination component
     console.log('Got page change: ', page);
     console.log('Current pageNum: ', query.page);
     console.log('Page change: ', pageChange);
@@ -139,17 +130,25 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         setPage(query.page);
       } else {
         // TODO: Workaround for issue where page remains same on pagination on investigation/dataset.
-        // If this is not a page change and there is no page query parameter,
-        // then default the initial page (we treat this as the initial page load).
+        //       If this is not a page change and there is no page query parameter,
+        //       then default the initial page (we treat this as the initial page load).
         setPage(1);
       }
     }
 
     // Ensure the max results change according to the query parameter.
-    if (query.results && maxResults !== query.results) {
-      setMaxResults(query.results);
+    if (query.results) {
+      if (totalDataCount > 10 && maxResults !== query.results) {
+        setMaxResults(query.results);
+      }
+    } else {
+      // TODO: Reset the max results back to the default value
+      //       when switching between pages (this is the same issue as
+      //       the pagination, page, holding the same value between
+      //       investigation/dataset card views).
+      setMaxResults(10);
     }
-  }, [page, pageChange, query, maxResults, setLoadedData]);
+  }, [page, pageChange, query, maxResults, totalDataCount]);
 
   // TODO: Work-around for the pagination, start/stop index
   //       working incorrectly due to the totalDataCount being updated later on.
@@ -157,54 +156,47 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     setLoadedData(false);
   }, [totalDataCount]);
 
-  React.useEffect(
-    () => {
-      console.log('Total Data Count: ', totalDataCount);
-      console.log('Max results: ', maxResults);
-      if (totalDataCount > 0) {
-        if (!loadedData) {
-          // Calculate the maximum pages needed for pagination.
-          setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
-          console.log('Number of pages: ', numPages);
+  React.useEffect(() => {
+    console.log('Total Data Count: ', totalDataCount);
+    console.log('Max results: ', maxResults);
+    if (totalDataCount > 0) {
+      if (!loadedData) {
+        // Calculate the maximum pages needed for pagination.
+        setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
+        console.log('Number of pages: ', numPages);
 
-          // Calculate the start/end indexes for the data.
-          const startIndex = page * maxResults - (maxResults - 1) - 1;
-          console.log('startIndex: ', startIndex);
+        // Calculate the start/end indexes for the data.
+        const startIndex = page * maxResults - (maxResults - 1) - 1;
+        console.log('startIndex: ', startIndex);
 
-          // End index not incremented for slice method.
-          const stopIndex =
-            Math.min(startIndex + maxResults, totalDataCount) - 1;
-          console.log('stopIndex: ', stopIndex);
+        // End index not incremented for slice method.
+        const stopIndex = Math.min(startIndex + maxResults, totalDataCount) - 1;
+        console.log('stopIndex: ', stopIndex);
 
-          if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
-            // console.log(data.slice(startIndex, stopIndex));
-            // setViewData(data.slice(startIndex, stopIndex));
-            // Clear data in the state before loading new data.
-            clearData();
-            loadData({ startIndex, stopIndex });
-            setLoadedData(true);
-          }
-        } else {
-          setViewData(data);
+        if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
+          // Clear data in the state before loading new data.
+          clearData();
+          loadData({ startIndex, stopIndex });
+          setLoadedData(true);
         }
+      } else {
+        // Set the data once it has been loaded.
+        setViewData(data);
       }
-    },
-    // TODO: Adding viewData dependency causes a loop?
-    [
-      data,
-      maxResults,
-      page,
-      query,
-      numPages,
-      pageChange,
-      loadData,
-      loadedData,
-      totalDataCount,
-      clearData,
-    ]
-  );
+    }
+  }, [
+    data,
+    maxResults,
+    page,
+    query,
+    numPages,
+    pageChange,
+    loadData,
+    loadedData,
+    totalDataCount,
+    clearData,
+  ]);
 
-  // TODO: We would need to customise the read the array of Entity objects as Investigation.
   return (
     <Grid container direction="column" alignItems="center">
       <Grid
@@ -230,6 +222,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   pushResults(e.target.value as number);
                   setLoadedData(false);
                 }}
+                // Disable if the number of data is smaller than the
+                // smallest amount of results to display (10).
+                disabled={totalDataCount <= 10}
               >
                 <MenuItem value={10}>10</MenuItem>
                 <MenuItem value={20}>20</MenuItem>
@@ -238,6 +233,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             </FormControl>
           </Box>
         </Grid>
+
         {/* Card data */}
         <Grid item xs>
           <List>
@@ -265,6 +261,14 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       }))
                     }
                     image={image}
+                    selected={selectedCards.includes(data.ID)}
+                    onSelect={() => {
+                      onSelect([data.ID]);
+                    }}
+                    onDeselect={() => {
+                      if (selectedCards.includes(data.ID))
+                        onDeselect([data.ID]);
+                    }}
                   />
                 </ListItem>
               );
@@ -296,8 +300,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
+    // data: state.dgcommon.data,
+    // totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
   };
 };
