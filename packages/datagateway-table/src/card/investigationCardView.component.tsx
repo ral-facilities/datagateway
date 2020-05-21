@@ -12,7 +12,7 @@ import {
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { StateType } from 'datagateway-common/lib/state/app.types';
+import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
 import { connect } from 'react-redux';
 import { Paper } from '@material-ui/core';
 
@@ -29,6 +29,7 @@ interface InvestigationCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
+  view: ViewsType;
 }
 
 type InvestigationCVCombinedProps = InvestigationCVDispatchProps &
@@ -45,6 +46,7 @@ const InvestigationCardView = (
     fetchCount,
     addToCart,
     removeFromCart,
+    view,
   } = props;
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
@@ -94,7 +96,11 @@ const InvestigationCardView = (
           // Provide both the dataKey (for tooltip) and link to render.
           dataKey: 'TITLE',
           link: (investigation: Investigation) => {
-            return investigationLink(investigation.ID, investigation.TITLE);
+            return investigationLink(
+              investigation.ID,
+              investigation.TITLE,
+              view
+            );
           },
         }}
         description={{ dataKey: 'SUMMARY' }}
@@ -136,6 +142,7 @@ const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
+    view: state.dgcommon.query.view,
   };
 };
 

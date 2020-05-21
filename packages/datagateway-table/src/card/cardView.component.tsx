@@ -10,7 +10,12 @@ import {
   Select,
   MenuItem,
   Box,
+  Paper,
+  TextField,
+  InputAdornment,
+  Typography,
 } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import { Pagination } from '@material-ui/lab';
 
 import EntityCard, { EntityImageDetails } from './card.component';
@@ -199,6 +204,48 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   return (
     <Grid container direction="column" alignItems="center">
+      <Grid container direction="row" justify="center">
+        <Grid item xs={10} style={{ paddingLeft: '700px' }}>
+          <TextField
+            style={{ width: '500px' }}
+            label="Search Data"
+            type="search"
+            margin="normal"
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+
+        <Grid item xs style={{ paddingTop: '10px' }}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="select-max-results-label">Max Results</InputLabel>
+            <Select
+              labelId="select-max-results-label"
+              id="select-max-results"
+              value={maxResults}
+              onChange={e => {
+                setMaxResults(e.target.value as number);
+                pushResults(e.target.value as number);
+                setLoadedData(false);
+              }}
+              // Disable if the number of data is smaller than the
+              // smallest amount of results to display (10).
+              disabled={totalDataCount <= 10}
+            >
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={30}>30</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
       <Grid
         container
         direction="row"
@@ -208,30 +255,20 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         xs={12}
       >
         {/* TODO: Place filtering options in a box here. */}
-        <Grid item direction="column" justify="flex-start" xs={3}>
-          <Box border={1} borderRadius="borderRadius">
-            <div>Filtering options</div>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="select-max-results-label">Max Results</InputLabel>
-              <Select
-                labelId="select-max-results-label"
-                id="select-max-results"
-                value={maxResults}
-                onChange={e => {
-                  setMaxResults(e.target.value as number);
-                  pushResults(e.target.value as number);
-                  setLoadedData(false);
-                }}
-                // Disable if the number of data is smaller than the
-                // smallest amount of results to display (10).
-                disabled={totalDataCount <= 10}
-              >
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={30}>30</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
+        <Grid item xs={3}>
+          {/* style={{ height: '100%', width: '100%' }} */}
+          <Paper>
+            <Grid
+              item
+              direction="column"
+              justify="flex-start"
+              alignItems="stretch"
+            >
+              <Box p={2}>
+                <Typography variant="h5">Filter By</Typography>
+              </Box>
+            </Grid>
+          </Paper>
         </Grid>
 
         {/* Card data */}
@@ -278,7 +315,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       </Grid>
 
       {/* TODO: Page jumps up on every other page click on the pagination component. */}
-      <Grid item xs>
+      <Grid item xs style={{ padding: '50px' }}>
         <Pagination
           size="large"
           style={{ textAlign: 'center' }}

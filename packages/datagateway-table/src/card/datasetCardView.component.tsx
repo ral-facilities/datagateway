@@ -3,7 +3,7 @@ import { Paper } from '@material-ui/core';
 
 import CardView from './cardView.component';
 import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from 'datagateway-common/lib/state/app.types';
+import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
 import {
@@ -32,6 +32,7 @@ interface DatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
+  view: ViewsType;
 }
 
 interface DatasetCardViewProps {
@@ -52,6 +53,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     fetchCount,
     addToCart,
     removeFromCart,
+    view,
   } = props;
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
@@ -94,7 +96,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
         title={{
           dataKey: 'NAME',
           link: (dataset: Dataset) => {
-            return datasetLink(investigationId, dataset.ID, dataset.NAME);
+            return datasetLink(investigationId, dataset.ID, dataset.NAME, view);
           },
         }}
         description={{ dataKey: 'DESCRIPTION' }}
@@ -122,6 +124,7 @@ const mapStateToProps = (state: StateType): DatasetCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
+    view: state.dgcommon.query.view,
   };
 };
 
