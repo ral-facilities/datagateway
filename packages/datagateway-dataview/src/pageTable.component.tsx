@@ -163,24 +163,22 @@ class PageTable extends React.PureComponent {
             investigationId: string;
             datasetId: string;
           }>) => {
-            {
-              const SafeISISDatafilesTable = withIdCheck(
-                Promise.all([
-                  checkInstrumentAndFacilityCycleId(
-                    parseInt(match.params.instrumentId),
-                    parseInt(match.params.facilityCycleId),
-                    parseInt(match.params.investigationId)
-                  ),
-                  checkInvestigationId(
-                    parseInt(match.params.investigationId),
-                    parseInt(match.params.datasetId)
-                  ),
-                ]).then(values => !values.includes(false))
-              )(ISISDatafilesTable);
-              return (
-                <SafeISISDatafilesTable datasetId={match.params.datasetId} />
-              );
-            }
+            const SafeISISDatafilesTable = withIdCheck(
+              Promise.all([
+                checkInstrumentAndFacilityCycleId(
+                  parseInt(match.params.instrumentId),
+                  parseInt(match.params.facilityCycleId),
+                  parseInt(match.params.investigationId)
+                ),
+                checkInvestigationId(
+                  parseInt(match.params.investigationId),
+                  parseInt(match.params.datasetId)
+                ),
+              ]).then(values => !values.includes(false))
+            )(ISISDatafilesTable);
+            return (
+              <SafeISISDatafilesTable datasetId={match.params.datasetId} />
+            );
           }}
         />
         <Route

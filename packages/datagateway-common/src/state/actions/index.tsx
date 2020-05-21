@@ -51,16 +51,16 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgcommon.sort;
   const filters = getState().dgcommon.filters;
 
-  let searchParams = new URLSearchParams();
+  const searchParams = new URLSearchParams();
 
-  for (let [key, value] of Object.entries(sort)) {
+  for (const [key, value] of Object.entries(sort)) {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
   // sort by ID first to guarantee order
   searchParams.append('order', JSON.stringify(`ID asc`));
 
-  for (let [column, filter] of Object.entries(filters)) {
+  for (const [column, filter] of Object.entries(filters)) {
     if (typeof filter === 'object') {
       if ('startDate' in filter && filter.startDate) {
         searchParams.append(

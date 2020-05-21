@@ -59,7 +59,7 @@ export const fetchInstruments = (
     const timestamp = Date.now();
     dispatch(fetchInstrumentsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     const { apiUrl } = getState().dgcommon.urls;
 
     if (offsetParams) {
@@ -121,7 +121,7 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
     const timestamp = Date.now();
     dispatch(fetchInstrumentCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
     const { apiUrl } = getState().dgcommon.urls;
 
@@ -170,7 +170,7 @@ export const fetchInstrumentDetails = (
   return async (dispatch, getState) => {
     dispatch(fetchInstrumentDetailsRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: instrumentId } }));
     params.append('include', JSON.stringify({ INSTRUMENTSCIENTIST: 'USER_' }));

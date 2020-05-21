@@ -19,7 +19,7 @@ describe('Text filter component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <TextColumnFilter label="test" onChange={() => {}} />
+      <TextColumnFilter label="test" onChange={jest.fn()} />
     );
     expect(wrapper).toMatchSnapshot();
   });

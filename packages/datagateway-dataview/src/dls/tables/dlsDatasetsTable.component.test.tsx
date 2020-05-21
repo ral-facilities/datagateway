@@ -295,11 +295,11 @@ describe('DLS Dataset table component', () => {
 
   it('sends off an FetchDatasetSize action when Calculate button is clicked', () => {
     const { SIZE, ...rowDataWithoutSize } = state.dgcommon.data[0];
-    let newState = state;
+    const newState = state;
     newState.dgcommon.data[0] = rowDataWithoutSize;
     const testStore = mockStore(newState);
 
-    let wrapper = mount(
+    const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
           <DLSDatasetsTable investigationId="1" proposalName="Proposal 1" />

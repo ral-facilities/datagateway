@@ -14,7 +14,7 @@ import { RequestPluginRerenderType, MicroFrontendId } from 'datagateway-common';
 const pluginName = 'datagateway-dataview';
 
 const render = (): void => {
-  let el = document.getElementById(pluginName);
+  const el = document.getElementById(pluginName);
   if (el) {
     ReactDOM.render(<App />, document.getElementById(pluginName));
   }

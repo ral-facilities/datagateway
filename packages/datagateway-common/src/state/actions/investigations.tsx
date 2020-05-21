@@ -144,7 +144,7 @@ export const fetchInvestigations = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     if (optionalParams && optionalParams.offsetParams) {
       params.append(
         'skip',
@@ -215,7 +215,7 @@ export const fetchISISInvestigations = ({
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
 
     params.append(
       'include',
@@ -313,7 +313,7 @@ export const fetchInvestigationDetails = (
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationDetailsRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: investigationId } }));
     params.append(
@@ -359,7 +359,7 @@ export const fetchInvestigationCount = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
 
     if (additionalFilters) {
       additionalFilters.forEach(filter => {
@@ -396,7 +396,7 @@ export const fetchISISInvestigationCount = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
 
     const { apiUrl } = getState().dgcommon.urls;

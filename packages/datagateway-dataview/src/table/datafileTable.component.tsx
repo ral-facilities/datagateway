@@ -155,15 +155,14 @@ const DatafileTable = (
       }}
       actions={[
         function downloadButton({ rowData }: TableActionProps) {
-          const datafileData = rowData as Datafile;
-          if (datafileData.LOCATION) {
+          const { ID, LOCATION } = rowData as Datafile;
+          if (LOCATION) {
             return (
               <IconButton
                 aria-label="Download"
                 key="download"
                 onClick={() => {
-                  // @ts-ignore - otherwise we need to check LOCATION isn't undefined again
-                  downloadData(datafileData.ID, datafileData.LOCATION);
+                  downloadData(ID, LOCATION);
                 }}
               >
                 <GetApp />

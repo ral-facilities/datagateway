@@ -25,7 +25,6 @@ module.exports = {
         trailingComma: 'es5',
       },
     ],
-    'ter-indent': [true, 2],
     '@typescript-eslint/explicit-function-return-type': [
       'error',
       {
