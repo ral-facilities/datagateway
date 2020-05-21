@@ -49,7 +49,7 @@ class ConfigProvider extends React.Component<
     this.updateConfigurationState();
   }
 
-  private updateConfigurationState = async () => {
+  private updateConfigurationState = async (): Promise<void> => {
     const settings = await axios
       .get<DownloadSettings>('/datagateway-download-settings.json')
       .then(res => {

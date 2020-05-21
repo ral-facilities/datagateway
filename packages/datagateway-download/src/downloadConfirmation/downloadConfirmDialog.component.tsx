@@ -153,7 +153,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   >(
     (): DownloadConfirmAccessMethod => {
       // Create an updated status method with disabled and message properties.
-      let defaultStatusMethods: DownloadConfirmAccessMethod = {};
+      const defaultStatusMethods: DownloadConfirmAccessMethod = {};
       for (const method in settings.accessMethods)
         defaultStatusMethods[method] = {
           ...settings.accessMethods[method],
@@ -233,7 +233,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const sortMethods = React.useCallback(() => {
     const sorted = Object.entries(statusMethods).sort(
       ([, methodInfoA], [, methodInfoB]) => {
-        let res =
+        const res =
           (methodInfoA.disabled !== undefined
             ? methodInfoA.disabled === false
               ? -1
@@ -257,7 +257,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   React.useEffect(() => {
     async function getStatus(): Promise<void> {
-      let statusErrors: string[] = [];
+      const statusErrors: string[] = [];
       Promise.all(
         Object.keys(statusMethods).map(method =>
           getDownloadTypeStatus(method, {
@@ -367,7 +367,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   const getDefaultFileName = (): string => {
     const now = new Date();
-    let defaultName = `${
+    const defaultName = `${
       settings.facilityName
     }_${now.getFullYear()}-${now.getMonth() +
       1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;

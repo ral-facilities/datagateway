@@ -660,17 +660,17 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
     days?: number
   ): number => {
     // NOTE: For these tests to make it simple we use 1 Mbps for this.
-    let downloadSpeed = 1; // Mbps
+    const downloadSpeed = 1; // Mbps
 
     // Get the all the time in seconds.
-    let inSeconds =
+    const inSeconds =
       (days ? days * 86400 : 0) +
       (hours ? hours * 3600 : 0) +
       (minutes ? minutes * 60 : 0) +
       seconds;
 
     // Calculate final file size required (in bytes).
-    let fileSize = inSeconds * (downloadSpeed / 8) * (1024 * 1024);
+    const fileSize = inSeconds * (downloadSpeed / 8) * (1024 * 1024);
 
     return fileSize;
   };

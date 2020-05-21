@@ -146,7 +146,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
   const sortedAndFilteredData = React.useMemo(() => {
     const filteredData = data.filter(item => {
-      for (let [key, value] of Object.entries(filters)) {
+      for (const [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (
           tableValue === undefined ||
@@ -162,7 +162,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       a: DownloadCartTableItem,
       b: DownloadCartTableItem
     ): number {
-      for (let [sortColumn, sortDirection] of Object.entries(sort)) {
+      for (const [sortColumn, sortDirection] of Object.entries(sort)) {
         if (sortDirection === 'asc') {
           if (a[sortColumn] > b[sortColumn]) {
             return 1;

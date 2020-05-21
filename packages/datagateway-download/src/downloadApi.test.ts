@@ -422,7 +422,7 @@ describe('Download Cart API functions test', () => {
       expect(document.createElement).toHaveBeenCalledWith('a');
 
       // Create our prepared cart download link.
-      let link = document.createElement('a');
+      const link = document.createElement('a');
       link.href = `https://scigateway-preprod.esc.rl.ac.uk:8181/ids/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
       link.style.display = 'none';
       link.target = '_blank';

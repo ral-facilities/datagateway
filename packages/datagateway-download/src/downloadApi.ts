@@ -52,7 +52,9 @@ export const removeAllDownloadCartItems: (settings: {
         },
       }
     )
-    .then(() => {})
+    .then(() => {
+      // do nothing
+    })
     .catch(handleICATError);
 };
 
@@ -81,7 +83,9 @@ export const removeDownloadCartItem: (
         },
       }
     )
-    .then(() => {})
+    .then(() => {
+      // do nothing
+    })
     .catch(handleICATError);
 };
 
@@ -289,7 +293,9 @@ export const downloadDeleted: (
       `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
       params
     )
-    .then(() => {})
+    .then(() => {
+      // do nothing
+    })
     .catch(error => {
       handleICATError(error);
     });

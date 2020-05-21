@@ -62,7 +62,7 @@ const DownloadTabs: React.FC = () => {
   // as the selected tab information is lost with each re-render
   // (e.g. opening/closing the navigation drawer).
   const getTab = (): number => {
-    let savedTab = sessionStorage.getItem('downloadStatusTab');
+    const savedTab = sessionStorage.getItem('downloadStatusTab');
 
     // If the tab has not been saved, then set it to the initial cart view (0).
     if (!savedTab) sessionStorage.setItem('downloadStatusTab', '0');
