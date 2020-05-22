@@ -3,19 +3,23 @@ coverage:
     project:
       default: false
       common:
-        flags: common
+        flags:
+          - common
         target: auto
         threshold: 5
       dataview:
-        flags: dataview
+        flags:
+          - dataview
         target: auto
         threshold: 5
       search:
-        flags: search
+        flags:
+          - search
         target: auto
         threshold: 5
       download:
-        flags: download
+        flags:
+          - download
         target: auto
         threshold: 5
     patch:
