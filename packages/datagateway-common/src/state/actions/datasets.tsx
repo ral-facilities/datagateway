@@ -146,7 +146,7 @@ export const fetchDatasets = ({
     const timestamp = Date.now();
     dispatch(fetchDatasetsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.append(
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
@@ -232,7 +232,7 @@ export const fetchDatasetCount = (
     const timestamp = Date.now();
     dispatch(fetchDatasetCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
     params.append(
       'where',
@@ -423,7 +423,7 @@ export const fetchDatasetDetails = (
   return async (dispatch, getState) => {
     dispatch(fetchDatasetDetailsRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
     params.append('include', JSON.stringify('DATASETTYPE'));

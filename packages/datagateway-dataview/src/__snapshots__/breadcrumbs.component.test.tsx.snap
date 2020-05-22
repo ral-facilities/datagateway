@@ -215,7 +215,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                         }
                                         disableHoverListener={true}
-                                        percentageWidth={20}
                                         title={
                                           <React.Fragment>
                                             Home
@@ -251,7 +250,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
-                                          percentageWidth={20}
                                           title={
                                             <React.Fragment>
                                               Home
@@ -268,7 +266,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             onFocus={[Function]}
                                             onTouchEnd={[Function]}
                                             onTouchStart={[Function]}
-                                            percentageWidth={20}
                                             title={null}
                                           >
                                             <WithStyles(ForwardRef(Typography))
@@ -328,7 +325,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             anchorEl={
                                               <div
                                                 class=""
-                                                percentagewidth="20"
                                               >
                                                 <p
                                                   aria-label="Breadcrumb-home"
@@ -413,7 +409,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                         }
                                         disableHoverListener={true}
-                                        percentageWidth={20}
                                         title={
                                           <React.Fragment>
                                             Investigations
@@ -449,7 +444,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
-                                          percentageWidth={20}
                                           title={
                                             <React.Fragment>
                                               Investigations
@@ -466,7 +460,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             onFocus={[Function]}
                                             onTouchEnd={[Function]}
                                             onTouchStart={[Function]}
-                                            percentageWidth={20}
                                             title={null}
                                           >
                                             <WithStyles(ForwardRef(Link))
@@ -633,7 +626,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             anchorEl={
                                               <div
                                                 class=""
-                                                percentagewidth="20"
                                               >
                                                 <a
                                                   aria-label="Breadcrumb-base"
@@ -719,7 +711,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                         }
                                         disableHoverListener={true}
-                                        percentageWidth={20}
                                         title={
                                           <React.Fragment>
                                             Test 1
@@ -755,7 +746,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
-                                          percentageWidth={20}
                                           title={
                                             <React.Fragment>
                                               Test 1
@@ -772,7 +762,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             onFocus={[Function]}
                                             onTouchEnd={[Function]}
                                             onTouchStart={[Function]}
-                                            percentageWidth={20}
                                             title={null}
                                           >
                                             <WithStyles(ForwardRef(Link))
@@ -939,7 +928,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             anchorEl={
                                               <div
                                                 class=""
-                                                percentagewidth="20"
                                               >
                                                 <a
                                                   aria-label="Breadcrumb-hierarchy-1"
@@ -1024,7 +1012,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                         }
                                         disableHoverListener={true}
-                                        percentageWidth={20}
                                         title={
                                           <React.Fragment>
                                             INVESTIGATION 1
@@ -1060,7 +1047,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
-                                          percentageWidth={20}
                                           title={
                                             <React.Fragment>
                                               INVESTIGATION 1
@@ -1077,7 +1063,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             onFocus={[Function]}
                                             onTouchEnd={[Function]}
                                             onTouchStart={[Function]}
-                                            percentageWidth={20}
                                             title={null}
                                           >
                                             <WithStyles(ForwardRef(Typography))
@@ -1137,7 +1122,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             anchorEl={
                                               <div
                                                 class=""
-                                                percentagewidth="20"
                                               >
                                                 <p
                                                   aria-label="Breadcrumb-hierarchy-2"
@@ -1222,7 +1206,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                         }
                                         disableHoverListener={true}
-                                        percentageWidth={20}
                                         title={
                                           <React.Fragment>
                                             Datafiles
@@ -1258,7 +1241,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                           }
                                           disableHoverListener={true}
-                                          percentageWidth={20}
                                           title={
                                             <React.Fragment>
                                               Datafiles
@@ -1275,7 +1257,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             onFocus={[Function]}
                                             onTouchEnd={[Function]}
                                             onTouchStart={[Function]}
-                                            percentageWidth={20}
                                             title={null}
                                           >
                                             <WithStyles(ForwardRef(Typography))
@@ -1337,7 +1318,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             anchorEl={
                                               <div
                                                 class=""
-                                                percentagewidth="20"
                                               >
                                                 <p
                                                   aria-label="Breadcrumb-last"

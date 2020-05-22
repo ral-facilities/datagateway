@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';
 
@@ -33,7 +32,7 @@ const reactLifecycles = singleSpaReact({
 });
 
 const render = (): void => {
-  let el = document.getElementById('datagateway-download');
+  const el = document.getElementById('datagateway-download');
   if (el) {
     ReactDOM.render(<App />, document.getElementById('datagateway-download'));
   }
@@ -114,11 +113,6 @@ if (
       .catch(error => console.error(`Can't log in to ICAT: ${error.message}`));
   }
 }
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
 
 document.dispatchEvent(
   new CustomEvent(MicroFrontendId, {

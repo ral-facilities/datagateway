@@ -120,7 +120,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   // Handle filtering for both text and date filters.
   const sortedAndFilteredData = React.useMemo(() => {
     const filteredData = data.filter(item => {
-      for (let [key, value] of Object.entries(filters)) {
+      for (const [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (tableValue !== undefined && typeof tableValue === 'string') {
           if (typeof value === 'string' && !tableValue.includes(value)) {
@@ -154,7 +154,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     });
 
     function sortDownloadItems(a: Download, b: Download): number {
-      for (let [sortColumn, sortDirection] of Object.entries(sort)) {
+      for (const [sortColumn, sortDirection] of Object.entries(sort)) {
         const aColumnValue = a[sortColumn];
         const bColumnValue = b[sortColumn];
         if (!aColumnValue || !bColumnValue) return 0;
@@ -207,7 +207,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 dataKey: 'status',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
-                    let status: string = props.cellData;
+                    const status: string = props.cellData;
                     return (
                       status.substring(0, 1).toUpperCase() +
                       status.substring(1).toLowerCase()

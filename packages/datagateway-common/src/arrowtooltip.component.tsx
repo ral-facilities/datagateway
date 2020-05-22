@@ -80,7 +80,7 @@ const ArrowTooltip = (
     maxEnabledHeight?: number;
   }
 ): React.ReactElement => {
-  const { percentageWidth, maxEnabledHeight } = props;
+  const { percentageWidth, maxEnabledHeight, ...tooltipProps } = props;
 
   const { arrow, ...classes } = useStylesArrow();
   const [arrowRef, setArrowRef] = React.useState<HTMLSpanElement | null>(null);
@@ -150,10 +150,10 @@ const ArrowTooltip = (
           },
         },
       }}
-      {...props}
+      {...tooltipProps}
       title={
         <React.Fragment>
-          {props.title}
+          {tooltipProps.title}
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }

@@ -32,7 +32,7 @@ describe('Table component', () => {
           label: string,
           dataKey: string
         ): React.ReactElement {
-          return <TextColumnFilter label={label} onChange={() => {}} />;
+          return <TextColumnFilter label={label} onChange={jest.fn()} />;
         },
       },
       {
@@ -306,7 +306,7 @@ describe('Table component', () => {
         actions={[
           function action() {
             return (
-              <button key="test" onClick={() => {}}>
+              <button key="test" onClick={jest.fn()}>
                 I am an action
               </button>
             );
@@ -348,9 +348,10 @@ describe('Table component', () => {
   });
 
   it('throws error when only one of loadMoreRows or totalRowCount are defined', () => {
-    // suppress react uncaught error warning as we're deliberately triggering an error!
     const spy = jest.spyOn(console, 'error');
-    spy.mockImplementation(() => {});
+    spy.mockImplementation(() => {
+      // suppress react uncaught error warning as we're deliberately triggering an error!
+    });
 
     expect(() =>
       mount(<Table {...tableProps} totalRowCount={undefined} />)

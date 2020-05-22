@@ -68,7 +68,7 @@ export const fetchDatafiles = (
     const timestamp = Date.now();
     dispatch(fetchDatafilesRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
     const { apiUrl } = getState().dgcommon.urls;
 
@@ -133,7 +133,7 @@ export const fetchDatafileCount = (
     const timestamp = Date.now();
     dispatch(fetchDatafileCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
     const { apiUrl } = getState().dgcommon.urls;
@@ -266,7 +266,7 @@ export const fetchDatafileDetails = (
   return async (dispatch, getState) => {
     dispatch(fetchDatafileDetailsRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
     params.append(

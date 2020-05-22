@@ -237,7 +237,7 @@ class PageBreadcrumbs extends React.Component<
     }
   }
 
-  private updateBreadcrumbState = async () => {
+  private updateBreadcrumbState = async (): Promise<void> => {
     let updatedState = this.state;
 
     // Update the base address if it has changed.
@@ -278,7 +278,7 @@ class PageBreadcrumbs extends React.Component<
     const pathLength = this.currentPathnames.length;
     for (let index = 1; index < pathLength; index += 2) {
       // Get the entity and the data stored on the entity.
-      let entity = this.currentPathnames[index];
+      const entity = this.currentPathnames[index];
 
       // Create the link to this breadcrumb which will be updated into
       // the correct object in the state.
@@ -357,7 +357,7 @@ class PageBreadcrumbs extends React.Component<
           }
 
           // Get the entity field for the given entity request.
-          let entityDisplayName = await this.getEntityInformation(
+          const entityDisplayName = await this.getEntityInformation(
             requestEntityUrl,
             requestEntityField
           );

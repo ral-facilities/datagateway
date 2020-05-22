@@ -14,7 +14,7 @@ import { MicroFrontendToken } from 'datagateway-common';
 const pluginName = 'datagateway-search';
 
 const render = (): void => {
-  let el = document.getElementById(pluginName);
+  const el = document.getElementById(pluginName);
   if (el) {
     ReactDOM.render(<App />, document.getElementById(pluginName));
   }

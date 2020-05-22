@@ -6,10 +6,7 @@ import {
 } from './state/actions/actions.types';
 import { MicroFrontendId } from './app.types';
 
-const handleICATError = (
-  error: AxiosError,
-  broadcast: boolean = true
-): void => {
+const handleICATError = (error: AxiosError, broadcast = true): void => {
   let message;
   if (error.response && error.response.data.message) {
     message = error.response.data.message;

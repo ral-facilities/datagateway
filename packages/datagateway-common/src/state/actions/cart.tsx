@@ -209,7 +209,7 @@ export const fetchAllIds = (
     const timestamp = Date.now();
     dispatch(fetchAllIdsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     if (additionalFilters) {
       additionalFilters.forEach(filter => {
         params.append(filter.filterType, filter.filterValue);
@@ -262,7 +262,7 @@ export const fetchAllISISInvestigationIds = (
     const timestamp = Date.now();
     dispatch(fetchAllIdsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
 
     // TODO: currently datagateway-api can't apply distinct filter to ISIS queries,
     // so for now just retrieve everything

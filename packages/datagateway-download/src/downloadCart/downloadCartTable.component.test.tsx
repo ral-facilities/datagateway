@@ -219,8 +219,6 @@ describe('Download cart table component', () => {
       .simulate('click');
   });
 
-  it('calls clearCart function once the download cart is closed', async () => {});
-
   it('removes all items from cart when Remove All button is clicked', async () => {
     const wrapper = mount(
       <DownloadSettingsContext.Provider value={mockedSettings}>

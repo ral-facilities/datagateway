@@ -9,7 +9,7 @@ const parseJwt = (token: string): string => {
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const payload = decodeURIComponent(
     atob(base64).replace(/(.)/g, function(m, p) {
-      var code = p
+      const code = p
         .charCodeAt(0)
         .toString(16)
         .toUpperCase();

@@ -20,7 +20,7 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
   const { searchText, submitSearchText } = props;
 
   const sendSearchText = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    let searchText = event.target.value;
+    const searchText = event.target.value;
     submitSearchText(searchText);
   };
 

@@ -14,9 +14,12 @@ describe('withIdCheck', () => {
   const Test: React.FC<{ message: string }> = (props: { message: string }) => (
     <div>{props.message}</div>
   );
-  const pendingPromiseMock = jest
-    .fn()
-    .mockImplementation(() => new Promise((resolve, reject) => {}));
+  const pendingPromiseMock = jest.fn().mockImplementation(
+    () =>
+      new Promise((resolve, reject) => {
+        // do nothing
+      })
+  );
   const resolvedTruePromiseMock = jest.fn().mockResolvedValue(true);
   const resolvedFalsePromiseMock = jest.fn().mockResolvedValue(false);
   const rejectedPromiseMock = jest.fn().mockRejectedValue('');
