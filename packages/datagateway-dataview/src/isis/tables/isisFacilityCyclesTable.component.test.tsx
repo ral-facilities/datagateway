@@ -183,7 +183,7 @@ describe('ISIS FacilityCycles table component', () => {
 
     expect(
       wrapper
-        .find('[aria-colindex=2]')
+        .find('[aria-colindex=1]')
         .find('p')
         .children()
     ).toMatchSnapshot();
