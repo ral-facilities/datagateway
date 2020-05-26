@@ -2256,7 +2256,7 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
 
-"@material-ui/pickers@^3.2.6", "@material-ui/pickers@^3.2.7":
+"@material-ui/pickers@^3.2.10":
   version "3.2.10"
   resolved "https://registry.yarnpkg.com/@material-ui/pickers/-/pickers-3.2.10.tgz#19df024895876eb0ec7cd239bbaea595f703f0ae"
   integrity sha512-B8G6Obn5S3RCl7hwahkQj9sKUapwXWFjiaz/Bsw1fhYFdNMnDUolRiWQSoKPb1/oKe37Dtfszoywi1Ynbo3y8w==
@@ -5267,10 +5267,10 @@ cypress-failed-log@^2.5.1:
     debug "4.1.1"
     logdown "3.3.1"
 
-cypress-plugin-retries@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/cypress-plugin-retries/-/cypress-plugin-retries-1.5.0.tgz#717cdfd7f2a8f07f218eb23e93ff6f7aa4c95029"
-  integrity sha512-nSJx4RkbeQFGjsymPWabn7i2GmxULUu9SqtiJqoVFa1XfVtQC1Uoogxj/zZzhrWYwYJ2183xslb9HqQV6bafFQ==
+cypress-plugin-retries@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/cypress-plugin-retries/-/cypress-plugin-retries-1.5.2.tgz#21d5247cd77013b95bbfdd914f2de66f91f76a2e"
+  integrity sha512-o1xVIGtv4WvNVxoVJ2X08eAuvditPHrePRzHqhwwHbMKu3C2rtxCdanRCZdO5fjh8ww+q4v4V0e9GmysbOvu3A==
   dependencies:
     chalk "^3.0.0"
 
