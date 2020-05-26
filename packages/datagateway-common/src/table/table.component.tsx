@@ -47,6 +47,7 @@ const styles = (theme: Theme): StyleRules =>
       flexDirection: 'column',
       alignItems: 'left',
       boxSizing: 'border-box',
+      justifyContent: 'flex-end',
     },
     tableRow: {},
     tableRowHover: {
@@ -224,7 +225,7 @@ const VirtualizedTable = (
                         {...props}
                         className={clsx(
                           classes.headerTableCell,
-                          classes.flexContainer
+                          classes.headerFlexContainer
                         )}
                         selectedRows={selectedRows}
                         totalRowCount={rowCount}
