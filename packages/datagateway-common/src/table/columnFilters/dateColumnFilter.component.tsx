@@ -4,8 +4,8 @@ import { format, isValid, isEqual } from 'date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-  MaterialUiPickersDate,
 } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 export function datesEqual(
   date1: MaterialUiPickersDate,
