@@ -22,7 +22,6 @@ import {
 
 import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
 import { Route } from 'react-router';
-import { withRouter } from 'react-router-dom';
 import PageCard from './pageCard.component';
 import { supportedPaths } from './pageCard.component';
 
@@ -95,19 +94,20 @@ class PageContainer extends React.Component<
     // );
     // console.log('supported: ', this.props.path.match('/browse/investigation'));
 
-    console.log('match supported: ', Object.values(supportedPaths));
+    // console.log('match supported: ', Object.values(supportedPaths));
     const res = Object.values(supportedPaths).some(p => {
-      // console.log('match input: ', p.replace(/:.*\//, '(.)/'));
-      const match = this.props.path.match(p.replace(/:.*\//, '(.)/'));
-      console.log('match: ', match);
-      console.log('match string: ', match && this.props.path === match[0]);
+      // console.log('match input: ', p.replace(/(:[^./]*)/g, '(.)+'));
+      // Look for the character set where the parameter for ID would be
+      // replaced with the regex to catch any character between the forward slashes.
+      const match = this.props.path.match(p.replace(/(:[^./]*)/g, '(.)+'));
+      // console.log('match: ', match);
+      // console.log('match string: ', match && this.props.path === match[0]);
       return match && this.props.path === match[0];
     });
-    console.log('supported: ', res);
+    // console.log('supported: ', res);
     return res;
   };
 
-  // TODO: The localstorage state should be correct regardless of getPathMatch
   public getToggle = (): boolean => {
     return this.getPathMatch()
       ? this.props.query.view
@@ -166,8 +166,8 @@ class PageContainer extends React.Component<
           <Route path="/browse" component={PageBreadcrumbs} />
         </Grid>
 
-        {/* The table entity count takes up an xs of 2, where the breadcrumbs 
-           will take the remainder of the space. */}
+        {/* The table entity count takes up an xs of 2, where the breadcrumbs
+            will take the remainder of the space. */}
         <Grid
           style={{ textAlign: 'center' }}
           item
@@ -239,6 +239,4 @@ const mapDispatchToProps = (
   restoreQuery: () => dispatch(restoreQueries()),
 });
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(PageContainer)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
