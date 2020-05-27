@@ -11,9 +11,6 @@ import {
 } from '@material-ui/core';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
-import { Route, RouteComponentProps } from 'react-router';
-
-import { Switch as RouteSwitch } from 'react-router';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import {
@@ -23,9 +20,11 @@ import {
   restoreQueries,
 } from 'datagateway-common';
 
-import InvestigationCardView from '../card/investigationCardView.component';
-import DatasetCardView from '../card/datasetCardView.component';
 import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
+import { Route } from 'react-router';
+import { withRouter } from 'react-router-dom';
+import PageCard from './pageCard.component';
+import { supportedPaths } from './pageCard.component';
 
 interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
@@ -45,6 +44,7 @@ type PageContainerCombinedProps = PageContainerProps &
   PageContainerDispatchProps;
 
 interface PageContainerState {
+  paths: string[];
   toggleCard: boolean;
 }
 
@@ -55,12 +55,15 @@ class PageContainer extends React.Component<
   public constructor(props: PageContainerCombinedProps) {
     super(props);
 
+    console.log('Support paths: ', Object.values(supportedPaths));
+
     // Load the current URL query parameters.
     this.props.loadQuery();
 
     // Allow for query parameter to override the
     // toggle state in the localStorage.
     this.state = {
+      paths: Object.values(supportedPaths),
       toggleCard: this.getToggle(),
     };
   }
@@ -68,6 +71,7 @@ class PageContainer extends React.Component<
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // Ensure if the location changes, then we update the query parameters.
     if (prevProps.path !== this.props.path) {
+      console.log('Path changed: ', this.props.path);
       this.props.loadQuery();
     }
 
@@ -84,13 +88,35 @@ class PageContainer extends React.Component<
     }
   }
 
+  public getPathMatch = (): boolean => {
+    // console.log(
+    //   'supported path: ',
+    //   Object.values(supportedPaths).some(p => this.props.path.match(p))
+    // );
+    // console.log('supported: ', this.props.path.match('/browse/investigation'));
+
+    console.log('match supported: ', Object.values(supportedPaths));
+    const res = Object.values(supportedPaths).some(p => {
+      // console.log('match input: ', p.replace(/:.*\//, '(.)/'));
+      const match = this.props.path.match(p.replace(/:.*\//, '(.)/'));
+      console.log('match: ', match);
+      console.log('match string: ', match && this.props.path === match[0]);
+      return match && this.props.path === match[0];
+    });
+    console.log('supported: ', res);
+    return res;
+  };
+
+  // TODO: The localstorage state should be correct regardless of getPathMatch
   public getToggle = (): boolean => {
-    return this.props.query.view
-      ? this.props.query.view === 'card'
+    return this.getPathMatch()
+      ? this.props.query.view
+        ? this.props.query.view === 'card'
+          ? true
+          : false
+        : this.getView() === 'card'
         ? true
         : false
-      : this.getView() === 'card'
-      ? true
       : false;
   };
 
@@ -158,43 +184,31 @@ class PageContainer extends React.Component<
         {/* Toggle between the table and card view */}
         {/* TODO: Prevent toggle on routes which are not investigation/dataset. */}
         <Grid item xs={12}>
-          <FormControlLabel
-            value="start"
-            control={
-              <Switch
-                checked={this.state.toggleCard}
-                onChange={this.handleToggleChange}
-                name="toggleCard"
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
+          <Route
+            exact
+            path={this.state.paths}
+            render={() => (
+              <FormControlLabel
+                value="start"
+                control={
+                  <Switch
+                    checked={this.state.toggleCard}
+                    onChange={this.handleToggleChange}
+                    name="toggleCard"
+                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                  />
+                }
+                label="Toggle Cards"
+                labelPlacement="start"
               />
-            }
-            label="Toggle Cards"
-            labelPlacement="start"
+            )}
           />
         </Grid>
 
         {/* Hold the table for remainder of the page */}
         <Grid item xs={12} aria-label="container-table">
           {this.state.toggleCard ? (
-            // TODO: Route switching needs to be moved to separate component
-            <RouteSwitch>
-              <Route
-                exact
-                path="/browse/investigation/"
-                render={() => <InvestigationCardView />}
-              />
-              <Route
-                exact
-                path="/browse/investigation/:investigationId/dataset"
-                render={({
-                  match,
-                }: RouteComponentProps<{ investigationId: string }>) => (
-                  <DatasetCardView
-                    investigationId={match.params.investigationId}
-                  />
-                )}
-              />
-            </RouteSwitch>
+            <PageCard />
           ) : (
             <Paper
               square
@@ -225,4 +239,6 @@ const mapDispatchToProps = (
   restoreQuery: () => dispatch(restoreQueries()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(PageContainer)
+);
