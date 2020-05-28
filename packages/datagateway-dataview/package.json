@@ -14,7 +14,7 @@
     "connected-react-router": "^6.5.2",
     "custom-event-polyfill": "^1.0.7",
     "datagateway-common": "0.1.0",
-    "loglevel": "^1.6.3",
+    "loglevel": "^1.6.8",
     "react": "^16.11.0",
     "react-app-polyfill": "^1.0.1",
     "react-dom": "^16.11.0",
