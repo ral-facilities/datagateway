@@ -14,6 +14,7 @@ import {
   TextField,
   InputAdornment,
   Typography,
+  CircularProgress,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import { Pagination } from '@material-ui/lab';
@@ -53,16 +54,18 @@ interface CardViewDetails {
   //       Pass a Link component to wrap the data.
   label?: string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  link?: (data?: any) => React.ReactNode;
+  content?: (data?: any) => React.ReactNode;
 }
 
 interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
   loadData: (offsetParams: IndexRange) => Promise<void>;
-  selectedCards: number[];
-  onSelect: (selectedIds: number[]) => void;
-  onDeselect: (selectedIds: number[]) => void;
+
+  // TODO:
+  selectedCards?: number[];
+  onSelect?: (selectedIds: number[]) => void;
+  onDeselect?: (selectedIds: number[]) => void;
 
   // Props to get title, description of the card
   // represented by data.
@@ -73,8 +76,6 @@ interface CardViewProps {
 }
 
 interface CardViewStateProps {
-  // data: Entity[];
-  // totalDataCount: number;
   query: QueryParams;
 }
 
@@ -205,6 +206,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   return (
     <Grid container direction="column" alignItems="center">
       <Grid container direction="row" justify="center">
+        {/* Search bar */}
         <Grid item xs={10} style={{ paddingLeft: '700px' }}>
           <TextField
             style={{ width: '500px' }}
@@ -222,6 +224,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           />
         </Grid>
 
+        {/* Maximum results selection */}
         <Grid item xs style={{ paddingTop: '10px' }}>
           <FormControl className={classes.formControl}>
             <InputLabel id="select-max-results-label">Max Results</InputLabel>
@@ -246,6 +249,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         </Grid>
       </Grid>
 
+      {/* Filtering options */}
       <Grid
         container
         direction="row"
@@ -272,73 +276,91 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         </Grid>
 
         {/* Card data */}
-        <Grid item xs>
-          <List>
-            {viewData.map((data, index) => {
-              return (
-                <ListItem
-                  key={index}
-                  alignItems="flex-start"
-                  className={classes.root}
-                >
-                  <EntityCard
-                    title={{
-                      // TODO: Is this the best way to handle label/dataKey?
-                      label: data[title.dataKey],
-                      content: title.link && title.link(data),
-                    }}
-                    description={description && data[description.dataKey]}
-                    furtherInformation={
-                      furtherInformation &&
-                      furtherInformation.map(details => ({
-                        // TODO: Create a separate type just for details label?
-                        //       We can say the label is the data key if not defined.
-                        label: details.label ? details.label : details.dataKey,
-                        data: data[details.dataKey],
-                      }))
-                    }
-                    image={image}
-                    selected={selectedCards.includes(data.ID)}
-                    onSelect={() => {
-                      onSelect([data.ID]);
-                    }}
-                    onDeselect={() => {
-                      if (selectedCards.includes(data.ID))
-                        onDeselect([data.ID]);
-                    }}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
-        </Grid>
+        {loadedData ? (
+          <Grid item xs>
+            <List>
+              {viewData.map((data, index) => {
+                return (
+                  <ListItem
+                    key={index}
+                    alignItems="flex-start"
+                    className={classes.root}
+                  >
+                    <EntityCard
+                      title={{
+                        // TODO: Is this the best way to handle label/dataKey?
+                        label: data[title.dataKey],
+                        content: title.content && title.content(data),
+                      }}
+                      description={description && data[description.dataKey]}
+                      furtherInformation={
+                        furtherInformation &&
+                        furtherInformation
+                          // Handle case when details dataKey is not present in data.
+                          .filter(details => details.dataKey in data)
+                          .map(details => ({
+                            // TODO: Create a separate type just for details label?
+                            //       We can say the label is the data key if not defined.
+                            label: details.label
+                              ? details.label
+                              : details.dataKey,
+                            content: details.content
+                              ? details.content(data)
+                              : data[details.dataKey],
+                          }))
+                      }
+                      image={image}
+                      selected={
+                        selectedCards && selectedCards.includes(data.ID)
+                      }
+                      onSelect={() => {
+                        if (onSelect) onSelect([data.ID]);
+                      }}
+                      onDeselect={() => {
+                        if (
+                          selectedCards &&
+                          onDeselect &&
+                          selectedCards.includes(data.ID)
+                        )
+                          onDeselect([data.ID]);
+                      }}
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Grid>
+        ) : (
+          <Grid item xs>
+            <CircularProgress size={50} />
+          </Grid>
+        )}
       </Grid>
 
-      {/* TODO: Page jumps up on every other page click on the pagination component. */}
-      <Grid item xs style={{ padding: '50px' }}>
-        <Pagination
-          size="large"
-          style={{ textAlign: 'center' }}
-          count={numPages}
-          page={page}
-          onChange={(e, p) => {
-            setPage(p);
-            // Add the query parameter for the changed view.
-            pushPage(p);
-            setPageChange(true);
-            setLoadedData(false);
-          }}
-          color="secondary"
-        />
-      </Grid>
+      {/* Pagination  */}
+      {loadedData && (
+        <Grid item xs style={{ padding: '50px' }}>
+          <Pagination
+            size="large"
+            style={{ textAlign: 'center' }}
+            count={numPages}
+            page={page}
+            onChange={(e, p) => {
+              setPage(p);
+              pushPage(p);
+              setPageChange(true);
+              setLoadedData(false);
+            }}
+            color="secondary"
+          />
+        </Grid>
+      )}
     </Grid>
   );
 };
 
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
-    // data: state.dgcommon.data,
-    // totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
   };
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Paper } from '@material-ui/core';
 
 import CardView from './cardView.component';
 import { ThunkDispatch } from 'redux-thunk';
@@ -32,7 +31,6 @@ interface DatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
-  // view: ViewsType;
 }
 
 interface DatasetCardViewProps {
@@ -53,7 +51,6 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     fetchCount,
     addToCart,
     removeFromCart,
-    // view,
   } = props;
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
@@ -83,39 +80,37 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
   }, [investigationId, data, fetchedCount, fetchCount]);
 
   return (
-    <Paper square>
-      <CardView
-        data={data}
-        totalDataCount={totalDataCount}
-        loadData={params => fetchData(parseInt(investigationId), params)}
-        selectedCards={selectedCards}
-        onSelect={addToCart}
-        onDeselect={removeFromCart}
-        // TODO: Put in the correct dataKeys.
-        //       Provide an array of further info and tags.
-        title={{
-          dataKey: 'NAME',
-          link: (dataset: Dataset) => {
-            return datasetLink(investigationId, dataset.ID, dataset.NAME);
-          },
-        }}
-        description={{ dataKey: 'DESCRIPTION' }}
-        furtherInformation={[
-          {
-            label: 'Created Time',
-            dataKey: 'CREATE_TIME',
-          },
-          {
-            label: 'Modified Time',
-            dataKey: 'MOD_TIME',
-          },
-          // {
-          //   label: 'Datafile Count',
-          //   dataKey: 'DATAFILE_COUNT',
-          // },
-        ]}
-      />
-    </Paper>
+    <CardView
+      data={data}
+      totalDataCount={totalDataCount}
+      loadData={params => fetchData(parseInt(investigationId), params)}
+      selectedCards={selectedCards}
+      onSelect={addToCart}
+      onDeselect={removeFromCart}
+      // TODO: Put in the correct dataKeys.
+      //       Provide an array of further info and tags.
+      title={{
+        dataKey: 'NAME',
+        content: (dataset: Dataset) => {
+          return datasetLink(investigationId, dataset.ID, dataset.NAME);
+        },
+      }}
+      description={{ dataKey: 'DESCRIPTION' }}
+      furtherInformation={[
+        {
+          label: 'Created Time',
+          dataKey: 'CREATE_TIME',
+        },
+        {
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
+        },
+        // {
+        //   label: 'Datafile Count',
+        //   dataKey: 'DATAFILE_COUNT',
+        // },
+      ]}
+    />
   );
 };
 
@@ -124,7 +119,6 @@ const mapStateToProps = (state: StateType): DatasetCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
-    // view: state.dgcommon.query.view,
   };
 };
 

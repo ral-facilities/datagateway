@@ -46,8 +46,10 @@ export function investigationLink(
 
 export function tableLink(
   linkUrl: string,
-  linkText: string
+  linkText: string,
+  view?: ViewsType
 ): React.ReactElement {
+  if (view) linkUrl += `?view=${view}`;
   return (
     <Link component={RouterLink} to={linkUrl}>
       {linkText}

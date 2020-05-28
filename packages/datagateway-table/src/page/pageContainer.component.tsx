@@ -182,7 +182,6 @@ class PageContainer extends React.Component<
         </Grid>
 
         {/* Toggle between the table and card view */}
-        {/* TODO: Prevent toggle on routes which are not investigation/dataset. */}
         <Grid item xs={12}>
           <Route
             exact
@@ -207,14 +206,18 @@ class PageContainer extends React.Component<
 
         {/* Hold the table for remainder of the page */}
         <Grid item xs={12} aria-label="container-table">
-          {this.state.toggleCard ? (
-            <PageCard />
-          ) : (
+          {!this.state.toggleCard ? (
+            // Place table in Paper component which adjusts for the height
+            // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
             <Paper
               square
               style={{ height: 'calc(100vh - 95px)', width: '100%' }}
             >
               <PageTable />
+            </Paper>
+          ) : (
+            <Paper square>
+              <PageCard />
             </Paper>
           )}
         </Grid>

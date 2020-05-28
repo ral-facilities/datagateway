@@ -126,24 +126,26 @@ const useCardStyles = makeStyles((theme: Theme) => {
   return styles;
 });
 
-export interface EntityCardTitle {
-  label: string;
-  content?: React.ReactNode;
-}
-
 export interface EntityImageDetails {
   url: string;
   title?: string;
 }
 
-interface EntityCardDetails {
+// TODO: Make into same interface - EntityCardDetails.
+export interface EntityCardDetails {
   label: string;
-  data: string;
+  content?: React.ReactNode;
 }
+
+// interface EntityCardDetails {
+//   label: string;
+//   data: string;
+// }
 
 interface EntityCardProps {
   // TODO: Minimum information.
-  title: EntityCardTitle;
+  // title: EntityCardTitle;
+  title: EntityCardDetails;
 
   // TODO: Description is also optional; if the isTitleCard
   //       flagged only the title will be shown and the the card
@@ -158,9 +160,10 @@ interface EntityCardProps {
   // TODO: Give the option to have a simple card which links to other data.
   // isTitleCard: boolean;
 
-  selected: boolean;
-  onSelect: () => void;
-  onDeselect: () => void;
+  // TODO:
+  selected?: boolean;
+  onSelect?: () => void;
+  onDeselect?: () => void;
 }
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
@@ -193,9 +196,11 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   );
 
   React.useEffect(() => {
-    // Set the button selected based on if it is flagged
-    // by the CardView.
-    setIsSelected(selected);
+    if (selected) {
+      // Set the button selected based on if it is flagged
+      // by the CardView.
+      setIsSelected(selected);
+    }
 
     // Decide if the collapsible should be present depending on
     // if the description height exceeds the default collapsed height.
@@ -322,7 +327,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
               {furtherInformation &&
                 furtherInformation.map(
                   (info: EntityCardDetails, index: number) => (
-                    <Typography key={index}>{info.data}</Typography>
+                    <Typography key={index}>
+                      {info.content && info.content}
+                    </Typography>
                   )
                 )}
             </div>
@@ -330,37 +337,44 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           {/* TODO: Add to cart button - requires API logic */}
           {/* TODO: Button should be located more centrally (positioned in the
           middle) if there is no further information. */}
-          <div style={{ paddingTop: '15px', textAlign: 'center' }}>
-            {!isSelected ? (
-              <Button
-                id="add-to-cart-btn"
-                variant="contained"
-                color="primary"
-                startIcon={<AddCircleOutlineOutlined />}
-                disableElevation
-                onClick={() => {
-                  onSelect();
-                  setIsSelected(true);
-                }}
-              >
-                Add to cart
-              </Button>
-            ) : (
-              <Button
-                id="remove-from-cart-btn"
-                variant="contained"
-                color="secondary"
-                startIcon={<RemoveCircleOutlineOutlined />}
-                disableElevation
-                onClick={() => {
-                  onDeselect();
-                  setIsSelected(false);
-                }}
-              >
-                Remove from cart
-              </Button>
-            )}
-          </div>
+
+          {selected && onSelect && onDeselect && (
+            <div style={{ paddingTop: '15px', textAlign: 'center' }}>
+              {!isSelected ? (
+                <Button
+                  id="add-to-cart-btn"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddCircleOutlineOutlined />}
+                  disableElevation
+                  onClick={() => {
+                    if (onSelect) {
+                      onSelect();
+                      setIsSelected(true);
+                    }
+                  }}
+                >
+                  Add to cart
+                </Button>
+              ) : (
+                <Button
+                  id="remove-from-cart-btn"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<RemoveCircleOutlineOutlined />}
+                  disableElevation
+                  onClick={() => {
+                    if (onDeselect) {
+                      onDeselect();
+                      setIsSelected(false);
+                    }
+                  }}
+                >
+                  Remove from cart
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
