@@ -71,6 +71,16 @@ const ISISFacilityCyclesCardView = (
           ),
       }}
       description={{ dataKey: 'DESCRIPTION' }}
+      furtherInformation={[
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+        },
+        {
+          label: 'End Date',
+          dataKey: 'ENDDATE',
+        },
+      ]}
     />
   );
 };

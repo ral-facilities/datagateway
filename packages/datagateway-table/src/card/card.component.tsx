@@ -313,8 +313,8 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         {/* TODO: Add in margins for spacing. */}
         {/* TODO: These should be specified elsewhere */}
         {/* TODO: Further information related to the entity. */}
-        {furtherInformation && (
-          <div>
+        <div>
+          {furtherInformation && (
             <div className={classes.further}>
               <div className={classes.furtherLabel}>
                 {furtherInformation &&
@@ -335,49 +335,43 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   )}
               </div>
             </div>
+          )}
 
-            {/* TODO: Add to cart button - requires API logic */}
-            {/* TODO: Button should be located more centrally (positioned in the
-          middle) if there is no further information. */}
-            {selected && onSelect && onDeselect && (
-              <div style={{ paddingTop: '15px', textAlign: 'center' }}>
-                {!isSelected ? (
-                  <Button
-                    id="add-to-cart-btn"
-                    variant="contained"
-                    color="primary"
-                    startIcon={<AddCircleOutlineOutlined />}
-                    disableElevation
-                    onClick={() => {
-                      if (onSelect) {
-                        onSelect();
-                        setIsSelected(true);
-                      }
-                    }}
-                  >
-                    Add to cart
-                  </Button>
-                ) : (
-                  <Button
-                    id="remove-from-cart-btn"
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<RemoveCircleOutlineOutlined />}
-                    disableElevation
-                    onClick={() => {
-                      if (onDeselect) {
-                        onDeselect();
-                        setIsSelected(false);
-                      }
-                    }}
-                  >
-                    Remove from cart
-                  </Button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+          {/* TODO: Button should be located more centrally (positioned in the middle) if there is no further information.  */}
+          {onSelect && onDeselect && (
+            <div style={{ paddingTop: '15px', textAlign: 'center' }}>
+              {!isSelected ? (
+                <Button
+                  id="add-to-cart-btn"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddCircleOutlineOutlined />}
+                  disableElevation
+                  onClick={() => {
+                    onSelect();
+                    setIsSelected(true);
+                  }}
+                >
+                  Add to cart
+                </Button>
+              ) : (
+                <Button
+                  id="remove-from-cart-btn"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<RemoveCircleOutlineOutlined />}
+                  disableElevation
+                  onClick={() => {
+                    onDeselect();
+                    setIsSelected(false);
+                  }}
+                >
+                  Remove from cart
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
