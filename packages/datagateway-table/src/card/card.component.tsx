@@ -308,74 +308,76 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         </div>
 
         {/* TODO: Divider is optional based on if there is further information. */}
-        <Divider orientation={'vertical'} />
+        {furtherInformation && <Divider orientation={'vertical'} />}
 
         {/* TODO: Add in margins for spacing. */}
         {/* TODO: These should be specified elsewhere */}
-        <div>
-          <div className={classes.further}>
-            {/* TODO: Further information related to the entity. */}
-            <div className={classes.furtherLabel}>
-              {furtherInformation &&
-                furtherInformation.map(
-                  (info: EntityCardDetails, index: number) => (
-                    <Typography key={index}>{`${info.label}:`}</Typography>
-                  )
-                )}
+        {/* TODO: Further information related to the entity. */}
+        {furtherInformation && (
+          <div>
+            <div className={classes.further}>
+              <div className={classes.furtherLabel}>
+                {furtherInformation &&
+                  furtherInformation.map(
+                    (info: EntityCardDetails, index: number) => (
+                      <Typography key={index}>{`${info.label}:`}</Typography>
+                    )
+                  )}
+              </div>
+              <div className={classes.furtherData}>
+                {furtherInformation &&
+                  furtherInformation.map(
+                    (info: EntityCardDetails, index: number) => (
+                      <Typography key={index}>
+                        {info.content && info.content}
+                      </Typography>
+                    )
+                  )}
+              </div>
             </div>
-            <div className={classes.furtherData}>
-              {furtherInformation &&
-                furtherInformation.map(
-                  (info: EntityCardDetails, index: number) => (
-                    <Typography key={index}>
-                      {info.content && info.content}
-                    </Typography>
-                  )
-                )}
-            </div>
-          </div>
-          {/* TODO: Add to cart button - requires API logic */}
-          {/* TODO: Button should be located more centrally (positioned in the
-          middle) if there is no further information. */}
 
-          {selected && onSelect && onDeselect && (
-            <div style={{ paddingTop: '15px', textAlign: 'center' }}>
-              {!isSelected ? (
-                <Button
-                  id="add-to-cart-btn"
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AddCircleOutlineOutlined />}
-                  disableElevation
-                  onClick={() => {
-                    if (onSelect) {
-                      onSelect();
-                      setIsSelected(true);
-                    }
-                  }}
-                >
-                  Add to cart
-                </Button>
-              ) : (
-                <Button
-                  id="remove-from-cart-btn"
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<RemoveCircleOutlineOutlined />}
-                  disableElevation
-                  onClick={() => {
-                    if (onDeselect) {
-                      onDeselect();
-                      setIsSelected(false);
-                    }
-                  }}
-                >
-                  Remove from cart
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
+            {/* TODO: Add to cart button - requires API logic */}
+            {/* TODO: Button should be located more centrally (positioned in the
+          middle) if there is no further information. */}
+            {selected && onSelect && onDeselect && (
+              <div style={{ paddingTop: '15px', textAlign: 'center' }}>
+                {!isSelected ? (
+                  <Button
+                    id="add-to-cart-btn"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddCircleOutlineOutlined />}
+                    disableElevation
+                    onClick={() => {
+                      if (onSelect) {
+                        onSelect();
+                        setIsSelected(true);
+                      }
+                    }}
+                  >
+                    Add to cart
+                  </Button>
+                ) : (
+                  <Button
+                    id="remove-from-cart-btn"
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<RemoveCircleOutlineOutlined />}
+                    disableElevation
+                    onClick={() => {
+                      if (onDeselect) {
+                        onDeselect();
+                        setIsSelected(false);
+                      }
+                    }}
+                  >
+                    Remove from cart
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

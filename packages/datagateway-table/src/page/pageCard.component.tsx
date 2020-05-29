@@ -4,11 +4,13 @@ import { Switch, Route, RouteComponentProps } from 'react-router';
 import InvestigationCardView from '../card/investigationCardView.component';
 import DatasetCardView from '../card/datasetCardView.component';
 import ISISInstrumentsCardView from '../card/isis/isisInstrumentsCardView.component';
+import ISISFacilityCyclesCardView from '../card/isis/isisFacilityCyclesCardView.component';
 
 export const supportedPaths = {
   investigation: '/browse/investigation',
   dataset: '/browse/investigation/:investigationId/dataset',
   isisInstrument: '/browse/instrument',
+  isisFacilityCycle: '/browse/instrument/:instrumentId/facilityCycle',
 };
 
 class PageCard extends React.Component {
@@ -33,6 +35,17 @@ class PageCard extends React.Component {
           exact
           path={supportedPaths['isisInstrument']}
           render={() => <ISISInstrumentsCardView />}
+        />
+        <Route
+          exact
+          path={supportedPaths['isisFacilityCycle']}
+          render={({
+            match,
+          }: RouteComponentProps<{ instrumentId: string }>) => (
+            <ISISFacilityCyclesCardView
+              instrumentId={match.params.instrumentId}
+            />
+          )}
         />
       </Switch>
     );
