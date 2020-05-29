@@ -365,6 +365,7 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
   };
 };
 
+// TODO: Should these be passed in or present in the card view by default?
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): CardViewDispatchProps => ({

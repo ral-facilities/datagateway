@@ -88,6 +88,8 @@ const ISISInstrumentsCardView = (
         {
           label: 'URL',
           dataKey: 'URL',
+          // TODO: Needs a different way of showing information (only when requested by user)
+          //       and not all at once.
           // eslint-disable-next-line react/display-name
           content: (instrument: Instrument) => {
             return <Link href={instrument.URL}>{instrument.URL}</Link>;
