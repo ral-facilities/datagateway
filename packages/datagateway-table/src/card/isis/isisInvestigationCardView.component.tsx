@@ -10,12 +10,14 @@ import {
   removeFromCart,
   Investigation,
   tableLink,
+  formatBytes,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
+// import ArrowTooltip from '../../page/arrowtooltip.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsCardViewProps {
@@ -83,7 +85,7 @@ const ISISInvestigationsCardView = (
 
   React.useEffect(() => {
     // TODO: React.useMemo?
-    //   Set the IDs of the investigation data.
+    // Set the IDs of the investigation data.
     setInvestigationIds(data.map(investigation => investigation.ID));
 
     if (!fetchedCount) {
@@ -128,6 +130,67 @@ const ISISInvestigationsCardView = (
         {
           label: 'RB Number',
           dataKey: 'NAME',
+        },
+        {
+          // TODO: Change behaviour to not show label cases where content returns nothing?
+          label: 'DOI',
+          dataKey: 'STUDYINVESTIGATION',
+          content: (investigation: Investigation) => {
+            if (
+              investigation.STUDYINVESTIGATION &&
+              investigation.STUDYINVESTIGATION[0].STUDY
+            ) {
+              if (investigation.STUDYINVESTIGATION[0].STUDY.PID)
+                return investigation.STUDYINVESTIGATION[0].STUDY.PID;
+            }
+            return 'N/A';
+          },
+        },
+        {
+          label: 'Size',
+          dataKey: 'SIZE',
+          content: (investigation: Investigation) =>
+            formatBytes(investigation.SIZE),
+        },
+        // TODO: Support ArrowTooltip in this case to shorten large text.
+        // {
+        //   // TODO: Change behaviour to not show label cases where content returns nothing?
+        //   // TODO: Use drilling down into nested data value.
+
+        //   label: 'Instrument',
+        //   dataKey: 'INVESTIGATIONINSTRUMENT',
+        //   content: (investigation: Investigation) => {
+        //     if (
+        //       investigation.INVESTIGATIONINSTRUMENT &&
+        //       investigation.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+        //     ) {
+        //       return (
+        //         <ArrowTooltip
+        //           title={
+        //             investigation.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME
+        //           }
+        //           percentageWidth={5}
+        //         >
+        //           <span>
+        //             {
+        //               investigation.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+        //                 .FULLNAME
+        //             }
+        //           </span>
+        //         </ArrowTooltip>
+        //       );
+        //     } else {
+        //       return 'N/A';
+        //     }
+        //   },
+        // },
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+        },
+        {
+          label: 'End Date',
+          dataKey: 'ENDDATE',
         },
       ]}
     />
