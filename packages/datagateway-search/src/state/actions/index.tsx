@@ -8,7 +8,7 @@ import {
 import { loadUrls, loadFacilityName } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
-import * as loglevel from 'loglevel';
+import * as log from 'loglevel';
 import jsrsasign from 'jsrsasign';
 
 export const settingsLoaded = (): Action => ({
@@ -32,14 +32,14 @@ export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
         dispatch(configureStrings(res.data));
       })
       .catch(error =>
-        loglevel.error(`Failed to read strings from ${path}: ${error}`)
+        log.error(`Failed to read strings from ${path}: ${error}`)
       );
   };
 };
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    axios
+    await axios
       .get('/datagateway-search-settings.json')
       .then(res => {
         const settings = res.data;
@@ -121,7 +121,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                   window.localStorage.setItem('scigateway:token', jwt);
                 })
                 .catch(error => {
-                  loglevel.error(
+                  log.error(
                     `datagateway-api cannot verify ICAT session id: ${error.message}.
                    This is likely caused if datagateway-api is pointing to a
                    different ICAT than the one used by the IDS/TopCAT`
@@ -129,13 +129,13 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                 });
             })
             .catch(error =>
-              loglevel.error(`Can't log in to ICAT: ${error.message}`)
+              log.error(`Can't log in to ICAT: ${error.message}`)
             );
         }
         dispatch(settingsLoaded());
       })
       .catch(error => {
-        loglevel.error(
+        log.error(
           `Error loading datagateway-search-settings.json: ${error.message}`
         );
       });
