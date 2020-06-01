@@ -82,8 +82,8 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
   return (
     <CardView
       data={data}
-      totalDataCount={totalDataCount}
       loadData={params => fetchData(parseInt(investigationId), params)}
+      totalDataCount={totalDataCount}
       selectedCards={selectedCards}
       onSelect={addToCart}
       onDeselect={removeFromCart}

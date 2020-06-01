@@ -6,6 +6,7 @@ import DatasetCardView from '../card/datasetCardView.component';
 import ISISInstrumentsCardView from '../card/isis/isisInstrumentsCardView.component';
 import ISISFacilityCyclesCardView from '../card/isis/isisFacilityCyclesCardView.component';
 import ISISInvestigationsCardView from '../card/isis/isisInvestigationCardView.component';
+import ISISDatasetsCardView from '../card/isis/isisDatasetsCardView.component';
 
 export const supportedPaths = {
   investigation: '/browse/investigation',
@@ -14,6 +15,8 @@ export const supportedPaths = {
   isisFacilityCycle: '/browse/instrument/:instrumentId/facilityCycle',
   isisInvestigation:
     '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation',
+  isisDataset:
+    '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset',
 };
 
 class PageCard extends React.Component {
@@ -62,6 +65,23 @@ class PageCard extends React.Component {
             <ISISInvestigationsCardView
               instrumentId={match.params.instrumentId}
               facilityCycleId={match.params.facilityCycleId}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={supportedPaths['isisDataset']}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            facilityCycleId: string;
+            investigationId: string;
+          }>) => (
+            <ISISDatasetsCardView
+              instrumentId={match.params.instrumentId}
+              facilityCycleId={match.params.facilityCycleId}
+              investigationId={match.params.investigationId}
             />
           )}
         />
