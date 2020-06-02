@@ -19,6 +19,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
+import { Button } from '@material-ui/core';
+import {
+  AddCircleOutlineOutlined,
+  RemoveCircleOutlineOutlined,
+} from '@material-ui/icons';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatasetCVDispatchProps {
@@ -98,9 +103,39 @@ const ISISDatasetsCardView = (
       data={data}
       loadData={params => fetchData(parseInt(investigationId), params)}
       totalDataCount={totalDataCount}
-      selectedCards={selectedCards}
-      onSelect={addToCart}
-      onDeselect={removeFromCart}
+      // selectedCards={selectedCards}
+      // onSelect={addToCart}
+      // onDeselect={removeFromCart}
+      buttons={[
+        function cartButton(dataset: Dataset) {
+          return !(selectedCards && selectedCards.includes(dataset.ID)) ? (
+            <Button
+              id="add-to-cart-btn"
+              variant="contained"
+              color="primary"
+              startIcon={<AddCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => addToCart([dataset.ID])}
+            >
+              Add to cart
+            </Button>
+          ) : (
+            <Button
+              id="remove-from-cart-btn"
+              variant="contained"
+              color="secondary"
+              startIcon={<RemoveCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => {
+                if (selectedCards && selectedCards.includes(dataset.ID))
+                  removeFromCart([dataset.ID]);
+              }}
+            >
+              Remove from cart
+            </Button>
+          );
+        },
+      ]}
       title={{
         dataKey: 'NAME',
         content: (dataset: Dataset) =>

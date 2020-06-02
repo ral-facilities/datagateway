@@ -8,14 +8,14 @@ import {
   Typography,
   Chip,
   Divider,
-  Button,
+  // Button,
   Collapse,
   Link,
 } from '@material-ui/core';
-import {
-  AddCircleOutlineOutlined,
-  RemoveCircleOutlineOutlined,
-} from '@material-ui/icons';
+// import {
+//   AddCircleOutlineOutlined,
+//   RemoveCircleOutlineOutlined,
+// } from '@material-ui/icons';
 
 import ArrowTooltip from '../page/arrowtooltip.component';
 
@@ -142,6 +142,13 @@ export interface EntityCardDetails {
 //   data: string;
 // }
 
+// interface EntityCardButtons {
+//   label: string;
+//   onSelect: () => void;
+//   onDeselect?: () => void;
+//   selected?: boolean;
+// }
+
 interface EntityCardProps {
   // TODO: Minimum information.
   // title: EntityCardTitle;
@@ -161,9 +168,10 @@ interface EntityCardProps {
   // isTitleCard: boolean;
 
   // TODO:
-  selected?: boolean;
-  onSelect?: () => void;
-  onDeselect?: () => void;
+  // selected?: boolean;
+  // onSelect?: () => void;
+  // onDeselect?: () => void;
+  buttons?: React.ReactNode[];
 }
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
@@ -178,13 +186,14 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     image,
     tags,
 
-    selected,
-    onSelect,
-    onDeselect,
+    // selected,
+    // onSelect,
+    // onDeselect,
+    buttons,
   } = props;
   console.log('Further information in card: ', furtherInformation);
 
-  const [isSelected, setIsSelected] = React.useState(false);
+  // const [isSelected, setIsSelected] = React.useState(false);
 
   // TODO: Should be configurable from card view?
   // The default collapsed height for card description is 100px.
@@ -196,11 +205,11 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   );
 
   React.useEffect(() => {
-    if (selected) {
-      // Set the button selected based on if it is flagged
-      // by the CardView.
-      setIsSelected(selected);
-    }
+    // if (selected) {
+    //   // Set the button selected based on if it is flagged
+    //   // by the CardView.
+    //   setIsSelected(selected);
+    // }
 
     // Decide if the collapsible should be present depending on
     // if the description height exceeds the default collapsed height.
@@ -208,7 +217,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
       if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
         setCollapsibleInteraction(true);
     }
-  }, [selected, setCollapsibleInteraction]);
+  }, [setCollapsibleInteraction]); // selected,
 
   return (
     // TODO: Fix width issue when having an image in the card.
@@ -338,9 +347,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           )}
 
           {/* TODO: Button should be located more centrally (positioned in the middle) if there is no further information.  */}
-          {onSelect && onDeselect && (
+          {/* {onSelect && onDeselect && ( */}
+          {buttons && (
             <div style={{ paddingTop: '15px', textAlign: 'center' }}>
-              {!isSelected ? (
+              {/* {!isSelected ? (
                 <Button
                   id="add-to-cart-btn"
                   variant="contained"
@@ -368,7 +378,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 >
                   Remove from cart
                 </Button>
-              )}
+              )} */}
+              {buttons.map((button, index) => (
+                <div key={index}>{button}</div>
+              ))}
             </div>
           )}
         </div>

@@ -66,6 +66,8 @@ interface CardViewProps {
   selectedCards?: number[];
   onSelect?: (selectedIds: number[]) => void;
   onDeselect?: (selectedIds: number[]) => void;
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  buttons?: ((data?: any) => React.ReactNode)[];
 
   // Props to get title, description of the card
   // represented by data.
@@ -102,9 +104,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     totalDataCount,
     query,
     loadData,
-    selectedCards,
-    onSelect,
-    onDeselect,
+    buttons,
+    // selectedCards,
+    // onSelect,
+    // onDeselect,
     pushPage,
     pushResults,
     clearData,
@@ -310,20 +313,21 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           }))
                       }
                       image={image}
-                      selected={
-                        selectedCards && selectedCards.includes(data.ID)
-                      }
-                      onSelect={() => {
-                        if (onSelect) onSelect([data.ID]);
-                      }}
-                      onDeselect={() => {
-                        if (
-                          selectedCards &&
-                          onDeselect &&
-                          selectedCards.includes(data.ID)
-                        )
-                          onDeselect([data.ID]);
-                      }}
+                      // selected={
+                      //   selectedCards && selectedCards.includes(data.ID)
+                      // }
+                      // onSelect={() => {
+                      //   if (onSelect) onSelect([data.ID]);
+                      // }}
+                      // onDeselect={() => {
+                      //   if (
+                      //     selectedCards &&
+                      //     onDeselect &&
+                      //     selectedCards.includes(data.ID)
+                      //   )
+                      //     onDeselect([data.ID]);
+                      // }}
+                      buttons={buttons && buttons.map(button => button(data))}
                     />
                   </ListItem>
                 );
