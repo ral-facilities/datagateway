@@ -33,7 +33,7 @@ import {
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 
-// TODO: Will require sort/filters/cartItems?
+// TODO: Will require sort/filters?
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -62,10 +62,7 @@ interface CardViewProps {
   totalDataCount: number;
   loadData: (offsetParams: IndexRange) => Promise<void>;
 
-  // TODO:
-  selectedCards?: number[];
-  onSelect?: (selectedIds: number[]) => void;
-  onDeselect?: (selectedIds: number[]) => void;
+  // TODO: Buttons need to be provided in the customised view.
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   buttons?: ((data?: any) => React.ReactNode)[];
 
@@ -92,6 +89,7 @@ type CardViewCombinedProps = CardViewProps &
   CardViewDispatchProps;
 
 // TODO: CardView needs URL support:
+//        - filtering (?filter=)
 //        - searching (?search=)
 //        - sort (?sort=)
 // TODO: Look at how datagateway-search creates a search/filter box; style the box.
@@ -105,9 +103,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     query,
     loadData,
     buttons,
-    // selectedCards,
-    // onSelect,
-    // onDeselect,
     pushPage,
     pushResults,
     clearData,
@@ -129,9 +124,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [loadedData, setLoadedData] = React.useState(false);
 
   React.useEffect(() => {
-    console.log('Got page change: ', page);
-    console.log('Current pageNum: ', query.page);
-    console.log('Page change: ', pageChange);
+    // console.log('Got page change: ', page);
+    // console.log('Current pageNum: ', query.page);
+    // console.log('Page change: ', pageChange);
 
     // Set the page number if it was found in the parameters.
     if (!pageChange) {
@@ -166,21 +161,21 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   }, [totalDataCount]);
 
   React.useEffect(() => {
-    console.log('Total Data Count: ', totalDataCount);
-    console.log('Max results: ', maxResults);
+    // console.log('Total Data Count: ', totalDataCount);
+    // console.log('Max results: ', maxResults);
     if (totalDataCount > 0) {
       if (!loadedData) {
         // Calculate the maximum pages needed for pagination.
         setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
-        console.log('Number of pages: ', numPages);
+        // console.log('Number of pages: ', numPages);
 
         // Calculate the start/end indexes for the data.
         const startIndex = page * maxResults - (maxResults - 1) - 1;
-        console.log('startIndex: ', startIndex);
+        // console.log('startIndex: ', startIndex);
 
         // End index not incremented for slice method.
         const stopIndex = Math.min(startIndex + maxResults, totalDataCount) - 1;
-        console.log('stopIndex: ', stopIndex);
+        // console.log('stopIndex: ', stopIndex);
 
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
           // Clear data in the state before loading new data.
@@ -282,6 +277,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         {loadedData ? (
           <Grid item xs>
             <List>
+              {/* TODO: The width of the card should take up more room when 
+                        there is no further information or buttons. */}
               {viewData.map((data, index) => {
                 return (
                   <ListItem
@@ -313,20 +310,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           }))
                       }
                       image={image}
-                      // selected={
-                      //   selectedCards && selectedCards.includes(data.ID)
-                      // }
-                      // onSelect={() => {
-                      //   if (onSelect) onSelect([data.ID]);
-                      // }}
-                      // onDeselect={() => {
-                      //   if (
-                      //     selectedCards &&
-                      //     onDeselect &&
-                      //     selectedCards.includes(data.ID)
-                      //   )
-                      //     onDeselect([data.ID]);
-                      // }}
+                      // Pass in the react nodes with the data to the card.
                       buttons={buttons && buttons.map(button => button(data))}
                     />
                   </ListItem>
@@ -369,7 +353,8 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
   };
 };
 
-// TODO: Should these be passed in or present in the card view by default?
+// TODO: Should pushPage, pushResults, clearData be passed in or
+//       present in the card view by default?
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): CardViewDispatchProps => ({

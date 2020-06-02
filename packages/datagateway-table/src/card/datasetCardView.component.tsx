@@ -16,6 +16,11 @@ import {
   removeFromCart,
 } from 'datagateway-common';
 import { connect } from 'react-redux';
+import { Button } from '@material-ui/core';
+import {
+  AddCircleOutlineOutlined,
+  RemoveCircleOutlineOutlined,
+} from '@material-ui/icons';
 
 interface DatasetCVDispatchProps {
   fetchData: (
@@ -84,11 +89,6 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       data={data}
       loadData={params => fetchData(parseInt(investigationId), params)}
       totalDataCount={totalDataCount}
-      selectedCards={selectedCards}
-      onSelect={addToCart}
-      onDeselect={removeFromCart}
-      // TODO: Put in the correct dataKeys.
-      //       Provide an array of further info and tags.
       title={{
         dataKey: 'NAME',
         content: (dataset: Dataset) => {
@@ -98,6 +98,10 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       description={{ dataKey: 'DESCRIPTION' }}
       furtherInformation={[
         {
+          label: 'Datafile Count',
+          dataKey: 'DATAFILE_COUNT',
+        },
+        {
           label: 'Created Time',
           dataKey: 'CREATE_TIME',
         },
@@ -105,10 +109,38 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
           label: 'Modified Time',
           dataKey: 'MOD_TIME',
         },
-        // {
-        //   label: 'Datafile Count',
-        //   dataKey: 'DATAFILE_COUNT',
-        // },
+      ]}
+      // TODO: Can we make defining buttons more cleaner?
+      //       Move button to a different component.
+      buttons={[
+        function cartButton(dataset: Dataset) {
+          return !(selectedCards && selectedCards.includes(dataset.ID)) ? (
+            <Button
+              id="add-to-cart-btn"
+              variant="contained"
+              color="primary"
+              startIcon={<AddCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => addToCart([dataset.ID])}
+            >
+              Add to cart
+            </Button>
+          ) : (
+            <Button
+              id="remove-from-cart-btn"
+              variant="contained"
+              color="secondary"
+              startIcon={<RemoveCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => {
+                if (selectedCards && selectedCards.includes(dataset.ID))
+                  removeFromCart([dataset.ID]);
+              }}
+            >
+              Remove from cart
+            </Button>
+          );
+        },
       ]}
     />
   );

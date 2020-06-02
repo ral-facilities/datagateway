@@ -131,47 +131,24 @@ export interface EntityImageDetails {
   title?: string;
 }
 
-// TODO: Make into same interface - EntityCardDetails.
 export interface EntityCardDetails {
   label: string;
   content?: React.ReactNode;
 }
 
-// interface EntityCardDetails {
-//   label: string;
-//   data: string;
-// }
-
-// interface EntityCardButtons {
-//   label: string;
-//   onSelect: () => void;
-//   onDeselect?: () => void;
-//   selected?: boolean;
-// }
-
 interface EntityCardProps {
-  // TODO: Minimum information.
-  // title: EntityCardTitle;
+  // TODO: Minimum information -
+  //       test how card appears when optional info is not provided.
   title: EntityCardDetails;
 
-  // TODO: Description is also optional; if the isTitleCard
-  //       flagged only the title will be shown and the the card
-  //       a simple card with an option to view items (?).
   description?: string;
   furtherInformation?: EntityCardDetails[];
+  buttons?: React.ReactNode[];
 
-  // TODO: optional and no information to create these; tags may be created from instrument information for ISIS.
+  // TODO: Optional and no information to create these;
+  //       tags may be created from instrument information for ISIS.
   image?: EntityImageDetails;
   tags?: typeof Chip[];
-
-  // TODO: Give the option to have a simple card which links to other data.
-  // isTitleCard: boolean;
-
-  // TODO:
-  // selected?: boolean;
-  // onSelect?: () => void;
-  // onDeselect?: () => void;
-  buttons?: React.ReactNode[];
 }
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
@@ -180,23 +157,17 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     title,
     description,
     furtherInformation,
+    buttons,
 
     // TODO: image, tags need to be clarified as
     //       to how they will be provided.
     image,
     tags,
-
-    // selected,
-    // onSelect,
-    // onDeselect,
-    buttons,
   } = props;
-  console.log('Further information in card: ', furtherInformation);
-
-  // const [isSelected, setIsSelected] = React.useState(false);
+  // console.log('Further information in card: ', furtherInformation);
 
   // TODO: Should be configurable from card view?
-  // The default collapsed height for card description is 100px.
+  //       The default collapsed height for card description is 100px.
   const defaultCollapsedHeight = 100;
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const descriptionRef = React.useRef<HTMLParagraphElement>(null);
@@ -205,19 +176,13 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   );
 
   React.useEffect(() => {
-    // if (selected) {
-    //   // Set the button selected based on if it is flagged
-    //   // by the CardView.
-    //   setIsSelected(selected);
-    // }
-
     // Decide if the collapsible should be present depending on
     // if the description height exceeds the default collapsed height.
     if (descriptionRef && descriptionRef.current) {
       if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
         setCollapsibleInteraction(true);
     }
-  }, [setCollapsibleInteraction]); // selected,
+  }, [setCollapsibleInteraction]);
 
   return (
     // TODO: Fix width issue when having an image in the card.
@@ -236,7 +201,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
       <CardContent className={classes.content}>
         {/* row:
           - main information
-          - further information; dates, DOI, visit id
+          - further information
+          - buttons
+          * retrievable info 
         */}
         <div className={classes.main}>
           {/*column:
@@ -317,7 +284,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         </div>
 
         {/* TODO: Divider is optional based on if there is further information. */}
-        {furtherInformation && <Divider orientation={'vertical'} />}
+        {(furtherInformation || buttons) && (
+          <Divider orientation={'vertical'} />
+        )}
 
         {/* TODO: Add in margins for spacing. */}
         {/* TODO: These should be specified elsewhere */}
@@ -346,41 +315,15 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             </div>
           )}
 
+          {/* TODO: Add correct spacing when only divider and buttons are present (no further information). */}
           {/* TODO: Button should be located more centrally (positioned in the middle) if there is no further information.  */}
-          {/* {onSelect && onDeselect && ( */}
           {buttons && (
-            <div style={{ paddingTop: '15px', textAlign: 'center' }}>
-              {/* {!isSelected ? (
-                <Button
-                  id="add-to-cart-btn"
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AddCircleOutlineOutlined />}
-                  disableElevation
-                  onClick={() => {
-                    onSelect();
-                    setIsSelected(true);
-                  }}
-                >
-                  Add to cart
-                </Button>
-              ) : (
-                <Button
-                  id="remove-from-cart-btn"
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<RemoveCircleOutlineOutlined />}
-                  disableElevation
-                  onClick={() => {
-                    onDeselect();
-                    setIsSelected(false);
-                  }}
-                >
-                  Remove from cart
-                </Button>
-              )} */}
+            // TODO: Adjust the paddingTop/padding to find the right with buttons and further information (with and without each other).
+            <div style={{ padding: '10px', textAlign: 'center' }}>
               {buttons.map((button, index) => (
-                <div key={index}>{button}</div>
+                <div style={{ paddingTop: '10px' }} key={index}>
+                  {button}
+                </div>
               ))}
             </div>
           )}

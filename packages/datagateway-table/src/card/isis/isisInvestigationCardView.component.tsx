@@ -17,6 +17,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
+import { Button } from '@material-ui/core';
+import {
+  AddCircleOutlineOutlined,
+  RemoveCircleOutlineOutlined,
+} from '@material-ui/icons';
 // import ArrowTooltip from '../../page/arrowtooltip.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -108,9 +113,6 @@ const ISISInvestigationsCardView = (
       loadData={params =>
         fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
       }
-      selectedCards={selectedCards}
-      onSelect={addToCart}
-      onDeselect={removeFromCart}
       title={{
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
@@ -191,6 +193,38 @@ const ISISInvestigationsCardView = (
         {
           label: 'End Date',
           dataKey: 'ENDDATE',
+        },
+      ]}
+      buttons={[
+        function cartButton(investigation: Investigation) {
+          return !(
+            selectedCards && selectedCards.includes(investigation.ID)
+          ) ? (
+            <Button
+              id="add-to-cart-btn"
+              variant="contained"
+              color="primary"
+              startIcon={<AddCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => addToCart([investigation.ID])}
+            >
+              Add to cart
+            </Button>
+          ) : (
+            <Button
+              id="remove-from-cart-btn"
+              variant="contained"
+              color="secondary"
+              startIcon={<RemoveCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => {
+                if (selectedCards && selectedCards.includes(investigation.ID))
+                  removeFromCart([investigation.ID]);
+              }}
+            >
+              Remove from cart
+            </Button>
+          );
         },
       ]}
     />

@@ -16,6 +16,11 @@ import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
 import { connect } from 'react-redux';
 
 import CardView from './cardView.component';
+import { Button } from '@material-ui/core';
+import {
+  AddCircleOutlineOutlined,
+  RemoveCircleOutlineOutlined,
+} from '@material-ui/icons';
 
 interface InvestigationCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
@@ -84,9 +89,6 @@ const InvestigationCardView = (
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
-      selectedCards={selectedCards}
-      onSelect={addToCart}
-      onDeselect={removeFromCart}
       // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
         // Provide both the dataKey (for tooltip) and link to render.
@@ -98,14 +100,6 @@ const InvestigationCardView = (
       description={{ dataKey: 'SUMMARY' }}
       furtherInformation={[
         {
-          label: 'Start Date',
-          dataKey: 'STARTDATE',
-        },
-        {
-          label: 'End Date',
-          dataKey: 'ENDDATE',
-        },
-        {
           label: 'DOI',
           dataKey: 'DOI',
         },
@@ -113,10 +107,22 @@ const InvestigationCardView = (
           label: 'Visit ID',
           dataKey: 'VISIT_ID',
         },
-        // {
-        //   label: 'Dataset Count',
-        //   dataKey: 'DATASET_COUNT',
-        // },
+        {
+          label: 'RB Number',
+          dataKey: 'RB_NUMBER',
+        },
+        {
+          label: 'Dataset Count',
+          dataKey: 'DATASET_COUNT',
+        },
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+        },
+        {
+          label: 'End Date',
+          dataKey: 'ENDDATE',
+        },
       ]}
       // TODO: Test image.
       // image={{
@@ -124,6 +130,38 @@ const InvestigationCardView = (
       //     'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
       //   title: 'Investigation Image',
       // }}
+      buttons={[
+        function cartButton(investigation: Investigation) {
+          return !(
+            selectedCards && selectedCards.includes(investigation.ID)
+          ) ? (
+            <Button
+              id="add-to-cart-btn"
+              variant="contained"
+              color="primary"
+              startIcon={<AddCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => addToCart([investigation.ID])}
+            >
+              Add to cart
+            </Button>
+          ) : (
+            <Button
+              id="remove-from-cart-btn"
+              variant="contained"
+              color="secondary"
+              startIcon={<RemoveCircleOutlineOutlined />}
+              disableElevation
+              onClick={() => {
+                if (selectedCards && selectedCards.includes(investigation.ID))
+                  removeFromCart([investigation.ID]);
+              }}
+            >
+              Remove from cart
+            </Button>
+          );
+        },
+      ]}
     />
   );
 };

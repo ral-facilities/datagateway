@@ -23,6 +23,7 @@ import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
+  GetApp,
 } from '@material-ui/icons';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -71,6 +72,7 @@ const ISISDatasetsCardView = (
     // fetchDetails,
     addToCart,
     removeFromCart,
+    downloadData,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
@@ -103,9 +105,30 @@ const ISISDatasetsCardView = (
       data={data}
       loadData={params => fetchData(parseInt(investigationId), params)}
       totalDataCount={totalDataCount}
-      // selectedCards={selectedCards}
-      // onSelect={addToCart}
-      // onDeselect={removeFromCart}
+      title={{
+        dataKey: 'NAME',
+        content: (dataset: Dataset) =>
+          tableLink(
+            `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
+            dataset.NAME
+          ),
+      }}
+      description={{ dataKey: 'DESCRIPTION' }}
+      furtherInformation={[
+        {
+          label: 'Size',
+          dataKey: 'SIZE',
+          content: (dataset: Dataset) => formatBytes(dataset.SIZE),
+        },
+        {
+          label: 'Create Time',
+          dataKey: 'CREATE_TIME',
+        },
+        {
+          label: 'Modified Time',
+          dataKey: 'MOD_TIME',
+        },
+      ]}
       buttons={[
         function cartButton(dataset: Dataset) {
           return !(selectedCards && selectedCards.includes(dataset.ID)) ? (
@@ -135,28 +158,21 @@ const ISISDatasetsCardView = (
             </Button>
           );
         },
-      ]}
-      title={{
-        dataKey: 'NAME',
-        content: (dataset: Dataset) =>
-          tableLink(
-            `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME
-          ),
-      }}
-      furtherInformation={[
-        {
-          label: 'Size',
-          dataKey: 'SIZE',
-          content: (dataset: Dataset) => formatBytes(dataset.SIZE),
-        },
-        {
-          label: 'Create Time',
-          dataKey: 'CREATE_TIME',
-        },
-        {
-          label: 'Modified Time',
-          dataKey: 'MOD_TIME',
+        function downloadButton(dataset: Dataset) {
+          return (
+            <Button
+              id="download-btn"
+              variant="outlined"
+              aria-label="Download"
+              key="download"
+              color="primary"
+              startIcon={<GetApp />}
+              disableElevation
+              onClick={() => downloadData(dataset.ID, dataset.NAME)}
+            >
+              Download
+            </Button>
+          );
         },
       ]}
     />
