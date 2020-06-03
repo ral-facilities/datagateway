@@ -76,7 +76,7 @@ describe('Actions', () => {
             idsUrl: 'ids',
             apiUrl: 'api',
             downloadApiUrl: 'download-api',
-            'ui-strings': '/res/default.json',
+            'ui-strings': 'res/default.json',
           },
         })
       )
