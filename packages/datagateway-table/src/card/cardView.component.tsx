@@ -18,6 +18,7 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
+  Chip,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -137,27 +138,35 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [maxResults, setMaxResults] = React.useState(-1);
 
   // Filters.
-  // const [filtersInfo, setFiltersInfo] = React.useState<CardViewFilter[]>([]);
+  const [filtersInfo, setFiltersInfo] = React.useState<CardViewFilter[]>([]);
   // const [loadedFilters, setLoadedFilters] = React.useState(false);
-  // const [loadedFI, setLoadedFI] = React.useState(false);
 
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
 
-  const filtersInfo = React.useMemo(() => {
-    return (
-      filters &&
-      Object.values(filters).map(filter => {
-        let info: CardViewFilter = {
-          label: filter.label,
-          dataKey: filter.dataKey,
-          dataItems: {},
-          selected: false,
-        };
-        return info;
-      })
-    );
-  }, [filters]);
+  // React.useEffect(() => {
+  //   if (filters && !loadedFilters) {
+  //     setFiltersInfo(
+  //       Object.values(filters).map(filter => {
+  //         let info: CardViewFilter = {
+  //           label: filter.label,
+  //           dataKey: filter.dataKey,
+  //           dataItems: {},
+  //           selected: false,
+  //         };
+  //         const filterValues = data.map(d => d[info.dataKey].toString());
+  //         if (filterValues) {
+  //           filterValues.forEach(v => {
+  //             info.dataItems[v] = (info.dataItems[v] || 0) + 1;
+  //           });
+  //         }
+  //         return info;
+  //       })
+  //     );
+  //     setLoadedFilters(true);
+  //   }
+  //   console.log('filters: ', filtersInfo);
+  // }, [filters, filtersInfo, loadedData, loadedFilters, data]);
 
   // React.useEffect(() => {
   //   if (filters && !loadedFilters) {
@@ -175,24 +184,21 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   //   setLoadedFilters(true);
   // }, [filters, loadedFilters]);
 
-  React.useEffect(() => {
-    // TODO: Need to use Object for Array?
-    // TODO: We do not need to recreate the filtersInfo object every time.
-    if (filtersInfo && loadedData) {
-      for (let i = 0; i < filtersInfo.length; i++) {
-        const filterValues = data.map(d =>
-          d[filtersInfo[i].dataKey].toString()
-        );
-        if (filterValues) {
-          filterValues.forEach(v => {
-            filtersInfo[i].dataItems[v] =
-              (filtersInfo[i].dataItems[v] || 0) + 1;
-          });
-        }
-      }
-      console.log('filters: ', filtersInfo);
-    }
-  }, [data, filtersInfo, loadedData]);
+  // React.useEffect(() => {
+  //   // TODO: Need to use Object for Array?
+  //   // TODO: We do not need to recreate the filtersInfo object every time.
+  //   // TODO: This runs twice due to state updates elsewhere?
+  //   if (filtersInfo && loadedData && !loadedFilters) {
+  //     setFiltersInfo(
+  //       Object.values(filtersInfo).map(info => {
+
+  //         return info;
+  //       })
+  //     );
+  //   }
+  //   setLoadedFilters(true);
+  //   console.log('filters: ', filtersInfo);
+  // }, [data, filtersInfo, loadedData, loadedFilters]);
 
   // React.useEffect(() => {
   // if (filters) {
@@ -269,6 +275,27 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           setLoadedData(true);
         }
       } else {
+        if (filters) {
+          // TODO: This might take a long time, we do not want to recreate the filtersInfo every time.
+          //       Create once and then only just update the dataItems.
+          setFiltersInfo(
+            Object.values(filters).map(filter => {
+              let info: CardViewFilter = {
+                label: filter.label,
+                dataKey: filter.dataKey,
+                dataItems: {},
+                selected: false,
+              };
+              const filterValues = data.map(d => d[info.dataKey].toString());
+              if (filterValues) {
+                filterValues.forEach(v => {
+                  info.dataItems[v] = (info.dataItems[v] || 0) + 1;
+                });
+              }
+              return info;
+            })
+          );
+        }
         // Set the data once it has been loaded.
         setViewData(data);
       }
@@ -284,6 +311,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     loadedData,
     totalDataCount,
     clearData,
+    filters,
   ]);
 
   return (
@@ -356,30 +384,37 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
               </Box>
 
               <Box>
-                {/* <ExpansionPanel> */}
-                {/* <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}> */}
-                {/* <Typography>{filter && filter.label}</Typography> */}
-                {/* </ExpansionPanelSummary> */}
-                {/* <ExpansionPanelDetails> */}
-                {/* <Typography>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Suspendisse malesuada lacus ex, sit amet blandit leo
-                      lobortis eget.
-                    </Typography> */}
-                {/* </ExpansionPanelDetails> */}
-                {/* </ExpansionPanel> */}
-                <ExpansionPanel>
-                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography>Visit</Typography>
-                  </ExpansionPanelSummary>
-                  <ExpansionPanelDetails>
-                    <Typography>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Suspendisse malesuada lacus ex, sit amet blandit leo
-                      lobortis eget.
-                    </Typography>
-                  </ExpansionPanelDetails>
-                </ExpansionPanel>
+                {filtersInfo &&
+                  filtersInfo.map((filter, index) => {
+                    return (
+                      <ExpansionPanel key={index}>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography>{filter.label}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                          <div style={{ maxWidth: 360, width: '100%' }}>
+                            <List component="nav">
+                              {Object.entries(filter.dataItems).map(
+                                (item, index) => {
+                                  return (
+                                    <ListItem key={index} button>
+                                      {/* TODO: The label chip could have its contents overflow (requires tooltip in future) */}
+                                      <Chip label={item[0]} />
+                                      {/* <Chip
+                                        style={{ marginLeft: '125px' }}
+                                        label={item[1]}
+                                        color="primary"
+                                      /> */}
+                                    </ListItem>
+                                  );
+                                }
+                              )}
+                            </List>
+                          </div>
+                        </ExpansionPanelDetails>
+                      </ExpansionPanel>
+                    );
+                  })}
               </Box>
             </Grid>
           </Paper>
