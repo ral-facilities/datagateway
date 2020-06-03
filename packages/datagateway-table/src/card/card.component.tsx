@@ -283,7 +283,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           )}
         </div>
 
-        {/* TODO: Divider is optional based on if there is further information. */}
+        {/* TODO: Divider is optional based on if there is further information/buttons. */}
         {(furtherInformation || buttons) && (
           <Divider orientation={'vertical'} />
         )}

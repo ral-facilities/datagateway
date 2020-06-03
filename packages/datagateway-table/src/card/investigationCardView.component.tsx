@@ -89,6 +89,7 @@ const InvestigationCardView = (
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
+      filters={[{ label: 'Type', dataKey: 'TYPE_ID' }]}
       // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
         // Provide both the dataKey (for tooltip) and link to render.
@@ -124,12 +125,6 @@ const InvestigationCardView = (
           dataKey: 'ENDDATE',
         },
       ]}
-      // TODO: Test image.
-      // image={{
-      //   url:
-      //     'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
-      //   title: 'Investigation Image',
-      // }}
       buttons={[
         function cartButton(investigation: Investigation) {
           return !(
@@ -162,6 +157,12 @@ const InvestigationCardView = (
           );
         },
       ]}
+      // TODO: Test image.
+      // image={{
+      //   url:
+      //     'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
+      //   title: 'Investigation Image',
+      // }}
     />
   );
 };

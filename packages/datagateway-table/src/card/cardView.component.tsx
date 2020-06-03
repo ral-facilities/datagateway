@@ -15,8 +15,12 @@ import {
   InputAdornment,
   Typography,
   CircularProgress,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 
 import EntityCard, { EntityImageDetails } from './card.component';
@@ -62,15 +66,17 @@ interface CardViewProps {
   totalDataCount: number;
   loadData: (offsetParams: IndexRange) => Promise<void>;
 
-  // TODO: Buttons need to be provided in the customised view.
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  buttons?: ((data?: any) => React.ReactNode)[];
-
   // Props to get title, description of the card
   // represented by data.
   title: CardViewDetails;
   description?: CardViewDetails;
   furtherInformation?: CardViewDetails[];
+
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  buttons?: ((data?: any) => React.ReactNode)[];
+
+  // TODO: Provide filtering options (array of dataKeys?).
+  filters?: { label: string; dataKey: string }[];
   image?: EntityImageDetails;
 }
 
@@ -88,6 +94,15 @@ type CardViewCombinedProps = CardViewProps &
   CardViewStateProps &
   CardViewDispatchProps;
 
+interface CardViewFilter {
+  label: string;
+  dataKey: string;
+  dataItems: {
+    [item: string]: number;
+  };
+  selected: boolean;
+}
+
 // TODO: CardView needs URL support:
 //        - filtering (?filter=)
 //        - searching (?search=)
@@ -101,6 +116,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     data,
     totalDataCount,
     query,
+    filters,
     loadData,
     buttons,
     pushPage,
@@ -120,8 +136,77 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
 
+  // Filters.
+  // const [filtersInfo, setFiltersInfo] = React.useState<CardViewFilter[]>([]);
+  // const [loadedFilters, setLoadedFilters] = React.useState(false);
+  // const [loadedFI, setLoadedFI] = React.useState(false);
+
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
+
+  const filtersInfo = React.useMemo(() => {
+    return (
+      filters &&
+      Object.values(filters).map(filter => {
+        let info: CardViewFilter = {
+          label: filter.label,
+          dataKey: filter.dataKey,
+          dataItems: {},
+          selected: false,
+        };
+        return info;
+      })
+    );
+  }, [filters]);
+
+  // React.useEffect(() => {
+  //   if (filters && !loadedFilters) {
+  //     const filterInfo = Object.values(filters).map(filter => {
+  //       let info: CardViewFilter = {
+  //         label: filter.label,
+  //         dataKey: filter.dataKey,
+  //         dataItems: {},
+  //         selected: false,
+  //       };
+  //       return info;
+  //     });
+  //     setFiltersInfo(filterInfo);
+  //   }
+  //   setLoadedFilters(true);
+  // }, [filters, loadedFilters]);
+
+  React.useEffect(() => {
+    // TODO: Need to use Object for Array?
+    // TODO: We do not need to recreate the filtersInfo object every time.
+    if (filtersInfo && loadedData) {
+      for (let i = 0; i < filtersInfo.length; i++) {
+        const filterValues = data.map(d =>
+          d[filtersInfo[i].dataKey].toString()
+        );
+        if (filterValues) {
+          filterValues.forEach(v => {
+            filtersInfo[i].dataItems[v] =
+              (filtersInfo[i].dataItems[v] || 0) + 1;
+          });
+        }
+      }
+      console.log('filters: ', filtersInfo);
+    }
+  }, [data, filtersInfo, loadedData]);
+
+  // React.useEffect(() => {
+  // if (filters) {
+  //   // Update the filter based on the types we receive.
+  //   console.log('filter: ', filtered);
+  //   let values: { [item: string]: number } = {};
+  //   if (filtered) {
+  //     filtered.forEach(v => {
+  //       values[v] = (values[v] || 0) + 1;
+  //     });
+  //   }
+  //   console.log('Count: ', values);
+  // }
+  // }, [data, filters, filtered]);
 
   React.useEffect(() => {
     // console.log('Got page change: ', page);
@@ -268,6 +353,33 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             >
               <Box p={2}>
                 <Typography variant="h5">Filter By</Typography>
+              </Box>
+
+              <Box>
+                {/* <ExpansionPanel> */}
+                {/* <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}> */}
+                {/* <Typography>{filter && filter.label}</Typography> */}
+                {/* </ExpansionPanelSummary> */}
+                {/* <ExpansionPanelDetails> */}
+                {/* <Typography>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Suspendisse malesuada lacus ex, sit amet blandit leo
+                      lobortis eget.
+                    </Typography> */}
+                {/* </ExpansionPanelDetails> */}
+                {/* </ExpansionPanel> */}
+                <ExpansionPanel>
+                  <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography>Visit</Typography>
+                  </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    <Typography>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Suspendisse malesuada lacus ex, sit amet blandit leo
+                      lobortis eget.
+                    </Typography>
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
               </Box>
             </Grid>
           </Paper>
