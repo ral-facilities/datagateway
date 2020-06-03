@@ -98,7 +98,7 @@
     "@types/single-spa-react": "^2.8.3",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
-    "@welldone-software/why-did-you-render": "^4.0.4",
+    "@welldone-software/why-did-you-render": "^4.2.5",
     "babel-eslint": "10.1.0",
     "cross-env": "^7.0.2",
     "cypress": "3.4.1",
