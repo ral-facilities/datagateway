@@ -79,6 +79,8 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             : settings['ui-strings'];
           dispatch(loadStrings(uiStringResourcesPath));
         }
+
+        /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
           const apiUrl = settings.apiUrl;
           const splitUrl = settings.downloadApiUrl.split('/');
