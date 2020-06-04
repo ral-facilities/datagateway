@@ -97,7 +97,7 @@
     "@types/redux-mock-store": "^1.0.1",
     "@types/single-spa-react": "^2.8.3",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.34.0",
+    "@typescript-eslint/parser": "^3.1.0",
     "babel-eslint": "10.1.0",
     "cross-env": "^7.0.2",
     "cypress": "3.4.1",
