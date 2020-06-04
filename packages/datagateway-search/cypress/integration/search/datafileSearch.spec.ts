@@ -29,7 +29,7 @@ describe('Datafile search tab', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 4961');
   });
 
-  it('should be able to search by date range', () => {
+  it.skip('should be able to search by date range', () => {
     // TODO
   });
 });
