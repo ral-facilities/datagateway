@@ -16,7 +16,7 @@
     "datagateway-common": "0.1.0",
     "loglevel": "^1.6.8",
     "react": "^16.13.1",
-    "react-app-polyfill": "^1.0.1",
+    "react-app-polyfill": "^1.0.6",
     "react-dom": "^16.11.0",
     "react-redux": "^7.1.0",
     "react-router": "^5.0.1",
