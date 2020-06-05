@@ -11,11 +11,12 @@ import {
   Investigation,
   tableLink,
   formatBytes,
+  clearData,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
-import { AnyAction } from 'redux';
+import { AnyAction, Action } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import {
@@ -43,12 +44,13 @@ interface ISISInvestigationsCVDispatchProps {
   fetchData: (
     instrumentId: number,
     facilityCycleId: number,
-    offsetParams: IndexRange
+    offsetParams?: IndexRange
   ) => Promise<void>;
   fetchCount: (instrumentId: number, facilityCycleId: number) => Promise<void>;
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  clearData: () => Action;
 }
 
 type ISISInvestigationsCVCombinedProps = ISISInvestigationsCVDispatchProps &
@@ -69,8 +71,10 @@ const ISISInvestigationsCardView = (
     addToCart,
     removeFromCart,
     view,
+    clearData,
   } = props;
 
+  const [fetchedData, setFetchedData] = React.useState(false);
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
 
@@ -89,6 +93,17 @@ const ISISInvestigationsCardView = (
   );
 
   React.useEffect(() => {
+    // TODO: Since for filtering we will fetch all data,
+    //       we will fetch it here and not use pagination on fetch.
+    console.log('fetched Data: ', fetchedData);
+    if (!fetchedData) {
+      // TODO: Manually clear data in the state before fetch to prevent duplicate,
+      //       we do not clear in CardView and if we did it may cause in the data not showing up.
+      clearData();
+      fetchData(parseInt(instrumentId), parseInt(facilityCycleId));
+      setFetchedData(true);
+    }
+
     // TODO: React.useMemo?
     // Set the IDs of the investigation data.
     setInvestigationIds(data.map(investigation => investigation.ID));
@@ -104,15 +119,20 @@ const ISISInvestigationsCardView = (
     fetchedCount,
     fetchCount,
     setFetchedCount,
+    fetchedData,
+    fetchData,
+    clearData,
   ]);
 
   return (
     <CardView
+      paginatedFetch={false}
       data={data}
       totalDataCount={totalDataCount}
-      loadData={params =>
-        fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
-      }
+      // loadData={params =>
+      //   fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
+      // }
+      filters={[{ label: 'Type', dataKey: 'TYPE_ID' }]}
       title={{
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
@@ -122,6 +142,7 @@ const ISISInvestigationsCardView = (
             view
           ),
       }}
+      description={{ dataKey: 'SUMMARY' }}
       furtherInformation={[
         // TODO: Do Visit Id and RB Number need links
         //       to the same dataset as the title?
@@ -237,7 +258,7 @@ const mapDispatchToProps = (
   fetchData: (
     instrumentId: number,
     facilityCycleId: number,
-    offsetParams: IndexRange
+    offsetParams?: IndexRange
   ) =>
     dispatch(
       fetchISISInvestigations({
@@ -255,6 +276,7 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
+  clearData: () => dispatch(clearData()),
 });
 
 const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {

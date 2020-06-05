@@ -65,7 +65,8 @@ interface CardViewDetails {
 interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
-  loadData: (offsetParams: IndexRange) => Promise<void>;
+  loadData?: (offsetParams: IndexRange) => Promise<void>;
+  paginatedFetch?: boolean;
 
   // Props to get title, description of the card
   // represented by data.
@@ -77,7 +78,7 @@ interface CardViewProps {
   buttons?: ((data?: any) => React.ReactNode)[];
 
   // TODO: Provide filtering options (array of dataKeys?).
-  filters?: { label: string; dataKey: string }[];
+  filters?: { label: string; dataKey: string; filterItems?: string[] }[];
   image?: EntityImageDetails;
 }
 
@@ -97,7 +98,7 @@ type CardViewCombinedProps = CardViewProps &
 
 interface CardViewFilter {
   label: string;
-  dataKey: string;
+  // dataKey: string;
   dataItems: {
     [item: string]: number;
   };
@@ -118,6 +119,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     totalDataCount,
     query,
     filters,
+    paginatedFetch,
     loadData,
     buttons,
     pushPage,
@@ -141,8 +143,16 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [filtersInfo, setFiltersInfo] = React.useState<CardViewFilter[]>([]);
   // const [loadedFilters, setLoadedFilters] = React.useState(false);
 
+  const [fetchPaginated, setFetchedPaginated] = React.useState(true);
+
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
+
+  React.useEffect(() => {
+    if (paginatedFetch === false) {
+      setFetchedPaginated(false);
+    }
+  }, [paginatedFetch]);
 
   // React.useEffect(() => {
   //   if (filters && !loadedFilters) {
@@ -254,10 +264,18 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   React.useEffect(() => {
     // console.log('Total Data Count: ', totalDataCount);
     // console.log('Max results: ', maxResults);
-    if (totalDataCount > 0) {
+    console.log('Fetch paginated: ', fetchPaginated);
+    console.log('data: ', data);
+    if (
+      (fetchPaginated && totalDataCount > 0) ||
+      (!fetchPaginated && data.length > 0)
+    ) {
       if (!loadedData) {
+        const totalCount = fetchPaginated ? totalDataCount : data.length;
+        console.log('total count: ', totalCount);
+
         // Calculate the maximum pages needed for pagination.
-        setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
+        setNumPages(~~((totalCount + maxResults - 1) / maxResults));
         // console.log('Number of pages: ', numPages);
 
         // Calculate the start/end indexes for the data.
@@ -265,16 +283,22 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         // console.log('startIndex: ', startIndex);
 
         // End index not incremented for slice method.
-        const stopIndex = Math.min(startIndex + maxResults, totalDataCount) - 1;
+        const stopIndex = Math.min(startIndex + maxResults, totalCount) - 1;
         // console.log('stopIndex: ', stopIndex);
 
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
-          // Clear data in the state before loading new data.
-          clearData();
-          loadData({ startIndex, stopIndex });
+          if (fetchPaginated && loadData) {
+            // Clear data in the state before loading new data.
+            clearData();
+            console.log('cleared data');
+            loadData({ startIndex, stopIndex });
+          } else {
+            setViewData(data.slice(startIndex, stopIndex + 1));
+          }
           setLoadedData(true);
         }
       } else {
+        // TODO: Gets called multiple times?
         if (filters) {
           // TODO: This might take a long time, we do not want to recreate the filtersInfo every time.
           //       Create once and then only just update the dataItems.
@@ -282,12 +306,23 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             Object.values(filters).map(filter => {
               let info: CardViewFilter = {
                 label: filter.label,
-                dataKey: filter.dataKey,
+                // TODO: Do we need a dataKey for this now?
+                // dataKey: filter.dataKey,
                 dataItems: {},
                 selected: false,
               };
-              const filterValues = data.map(d => d[info.dataKey].toString());
-              if (filterValues) {
+
+              let filterValues = [];
+              // TODO: filter values are always string.
+              // TODO: filterable values can be passed in with the filter object.
+              if (filter.filterItems) {
+                filterValues = filter.filterItems;
+              } else {
+                // TODO: This toString will explicitly fail if the data does not is not found.
+                filterValues = data.map(d => d[filter.dataKey].toString());
+              }
+
+              if (filterValues.length > 0) {
                 filterValues.forEach(v => {
                   info.dataItems[v] = (info.dataItems[v] || 0) + 1;
                 });
@@ -296,8 +331,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             })
           );
         }
+
         // Set the data once it has been loaded.
-        setViewData(data);
+        if (fetchPaginated) {
+          setViewData(data);
+        }
       }
     }
   }, [
@@ -312,6 +350,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     totalDataCount,
     clearData,
     filters,
+    fetchPaginated,
   ]);
 
   return (
@@ -400,11 +439,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                                     <ListItem key={index} button>
                                       {/* TODO: The label chip could have its contents overflow (requires tooltip in future) */}
                                       <Chip label={item[0]} />
-                                      {/* <Chip
+                                      <Chip
                                         style={{ marginLeft: '125px' }}
                                         label={item[1]}
                                         color="primary"
-                                      /> */}
+                                      />
                                     </ListItem>
                                   );
                                 }
