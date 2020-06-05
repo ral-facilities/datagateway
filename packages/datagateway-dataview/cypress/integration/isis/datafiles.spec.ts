@@ -30,25 +30,21 @@ describe('ISIS - Datafiles Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = (windowWidth - 40 - 40 - 70) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(2)
-      .as('nameColumn');
-    cy.get('[role="columnheader"]')
-      .eq(3)
-      .as('locationColumn');
+    cy.get('[role="columnheader"]').eq(2).as('nameColumn');
+    cy.get('[role="columnheader"]').eq(3).as('locationColumn');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@locationColumn').should($column => {
+    cy.get('@locationColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -59,12 +55,12 @@ describe('ISIS - Datafiles Table', () => {
       .trigger('mousemove', { clientX: 400 })
       .trigger('mouseup');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@locationColumn').should($column => {
+    cy.get('@locationColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -72,9 +68,7 @@ describe('ISIS - Datafiles Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.get('[role="button"]')
-        .contains('Location')
-        .click();
+      cy.get('[role="button"]').contains('Location').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -109,9 +103,7 @@ describe('ISIS - Datafiles Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]')
-        .find('input')
-        .type('sea');
+      cy.get('[aria-label="Filter by Location"]').find('input').type('sea');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
@@ -129,13 +121,11 @@ describe('ISIS - Datafiles Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Modified Time date filter to"]').should(
@@ -150,13 +140,9 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('5');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('5');
 
-      cy.get('[aria-label="Filter by Location"]')
-        .find('input')
-        .type('.png');
+      cy.get('[aria-label="Filter by Location"]').find('input').type('.png');
 
       cy.get('[aria-rowcount="4"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
@@ -167,22 +153,16 @@ describe('ISIS - Datafiles Table', () => {
 
   describe('should be able to view details', () => {
     it('when no other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('Name: Datafile 117').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
     it('when another other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .eq(1)
-        .click();
+      cy.get('[aria-label="Show details"]').eq(1).click();
 
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('Name: Datafile 117').should('be.visible');
       cy.contains('Name: Datafile 3470').should('not.be.visible');
@@ -190,14 +170,12 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('and view datafile details and parameters', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-controls="datafile-details-panel"]').should('be.visible');
 
       cy.contains(
-        'Description: Remember word economic catch. After television scene alone.\nPartner send rise your. Exist room long success financial. Help itself culture money child realize take rise.'
+        'Description: Remember word economic catch. After television scene alone. Partner send rise your. Exist room long success financial. Help itself culture money child realize take rise.'
       ).should('be.visible');
 
       cy.get('[aria-controls="datafile-parameters-panel"]').should(
@@ -209,13 +187,9 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Hide details"]').first().click();
 
       cy.contains('Name: Datafile 117').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');

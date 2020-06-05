@@ -10,9 +10,7 @@ describe('ISIS - FacilityCycles Table', () => {
   });
 
   it('should be able to click a facility cycle to see its investigations', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/1/facilityCycle/14/investigation'
@@ -30,25 +28,21 @@ describe('ISIS - FacilityCycles Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = windowWidth / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(0)
-      .as('titleColumn');
-    cy.get('[role="columnheader"]')
-      .eq(1)
-      .as('descriptionColumn');
+    cy.get('[role="columnheader"]').eq(0).as('titleColumn');
+    cy.get('[role="columnheader"]').eq(1).as('descriptionColumn');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@descriptionColumn').should($column => {
+    cy.get('@descriptionColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -59,12 +53,12 @@ describe('ISIS - FacilityCycles Table', () => {
       .trigger('mousemove', { clientX: 400 })
       .trigger('mouseup');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@descriptionColumn').should($column => {
+    cy.get('@descriptionColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -119,16 +113,14 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+        'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('2010');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('2010');
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
@@ -144,13 +136,11 @@ describe('ISIS - FacilityCycles Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Start Date date filter to"]').should(
@@ -165,13 +155,9 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('3');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('3');
 
-      cy.get('[aria-label="Filter by Description"]')
-        .find('input')
-        .type('Call');
+      cy.get('[aria-label="Filter by Description"]').find('input').type('Call');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

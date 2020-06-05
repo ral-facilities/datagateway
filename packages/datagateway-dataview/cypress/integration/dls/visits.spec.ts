@@ -12,9 +12,7 @@ describe('DLS - Visits Table', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
 
     cy.location('pathname').should(
       'eq',
@@ -33,25 +31,21 @@ describe('DLS - Visits Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = (windowWidth - 40) / 5;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(1)
-      .as('nameColumn');
-    cy.get('[role="columnheader"]')
-      .eq(2)
-      .as('datasetCountColumn');
+    cy.get('[role="columnheader"]').eq(1).as('nameColumn');
+    cy.get('[role="columnheader"]').eq(2).as('datasetCountColumn');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@datasetCountColumn').should($column => {
+    cy.get('@datasetCountColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -62,12 +56,12 @@ describe('DLS - Visits Table', () => {
       .trigger('mousemove', { clientX: 400 })
       .trigger('mouseup');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@datasetCountColumn').should($column => {
+    cy.get('@datasetCountColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -121,9 +115,7 @@ describe('DLS - Visits Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Visit Id"]')
-        .find('input')
-        .type('64');
+      cy.get('[aria-label="Filter by Visit Id"]').find('input').type('64');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
@@ -137,13 +129,11 @@ describe('DLS - Visits Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Start Date date filter to"]').should(
@@ -156,9 +146,7 @@ describe('DLS - Visits Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Visit Id"]')
-        .find('input')
-        .type('64');
+      cy.get('[aria-label="Filter by Visit Id"]').find('input').type('64');
 
       cy.get('[aria-label="Filter by Beamline')
         .find('input')
@@ -170,9 +158,7 @@ describe('DLS - Visits Table', () => {
 
   describe('should be able to view details', () => {
     it('when no other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains(
         'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
@@ -187,9 +173,7 @@ describe('DLS - Visits Table', () => {
       cy.contains('[aria-rowindex="1"] [aria-colindex="3"]', '2').should(
         'exist'
       );
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
@@ -208,9 +192,7 @@ describe('DLS - Visits Table', () => {
         'exist'
       );
 
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
@@ -223,18 +205,14 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
       cy.contains(
-        'Reference: Democrat sea gas road police. Citizen relationship southern affect.\nThousand national especially. In edge far education.'
+        'Reference: Democrat sea gas road police. Citizen relationship southern affect. Thousand national especially. In edge far education.'
       );
     });
 
     it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Hide details"]').first().click();
 
       cy.contains(
         'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
