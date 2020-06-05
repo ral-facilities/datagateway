@@ -27,7 +27,7 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
-    "redux-mock-store": "^1.5.3",
+    "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.3.0",
     "single-spa-react": "^2.10.2",
     "typescript": "3.5.3",
