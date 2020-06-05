@@ -10,9 +10,7 @@ describe('ISIS - Investigations Table', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
@@ -30,25 +28,21 @@ describe('ISIS - Investigations Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = (windowWidth - 40 - 40) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(2)
-      .as('titleColumn');
-    cy.get('[role="columnheader"]')
-      .eq(3)
-      .as('visitColumn');
+    cy.get('[role="columnheader"]').eq(2).as('titleColumn');
+    cy.get('[role="columnheader"]').eq(3).as('visitColumn');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@visitColumn').should($column => {
+    cy.get('@visitColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -59,12 +53,12 @@ describe('ISIS - Investigations Table', () => {
       .trigger('mousemove', { clientX: 200 })
       .trigger('mouseup');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@visitColumn').should($column => {
+    cy.get('@visitColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -127,9 +121,7 @@ describe('ISIS - Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('series');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('series');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('15');
@@ -143,13 +135,11 @@ describe('ISIS - Investigations Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Start Date date filter to"]').should(
@@ -164,13 +154,9 @@ describe('ISIS - Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('series');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('series');
 
-      cy.get('[aria-label="Filter by Visit Id"]')
-        .find('input')
-        .type('15');
+      cy.get('[aria-label="Filter by Visit Id"]').find('input').type('15');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
@@ -186,9 +172,7 @@ describe('ISIS - Investigations Table', () => {
     });
 
     it('when not other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('Proposal: INVESTIGATION 107').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
@@ -198,16 +182,14 @@ describe('ISIS - Investigations Table', () => {
     // as well since we are currently limited to 1 investigation to test.
 
     it('and view investigation details, users, samples and publications', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-controls="investigation-details-panel"]').should(
         'be.visible'
       );
 
       cy.contains(
-        'Summary: Most within thus represent stock entire. Shoulder table board. Tax step street early either third life.\nEdge building say wife use upon. If half true media matter Mr. Still support shake.'
+        'Summary: Most within thus represent stock entire. Shoulder table board. Tax step street early either third life. Edge building say wife use upon. If half true media matter Mr. Still support shake.'
       ).should('be.visible');
 
       cy.get('[aria-controls="investigation-users-panel"]').should(
@@ -230,18 +212,14 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-controls="investigation-publications-panel"]').click();
 
       cy.contains(
-        'Reference: Follow team before this.\nBeat likely soldier anyone. By management look activity economic plant others. Take move turn pay.\nWalk project charge against sell.'
+        'Reference: Follow team before this. Beat likely soldier anyone. By management look activity economic plant others. Take move turn pay. Walk project charge against sell.'
       ).should('be.visible');
     });
 
     it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Hide details"]').first().click();
 
       cy.contains('Proposal: INVESTIGATION 107').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');

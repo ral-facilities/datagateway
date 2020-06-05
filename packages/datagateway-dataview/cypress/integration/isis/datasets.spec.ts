@@ -17,9 +17,7 @@ describe('ISIS - Datasets Table', () => {
   });
 
   it('should be able to click a dataset to see its datafiles', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
 
     cy.location('pathname').should(
       'eq',
@@ -39,25 +37,21 @@ describe('ISIS - Datasets Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = (windowWidth - 40 - 40 - 70) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(2)
-      .as('nameColumn');
-    cy.get('[role="columnheader"]')
-      .eq(3)
-      .as('sizeColumn');
+    cy.get('[role="columnheader"]').eq(2).as('nameColumn');
+    cy.get('[role="columnheader"]').eq(3).as('sizeColumn');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@sizeColumn').should($column => {
+    cy.get('@sizeColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -68,12 +62,12 @@ describe('ISIS - Datasets Table', () => {
       .trigger('mousemove', { clientX: 400 })
       .trigger('mouseup');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@sizeColumn').should($column => {
+    cy.get('@sizeColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -129,9 +123,7 @@ describe('ISIS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('DATASET 327');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('DATASET 327');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -147,13 +139,11 @@ describe('ISIS - Datasets Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Create Time date filter to"]').should(
@@ -166,9 +156,7 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('87');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('87');
 
       cy.get('[aria-label="Create Time date filter to"]').type('2007-06-23');
 
@@ -191,22 +179,16 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('when no other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('Name: DATASET 87').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
     it('when another other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .eq(1)
-        .click();
+      cy.get('[aria-label="Show details"]').eq(1).click();
 
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('Name: DATASET 87').should('be.visible');
       cy.contains('Name: DATASET 327').should('not.be.visible');
@@ -214,32 +196,26 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('and view dataset details and type', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-controls="dataset-details-panel"]').should('be.visible');
 
       cy.contains(
-        'Description: Onto wind media return. Cultural area while friend who rich detail.\nWord allow education.\nAcross share be. Along month decide eye. Media foot war available organization could performance.'
+        'Description: Onto wind media return. Cultural area while friend who rich detail. Word allow education. Across share be. Along month decide eye. Media foot war available organization could performance.'
       ).should('be.visible');
 
       cy.get('[aria-controls="dataset-type-panel"]').should('be.visible');
       cy.get('[aria-controls="dataset-type-panel"]').click();
 
       cy.contains(
-        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+        'Description: Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
       ).should('be.visible');
     });
 
     it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Hide details"]').first().click();
 
       cy.contains('Name: DATASET 87').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');

@@ -17,9 +17,7 @@ describe('DLS - Datasets Table', () => {
   });
 
   it('should be able to click a dataset to see its datafiles', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
 
     cy.location('pathname').should(
       'eq',
@@ -38,25 +36,21 @@ describe('DLS - Datasets Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = (windowWidth - 40 - 40) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(2)
-      .as('nameColumn');
-    cy.get('[role="columnheader"]')
-      .eq(3)
-      .as('datafileCountColumn');
+    cy.get('[role="columnheader"]').eq(2).as('nameColumn');
+    cy.get('[role="columnheader"]').eq(3).as('datafileCountColumn');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@datafileCountColumn').should($column => {
+    cy.get('@datafileCountColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -67,12 +61,12 @@ describe('DLS - Datasets Table', () => {
       .trigger('mousemove', { clientX: 400 })
       .trigger('mouseup');
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@datafileCountColumn').should($column => {
+    cy.get('@datafileCountColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -117,9 +111,7 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('1');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('1');
 
       cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
 
@@ -130,9 +122,7 @@ describe('DLS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('DATASET 1');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -148,13 +138,11 @@ describe('DLS - Datasets Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Create Time date filter to"]').should(
@@ -167,9 +155,7 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]')
-        .find('input')
-        .type('1');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('1');
 
       cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
 
@@ -180,22 +166,16 @@ describe('DLS - Datasets Table', () => {
 
   describe('should be able to view details', () => {
     it('when no other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('Name: DATASET 1').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
     it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .eq(1)
-        .click();
+      cy.get('[aria-label="Show details"]').eq(1).click();
 
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('Name: DATASET 1').should('be.visible');
       cy.contains('Name: DATASET 241').should('not.be.visible');
@@ -203,12 +183,10 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('and view dataset details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains(
-        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+        'Description: Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
       ).should('be.visible');
     });
 
@@ -222,9 +200,7 @@ describe('DLS - Datasets Table', () => {
         'exist'
       );
 
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
@@ -242,9 +218,7 @@ describe('DLS - Datasets Table', () => {
         'exist'
       );
 
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-controls="dataset-type-panel"]').click();
 
@@ -253,16 +227,12 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Hide details"]').first().click();
 
       cy.contains(
-        'Description: Many last prepare small. Maintain throw hope parent.\nEntire soon option bill fish against power.\nRather why rise month shake voice.'
+        'Description: Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
       ).should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
