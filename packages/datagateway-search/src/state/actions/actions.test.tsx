@@ -53,9 +53,9 @@ describe('Actions', () => {
 
     expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
-    // expect(actions).toContainEqual(
-    //   configureStrings({ testSection: { test: 'string' } })
-    // );
+    expect(actions).toContainEqual(
+      configureStrings({ testSection: { test: 'string' } })
+    );
     expect(actions).toContainEqual(
       loadUrls({
         idsUrl: 'ids',
