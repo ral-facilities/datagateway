@@ -466,14 +466,15 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             count={numPages}
             page={page}
             onChange={(e, p) => {
-              setPage(p);
-              pushPage(p);
-              setPageChange(true);
-              setLoadedData(false);
+              if (p !== page) {
+                setPage(p);
+                pushPage(p);
+                setPageChange(true);
+                setLoadedData(false);
+              }
             }}
-            // renderItem={(item) => (
-            //   <PaginationItem {...item} disabled={item.page } />
-            // )}
+            hidePrevButton={page === 1}
+            hideNextButton={page >= numPages}
           />
         </Grid>
       )}
