@@ -89,7 +89,8 @@ const InvestigationCardView = (
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
-      filters={[{ label: 'Type', dataKey: 'TYPE_ID' }]}
+      // TODO: Provide all types from data from API using filter.
+      // filters={[{ label: 'Type', dataKey: 'TYPE_ID' }]}
       // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
         // Provide both the dataKey (for tooltip) and link to render.

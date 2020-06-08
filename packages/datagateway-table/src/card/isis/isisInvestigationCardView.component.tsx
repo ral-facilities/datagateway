@@ -87,6 +87,17 @@ const ISISInvestigationsCardView = (
     [cartItems, investigationIds]
   );
 
+  const filteredItems = React.useMemo(
+    () =>
+      data.map(
+        d =>
+          d.INVESTIGATIONINSTRUMENT &&
+          d.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
+          d.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME
+      ),
+    [data]
+  );
+
   React.useEffect(() => {
     // TODO: Since for filtering we will fetch all data,
     //       we will fetch it here and not use pagination on fetch.
@@ -126,7 +137,10 @@ const ISISInvestigationsCardView = (
       paginatedFetch={false}
       data={data}
       totalDataCount={totalDataCount}
-      filters={[{ label: 'Type', dataKey: 'TYPE_ID' }]}
+      // TODO: Remove dataKey from filters.
+      filters={[
+        { label: 'Instrument', dataKey: 'TYPE_ID', filterItems: filteredItems },
+      ]}
       title={{
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>

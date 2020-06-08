@@ -135,6 +135,7 @@ export const initialState: DGCommonState = {
   allIds: [],
   query: initialQuery,
   savedQueries: null,
+  filterData: {},
 };
 
 export function handleSortTable(

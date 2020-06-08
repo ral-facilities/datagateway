@@ -198,6 +198,24 @@ export const fetchAllIdsRequest = (
   },
 });
 
+// export const fetchFilter = (
+//   entityType: 'investigation' | 'dataset',
+//   additionalFilters?: {
+//     filterType: 'where' | 'distinct' | 'include';
+//     filterValue: string;
+//   }[]
+// ): ThunkResult<Promise<void>> => {
+//   return async (dispatch, getState) => {
+//     const timestamp = Date.now();
+//     dispatch(fetchFilterRequest(timestamp));
+
+//     let params = new URLSearchParams();
+
+//     // sort by ID first to guarantee order
+//     params.append('order', JSON.stringify(`ID asc`));
+//   };
+// };
+
 export const fetchAllIds = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   additionalFilters?: {

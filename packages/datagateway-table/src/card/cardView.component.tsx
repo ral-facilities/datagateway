@@ -78,7 +78,7 @@ interface CardViewProps {
   buttons?: ((data?: any) => React.ReactNode)[];
 
   // TODO: Provide filtering options (array of dataKeys?).
-  filters?: { label: string; dataKey: string; filterItems?: string[] }[];
+  filters?: { label: string; dataKey: string; filterItems: string[] }[];
   image?: EntityImageDetails;
 }
 
@@ -153,9 +153,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [loadedData, setLoadedData] = React.useState(false);
 
   React.useEffect(() => {
-    // console.log('Got page change: ', page);
-    // console.log('Current pageNum: ', query.page);
-    // console.log('Page change: ', pageChange);
+    console.log('Page number (page): ', page);
+    console.log('Current pageNum (query): ', query.page);
+    console.log('Page change: ', pageChange);
 
     // Set the page number if it was found in the parameters.
     if (!pageChange) {
@@ -247,18 +247,21 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 selected: false,
               };
 
-              let filterValues = [];
-              // TODO: filter values are always string.
-              // TODO: filterable values can be passed in with the filter object.
-              if (filter.filterItems) {
-                filterValues = filter.filterItems;
-              } else {
-                // TODO: This toString will explicitly fail if the data does not is not found.
-                filterValues = data.map(d => d[filter.dataKey].toString());
-              }
+              // // TODO: Move this to custom card view.
+              // let filterValues = [];
+              // // TODO: filter values are always string.
+              // // TODO: filterable values can be passed in with the filter object.
+              // if (filter.filterItems) {
+              //   filterValues = filter.filterItems;
+              // } else {
+              //   // TODO: What if the value is nested within?
+              //   //       Move this to the custom view?
+              //   // TODO: This toString will explicitly fail if the data does not is not found.
+              //   filterValues = data.map(d => d[filter.dataKey].toString());
+              // }
 
-              if (filterValues.length > 0) {
-                filterValues.forEach(v => {
+              if (filter.filterItems.length > 0) {
+                filter.filterItems.forEach(v => {
                   info.dataItems[v] = (info.dataItems[v] || 0) + 1;
                 });
               }
@@ -290,7 +293,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   return (
     <Grid container direction="column" alignItems="center">
       <Grid container direction="row" justify="center">
-        {/* Search bar */}
+        {/* TODO: Search bar */}
+        {/* TODO: Provide dropdown additional filters */}
         <Grid item xs={10} style={{ paddingLeft: '700px' }}>
           <TextField
             style={{ width: '500px' }}
@@ -324,7 +328,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
               // Disable if the number of data is smaller than the
               // smallest amount of results to display (10).
               // totalDataCount
-              disabled={(fetchPaginated ? totalDataCount : data.length) <= 10}
+              disabled={dataCount <= 10}
             >
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
@@ -334,7 +338,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         </Grid>
       </Grid>
 
-      {/* Filtering options */}
       <Grid
         container
         direction="row"
@@ -344,54 +347,61 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         xs={12}
       >
         {/* TODO: Place filtering options in a box here. */}
+        {/* Filtering options */}
+
         <Grid item xs={3}>
           {/* style={{ height: '100%', width: '100%' }} */}
-          <Paper>
-            <Grid
-              item
-              direction="column"
-              justify="flex-start"
-              alignItems="stretch"
-            >
-              <Box p={2}>
-                <Typography variant="h5">Filter By</Typography>
-              </Box>
+          {filters && (
+            <Paper>
+              <Grid
+                item
+                direction="column"
+                justify="flex-start"
+                alignItems="stretch"
+              >
+                <Box p={2}>
+                  <Typography variant="h5">Filter By</Typography>
+                </Box>
 
-              <Box>
-                {filtersInfo &&
-                  filtersInfo.map((filter, index) => {
-                    return (
-                      <ExpansionPanel key={index}>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                          <Typography>{filter.label}</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                          <div style={{ maxWidth: 360, width: '100%' }}>
-                            <List component="nav">
-                              {Object.entries(filter.dataItems).map(
-                                (item, index) => {
-                                  return (
-                                    <ListItem key={index} button>
-                                      {/* TODO: The label chip could have its contents overflow (requires tooltip in future) */}
-                                      <Chip label={item[0]} />
-                                      <Chip
-                                        style={{ marginLeft: '125px' }}
-                                        label={item[1]}
-                                        color="primary"
-                                      />
-                                    </ListItem>
-                                  );
-                                }
-                              )}
-                            </List>
-                          </div>
-                        </ExpansionPanelDetails>
-                      </ExpansionPanel>
-                    );
-                  })}
-              </Box>
-            </Grid>
-          </Paper>
+                <Box>
+                  {filtersInfo &&
+                    filtersInfo.map((filter, index) => {
+                      return (
+                        <ExpansionPanel key={index}>
+                          <ExpansionPanelSummary
+                            expandIcon={<ExpandMoreIcon />}
+                          >
+                            <Typography>{filter.label}</Typography>
+                          </ExpansionPanelSummary>
+                          <ExpansionPanelDetails>
+                            <div style={{ maxWidth: 360, width: '100%' }}>
+                              <List component="nav">
+                                {Object.entries(filter.dataItems).map(
+                                  (item, index) => {
+                                    return (
+                                      <ListItem key={index} button>
+                                        {/* TODO: The label chip could have its contents overflow 
+                                                (requires tooltip in future) */}
+                                        <Chip label={item[0]} />
+                                        <Chip
+                                          // style={{ paddingLeft: '125px' }}
+                                          label={item[1]}
+                                          color="primary"
+                                        />
+                                      </ListItem>
+                                    );
+                                  }
+                                )}
+                              </List>
+                            </div>
+                          </ExpansionPanelDetails>
+                        </ExpansionPanel>
+                      );
+                    })}
+                </Box>
+              </Grid>
+            </Paper>
+          )}
         </Grid>
 
         {/* Card data */}
@@ -451,6 +461,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         <Grid item xs style={{ padding: '50px' }}>
           <Pagination
             size="large"
+            color="secondary"
             style={{ textAlign: 'center' }}
             count={numPages}
             page={page}
@@ -460,7 +471,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
               setPageChange(true);
               setLoadedData(false);
             }}
-            color="secondary"
+            // renderItem={(item) => (
+            //   <PaginationItem {...item} disabled={item.page } />
+            // )}
           />
         </Grid>
       )}
