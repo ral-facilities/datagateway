@@ -227,7 +227,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
-    luceneData: state.dgsearch.searchData.datafile,
+    luceneData: state.dgsearch.searchData.dataset,
   };
 };
 
