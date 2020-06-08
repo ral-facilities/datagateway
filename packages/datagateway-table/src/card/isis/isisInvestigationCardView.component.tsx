@@ -13,7 +13,6 @@ import {
   formatBytes,
   clearData,
 } from 'datagateway-common';
-import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction, Action } from 'redux';
@@ -41,11 +40,7 @@ interface ISISInvestigationsCVStateProps {
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsCVDispatchProps {
-  fetchData: (
-    instrumentId: number,
-    facilityCycleId: number,
-    offsetParams?: IndexRange
-  ) => Promise<void>;
+  fetchData: (instrumentId: number, facilityCycleId: number) => Promise<void>;
   fetchCount: (instrumentId: number, facilityCycleId: number) => Promise<void>;
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
@@ -95,6 +90,8 @@ const ISISInvestigationsCardView = (
   React.useEffect(() => {
     // TODO: Since for filtering we will fetch all data,
     //       we will fetch it here and not use pagination on fetch.
+    //       (this is only a temporary fix for filtering to work without having to fetch the whole data
+    //        again for each filter for ISIS)
     console.log('fetched Data: ', fetchedData);
     if (!fetchedData) {
       // TODO: Manually clear data in the state before fetch to prevent duplicate,
@@ -129,9 +126,6 @@ const ISISInvestigationsCardView = (
       paginatedFetch={false}
       data={data}
       totalDataCount={totalDataCount}
-      // loadData={params =>
-      //   fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
-      // }
       filters={[{ label: 'Type', dataKey: 'TYPE_ID' }]}
       title={{
         dataKey: 'TITLE',
@@ -255,16 +249,11 @@ const ISISInvestigationsCardView = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISInvestigationsCVDispatchProps => ({
-  fetchData: (
-    instrumentId: number,
-    facilityCycleId: number,
-    offsetParams?: IndexRange
-  ) =>
+  fetchData: (instrumentId: number, facilityCycleId: number) =>
     dispatch(
       fetchISISInvestigations({
         instrumentId,
         facilityCycleId,
-        offsetParams,
         optionalParams: { getSize: true },
       })
     ),

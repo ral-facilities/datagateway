@@ -77,12 +77,12 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     setDatasetIds(data.map(dataset => dataset.ID));
 
     // Fetch the dataset count based on the investigation ID.
+    console.log('dataset count: ', totalDataCount);
     if (!fetchedCount) {
-      console.log('Fetch dataset count');
       fetchCount(parseInt(investigationId));
       setFetchedCount(true);
     }
-  }, [investigationId, data, fetchedCount, fetchCount]);
+  }, [investigationId, data, fetchedCount, fetchCount, totalDataCount]);
 
   return (
     <CardView

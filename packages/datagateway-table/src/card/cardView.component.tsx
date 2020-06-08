@@ -83,6 +83,7 @@ interface CardViewProps {
 }
 
 interface CardViewStateProps {
+  loading: boolean;
   query: QueryParams;
 }
 
@@ -122,6 +123,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     paginatedFetch,
     loadData,
     buttons,
+    loading,
     pushPage,
     pushResults,
     clearData,
@@ -136,6 +138,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // Pagination.
   // TODO: This page is not reset when component is changed.
   const [page, setPage] = React.useState(-1);
+  // TODO: Store one state variable for the current count (from totalDataCount or data length).
+  const [dataCount, setDataCount] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
 
@@ -147,82 +151,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
-
-  React.useEffect(() => {
-    if (paginatedFetch === false) {
-      setFetchedPaginated(false);
-    }
-  }, [paginatedFetch]);
-
-  // React.useEffect(() => {
-  //   if (filters && !loadedFilters) {
-  //     setFiltersInfo(
-  //       Object.values(filters).map(filter => {
-  //         let info: CardViewFilter = {
-  //           label: filter.label,
-  //           dataKey: filter.dataKey,
-  //           dataItems: {},
-  //           selected: false,
-  //         };
-  //         const filterValues = data.map(d => d[info.dataKey].toString());
-  //         if (filterValues) {
-  //           filterValues.forEach(v => {
-  //             info.dataItems[v] = (info.dataItems[v] || 0) + 1;
-  //           });
-  //         }
-  //         return info;
-  //       })
-  //     );
-  //     setLoadedFilters(true);
-  //   }
-  //   console.log('filters: ', filtersInfo);
-  // }, [filters, filtersInfo, loadedData, loadedFilters, data]);
-
-  // React.useEffect(() => {
-  //   if (filters && !loadedFilters) {
-  //     const filterInfo = Object.values(filters).map(filter => {
-  //       let info: CardViewFilter = {
-  //         label: filter.label,
-  //         dataKey: filter.dataKey,
-  //         dataItems: {},
-  //         selected: false,
-  //       };
-  //       return info;
-  //     });
-  //     setFiltersInfo(filterInfo);
-  //   }
-  //   setLoadedFilters(true);
-  // }, [filters, loadedFilters]);
-
-  // React.useEffect(() => {
-  //   // TODO: Need to use Object for Array?
-  //   // TODO: We do not need to recreate the filtersInfo object every time.
-  //   // TODO: This runs twice due to state updates elsewhere?
-  //   if (filtersInfo && loadedData && !loadedFilters) {
-  //     setFiltersInfo(
-  //       Object.values(filtersInfo).map(info => {
-
-  //         return info;
-  //       })
-  //     );
-  //   }
-  //   setLoadedFilters(true);
-  //   console.log('filters: ', filtersInfo);
-  // }, [data, filtersInfo, loadedData, loadedFilters]);
-
-  // React.useEffect(() => {
-  // if (filters) {
-  //   // Update the filter based on the types we receive.
-  //   console.log('filter: ', filtered);
-  //   let values: { [item: string]: number } = {};
-  //   if (filtered) {
-  //     filtered.forEach(v => {
-  //       values[v] = (values[v] || 0) + 1;
-  //     });
-  //   }
-  //   console.log('Count: ', values);
-  // }
-  // }, [data, filters, filtered]);
 
   React.useEffect(() => {
     // console.log('Got page change: ', page);
@@ -243,7 +171,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
     // Ensure the max results change according to the query parameter.
     if (query.results) {
-      if (totalDataCount > 10 && maxResults !== query.results) {
+      if (dataCount > 10 && maxResults !== query.results) {
         setMaxResults(query.results);
       }
     } else {
@@ -253,29 +181,35 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       //       investigation/dataset card views).
       setMaxResults(10);
     }
-  }, [page, pageChange, query, maxResults, totalDataCount]);
+  }, [page, pageChange, query, maxResults, dataCount]);
 
   // TODO: Work-around for the pagination, start/stop index
-  //       working incorrectly due to the totalDataCount being updated later on.
+  //       working incorrectly due to the totalDataCount being updated later on
+  //       (to the new value for the new view).
   React.useEffect(() => {
-    setLoadedData(false);
-  }, [totalDataCount]);
+    // Get when the pagination fetch is disabled.
+    if (paginatedFetch === false) {
+      setFetchedPaginated(false);
+    }
+
+    if (fetchPaginated) {
+      if (totalDataCount > 0 && totalDataCount !== dataCount) {
+        setDataCount(totalDataCount);
+        setLoadedData(false);
+      }
+    } else {
+      if (data.length > 0 && data.length !== dataCount) {
+        setDataCount(data.length);
+        setLoadedData(false);
+      }
+    }
+  }, [paginatedFetch, fetchPaginated, totalDataCount, dataCount, data.length]);
 
   React.useEffect(() => {
-    // console.log('Total Data Count: ', totalDataCount);
-    // console.log('Max results: ', maxResults);
-    console.log('Fetch paginated: ', fetchPaginated);
-    console.log('data: ', data);
-    if (
-      (fetchPaginated && totalDataCount > 0) ||
-      (!fetchPaginated && data.length > 0)
-    ) {
+    if (!loading && dataCount > 0) {
       if (!loadedData) {
-        const totalCount = fetchPaginated ? totalDataCount : data.length;
-        console.log('total count: ', totalCount);
-
         // Calculate the maximum pages needed for pagination.
-        setNumPages(~~((totalCount + maxResults - 1) / maxResults));
+        setNumPages(~~((dataCount + maxResults - 1) / maxResults));
         // console.log('Number of pages: ', numPages);
 
         // Calculate the start/end indexes for the data.
@@ -283,14 +217,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         // console.log('startIndex: ', startIndex);
 
         // End index not incremented for slice method.
-        const stopIndex = Math.min(startIndex + maxResults, totalCount) - 1;
+        const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
         // console.log('stopIndex: ', stopIndex);
 
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
           if (fetchPaginated && loadData) {
             // Clear data in the state before loading new data.
             clearData();
-            console.log('cleared data');
             loadData({ startIndex, stopIndex });
           } else {
             setViewData(data.slice(startIndex, stopIndex + 1));
@@ -300,6 +233,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       } else {
         // TODO: Gets called multiple times?
         if (filters) {
+          // TODO: Need to use Object for Array?
+          // TODO: We do not need to recreate the filtersInfo object every time.
           // TODO: This might take a long time, we do not want to recreate the filtersInfo every time.
           //       Create once and then only just update the dataItems.
           setFiltersInfo(
@@ -340,17 +275,16 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
   }, [
     data,
+    dataCount,
     maxResults,
     page,
-    query,
     numPages,
-    pageChange,
     loadData,
     loadedData,
-    totalDataCount,
     clearData,
     filters,
     fetchPaginated,
+    loading,
   ]);
 
   return (
@@ -389,7 +323,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
               }}
               // Disable if the number of data is smaller than the
               // smallest amount of results to display (10).
-              disabled={totalDataCount <= 10}
+              // totalDataCount
+              disabled={(fetchPaginated ? totalDataCount : data.length) <= 10}
             >
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
@@ -535,6 +470,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
 const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
+    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
   };
 };
