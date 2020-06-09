@@ -32,4 +32,16 @@ describe('Datafile search tab', () => {
   it.skip('should be able to search by date range', () => {
     // TODO
   });
+
+  it('should be hidden if dataset checkbox is unchecked', () => {
+    cy.get('[aria-label="datafile checkbox"]').click();
+
+    cy.get('[aria-label="submit search button"]').click();
+
+    cy.get('[aria-rowcount="50"]').should('exist');
+
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Datafile')
+      .should('not.exist');
+  });
 });

@@ -43,4 +43,16 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 12');
   });
+
+  it('should be hidden if dataset checkbox is unchecked', () => {
+    cy.get('[aria-label="dataset checkbox"]').click();
+
+    cy.get('[aria-label="submit search button"]').click();
+
+    cy.get('[aria-rowcount="50"]').should('exist');
+
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Dataset')
+      .should('not.exist');
+  });
 });

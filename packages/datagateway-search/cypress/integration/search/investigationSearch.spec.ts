@@ -65,4 +65,16 @@ describe('Investigation search tab', () => {
       'INVESTIGATION 4'
     );
   });
+
+  it('should be hidden if investigation checkbox is unchecked', () => {
+    cy.get('[aria-label="investigation checkbox"]').click();
+
+    cy.get('[aria-label="submit search button"]').click();
+
+    cy.get('[aria-rowcount="50"]').should('exist');
+
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Investigation')
+      .should('not.exist');
+  });
 });
