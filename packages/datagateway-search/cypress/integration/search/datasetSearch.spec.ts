@@ -24,9 +24,9 @@ describe('Dataset search tab', () => {
       .contains('Dataset')
       .click();
 
-    cy.get('[aria-rowcount="15"]').should('exist');
+    cy.get('[aria-rowcount="12"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 32');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
   });
 
   it.skip('should be able to search by date range', () => {
