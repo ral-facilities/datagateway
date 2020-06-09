@@ -29,7 +29,18 @@ describe('Dataset search tab', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
   });
 
-  it.skip('should be able to search by date range', () => {
-    // TODO
+  it('should be able to search by date range', () => {
+    cy.get('[aria-label="start date input"]').type('2003-01-01');
+    cy.get('[aria-label="end date input"]').type('2004-01-01');
+
+    cy.get('[aria-label="submit search button"]').click();
+
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Dataset')
+      .click();
+
+    cy.get('[aria-rowcount="1"]').should('exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 12');
   });
 });
