@@ -3,10 +3,13 @@ import { Switch, Route, RouteComponentProps } from 'react-router';
 
 import InvestigationCardView from '../card/investigationCardView.component';
 import DatasetCardView from '../card/datasetCardView.component';
+
 import ISISInstrumentsCardView from '../card/isis/isisInstrumentsCardView.component';
 import ISISFacilityCyclesCardView from '../card/isis/isisFacilityCyclesCardView.component';
 import ISISInvestigationsCardView from '../card/isis/isisInvestigationCardView.component';
 import ISISDatasetsCardView from '../card/isis/isisDatasetsCardView.component';
+
+import DLSProposalCardView from '../card/dls/dlsProposalsCardView.component';
 
 export const supportedPaths = {
   investigation: '/browse/investigation',
@@ -17,6 +20,7 @@ export const supportedPaths = {
     '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation',
   isisDataset:
     '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset',
+  dlsProposal: '/browse/proposal',
 };
 
 class PageCard extends React.Component {
@@ -85,6 +89,7 @@ class PageCard extends React.Component {
             />
           )}
         />
+        <Route exact path="/browse/proposal/" component={DLSProposalCardView} />
       </Switch>
     );
   }
