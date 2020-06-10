@@ -22,7 +22,6 @@ import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
-// import ArrowTooltip from '../../page/arrowtooltip.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsCardViewProps {

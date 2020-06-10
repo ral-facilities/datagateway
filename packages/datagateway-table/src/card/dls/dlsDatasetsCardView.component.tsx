@@ -1,62 +1,70 @@
 import React from 'react';
 
-import CardView from './cardView.component';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from 'datagateway-common/lib/state/app.types';
-import { AnyAction } from 'redux';
-import { IndexRange } from 'react-virtualized';
+import CardView from '../cardView.component';
 import {
-  fetchDatasets,
-  fetchDatasetCount,
-  Dataset,
-  datasetLink,
   Entity,
   DownloadCartItem,
+  fetchDatasets,
+  fetchDatasetCount,
+  fetchDatasetDetails,
   addToCart,
   removeFromCart,
+  Dataset,
+  tableLink,
+  // formatBytes,
 } from 'datagateway-common';
+import { IndexRange } from 'react-virtualized';
+import { StateType } from 'datagateway-common/lib/state/app.types';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
-import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
+import { Button } from '@material-ui/core';
 
-interface DatasetCVDispatchProps {
-  fetchData: (
-    investigationId: number,
-    offsetParams?: IndexRange
-  ) => Promise<void>;
-  fetchCount: (investigationId: number) => Promise<void>;
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
+interface DLSDatasetsCVProps {
+  proposalName: string;
+  investigationId: string;
 }
 
-interface DatasetCVStateProps {
+interface DLSDatasetsCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
 }
 
-interface DatasetCardViewProps {
-  investigationId: string;
+interface DLSDatasetsCVDispatchProps {
+  fetchData: (
+    investigationId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
+  fetchDetails: (datasetId: number) => Promise<void>;
+  addToCart: (entityIds: number[]) => Promise<void>;
+  removeFromCart: (entityIds: number[]) => Promise<void>;
 }
 
-type DatasetCVCombinedProps = DatasetCardViewProps &
-  DatasetCVDispatchProps &
-  DatasetCVStateProps;
+type DLSDatasetsCVCombinedProps = DLSDatasetsCVProps &
+  DLSDatasetsCVStateProps &
+  DLSDatasetsCVDispatchProps;
 
-const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
+const DLSDatasetsCardView = (
+  props: DLSDatasetsCVCombinedProps
+): React.ReactElement => {
   const {
+    proposalName,
     investigationId,
     data,
     totalDataCount,
-    cartItems,
     fetchData,
     fetchCount,
+    cartItems,
     addToCart,
     removeFromCart,
   } = props;
+
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
 
@@ -76,7 +84,6 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     // TODO: React.useMemo?
     setDatasetIds(data.map(dataset => dataset.ID));
 
-    // Fetch the dataset count based on the investigation ID.
     if (!fetchedCount) {
       fetchCount(parseInt(investigationId));
       setFetchedCount(true);
@@ -90,9 +97,11 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       totalDataCount={totalDataCount}
       title={{
         dataKey: 'NAME',
-        content: (dataset: Dataset) => {
-          return datasetLink(investigationId, dataset.ID, dataset.NAME);
-        },
+        content: (dataset: Dataset) =>
+          tableLink(
+            `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
+            dataset.NAME
+          ),
       }}
       description={{ dataKey: 'DESCRIPTION' }}
       furtherInformation={[
@@ -101,16 +110,36 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
           dataKey: 'DATAFILE_COUNT',
         },
         {
-          label: 'Created Time',
+          label: 'Create Time',
           dataKey: 'CREATE_TIME',
         },
         {
           label: 'Modified Time',
           dataKey: 'MOD_TIME',
         },
+        {
+          label: 'Start Date',
+          dataKey: 'STARTDATE',
+        },
+        {
+          label: 'End Date',
+          dataKey: 'END_DATE',
+        },
+        // TODO: Needs to be part of the retrievable information.
+        // {
+        //   label: 'Size',
+        //   dataKey: 'SIZE',
+        //   content: (dataset: Dataset) => formatBytes(dataset.SIZE),
+        // },
+        // {
+        //   label: 'Name',
+        //   dataKey: 'DATASETTYPE.NAME',
+        // },
+        // {
+        //   label: 'Description',
+        //   dataKey: 'DATASETTYPE.DESCRIPTION',
+        // },
       ]}
-      // TODO: Can we make defining buttons more cleaner?
-      //       Move button to a different component.
       buttons={[
         function cartButton(dataset: Dataset) {
           return !(selectedCards && selectedCards.includes(dataset.ID)) ? (
@@ -145,7 +174,26 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
   );
 };
 
-const mapStateToProps = (state: StateType): DatasetCVStateProps => {
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): DLSDatasetsCVDispatchProps => ({
+  fetchData: (investigationId: number, offsetParams: IndexRange) =>
+    dispatch(
+      fetchDatasets({
+        investigationId,
+        offsetParams,
+        optionalParams: { getDatafileCount: true },
+      })
+    ),
+  fetchCount: (investigationId: number) =>
+    dispatch(fetchDatasetCount(investigationId)),
+  fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
+  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
+  removeFromCart: (entityIds: number[]) =>
+    dispatch(removeFromCart('dataset', entityIds)),
+});
+
+const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
@@ -153,16 +201,7 @@ const mapStateToProps = (state: StateType): DatasetCVStateProps => {
   };
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DatasetCVDispatchProps => ({
-  fetchData: (investigationId: number, offsetParams?: IndexRange) =>
-    dispatch(fetchDatasets({ investigationId, offsetParams })),
-  fetchCount: (investigationId: number) =>
-    dispatch(fetchDatasetCount(investigationId)),
-  addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('dataset', entityIds)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DatasetCardView);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DLSDatasetsCardView);

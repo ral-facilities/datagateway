@@ -11,6 +11,7 @@ import ISISDatasetsCardView from '../card/isis/isisDatasetsCardView.component';
 
 import DLSProposalsCardView from '../card/dls/dlsProposalsCardView.component';
 import DLSVisitsCardView from '../card/dls/dlsVisitsCardView.component';
+import DLSDatasetsCardView from '../card/dls/dlsDatasetsCardView.component';
 
 export const supportedPaths = {
   investigation: '/browse/investigation',
@@ -23,6 +24,8 @@ export const supportedPaths = {
     '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset',
   dlsProposal: '/browse/proposal',
   dlsVisit: '/browse/proposal/:proposalName/investigation',
+  dlsDataset:
+    '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
 };
 
 class PageCard extends React.Component {
@@ -103,6 +106,21 @@ class PageCard extends React.Component {
             match,
           }: RouteComponentProps<{ proposalName: string }>) => (
             <DLSVisitsCardView proposalName={match.params.proposalName} />
+          )}
+        />
+        <Route
+          exact
+          path={supportedPaths['dlsDataset']}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            proposalName: string;
+            investigationId: string;
+          }>) => (
+            <DLSDatasetsCardView
+              proposalName={match.params.proposalName}
+              investigationId={match.params.investigationId}
+            />
           )}
         />
       </Switch>
