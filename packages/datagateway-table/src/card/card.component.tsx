@@ -288,6 +288,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           <Divider orientation={'vertical'} />
         )}
 
+        {/* TODO: Support ArrowTooltip for furtherInformation to shorten large text. */}
         {/* TODO: Add in margins for spacing. */}
         {/* TODO: These should be specified elsewhere */}
         {/* TODO: Further information related to the entity. */}

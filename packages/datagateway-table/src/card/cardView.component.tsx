@@ -205,6 +205,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
   }, [paginatedFetch, fetchPaginated, totalDataCount, dataCount, data.length]);
 
+  // TODO: If fetchPaginated is false, data will only be set to view data once.
   React.useEffect(() => {
     if (!loading && dataCount > 0) {
       if (!loadedData) {
@@ -289,6 +290,19 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     fetchPaginated,
     loading,
   ]);
+
+  // TODO: Get the nested value from an Entity object given a dataKey
+  //       which drills specifies the property or array indexes.
+  const nestedValue = (data: Entity, dataKey: string): string => {
+    const v = dataKey.split(/[.[\]]+/).reduce(function(prev, curr) {
+      return prev ? prev[curr] : null;
+    }, data);
+    if (v) {
+      return v.toString();
+    } else {
+      return '';
+    }
+  };
 
   return (
     <Grid container direction="column" alignItems="center">
@@ -417,18 +431,19 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                     alignItems="flex-start"
                     className={classes.root}
                   >
+                    {/* Create an individual card */}
                     <EntityCard
                       title={{
                         // TODO: Is this the best way to handle label/dataKey?
-                        label: data[title.dataKey],
+                        label: nestedValue(data, title.dataKey),
                         content: title.content && title.content(data),
                       }}
-                      description={description && data[description.dataKey]}
+                      description={
+                        description && nestedValue(data, description.dataKey)
+                      }
                       furtherInformation={
                         furtherInformation &&
                         furtherInformation
-                          // Handle case when details dataKey is not present in data.
-                          .filter(details => details.dataKey in data)
                           .map(details => ({
                             // TODO: Create a separate type just for details label?
                             //       We can say the label is the data key if not defined.
@@ -437,8 +452,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                               : details.dataKey,
                             content: details.content
                               ? details.content(data)
-                              : data[details.dataKey],
+                              : nestedValue(data, details.dataKey),
                           }))
+                          // Filter afterwards to only show content with information.
+                          .filter(v => v.content)
                       }
                       image={image}
                       // Pass in the react nodes with the data to the card.
@@ -475,6 +492,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             }}
             hidePrevButton={page === 1}
             hideNextButton={page >= numPages}
+            // TODO: Add first/last options for pagination
+            //       and disable those on same conditions as above.
           />
         </Grid>
       )}

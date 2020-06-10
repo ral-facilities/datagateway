@@ -87,6 +87,7 @@ const ISISInvestigationsCardView = (
     [cartItems, investigationIds]
   );
 
+  // Provide the filtered items to use to tag.
   const filteredItems = React.useMemo(
     () =>
       data.map(
@@ -99,22 +100,22 @@ const ISISInvestigationsCardView = (
   );
 
   React.useEffect(() => {
+    // TODO: React.useMemo?
+    // Set the IDs of the investigation data.
+    setInvestigationIds(data.map(investigation => investigation.ID));
+
     // TODO: Since for filtering we will fetch all data,
-    //       we will fetch it here and not use pagination on fetch.
+    //       we will fetch it here and not use pagination on fetch
     //       (this is only a temporary fix for filtering to work without having to fetch the whole data
-    //        again for each filter for ISIS)
-    console.log('fetched Data: ', fetchedData);
+    //        again for each filter for ISIS).
+    console.log('data update: ', data);
     if (!fetchedData) {
-      // TODO: Manually clear data in the state before fetch to prevent duplicate,
-      //       we do not clear in CardView and if we did it may cause in the data not showing up.
+      // Manually clear data in the state before fetch to prevent duplicate,
+      // we do not clear in CardView and if we did it may cause in the data not showing up.
       clearData();
       fetchData(parseInt(instrumentId), parseInt(facilityCycleId));
       setFetchedData(true);
     }
-
-    // TODO: React.useMemo?
-    // Set the IDs of the investigation data.
-    setInvestigationIds(data.map(investigation => investigation.ID));
 
     if (!fetchedCount) {
       fetchCount(parseInt(instrumentId), parseInt(facilityCycleId));
@@ -124,12 +125,12 @@ const ISISInvestigationsCardView = (
     instrumentId,
     facilityCycleId,
     data,
-    fetchedCount,
-    fetchCount,
-    setFetchedCount,
     fetchedData,
     fetchData,
     clearData,
+    fetchedCount,
+    fetchCount,
+    setFetchedCount,
   ]);
 
   return (
@@ -162,58 +163,23 @@ const ISISInvestigationsCardView = (
           label: 'RB Number',
           dataKey: 'NAME',
         },
+        // TODO: Change behaviour to not show label cases where content returns nothing?
         {
-          // TODO: Change behaviour to not show label cases where content returns nothing?
           label: 'DOI',
-          dataKey: 'STUDYINVESTIGATION',
-          content: (investigation: Investigation) => {
-            if (
-              investigation.STUDYINVESTIGATION &&
-              investigation.STUDYINVESTIGATION[0].STUDY
-            ) {
-              if (investigation.STUDYINVESTIGATION[0].STUDY.PID)
-                return investigation.STUDYINVESTIGATION[0].STUDY.PID;
-            }
-            return 'N/A';
-          },
+          dataKey: 'STUDYINVESTIGATION[0].STUDY.PID',
         },
+        // TODO: Size showing as unknown (due to paginatedFetch=false in CardView not showing updated data).
         {
           label: 'Size',
           dataKey: 'SIZE',
-          content: (investigation: Investigation) =>
-            formatBytes(investigation.SIZE),
+          content: (investigation: Investigation) => {
+            console.log('current SIZE: ', investigation.SIZE);
+            return formatBytes(investigation.SIZE);
+          },
         },
-        // TODO: Support ArrowTooltip in this case to shorten large text.
         // {
-        //   // TODO: Change behaviour to not show label cases where content returns nothing?
-        //   // TODO: Use drilling down into nested data value.
-
         //   label: 'Instrument',
-        //   dataKey: 'INVESTIGATIONINSTRUMENT',
-        //   content: (investigation: Investigation) => {
-        //     if (
-        //       investigation.INVESTIGATIONINSTRUMENT &&
-        //       investigation.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-        //     ) {
-        //       return (
-        //         <ArrowTooltip
-        //           title={
-        //             investigation.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME
-        //           }
-        //           percentageWidth={5}
-        //         >
-        //           <span>
-        //             {
-        //               investigation.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-        //                 .FULLNAME
-        //             }
-        //           </span>
-        //         </ArrowTooltip>
-        //       );
-        //     } else {
-        //       return 'N/A';
-        //     }
-        //   },
+        //   dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
         // },
         {
           label: 'Start Date',
