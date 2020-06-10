@@ -344,7 +344,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
               }}
               // Disable if the number of data is smaller than the
               // smallest amount of results to display (10).
-              // totalDataCount
               disabled={dataCount <= 10}
             >
               <MenuItem value={10}>10</MenuItem>
@@ -363,11 +362,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         spacing={10}
         xs={12}
       >
-        {/* TODO: Place filtering options in a box here. */}
         {/* Filtering options */}
-
         <Grid item xs={3}>
-          {/* style={{ height: '100%', width: '100%' }} */}
           {filters && (
             <Paper>
               <Grid
@@ -396,15 +392,12 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                                 {Object.entries(filter.dataItems).map(
                                   (item, index) => {
                                     return (
+                                      // TODO: Fix layout of these chips, have spacing.
                                       <ListItem key={index} button>
                                         {/* TODO: The label chip could have its contents overflow 
-                                                (requires tooltip in future) */}
+                                                  (requires tooltip in future) */}
                                         <Chip label={item[0]} />
-                                        <Chip
-                                          // style={{ paddingLeft: '125px' }}
-                                          label={item[1]}
-                                          color="primary"
-                                        />
+                                        <Chip label={item[1]} color="primary" />
                                       </ListItem>
                                     );
                                   }
@@ -449,7 +442,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                         furtherInformation
                           .map(details => ({
                             // TODO: Create a separate type just for details label?
-                            //       We can say the label is the data key if not defined.
+                            //       We can say the data key is the label if not defined.
                             label: details.label
                               ? details.label
                               : details.dataKey,
@@ -498,10 +491,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 setLoadedData(false);
               }
             }}
+            showFirstButton
             hidePrevButton={page === 1}
             hideNextButton={page >= numPages}
-            // TODO: Add first/last options for pagination
-            //       and disable those on same conditions as above.
+            showLastButton
           />
         </Grid>
       )}
