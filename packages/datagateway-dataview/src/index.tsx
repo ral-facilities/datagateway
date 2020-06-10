@@ -40,7 +40,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener(MicroFrontendId, e => {
+document.addEventListener(MicroFrontendId, (e) => {
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {
     render();
@@ -54,39 +54,37 @@ const reactLifecycles = singleSpaReact({
   domElementGetter,
 });
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Single-SPA bootstrap methods have no idea what type of inputs may be
 // pushed down from the parent app
-export function bootstrap(props: any): Promise<void> {
+export function bootstrap(props: unknown): Promise<void> {
   return reactLifecycles
     .bootstrap(props)
     .then(() => {
       log.info(`${pluginName} has been successfully bootstrapped`);
     })
-    .catch(error => {
+    .catch((error) => {
       log.error(`${pluginName} failed whilst bootstrapping: ${error}`);
     });
 }
 
-export function mount(props: any): Promise<void> {
+export function mount(props: unknown): Promise<void> {
   return reactLifecycles
     .mount(props)
     .then(() => {
       log.info(`${pluginName} has been successfully mounted`);
     })
-    .catch(error => {
+    .catch((error) => {
       log.error(`${pluginName} failed whilst mounting: ${error}`);
     });
 }
 
-export function unmount(props: any): Promise<void> {
+export function unmount(props: unknown): Promise<void> {
   return reactLifecycles
     .unmount(props)
     .then(() => {
       log.info(`${pluginName} has been successfully unmounted`);
     })
-    .catch(error => {
+    .catch((error) => {
       log.error(`${pluginName} failed whilst unmounting: ${error}`);
     });
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */

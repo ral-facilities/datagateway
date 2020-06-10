@@ -43,7 +43,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
-document.addEventListener(MicroFrontendId, e => {
+document.addEventListener(MicroFrontendId, (e) => {
   // attempt to re-render the plugin if the corresponding div is present
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {
@@ -57,21 +57,19 @@ document.addEventListener(MicroFrontendId, e => {
   }
 });
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Single-SPA bootstrap methods have no idea what type of inputs may be
 // pushed down from the parent app
-export function bootstrap(props: any): Promise<void> {
+export function bootstrap(props: unknown): Promise<void> {
   return reactLifecycles.bootstrap(props);
 }
 
-export function mount(props: any): Promise<void> {
+export function mount(props: unknown): Promise<void> {
   return reactLifecycles.mount(props);
 }
 
-export function unmount(props: any): Promise<void> {
+export function unmount(props: unknown): Promise<void> {
   return reactLifecycles.unmount(props);
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 if (
   process.env.NODE_ENV === `development` ||
@@ -95,7 +93,7 @@ if (
           },
         }
       )
-      .then(response => {
+      .then((response) => {
         const jwtHeader = { alg: 'HS256', typ: 'JWT' };
         const payload = {
           sessionId: response.data.sessionId,
@@ -110,7 +108,9 @@ if (
 
         window.localStorage.setItem(MicroFrontendToken, jwt);
       })
-      .catch(error => console.error(`Can't log in to ICAT: ${error.message}`));
+      .catch((error) =>
+        console.error(`Can't log in to ICAT: ${error.message}`)
+      );
   }
 }
 

@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 export default {
-  get: jest.fn(path => {
+  get: jest.fn((path) => {
     if (path.includes('/topcat/user/cart/')) {
       return Promise.resolve({ data: { cartItems: [] } });
     } else if (path === '/datagateway-download-settings.json') {

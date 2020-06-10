@@ -40,15 +40,15 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
   return function WithIdCheck<T>(
     Component: React.ComponentType<T>
   ): React.ComponentType<T> {
-    const WithIdCheckComponent: React.FC<T &
-      WithStyles<typeof styles> &
-      RouteComponentProps> = props => {
+    const WithIdCheckComponent: React.FC<
+      T & WithStyles<typeof styles> & RouteComponentProps
+    > = (props) => {
       const [loading, setLoading] = React.useState<boolean>(true);
       const [valid, setValid] = React.useState<boolean>(false);
 
       React.useEffect(() => {
         checkingPromise
-          .then(valid => {
+          .then((valid) => {
             setValid(valid);
           })
           .catch(() => {

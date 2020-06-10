@@ -26,10 +26,10 @@ export const fetchDownloadCartItems: (settings: {
         },
       }
     )
-    .then(response => {
+    .then((response) => {
       return response.data.cartItems;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
       return [];
     });
@@ -94,10 +94,10 @@ export const getIsTwoLevel: (settings: {
 }) => Promise<boolean> = (settings: { idsUrl: string }) => {
   return axios
     .get<boolean>(`${settings.idsUrl}/isTwoLevel`)
-    .then(response => {
+    .then((response) => {
       return response.data;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error, false);
       return false;
     });
@@ -136,14 +136,14 @@ export const submitCart: (
       `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/submit`,
       params
     )
-    .then(response => {
+    .then((response) => {
       log.debug(response);
 
       // Get the downloadId that was returned from the IDS server.
       const downloadId = response.data['downloadId'];
       return downloadId;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
       return -1;
     });
@@ -166,10 +166,10 @@ export const fetchDownloads: (
           : queryOffset,
       },
     })
-    .then(response => {
+    .then((response) => {
       return response.data;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
       return [];
     });
@@ -190,11 +190,11 @@ export const getDownload: (
         queryOffset: `where download.id = ${downloadId}`,
       },
     })
-    .then(response => {
+    .then((response) => {
       const download = response.data[0];
       return download;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
       return null;
     });
@@ -262,7 +262,7 @@ export const getDownloadTypeStatus: (
         return response.data;
       }
     )
-    .catch(error => {
+    .catch((error) => {
       if (error) handleICATError(error);
       return null;
     });
@@ -296,7 +296,7 @@ export const downloadDeleted: (
     .then(() => {
       // do nothing
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
     });
 };
@@ -325,11 +325,11 @@ export const getSize: (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         const size = response.data['FILESIZE'] as number;
         return size;
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error, false);
         return -1;
       });
@@ -343,10 +343,10 @@ export const getSize: (
           entityId: entityId,
         },
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error, false);
         return -1;
       });
@@ -378,10 +378,10 @@ export const getDatafileCount: (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error, false);
         return -1;
       });
@@ -400,10 +400,10 @@ export const getDatafileCount: (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error, false);
         return -1;
       });
@@ -418,7 +418,7 @@ export const getCartDatafileCount: (
   settings: { apiUrl: string }
 ) => {
   const getDatafileCountPromises: Promise<number>[] = [];
-  cartItems.forEach(cartItem =>
+  cartItems.forEach((cartItem) =>
     getDatafileCountPromises.push(
       getDatafileCount(cartItem.entityId, cartItem.entityType, {
         apiUrl: settings.apiUrl,
@@ -426,7 +426,7 @@ export const getCartDatafileCount: (
     )
   );
 
-  return Promise.all(getDatafileCountPromises).then(counts =>
+  return Promise.all(getDatafileCountPromises).then((counts) =>
     counts.reduce(
       (accumulator, nextCount) =>
         nextCount > -1 ? accumulator + nextCount : accumulator,
@@ -451,7 +451,7 @@ export const getCartSize: (
   }
 ) => {
   const getSizePromises: Promise<number>[] = [];
-  cartItems.forEach(cartItem =>
+  cartItems.forEach((cartItem) =>
     getSizePromises.push(
       getSize(cartItem.entityId, cartItem.entityType, {
         facilityName: settings.facilityName,
@@ -461,7 +461,7 @@ export const getCartSize: (
     )
   );
 
-  return Promise.all(getSizePromises).then(sizes =>
+  return Promise.all(getSizePromises).then((sizes) =>
     sizes.reduce(
       (accumulator, nextSize) =>
         nextSize > -1 ? accumulator + nextSize : accumulator,

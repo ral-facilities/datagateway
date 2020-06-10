@@ -33,14 +33,12 @@ import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component'
 import { GetApp } from '@material-ui/icons';
 import useAfterMountEffect from '../../utils';
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatasetsTableProps {
   instrumentId: string;
   facilityCycleId: string;
   investigationId: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatasetsTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -56,7 +54,6 @@ interface ISISDatasetsTableStoreProps {
   allIds: number[];
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatasetsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
@@ -106,11 +103,11 @@ const ISISDatasetsTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'dataset' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -144,7 +141,7 @@ const ISISDatasetsTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+      loadMoreRows={(params) => fetchData(parseInt(investigationId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -192,7 +189,7 @@ const ISISDatasetsTable = (
         {
           label: 'Size',
           dataKey: 'SIZE',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
           disableSort: true,

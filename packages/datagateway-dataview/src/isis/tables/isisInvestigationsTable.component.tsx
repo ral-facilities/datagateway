@@ -28,13 +28,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsTableProps {
   instrumentId: string;
   facilityCycleId: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -50,7 +48,6 @@ interface ISISInvestigationsTableStoreProps {
   allIds: number[];
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
@@ -98,11 +95,11 @@ const ISISInvestigationsTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'investigation' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -141,7 +138,7 @@ const ISISInvestigationsTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params =>
+      loadMoreRows={(params) =>
         fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
       }
       totalRowCount={totalDataCount}
@@ -219,7 +216,7 @@ const ISISInvestigationsTable = (
         {
           label: 'Size',
           dataKey: 'SIZE',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
           disableSort: true,

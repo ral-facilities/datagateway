@@ -71,7 +71,7 @@ const DatafileDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'parameters'}
         >
-          {datafileData.DATAFILEPARAMETER.map(parameter => {
+          {datafileData.DATAFILEPARAMETER.map((parameter) => {
             if (parameter.PARAMETERTYPE) {
               switch (parameter.PARAMETERTYPE.VALUETYPE) {
                 case 'STRING':

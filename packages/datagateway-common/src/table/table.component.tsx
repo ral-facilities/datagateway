@@ -176,7 +176,7 @@ const VirtualizedTable = (
           >
             {({ onRowsRendered, registerChild }) => (
               <Table
-                ref={ref => {
+                ref={(ref) => {
                   tableRef = ref;
                   registerChild(ref);
                 }}
@@ -199,7 +199,7 @@ const VirtualizedTable = (
                   )
                 }
                 rowGetter={({ index }) => data[index]}
-                rowRenderer={props => {
+                rowRenderer={(props) => {
                   if (detailsPanel && props.index === expandedIndex) {
                     return (
                       <DetailsPanelRow
@@ -220,7 +220,7 @@ const VirtualizedTable = (
                     flexShrink={0}
                     key="Select"
                     dataKey="Select"
-                    headerRenderer={props => (
+                    headerRenderer={(props) => (
                       <SelectHeader
                         {...props}
                         className={clsx(
@@ -231,7 +231,7 @@ const VirtualizedTable = (
                         totalRowCount={rowCount}
                         allIds={
                           allIds ||
-                          data.map(d => {
+                          data.map((d) => {
                             const icatEntity = d as ICATEntity;
                             return icatEntity.ID;
                           })
@@ -243,7 +243,7 @@ const VirtualizedTable = (
                     )}
                     className={classes.flexContainer}
                     headerClassName={classes.flexContainer}
-                    cellRenderer={props => (
+                    cellRenderer={(props) => (
                       <SelectCell
                         {...props}
                         selectedRows={selectedRows}
@@ -281,7 +281,7 @@ const VirtualizedTable = (
                     )}
                     className={classes.flexContainer}
                     headerClassName={classes.flexContainer}
-                    cellRenderer={props => (
+                    cellRenderer={(props) => (
                       <ExpandCell
                         {...props}
                         expandedIndex={expandedIndex}
@@ -312,7 +312,7 @@ const VirtualizedTable = (
                         dataKey={dataKey}
                         label={label}
                         disableSort={disableSort}
-                        headerRenderer={headerProps => (
+                        headerRenderer={(headerProps) => (
                           <DataHeader
                             {...headerProps}
                             className={clsx(
@@ -324,7 +324,7 @@ const VirtualizedTable = (
                             filterComponent={
                               filterComponent && filterComponent(label, dataKey)
                             }
-                            resizeColumn={deltaX => {
+                            resizeColumn={(deltaX) => {
                               const columnDataKeys = Object.keys(widths);
                               const percentDelta = deltaX / dataColumnsWidth;
                               const dividedPercentDelta =
@@ -347,7 +347,7 @@ const VirtualizedTable = (
                           />
                         )}
                         className={clsx(classes.flexContainer, className)}
-                        cellRenderer={props => (
+                        cellRenderer={(props) => (
                           <DataCell
                             {...props}
                             cellContentRenderer={cellContentRenderer}
@@ -368,7 +368,7 @@ const VirtualizedTable = (
                     key="Actions"
                     dataKey="actions"
                     className={classes.flexContainer}
-                    headerRenderer={headerProps => (
+                    headerRenderer={(headerProps) => (
                       <TableCell
                         size="small"
                         component="div"
@@ -381,7 +381,7 @@ const VirtualizedTable = (
                         Actions
                       </TableCell>
                     )}
-                    cellRenderer={props => (
+                    cellRenderer={(props) => (
                       <ActionCell
                         {...props}
                         actions={actions}

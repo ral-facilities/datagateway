@@ -134,10 +134,7 @@ describe('Datafile details panel component', () => {
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
-    wrapper
-      .find('#datafile-parameters-tab')
-      .hostNodes()
-      .simulate('click');
+    wrapper.find('#datafile-parameters-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });

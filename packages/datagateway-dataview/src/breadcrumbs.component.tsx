@@ -224,12 +224,12 @@ class PageBreadcrumbs extends React.Component<
   }
 
   public componentDidMount(): void {
-    this.currentPathnames = this.props.location.split('/').filter(x => x);
+    this.currentPathnames = this.props.location.split('/').filter((x) => x);
     this.updateBreadcrumbState();
   }
 
   public componentDidUpdate(prevProps: PageBreadcrumbsProps): void {
-    this.currentPathnames = this.props.location.split('/').filter(x => x);
+    this.currentPathnames = this.props.location.split('/').filter((x) => x);
 
     // If the location has changed, then update the breadcrumb state.
     if (prevProps.location !== this.props.location) {
@@ -422,7 +422,7 @@ class PageBreadcrumbs extends React.Component<
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         // Return the property in the data received.
         return response.data[entityField];
       });

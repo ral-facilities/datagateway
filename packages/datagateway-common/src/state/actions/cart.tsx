@@ -59,10 +59,10 @@ export const fetchDownloadCart = (): ThunkResult<Promise<void>> => {
           sessionId: readSciGatewayToken().sessionId,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDownloadCartSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDownloadCartFailure(error.message));
       });
@@ -110,10 +110,10 @@ export const addToCart = (
     // TODO: get facility name from somewhere else...
     await axios
       .post(`${downloadApiUrl}/user/cart/LILS/cartItems`, params)
-      .then(response => {
+      .then((response) => {
         dispatch(addToCartSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(addToCartFailure(error.message));
       });
@@ -159,10 +159,10 @@ export const removeFromCart = (
           items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(removeFromCartSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(removeFromCartFailure(error.message));
       });
@@ -211,7 +211,7 @@ export const fetchAllIds = (
 
     const params = getApiFilter(getState);
     if (additionalFilters) {
-      additionalFilters.forEach(filter => {
+      additionalFilters.forEach((filter) => {
         params.append(filter.filterType, filter.filterValue);
       });
     }
@@ -239,15 +239,15 @@ export const fetchAllIds = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(
           fetchAllIdsSuccess(
-            response.data.map(x => x.ID),
+            response.data.map((x) => x.ID),
             timestamp
           )
         );
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchAllIdsFailure(error.message));
       });
@@ -280,15 +280,15 @@ export const fetchAllISISInvestigationIds = (
           },
         }
       )
-      .then(response => {
+      .then((response) => {
         dispatch(
           fetchAllIdsSuccess(
-            response.data.map(x => x.ID),
+            response.data.map((x) => x.ID),
             timestamp
           )
         );
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchAllIdsFailure(error.message));
       });

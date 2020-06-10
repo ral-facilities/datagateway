@@ -25,7 +25,7 @@ describe('withIdCheck', () => {
   const rejectedPromiseMock = jest.fn().mockRejectedValue('');
 
   const mockUseEffect = (): void => {
-    useEffect.mockImplementationOnce(f => f());
+    useEffect.mockImplementationOnce((f) => f());
   };
 
   beforeEach(() => {

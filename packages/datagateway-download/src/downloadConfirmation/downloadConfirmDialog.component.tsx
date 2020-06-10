@@ -259,19 +259,19 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     async function getStatus(): Promise<void> {
       const statusErrors: string[] = [];
       Promise.all(
-        Object.keys(statusMethods).map(method =>
+        Object.keys(statusMethods).map((method) =>
           getDownloadTypeStatus(method, {
             facilityName: settings.facilityName,
             downloadApiUrl: settings.downloadApiUrl,
           })
         )
-      ).then(methodStatuses => {
+      ).then((methodStatuses) => {
         // Loop through all the current access methods and match that
         // to the status information we received for each.
         Object.keys(statusMethods).forEach((method, index) => {
           const status = methodStatuses[index];
           if (status) {
-            setStatusMethods(prevState => {
+            setStatusMethods((prevState) => {
               return {
                 ...prevState,
                 [method]: {
@@ -283,7 +283,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               };
             });
           } else {
-            setStatusMethods(prevState => {
+            setStatusMethods((prevState) => {
               return {
                 ...prevState,
                 [method]: {
@@ -367,10 +367,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
   const getDefaultFileName = (): string => {
     const now = new Date();
-    const defaultName = `${
-      settings.facilityName
-    }_${now.getFullYear()}-${now.getMonth() +
-      1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+    const defaultName = `${settings.facilityName}_${now.getFullYear()}-${
+      now.getMonth() + 1
+    }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
 
     return defaultName;
   };
@@ -481,7 +480,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     inputProps={{
                       maxLength: 255,
                     }}
-                    onChange={e => {
+                    onChange={(e) => {
                       setDownloadName(e.target.value as string);
                     }}
                     helperText="Enter a custom file name or leave as the default format (facility_date_time)."
@@ -507,7 +506,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       defaultValue={`${
                         methodsUnavailable ? '' : selectedMethod
                       }`}
-                      onChange={e => {
+                      onChange={(e) => {
                         if (!methodsUnavailable)
                           // Material UI select is not a real select element, so needs casting.
                           setSelectedMethod(e.target.value as string);
@@ -622,7 +621,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     inputProps={{
                       maxLength: 254,
                     }}
-                    onChange={e => {
+                    onChange={(e) => {
                       // Remove whitespaces and allow for the email to be optional.
                       const email = (e.target.value as string).trim();
                       if (email) {

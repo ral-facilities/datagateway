@@ -18,8 +18,8 @@ const generateClassName = createGenerateClassName({
     process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
 });
 
-class App extends Component<{}, { hasError: boolean }> {
-  public constructor(props: {}) {
+class App extends Component<unknown, { hasError: boolean }> {
+  public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
   }

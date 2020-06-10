@@ -757,7 +757,7 @@ describe('Download Cart API functions test', () => {
     it('returns an accurate size of a given cart', async () => {
       axios.get = jest
         .fn()
-        .mockImplementation(path => {
+        .mockImplementation((path) => {
           if (path.includes('datafiles/')) {
             return Promise.resolve({
               data: {

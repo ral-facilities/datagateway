@@ -48,7 +48,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           maxDateMessage="Invalid date range"
           format="yyyy-MM-dd"
           value={startDate}
-          onChange={date => {
+          onChange={(date) => {
             selectStartDate(date);
           }}
           animateYearScrolling
@@ -65,7 +65,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           minDateMessage="Invalid date range"
           format="yyyy-MM-dd"
           value={endDate}
-          onChange={date => {
+          onChange={(date) => {
             selectEndDate(date);
           }}
           animateYearScrolling

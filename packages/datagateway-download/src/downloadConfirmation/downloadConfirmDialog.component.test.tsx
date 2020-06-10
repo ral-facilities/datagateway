@@ -149,10 +149,7 @@ describe('DownloadConfirmDialog', () => {
     // Change the value of the dropdown access method list.
     expect(wrapper.exists('[role="button"]#confirm-access-method')).toBe(true);
     wrapper.find('[role="button"]#confirm-access-method').simulate('click');
-    wrapper
-      .find(MenuItem)
-      .at(1)
-      .simulate('click');
+    wrapper.find(MenuItem).at(1).simulate('click');
 
     // Ensure that the download button is disabled for the selected access method.
     expect(
@@ -205,12 +202,7 @@ describe('DownloadConfirmDialog', () => {
     // Ensure the access method for which we did not receive a status response has been disabled.
     expect(wrapper.exists('[role="button"]#confirm-access-method')).toBe(true);
     wrapper.find('[role="button"]#confirm-access-method').simulate('click');
-    expect(
-      wrapper
-        .find(MenuItem)
-        .at(1)
-        .prop('disabled')
-    ).toBe(true);
+    expect(wrapper.find(MenuItem).at(1).prop('disabled')).toBe(true);
 
     // Ensure the download button is present and it is disabled.
     expect(wrapper.exists('button#download-confirmation-download')).toBe(true);
@@ -369,10 +361,7 @@ describe('DownloadConfirmDialog', () => {
     // Change the value of the dropdown access method list.
     expect(wrapper.exists('[role="button"]#confirm-access-method')).toBe(true);
     wrapper.find('[role="button"]#confirm-access-method').simulate('click');
-    wrapper
-      .find(MenuItem)
-      .at(1)
-      .simulate('click');
+    wrapper.find(MenuItem).at(1).simulate('click');
 
     expect(wrapper.exists('input#confirm-download-email')).toBe(true);
     const emailAddress = wrapper.find('input#confirm-download-email');

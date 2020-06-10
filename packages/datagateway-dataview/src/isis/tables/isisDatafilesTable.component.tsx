@@ -31,12 +31,10 @@ import DatafileDetailsPanel from '../detailsPanels/datafileDetailsPanel.componen
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatafilesTableProps {
   datasetId: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatafilesTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -52,7 +50,6 @@ interface ISISDatafilesTableStoreProps {
   allIds: number[];
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatafilesTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
@@ -98,11 +95,11 @@ const ISISDatafilesTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'datafile' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -136,7 +133,7 @@ const ISISDatafilesTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+      loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -188,7 +185,7 @@ const ISISDatafilesTable = (
         {
           label: 'Size',
           dataKey: 'FILESIZE',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
           filterComponent: textFilter,

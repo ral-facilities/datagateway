@@ -97,10 +97,7 @@ describe('Instrument details panel component', () => {
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
-    wrapper
-      .find('#instrument-users-tab')
-      .hostNodes()
-      .simulate('click');
+    wrapper.find('#instrument-users-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });

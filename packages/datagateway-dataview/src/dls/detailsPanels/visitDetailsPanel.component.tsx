@@ -127,7 +127,7 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          {investigationData.INVESTIGATIONUSER.map(investigationUser => {
+          {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
             if (investigationUser.USER_) {
               return (
                 <Typography key={investigationUser.USER_ID} variant="body2">
@@ -149,7 +149,7 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'samples'}
         >
-          {investigationData.SAMPLE.map(sample => {
+          {investigationData.SAMPLE.map((sample) => {
             return (
               <Typography key={sample.ID} variant="body2">
                 <b>Sample:</b> {sample.NAME}
@@ -165,7 +165,7 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'publications'}
         >
-          {investigationData.PUBLICATION.map(publication => {
+          {investigationData.PUBLICATION.map((publication) => {
             return (
               <Typography key={publication.ID} variant="body2">
                 <b>Reference:</b> {publication.FULLREFERENCE}

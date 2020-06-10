@@ -24,7 +24,7 @@ describe('Text filter component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('calls the onChange method once when input is typed and calls again by debounced function after timeout', done => {
+  it('calls the onChange method once when input is typed and calls again by debounced function after timeout', (done) => {
     const onChange = jest.fn();
 
     const wrapper = mount(
