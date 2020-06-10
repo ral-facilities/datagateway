@@ -40,7 +40,7 @@ const DLSProposalsCardView = (
       fetchCount();
       setFetchedCount(true);
     }
-  }, [data, fetchedCount, fetchCount, setFetchedCount]);
+  }, [fetchedCount, fetchCount, setFetchedCount]);
 
   return (
     <CardView
