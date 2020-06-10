@@ -192,6 +192,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       setFetchedPaginated(false);
     }
 
+    // Handle count and reloading of data based on pagination options.
     if (fetchPaginated) {
       if (totalDataCount > 0 && totalDataCount !== dataCount) {
         setDataCount(totalDataCount);
@@ -200,10 +201,12 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     } else {
       if (data.length > 0 && data.length !== dataCount) {
         setDataCount(data.length);
-        setLoadedData(false);
       }
+      // Reload data if we are not fetching via pagination
+      // as data can be changed at any time as it only passed in.
+      setLoadedData(false);
     }
-  }, [paginatedFetch, fetchPaginated, totalDataCount, dataCount, data.length]);
+  }, [paginatedFetch, fetchPaginated, totalDataCount, dataCount, data]);
 
   // TODO: If fetchPaginated is false, data will only be set to view data once.
   React.useEffect(() => {
