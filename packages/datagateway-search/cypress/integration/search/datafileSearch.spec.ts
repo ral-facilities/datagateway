@@ -29,8 +29,19 @@ describe('Datafile search tab', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 4961');
   });
 
-  it.skip('should be able to search by date range', () => {
-    // TODO
+  it('should be able to search by date range', () => {
+    cy.get('[aria-label="start date input"]').type('2012-02-02');
+    cy.get('[aria-label="end date input"]').type('2012-02-03');
+
+    cy.get('[aria-label="submit search button"]').click();
+
+    cy.get('[aria-label="simple tabs example"]')
+      .contains('Datafile')
+      .click();
+
+    cy.get('[aria-rowcount="4"]').should('exist');
+
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 120');
   });
 
   it('should be hidden if dataset checkbox is unchecked', () => {
