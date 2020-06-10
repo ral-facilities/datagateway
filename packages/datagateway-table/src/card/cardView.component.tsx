@@ -38,6 +38,19 @@ import {
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 
+// TODO: Get the nested value from an Entity object given a dataKey
+//       which drills specifies the property or array indexes.
+export const nestedValue = (data: Entity, dataKey: string): string => {
+  const v = dataKey.split(/[.[\]]+/).reduce(function(prev, curr) {
+    return prev ? prev[curr] : null;
+  }, data);
+  if (v) {
+    return v.toString();
+  } else {
+    return '';
+  }
+};
+
 // TODO: Will require sort/filters?
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -294,19 +307,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     loading,
   ]);
 
-  // TODO: Get the nested value from an Entity object given a dataKey
-  //       which drills specifies the property or array indexes.
-  const nestedValue = (data: Entity, dataKey: string): string => {
-    const v = dataKey.split(/[.[\]]+/).reduce(function(prev, curr) {
-      return prev ? prev[curr] : null;
-    }, data);
-    if (v) {
-      return v.toString();
-    } else {
-      return '';
-    }
-  };
-
   return (
     <Grid container direction="column" alignItems="center">
       <Grid container direction="row" justify="center">
@@ -463,6 +463,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       image={image}
                       // Pass in the react nodes with the data to the card.
                       buttons={buttons && buttons.map(button => button(data))}
+                      // Pass tag names to the card given the specified data key for the filter.
+                      tags={
+                        filters &&
+                        filters.map(f => nestedValue(data, f.dataKey))
+                      }
                     />
                   </ListItem>
                 );

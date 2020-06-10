@@ -139,7 +139,11 @@ const ISISInvestigationsCardView = (
       totalDataCount={totalDataCount}
       // TODO: Remove dataKey from filters.
       filters={[
-        { label: 'Instrument', dataKey: 'TYPE_ID', filterItems: filteredItems },
+        {
+          label: 'Instrument',
+          dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME',
+          filterItems: filteredItems,
+        },
       ]}
       title={{
         dataKey: 'TITLE',

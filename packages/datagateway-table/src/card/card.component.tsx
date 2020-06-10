@@ -8,18 +8,12 @@ import {
   Typography,
   Chip,
   Divider,
-  // Button,
   Collapse,
   Link,
 } from '@material-ui/core';
-// import {
-//   AddCircleOutlineOutlined,
-//   RemoveCircleOutlineOutlined,
-// } from '@material-ui/icons';
 
 import ArrowTooltip from '../page/arrowtooltip.component';
 
-// TODO: Understand CSS flexbox to style this correctly OR use Grid/GridList instead of Card?
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
@@ -137,18 +131,15 @@ export interface EntityCardDetails {
 }
 
 interface EntityCardProps {
-  // TODO: Minimum information -
-  //       test how card appears when optional info is not provided.
+  // TODO: Test how card appears when optional info is not provided.
   title: EntityCardDetails;
 
   description?: string;
   furtherInformation?: EntityCardDetails[];
   buttons?: React.ReactNode[];
 
-  // TODO: Optional and no information to create these;
-  //       tags may be created from instrument information for ISIS.
   image?: EntityImageDetails;
-  tags?: typeof Chip[];
+  tags?: string[];
 }
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
@@ -158,13 +149,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     description,
     furtherInformation,
     buttons,
-
-    // TODO: image, tags need to be clarified as
-    //       to how they will be provided.
     image,
     tags,
   } = props;
-  // console.log('Further information in card: ', furtherInformation);
 
   // TODO: Should be configurable from card view?
   //       The default collapsed height for card description is 100px.
@@ -272,12 +259,14 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
 
               {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
               <div style={{ paddingTop: '10px' }}>
-                <Chip className={classes.chip} label="particle" size="small" />
-                <Chip
-                  className={classes.chip}
-                  label="experiment"
-                  size="small"
-                />
+                {tags.map((v, i) => (
+                  <Chip
+                    key={i}
+                    className={classes.chip}
+                    label={v}
+                    size="medium"
+                  />
+                ))}
               </div>
             </div>
           )}
