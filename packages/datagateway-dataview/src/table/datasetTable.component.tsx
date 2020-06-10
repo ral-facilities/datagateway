@@ -88,11 +88,11 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'dataset' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -126,7 +126,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+      loadMoreRows={(params) => fetchData(parseInt(investigationId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -151,7 +151,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         {
           label: 'Name',
           dataKey: 'NAME',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             const datasetData = props.rowData as Dataset;
             return datasetLink(
               investigationId,

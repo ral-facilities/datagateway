@@ -232,15 +232,9 @@ describe('DLS Visits table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="Show details"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
-    wrapper
-      .find('#calculate-size-btn')
-      .first()
-      .simulate('click');
+    wrapper.find('#calculate-size-btn').first().simulate('click');
 
     expect(testStore.getActions()[2]).toEqual(fetchInvestigationSizeRequest());
   });
@@ -255,10 +249,7 @@ describe('DLS Visits table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=2]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=2]').find('p').children()
     ).toMatchSnapshot();
   });
 
@@ -281,11 +272,6 @@ describe('DLS Visits table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=4]')
-        .find('p')
-        .text()
-    ).toEqual('');
+    expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
   });
 });

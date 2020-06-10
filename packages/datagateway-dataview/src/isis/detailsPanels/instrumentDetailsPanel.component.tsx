@@ -77,7 +77,7 @@ const InstrumentDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          {instrumentData.INSTRUMENTSCIENTIST.map(instrumentScientist => {
+          {instrumentData.INSTRUMENTSCIENTIST.map((instrumentScientist) => {
             if (instrumentScientist.USER_) {
               return (
                 <Typography key={instrumentScientist.USER_ID} variant="body2">

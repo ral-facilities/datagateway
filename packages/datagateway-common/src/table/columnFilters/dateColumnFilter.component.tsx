@@ -76,7 +76,7 @@ const DateColumnFilter = (props: {
           views={['year', 'month', 'date']}
           maxDate={endDate || new Date('2100-01-01')}
           maxDateMessage="Invalid date range"
-          onChange={date => {
+          onChange={(date) => {
             updateFilter({
               date,
               prevDate: startDate,
@@ -97,7 +97,7 @@ const DateColumnFilter = (props: {
           views={['year', 'month', 'date']}
           minDate={startDate || new Date('1900-01-01')}
           minDateMessage="Invalid date range"
-          onChange={date => {
+          onChange={(date) => {
             updateFilter({
               date,
               prevDate: endDate,

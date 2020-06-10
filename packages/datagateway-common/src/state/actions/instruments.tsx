@@ -77,10 +77,10 @@ export const fetchInstruments = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInstrumentsSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInstrumentsFailure(error.message));
       });
@@ -132,10 +132,10 @@ export const fetchInstrumentCount = (): ThunkResult<Promise<void>> => {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInstrumentCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInstrumentCountFailure(error.message));
       });
@@ -184,10 +184,10 @@ export const fetchInstrumentDetails = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInstrumentDetailsSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInstrumentDetailsFailure(error.message));
       });

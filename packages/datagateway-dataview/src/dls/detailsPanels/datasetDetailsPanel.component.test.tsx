@@ -109,10 +109,7 @@ describe('Dataset details panel component', () => {
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
-    wrapper
-      .find('#dataset-type-tab')
-      .hostNodes()
-      .simulate('click');
+    wrapper.find('#dataset-type-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });

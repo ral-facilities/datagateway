@@ -185,10 +185,7 @@ describe('ISIS Instruments table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=2]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=2]').find('p').children()
     ).toMatchSnapshot();
   });
 });

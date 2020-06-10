@@ -12,7 +12,7 @@
   },
   "scripts": {
     "prepare": "lerna run prepare",
-    "lint": "lerna run lint:js -- -- --max-warnings=0",
+    "lint": "lerna run lint:js -- --max-warnings=0",
     "tsc": "lerna run tsc",
     "test": "yarn test:unit && yarn test:e2e",
     "test:unit": "lerna run test --stream",

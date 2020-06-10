@@ -117,10 +117,10 @@ export const fetchDatasetSize = (
             entityId: datasetId,
           },
         })
-        .then(response => {
+        .then((response) => {
           dispatch(fetchDatasetSizeSuccess(datasetId, response.data));
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchDatasetSizeFailure(error.message));
         });
@@ -167,7 +167,7 @@ export const fetchDatasets = ({
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatasetsSuccess(response.data, timestamp));
         if (optionalParams) {
           if (optionalParams.getDatafileCount) {
@@ -189,7 +189,7 @@ export const fetchDatasets = ({
           }
         }
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatasetsFailure(error.message));
       });
@@ -247,10 +247,10 @@ export const fetchDatasetCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatasetCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatasetCountFailure(error.message));
       });
@@ -378,7 +378,7 @@ export const fetchInvestigationDatasetsCount = (
           },
           cancelToken: source.token,
         })
-        .then(response => {
+        .then((response) => {
           dispatch(
             fetchInvestigationDatasetsCountSuccess(
               investigationId,
@@ -387,7 +387,7 @@ export const fetchInvestigationDatasetsCount = (
             )
           );
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchInvestigationDatasetsCountFailure(error.message));
         });
@@ -437,10 +437,10 @@ export const fetchDatasetDetails = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatasetDetailsSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatasetDetailsFailure(error.message));
       });

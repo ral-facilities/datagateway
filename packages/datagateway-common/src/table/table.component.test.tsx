@@ -136,54 +136,31 @@ describe('Table component', () => {
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(0)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('400px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(1)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(1).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('400px'),
       })
     );
 
     ReactTestUtils.act(() => {
-      wrapper
-        .find('DataHeader')
-        .at(0)
-        .prop('resizeColumn')(50);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(50);
     });
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(0)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('450px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(1)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(1).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('350px'),
       })
@@ -206,54 +183,31 @@ describe('Table component', () => {
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(2)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('325px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(3)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(3).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('325px'),
       })
     );
 
     ReactTestUtils.act(() => {
-      wrapper
-        .find('DataHeader')
-        .at(0)
-        .prop('resizeColumn')(40);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(40);
     });
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(2)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('365px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(3)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(3).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('285px'),
       })
@@ -284,17 +238,11 @@ describe('Table component', () => {
       />
     );
 
-    wrapper
-      .find('[aria-label="Show details"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
     expect(wrapper.exists('#details-panel')).toBe(true);
 
-    wrapper
-      .find('[aria-label="Hide details"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="Hide details"]').first().simulate('click');
 
     expect(wrapper.exists('#details-panel')).toBe(false);
   });
@@ -317,12 +265,7 @@ describe('Table component', () => {
 
     expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
     expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .last()
-        .children()
-        .find('div')
-        .text()
+      wrapper.find('[role="columnheader"]').last().children().find('div').text()
     ).toEqual('Actions');
     expect(wrapper.find('button').text()).toEqual('I am an action');
   });

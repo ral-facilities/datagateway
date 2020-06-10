@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 export default {
-  get: jest.fn(path => {
+  get: jest.fn((path) => {
     if (path === '/datagateway-dataview-settings.json') {
       return Promise.resolve({
         data: {

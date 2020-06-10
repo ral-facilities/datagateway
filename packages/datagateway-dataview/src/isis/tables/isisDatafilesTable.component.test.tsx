@@ -189,10 +189,7 @@ describe('ISIS datafiles table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(addToCartRequest());
   });
@@ -217,10 +214,7 @@ describe('ISIS datafiles table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
   });
@@ -328,11 +322,6 @@ describe('ISIS datafiles table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=5]')
-        .find('p')
-        .text()
-    ).toEqual('1 B');
+    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
   });
 });

@@ -87,10 +87,10 @@ export const fetchDatafiles = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatafilesSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatafilesFailure(error.message));
       });
@@ -145,10 +145,10 @@ export const fetchDatafileCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatafileCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatafileCountFailure(error.message));
       });
@@ -221,7 +221,7 @@ export const fetchDatasetDatafilesCount = (
           },
           cancelToken: source.token,
         })
-        .then(response => {
+        .then((response) => {
           dispatch(
             fetchDatasetDatafilesCountSuccess(
               datasetId,
@@ -230,7 +230,7 @@ export const fetchDatasetDatafilesCount = (
             )
           );
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchDatasetDatafilesCountFailure(error.message));
         });
@@ -282,10 +282,10 @@ export const fetchDatafileDetails = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatafileDetailsSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatafileDetailsFailure(error.message));
       });

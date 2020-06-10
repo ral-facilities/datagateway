@@ -73,10 +73,10 @@ export const fetchFacilityCycles = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchFacilityCyclesSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchFacilityCyclesFailure(error.message));
       });
@@ -130,10 +130,10 @@ export const fetchFacilityCycleCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchFacilityCycleCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchFacilityCycleCountFailure(error.message));
       });

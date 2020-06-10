@@ -12,7 +12,7 @@ const DataCell = (props: CellRendererProps): React.ReactElement => {
   const { className, dataKey, rowData, cellContentRenderer } = props;
 
   // use . in dataKey name to drill down into nested row data
-  const cellValue = dataKey.split('.').reduce(function(prev, curr) {
+  const cellValue = dataKey.split('.').reduce(function (prev, curr) {
     return prev ? prev[curr] : null;
   }, rowData);
 

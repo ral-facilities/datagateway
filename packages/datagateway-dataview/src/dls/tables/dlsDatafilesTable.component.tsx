@@ -86,11 +86,11 @@ const DLSDatafilesTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'datafile' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -124,7 +124,7 @@ const DLSDatafilesTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+      loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -165,7 +165,7 @@ const DLSDatafilesTable = (
         {
           label: 'Size',
           dataKey: 'FILESIZE',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
           filterComponent: textFilter,

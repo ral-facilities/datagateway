@@ -34,7 +34,7 @@ export const checkInvestigationId = (
     .then((response: AxiosResponse<Dataset>) => {
       return response.data.INVESTIGATION_ID === investigationId;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
       return false;
     });
@@ -64,7 +64,7 @@ export const checkInstrumentAndFacilityCycleId = (
     .then((response: AxiosResponse<Investigation[]>) => {
       return response.data.length > 0;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
       return false;
     });
@@ -83,7 +83,7 @@ export const checkProposalName = (
     .then((response: AxiosResponse<Investigation>) => {
       return response.data.NAME === proposalName;
     })
-    .catch(error => {
+    .catch((error) => {
       handleICATError(error);
       return false;
     });

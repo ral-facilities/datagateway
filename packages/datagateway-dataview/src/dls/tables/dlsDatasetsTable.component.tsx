@@ -96,11 +96,11 @@ const DLSDatasetsTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'dataset' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -134,7 +134,7 @@ const DLSDatasetsTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(parseInt(investigationId), params)}
+      loadMoreRows={(params) => fetchData(parseInt(investigationId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}

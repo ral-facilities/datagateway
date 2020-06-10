@@ -22,7 +22,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import InstrumentDetailsPanel from '../detailsPanels/instrumentDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInstrumentsTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -36,7 +35,6 @@ interface ISISInstrumentsTableStoreProps {
   error: string | null;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInstrumentsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;

@@ -52,7 +52,7 @@ class ConfigProvider extends React.Component<
   private updateConfigurationState = async (): Promise<void> => {
     const settings = await axios
       .get<DownloadSettings>('/datagateway-download-settings.json')
-      .then(res => {
+      .then((res) => {
         const settings = res.data;
 
         if (typeof settings !== 'object') {
@@ -99,7 +99,7 @@ class ConfigProvider extends React.Component<
 
         return settings;
       })
-      .catch(error => {
+      .catch((error) => {
         log.error(
           `Error loading datagateway-download-settings.json: ${error.message}`
         );

@@ -37,4 +37,4 @@ export const dispatch = (action: Action): void | Promise<void> => {
 export const flushPromises = (): Promise<void> => new Promise(setImmediate);
 
 // Mock lodash.debounce to return the function we want to call.
-jest.mock('lodash.debounce', () => (fn: Function) => fn);
+jest.mock('lodash.debounce', () => (fn: (args: unknown) => unknown) => fn);

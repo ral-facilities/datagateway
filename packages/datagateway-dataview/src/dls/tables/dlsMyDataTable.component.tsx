@@ -102,7 +102,7 @@ const DLSMyDataTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(username, params)}
+      loadMoreRows={(params) => fetchData(username, params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}

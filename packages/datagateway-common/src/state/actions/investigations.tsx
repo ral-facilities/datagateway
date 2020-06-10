@@ -114,12 +114,12 @@ export const fetchInvestigationSize = (
             entityId: investigationId,
           },
         })
-        .then(response => {
+        .then((response) => {
           dispatch(
             fetchInvestigationSizeSuccess(investigationId, response.data)
           );
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchInvestigationSizeFailure(error.message));
         });
@@ -162,7 +162,7 @@ export const fetchInvestigations = (
     const { apiUrl } = getState().dgcommon.urls;
 
     if (optionalParams && optionalParams.additionalFilters) {
-      optionalParams.additionalFilters.forEach(filter => {
+      optionalParams.additionalFilters.forEach((filter) => {
         params.append(filter.filterType, filter.filterValue);
       });
     }
@@ -174,7 +174,7 @@ export const fetchInvestigations = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
         if (optionalParams) {
           if (optionalParams.getDatasetCount) {
@@ -193,7 +193,7 @@ export const fetchInvestigations = (
           }
         }
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
@@ -245,7 +245,7 @@ export const fetchISISInvestigations = ({
           },
         }
       )
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
 
         // Once investigation has been fetched successfully,
@@ -258,7 +258,7 @@ export const fetchISISInvestigations = ({
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
@@ -330,10 +330,10 @@ export const fetchInvestigationDetails = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationDetailsSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationDetailsFailure(error.message));
       });
@@ -362,7 +362,7 @@ export const fetchInvestigationCount = (
     const params = getApiFilter(getState);
 
     if (additionalFilters) {
-      additionalFilters.forEach(filter => {
+      additionalFilters.forEach((filter) => {
         params.append(filter.filterType, filter.filterValue);
       });
     }
@@ -378,10 +378,10 @@ export const fetchInvestigationCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });
@@ -411,10 +411,10 @@ export const fetchISISInvestigationCount = (
           },
         }
       )
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });

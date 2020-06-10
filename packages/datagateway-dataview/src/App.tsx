@@ -93,8 +93,8 @@ function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
 
 export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
-class App extends React.Component<{}, { hasError: boolean }> {
-  public constructor(props: {}) {
+class App extends React.Component<unknown, { hasError: boolean }> {
+  public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
   }

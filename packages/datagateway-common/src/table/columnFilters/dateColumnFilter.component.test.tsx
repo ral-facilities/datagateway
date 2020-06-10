@@ -292,11 +292,8 @@ describe('Date filter component', () => {
     endDateFilterInput.simulate('change');
 
     expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-    expect(
-      wrapper
-        .find('p.Mui-error')
-        .first()
-        .text()
-    ).toEqual('Invalid date range');
+    expect(wrapper.find('p.Mui-error').first().text()).toEqual(
+      'Invalid date range'
+    );
   });
 });

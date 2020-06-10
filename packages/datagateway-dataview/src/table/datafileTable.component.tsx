@@ -91,11 +91,11 @@ const DatafileTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'datafile' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -129,7 +129,7 @@ const DatafileTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(parseInt(datasetId), params)}
+      loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -187,7 +187,7 @@ const DatafileTable = (
         {
           label: 'Size',
           dataKey: 'FILESIZE',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
         },

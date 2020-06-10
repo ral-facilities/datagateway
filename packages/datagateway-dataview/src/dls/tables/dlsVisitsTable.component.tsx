@@ -101,7 +101,7 @@ const DLSVisitsTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(proposalName, params)}
+      loadMoreRows={(params) => fetchData(proposalName, params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}

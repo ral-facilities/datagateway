@@ -53,7 +53,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         fetchDownloads({
           facilityName: settings.facilityName,
           downloadApiUrl: settings.downloadApiUrl,
-        }).then(downloads => {
+        }).then((downloads) => {
           setData([...downloads].reverse());
           setDataLoaded(true);
 
@@ -119,7 +119,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   // Handle filtering for both text and date filters.
   const sortedAndFilteredData = React.useMemo(() => {
-    const filteredData = data.filter(item => {
+    const filteredData = data.filter((item) => {
       for (const [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (tableValue !== undefined && typeof tableValue === 'string') {
@@ -316,7 +316,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                             downloadApiUrl: settings.downloadApiUrl,
                           }).then(() =>
                             setData(
-                              data.filter(item => item.id !== downloadItem.id)
+                              data.filter((item) => item.id !== downloadItem.id)
                             )
                           ),
                         100

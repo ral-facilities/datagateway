@@ -29,7 +29,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISMyDataTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -45,7 +44,6 @@ interface ISISMyDataTableStoreProps {
   allIds: number[];
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISMyDataTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
@@ -88,11 +86,11 @@ const ISISMyDataTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'investigation' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -130,7 +128,7 @@ const ISISMyDataTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(username, params)}
+      loadMoreRows={(params) => fetchData(username, params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -160,7 +158,7 @@ const ISISMyDataTable = (
               investigationData.FACILITY.FACILITYCYCLE
             ) {
               const facilityCycle = investigationData.FACILITY.FACILITYCYCLE.find(
-                facilitycycle =>
+                (facilitycycle) =>
                   facilitycycle.STARTDATE &&
                   facilitycycle.ENDDATE &&
                   investigationData.STARTDATE &&
@@ -212,7 +210,7 @@ const ISISMyDataTable = (
               investigationData.FACILITY.FACILITYCYCLE
             ) {
               const facilityCycle = investigationData.FACILITY.FACILITYCYCLE.find(
-                facilitycycle =>
+                (facilitycycle) =>
                   facilitycycle.STARTDATE &&
                   facilitycycle.ENDDATE &&
                   investigationData.STARTDATE &&
@@ -251,7 +249,7 @@ const ISISMyDataTable = (
         {
           label: 'Size',
           dataKey: 'SIZE',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
           disableSort: true,

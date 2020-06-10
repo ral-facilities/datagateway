@@ -170,17 +170,11 @@ describe('DLS Proposals table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=2]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=2]').find('p').children()
     ).toMatchSnapshot();
 
     expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=3]').find('p').children()
     ).toMatchSnapshot();
   });
 });

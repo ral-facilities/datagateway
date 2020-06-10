@@ -191,10 +191,7 @@ describe('DLS Dataset table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(addToCartRequest());
   });
@@ -219,10 +216,7 @@ describe('DLS Dataset table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
   });
@@ -307,15 +301,9 @@ describe('DLS Dataset table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="Show details"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
-    wrapper
-      .find('#calculate-size-btn')
-      .first()
-      .simulate('click');
+    wrapper.find('#calculate-size-btn').first().simulate('click');
 
     expect(testStore.getActions()[2]).toEqual(fetchDatasetSizeRequest());
   });
@@ -330,10 +318,7 @@ describe('DLS Dataset table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=3]').find('p').children()
     ).toMatchSnapshot();
   });
 });

@@ -22,12 +22,10 @@ import {
 } from 'datagateway-common';
 import useAfterMountEffect from '../../utils';
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISFacilityCyclesTableProps {
   instrumentId: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISFacilityCyclesTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -41,7 +39,6 @@ interface ISISFacilityCyclesTableStoreProps {
   error: string | null;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISFacilityCyclesTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
   filterTable: (column: string, filter: Filter | null) => Action;
@@ -100,7 +97,7 @@ const ISISFacilityCyclesTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(parseInt(instrumentId), params)}
+      loadMoreRows={(params) => fetchData(parseInt(instrumentId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}

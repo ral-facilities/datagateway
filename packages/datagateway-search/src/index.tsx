@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === `development`) {
         },
       }
     )
-    .then(response => {
+    .then((response) => {
       axios
         .get(`${apiUrl}/sessions`, {
           headers: {
@@ -63,7 +63,7 @@ if (process.env.NODE_ENV === `development`) {
 
           window.localStorage.setItem(MicroFrontendToken, jwt);
         })
-        .catch(error => {
+        .catch((error) => {
           log.error(
             `datagateway-api cannot verify ICAT session id: ${error.message}.
                This is likely caused if datagateway-api is pointing to a
@@ -71,7 +71,7 @@ if (process.env.NODE_ENV === `development`) {
           );
         });
     })
-    .catch(error => log.error(`Can't log in to ICAT: ${error.message}`));
+    .catch((error) => log.error(`Can't log in to ICAT: ${error.message}`));
 }
 
 window.addEventListener('single-spa:routing-event', () => {

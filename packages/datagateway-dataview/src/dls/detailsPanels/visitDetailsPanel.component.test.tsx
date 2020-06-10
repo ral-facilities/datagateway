@@ -159,10 +159,7 @@ describe('Visit details panel component', () => {
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(1);
 
-    wrapper
-      .find('#visit-publications-tab')
-      .hostNodes()
-      .simulate('click');
+    wrapper.find('#visit-publications-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });
