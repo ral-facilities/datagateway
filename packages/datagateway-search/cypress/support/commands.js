@@ -58,12 +58,11 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', (username, password) => {
-  return cy
-    .request('POST', 'http://scigateway-preprod.esc.rl.ac.uk:5000/sessions', {
+  return cy.readFile('server/e2e-settings.json').then(settings => {
+    cy.request('POST', `${settings.apiUrl}/sessions`, {
       username: username,
       password: password,
-    })
-    .then(response => {
+    }).then(response => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
@@ -78,4 +77,5 @@ Cypress.Commands.add('login', (username, password) => {
 
       window.localStorage.setItem('scigateway:token', jwt);
     });
+  });
 });

@@ -11,12 +11,21 @@ import {
   selectStartDate,
   selectEndDate,
 } from '../actions/actions';
+import { settingsLoaded } from '../actions';
 
 describe('dgsearch reducer', () => {
   let state: DGSearchState;
 
   beforeEach(() => {
     state = { ...initialState };
+  });
+
+  it('should set settingsLoaded to true when SettingsLoaded action is sent', () => {
+    expect(state.settingsLoaded).toBe(false);
+
+    const updatedState = DGSearchReducer(state, settingsLoaded());
+
+    expect(updatedState.settingsLoaded).toBe(true);
   });
 
   it('should return state for actions it does not care about', () => {

@@ -19,6 +19,7 @@ import {
   SetDatasetTabType,
   SetDatafileTabType,
   SetInvestigationTabType,
+  SettingsLoadedType,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -44,7 +45,15 @@ export const initialState: DGSearchState = {
     datafile: [],
     investigation: [],
   },
+  settingsLoaded: false,
 };
+
+export function handleSettingsLoaded(state: DGSearchState): DGSearchState {
+  return {
+    ...state,
+    settingsLoaded: true,
+  };
+}
 
 export function handleSearchText(
   state: DGSearchState,
@@ -223,6 +232,7 @@ const DGSearchReducer = createReducer(initialState, {
   [SetDatasetTabType]: handleSetDatasetTab,
   [SetDatafileTabType]: handleSetDatafileTab,
   [SetInvestigationTabType]: handleSetInvestigationTab,
+  [SettingsLoadedType]: handleSettingsLoaded,
 });
 
 export default DGSearchReducer;

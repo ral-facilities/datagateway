@@ -26,6 +26,7 @@ export interface DGSearchState {
     datafileTab: boolean;
     investigationTab: boolean;
   };
+  settingsLoaded: boolean;
 }
 
 export type StateType = {

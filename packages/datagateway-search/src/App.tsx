@@ -9,12 +9,12 @@ import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
-import { DGCommonMiddleware } from 'datagateway-common';
+import { DGCommonMiddleware, Preloader } from 'datagateway-common';
 import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 
@@ -48,6 +48,14 @@ if (process.env.NODE_ENV === `development`) {
   const logger = (createLogger as any)();
   middleware.push(logger);
 }
+
+function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
+  return {
+    loading: !state.dgsearch.settingsLoaded,
+  };
+}
+
+export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -88,7 +96,9 @@ class App extends React.Component<{}, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <SearchPageContainer />
+                <ConnectedPreloader>
+                  <SearchPageContainer />
+                </ConnectedPreloader>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>

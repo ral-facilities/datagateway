@@ -20,8 +20,8 @@ export const SetDatasetTabType = 'datagateway_search:set_dataset_tab';
 export const SetDatafileTabType = 'datagateway_search:set_datafile_tab';
 export const SetInvestigationTabType =
   'datagateway_search:set_investigation_tab';
-export const ConfigureStringsType = 'datagateway_table:configure_strings';
-export const SettingsLoadedType = 'datagateway_table:settings_loaded';
+export const ConfigureStringsType = 'datagateway_search:configure_strings';
+export const SettingsLoadedType = 'datagateway_search:settings_loaded';
 
 export interface ConfigureStringsPayload {
   res: ApplicationStrings;
