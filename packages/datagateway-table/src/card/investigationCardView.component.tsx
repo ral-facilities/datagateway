@@ -1,33 +1,33 @@
-import React from 'react';
-import { IndexRange } from 'react-virtualized';
-import {
-  fetchInvestigationCount,
-  fetchInvestigations,
-  Investigation,
-  investigationLink,
-  addToCart,
-  removeFromCart,
-  DownloadCartItem,
-  Entity,
-} from 'datagateway-common';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
-import { connect } from 'react-redux';
-
-import CardView from './cardView.component';
 import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
+import {
+  addToCart,
+  DownloadCartItem,
+  Entity,
+  fetchFilter,
+  fetchInvestigationCount,
+  fetchInvestigations,
+  Investigation,
+  investigationLink,
+  removeFromCart,
+} from 'datagateway-common';
+import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
+import React from 'react';
+import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import CardView from './cardView.component';
 
 interface InvestigationCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  // fetchFilter: () => Promise<void>;
+  fetchFilter: () => Promise<void>;
 }
 
 interface InvestigationCVStateProps {
@@ -49,11 +49,13 @@ const InvestigationCardView = (
     cartItems,
     fetchData,
     fetchCount,
+    fetchFilter,
     addToCart,
     removeFromCart,
     view,
   } = props;
   const [fetchedCount, setFetchedCount] = React.useState(false);
+  const [fetchedFilter, setFetchedFilter] = React.useState(false);
   const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
 
   const selectedCards = React.useMemo(
@@ -78,7 +80,12 @@ const InvestigationCardView = (
       fetchCount();
       setFetchedCount(true);
     }
-  }, [data, fetchedCount, fetchCount, setFetchedCount]);
+
+    if (!fetchedFilter) {
+      fetchFilter();
+      setFetchedFilter(true);
+    }
+  }, [data, fetchedCount, fetchCount, fetchFilter, fetchedFilter]);
 
   return (
     // TODO: Since CardView is a separate component, we should not couple the data from redux to it,
@@ -188,7 +195,7 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  // fetchFilter: () => dispatch(),
+  fetchFilter: () => dispatch(fetchFilter('investigation', 'TYPE_ID')),
 });
 
 export default connect(

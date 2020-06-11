@@ -1,37 +1,37 @@
+import axios from 'axios';
+import { batch } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import { Action } from 'redux';
+import { getApiFilter, nestedValue } from '.';
+import { Entity, Investigation } from '../../app.types';
+import handleICATError from '../../handleICATError';
+import { readSciGatewayToken } from '../../parseTokens';
+import { ActionType, ThunkResult } from '../app.types';
 import {
-  FetchInvestigationsSuccessType,
-  FetchInvestigationsFailureType,
-  FetchInvestigationsRequestType,
-  FetchDataSuccessPayload,
   FailurePayload,
-  FetchInvestigationDetailsSuccessType,
-  FetchInvestigationDetailsFailureType,
-  FetchInvestigationDetailsRequestType,
   FetchCountSuccessPayload,
-  FetchInvestigationCountSuccessType,
+  FetchDataSuccessPayload,
+  FetchDetailsSuccessPayload,
+  FetchFilterFailureType,
+  FetchFilterRequestType,
+  FetchFilterSuccessPayload,
+  FetchFilterSuccessType,
   FetchInvestigationCountFailureType,
   FetchInvestigationCountRequestType,
-  RequestPayload,
-  FetchDetailsSuccessPayload,
-  FetchInvestigationSizeRequestType,
-  FetchSizeSuccessPayload,
-  FetchInvestigationSizeSuccessType,
+  FetchInvestigationCountSuccessType,
+  FetchInvestigationDetailsFailureType,
+  FetchInvestigationDetailsRequestType,
+  FetchInvestigationDetailsSuccessType,
+  FetchInvestigationsFailureType,
   FetchInvestigationSizeFailureType,
-  FetchFilterRequestType,
-  FetchFilterSuccessType,
-  FetchFilterSuccessPayload,
-  FetchFilterFailureType,
+  FetchInvestigationSizeRequestType,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationsRequestType,
+  FetchInvestigationsSuccessType,
+  FetchSizeSuccessPayload,
+  RequestPayload,
 } from './actions.types';
-import { ActionType, ThunkResult } from '../app.types';
-import { Action } from 'redux';
-import { batch } from 'react-redux';
-import axios from 'axios';
-import { getApiFilter, nestedValue } from '.';
 import { fetchInvestigationDatasetsCount } from './datasets';
-import { Investigation, Entity } from '../../app.types';
-import { IndexRange } from 'react-virtualized';
-import { readSciGatewayToken } from '../../parseTokens';
-import handleICATError from '../../handleICATError';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[],
@@ -492,7 +492,7 @@ export const fetchFilter = (
         params.set('distinct', JSON.stringify([...distinctFilter, filterKey]));
       }
     } else {
-      params.set('distinct', JSON.stringify('ID'));
+      params.set('distinct', JSON.stringify(filterKey));
     }
 
     const { apiUrl } = getState().dgcommon.urls;
