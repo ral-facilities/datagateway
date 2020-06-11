@@ -30,7 +30,7 @@ import {
   ResetQueryType,
   ClearDataType,
 } from './actions.types';
-import { Filter, Order } from '../../app.types';
+import { Filter, Order, Entity } from '../../app.types';
 import { Action } from 'redux';
 import { push } from 'connected-react-router';
 
@@ -40,6 +40,19 @@ export * from './datafiles';
 export * from './cart';
 export * from './instruments';
 export * from './facilityCycles';
+
+// TODO: Get the nested value from an Entity object given a dataKey
+//       which drills specifies the property or array indexes.
+export const nestedValue = (data: Entity, dataKey: string): string => {
+  const v = dataKey.split(/[.[\]]+/).reduce(function(prev, curr) {
+    return prev ? prev[curr] : null;
+  }, data);
+  if (v) {
+    return v.toString();
+  } else {
+    return '';
+  }
+};
 
 export const sortTable = (
   column: string,

@@ -103,6 +103,10 @@ import {
   UpdateResultsPayload,
   UpdateResultsType,
   ClearDataType,
+  FetchFilterRequestType,
+  FetchFilterSuccessType,
+  FetchFilterFailureType,
+  FetchFilterSuccessPayload,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
 
@@ -126,6 +130,7 @@ export const initialState: DGCommonState = {
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
   allIdsTimestamp: Date.now(),
+  filterDataTimestamp: Date.now(),
   urls: {
     idsUrl: '',
     apiUrl: '',
@@ -653,6 +658,41 @@ export function handleFetchAllIdsSuccess(
     return state;
   }
 }
+
+export function handleFetchFilterRequest(
+  state: DGCommonState,
+  payload: RequestPayload
+): DGCommonState {
+  if (payload.timestamp >= state.filterDataTimestamp) {
+    return {
+      ...state,
+      filterDataTimestamp: payload.timestamp,
+      loading: false,
+    };
+  } else {
+    return state;
+  }
+}
+
+export function handleFetchFilterSuccess(
+  state: DGCommonState,
+  payload: FetchFilterSuccessPayload
+): DGCommonState {
+  if (payload.timestamp >= state.filterDataTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      filterData: {
+        ...state.filterData,
+        [payload.filterKey]: payload.data,
+      },
+      filterDataTimestamp: payload.timestamp,
+    };
+  } else {
+    return state;
+  }
+}
+
 // remove things I want
 const dGCommonReducer = createReducer(initialState, {
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
@@ -743,6 +783,9 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
   [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
   [FetchAllIdsFailureType]: handleFetchDataFailure,
+  [FetchFilterRequestType]: handleFetchFilterRequest,
+  [FetchFilterSuccessType]: handleFetchFilterSuccess,
+  [FetchFilterFailureType]: handleFetchDataFailure,
 });
 
 export default dGCommonReducer;

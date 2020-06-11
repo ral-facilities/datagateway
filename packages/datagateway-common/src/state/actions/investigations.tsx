@@ -17,14 +17,18 @@ import {
   FetchSizeSuccessPayload,
   FetchInvestigationSizeSuccessType,
   FetchInvestigationSizeFailureType,
+  FetchFilterRequestType,
+  FetchFilterSuccessType,
+  FetchFilterSuccessPayload,
+  FetchFilterFailureType,
 } from './actions.types';
 import { ActionType, ThunkResult } from '../app.types';
 import { Action } from 'redux';
 import { batch } from 'react-redux';
 import axios from 'axios';
-import { getApiFilter } from '.';
+import { getApiFilter, nestedValue } from '.';
 import { fetchInvestigationDatasetsCount } from './datasets';
-import { Investigation } from '../../app.types';
+import { Investigation, Entity } from '../../app.types';
 import { IndexRange } from 'react-virtualized';
 import { readSciGatewayToken } from '../../parseTokens';
 import handleICATError from '../../handleICATError';
@@ -416,6 +420,102 @@ export const fetchISISInvestigationCount = (
       .catch(error => {
         handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchFilterRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
+  type: FetchFilterRequestType,
+  payload: {
+    timestamp,
+  },
+});
+
+export const fetchFilterSuccess = (
+  filterKey: string,
+  filterData: string[],
+  timestamp: number
+): ActionType<FetchFilterSuccessPayload> => ({
+  type: FetchFilterSuccessType,
+  payload: {
+    filterKey,
+    data: filterData,
+    timestamp,
+  },
+});
+
+export const fetchFilterFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchFilterFailureType,
+  payload: {
+    error,
+  },
+});
+
+// TODO: Can distinct inspect inside objects?
+export const fetchFilter = (
+  entityType: 'investigation' | 'dataset' | 'datafile',
+  filterKey: string,
+  // dataKey: string,
+  additionalFilters?: {
+    filterType: 'where' | 'distinct' | 'include';
+    filterValue: string;
+  }[]
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const timestamp = Date.now();
+    dispatch(fetchFilterRequest(timestamp));
+
+    let params = new URLSearchParams();
+    // Allow for other additional filters to be applied.
+    if (additionalFilters) {
+      additionalFilters.forEach(filter => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
+    // sort by ID first to guarantee order
+    params.append('order', JSON.stringify(`ID asc`));
+
+    // Add in the distinct if it as not already been added.
+    const distinctFilterString = params.get('distinct');
+    if (distinctFilterString) {
+      const distinctFilter: string | string[] = JSON.parse(
+        distinctFilterString
+      );
+      if (typeof distinctFilter === 'string') {
+        params.set('distinct', JSON.stringify([distinctFilter, filterKey]));
+      } else {
+        params.set('distinct', JSON.stringify([...distinctFilter, filterKey]));
+      }
+    } else {
+      params.set('distinct', JSON.stringify('ID'));
+    }
+
+    const { apiUrl } = getState().dgcommon.urls;
+
+    await axios
+      .get<Entity[]>(`${apiUrl}/${entityType}s`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then(response => {
+        dispatch(
+          fetchFilterSuccess(
+            filterKey,
+            response.data.map(x => nestedValue(x, filterKey)),
+            timestamp
+          )
+        );
+      })
+      .catch(error => {
+        handleICATError(error);
+        dispatch(fetchFilterFailure(error.message));
       });
   };
 };

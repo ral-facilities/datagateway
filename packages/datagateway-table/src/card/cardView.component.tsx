@@ -35,21 +35,9 @@ import {
   pushPageNum,
   pushPageResults,
   clearData,
+  nestedValue,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
-
-// TODO: Get the nested value from an Entity object given a dataKey
-//       which drills specifies the property or array indexes.
-export const nestedValue = (data: Entity, dataKey: string): string => {
-  const v = dataKey.split(/[.[\]]+/).reduce(function(prev, curr) {
-    return prev ? prev[curr] : null;
-  }, data);
-  if (v) {
-    return v.toString();
-  } else {
-    return '';
-  }
-};
 
 // TODO: Will require sort/filters?
 const useCardViewStyles = makeStyles((theme: Theme) =>

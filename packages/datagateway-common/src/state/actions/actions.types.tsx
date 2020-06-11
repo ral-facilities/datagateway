@@ -191,6 +191,10 @@ export const FetchAllIdsFailureType =
 export const FetchAllIdsSuccessType =
   'datagateway_common:fetch_all_ids_success';
 
+export const FetchFilterRequestType = 'datagateway_common:fetch_filter_request';
+export const FetchFilterFailureType = 'datagateway_common:fetch_filter_failure';
+export const FetchFilterSuccessType = 'datagateway_common:fetch_filter_success';
+
 export interface SortTablePayload {
   column: string;
   order: Order | null;
@@ -257,6 +261,12 @@ export interface FetchDetailsSuccessPayload {
 
 export interface FetchAllIdsSuccessPayload {
   data: number[];
+  timestamp: number;
+}
+
+export interface FetchFilterSuccessPayload {
+  filterKey: string;
+  data: string[];
   timestamp: number;
 }
 

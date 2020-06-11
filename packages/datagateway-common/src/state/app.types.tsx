@@ -24,11 +24,12 @@ export interface DGCommonState {
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
+  filterDataTimestamp: number;
   urls: URLs;
   query: QueryParams;
   savedQueries: QueryParams | null;
   filterData: {
-    [filter: string]: string[];
+    [filterKey: string]: string[];
   };
 }
 

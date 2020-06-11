@@ -27,6 +27,7 @@ interface InvestigationCVDispatchProps {
   fetchCount: () => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  // fetchFilter: () => Promise<void>;
 }
 
 interface InvestigationCVStateProps {
@@ -187,6 +188,7 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
+  // fetchFilter: () => dispatch(),
 });
 
 export default connect(
