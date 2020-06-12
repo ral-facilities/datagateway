@@ -100,10 +100,7 @@ type CardViewCombinedProps = CardViewProps &
 
 interface CardViewFilter {
   label: string;
-  // dataKey: string;
-  dataItems: {
-    [item: string]: number;
-  };
+  items: string[];
   selected: boolean;
 }
 
@@ -139,19 +136,27 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // Pagination.
   // TODO: This page is not reset when component is changed.
   const [page, setPage] = React.useState(-1);
-  // TODO: Store one state variable for the current count (from totalDataCount or data length).
   const [dataCount, setDataCount] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
 
-  // Filters.
-  const [filtersInfo, setFiltersInfo] = React.useState<CardViewFilter[]>([]);
-  // const [loadedFilters, setLoadedFilters] = React.useState(false);
-
   const [fetchPaginated, setFetchedPaginated] = React.useState(true);
-
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
+
+  // Set the filter information based on what was provided.
+  const filtersInfo = React.useMemo(
+    () =>
+      filters &&
+      Object.values(filters).map(filter => {
+        return {
+          label: filter.label,
+          items: filter.filterItems,
+          selected: false,
+        };
+      }),
+    [filters]
+  );
 
   React.useEffect(() => {
     console.log('Page number (page): ', page);
@@ -236,45 +241,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           setLoadedData(true);
         }
       } else {
-        // TODO: Gets called multiple times?
-        if (filters) {
-          // TODO: Need to use Object for Array?
-          // TODO: We do not need to recreate the filtersInfo object every time.
-          // TODO: This might take a long time, we do not want to recreate the filtersInfo every time.
-          //       Create once and then only just update the dataItems.
-          setFiltersInfo(
-            Object.values(filters).map(filter => {
-              let info: CardViewFilter = {
-                label: filter.label,
-                // TODO: Do we need a dataKey for this now?
-                // dataKey: filter.dataKey,
-                dataItems: {},
-                selected: false,
-              };
-
-              // // TODO: Move this to custom card view.
-              // let filterValues = [];
-              // // TODO: filter values are always string.
-              // // TODO: filterable values can be passed in with the filter object.
-              // if (filter.filterItems) {
-              //   filterValues = filter.filterItems;
-              // } else {
-              //   // TODO: What if the value is nested within?
-              //   //       Move this to the custom view?
-              //   // TODO: This toString will explicitly fail if the data does not is not found.
-              //   filterValues = data.map(d => d[filter.dataKey].toString());
-              // }
-
-              if (filter.filterItems.length > 0) {
-                filter.filterItems.forEach(v => {
-                  info.dataItems[v] = (info.dataItems[v] || 0) + 1;
-                });
-              }
-              return info;
-            })
-          );
-        }
-
         // Set the data once it has been loaded.
         if (fetchPaginated) {
           setViewData(data);
@@ -364,6 +330,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   <Typography variant="h5">Filter By</Typography>
                 </Box>
 
+                {/* Show the specific options available to filter by */}
                 <Box>
                   {filtersInfo &&
                     filtersInfo.map((filter, index) => {
@@ -377,18 +344,14 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           <ExpansionPanelDetails>
                             <div style={{ maxWidth: 360, width: '100%' }}>
                               <List component="nav">
-                                {Object.entries(filter.dataItems).map(
-                                  (item, index) => {
-                                    return (
-                                      // TODO: Fix layout of these chips, have spacing.
-                                      <ListItem key={index} button>
-                                        {/* TODO: The label chip could have its contents overflow 
-                                                  (requires tooltip in future) */}
-                                        <Chip label={item[0]} />
-                                        <Chip label={item[1]} color="primary" />
-                                      </ListItem>
-                                    );
-                                  }
+                                {filtersInfo.map((filter, index) =>
+                                  filter.items.map(value => (
+                                    <ListItem key={index} button>
+                                      {/* TODO: The label chip could have its contents overflow
+                                            (requires tooltip in future)  */}
+                                      <Chip label={value} />
+                                    </ListItem>
+                                  ))
                                 )}
                               </List>
                             </div>

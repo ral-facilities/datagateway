@@ -478,7 +478,7 @@ export const fetchFilter = (
     }
 
     // sort by ID first to guarantee order
-    params.append('order', JSON.stringify(`ID asc`));
+    // params.append('order', JSON.stringify(`ID asc`));
 
     // Add in the distinct if it as not already been added.
     const distinctFilterString = params.get('distinct');
