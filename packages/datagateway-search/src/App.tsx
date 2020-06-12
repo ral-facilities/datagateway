@@ -2,20 +2,21 @@ import React from 'react';
 import './App.css';
 import * as log from 'loglevel';
 import SearchPageContainer from './searchPageContainer.component';
-import thunk from 'redux-thunk';
-import { loadUrls } from 'datagateway-common';
-import { applyMiddleware, createStore, compose } from 'redux';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import { applyMiddleware, createStore, compose, AnyAction } from 'redux';
 import AppReducer from './state/reducers/app.reducer';
 import { createLogger } from 'redux-logger';
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
-import { DGCommonMiddleware } from 'datagateway-common';
+import { DGCommonMiddleware, Preloader } from 'datagateway-common';
 import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
+import { configureApp } from './state/actions';
+import { StateType } from './state/app.types';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -30,14 +31,8 @@ const store = createStore(
   composeEnhancers(applyMiddleware(...middleware))
 );
 
-store.dispatch(
-  loadUrls({
-    apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-    idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
-    downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-  })
-);
-// this loading in of the urls should be removed when loading urls from settings.json issue is fixed
+const dispatch = store.dispatch as ThunkDispatch<StateType, null, AnyAction>;
+dispatch(configureApp());
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgws',
@@ -53,6 +48,14 @@ if (process.env.NODE_ENV === `development`) {
   const logger = (createLogger as any)();
   middleware.push(logger);
 }
+
+function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
+  return {
+    loading: !state.dgsearch.settingsLoaded,
+  };
+}
+
+export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
@@ -93,7 +96,9 @@ class App extends React.Component<{}, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <SearchPageContainer />
+                <ConnectedPreloader>
+                  <SearchPageContainer />
+                </ConnectedPreloader>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>
