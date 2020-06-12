@@ -1,8 +1,8 @@
-import { ThunkAction } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { Order, Filter, Entity, DownloadCartItem } from '../app.types';
-import { URLs } from './actions/actions.types';
 import { RouterState } from 'connected-react-router';
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { DownloadCartItem, Entity, Filter, Order } from '../app.types';
+import { URLs } from './actions/actions.types';
 
 export interface DGCommonState {
   facilityName: string;
@@ -28,9 +28,7 @@ export interface DGCommonState {
   urls: URLs;
   query: QueryParams;
   savedQueries: QueryParams | null;
-  filterData: {
-    [filterKey: string]: string[];
-  };
+  filterData: FilterDataType;
 }
 
 export type ViewsType = 'table' | 'card' | null;
@@ -39,6 +37,10 @@ export interface QueryParams {
   view: ViewsType;
   page: number | null;
   results: number | null;
+}
+
+export interface FilterDataType {
+  [filterKey: string]: string[];
 }
 
 export interface EntityCache {

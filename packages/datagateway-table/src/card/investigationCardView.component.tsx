@@ -14,7 +14,11 @@ import {
   investigationLink,
   removeFromCart,
 } from 'datagateway-common';
-import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
+import {
+  FilterDataType,
+  StateType,
+  ViewsType,
+} from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
@@ -33,6 +37,7 @@ interface InvestigationCVDispatchProps {
 interface InvestigationCVStateProps {
   data: Entity[];
   totalDataCount: number;
+  filterData: FilterDataType;
   cartItems: DownloadCartItem[];
   view: ViewsType;
 }
@@ -46,6 +51,7 @@ const InvestigationCardView = (
   const {
     data,
     totalDataCount,
+    filterData,
     cartItems,
     fetchData,
     fetchCount,
@@ -70,6 +76,11 @@ const InvestigationCardView = (
     [cartItems, investigationIds]
   );
 
+  const filteredItems = React.useMemo(
+    () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
+    [filterData]
+  );
+
   React.useEffect(() => {
     // TODO: React.useMemo?
     // Set the IDs of the data.
@@ -81,6 +92,7 @@ const InvestigationCardView = (
       setFetchedCount(true);
     }
 
+    // Fetch the filter data.
     if (!fetchedFilter) {
       fetchFilter();
       setFetchedFilter(true);
@@ -98,7 +110,9 @@ const InvestigationCardView = (
       totalDataCount={totalDataCount}
       loadData={fetchData}
       // TODO: Provide all types from data from API using filter.
-      filters={[{ label: 'Type', dataKey: 'TYPE_ID', filterItems: [] }]}
+      filters={[
+        { label: 'Type ID', dataKey: 'TYPE_ID', filterItems: filteredItems },
+      ]}
       // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
         // Provide both the dataKey (for tooltip) and link to render.
@@ -180,6 +194,7 @@ const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
+    filterData: state.dgcommon.filterData,
     cartItems: state.dgcommon.cartItems,
     view: state.dgcommon.query.view,
   };
