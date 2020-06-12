@@ -32,11 +32,15 @@ export interface DGCommonState {
 }
 
 export type ViewsType = 'table' | 'card' | null;
+export interface FiltersType {
+  [filter: string]: boolean;
+}
 
 export interface QueryParams {
   view: ViewsType;
   page: number | null;
   results: number | null;
+  filters: FiltersType | null;
 }
 
 export interface FilterDataType {

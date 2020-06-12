@@ -171,14 +171,11 @@ const ISISInvestigationsCardView = (
           label: 'DOI',
           dataKey: 'STUDYINVESTIGATION[0].STUDY.PID',
         },
-        // TODO: Size showing as unknown (due to paginatedFetch=false in CardView not showing updated data).
         {
           label: 'Size',
           dataKey: 'SIZE',
-          content: (investigation: Investigation) => {
-            console.log('current SIZE: ', investigation.SIZE);
-            return formatBytes(investigation.SIZE);
-          },
+          content: (investigation: Investigation) =>
+            formatBytes(investigation.SIZE),
         },
         // {
         //   label: 'Instrument',

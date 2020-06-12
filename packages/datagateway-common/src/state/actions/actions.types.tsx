@@ -20,6 +20,7 @@ export const ClearDataType = 'datagateway_common:clear_data';
 export const UpdateViewType = 'datagateway_common:update_view';
 export const UpdatePageType = 'datagateway_common:update_page';
 export const UpdateResultsType = 'datagateway_common:update_results';
+export const UpdateFiltersType = 'datagateway_common:update_filters';
 
 export const UpdateQueriesType = 'datagateway_common:update_queries';
 export const SaveQueriesType = 'datagateway_common:save_queries';
@@ -232,6 +233,11 @@ export interface UpdatePagePayload {
 
 export interface UpdateResultsPayload {
   results: number | null;
+}
+
+export interface UpdateFiltersPayload {
+  filter: string;
+  data: boolean;
 }
 
 export interface UpdateQueriesPayload {

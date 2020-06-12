@@ -4,6 +4,7 @@ import {
   ViewsType,
   ThunkResult,
   QueryParams,
+  FiltersType,
 } from '../app.types';
 import {
   URLs,
@@ -29,6 +30,8 @@ import {
   RestoreQueriesType,
   ResetQueryType,
   ClearDataType,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
 } from './actions.types';
 import { Filter, Order, Entity } from '../../app.types';
 import { Action } from 'redux';
@@ -101,11 +104,26 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
 
     const page = query.get('page');
     const results = query.get('results');
+    const filters = query.get('filters');
+    console.log('parsed: ', filters && JSON.parse(filters));
     // console.log(`load URL Query: ${page}`);
     const params: QueryParams = {
       view: query.get('view') as ViewsType,
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
+      // TODO: Handle incorrect formats of filters.
+      // filters: {
+      //   filters ? JSON.parse(filters) : null,
+      // }
+      filters: filters
+        ? JSON.parse(filters).reduce(
+            (o: FiltersType, filter: string) => ({
+              ...o,
+              [filter]: true,
+            }),
+            {}
+          )
+        : null,
     };
 
     dispatch(updateQueryParams(params));
@@ -120,7 +138,17 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   // Loop and add all the query parameters which is in use.
   for (let [q, v] of Object.entries(query)) {
     console.log(`${q} with value: ${v}`);
-    if (v !== null) queryParams.append(q, v);
+    if (v !== null) {
+      // Handle adding filters.
+      if (q === 'filters') {
+        // console.log(`getURLQuery - filters: ${f}, ${s}`);
+        const filters = Object.entries(v).map(([f, s]) => (s ? f : null));
+        console.log('filters to add: ', filters);
+        queryParams.append(q, JSON.stringify(filters));
+      } else {
+        queryParams.append(q, v);
+      }
+    }
   }
   console.log(`Final URLSearchParams - getURLQuery: ${queryParams.toString()}`);
   return queryParams;
@@ -206,6 +234,17 @@ export const updateResults = (
   },
 });
 
+export const updateFilters = (
+  filter: string,
+  data: boolean
+): ActionType<UpdateFiltersPayload> => ({
+  type: UpdateFiltersType,
+  payload: {
+    filter,
+    data,
+  },
+});
+
 export const updateSaveQueries = (
   queries: QueryParams
 ): ActionType<SaveQueriesPayload> => ({
@@ -244,6 +283,16 @@ export const pushPageResults = (
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(updateResults(results));
+    dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};
+
+export const pushPageFilter = (
+  filter: string,
+  selected: boolean
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(updateFilters(filter, selected));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
 };

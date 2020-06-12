@@ -34,6 +34,7 @@ import {
   Entity,
   pushPageNum,
   pushPageResults,
+  pushPageFilter,
   clearData,
   nestedValue,
 } from 'datagateway-common';
@@ -91,6 +92,7 @@ interface CardViewStateProps {
 interface CardViewDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
+  pushFilters: (filter: string, selected: boolean) => Promise<void>;
   clearData: () => Action;
 }
 
@@ -100,6 +102,7 @@ type CardViewCombinedProps = CardViewProps &
 
 interface CardViewFilter {
   label: string;
+  filterKey: string;
   items: string[];
   selected: boolean;
 }
@@ -124,6 +127,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     loading,
     pushPage,
     pushResults,
+    pushFilters,
     clearData,
   } = props;
 
@@ -151,6 +155,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       Object.values(filters).map(filter => {
         return {
           label: filter.label,
+          filterKey: filter.dataKey,
           items: filter.filterItems,
           selected: false,
         };
@@ -346,7 +351,18 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                               <List component="nav">
                                 {filtersInfo.map((filter, index) =>
                                   filter.items.map(value => (
-                                    <ListItem key={index} button>
+                                    <ListItem
+                                      key={index}
+                                      button
+                                      disabled={filter.selected}
+                                      onClick={() => {
+                                        console.log(
+                                          'Got click of filter option: ',
+                                          filter.items[index]
+                                        );
+                                        pushFilters(filter.filterKey, true);
+                                      }}
+                                    >
                                       {/* TODO: The label chip could have its contents overflow
                                             (requires tooltip in future)  */}
                                       <Chip label={value} />
@@ -467,6 +483,8 @@ const mapDispatchToProps = (
 ): CardViewDispatchProps => ({
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushFilters: (filter: string, selected: boolean) =>
+    dispatch(pushPageFilter(filter, selected)),
   clearData: () => dispatch(clearData()),
 });
 

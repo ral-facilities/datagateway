@@ -107,6 +107,8 @@ import {
   FetchFilterSuccessType,
   FetchFilterFailureType,
   FetchFilterSuccessPayload,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
 } from '../actions/actions.types';
 import { Entity, Investigation, Dataset } from '../../app.types';
 
@@ -114,6 +116,7 @@ const initialQuery: QueryParams = {
   view: null,
   page: null,
   results: null,
+  filters: null,
 };
 
 export const initialState: DGCommonState = {
@@ -268,6 +271,22 @@ export function handleUpdateResults(
     query: {
       ...state.query,
       results: payload.results,
+    },
+  };
+}
+
+export function handleUpdateFilters(
+  state: DGCommonState,
+  payload: UpdateFiltersPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      filters: {
+        ...state.query.filters,
+        [payload.filter]: payload.data,
+      },
     },
   };
 }
@@ -704,6 +723,7 @@ const dGCommonReducer = createReducer(initialState, {
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
   [UpdateResultsType]: handleUpdateResults,
+  [UpdateFiltersType]: handleUpdateFilters,
   [UpdateQueriesType]: handleUpdateQueries,
   [SaveQueriesType]: handleSaveQueries,
   [RestoreQueriesType]: handleRestoreQueries,
