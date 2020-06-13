@@ -424,25 +424,18 @@ export const fetchISISInvestigationCount = (
   };
 };
 
-export const fetchFilterRequest = (
-  timestamp: number
-): ActionType<RequestPayload> => ({
+export const fetchFilterRequest = (): Action => ({
   type: FetchFilterRequestType,
-  payload: {
-    timestamp,
-  },
 });
 
 export const fetchFilterSuccess = (
   filterKey: string,
-  filterData: string[],
-  timestamp: number
+  filterData: string[]
 ): ActionType<FetchFilterSuccessPayload> => ({
   type: FetchFilterSuccessType,
   payload: {
     filterKey,
     data: filterData,
-    timestamp,
   },
 });
 
@@ -466,8 +459,7 @@ export const fetchFilter = (
   }[]
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    const timestamp = Date.now();
-    dispatch(fetchFilterRequest(timestamp));
+    dispatch(fetchFilterRequest());
 
     let params = new URLSearchParams();
     // Allow for other additional filters to be applied.
@@ -508,8 +500,7 @@ export const fetchFilter = (
         dispatch(
           fetchFilterSuccess(
             filterKey,
-            response.data.map(x => nestedValue(x, filterKey)),
-            timestamp
+            response.data.map(x => nestedValue(x, filterKey))
           )
         );
       })

@@ -1,48 +1,47 @@
+import { push } from 'connected-react-router';
+import { Action } from 'redux';
+import { Entity, Filter, Order } from '../../app.types';
 import {
   ActionType,
-  StateType,
-  ViewsType,
-  ThunkResult,
   QueryParams,
-  FiltersType,
+  StateType,
+  ThunkResult,
+  ViewsType,
 } from '../app.types';
 import {
-  URLs,
-  ConfigureUrlsPayload,
-  ConfigureURLsType,
+  ClearDataType,
+  ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
-  SortTablePayload,
-  SortTableType,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
   FilterTablePayload,
   FilterTableType,
-  ClearTableType,
-  UpdateViewType,
-  UpdateViewPayload,
-  UpdatePageType,
-  UpdatePagePayload,
-  UpdateResultsPayload,
-  UpdateResultsType,
-  UpdateQueriesPayload,
-  UpdateQueriesType,
+  ResetQueryType,
+  RestoreQueriesType,
   SaveQueriesPayload,
   SaveQueriesType,
-  RestoreQueriesType,
-  ResetQueryType,
-  ClearDataType,
+  SortTablePayload,
+  SortTableType,
   UpdateFiltersPayload,
   UpdateFiltersType,
+  UpdatePagePayload,
+  UpdatePageType,
+  UpdateQueriesPayload,
+  UpdateQueriesType,
+  UpdateResultsPayload,
+  UpdateResultsType,
+  UpdateViewPayload,
+  UpdateViewType,
+  URLs,
 } from './actions.types';
-import { Filter, Order, Entity } from '../../app.types';
-import { Action } from 'redux';
-import { push } from 'connected-react-router';
 
-export * from './investigations';
-export * from './datasets';
-export * from './datafiles';
 export * from './cart';
-export * from './instruments';
+export * from './datafiles';
+export * from './datasets';
 export * from './facilityCycles';
+export * from './instruments';
+export * from './investigations';
 
 // TODO: Get the nested value from an Entity object given a dataKey
 //       which drills specifies the property or array indexes.
@@ -112,18 +111,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
       // TODO: Handle incorrect formats of filters.
-      // filters: {
-      //   filters ? JSON.parse(filters) : null,
-      // }
-      filters: filters
-        ? JSON.parse(filters).reduce(
-            (o: FiltersType, filter: string) => ({
-              ...o,
-              [filter]: true,
-            }),
-            {}
-          )
-        : null,
+      filters: filters ? JSON.parse(filters) : null,
     };
 
     dispatch(updateQueryParams(params));
@@ -141,10 +129,7 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
     if (v !== null) {
       // Handle adding filters.
       if (q === 'filters') {
-        // console.log(`getURLQuery - filters: ${f}, ${s}`);
-        const filters = Object.entries(v).map(([f, s]) => (s ? f : null));
-        console.log('filters to add: ', filters);
-        queryParams.append(q, JSON.stringify(filters));
+        queryParams.append(q, JSON.stringify(v));
       } else {
         queryParams.append(q, v);
       }
@@ -236,7 +221,7 @@ export const updateResults = (
 
 export const updateFilters = (
   filter: string,
-  data: boolean
+  data: string
 ): ActionType<UpdateFiltersPayload> => ({
   type: UpdateFiltersType,
   payload: {
@@ -289,10 +274,10 @@ export const pushPageResults = (
 
 export const pushPageFilter = (
   filter: string,
-  selected: boolean
+  data: string
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(updateFilters(filter, selected));
+    dispatch(updateFilters(filter, data));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
 };

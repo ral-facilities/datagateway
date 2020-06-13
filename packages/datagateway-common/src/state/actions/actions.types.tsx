@@ -1,5 +1,5 @@
-import { Filter, Order, Entity, DownloadCart } from '../../app.types';
-import { ViewsType, QueryParams } from '../app.types';
+import { DownloadCart, Entity, Filter, Order } from '../../app.types';
+import { QueryParams, ViewsType } from '../app.types';
 
 // parent app actions
 export const MicroFrontendMessageId = 'scigateway';
@@ -237,7 +237,7 @@ export interface UpdateResultsPayload {
 
 export interface UpdateFiltersPayload {
   filter: string;
-  data: boolean;
+  data: string;
 }
 
 export interface UpdateQueriesPayload {
@@ -273,7 +273,6 @@ export interface FetchAllIdsSuccessPayload {
 export interface FetchFilterSuccessPayload {
   filterKey: string;
   data: string[];
-  timestamp: number;
 }
 
 export interface FetchCountSuccessPayload {

@@ -24,7 +24,6 @@ export interface DGCommonState {
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
-  filterDataTimestamp: number;
   urls: URLs;
   query: QueryParams;
   savedQueries: QueryParams | null;
@@ -33,7 +32,7 @@ export interface DGCommonState {
 
 export type ViewsType = 'table' | 'card' | null;
 export interface FiltersType {
-  [filter: string]: boolean;
+  [filter: string]: string;
 }
 
 export interface QueryParams {

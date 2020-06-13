@@ -1,44 +1,41 @@
-import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
-  List,
-  ListItem,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Box,
-  Paper,
-  TextField,
-  InputAdornment,
-  Typography,
+  Chip,
   CircularProgress,
   ExpansionPanel,
-  ExpansionPanelSummary,
   ExpansionPanelDetails,
-  Chip,
+  ExpansionPanelSummary,
+  FormControl,
+  Grid,
+  InputAdornment,
+  InputLabel,
+  List,
+  ListItem,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SearchIcon from '@material-ui/icons/Search';
 import { Pagination } from '@material-ui/lab';
-
-import EntityCard, { EntityImageDetails } from './card.component';
-
-import { connect } from 'react-redux';
-import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, Action } from 'redux';
 import {
+  clearData,
   Entity,
+  nestedValue,
+  pushPageFilter,
   pushPageNum,
   pushPageResults,
-  pushPageFilter,
-  clearData,
-  nestedValue,
 } from 'datagateway-common';
+import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
+import React from 'react';
+import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import EntityCard, { EntityImageDetails } from './card.component';
 
 // TODO: Will require sort/filters?
 const useCardViewStyles = makeStyles((theme: Theme) =>
@@ -92,7 +89,7 @@ interface CardViewStateProps {
 interface CardViewDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
-  pushFilters: (filter: string, selected: boolean) => Promise<void>;
+  pushFilters: (filter: string, data: string) => Promise<void>;
   clearData: () => Action;
 }
 
@@ -338,9 +335,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 {/* Show the specific options available to filter by */}
                 <Box>
                   {filtersInfo &&
-                    filtersInfo.map((filter, index) => {
+                    filtersInfo.map((filter, filterIndex) => {
                       return (
-                        <ExpansionPanel key={index}>
+                        <ExpansionPanel key={filterIndex}>
                           <ExpansionPanelSummary
                             expandIcon={<ExpandMoreIcon />}
                           >
@@ -349,26 +346,25 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           <ExpansionPanelDetails>
                             <div style={{ maxWidth: 360, width: '100%' }}>
                               <List component="nav">
-                                {filtersInfo.map((filter, index) =>
-                                  filter.items.map(value => (
-                                    <ListItem
-                                      key={index}
-                                      button
-                                      disabled={filter.selected}
-                                      onClick={() => {
-                                        console.log(
-                                          'Got click of filter option: ',
-                                          filter.items[index]
-                                        );
-                                        pushFilters(filter.filterKey, true);
-                                      }}
-                                    >
-                                      {/* TODO: The label chip could have its contents overflow
+                                {filter.items.map((value, valueIndex) => (
+                                  <ListItem
+                                    key={valueIndex}
+                                    button
+                                    // TODO: Add selected to each individual item.
+                                    // disabled={filter.selected}
+                                    onClick={() => {
+                                      console.log(
+                                        'Got click of filter option: ',
+                                        value
+                                      );
+                                      pushFilters(filter.filterKey, value);
+                                    }}
+                                  >
+                                    {/* TODO: The label chip could have its contents overflow
                                             (requires tooltip in future)  */}
-                                      <Chip label={value} />
-                                    </ListItem>
-                                  ))
-                                )}
+                                    <Chip label={value} />
+                                  </ListItem>
+                                ))}
                               </List>
                             </div>
                           </ExpansionPanelDetails>
@@ -483,8 +479,8 @@ const mapDispatchToProps = (
 ): CardViewDispatchProps => ({
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-  pushFilters: (filter: string, selected: boolean) =>
-    dispatch(pushPageFilter(filter, selected)),
+  pushFilters: (filter: string, data: string) =>
+    dispatch(pushPageFilter(filter, data)),
   clearData: () => dispatch(clearData()),
 });
 

@@ -31,7 +31,8 @@ interface InvestigationCVDispatchProps {
   fetchCount: () => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchFilter: () => Promise<void>;
+  fetchTypeFilter: () => Promise<void>;
+  fetchFacilityFilter: () => Promise<void>;
 }
 
 interface InvestigationCVStateProps {
@@ -55,13 +56,17 @@ const InvestigationCardView = (
     cartItems,
     fetchData,
     fetchCount,
-    fetchFilter,
+    fetchTypeFilter,
+    fetchFacilityFilter,
     addToCart,
     removeFromCart,
     view,
   } = props;
   const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [fetchedFilter, setFetchedFilter] = React.useState(false);
+  const [fetchedTypeFilter, setFetchedTypeFilter] = React.useState(false);
+  const [fetchedFacilityFilter, setFetchedFacilityFilter] = React.useState(
+    false
+  );
   const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
 
   const selectedCards = React.useMemo(
@@ -76,8 +81,13 @@ const InvestigationCardView = (
     [cartItems, investigationIds]
   );
 
-  const filteredItems = React.useMemo(
+  const typeFilteredItems = React.useMemo(
     () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
+    [filterData]
+  );
+
+  const facilityFilteredItems = React.useMemo(
+    () => ('FACILITY_ID' in filterData ? filterData['FACILITY_ID'] : []),
     [filterData]
   );
 
@@ -93,11 +103,23 @@ const InvestigationCardView = (
     }
 
     // Fetch the filter data.
-    if (!fetchedFilter) {
-      fetchFilter();
-      setFetchedFilter(true);
+    if (!fetchedTypeFilter) {
+      fetchTypeFilter();
+      setFetchedTypeFilter(true);
     }
-  }, [data, fetchedCount, fetchCount, fetchFilter, fetchedFilter]);
+    if (!fetchedFacilityFilter) {
+      fetchFacilityFilter();
+      setFetchedFacilityFilter(true);
+    }
+  }, [
+    data,
+    fetchedCount,
+    fetchCount,
+    fetchTypeFilter,
+    fetchedTypeFilter,
+    fetchFacilityFilter,
+    fetchedFacilityFilter,
+  ]);
 
   return (
     // TODO: Since CardView is a separate component, we should not couple the data from redux to it,
@@ -111,7 +133,16 @@ const InvestigationCardView = (
       loadData={fetchData}
       // TODO: Provide all types from data from API using filter.
       filters={[
-        { label: 'Type ID', dataKey: 'TYPE_ID', filterItems: filteredItems },
+        {
+          label: 'Type ID',
+          dataKey: 'TYPE_ID',
+          filterItems: typeFilteredItems,
+        },
+        {
+          label: 'Facility ID',
+          dataKey: 'FACILITY_ID',
+          filterItems: facilityFilteredItems,
+        },
       ]}
       // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
@@ -210,7 +241,9 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  fetchFilter: () => dispatch(fetchFilter('investigation', 'TYPE_ID')),
+  fetchTypeFilter: () => dispatch(fetchFilter('investigation', 'TYPE_ID')),
+  fetchFacilityFilter: () =>
+    dispatch(fetchFilter('investigation', 'FACILITY_ID')),
 });
 
 export default connect(
