@@ -1,17 +1,15 @@
-import React from 'react';
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import {
   Card,
-  CardMedia,
   CardContent,
-  Typography,
+  CardMedia,
   Chip,
-  Divider,
   Collapse,
+  Divider,
   Link,
+  Typography,
 } from '@material-ui/core';
-
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
 import ArrowTooltip from '../page/arrowtooltip.component';
 
 const useCardStyles = makeStyles((theme: Theme) => {
@@ -260,12 +258,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
               {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
               <div style={{ paddingTop: '10px' }}>
                 {tags.map((v, i) => (
-                  <Chip
-                    key={i}
-                    className={classes.chip}
-                    label={v}
-                    size="medium"
-                  />
+                  <Chip key={i} className={classes.chip} label={v} />
                 ))}
               </div>
             </div>

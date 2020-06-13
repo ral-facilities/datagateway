@@ -284,7 +284,10 @@ export function handleUpdateFilters(
       ...state.query,
       filters: {
         ...state.query.filters,
-        [payload.filter]: payload.data,
+        [payload.filter]: {
+          data: payload.data,
+          selected: payload.selected,
+        },
       },
     },
   };

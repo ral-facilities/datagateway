@@ -32,7 +32,10 @@ export interface DGCommonState {
 
 export type ViewsType = 'table' | 'card' | null;
 export interface FiltersType {
-  [filter: string]: string;
+  [filter: string]: {
+    data: string;
+    selected: boolean;
+  };
 }
 
 export interface QueryParams {

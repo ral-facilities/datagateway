@@ -89,7 +89,11 @@ interface CardViewStateProps {
 interface CardViewDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
-  pushFilters: (filter: string, data: string) => Promise<void>;
+  pushFilters: (
+    filter: string,
+    data: string,
+    selected: boolean
+  ) => Promise<void>;
   clearData: () => Action;
 }
 
@@ -100,8 +104,7 @@ type CardViewCombinedProps = CardViewProps &
 interface CardViewFilter {
   label: string;
   filterKey: string;
-  items: string[];
-  selected: boolean;
+  items: { data: string; selected: boolean }[];
 }
 
 // TODO: CardView needs URL support:
@@ -150,14 +153,24 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     () =>
       filters &&
       Object.values(filters).map(filter => {
+        // TODO: Type this into an interface?
         return {
           label: filter.label,
           filterKey: filter.dataKey,
-          items: filter.filterItems,
-          selected: false,
+          items: filter.filterItems.map(v => ({
+            data: v,
+            // Selected is based on the current query in the state.
+            selected: query.filters
+              ? filter.dataKey in query.filters
+                ? query.filters[filter.dataKey].data === v
+                  ? query.filters[filter.dataKey].selected
+                  : false
+                : false
+              : false,
+          })),
         };
       }),
-    [filters]
+    [filters, query]
   );
 
   React.useEffect(() => {
@@ -346,23 +359,27 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           <ExpansionPanelDetails>
                             <div style={{ maxWidth: 360, width: '100%' }}>
                               <List component="nav">
-                                {filter.items.map((value, valueIndex) => (
+                                {filter.items.map((item, valueIndex) => (
                                   <ListItem
                                     key={valueIndex}
                                     button
                                     // TODO: Add selected to each individual item.
-                                    // disabled={filter.selected}
+                                    disabled={item.selected}
                                     onClick={() => {
                                       console.log(
                                         'Got click of filter option: ',
-                                        value
+                                        item.data
                                       );
-                                      pushFilters(filter.filterKey, value);
+                                      pushFilters(
+                                        filter.filterKey,
+                                        item.data,
+                                        true
+                                      );
                                     }}
                                   >
                                     {/* TODO: The label chip could have its contents overflow
                                             (requires tooltip in future)  */}
-                                    <Chip label={value} />
+                                    <Chip label={item.data} />
                                   </ListItem>
                                 ))}
                               </List>
@@ -479,8 +496,8 @@ const mapDispatchToProps = (
 ): CardViewDispatchProps => ({
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-  pushFilters: (filter: string, data: string) =>
-    dispatch(pushPageFilter(filter, data)),
+  pushFilters: (filter: string, data: string, selected: boolean) =>
+    dispatch(pushPageFilter(filter, data, selected)),
   clearData: () => dispatch(clearData()),
 });
 

@@ -238,6 +238,7 @@ export interface UpdateResultsPayload {
 export interface UpdateFiltersPayload {
   filter: string;
   data: string;
+  selected: boolean;
 }
 
 export interface UpdateQueriesPayload {
