@@ -3,6 +3,7 @@ import { Action } from 'redux';
 import { Entity, Filter, Order } from '../../app.types';
 import {
   ActionType,
+  FiltersType,
   QueryParams,
   StateType,
   ThunkResult,
@@ -95,6 +96,10 @@ export const updateQueryParams = (
   },
 });
 
+interface FilterQuery {
+  [filter: string]: string[];
+}
+
 export const loadURLQuery = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     // Get the URLSearchParams object from the search query.
@@ -106,16 +111,20 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     const filters = query.get('filters');
 
     // Parse filters in the query.
-    let parsedFilters = null;
+    let parsedFilters: FiltersType = {};
     if (filters) {
       try {
-        const f = JSON.parse(filters);
-        console.log('parsed filters: ', f);
-        // TODO: This is not properly typed and can be changed to anything within state.
-        parsedFilters = Object.entries(f).reduce(
-          (o, [f, v]) => ({ ...o, [f]: { data: v, selected: true } }),
-          {}
-        );
+        const fq: FilterQuery = JSON.parse(filters);
+        console.log('parsed filters: ', fq);
+
+        // Create the entries for the filter.
+        for (const [f, v] of Object.entries(fq)) {
+          console.log(`Adding ${f} with values: ${v}`);
+          parsedFilters[f] = v.reduce(
+            (o, value) => ({ ...o, [value]: true }),
+            {}
+          );
+        }
       } catch (e) {
         throw new Error('Filter queries provided in an incorrect format.');
       }
@@ -127,7 +136,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
       // TODO: Handle incorrect formats of filters.
-      filters: parsedFilters,
+      filters: filters ? parsedFilters : null,
     };
 
     dispatch(updateQueryParams(params));
@@ -150,9 +159,12 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
 
   // Add filters.
   if (query.filters) {
-    const filters: { [filter: string]: string } = {};
+    const filters: FilterQuery = {};
     for (const [f, v] of Object.entries(query.filters)) {
-      filters[f] = v.data;
+      // TODO: Only map and add if selected is true.
+      filters[f] = Object.entries(v)
+        .filter(([, selected]) => selected)
+        .map(([data]) => data);
     }
     console.log('Add filters: ', filters);
     queryParams.append('filters', JSON.stringify(filters));

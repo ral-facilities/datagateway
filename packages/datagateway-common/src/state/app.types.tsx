@@ -31,10 +31,10 @@ export interface DGCommonState {
 }
 
 export type ViewsType = 'table' | 'card' | null;
+
 export interface FiltersType {
   [filter: string]: {
-    data: string;
-    selected: boolean;
+    [value: string]: boolean;
   };
 }
 

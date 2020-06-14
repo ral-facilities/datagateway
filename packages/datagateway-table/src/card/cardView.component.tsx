@@ -162,8 +162,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             // Selected is based on the current query in the state.
             selected: query.filters
               ? filter.dataKey in query.filters
-                ? query.filters[filter.dataKey].data === v
-                  ? query.filters[filter.dataKey].selected
+                ? v in query.filters[filter.dataKey]
+                  ? query.filters[filter.dataKey][v]
                   : false
                 : false
               : false,
