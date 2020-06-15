@@ -106,6 +106,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     const query = new URLSearchParams(getState().router.location.search);
     console.log('loading search: ', query.toString());
 
+    // Get filters in URL.
     const page = query.get('page');
     const results = query.get('results');
     const filters = query.get('filters');
@@ -117,29 +118,33 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       try {
         const fq: FilterQuery = JSON.parse(filters);
         console.log('parsed filters: ', fq);
-        parsed = true;
 
         // Create the entries for the filter.
         for (const [f, v] of Object.entries(fq)) {
           console.log(`Adding ${f} with values: ${v}`);
-          parsedFilters[f] = v.reduce(
-            (o, value) => ({ ...o, [value]: true }),
-            {}
-          );
+          const items = v.reduce((o, value) => ({ ...o, [value]: true }), {});
+
+          // Add only if there are filter items present.
+          if (Object.keys(items).length > 0) {
+            parsedFilters[f] = items;
+          }
+        }
+
+        // Ensure at least one filter has been added.
+        if (Object.keys(parsedFilters).length > 0) {
+          parsed = true;
         }
       } catch (e) {
-        // TODO: This will stop if the query is incorrect.
         console.error('Filter queries provided in an incorrect format.');
       }
     }
 
-    // console.log(`load URL Query: ${page}`);
+    // Create the query parameters object.
     const params: QueryParams = {
       view: query.get('view') as ViewsType,
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
-      // TODO: Handle incorrect formats of filters - prevent filters being added if incorrect.
-      filters: filters && parsed ? parsedFilters : null,
+      filters: parsed ? parsedFilters : null,
     };
 
     dispatch(updateQueryParams(params));
@@ -165,12 +170,17 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
     const filters: FilterQuery = {};
     for (const [f, v] of Object.entries(query.filters)) {
       // TODO: Only map and add if selected is true.
-      filters[f] = Object.entries(v)
+      const items = Object.entries(v)
         .filter(([, selected]) => selected)
         .map(([data]) => data);
+      if (items.length > 0) {
+        filters[f] = items;
+      }
     }
-    console.log('Add filters: ', filters);
-    queryParams.append('filters', JSON.stringify(filters));
+    if (Object.keys(filters).length > 0) {
+      console.log('Add filters: ', filters);
+      queryParams.append('filters', JSON.stringify(filters));
+    }
   }
 
   console.log(`Final URLSearchParams - getURLQuery: ${queryParams.toString()}`);

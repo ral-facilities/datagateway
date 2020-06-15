@@ -198,10 +198,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           items: filter.items.filter(i => i.selected),
         }))
         .filter(f => f.items.length > 0);
-
-      if (selected.length > 0) {
-        setSelectedFilters(selected);
-      }
+      setSelectedFilters(selected);
     }
   }, [filtersInfo]);
 
@@ -439,7 +436,12 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                         key={itemIndex}
                         className={classes.chip}
                         label={`${filter.label} - ${item.data}`}
-                        // TODO: Add onDelete to remove a chip from array and state/query.
+                        onDelete={() => {
+                          console.log(
+                            `Deselect filter ${filter.label} with value: ${item.data}`
+                          );
+                          pushFilters(filter.filterKey, item.data, false);
+                        }}
                       />
                     ))}
                   </li>
