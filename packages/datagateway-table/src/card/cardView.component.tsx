@@ -48,6 +48,17 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
       minWidth: 120,
     },
+    selectedChips: {
+      display: 'inline-flex',
+      justifyContent: 'center',
+      flexWrap: 'wrap',
+      listStyle: 'none',
+      padding: theme.spacing(0.5),
+      margin: 0,
+    },
+    chip: {
+      margin: theme.spacing(0.5),
+    },
   })
 );
 
@@ -108,10 +119,8 @@ interface CardViewFilter {
 }
 
 // TODO: CardView needs URL support:
-//        - filtering (?filter=)
-//        - searching (?search=)
 //        - sort (?sort=)
-// TODO: Look at how datagateway-search creates a search/filter box; style the box.
+//        - searching (?search=)
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
@@ -148,30 +157,53 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [pageChange, setPageChange] = React.useState(false);
   const [loadedData, setLoadedData] = React.useState(false);
 
+  // Filters.
+  const [selectedFilters, setSelectedFilters] = React.useState<
+    CardViewFilter[]
+  >([]);
+
   // Set the filter information based on what was provided.
-  const filtersInfo = React.useMemo(
+  const filtersInfo = React.useMemo<CardViewFilter[]>(
     () =>
-      filters &&
-      Object.values(filters).map(filter => {
-        // TODO: Type this into an interface?
-        return {
-          label: filter.label,
-          filterKey: filter.dataKey,
-          items: filter.filterItems.map(v => ({
-            data: v,
-            // Selected is based on the current query in the state.
-            selected: query.filters
-              ? filter.dataKey in query.filters
-                ? v in query.filters[filter.dataKey]
-                  ? query.filters[filter.dataKey][v]
-                  : false
-                : false
-              : false,
-          })),
-        };
-      }),
-    [filters, query]
+      filters
+        ? Object.values(filters).map(filter => {
+            return {
+              label: filter.label,
+              filterKey: filter.dataKey,
+              items: filter.filterItems.map(v => ({
+                data: v,
+                // Selected is based on the current query in the state.
+                selected: query.filters
+                  ? filter.dataKey in query.filters
+                    ? v in query.filters[filter.dataKey]
+                      ? query.filters[filter.dataKey][v]
+                      : false
+                    : false
+                  : false,
+              })),
+            };
+          })
+        : [],
+    [filters, query.filters]
   );
+
+  // TODO: Set the selected cards.
+  React.useEffect(() => {
+    if (filtersInfo.length > 0) {
+      // Get selected items only and remove any arrays without items.
+      const selected = filtersInfo
+        .map<CardViewFilter>(filter => ({
+          label: filter.label,
+          filterKey: filter.filterKey,
+          items: filter.items.filter(i => i.selected),
+        }))
+        .filter(f => f.items.length > 0);
+
+      if (selected.length > 0) {
+        setSelectedFilters(selected);
+      }
+    }
+  }, [filtersInfo]);
 
   React.useEffect(() => {
     console.log('Page number (page): ', page);
@@ -397,6 +429,24 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         {/* Card data */}
         {loadedData ? (
           <Grid item xs>
+            {/* Selected filters array */}
+            {selectedFilters.length > 0 && (
+              <Paper component="ul" className={classes.selectedChips}>
+                {selectedFilters.map((filter, filterIndex) => (
+                  <li key={filterIndex}>
+                    {filter.items.map((item, itemIndex) => (
+                      <Chip
+                        key={itemIndex}
+                        className={classes.chip}
+                        label={`${filter.label} - ${item.data}`}
+                        // TODO: Add onDelete to remove a chip from array and state/query.
+                      />
+                    ))}
+                  </li>
+                ))}
+              </Paper>
+            )}
+
             <List>
               {/* TODO: The width of the card should take up more room when 
                         there is no further information or buttons. */}

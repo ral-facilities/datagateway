@@ -140,6 +140,7 @@ interface EntityCardProps {
   tags?: string[];
 }
 
+// TODO: Rename from EntityCard to Card.
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
   const {
@@ -251,6 +252,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             </div>
           </div>
 
+          {/* TODO: Place paddingTop inline styles in createStyles. */}
           {tags && (
             <div className={classes.tags}>
               <Divider />

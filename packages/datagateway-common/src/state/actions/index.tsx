@@ -112,10 +112,12 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
 
     // Parse filters in the query.
     let parsedFilters: FiltersType = {};
+    let parsed = false;
     if (filters) {
       try {
         const fq: FilterQuery = JSON.parse(filters);
         console.log('parsed filters: ', fq);
+        parsed = true;
 
         // Create the entries for the filter.
         for (const [f, v] of Object.entries(fq)) {
@@ -126,7 +128,8 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
           );
         }
       } catch (e) {
-        throw new Error('Filter queries provided in an incorrect format.');
+        // TODO: This will stop if the query is incorrect.
+        console.error('Filter queries provided in an incorrect format.');
       }
     }
 
@@ -135,8 +138,8 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       view: query.get('view') as ViewsType,
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
-      // TODO: Handle incorrect formats of filters.
-      filters: filters ? parsedFilters : null,
+      // TODO: Handle incorrect formats of filters - prevent filters being added if incorrect.
+      filters: filters && parsed ? parsedFilters : null,
     };
 
     dispatch(updateQueryParams(params));
