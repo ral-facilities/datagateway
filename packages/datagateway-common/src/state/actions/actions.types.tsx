@@ -206,6 +206,10 @@ export interface FilterTablePayload {
   filter: Filter | null;
 }
 
+export interface FilterQuery {
+  [filter: string]: Filter;
+}
+
 export interface ConfigureFacilityNamePayload {
   facilityName: string;
 }
@@ -236,9 +240,7 @@ export interface UpdateResultsPayload {
 }
 
 export interface UpdateFiltersPayload {
-  filter: string;
-  data: string;
-  selected: boolean;
+  filters: FilterQuery;
 }
 
 export interface UpdateQueriesPayload {

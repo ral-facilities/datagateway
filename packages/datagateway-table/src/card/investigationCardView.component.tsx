@@ -62,6 +62,7 @@ const InvestigationCardView = (
     removeFromCart,
     view,
   } = props;
+
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedTypeFilter, setFetchedTypeFilter] = React.useState(false);
   const [fetchedFacilityFilter, setFetchedFacilityFilter] = React.useState(
@@ -81,11 +82,13 @@ const InvestigationCardView = (
     [cartItems, investigationIds]
   );
 
+  // Get the distinct 'TYPE_ID' options.
   const typeFilteredItems = React.useMemo(
     () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
     [filterData]
   );
 
+  // Get the distinct 'FACILITY_ID' options.
   const facilityFilteredItems = React.useMemo(
     () => ('FACILITY_ID' in filterData ? filterData['FACILITY_ID'] : []),
     [filterData]
@@ -132,7 +135,7 @@ const InvestigationCardView = (
       totalDataCount={totalDataCount}
       loadData={fetchData}
       // TODO: Provide all types from data from API using filter.
-      filters={[
+      cardFilters={[
         {
           label: 'Type ID',
           dataKey: 'TYPE_ID',

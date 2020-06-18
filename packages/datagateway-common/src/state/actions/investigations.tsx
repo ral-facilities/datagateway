@@ -448,7 +448,7 @@ export const fetchFilterFailure = (
   },
 });
 
-// TODO: Can distinct inspect inside objects?
+// TODO: Should be moved out of investigations and placed somewhere generic (index).
 export const fetchFilter = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   filterKey: string,
@@ -468,9 +468,6 @@ export const fetchFilter = (
         params.append(filter.filterType, filter.filterValue);
       });
     }
-
-    // sort by ID first to guarantee order
-    // params.append('order', JSON.stringify(`ID asc`));
 
     // Add in the distinct if it as not already been added.
     const distinctFilterString = params.get('distinct');

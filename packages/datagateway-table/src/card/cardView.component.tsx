@@ -28,6 +28,7 @@ import {
   pushPageFilter,
   pushPageNum,
   pushPageResults,
+  Filter,
 } from 'datagateway-common';
 import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
@@ -88,23 +89,22 @@ interface CardViewProps {
   buttons?: ((data?: any) => React.ReactNode)[];
 
   // TODO: Provide filtering options (array of dataKeys?).
-  filters?: { label: string; dataKey: string; filterItems: string[] }[];
+  cardFilters?: { label: string; dataKey: string; filterItems: string[] }[];
   image?: EntityImageDetails;
 }
 
 interface CardViewStateProps {
   loading: boolean;
   query: QueryParams;
+  filters: {
+    [column: string]: Filter;
+  };
 }
 
 interface CardViewDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
-  pushFilters: (
-    filter: string,
-    data: string,
-    selected: boolean
-  ) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   clearData: () => Action;
 }
 
@@ -112,10 +112,19 @@ type CardViewCombinedProps = CardViewProps &
   CardViewStateProps &
   CardViewDispatchProps;
 
-interface CardViewFilter {
-  label: string;
+interface CVFilterInfo {
+  [filterKey: string]: {
+    label: string;
+    items: {
+      [data: string]: boolean;
+    };
+  };
+}
+
+interface CVSelectedFilter {
   filterKey: string;
-  items: { data: string; selected: boolean }[];
+  label: string;
+  items: string[];
 }
 
 // TODO: CardView needs URL support:
@@ -130,6 +139,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     totalDataCount,
     query,
     filters,
+    cardFilters,
     paginatedFetch,
     loadData,
     buttons,
@@ -158,49 +168,124 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [loadedData, setLoadedData] = React.useState(false);
 
   // Filters.
+  const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
   const [selectedFilters, setSelectedFilters] = React.useState<
-    CardViewFilter[]
+    CVSelectedFilter[]
   >([]);
 
   // Set the filter information based on what was provided.
-  const filtersInfo = React.useMemo<CardViewFilter[]>(
-    () =>
-      filters
-        ? Object.values(filters).map(filter => {
-            return {
-              label: filter.label,
-              filterKey: filter.dataKey,
-              items: filter.filterItems.map(v => ({
-                data: v,
-                // Selected is based on the current query in the state.
-                selected: query.filters
-                  ? filter.dataKey in query.filters
-                    ? v in query.filters[filter.dataKey]
-                      ? query.filters[filter.dataKey][v]
-                      : false
-                    : false
-                  : false,
-              })),
-            };
-          })
-        : [],
-    [filters, query.filters]
-  );
-
-  // TODO: Set the selected cards.
   React.useEffect(() => {
-    if (filtersInfo.length > 0) {
+    const getFilterSelected = (
+      filterKey: string,
+      filterValue: string
+    ): boolean => {
+      // console.log(`Check ${filterKey} with ${filterValue}`);
+      // console.log('Current filters: ', filters);
+      if (filterKey in filters) {
+        // console.log(`${filterKey} in filters`);
+        const v = filters[filterKey];
+        // console.log('Returned array: ', v);
+        // console.log(filterValue in v);
+        if (Array.isArray(v) && v.includes(filterValue)) {
+          // console.log(`Is array and ${filterValue} in v`);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    const info = cardFilters
+      ? Object.values(cardFilters).reduce(
+          (o, filter) => ({
+            ...o,
+            [filter.dataKey]: {
+              label: filter.label,
+              items: filter.filterItems.reduce(
+                (o, item) => ({
+                  ...o,
+                  [item]: getFilterSelected(filter.dataKey, item),
+                }),
+                {}
+              ),
+            },
+          }),
+          {}
+        )
+      : [];
+
+    console.log('Updated info: ', info);
+    setFiltersInfo(info);
+  }, [cardFilters, filters]);
+
+  // TODO: Set the selected filters.
+  React.useEffect(() => {
+    if (Object.keys(filtersInfo).length > 0) {
       // Get selected items only and remove any arrays without items.
-      const selected = filtersInfo
-        .map<CardViewFilter>(filter => ({
-          label: filter.label,
-          filterKey: filter.filterKey,
-          items: filter.items.filter(i => i.selected),
-        }))
-        .filter(f => f.items.length > 0);
+      const selected = Object.entries(filtersInfo)
+        .map(
+          ([filterKey, info]) => ({
+            filterKey: filterKey,
+            label: info.label,
+            items: Object.entries(info.items)
+              .filter(([, v]) => v)
+              .map(([i]) => i),
+          }),
+          []
+        )
+        .filter(v => v.items.length > 0);
+      console.log(selected);
       setSelectedFilters(selected);
     }
   }, [filtersInfo]);
+
+  const changeFilter = (
+    filterKey: string,
+    filterValue: string,
+    remove?: boolean
+  ): void => {
+    // Add or remove the filter value in the state.
+    let updateItems: string[];
+    if (filterKey in filters) {
+      const filterItems = filters[filterKey];
+      if (Array.isArray(filterItems)) {
+        updateItems = filterItems;
+      } else {
+        updateItems = [];
+      }
+    } else {
+      updateItems = [];
+    }
+    // console.log('Current items: ', updateItems);
+
+    if (!remove && !updateItems.includes(filterValue)) {
+      // Add a filter item.
+      // filtersInfo[filterKey].items[filterValue] = true;
+      updateItems.push(filterValue);
+      // console.log('Push items: ', updateItems);
+      pushFilters(filterKey, updateItems);
+      setLoadedData(false);
+    } else {
+      if (updateItems.length > 0 && updateItems.includes(filterValue)) {
+        // console.log('Remove filterValue: ', filterValue);
+        // console.log('Push items: ', updateItems);
+        // Set to null if this is the last item in the array.
+        // Remove the item from the updated items array.
+        const i = updateItems.indexOf(filterValue);
+        console.log('Index to remove: ', i);
+        if (i > -1) {
+          // Remove the filter value from the update items.
+          updateItems.splice(i, 1);
+          console.log('Push items: ', updateItems);
+          if (updateItems.length > 0) {
+            pushFilters(filterKey, updateItems);
+          } else {
+            pushFilters(filterKey, null);
+          }
+          setLoadedData(false);
+        }
+      }
+    }
+  };
 
   React.useEffect(() => {
     console.log('Page number (page): ', page);
@@ -261,33 +346,48 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // TODO: If fetchPaginated is false, data will only be set to view data once.
   React.useEffect(() => {
     if (!loading && dataCount > 0) {
+      // Calculate the maximum pages needed for pagination.
+      setNumPages(~~((dataCount + maxResults - 1) / maxResults));
+      // console.log('Number of pages: ', numPages);
+
+      // Calculate the start/end indexes for the data.
+      const startIndex = page * maxResults - (maxResults - 1) - 1;
+      // console.log('startIndex: ', startIndex);
+
+      // End index not incremented for slice method.
+      const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
+      // console.log('stopIndex: ', stopIndex);
+
       if (!loadedData) {
-        // Calculate the maximum pages needed for pagination.
-        setNumPages(~~((dataCount + maxResults - 1) / maxResults));
-        // console.log('Number of pages: ', numPages);
+        // // Calculate the maximum pages needed for pagination.
+        // setNumPages(~~((dataCount + maxResults - 1) / maxResults));
+        // // console.log('Number of pages: ', numPages);
 
-        // Calculate the start/end indexes for the data.
-        const startIndex = page * maxResults - (maxResults - 1) - 1;
-        // console.log('startIndex: ', startIndex);
+        // // Calculate the start/end indexes for the data.
+        // const startIndex = page * maxResults - (maxResults - 1) - 1;
+        // // console.log('startIndex: ', startIndex);
 
-        // End index not incremented for slice method.
-        const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-        // console.log('stopIndex: ', stopIndex);
+        // // End index not incremented for slice method.
+        // const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
+        // // console.log('stopIndex: ', stopIndex);
 
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
           if (fetchPaginated && loadData) {
             // Clear data in the state before loading new data.
             clearData();
             loadData({ startIndex, stopIndex });
-          } else {
-            setViewData(data.slice(startIndex, stopIndex + 1));
           }
+          // } else {
+          // setViewData(data.slice(startIndex, stopIndex + 1));
+          // }
           setLoadedData(true);
         }
       } else {
         // Set the data once it has been loaded.
         if (fetchPaginated) {
           setViewData(data);
+        } else {
+          setViewData(data.slice(startIndex, stopIndex + 1));
         }
       }
     }
@@ -377,46 +477,50 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 {/* Show the specific options available to filter by */}
                 <Box>
                   {filtersInfo &&
-                    filtersInfo.map((filter, filterIndex) => {
-                      return (
-                        <ExpansionPanel key={filterIndex}>
-                          <ExpansionPanelSummary
-                            expandIcon={<ExpandMoreIcon />}
-                          >
-                            <Typography>{filter.label}</Typography>
-                          </ExpansionPanelSummary>
-                          <ExpansionPanelDetails>
-                            <div style={{ maxWidth: 360, width: '100%' }}>
-                              <List component="nav">
-                                {filter.items.map((item, valueIndex) => (
-                                  <ListItem
-                                    key={valueIndex}
-                                    button
-                                    // TODO: Add selected to each individual item.
-                                    disabled={item.selected}
-                                    onClick={() => {
-                                      console.log(
-                                        'Got click of filter option: ',
-                                        item.data
-                                      );
-                                      pushFilters(
-                                        filter.filterKey,
-                                        item.data,
-                                        true
-                                      );
-                                    }}
-                                  >
-                                    {/* TODO: The label chip could have its contents overflow
-                                            (requires tooltip in future)  */}
-                                    <Chip label={item.data} />
-                                  </ListItem>
-                                ))}
-                              </List>
-                            </div>
-                          </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                      );
-                    })}
+                    Object.entries(filtersInfo).map(
+                      ([filterKey, filter], filterIndex) => {
+                        return (
+                          <ExpansionPanel key={filterIndex}>
+                            <ExpansionPanelSummary
+                              expandIcon={<ExpandMoreIcon />}
+                            >
+                              <Typography>{filter.label}</Typography>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                              <div style={{ maxWidth: 360, width: '100%' }}>
+                                <List component="nav">
+                                  {Object.entries(filter.items).map(
+                                    ([item, selected], valueIndex) => (
+                                      <ListItem
+                                        key={valueIndex}
+                                        button
+                                        // TODO: Add selected to each individual item.
+                                        disabled={selected}
+                                        onClick={() => {
+                                          console.log(
+                                            'Got click of filter option: ',
+                                            item
+                                          );
+
+                                          // TODO: Move to one function.
+                                          changeFilter(filterKey, item);
+                                          // TODO: Should reload on count change allow for the data to be reloaded.
+                                          setLoadedData(false);
+                                        }}
+                                      >
+                                        {/* TODO: The label chip could have its contents overflow
+                                                  (requires tooltip in future)  */}
+                                        <Chip label={item} />
+                                      </ListItem>
+                                    )
+                                  )}
+                                </List>
+                              </div>
+                            </ExpansionPanelDetails>
+                          </ExpansionPanel>
+                        );
+                      }
+                    )}
                 </Box>
               </Grid>
             </Paper>
@@ -435,12 +539,16 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       <Chip
                         key={itemIndex}
                         className={classes.chip}
-                        label={`${filter.label} - ${item.data}`}
+                        label={`${filter.label} - ${item}`}
                         onDelete={() => {
                           console.log(
-                            `Deselect filter ${filter.label} with value: ${item.data}`
+                            `Deselect filter ${filter.label} with value: ${item}`
                           );
-                          pushFilters(filter.filterKey, item.data, false);
+
+                          // TODO: Move to one function.
+                          changeFilter(filter.filterKey, item, true);
+                          // Allow for the data to be reloaded.
+                          // setLoadedData(false);
                         }}
                       />
                     ))}
@@ -490,8 +598,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       buttons={buttons && buttons.map(button => button(data))}
                       // Pass tag names to the card given the specified data key for the filter.
                       tags={
-                        filters &&
-                        filters.map(f => nestedValue(data, f.dataKey))
+                        cardFilters &&
+                        cardFilters.map(f => nestedValue(data, f.dataKey))
                       }
                     />
                   </ListItem>
@@ -538,6 +646,7 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
     loading: state.dgcommon.loading,
     query: state.dgcommon.query,
+    filters: state.dgcommon.filters,
   };
 };
 
@@ -548,8 +657,8 @@ const mapDispatchToProps = (
 ): CardViewDispatchProps => ({
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-  pushFilters: (filter: string, data: string, selected: boolean) =>
-    dispatch(pushPageFilter(filter, data, selected)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   clearData: () => dispatch(clearData()),
 });
 

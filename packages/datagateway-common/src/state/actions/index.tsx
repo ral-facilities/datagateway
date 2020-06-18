@@ -3,7 +3,6 @@ import { Action } from 'redux';
 import { Entity, Filter, Order } from '../../app.types';
 import {
   ActionType,
-  FiltersType,
   QueryParams,
   StateType,
   ThunkResult,
@@ -24,8 +23,6 @@ import {
   SaveQueriesType,
   SortTablePayload,
   SortTableType,
-  UpdateFiltersPayload,
-  UpdateFiltersType,
   UpdatePagePayload,
   UpdatePageType,
   UpdateQueriesPayload,
@@ -35,6 +32,9 @@ import {
   UpdateViewPayload,
   UpdateViewType,
   URLs,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
+  FilterQuery,
 } from './actions.types';
 
 export * from './cart';
@@ -96,9 +96,14 @@ export const updateQueryParams = (
   },
 });
 
-interface FilterQuery {
-  [filter: string]: string[];
-}
+export const updateFilters = (
+  filters: FilterQuery
+): ActionType<UpdateFiltersPayload> => ({
+  type: UpdateFiltersType,
+  payload: {
+    filters,
+  },
+});
 
 export const loadURLQuery = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
@@ -112,7 +117,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     const filters = query.get('filters');
 
     // Parse filters in the query.
-    let parsedFilters: FiltersType = {};
+    let parsedFilters: FilterQuery = {};
     let parsed = false;
     if (filters) {
       try {
@@ -121,13 +126,15 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
 
         // Create the entries for the filter.
         for (const [f, v] of Object.entries(fq)) {
-          console.log(`Adding ${f} with values: ${v}`);
-          const items = v.reduce((o, value) => ({ ...o, [value]: true }), {});
-
           // Add only if there are filter items present.
-          if (Object.keys(items).length > 0) {
-            parsedFilters[f] = items;
+          if (Array.isArray(v)) {
+            if (v.length > 0) {
+              parsedFilters[f] = v;
+            }
+          } else {
+            parsedFilters[f] = v;
           }
+          console.log(`Added ${f} with values: ${v}`);
         }
 
         // Ensure at least one filter has been added.
@@ -144,43 +151,47 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       view: query.get('view') as ViewsType,
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
-      filters: parsed ? parsedFilters : null,
     };
 
     dispatch(updateQueryParams(params));
+
+    // Dispatch and update the filter object in state.
+    console.log('Parsed filters: ', parsed);
+    console.log(parsedFilters);
+    if (parsed) {
+      dispatch(updateFilters(parsedFilters));
+    }
   };
 };
 
 // Get the current URL query parameters.
 export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   const query = getState().dgcommon.query;
+  const filters = getState().dgcommon.filters;
+
   let queryParams = new URLSearchParams();
 
   // Loop and add all the query parameters which is in use.
   for (let [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters') {
       console.log(`Adding ${q} with value: ${v}`);
-      // TODO: Handle adding filters; we cannot get exact type filter.
       queryParams.append(q, v);
     }
   }
 
   // Add filters.
-  if (query.filters) {
-    const filters: FilterQuery = {};
-    for (const [f, v] of Object.entries(query.filters)) {
-      // TODO: Only map and add if selected is true.
-      const items = Object.entries(v)
-        .filter(([, selected]) => selected)
-        .map(([data]) => data);
-      if (items.length > 0) {
-        filters[f] = items;
+  for (const [f, v] of Object.entries(filters)) {
+    if (Array.isArray(v)) {
+      if (v.length > 0) {
+        filters[f] = v;
       }
+    } else {
+      filters[f] = v;
     }
-    if (Object.keys(filters).length > 0) {
-      console.log('Add filters: ', filters);
-      queryParams.append('filters', JSON.stringify(filters));
-    }
+  }
+  if (Object.keys(filters).length > 0) {
+    console.log('Add filters: ', filters);
+    queryParams.append('filters', JSON.stringify(filters));
   }
 
   console.log(`Final URLSearchParams - getURLQuery: ${queryParams.toString()}`);
@@ -203,16 +214,27 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
 
   for (let [column, filter] of Object.entries(filters)) {
     if (typeof filter === 'object') {
-      if ('startDate' in filter && filter.startDate) {
+      if (!Array.isArray(filter)) {
+        if ('startDate' in filter && filter.startDate) {
+          searchParams.append(
+            'where',
+            JSON.stringify({
+              [column]: { gte: `${filter.startDate} 00:00:00` },
+            })
+          );
+        }
+        if ('endDate' in filter && filter.endDate) {
+          searchParams.append(
+            'where',
+            JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
+          );
+        }
+      } else {
+        // If it is an array (strings or numbers) we use IN
+        // and filter by what is in the array at the moment.
         searchParams.append(
           'where',
-          JSON.stringify({ [column]: { gte: `${filter.startDate} 00:00:00` } })
-        );
-      }
-      if ('endDate' in filter && filter.endDate) {
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
+          JSON.stringify({ [column]: { in: filter } })
         );
       }
     } else {
@@ -267,19 +289,6 @@ export const updateResults = (
   },
 });
 
-export const updateFilters = (
-  filter: string,
-  data: string,
-  selected: boolean
-): ActionType<UpdateFiltersPayload> => ({
-  type: UpdateFiltersType,
-  payload: {
-    filter,
-    data,
-    selected,
-  },
-});
-
 export const updateSaveQueries = (
   queries: QueryParams
 ): ActionType<SaveQueriesPayload> => ({
@@ -322,13 +331,13 @@ export const pushPageResults = (
   };
 };
 
+// TODO: Make use of already present filterTable.
 export const pushPageFilter = (
-  filter: string,
-  data: string,
-  selected: boolean
+  filterKey: string,
+  data: Filter | null
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(updateFilters(filter, data, selected));
+    dispatch(filterTable(filterKey, data));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
 };

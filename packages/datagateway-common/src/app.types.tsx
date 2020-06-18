@@ -239,6 +239,10 @@ export const EntityTypes: string[] = [
 ];
 
 // TODO: type this properly
-export type Filter = string | number | { startDate?: string; endDate?: string };
-
+// TODO: Do we need number[]?
+export type Filter =
+  | string
+  | string[]
+  | number
+  | { startDate?: string; endDate?: string };
 export type Order = 'asc' | 'desc';

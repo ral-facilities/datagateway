@@ -98,8 +98,6 @@ import {
   SaveQueriesType,
   SortTablePayload,
   SortTableType,
-  UpdateFiltersPayload,
-  UpdateFiltersType,
   UpdatePagePayload,
   UpdatePageType,
   UpdateQueriesPayload,
@@ -108,6 +106,8 @@ import {
   UpdateResultsType,
   UpdateViewPayload,
   UpdateViewType,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
 } from '../actions/actions.types';
 import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
@@ -116,7 +116,6 @@ const initialQuery: QueryParams = {
   view: null,
   page: null,
   results: null,
-  filters: null,
 };
 
 export const initialState: DGCommonState = {
@@ -280,16 +279,9 @@ export function handleUpdateFilters(
 ): DGCommonState {
   return {
     ...state,
-    query: {
-      ...state.query,
-      filters: {
-        ...state.query.filters,
-        [payload.filter]: {
-          ...(state.query.filters && state.query.filters[payload.filter]),
-          [payload.data]: payload.selected,
-        },
-      },
-    },
+    filters: payload.filters,
+    data: [],
+    totalDataCount: 0,
   };
 }
 
