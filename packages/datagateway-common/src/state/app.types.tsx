@@ -1,33 +1,29 @@
 import { RouterState } from 'connected-react-router';
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { DownloadCartItem, Entity, Filter, Order } from '../app.types';
+import { DownloadCartItem, Entity, FiltersType, SortType } from '../app.types';
 import { URLs } from './actions/actions.types';
 
 export interface DGCommonState {
   facilityName: string;
-  sort: {
-    [column: string]: Order;
-  };
-  filters: {
-    [column: string]: Filter;
-  };
+  urls: URLs;
+  loading: boolean;
+  downloading: boolean;
+  error: string | null;
   data: Entity[];
   totalDataCount: number;
   investigationCache: EntityCache;
   datasetCache: EntityCache;
   cartItems: DownloadCartItem[];
   allIds: number[];
-  loading: boolean;
-  downloading: boolean;
-  error: string | null;
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
-  urls: URLs;
-  query: QueryParams;
-  savedQueries: QueryParams | null;
+  sort: SortType;
+  filters: FiltersType;
   filterData: FilterDataType;
+  query: QueryParams;
+  savedView: SavedView;
 }
 
 export type ViewsType = 'table' | 'card' | null;
@@ -36,6 +32,12 @@ export interface QueryParams {
   view: ViewsType;
   page: number | null;
   results: number | null;
+}
+
+export interface SavedView {
+  view: ViewsType;
+  queries: QueryParams | null;
+  filters: FiltersType;
 }
 
 export interface FilterDataType {

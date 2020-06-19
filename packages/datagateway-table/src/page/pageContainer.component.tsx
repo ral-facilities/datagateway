@@ -13,14 +13,13 @@ import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import {
-  loadURLQuery,
-  pushPageView,
-  saveQueries,
-  restoreQueries,
-} from 'datagateway-common';
+import { loadURLQuery, pushPageView, saveView } from 'datagateway-common';
 
-import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
+import {
+  QueryParams,
+  ViewsType,
+  SavedView,
+} from 'datagateway-common/lib/state/app.types';
 import { Route } from 'react-router';
 import PageCard from './pageCard.component';
 import { supportedPaths } from './pageCard.component';
@@ -28,15 +27,14 @@ import { supportedPaths } from './pageCard.component';
 interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
   pushView: (view: ViewsType) => Promise<void>;
-  saveQuery: () => Promise<void>;
-  restoreQuery: () => Promise<void>;
+  saveView: (view: ViewsType) => Promise<void>;
 }
 
 interface PageContainerProps {
   entityCount: number;
   path: string;
   query: QueryParams;
-  savedQueries: QueryParams | null;
+  savedView: SavedView;
 }
 
 type PageContainerCombinedProps = PageContainerProps &
@@ -135,20 +133,16 @@ class PageContainer extends React.Component<
   };
 
   public handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const viewName = event.target.checked ? 'card' : 'table';
+    const nextView = event.target.checked ? 'card' : 'table';
+
+    // Save the current view information to state and restore the previous view information.
+    this.props.saveView(this.state.toggleCard ? 'card' : 'table');
 
     // Set the view in local storage.
-    this.storeDataView(viewName);
-
-    // Handle logic for handling queries when changing between views.
-    if (!event.target.checked) {
-      this.props.saveQuery();
-    } else if (event.target.checked && this.props.savedQueries !== null) {
-      this.props.restoreQuery();
-    }
+    this.storeDataView(nextView);
 
     // Add the view and push the final query parameters.
-    this.props.pushView(viewName);
+    this.props.pushView(nextView);
 
     // Set the state with the toggled card option and the saved queries.
     this.setState({
@@ -230,7 +224,7 @@ const mapStateToProps = (state: StateType): PageContainerProps => ({
   entityCount: state.dgcommon.totalDataCount,
   path: state.router.location.pathname,
   query: state.dgcommon.query,
-  savedQueries: state.dgcommon.savedQueries,
+  savedView: state.dgcommon.savedView,
 });
 
 const mapDispatchToProps = (
@@ -238,8 +232,7 @@ const mapDispatchToProps = (
 ): PageContainerDispatchProps => ({
   loadQuery: () => dispatch(loadURLQuery()),
   pushView: (view: ViewsType) => dispatch(pushPageView(view)),
-  saveQuery: () => dispatch(saveQueries()),
-  restoreQuery: () => dispatch(restoreQueries()),
+  saveView: (view: ViewsType) => dispatch(saveView(view)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);

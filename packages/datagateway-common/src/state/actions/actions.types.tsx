@@ -1,4 +1,10 @@
-import { DownloadCart, Entity, Filter, Order } from '../../app.types';
+import {
+  DownloadCart,
+  Entity,
+  Filter,
+  Order,
+  FiltersType,
+} from '../../app.types';
 import { QueryParams, ViewsType } from '../app.types';
 
 // parent app actions
@@ -17,15 +23,14 @@ export const FilterTableType = 'datagateway_common:filter_table';
 export const ClearTableType = 'datagateway_common:clear_table';
 export const ClearDataType = 'datagateway_common:clear_data';
 
+export const UpdateFiltersType = 'datagateway_common:update_filters';
+export const UpdateQueriesType = 'datagateway_common:update_queries';
+
 export const UpdateViewType = 'datagateway_common:update_view';
 export const UpdatePageType = 'datagateway_common:update_page';
 export const UpdateResultsType = 'datagateway_common:update_results';
-export const UpdateFiltersType = 'datagateway_common:update_filters';
 
-export const UpdateQueriesType = 'datagateway_common:update_queries';
-export const SaveQueriesType = 'datagateway_common:save_queries';
-export const RestoreQueriesType = 'datagateway_common:restore_queries';
-export const ResetQueryType = 'datagateway_common:reset_queries';
+export const UpdateSaveViewType = 'datagateway_common:update_save_view';
 
 export const FetchInvestigationsRequestType =
   'datagateway_common:fetch_investigations_request';
@@ -206,10 +211,6 @@ export interface FilterTablePayload {
   filter: Filter | null;
 }
 
-export interface FilterQuery {
-  [filter: string]: Filter;
-}
-
 export interface ConfigureFacilityNamePayload {
   facilityName: string;
 }
@@ -240,15 +241,15 @@ export interface UpdateResultsPayload {
 }
 
 export interface UpdateFiltersPayload {
-  filters: FilterQuery;
+  filters: FiltersType;
 }
 
 export interface UpdateQueriesPayload {
   queries: QueryParams;
 }
 
-export interface SaveQueriesPayload {
-  queries: QueryParams;
+export interface SaveViewPayload {
+  view: ViewsType;
 }
 
 export interface RequestPayload {

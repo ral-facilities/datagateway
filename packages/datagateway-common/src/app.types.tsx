@@ -245,4 +245,15 @@ export type Filter =
   | string[]
   | number
   | { startDate?: string; endDate?: string };
+
 export type Order = 'asc' | 'desc';
+
+// TODO: Replace this in all files.
+export interface FiltersType {
+  [column: string]: Filter;
+}
+
+// TODO: Replace this in all files.
+export interface SortType {
+  [column: string]: Order;
+}

@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router';
 import { Action } from 'redux';
-import { Entity, Filter, Order } from '../../app.types';
+import { Entity, Filter, Order, FiltersType } from '../../app.types';
 import {
   ActionType,
   QueryParams,
@@ -17,16 +17,13 @@ import {
   ConfigureURLsType,
   FilterTablePayload,
   FilterTableType,
-  ResetQueryType,
-  RestoreQueriesType,
-  SaveQueriesPayload,
-  SaveQueriesType,
+  SaveViewPayload,
   SortTablePayload,
   SortTableType,
   UpdatePagePayload,
   UpdatePageType,
   UpdateQueriesPayload,
-  UpdateQueriesType,
+  UpdateSaveViewType,
   UpdateResultsPayload,
   UpdateResultsType,
   UpdateViewPayload,
@@ -34,7 +31,7 @@ import {
   URLs,
   UpdateFiltersPayload,
   UpdateFiltersType,
-  FilterQuery,
+  UpdateQueriesType,
 } from './actions.types';
 
 export * from './cart';
@@ -97,7 +94,7 @@ export const updateQueryParams = (
 });
 
 export const updateFilters = (
-  filters: FilterQuery
+  filters: FiltersType
 ): ActionType<UpdateFiltersPayload> => ({
   type: UpdateFiltersType,
   payload: {
@@ -117,11 +114,11 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     const filters = query.get('filters');
 
     // Parse filters in the query.
-    let parsedFilters: FilterQuery = {};
+    let parsedFilters: FiltersType = {};
     let parsed = false;
     if (filters) {
       try {
-        const fq: FilterQuery = JSON.parse(filters);
+        const fq: FiltersType = JSON.parse(filters);
         console.log('parsed filters: ', fq);
 
         // Create the entries for the filter.
@@ -289,21 +286,13 @@ export const updateResults = (
   },
 });
 
-export const updateSaveQueries = (
-  queries: QueryParams
-): ActionType<SaveQueriesPayload> => ({
-  type: SaveQueriesType,
+export const updateSaveView = (
+  view: ViewsType
+): ActionType<SaveViewPayload> => ({
+  type: UpdateSaveViewType,
   payload: {
-    queries,
+    view,
   },
-});
-
-export const restoreSaveQueries = (): Action => ({
-  type: RestoreQueriesType,
-});
-
-export const resetQuery = (): Action => ({
-  type: ResetQueryType,
 });
 
 export const pushPageView = (view: ViewsType): ThunkResult<Promise<void>> => {
@@ -342,20 +331,9 @@ export const pushPageFilter = (
   };
 };
 
-export const saveQueries = (): ThunkResult<Promise<void>> => {
-  return async (dispatch, getState) => {
-    // Save the current queries.
-    dispatch(updateSaveQueries(getState().dgcommon.query));
-
-    // Reset the queries in state.
-    dispatch(resetQuery());
-  };
-};
-
-export const restoreQueries = (): ThunkResult<Promise<void>> => {
+export const saveView = (view: ViewsType): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    // Update the current query params with the saved ones.
-    dispatch(restoreSaveQueries());
-    // dispatch(push(`?${getURLQuery(getState).toString()}`));
+    // Save the current queries.
+    dispatch(updateSaveView(view));
   };
 };

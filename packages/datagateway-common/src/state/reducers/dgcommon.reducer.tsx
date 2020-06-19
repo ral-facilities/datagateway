@@ -92,10 +92,6 @@ import {
   RemoveFromCartRequestType,
   RemoveFromCartSuccessType,
   RequestPayload,
-  ResetQueryType,
-  RestoreQueriesType,
-  SaveQueriesPayload,
-  SaveQueriesType,
   SortTablePayload,
   SortTableType,
   UpdatePagePayload,
@@ -108,6 +104,8 @@ import {
   UpdateViewType,
   UpdateFiltersPayload,
   UpdateFiltersType,
+  SaveViewPayload,
+  UpdateSaveViewType,
 } from '../actions/actions.types';
 import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
@@ -140,7 +138,11 @@ export const initialState: DGCommonState = {
   cartItems: [],
   allIds: [],
   query: initialQuery,
-  savedQueries: null,
+  savedView: {
+    view: null,
+    queries: null,
+    filters: {},
+  },
   filterData: {},
 };
 
@@ -295,30 +297,19 @@ export function handleUpdateQueries(
   };
 }
 
-export function handleSaveQueries(
+export function handleSaveView(
   state: DGCommonState,
-  payload: SaveQueriesPayload
+  payload: SaveViewPayload
 ): DGCommonState {
   return {
     ...state,
-    savedQueries: payload.queries,
-  };
-}
-
-export function handleRestoreQueries(state: DGCommonState): DGCommonState {
-  return {
-    ...state,
-    // TODO: Handling the null on savedQueries?
-    // Restores any saved queries, if there are none, then resets the query.
-    query: state.savedQueries ? state.savedQueries : initialQuery,
-    savedQueries: null,
-  };
-}
-
-export function handleResetQuery(state: DGCommonState): DGCommonState {
-  return {
-    ...state,
-    query: initialQuery,
+    filters: state.savedView.filters,
+    query: state.savedView.queries ? state.savedView.queries : initialQuery,
+    savedView: {
+      view: payload.view,
+      queries: state.query,
+      filters: state.filters,
+    },
   };
 }
 
@@ -709,9 +700,7 @@ const dGCommonReducer = createReducer(initialState, {
   [UpdateResultsType]: handleUpdateResults,
   [UpdateFiltersType]: handleUpdateFilters,
   [UpdateQueriesType]: handleUpdateQueries,
-  [SaveQueriesType]: handleSaveQueries,
-  [RestoreQueriesType]: handleRestoreQueries,
-  [ResetQueryType]: handleResetQuery,
+  [UpdateSaveViewType]: handleSaveView,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
