@@ -13,6 +13,7 @@ import {
   Investigation,
   investigationLink,
   removeFromCart,
+  Filter,
 } from 'datagateway-common';
 import {
   FilterDataType,
@@ -40,6 +41,9 @@ interface InvestigationCVStateProps {
   totalDataCount: number;
   filterData: FilterDataType;
   cartItems: DownloadCartItem[];
+  filters: {
+    [column: string]: Filter;
+  };
   view: ViewsType;
 }
 
@@ -64,23 +68,8 @@ const InvestigationCardView = (
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [fetchedTypeFilter, setFetchedTypeFilter] = React.useState(false);
-  const [fetchedFacilityFilter, setFetchedFacilityFilter] = React.useState(
-    false
-  );
+  const [fetchedFilters, setFetchedFilters] = React.useState(false);
   const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
-
-  const selectedCards = React.useMemo(
-    () =>
-      cartItems
-        .filter(
-          cartItem =>
-            cartItem.entityType === 'investigation' &&
-            investigationIds.includes(cartItem.entityId)
-        )
-        .map(cartItem => cartItem.entityId),
-    [cartItems, investigationIds]
-  );
 
   // Get the distinct 'TYPE_ID' options.
   const typeFilteredItems = React.useMemo(
@@ -94,8 +83,20 @@ const InvestigationCardView = (
     [filterData]
   );
 
+  // Get the selected cards.
+  const selectedCards = React.useMemo(
+    () =>
+      cartItems
+        .filter(
+          cartItem =>
+            cartItem.entityType === 'investigation' &&
+            investigationIds.includes(cartItem.entityId)
+        )
+        .map(cartItem => cartItem.entityId),
+    [cartItems, investigationIds]
+  );
+
   React.useEffect(() => {
-    // TODO: React.useMemo?
     // Set the IDs of the data.
     setInvestigationIds(data.map(investigation => investigation.ID));
 
@@ -106,22 +107,18 @@ const InvestigationCardView = (
     }
 
     // Fetch the filter data.
-    if (!fetchedTypeFilter) {
+    if (!fetchedFilters) {
       fetchTypeFilter();
-      setFetchedTypeFilter(true);
-    }
-    if (!fetchedFacilityFilter) {
       fetchFacilityFilter();
-      setFetchedFacilityFilter(true);
+      setFetchedFilters(true);
     }
   }, [
     data,
     fetchedCount,
     fetchCount,
+    fetchedFilters,
     fetchTypeFilter,
-    fetchedTypeFilter,
     fetchFacilityFilter,
-    fetchedFacilityFilter,
   ]);
 
   return (
@@ -134,6 +131,7 @@ const InvestigationCardView = (
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
+      loadCount={fetchCount}
       // TODO: Provide all types from data from API using filter.
       cardFilters={[
         {
@@ -230,6 +228,7 @@ const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     filterData: state.dgcommon.filterData,
     cartItems: state.dgcommon.cartItems,
+    filters: state.dgcommon.filters,
     view: state.dgcommon.query.view,
   };
 };

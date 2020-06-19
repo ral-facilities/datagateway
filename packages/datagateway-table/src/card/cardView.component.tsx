@@ -77,6 +77,7 @@ interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
   loadData?: (offsetParams: IndexRange) => Promise<void>;
+  loadCount?: () => Promise<void>;
   paginatedFetch?: boolean;
 
   // Props to get title, description of the card
@@ -142,6 +143,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     cardFilters,
     paginatedFetch,
     loadData,
+    loadCount,
     buttons,
     loading,
     pushPage,
@@ -155,6 +157,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   // Card data.
   const [viewData, setViewData] = React.useState<Entity[]>([]);
+  const [loadedData, setLoadedData] = React.useState(false);
 
   // Pagination.
   // TODO: This page is not reset when component is changed.
@@ -162,10 +165,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [dataCount, setDataCount] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
-
-  const [fetchPaginated, setFetchedPaginated] = React.useState(true);
+  const [fetchPaginated, setFetchPaginated] = React.useState(true);
   const [pageChange, setPageChange] = React.useState(false);
-  const [loadedData, setLoadedData] = React.useState(false);
+  const [filterChange, setFilterChange] = React.useState(false);
 
   // Filters.
   const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
@@ -194,6 +196,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       return false;
     };
 
+    // Get the updated info.
     const info = cardFilters
       ? Object.values(cardFilters).reduce(
           (o, filter) => ({
@@ -263,7 +266,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       updateItems.push(filterValue);
       // console.log('Push items: ', updateItems);
       pushFilters(filterKey, updateItems);
-      setLoadedData(false);
+      // setLoadedData(false);
+      setFilterChange(true);
     } else {
       if (updateItems.length > 0 && updateItems.includes(filterValue)) {
         // console.log('Remove filterValue: ', filterValue);
@@ -281,7 +285,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           } else {
             pushFilters(filterKey, null);
           }
-          setLoadedData(false);
+          // setLoadedData(false);
+          setFilterChange(true);
         }
       }
     }
@@ -324,7 +329,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   React.useEffect(() => {
     // Get when the pagination fetch is disabled.
     if (paginatedFetch === false) {
-      setFetchedPaginated(false);
+      setFetchPaginated(false);
     }
 
     // Handle count and reloading of data based on pagination options.
@@ -345,6 +350,14 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   // TODO: If fetchPaginated is false, data will only be set to view data once.
   React.useEffect(() => {
+    // TODO: Need to handle sort and search as well.
+    // Reload the count on filter update.
+    if (filterChange && loadCount) {
+      loadCount();
+      setFilterChange(false);
+      setLoadedData(false);
+    }
+
     if (!loading && dataCount > 0) {
       // Calculate the maximum pages needed for pagination.
       setNumPages(~~((dataCount + maxResults - 1) / maxResults));
@@ -397,12 +410,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     maxResults,
     page,
     numPages,
+    loadCount,
     loadData,
     loadedData,
     clearData,
-    filters,
     fetchPaginated,
     loading,
+    filterChange,
   ]);
 
   return (
@@ -462,7 +476,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       >
         {/* Filtering options */}
         <Grid item xs={3}>
-          {filters && (
+          {cardFilters && (
             <Paper>
               <Grid
                 item
@@ -501,11 +515,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                                             'Got click of filter option: ',
                                             item
                                           );
-
-                                          // TODO: Move to one function.
                                           changeFilter(filterKey, item);
-                                          // TODO: Should reload on count change allow for the data to be reloaded.
-                                          setLoadedData(false);
                                         }}
                                       >
                                         {/* TODO: The label chip could have its contents overflow
@@ -544,11 +554,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           console.log(
                             `Deselect filter ${filter.label} with value: ${item}`
                           );
-
-                          // TODO: Move to one function.
                           changeFilter(filter.filterKey, item, true);
-                          // Allow for the data to be reloaded.
-                          // setLoadedData(false);
                         }}
                       />
                     ))}
