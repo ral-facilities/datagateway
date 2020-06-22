@@ -106,6 +106,7 @@ import {
   UpdateFiltersType,
   SaveViewPayload,
   UpdateSaveViewType,
+  ClearFiltersType,
 } from '../actions/actions.types';
 import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
@@ -233,6 +234,13 @@ export function handleClearData(state: DGCommonState): DGCommonState {
   return {
     ...state,
     data: [],
+  };
+}
+
+export function handleClearFilters(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    filters: {},
   };
 }
 
@@ -695,6 +703,7 @@ const dGCommonReducer = createReducer(initialState, {
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
   [ClearDataType]: handleClearData,
+  [ClearFiltersType]: handleClearFilters,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
   [UpdateResultsType]: handleUpdateResults,

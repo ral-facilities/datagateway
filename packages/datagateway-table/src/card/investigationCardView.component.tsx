@@ -13,7 +13,7 @@ import {
   Investigation,
   investigationLink,
   removeFromCart,
-  Filter,
+  FiltersType,
 } from 'datagateway-common';
 import {
   FilterDataType,
@@ -41,9 +41,7 @@ interface InvestigationCVStateProps {
   totalDataCount: number;
   filterData: FilterDataType;
   cartItems: DownloadCartItem[];
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   view: ViewsType;
 }
 
@@ -126,25 +124,12 @@ const InvestigationCardView = (
     //       and pass it through here.
     // TODO: Support for more simpler data types i.e. strings to directly passed or different ways
     //       of passing data to the card view (how can we achieve this if the data is not Entity[]).
-    // TODO: Add support for pagination here (?), card layout type (buttons), card widths, sort, filtering.
+    // TODO: card widths, sort.
     <CardView
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
       loadCount={fetchCount}
-      // TODO: Provide all types from data from API using filter.
-      cardFilters={[
-        {
-          label: 'Type ID',
-          dataKey: 'TYPE_ID',
-          filterItems: typeFilteredItems,
-        },
-        {
-          label: 'Facility ID',
-          dataKey: 'FACILITY_ID',
-          filterItems: facilityFilteredItems,
-        },
-      ]}
       // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
         // Provide both the dataKey (for tooltip) and link to render.
@@ -218,6 +203,19 @@ const InvestigationCardView = (
       //     'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
       //   title: 'Investigation Image',
       // }}
+      // TODO: Provide all types from data from API using filter.
+      cardFilters={[
+        {
+          label: 'Type ID',
+          dataKey: 'TYPE_ID',
+          filterItems: typeFilteredItems,
+        },
+        {
+          label: 'Facility ID',
+          dataKey: 'FACILITY_ID',
+          filterItems: facilityFilteredItems,
+        },
+      ]}
     />
   );
 };

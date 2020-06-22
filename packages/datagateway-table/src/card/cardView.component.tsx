@@ -38,7 +38,6 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import EntityCard, { EntityImageDetails } from './card.component';
 
-// TODO: Will require sort/filters?
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -76,9 +75,8 @@ interface CardViewDetails {
 interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
-  loadData?: (offsetParams: IndexRange) => Promise<void>;
-  loadCount?: () => Promise<void>;
-  paginatedFetch?: boolean;
+  loadData: (offsetParams: IndexRange) => Promise<void>;
+  loadCount: () => Promise<void>;
 
   // Props to get title, description of the card
   // represented by data.
@@ -119,6 +117,7 @@ interface CVFilterInfo {
     items: {
       [data: string]: boolean;
     };
+    selectedCount: number;
   };
 }
 
@@ -129,7 +128,7 @@ interface CVSelectedFilter {
 }
 
 // TODO: CardView needs URL support:
-//        - sort (?sort=)
+//        - sort (?sort=); will it require sort?
 //        - searching (?search=)
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
@@ -141,7 +140,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     query,
     filters,
     cardFilters,
-    paginatedFetch,
     loadData,
     loadCount,
     buttons,
@@ -165,7 +163,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [dataCount, setDataCount] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
-  const [fetchPaginated, setFetchPaginated] = React.useState(true);
   const [pageChange, setPageChange] = React.useState(false);
   const [filterChange, setFilterChange] = React.useState(false);
 
@@ -177,19 +174,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   // Set the filter information based on what was provided.
   React.useEffect(() => {
-    const getFilterSelected = (
+    const getSelectedFilter = (
       filterKey: string,
       filterValue: string
     ): boolean => {
-      // console.log(`Check ${filterKey} with ${filterValue}`);
-      // console.log('Current filters: ', filters);
       if (filterKey in filters) {
-        // console.log(`${filterKey} in filters`);
         const v = filters[filterKey];
-        // console.log('Returned array: ', v);
-        // console.log(filterValue in v);
         if (Array.isArray(v) && v.includes(filterValue)) {
-          // console.log(`Is array and ${filterValue} in v`);
           return true;
         }
       }
@@ -198,25 +189,30 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
     // Get the updated info.
     const info = cardFilters
-      ? Object.values(cardFilters).reduce(
-          (o, filter) => ({
+      ? Object.values(cardFilters).reduce((o, filter) => {
+          const data: CVFilterInfo = {
             ...o,
             [filter.dataKey]: {
               label: filter.label,
               items: filter.filterItems.reduce(
                 (o, item) => ({
                   ...o,
-                  [item]: getFilterSelected(filter.dataKey, item),
+                  [item]: getSelectedFilter(filter.dataKey, item),
                 }),
                 {}
               ),
+              selectedCount: -1,
             },
-          }),
-          {}
-        )
-      : [];
+          };
 
-    console.log('Updated info: ', info);
+          // Update the selected count for each filter.
+          data[filter.dataKey].selectedCount = Object.values(
+            data[filter.dataKey].items
+          ).filter(v => v).length;
+          return data;
+        }, {})
+      : [];
+    // console.log('info: ', info);
     setFiltersInfo(info);
   }, [cardFilters, filters]);
 
@@ -236,7 +232,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           []
         )
         .filter(v => v.items.length > 0);
-      console.log(selected);
+      // console.log(selected);
       setSelectedFilters(selected);
     }
   }, [filtersInfo]);
@@ -258,34 +254,26 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     } else {
       updateItems = [];
     }
-    // console.log('Current items: ', updateItems);
 
+    // Add or remove the filter value.
     if (!remove && !updateItems.includes(filterValue)) {
       // Add a filter item.
-      // filtersInfo[filterKey].items[filterValue] = true;
       updateItems.push(filterValue);
-      // console.log('Push items: ', updateItems);
       pushFilters(filterKey, updateItems);
-      // setLoadedData(false);
       setFilterChange(true);
     } else {
       if (updateItems.length > 0 && updateItems.includes(filterValue)) {
-        // console.log('Remove filterValue: ', filterValue);
-        // console.log('Push items: ', updateItems);
         // Set to null if this is the last item in the array.
         // Remove the item from the updated items array.
         const i = updateItems.indexOf(filterValue);
-        console.log('Index to remove: ', i);
         if (i > -1) {
           // Remove the filter value from the update items.
           updateItems.splice(i, 1);
-          console.log('Push items: ', updateItems);
           if (updateItems.length > 0) {
             pushFilters(filterKey, updateItems);
           } else {
             pushFilters(filterKey, null);
           }
-          // setLoadedData(false);
           setFilterChange(true);
         }
       }
@@ -293,9 +281,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   };
 
   React.useEffect(() => {
-    console.log('Page number (page): ', page);
-    console.log('Current pageNum (query): ', query.page);
-    console.log('Page change: ', pageChange);
+    // console.log('Page number (page): ', page);
+    // console.log('Current pageNum (query): ', query.page);
+    // console.log('Page change: ', pageChange);
 
     // Set the page number if it was found in the parameters.
     if (!pageChange) {
@@ -327,81 +315,42 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   //       working incorrectly due to the totalDataCount being updated later on
   //       (to the new value for the new view).
   React.useEffect(() => {
-    // Get when the pagination fetch is disabled.
-    if (paginatedFetch === false) {
-      setFetchPaginated(false);
-    }
-
     // Handle count and reloading of data based on pagination options.
-    if (fetchPaginated) {
-      if (totalDataCount > 0 && totalDataCount !== dataCount) {
-        setDataCount(totalDataCount);
-        setLoadedData(false);
-      }
-    } else {
-      if (data.length > 0 && data.length !== dataCount) {
-        setDataCount(data.length);
-      }
-      // Reload data if we are not fetching via pagination
-      // as data can be changed at any time as it only passed in.
+    if (totalDataCount > 0) {
+      setDataCount(totalDataCount);
       setLoadedData(false);
     }
-  }, [paginatedFetch, fetchPaginated, totalDataCount, dataCount, data]);
+  }, [totalDataCount]);
 
   // TODO: If fetchPaginated is false, data will only be set to view data once.
   React.useEffect(() => {
     // TODO: Need to handle sort and search as well.
     // Reload the count on filter update.
-    if (filterChange && loadCount) {
+    if (!loading && filterChange) {
       loadCount();
       setFilterChange(false);
-      setLoadedData(false);
     }
 
     if (!loading && dataCount > 0) {
       // Calculate the maximum pages needed for pagination.
       setNumPages(~~((dataCount + maxResults - 1) / maxResults));
-      // console.log('Number of pages: ', numPages);
 
       // Calculate the start/end indexes for the data.
       const startIndex = page * maxResults - (maxResults - 1) - 1;
-      // console.log('startIndex: ', startIndex);
 
       // End index not incremented for slice method.
       const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-      // console.log('stopIndex: ', stopIndex);
 
       if (!loadedData) {
-        // // Calculate the maximum pages needed for pagination.
-        // setNumPages(~~((dataCount + maxResults - 1) / maxResults));
-        // // console.log('Number of pages: ', numPages);
-
-        // // Calculate the start/end indexes for the data.
-        // const startIndex = page * maxResults - (maxResults - 1) - 1;
-        // // console.log('startIndex: ', startIndex);
-
-        // // End index not incremented for slice method.
-        // const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-        // // console.log('stopIndex: ', stopIndex);
-
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
-          if (fetchPaginated && loadData) {
-            // Clear data in the state before loading new data.
-            clearData();
-            loadData({ startIndex, stopIndex });
-          }
-          // } else {
-          // setViewData(data.slice(startIndex, stopIndex + 1));
-          // }
+          // Clear data in the state before loading new data.
+          clearData();
+          loadData({ startIndex, stopIndex });
           setLoadedData(true);
         }
       } else {
         // Set the data once it has been loaded.
-        if (fetchPaginated) {
-          setViewData(data);
-        } else {
-          setViewData(data.slice(startIndex, stopIndex + 1));
-        }
+        setViewData(data);
       }
     }
   }, [
@@ -414,7 +363,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     loadData,
     loadedData,
     clearData,
-    fetchPaginated,
     loading,
     filterChange,
   ]);
@@ -494,7 +442,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                     Object.entries(filtersInfo).map(
                       ([filterKey, filter], filterIndex) => {
                         return (
-                          <ExpansionPanel key={filterIndex}>
+                          // TODO: Expand filter panel if any options are selected.
+                          <ExpansionPanel
+                            key={filterIndex}
+                            // TODO: Since this is value which changes depending on the filter,
+                            //       this will produce an error.s
+                            // defaultExpanded={filter.selectedCount > 0}
+                          >
                             <ExpansionPanelSummary
                               expandIcon={<ExpandMoreIcon />}
                             >
@@ -508,13 +462,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                                       <ListItem
                                         key={valueIndex}
                                         button
-                                        // TODO: Add selected to each individual item.
                                         disabled={selected}
                                         onClick={() => {
-                                          console.log(
-                                            'Got click of filter option: ',
-                                            item
-                                          );
                                           changeFilter(filterKey, item);
                                         }}
                                       >
@@ -551,9 +500,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                         className={classes.chip}
                         label={`${filter.label} - ${item}`}
                         onDelete={() => {
-                          console.log(
-                            `Deselect filter ${filter.label} with value: ${item}`
-                          );
                           changeFilter(filter.filterKey, item, true);
                         }}
                       />
@@ -630,6 +576,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             count={numPages}
             page={page}
             onChange={(e, p) => {
+              // If we are not clicking on the same page.
               if (p !== page) {
                 setPage(p);
                 pushPage(p);

@@ -22,6 +22,7 @@ import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
+import { IndexRange } from 'react-virtualized';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsCardViewProps {
@@ -39,7 +40,11 @@ interface ISISInvestigationsCVStateProps {
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsCVDispatchProps {
-  fetchData: (instrumentId: number, facilityCycleId: number) => Promise<void>;
+  fetchData: (
+    instrumentId: number,
+    facilityCycleId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
   fetchCount: (instrumentId: number, facilityCycleId: number) => Promise<void>;
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
@@ -68,7 +73,6 @@ const ISISInvestigationsCardView = (
     clearData,
   } = props;
 
-  const [fetchedData, setFetchedData] = React.useState(false);
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
 
@@ -86,35 +90,10 @@ const ISISInvestigationsCardView = (
     [cartItems, investigationIds]
   );
 
-  // Provide the filtered items to use to tag.
-  const filteredItems = React.useMemo(
-    () =>
-      data.map(
-        d =>
-          d.INVESTIGATIONINSTRUMENT &&
-          d.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
-          d.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME
-      ),
-    [data]
-  );
-
   React.useEffect(() => {
     // TODO: React.useMemo?
     // Set the IDs of the investigation data.
     setInvestigationIds(data.map(investigation => investigation.ID));
-
-    // TODO: Since for filtering we will fetch all data,
-    //       we will fetch it here and not use pagination on fetch
-    //       (this is only a temporary fix for filtering to work without having to fetch the whole data
-    //        again for each filter for ISIS).
-    console.log('data update: ', data);
-    if (!fetchedData) {
-      // Manually clear data in the state before fetch to prevent duplicate,
-      // we do not clear in CardView and if we did it may cause in the data not showing up.
-      clearData();
-      fetchData(parseInt(instrumentId), parseInt(facilityCycleId));
-      setFetchedData(true);
-    }
 
     if (!fetchedCount) {
       fetchCount(parseInt(instrumentId), parseInt(facilityCycleId));
@@ -124,8 +103,6 @@ const ISISInvestigationsCardView = (
     instrumentId,
     facilityCycleId,
     data,
-    fetchedData,
-    fetchData,
     clearData,
     fetchedCount,
     fetchCount,
@@ -134,17 +111,14 @@ const ISISInvestigationsCardView = (
 
   return (
     <CardView
-      paginatedFetch={false}
       data={data}
       totalDataCount={totalDataCount}
-      // TODO: Remove dataKey from filters.
-      cardFilters={[
-        {
-          label: 'Instrument',
-          dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME',
-          filterItems: filteredItems,
-        },
-      ]}
+      loadData={params =>
+        fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
+      }
+      loadCount={() =>
+        fetchCount(parseInt(instrumentId), parseInt(facilityCycleId))
+      }
       title={{
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
@@ -229,11 +203,16 @@ const ISISInvestigationsCardView = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISInvestigationsCVDispatchProps => ({
-  fetchData: (instrumentId: number, facilityCycleId: number) =>
+  fetchData: (
+    instrumentId: number,
+    facilityCycleId: number,
+    offsetParams: IndexRange
+  ) =>
     dispatch(
       fetchISISInvestigations({
         instrumentId,
         facilityCycleId,
+        offsetParams,
         optionalParams: { getSize: true },
       })
     ),

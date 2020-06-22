@@ -51,8 +51,7 @@ class PageContainer extends React.Component<
 > {
   public constructor(props: PageContainerCombinedProps) {
     super(props);
-
-    console.log('Support paths: ', Object.values(supportedPaths));
+    // console.log('Support paths: ', Object.values(supportedPaths));
 
     // Load the current URL query parameters.
     this.props.loadQuery();
@@ -68,7 +67,7 @@ class PageContainer extends React.Component<
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // Ensure if the location changes, then we update the query parameters.
     if (prevProps.path !== this.props.path) {
-      console.log('Path changed: ', this.props.path);
+      // console.log('Path changed: ', this.props.path);
       this.props.loadQuery();
     }
 

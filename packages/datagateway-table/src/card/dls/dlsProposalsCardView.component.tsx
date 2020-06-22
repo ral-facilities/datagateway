@@ -47,6 +47,7 @@ const DLSProposalsCardView = (
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
+      loadCount={fetchCount}
       title={{
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>

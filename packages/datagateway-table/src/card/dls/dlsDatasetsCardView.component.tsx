@@ -11,10 +11,14 @@ import {
   removeFromCart,
   Dataset,
   tableLink,
+  fetchFilter,
   // formatBytes,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
-import { StateType } from 'datagateway-common/lib/state/app.types';
+import {
+  StateType,
+  FilterDataType,
+} from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
@@ -33,6 +37,7 @@ interface DLSDatasetsCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
+  filterData: FilterDataType;
 }
 
 interface DLSDatasetsCVDispatchProps {
@@ -41,9 +46,11 @@ interface DLSDatasetsCVDispatchProps {
     offsetParams: IndexRange
   ) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
+  // TODO: Make use of fetch details in optional information.
   fetchDetails: (datasetId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  fetchTypeFilter: (datasetId: number) => Promise<void>;
 }
 
 type DLSDatasetsCVCombinedProps = DLSDatasetsCVProps &
@@ -60,12 +67,15 @@ const DLSDatasetsCardView = (
     totalDataCount,
     fetchData,
     fetchCount,
+    fetchTypeFilter,
     cartItems,
+    filterData,
     addToCart,
     removeFromCart,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
+  const [fetchedFilters, setFetchedFilters] = React.useState(false);
   const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
 
   const selectedCards = React.useMemo(
@@ -80,6 +90,11 @@ const DLSDatasetsCardView = (
     [cartItems, datasetIds]
   );
 
+  const typeFilteredItems = React.useMemo(
+    () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
+    [filterData]
+  );
+
   React.useEffect(() => {
     // TODO: React.useMemo?
     setDatasetIds(data.map(dataset => dataset.ID));
@@ -88,12 +103,25 @@ const DLSDatasetsCardView = (
       fetchCount(parseInt(investigationId));
       setFetchedCount(true);
     }
-  }, [investigationId, data, fetchedCount, fetchCount]);
+
+    if (!fetchedFilters) {
+      fetchTypeFilter(parseInt(investigationId));
+      setFetchedFilters(true);
+    }
+  }, [
+    investigationId,
+    data,
+    fetchedCount,
+    fetchCount,
+    fetchedFilters,
+    fetchTypeFilter,
+  ]);
 
   return (
     <CardView
       data={data}
       loadData={params => fetchData(parseInt(investigationId), params)}
+      loadCount={() => fetchCount(parseInt(investigationId))}
       totalDataCount={totalDataCount}
       title={{
         dataKey: 'NAME',
@@ -170,6 +198,13 @@ const DLSDatasetsCardView = (
           );
         },
       ]}
+      cardFilters={[
+        {
+          label: 'Type ID',
+          dataKey: 'TYPE_ID',
+          filterItems: typeFilteredItems,
+        },
+      ]}
     />
   );
 };
@@ -191,6 +226,17 @@ const mapDispatchToProps = (
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
+  fetchTypeFilter: (investigationId: number) =>
+    dispatch(
+      fetchFilter('dataset', 'TYPE_ID', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: investigationId },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
@@ -198,6 +244,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
+    filterData: state.dgcommon.filterData,
   };
 };
 

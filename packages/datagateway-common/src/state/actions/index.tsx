@@ -32,6 +32,7 @@ import {
   UpdateFiltersPayload,
   UpdateFiltersType,
   UpdateQueriesType,
+  ClearFiltersType,
 } from './actions.types';
 
 export * from './cart';
@@ -82,6 +83,10 @@ export const clearTable = (): Action => ({
 
 export const clearData = (): Action => ({
   type: ClearDataType,
+});
+
+export const clearFilters = (): Action => ({
+  type: ClearFiltersType,
 });
 
 export const updateQueryParams = (
@@ -150,6 +155,10 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       results: results ? Number(results) : null,
     };
 
+    // Clear filters currently in state.
+    dispatch(clearFilters());
+
+    // Update with the new query parameters.
     dispatch(updateQueryParams(params));
 
     // Dispatch and update the filter object in state.
@@ -320,12 +329,12 @@ export const pushPageResults = (
   };
 };
 
-// TODO: Make use of already present filterTable.
 export const pushPageFilter = (
   filterKey: string,
   data: Filter | null
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
+    // Make use of already present filterTable.
     dispatch(filterTable(filterKey, data));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
@@ -333,7 +342,7 @@ export const pushPageFilter = (
 
 export const saveView = (view: ViewsType): ThunkResult<Promise<void>> => {
   return async dispatch => {
-    // Save the current queries.
+    // Save the current view.
     dispatch(updateSaveView(view));
   };
 };

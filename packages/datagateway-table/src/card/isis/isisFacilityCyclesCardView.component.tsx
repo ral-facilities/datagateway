@@ -61,6 +61,7 @@ const ISISFacilityCyclesCardView = (
       data={data}
       totalDataCount={totalDataCount}
       loadData={params => fetchData(parseInt(instrumentId), params)}
+      loadCount={() => fetchCount(parseInt(instrumentId))}
       title={{
         dataKey: 'NAME',
         content: (facilityCycle: FacilityCycle) =>

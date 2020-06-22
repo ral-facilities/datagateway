@@ -69,6 +69,7 @@ const ISISInstrumentsCardView = (
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
+      loadCount={fetchCount}
       title={{
         dataKey: 'FULLNAME',
         content: (instrument: Instrument) =>

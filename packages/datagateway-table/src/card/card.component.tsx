@@ -7,7 +7,11 @@ import {
   Divider,
   Link,
   Typography,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
 } from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import ArrowTooltip from '../page/arrowtooltip.component';
@@ -107,6 +111,11 @@ const useCardStyles = makeStyles((theme: Theme) => {
       paddingLeft: '5px',
     },
 
+    retrievable: {
+      paddingTop: '10px',
+      paddingLeft: '15px',
+    },
+
     tags: {
       paddingTop: '10px',
     },
@@ -140,7 +149,6 @@ interface EntityCardProps {
   tags?: string[];
 }
 
-// TODO: Rename from EntityCard to Card.
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
   const {
@@ -186,15 +194,16 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 - has card details area which takes up smaller space */}
       <CardContent className={classes.content}>
         {/* row:
-          - main information
-          - further information
-          - buttons
-          * retrievable info 
+              - main information
+              - further information
+              - buttons
+              * retrievable info 
         */}
         <div className={classes.main}>
-          {/*column:
+          {/* column:
                 - title/description
-                - tags  */}
+                - tags  
+          */}
           <div>
             {/* TODO: Delay not consistent between cards? */}
             <ArrowTooltip
@@ -273,9 +282,6 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         )}
 
         {/* TODO: Support ArrowTooltip for furtherInformation to shorten large text. */}
-        {/* TODO: Add in margins for spacing. */}
-        {/* TODO: These should be specified elsewhere */}
-        {/* TODO: Further information related to the entity. */}
         <div>
           {furtherInformation && (
             <div className={classes.further}>
@@ -299,6 +305,18 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
               </div>
             </div>
           )}
+
+          {/* TODO: Retrievable items */}
+          <div className={classes.retrievable}>
+            <ExpansionPanel square elevation={1} variant="outlined">
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>More Information</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <Typography>Test</Typography>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </div>
 
           {/* TODO: Add correct spacing when only divider and buttons are present (no further information). */}
           {/* TODO: Button should be located more centrally (positioned in the middle) if there is no further information.  */}
