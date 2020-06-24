@@ -40,6 +40,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
+// Handle plugin re-render messages from the parent app.
 document.addEventListener(MicroFrontendId, (e) => {
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {

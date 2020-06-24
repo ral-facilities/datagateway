@@ -15,6 +15,7 @@ import {
   listenToMessages,
   RegisterRouteType,
   MicroFrontendId,
+  SendThemeOptionsType,
 } from 'datagateway-common';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
@@ -24,7 +25,9 @@ import { saveApiUrlMiddleware } from './idCheckFunctions';
 import {
   createGenerateClassName,
   StylesProvider,
+  MuiThemeProvider,
 } from '@material-ui/core/styles';
+import { Theme } from '@material-ui/core/styles/createMuiTheme';
 
 import PageContainer from './pageContainer.component';
 
@@ -44,6 +47,8 @@ const middleware = [
   DGCommonMiddleware,
   saveApiUrlMiddleware,
 ];
+// Store the parent theme options when received.
+let parentThemeOptions: Theme | null = null;
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -63,6 +68,16 @@ const store = createStore(
   AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))
 );
+
+// Handle theme options sent from the parent app.
+document.addEventListener(MicroFrontendId, (e) => {
+  const action = (e as CustomEvent).detail;
+  console.log('Got payload: ', action);
+  if (action.type === SendThemeOptionsType) {
+    console.log('Received theme options: ', action.payload);
+    parentThemeOptions = action.payload.theme;
+  }
+});
 
 listenToMessages(store.dispatch);
 
@@ -126,9 +141,11 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <ConnectedPreloader>
-                  <PageContainer />
-                </ConnectedPreloader>
+                <MuiThemeProvider theme={parentThemeOptions}>
+                  <ConnectedPreloader>
+                    <PageContainer />
+                  </ConnectedPreloader>
+                </MuiThemeProvider>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>
