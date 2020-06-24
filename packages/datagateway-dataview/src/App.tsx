@@ -47,6 +47,7 @@ const middleware = [
   DGCommonMiddleware,
   saveApiUrlMiddleware,
 ];
+
 // Store the parent theme options when received.
 let parentThemeOptions: Theme | null = null;
 
@@ -72,8 +73,12 @@ const store = createStore(
 // Handle theme options sent from the parent app.
 document.addEventListener(MicroFrontendId, (e) => {
   const action = (e as CustomEvent).detail;
-  console.log('Got payload: ', action);
-  if (action.type === SendThemeOptionsType) {
+  console.log('Got action: ', action);
+  if (
+    action.type === SendThemeOptionsType &&
+    action.payload &&
+    action.payload.theme
+  ) {
     console.log('Received theme options: ', action.payload);
     parentThemeOptions = action.payload.theme;
   }

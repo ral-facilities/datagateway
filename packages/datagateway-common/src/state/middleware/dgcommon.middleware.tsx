@@ -4,6 +4,7 @@ import {
   RegisterRouteType,
   RequestPluginRerenderType,
   CustomFrontendMessageType,
+  SendThemeOptionsType,
 } from '../actions/actions.types';
 import axios from 'axios';
 import { MicroFrontendId } from '../../app.types';
@@ -32,6 +33,7 @@ export const listenToMessages = (dispatch: Dispatch): void => {
         // ignore messages not meant for this plugin
         case RequestPluginRerenderType:
         case RegisterRouteType:
+        case SendThemeOptionsType:
           break;
         default:
           // log and ignore
