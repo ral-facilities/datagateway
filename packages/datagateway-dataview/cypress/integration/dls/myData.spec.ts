@@ -139,7 +139,7 @@ describe('DLS - MyData Table', () => {
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.contains('Investigator: Robert499').should('be.visible');
+      cy.contains('Name: Robert499').should('be.visible');
 
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');

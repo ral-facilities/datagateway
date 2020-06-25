@@ -196,7 +196,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.contains('Investigator: Robert499').should('be.visible');
+      cy.contains('Name: Robert499').should('be.visible');
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
       cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
