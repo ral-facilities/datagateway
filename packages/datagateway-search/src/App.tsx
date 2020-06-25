@@ -13,10 +13,13 @@ import { DGCommonMiddleware, Preloader } from 'datagateway-common';
 import {
   createGenerateClassName,
   StylesProvider,
+  MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { Provider, connect } from 'react-redux';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
+import { Theme } from '@material-ui/core/styles/createMuiTheme';
+import { Provider, connect } from 'react-redux';
+import { MicroFrontendId, SendThemeOptionsType } from 'datagateway-common';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -57,6 +60,23 @@ function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
 
 export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
+// Store the parent theme options when received.
+let parentThemeOptions: Theme | null = null;
+
+// Handle theme options sent from the parent app.
+document.addEventListener(MicroFrontendId, e => {
+  const action = (e as CustomEvent).detail;
+  console.log('Got action: ', action);
+  if (
+    action.type === SendThemeOptionsType &&
+    action.payload &&
+    action.payload.theme
+  ) {
+    console.log('Received theme options: ', action.payload);
+    parentThemeOptions = action.payload.theme;
+  }
+});
+
 class App extends React.Component<{}, { hasError: boolean }> {
   public constructor(props: {}) {
     super(props);
@@ -96,9 +116,11 @@ class App extends React.Component<{}, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <ConnectedPreloader>
-                  <SearchPageContainer />
-                </ConnectedPreloader>
+                <MuiThemeProvider theme={parentThemeOptions}>
+                  <ConnectedPreloader>
+                    <SearchPageContainer />
+                  </ConnectedPreloader>
+                </MuiThemeProvider>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>
