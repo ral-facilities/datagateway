@@ -26,7 +26,9 @@ describe('DGCommon middleware', () => {
 
   beforeEach(() => {
     events = [];
-    handler = () => {};
+    handler = () => {
+      // to be assigned later
+    };
 
     document.dispatchEvent = (e: Event) => {
       events.push(e as CustomEvent<AnyAction>);

@@ -19,12 +19,12 @@ describe('Text filter component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <TextColumnFilter label="test" onChange={() => {}} />
+      <TextColumnFilter label="test" onChange={jest.fn()} />
     );
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('calls the onChange method once when input is typed and calls again by debounced function after timeout', done => {
+  it('calls the onChange method once when input is typed and calls again by debounced function after timeout', (done) => {
     const onChange = jest.fn();
 
     const wrapper = mount(

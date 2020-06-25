@@ -55,7 +55,7 @@ export const fetchFacilityCycles = (
     const timestamp = Date.now();
     dispatch(fetchFacilityCyclesRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     const { apiUrl } = getState().dgcommon.urls;
 
     if (offsetParams) {
@@ -73,10 +73,10 @@ export const fetchFacilityCycles = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchFacilityCyclesSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchFacilityCyclesFailure(error.message));
       });
@@ -119,7 +119,7 @@ export const fetchFacilityCycleCount = (
     const timestamp = Date.now();
     dispatch(fetchFacilityCycleCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
     const { apiUrl } = getState().dgcommon.urls;
 
@@ -130,10 +130,10 @@ export const fetchFacilityCycleCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchFacilityCycleCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchFacilityCycleCountFailure(error.message));
       });

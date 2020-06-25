@@ -1,7 +1,7 @@
 describe('Download Confirmation', () => {
   before(() => {
     // Ensure the download cart is cleared before running tests.
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.clearDownloadCart();
   });
 
@@ -13,7 +13,7 @@ describe('Download Confirmation', () => {
     cy.server();
     cy.route('GET', '**/ids/isTwoLevel').as('fetchIsTwoLevel');
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
 
     // Ensure the cart is clear before running tests.
     cy.clearDownloadCart();
@@ -30,7 +30,8 @@ describe('Download Confirmation', () => {
   });
 
   afterEach(() => {
-    cy.clearDownloadCart();
+    // Clear the session storage to avoid storing the current tab information.
+    sessionStorage.clear();
   });
 
   it('should load correctly and display the confirmation dialog for the cart items', () => {
@@ -46,7 +47,6 @@ describe('Download Confirmation', () => {
     );
 
     // Shows the estimated download times in the table.
-    // cy.contains('[aria-label="confirm-estimated-time"]', '1 day, 33 minutes, 54 seconds').should('exist');
     cy.get('[aria-label="download-table"]').should('exist');
     cy.contains(
       '[aria-label="download-table-one"]',
@@ -93,15 +93,9 @@ describe('Download Confirmation', () => {
       'exist'
     );
     cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
-
-    // NOTE: When running this e2e test interactively the downloaded file
-    //       must be saved in your default Downloads folder in order for it to be deleted.
-    // Delete the downloaded file.
-    // cy.deleteTestDownload('LILS_2020-1-1_1-1-1.zip');
   });
 
-  it('should be able to submit a download request with altered access method (Globus)', () => {
-    // Ensure our access method is HTTPS before starting an immediate download.
+  it('should not be able to submit a download request with a disabled access method (Globus)', () => {
     cy.get('[aria-label="confirm-access-method"]')
       .should('exist')
       .click();
@@ -110,19 +104,14 @@ describe('Download Confirmation', () => {
       .should('exist')
       .click();
 
-    // Click on the download button.
-    cy.get('#download-confirmation-download').click();
-
-    // Ensure the correct message and download details are shown.
+    // Ensure the globus access method has the disabled message.
     cy.contains(
-      '#download-confirmation-success',
-      'Successfully submitted download request'
+      '#confirm-access-method-help',
+      'GLOBUS has been disabled for testing'
     ).should('exist');
 
-    cy.contains('#confirm-success-download-name', 'LILS_2020-1-1_1-1-1').should(
-      'exist'
-    );
-    cy.contains('#confirm-success-access-method', 'GLOBUS').should('exist');
+    // The download button should be disabled.
+    cy.get('#download-confirmation-download').should('be.disabled');
   });
 
   it('should show download confirmation unsuccessful if no download information was received', () => {
@@ -143,15 +132,6 @@ describe('Download Confirmation', () => {
     // Set download name.
     cy.get('#confirm-download-name').type('test-file-name');
 
-    // Set access method.
-    cy.get('[aria-label="confirm-access-method"]')
-      .should('exist')
-      .click();
-
-    cy.contains('#confirm-access-method-globus', 'Globus')
-      .should('exist')
-      .click();
-
     // Set email address.
     cy.get('#confirm-download-email').type('test@email.com');
 
@@ -167,16 +147,25 @@ describe('Download Confirmation', () => {
     cy.contains('#confirm-success-download-name', 'test-file-name').should(
       'exist'
     );
-    cy.contains('#confirm-success-access-method', 'GLOBUS').should('exist');
+    cy.contains('#confirm-success-access-method', 'HTTPS').should('exist');
     cy.contains('#confirm-success-email-address', 'test@email.com').should(
       'exist'
     );
   });
 
   // This needs to be implemented once the tab has been included into the code.
-  // it('should be able to link to the downloads status tab upon successful download confirmation', () => {
+  it('should be able to link to the downloads status tab upon successful download confirmation', () => {
+    cy.get('#download-confirmation-download').click();
 
-  // });
+    cy.get('#download-confirmation-success').should('exist');
+
+    // Click on the download status link and expect the download
+    // status panel to have been displayed.
+    cy.contains('#download-confirmation-status-link', 'View My Downloads')
+      .should('exist')
+      .click();
+    cy.get('[aria-label="Download status panel"]').should('exist');
+  });
 
   it('should be able to close the download confirmation dialog', () => {
     cy.get('[aria-label="download-confirmation-close"]').should('exist');

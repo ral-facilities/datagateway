@@ -9,7 +9,7 @@ import App from './App';
 import * as log from 'loglevel';
 import singleSpaReact from 'single-spa-react';
 
-import { MicroFrontendMessageId, RegisterRouteType } from 'datagateway-common';
+import { MicroFrontendId, RegisterRouteType } from 'datagateway-common';
 
 const pluginName = 'datagateway-search';
 
@@ -31,7 +31,7 @@ const reactLifecycles = singleSpaReact({
 });
 
 const render = (): void => {
-  let el = document.getElementById(pluginName);
+  const el = document.getElementById(pluginName);
   if (el) {
     ReactDOM.render(<App />, document.getElementById(pluginName));
   }
@@ -74,7 +74,7 @@ if (
 }
 
 document.dispatchEvent(
-  new CustomEvent(MicroFrontendMessageId, {
+  new CustomEvent(MicroFrontendId, {
     detail: {
       type: RegisterRouteType,
       payload: {

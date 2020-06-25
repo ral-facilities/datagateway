@@ -98,6 +98,7 @@ exports[`Download cart table component renders correctly 1`] = `
         >
           <WithStyles(ForwardRef(Button))
             color="primary"
+            disabled={true}
             id="removeAllButton"
             onClick={[Function]}
             variant="contained"
@@ -126,6 +127,7 @@ exports[`Download cart table component renders correctly 1`] = `
     clearCart={[Function]}
     isTwoLevel={false}
     open={false}
+    redirectToStatusTab={[MockFunction]}
     setClose={[Function]}
     totalSize={0}
   />

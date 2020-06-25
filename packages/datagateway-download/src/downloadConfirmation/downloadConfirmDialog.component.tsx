@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -15,16 +15,23 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  FormHelperText,
+  CircularProgress,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Mark from './mark.component';
 
-import { formatBytes } from 'datagateway-common';
+import {
+  formatBytes,
+  MicroFrontendId,
+  NotificationType,
+} from 'datagateway-common';
 import {
   submitCart,
   getDownload,
   downloadPreparedCart,
-} from '../downloadCart/downloadCartApi';
+  getDownloadTypeStatus,
+} from '../downloadApi';
 
 import {
   Theme,
@@ -33,6 +40,7 @@ import {
   WithStyles,
   StyleRules,
 } from '@material-ui/core/styles';
+import { DownloadSettingsContext } from '../ConfigProvider';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -109,52 +117,94 @@ interface DownloadConfirmDialogProps
   isTwoLevel: boolean;
   open: boolean;
 
-  // TODO: pass in the function to call to redirect to the status tab.
-  // setStatus: () => void;
+  redirectToStatusTab: () => void;
   setClose: () => void;
   clearCart: () => void;
+}
+
+interface DownloadConfirmAccessMethod {
+  [type: string]: {
+    idsUrl: string;
+    displayName?: string;
+    description?: string;
+    disabled: boolean | undefined;
+    message: string;
+  };
 }
 
 const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   props: DownloadConfirmDialogProps
 ) => {
-  const { classes, setClose, clearCart } = props;
+  const {
+    totalSize,
+    isTwoLevel,
+    classes,
+    redirectToStatusTab,
+    setClose,
+    clearCart,
+  } = props;
 
-  // TODO: Temporary facilityName until we load it from settings.
-  // TODO: Access methods should be configurable and not defined in the component.
-  const facilityName = 'LILS';
-  const defaultAccessMethod = 'https';
+  // Load the settings for use.
+  const settings = React.useContext(DownloadSettingsContext);
 
-  const { totalSize } = props;
-  const { isTwoLevel } = props;
+  // Sorting and loading status.
+  const [statusMethods, setStatusMethods] = React.useState<
+    DownloadConfirmAccessMethod
+  >(
+    (): DownloadConfirmAccessMethod => {
+      // Create an updated status method with disabled and message properties.
+      const defaultStatusMethods: DownloadConfirmAccessMethod = {};
+      for (const method in settings.accessMethods)
+        defaultStatusMethods[method] = {
+          ...settings.accessMethods[method],
+          disabled: true,
+          message: '',
+        };
+      return defaultStatusMethods;
+    }
+  );
+  const [requestStatus, setRequestStatus] = React.useState(false);
+  const [loadedStatus, setLoadedStatus] = React.useState(false);
+
+  // Create a sorted access methods array to use internally.
+  const [sortedMethods, setSortedMethods] = React.useState<
+    [
+      string,
+      {
+        idsUrl: string;
+        displayName?: string;
+        description?: string;
+        disabled: boolean | undefined;
+        message: string;
+      }
+    ][]
+  >([]);
+  const [isSorted, setIsSorted] = React.useState(false);
+  const [methodsUnavailable, setMethodsUnavailable] = React.useState(false);
 
   // Download speed/time table.
-  const [showDownloadTime, setShowDownloadTime] = React.useState<boolean>(true);
-  const [timeAtOne, setTimeAtOne] = React.useState<number>(-1);
-  const [timeAtThirty, setTimeAtThirty] = React.useState<number>(-1);
-  const [timeAtHundred, setTimeAtHundred] = React.useState<number>(-1);
+  const [showDownloadTime, setShowDownloadTime] = React.useState(true);
+  const [timeAtOne, setTimeAtOne] = React.useState(-1);
+  const [timeAtThirty, setTimeAtThirty] = React.useState(-1);
+  const [timeAtHundred, setTimeAtHundred] = React.useState(-1);
 
   // Submit values.
-  const [downloadName, setDownloadName] = React.useState<string>('');
-  const [accessMethod, setAccessMethod] = React.useState<string>(
-    defaultAccessMethod
-  );
-  const [emailAddress, setEmailAddress] = React.useState<string>('');
+  const [downloadName, setDownloadName] = React.useState('');
+  const [selectedMethod, setSelectedMethod] = React.useState('');
+  const [emailAddress, setEmailAddress] = React.useState('');
 
   // Email validation.
   const emailHelpText = 'Send me download status messages via email.';
   const emailErrorText = 'Please ensure the email you have entered is valid.';
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  const [emailValid, setEmailValid] = React.useState<boolean>(true);
-  const [emailHelperText, setEmailHelperText] = React.useState<string>(
-    emailHelpText
-  );
+  const [emailValid, setEmailValid] = React.useState(true);
+  const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
 
   // Download button.
-  const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
-  const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState<boolean>(
-    false
-  );
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = React.useState(false);
+
+  const [showDialog, setShowDialog] = React.useState(false);
 
   // Hide the confirmation dialog and clear the download cart
   // when the dialog is closed.
@@ -163,15 +213,130 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     if (isSubmitSuccessful) clearCart();
   };
 
-  useEffect(() => {
+  // Broadcast a SciGateway notification for any error encountered.
+  const broadcastError = (message: string): void => {
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: NotificationType,
+          payload: {
+            severity: 'error',
+            message,
+          },
+        },
+      })
+    );
+  };
+
+  // Sort access methods into a sorted array used for
+  // rendering the select dropdown list.
+  const sortMethods = React.useCallback(() => {
+    const sorted = Object.entries(statusMethods).sort(
+      ([, methodInfoA], [, methodInfoB]) => {
+        const res =
+          (methodInfoA.disabled !== undefined
+            ? methodInfoA.disabled === false
+              ? -1
+              : 0
+            : 1) -
+          (methodInfoB.disabled !== undefined
+            ? methodInfoB.disabled === false
+              ? -1
+              : 0
+            : 1);
+        return res;
+      }
+    );
+
+    // Set the sorted, selected access method
+    // and set it to have been sorted.
+    setSortedMethods(sorted);
+    setSelectedMethod(sorted[0][0]);
+    setIsSorted(true);
+  }, [statusMethods, setSortedMethods, setSelectedMethod, setIsSorted]);
+
+  React.useEffect(() => {
+    async function getStatus(): Promise<void> {
+      const statusErrors: string[] = [];
+      Promise.all(
+        Object.keys(statusMethods).map((method) =>
+          getDownloadTypeStatus(method, {
+            facilityName: settings.facilityName,
+            downloadApiUrl: settings.downloadApiUrl,
+          })
+        )
+      ).then((methodStatuses) => {
+        // Loop through all the current access methods and match that
+        // to the status information we received for each.
+        Object.keys(statusMethods).forEach((method, index) => {
+          const status = methodStatuses[index];
+          if (status) {
+            setStatusMethods((prevState) => {
+              return {
+                ...prevState,
+                [method]: {
+                  ...prevState[method],
+
+                  disabled: status.disabled,
+                  message: status.message,
+                },
+              };
+            });
+          } else {
+            setStatusMethods((prevState) => {
+              return {
+                ...prevState,
+                [method]: {
+                  ...prevState[method],
+
+                  disabled: undefined,
+                  message: '',
+                },
+              };
+            });
+
+            // Push the method type to display an error.
+            statusErrors.push(method);
+          }
+        });
+
+        // Broadcast errors depending on the result of the status requests.
+        if (statusErrors.length < Object.keys(statusMethods).length) {
+          for (const method of statusErrors) {
+            broadcastError(
+              `The status of access method ${method.toUpperCase()} is unable to be fetched. If required, use an alternative method.`
+            );
+          }
+        } else {
+          setMethodsUnavailable(true);
+          broadcastError(
+            'Download access method statuses unable to be fetched. Please try again later.'
+          );
+        }
+
+        // Set the status information to have been loaded.
+        setLoadedStatus(true);
+      });
+    }
+
     if (props.open) {
+      if (!requestStatus) {
+        // Get the status of all the available access methods.
+        getStatus();
+        setRequestStatus(true);
+      } else {
+        if (loadedStatus && !isSorted) {
+          sortMethods();
+          setShowDialog(true);
+        }
+      }
+
       // Reset checkmark view.
       setIsSubmitted(false);
       setIsSubmitSuccessful(false);
 
       // Reset all fields for next time dialog is opened.
       setDownloadName('');
-      setAccessMethod(defaultAccessMethod);
       setEmailAddress('');
 
       if (!isTwoLevel) {
@@ -186,12 +351,25 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         setShowDownloadTime(false);
       }
     }
-  }, [props.open, isTwoLevel, totalSize]);
+  }, [
+    props.open,
+    settings.facilityName,
+    settings.downloadApiUrl,
+    isTwoLevel,
+    totalSize,
+    statusMethods,
+    requestStatus,
+    loadedStatus,
+    sortMethods,
+    isSorted,
+    showDialog,
+  ]);
 
   const getDefaultFileName = (): string => {
     const now = new Date();
-    let defaultName = `${facilityName}_${now.getFullYear()}-${now.getMonth() +
-      1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
+    const defaultName = `${settings.facilityName}_${now.getFullYear()}-${
+      now.getMonth() + 1
+    }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
 
     return defaultName;
   };
@@ -224,22 +402,34 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     }
 
     const downloadId = await submitCart(
-      facilityName,
-      accessMethod,
+      selectedMethod,
       emailAddress,
-      fileName
+      fileName,
+      {
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      }
     );
 
     // Ensure that we have received a downloadId.
     if (downloadId && downloadId !== -1) {
       // If we are using HTTPS then start the download using
       // the download ID we received.
-      if (accessMethod === defaultAccessMethod) {
-        const downloadInfo = await getDownload(facilityName, downloadId);
+      if (selectedMethod.match(/https|http/)) {
+        const downloadInfo = await getDownload(downloadId, {
+          facilityName: settings.facilityName,
+          downloadApiUrl: settings.downloadApiUrl,
+        });
 
-        // Download the file as long as it is available for immediate download.
+        // Download the file as long as it is available for instant download.
         if (downloadInfo != null && downloadInfo.status === 'COMPLETE')
-          downloadPreparedCart(downloadInfo.preparedId, downloadInfo.fileName);
+          downloadPreparedCart(
+            downloadInfo.preparedId,
+            downloadInfo.fileName,
+
+            // Use the idsUrl that has been defined for this access method.
+            { idsUrl: settings.accessMethods[selectedMethod].idsUrl }
+          );
       }
 
       setIsSubmitSuccessful(true);
@@ -258,171 +448,225 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       aria-label="download-confirm-dialog"
     >
       {!isSubmitted ? (
-        <div>
-          {/* Custom title component which has a close button */}
-          <DialogTitle id="download-confirm-dialog-title" onClose={dialogClose}>
-            Confirm Your Download
-          </DialogTitle>
-
-          {/* The download confirmation form  */}
+        !showDialog ? (
           <DialogContent>
-            <Grid container spacing={2}>
-              {/* Set the download name text field */}
-              <Grid item xs={12}>
-                <TextField
-                  id="confirm-download-name"
-                  label="Download Name (optional)"
-                  placeholder={`${getDefaultFileName()}`}
-                  fullWidth={true}
-                  inputProps={{
-                    maxLength: 255,
-                  }}
-                  onChange={e => {
-                    setDownloadName(e.target.value as string);
-                  }}
-                  helperText="Enter a custom file name or leave as the default format (facility_date_time)."
-                />
-              </Grid>
+            <div style={{ textAlign: 'center', padding: '25px' }}>
+              <CircularProgress />
+              <Typography style={{ paddingTop: '10px' }}>
+                Loading Confirmation...
+              </Typography>
+            </div>
+          </DialogContent>
+        ) : (
+          <div>
+            {/* Custom title component which has a close button */}
+            <DialogTitle
+              id="download-confirm-dialog-title"
+              onClose={dialogClose}
+            >
+              Confirm Your Download
+            </DialogTitle>
 
-              {/* Select the access method */}
-              <Grid item xs={12}>
-                <FormControl style={{ minWidth: 120 }}>
-                  <InputLabel id="confirm-access-method-label">
-                    Access Method
-                  </InputLabel>
-                  <Select
-                    labelId="confirm-access-method"
-                    id="confirm-access-method"
-                    aria-label="confirm-access-method"
-                    defaultValue={`${defaultAccessMethod}`}
-                    onChange={e => {
-                      // Material UI select is not a real select element, so needs casting.
-                      setAccessMethod(e.target.value as string);
+            {/* The download confirmation form  */}
+            <DialogContent>
+              <Grid container spacing={2}>
+                {/* Set the download name text field */}
+                <Grid item xs={12}>
+                  <TextField
+                    id="confirm-download-name"
+                    label="Download Name (optional)"
+                    placeholder={`${getDefaultFileName()}`}
+                    fullWidth={true}
+                    inputProps={{
+                      maxLength: 255,
                     }}
+                    onChange={(e) => {
+                      setDownloadName(e.target.value as string);
+                    }}
+                    helperText="Enter a custom file name or leave as the default format (facility_date_time)."
+                  />
+                </Grid>
+
+                {/* Select the access method */}
+                <Grid item xs={12}>
+                  <FormControl
+                    style={{ minWidth: 120 }}
+                    error={
+                      statusMethods[selectedMethod].disabled ||
+                      methodsUnavailable
+                    }
                   >
-                    {/* TODO: Values need to be retrieved from an object from settings. */}
-                    <MenuItem id="confirm-access-method-https" value="https">
-                      HTTPS
-                    </MenuItem>
-                    <MenuItem id="confirm-access-method-globus" value="globus">
-                      Globus
-                    </MenuItem>
-                  </Select>
+                    <InputLabel id="confirm-access-method-label">
+                      Access Method
+                    </InputLabel>
+                    <Select
+                      labelId="confirm-access-method"
+                      id="confirm-access-method"
+                      aria-label="confirm-access-method"
+                      defaultValue={`${
+                        methodsUnavailable ? '' : selectedMethod
+                      }`}
+                      onChange={(e) => {
+                        if (!methodsUnavailable)
+                          // Material UI select is not a real select element, so needs casting.
+                          setSelectedMethod(e.target.value as string);
+                      }}
+                    >
+                      {/* Access methods from settings as items for selection */}
+                      {sortedMethods.map(([type, methodInfo], index) => (
+                        <MenuItem
+                          key={index}
+                          id={`confirm-access-method-${type}`}
+                          value={type}
+                          disabled={methodInfo.disabled === undefined}
+                        >
+                          {/* The display name will be shown as the menu item,
+                          if defined in the settings, otherwise we show the type. */}
+                          {methodInfo.displayName
+                            ? methodInfo.displayName
+                            : type.toUpperCase()}
+                        </MenuItem>
+                      ))}
+                    </Select>
 
-                  {/* Provide some information on the selected access method. */}
-                  <Typography style={{ paddingTop: '20px' }}>
-                    <b>Access Method Information:</b>
-                  </Typography>
+                    <FormHelperText id="confirm-access-method-help">
+                      {(() => {
+                        const method = statusMethods[selectedMethod];
+                        if (methodsUnavailable) {
+                          return 'Access methods currently unavailable.';
+                        } else if (method.disabled) {
+                          if (method.message) {
+                            return method.message;
+                          } else {
+                            return 'This access method is currently disabled.';
+                          }
+                        } else {
+                          return 'Select an access method for download.';
+                        }
+                      })()}
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
 
+                <Grid item xs={12}>
                   {/* Depending on the type of access method that has been selected,
                   show specific access information. */}
-                  {(() => {
-                    let accessMethodInfo;
-                    if (accessMethod === defaultAccessMethod)
-                      accessMethodInfo = 'HTTPS is the default access method.';
-                    else if (accessMethod === 'globus')
-                      accessMethodInfo = 'Globus is a special access method.';
+                  {Object.entries(settings.accessMethods)
+                    .filter(
+                      ([type, methodInfo]) =>
+                        type === selectedMethod && methodInfo.description
+                    )
+                    .map(([type, methodInfo], index) => (
+                      <span key={index} style={{ paddingTop: '20px' }}>
+                        <Typography>
+                          <b>Access Method Information:</b>
+                        </Typography>
 
-                    return (
-                      <Typography id="confirm-access-method-information">
-                        {accessMethodInfo}
-                      </Typography>
-                    );
-                  })()}
-                </FormControl>
-              </Grid>
-
-              {/* Get the size of the download  */}
-              <Grid item xs={12}>
-                <Typography aria-label="confirm-download-size">
-                  <b>Download size:</b> {formatBytes(totalSize)}
-                </Typography>
-              </Grid>
-
-              {/* Show the estimated download times */}
-              {showDownloadTime && (
-                <Grid item xs={12}>
-                  <Typography>Estimated download times:</Typography>
-                  <div
-                    style={{ paddingTop: '10px' }}
-                    className={classes.tableContent}
-                  >
-                    <table aria-label="download-table">
-                      <tbody>
-                        <tr>
-                          <th>1 Mbps</th>
-                          <th>30 Mbps</th>
-                          <th>100 Mbps</th>
-                        </tr>
-                        <tr>
-                          <td aria-label="download-table-one">
-                            {secondsToDHMS(timeAtOne)}
-                          </td>
-                          <td aria-label="download-table-thirty">
-                            {secondsToDHMS(timeAtThirty)}
-                          </td>
-                          <td aria-label="download-table-hundred">
-                            {secondsToDHMS(timeAtHundred)}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                        <Typography
+                          id={`confirm-access-method-${type}-description`}
+                        >
+                          {methodInfo.description}
+                        </Typography>
+                      </span>
+                    ))}
                 </Grid>
-              )}
 
-              {/* Set email address text field */}
-              <Grid item xs={12}>
-                <TextField
-                  id="confirm-download-email"
-                  label="Email Address (optional)"
-                  fullWidth={true}
-                  helperText={emailHelperText}
-                  error={!emailValid}
-                  inputProps={{
-                    maxLength: 254,
-                  }}
-                  onChange={e => {
-                    // Remove whitespaces and allow for the email to be optional.
-                    const email = (e.target.value as string).trim();
-                    if (email) {
-                      if (emailRegex.test(email)) {
-                        // Material UI select is not a real select element, so needs casting.
-                        setEmailAddress(email);
+                {/* Get the size of the download  */}
+                <Grid item xs={12}>
+                  <Typography aria-label="confirm-download-size">
+                    <b>Download size:</b> {formatBytes(totalSize)}
+                  </Typography>
+                </Grid>
 
-                        if (emailHelperText !== emailHelpText)
-                          setEmailHelperText(emailHelpText);
-                        setEmailValid(true);
+                {/* Show the estimated download times */}
+                {showDownloadTime && (
+                  <Grid item xs={12}>
+                    <Typography>Estimated download times:</Typography>
+                    <div
+                      style={{ paddingTop: '10px' }}
+                      className={classes.tableContent}
+                    >
+                      <table aria-label="download-table">
+                        <tbody>
+                          <tr>
+                            <th>1 Mbps</th>
+                            <th>30 Mbps</th>
+                            <th>100 Mbps</th>
+                          </tr>
+                          <tr>
+                            <td aria-label="download-table-one">
+                              {secondsToDHMS(timeAtOne)}
+                            </td>
+                            <td aria-label="download-table-thirty">
+                              {secondsToDHMS(timeAtThirty)}
+                            </td>
+                            <td aria-label="download-table-hundred">
+                              {secondsToDHMS(timeAtHundred)}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </Grid>
+                )}
+
+                {/* Set email address text field */}
+                <Grid item xs={12}>
+                  <TextField
+                    id="confirm-download-email"
+                    label="Email Address (optional)"
+                    fullWidth={true}
+                    helperText={emailHelperText}
+                    error={!emailValid}
+                    inputProps={{
+                      maxLength: 254,
+                    }}
+                    onChange={(e) => {
+                      // Remove whitespaces and allow for the email to be optional.
+                      const email = (e.target.value as string).trim();
+                      if (email) {
+                        if (emailRegex.test(email)) {
+                          // Material UI select is not a real select element, so needs casting.
+                          setEmailAddress(email);
+
+                          if (emailHelperText !== emailHelpText)
+                            setEmailHelperText(emailHelpText);
+                          setEmailValid(true);
+                        } else {
+                          if (emailHelperText !== emailErrorText)
+                            setEmailHelperText(emailErrorText);
+                          setEmailValid(false);
+                        }
                       } else {
-                        if (emailHelperText !== emailErrorText)
-                          setEmailHelperText(emailErrorText);
-                        setEmailValid(false);
+                        // Allow for the red highlighted error to toggle off,
+                        // if there is no longer an email entered in the text field.
+                        setEmailAddress('');
+                        setEmailHelperText(emailHelpText);
+                        setEmailValid(true);
                       }
-                    } else {
-                      // Allow for the red highlighted error to toggle off,
-                      // if there is no longer an email entered in the text field.
-                      setEmailAddress('');
-                      setEmailHelperText(emailHelpText);
-                      setEmailValid(true);
-                    }
-                  }}
-                />
+                    }}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-          </DialogContent>
+            </DialogContent>
 
-          <DialogActions>
-            <Button
-              id="download-confirmation-download"
-              disabled={!emailValid}
-              onClick={processDownload}
-              color="primary"
-              variant="contained"
-            >
-              Download
-            </Button>
-          </DialogActions>
-        </div>
+            <DialogActions>
+              <Button
+                id="download-confirmation-download"
+                disabled={
+                  !emailValid ||
+                  statusMethods[selectedMethod].disabled ||
+                  methodsUnavailable
+                }
+                onClick={processDownload}
+                color="primary"
+                variant="contained"
+              >
+                Download
+              </Button>
+            </DialogActions>
+          </div>
+        )
       ) : (
         <div>
           <DialogTitle
@@ -440,8 +684,6 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               style={{ paddingBottom: '25px' }}
             >
               <Grid item xs>
-                {/* TODO: When closing the animation renders again? 
-                Maybe set a fixed width for the dialog and not render it? */}
                 {isSubmitSuccessful ? (
                   <Mark size={100} colour="#3E863E" visible={props.open} />
                 ) : (
@@ -502,7 +744,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                         {downloadName}
                       </Typography>
                       <Typography id="confirm-success-access-method">
-                        {accessMethod.toUpperCase()}
+                        {selectedMethod.toUpperCase()}
                       </Typography>
                       {emailAddress && (
                         <Typography id="confirm-success-email-address">
@@ -516,13 +758,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
               {isSubmitSuccessful && (
                 <Grid item xs>
-                  {/* TODO: Button needs to call a function that has been passed in
-                        which allow for the tab to be changed to the status page. */}
                   <Button
                     id="download-confirmation-status-link"
                     variant="outlined"
                     color="primary"
-                    href="/"
+                    onClick={redirectToStatusTab}
                   >
                     View My Downloads
                   </Button>
@@ -536,5 +776,4 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   );
 };
 
-// TODO: Pass in facilityName as prop to DownloadConfirmDialog to get customisable download name.
 export default withStyles(dialogContentStyles)(DownloadConfirmDialog);

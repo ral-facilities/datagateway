@@ -14,7 +14,7 @@ const style = {
     animation: 'rotate 10s infinite linear',
   },
   wrapper: {
-    boxSizing: 'border-box' as 'border-box',
+    boxSizing: 'border-box' as const,
     padding: '10px 0',
   },
   container: {
@@ -23,7 +23,7 @@ const style = {
     height: '100%',
     backgroundColor: 'rgba(255,255,255,1)',
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -42,7 +42,7 @@ const spinnerStyle = (index: number): SpinnerStyle => {
   const size = innerRadius + index * 2 * (border + spacing);
 
   return {
-    position: 'absolute' as 'absolute',
+    position: 'absolute' as const,
     display: 'inline-block',
     top: '50%',
     left: '50%',
@@ -58,10 +58,11 @@ const spinnerStyle = (index: number): SpinnerStyle => {
     animationName: 'rotate',
     animationIterationCount: 'infinite',
     animationDuration: '3s',
-    animationTimingFunction: `cubic-bezier(.09, ${0.3 * index}, ${0.12 *
-      index}, .03)`,
+    animationTimingFunction: `cubic-bezier(.09, ${0.3 * index}, ${
+      0.12 * index
+    }, .03)`,
     transformOrigin: '50% 100% 0',
-    boxSizing: 'border-box' as 'border-box',
+    boxSizing: 'border-box' as const,
   };
 };
 

@@ -20,7 +20,7 @@ The project is structured as a monorepo. This means that the actual code package
   multiple packages to implement their specific configuration of tables. Another example is the type definitions of ICAT entities, as these are not
   specific to any one plugin and are used by all for typing. An example of something that _can't_ go into `datagateway-common` are Redux connected
   components as Redux state is (currently) unique to each app.
-- `datagateway-table` - This package contains all the functionality of the TopCAT Browse and My Data views. It displays configured tables for the facilities
+- `datagateway-dataview` - This package contains all the functionality of the TopCAT Browse and My Data views. It displays configured tables for the facilities
   and provides the data to the tables via API calls.
 
 ### Available Scripts
@@ -40,10 +40,10 @@ Alternatively, you can also change directory to the plugin you're developing and
 Use the second command to add a package to all projects.
 
 ```
-yarn workspace datagateway-table add loglevel
+yarn workspace datagateway-dataview add loglevel
 ```
 
-This will add the `loglevel` package to `datagateway-table`
+This will add the `loglevel` package to `datagateway-dataview`
 
 ```
 yarn workspaces add loglevel
@@ -53,9 +53,9 @@ This will add the `loglevel` package to all packages.
 
 Remember that you can use `--dev` to save as a devDependency instead of a regular dependency.
 
-### `yarn datagateway-table`
+### `yarn datagateway-dataview`
 
-Runs the `datagateway-table` `start` script, which runs the app in development mode
+Runs the `datagateway-dataview` `start` script, which runs the app in development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 Similarly, use `yarn datagateway-download` and `yarn datagateway-search` to run the datagateway-download and datagateway-search packages respectively.

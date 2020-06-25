@@ -32,7 +32,7 @@ describe('Table component', () => {
           label: string,
           dataKey: string
         ): React.ReactElement {
-          return <TextColumnFilter label={label} onChange={() => {}} />;
+          return <TextColumnFilter label={label} onChange={jest.fn()} />;
         },
       },
       {
@@ -136,54 +136,31 @@ describe('Table component', () => {
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(0)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('400px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(1)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(1).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('400px'),
       })
     );
 
     ReactTestUtils.act(() => {
-      wrapper
-        .find('DataHeader')
-        .at(0)
-        .prop('resizeColumn')(50);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(50);
     });
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(0)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('450px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(1)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(1).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('350px'),
       })
@@ -206,54 +183,31 @@ describe('Table component', () => {
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(2)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('325px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(3)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(3).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('325px'),
       })
     );
 
     ReactTestUtils.act(() => {
-      wrapper
-        .find('DataHeader')
-        .at(0)
-        .prop('resizeColumn')(40);
+      wrapper.find('DataHeader').at(0).prop('resizeColumn')(40);
     });
 
     wrapper.update();
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(2)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('365px'),
       })
     );
 
-    expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .at(3)
-        .prop('style')
-    ).toEqual(
+    expect(wrapper.find('[role="columnheader"]').at(3).prop('style')).toEqual(
       expect.objectContaining({
         flex: expect.stringContaining('285px'),
       })
@@ -284,17 +238,11 @@ describe('Table component', () => {
       />
     );
 
-    wrapper
-      .find('[aria-label="Show details"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="Show details"]').first().simulate('click');
 
     expect(wrapper.exists('#details-panel')).toBe(true);
 
-    wrapper
-      .find('[aria-label="Hide details"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="Hide details"]').first().simulate('click');
 
     expect(wrapper.exists('#details-panel')).toBe(false);
   });
@@ -306,7 +254,7 @@ describe('Table component', () => {
         actions={[
           function action() {
             return (
-              <button key="test" onClick={() => {}}>
+              <button key="test" onClick={jest.fn()}>
                 I am an action
               </button>
             );
@@ -317,12 +265,7 @@ describe('Table component', () => {
 
     expect(wrapper.exists('[aria-colcount=3]')).toBe(true);
     expect(
-      wrapper
-        .find('[role="columnheader"]')
-        .last()
-        .children()
-        .find('div')
-        .text()
+      wrapper.find('[role="columnheader"]').last().children().find('div').text()
     ).toEqual('Actions');
     expect(wrapper.find('button').text()).toEqual('I am an action');
   });
@@ -348,9 +291,10 @@ describe('Table component', () => {
   });
 
   it('throws error when only one of loadMoreRows or totalRowCount are defined', () => {
-    // suppress react uncaught error warning as we're deliberately triggering an error!
     const spy = jest.spyOn(console, 'error');
-    spy.mockImplementation(() => {});
+    spy.mockImplementation(() => {
+      // suppress react uncaught error warning as we're deliberately triggering an error!
+    });
 
     expect(() =>
       mount(<Table {...tableProps} totalRowCount={undefined} />)

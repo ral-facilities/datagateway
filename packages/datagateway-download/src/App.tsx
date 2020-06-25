@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
 
-import DownloadCartTable from './downloadCart/downloadCartTable.component';
+import DownloadTabs from './downloadTab/downloadTab.component';
 
 import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
+import ConfigProvider from './ConfigProvider';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
@@ -17,8 +18,8 @@ const generateClassName = createGenerateClassName({
     process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
 });
 
-class App extends Component<{}, { hasError: boolean }> {
-  public constructor(props: {}) {
+class App extends Component<unknown, { hasError: boolean }> {
+  public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
   }
@@ -49,7 +50,9 @@ class App extends Component<{}, { hasError: boolean }> {
     return (
       <div className="App">
         <StylesProvider generateClassName={generateClassName}>
-          <DownloadCartTable />
+          <ConfigProvider>
+            <DownloadTabs />
+          </ConfigProvider>
         </StylesProvider>
       </div>
     );

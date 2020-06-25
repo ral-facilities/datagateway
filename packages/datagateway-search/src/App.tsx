@@ -15,10 +15,10 @@ import {
   StylesProvider,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
+import { Provider, connect } from 'react-redux';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { Provider, connect } from 'react-redux';
 import { MicroFrontendId, SendThemeOptionsType } from 'datagateway-common';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
@@ -77,8 +77,8 @@ document.addEventListener(MicroFrontendId, e => {
   }
 });
 
-class App extends React.Component<{}, { hasError: boolean }> {
-  public constructor(props: {}) {
+class App extends React.Component<unknown, { hasError: boolean }> {
+  public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
   }

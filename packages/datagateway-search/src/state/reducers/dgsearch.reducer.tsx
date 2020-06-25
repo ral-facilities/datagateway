@@ -1,5 +1,5 @@
 import { DGSearchState } from '../app.types';
-import createReducer from './createReducer';
+import { createReducer } from 'datagateway-common';
 import {
   ToggleDatasetType,
   ToggleDatafileType,

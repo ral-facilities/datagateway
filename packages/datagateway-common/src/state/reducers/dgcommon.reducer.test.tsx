@@ -106,7 +106,7 @@ describe('DGCommon reducer', () => {
   it('should set the sort state when given a SortTable action with asc or desc order', () => {
     expect(state.sort).toEqual({});
 
-    let updatedState = DGCommonReducer(state, sortTable('test', 'asc'));
+    const updatedState = DGCommonReducer(state, sortTable('test', 'asc'));
     expect(updatedState.sort).toEqual({ test: 'asc' });
   });
 
@@ -115,14 +115,14 @@ describe('DGCommon reducer', () => {
       test: 'asc',
     };
 
-    let updatedState = DGCommonReducer(state, sortTable('test', null));
+    const updatedState = DGCommonReducer(state, sortTable('test', null));
     expect(updatedState.sort).toEqual({});
   });
 
   it('should set the filters state when given a FilterTable action', () => {
     expect(state.filters).toEqual({});
 
-    let updatedState = DGCommonReducer(
+    const updatedState = DGCommonReducer(
       state,
       filterTable('test column', 'test filter')
     );
@@ -136,7 +136,7 @@ describe('DGCommon reducer', () => {
       'test column': 'test filter',
     };
 
-    let updatedState = DGCommonReducer(state, filterTable('test', null));
+    const updatedState = DGCommonReducer(state, filterTable('test', null));
     expect(updatedState.sort).toEqual({});
   });
 
@@ -152,7 +152,7 @@ describe('DGCommon reducer', () => {
       filters: { NAME: 't' },
     };
 
-    let updatedState = DGCommonReducer(state, clearTable());
+    const updatedState = DGCommonReducer(state, clearTable());
     expect(updatedState).toEqual({
       ...initialState,
       data: [],
@@ -167,7 +167,7 @@ describe('DGCommon reducer', () => {
 
   describe('timestamps', () => {
     it('should ignore data requests with invalid timestamps', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationsRequest(invalidTimestamp)
       );
@@ -175,7 +175,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should ignore data successes with invalid timestamps', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetsSuccess([], invalidTimestamp)
       );
@@ -183,7 +183,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should ignore count requests with invalid timestamps', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafileCountRequest(invalidTimestamp)
       );
@@ -191,7 +191,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should ignore count successes with invalid timestamps', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentCountSuccess(1, invalidTimestamp)
       );
@@ -199,7 +199,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should ignore allIds requests with invalid timestamps', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchAllIdsRequest(invalidTimestamp)
       );
@@ -207,7 +207,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should ignore allIds successes with invalid timestamps', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchAllIdsSuccess([1], invalidTimestamp)
       );
@@ -215,7 +215,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should update dataTimestamp when given a valid fetchDataRequest', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafilesRequest(validTimestamp)
       );
@@ -223,7 +223,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should update dataTimestamp when given a valid fetchDataSuccess', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchFacilityCyclesSuccess([], validTimestamp)
       );
@@ -231,7 +231,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should update countTimestamp when given a valid fetchCountRequest', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetCountRequest(validTimestamp)
       );
@@ -239,7 +239,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should update countTimestamp when given a valid fetchCountSuccess', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationCountSuccess(1, validTimestamp)
       );
@@ -247,7 +247,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should update allIdsTimestamp when given a valid fetchAllIdsRequest', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchAllIdsRequest(validTimestamp)
       );
@@ -255,7 +255,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should update allIdsTimestamp when given a valid fetchAllIdsSuccess', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchAllIdsSuccess([1], validTimestamp)
       );
@@ -289,7 +289,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchInvestigationsRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationsRequest(validTimestamp)
       );
@@ -323,7 +323,7 @@ describe('DGCommon reducer', () => {
         },
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationsSuccess(mockData, validTimestamp)
       );
@@ -335,7 +335,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchInvestigationsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationsFailure('Test error message')
       );
@@ -347,7 +347,7 @@ describe('DGCommon reducer', () => {
 
   describe('FetchInvestigationDetails actions', () => {
     it('should not update state when given a FetchInvestigationDetailsRequest action', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDetailsRequest()
       );
@@ -401,7 +401,7 @@ describe('DGCommon reducer', () => {
         mockData[1],
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDetailsSuccess([investigationDetails])
       );
@@ -412,7 +412,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state when given a FetchInvestigationDetailsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDetailsFailure('Test error message')
       );
@@ -446,7 +446,7 @@ describe('DGCommon reducer', () => {
     ];
 
     it('should have the same state when given a FetchSizeRequest', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationSizeRequest()
       );
@@ -464,7 +464,7 @@ describe('DGCommon reducer', () => {
         },
       };
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationSizeSuccess(1, 1)
       );
@@ -485,7 +485,7 @@ describe('DGCommon reducer', () => {
         },
       };
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetSizeSuccess(2, 10000)
       );
@@ -495,7 +495,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should set the error state when given a FetchInvestigationSizeFailure action', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationSizeFailure('Test error message')
       );
@@ -507,7 +507,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchInvestigationCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationCountRequest(validTimestamp)
       );
@@ -517,7 +517,7 @@ describe('DGCommon reducer', () => {
     it('should set the totalDataCount state and reset error and loading state when given a FetchInvestigationCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationCountSuccess(11, validTimestamp)
       );
@@ -529,7 +529,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchInvestigationCountFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationCountFailure('Test error message')
       );
@@ -543,7 +543,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchDatasetsRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetsRequest(validTimestamp)
       );
@@ -569,7 +569,7 @@ describe('DGCommon reducer', () => {
         },
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetsSuccess(mockData, validTimestamp)
       );
@@ -581,7 +581,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchDatasetsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetsFailure('Test error message')
       );
@@ -593,7 +593,7 @@ describe('DGCommon reducer', () => {
 
   describe('FetchDatasetDetails actions', () => {
     it('should not update state when given a FetchDatasetDetailsRequest action', () => {
-      let updatedState = DGCommonReducer(state, fetchDatasetDetailsRequest());
+      const updatedState = DGCommonReducer(state, fetchDatasetDetailsRequest());
       expect(updatedState).toEqual(state);
     });
 
@@ -628,7 +628,7 @@ describe('DGCommon reducer', () => {
 
       const mockDataUpdated: Dataset[] = [datasetDetails, mockData[1]];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetDetailsSuccess([datasetDetails])
       );
@@ -639,7 +639,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state when given a FetchDatasetDetailsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetDetailsFailure('Test error message')
       );
@@ -652,7 +652,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchDatasetCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetCountRequest(validTimestamp)
       );
@@ -662,7 +662,7 @@ describe('DGCommon reducer', () => {
     it('should set the totalDataCount state and reset error and loading state when given a FetchDatasetCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetCountSuccess(12, validTimestamp)
       );
@@ -674,7 +674,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchDatasetCountFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetCountFailure('Test error message')
       );
@@ -688,7 +688,7 @@ describe('DGCommon reducer', () => {
     it('should set the downloading state to true when given a DownloadDatasetRequest action', () => {
       expect(state.downloading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         downloadDatasetRequest(validTimestamp)
       );
@@ -698,14 +698,14 @@ describe('DGCommon reducer', () => {
     it('should set the downloading state to false when given a DownloadDatasetSuccess action', () => {
       state.downloading = true;
 
-      let updatedState = DGCommonReducer(state, downloadDatasetSuccess());
+      const updatedState = DGCommonReducer(state, downloadDatasetSuccess());
       expect(updatedState.downloading).toBe(false);
     });
 
     it('should set the error state and the downloading state to false when given a DownloadDatasetFailure action', () => {
       state.downloading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         downloadDatasetFailure('Test error message')
       );
@@ -716,7 +716,7 @@ describe('DGCommon reducer', () => {
 
   describe('FetchInvestigationDatasetsCount actions', () => {
     it('should not affect state when given a FetchInvestigationDatasetsCountRequest action', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDatasetsCountRequest(validTimestamp)
       );
@@ -757,7 +757,7 @@ describe('DGCommon reducer', () => {
         mockData[1],
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDatasetsCountSuccess(1, 2, validTimestamp)
       );
@@ -813,7 +813,7 @@ describe('DGCommon reducer', () => {
       };
 
       // We give the investigation ID of 3 and the new dataset count (we would cache) as 4.
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDatasetsCountSuccess(3, 4, validTimestamp)
       );
@@ -826,7 +826,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should set the error state when given a FetchInvestigationDatasetsCountFailure action', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDatasetsCountFailure('Test error message')
       );
@@ -838,7 +838,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchDatafilesRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafilesRequest(validTimestamp)
       );
@@ -868,7 +868,7 @@ describe('DGCommon reducer', () => {
         },
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafilesSuccess(mockData, validTimestamp)
       );
@@ -880,7 +880,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchDatafilesFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafilesFailure('Test error message')
       );
@@ -894,7 +894,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchDatafileCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafileCountRequest(validTimestamp)
       );
@@ -904,7 +904,7 @@ describe('DGCommon reducer', () => {
     it('should set the totalDataCount state and reset error and loading state when given a FetchDatafileCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafileCountSuccess(13, validTimestamp)
       );
@@ -916,7 +916,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchDatafileCountFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafileCountFailure('Test error message')
       );
@@ -928,7 +928,10 @@ describe('DGCommon reducer', () => {
 
   describe('FetchDatafileDetails actions', () => {
     it('should not update state when given a FetchDatafileDetailsRequest action', () => {
-      let updatedState = DGCommonReducer(state, fetchDatafileDetailsRequest());
+      const updatedState = DGCommonReducer(
+        state,
+        fetchDatafileDetailsRequest()
+      );
       expect(updatedState).toEqual(state);
     });
 
@@ -976,7 +979,7 @@ describe('DGCommon reducer', () => {
 
       const mockDataUpdated: Datafile[] = [datafileDetails, mockData[1]];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafileDetailsSuccess([datafileDetails])
       );
@@ -987,7 +990,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state when given a FetchDatafileDetailsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatafileDetailsFailure('Test error message')
       );
@@ -1000,7 +1003,7 @@ describe('DGCommon reducer', () => {
     it('should set the downloading state to true when given a DownloadDatafileRequest action', () => {
       expect(state.downloading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         downloadDatafileRequest(validTimestamp)
       );
@@ -1010,14 +1013,14 @@ describe('DGCommon reducer', () => {
     it('should set the downloading state to false when given a DownloadDatafileSuccess action', () => {
       state.downloading = true;
 
-      let updatedState = DGCommonReducer(state, downloadDatafileSuccess());
+      const updatedState = DGCommonReducer(state, downloadDatafileSuccess());
       expect(updatedState.downloading).toBe(false);
     });
 
     it('should set the error state and the downloading state to false when given a DownloadDatafileFailure action', () => {
       state.downloading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         downloadDatafileFailure('Test error message')
       );
@@ -1028,7 +1031,7 @@ describe('DGCommon reducer', () => {
 
   describe('FetchDatasetDatafilesCount actions', () => {
     it('should not affect state when given a FetchDatasetDatafilesCountRequest action', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetDatafilesCountRequest(validTimestamp)
       );
@@ -1061,7 +1064,7 @@ describe('DGCommon reducer', () => {
         mockData[1],
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetDatafilesCountSuccess(1, 2, validTimestamp)
       );
@@ -1127,7 +1130,7 @@ describe('DGCommon reducer', () => {
       };
 
       // We give the investigation ID of 3 and the new datafile count (we would cache) as 99.
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetDatafilesCountSuccess(3, 99, validTimestamp)
       );
@@ -1139,7 +1142,7 @@ describe('DGCommon reducer', () => {
     });
 
     it('should set the error state when given a FetchDatasetDatafilesCountFailure action', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchDatasetDatafilesCountFailure('Test error message')
       );
@@ -1151,7 +1154,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchInstrumentsRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentsRequest(validTimestamp)
       );
@@ -1171,7 +1174,7 @@ describe('DGCommon reducer', () => {
         },
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentsSuccess(mockData, validTimestamp)
       );
@@ -1183,7 +1186,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchInstrumentsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentsFailure('Test error message')
       );
@@ -1197,7 +1200,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchInstrumentCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentCountRequest(validTimestamp)
       );
@@ -1207,7 +1210,7 @@ describe('DGCommon reducer', () => {
     it('should set the totalDataCount state and reset error and loading state when given a FetchInstrumentCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentCountSuccess(14, validTimestamp)
       );
@@ -1219,7 +1222,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchInstrumentCountFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentCountFailure('Test error message')
       );
@@ -1231,7 +1234,7 @@ describe('DGCommon reducer', () => {
 
   describe('FetchInstrumentDetails actions', () => {
     it('should not update state when given a FetchInstrumentDetailsRequest action', () => {
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentDetailsRequest()
       );
@@ -1267,7 +1270,7 @@ describe('DGCommon reducer', () => {
 
       const mockDataUpdated: Instrument[] = [instrumentDetails, mockData[1]];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentDetailsSuccess([instrumentDetails])
       );
@@ -1278,7 +1281,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state when given a FetchInstrumentDetailsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchInstrumentDetailsFailure('Test error message')
       );
@@ -1290,7 +1293,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchFacilityCyclesRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchFacilityCyclesRequest(validTimestamp)
       );
@@ -1316,7 +1319,7 @@ describe('DGCommon reducer', () => {
         },
       ];
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchFacilityCyclesSuccess(mockData, validTimestamp)
       );
@@ -1328,7 +1331,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchFacilityCyclesFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchFacilityCyclesFailure('Test error message')
       );
@@ -1342,7 +1345,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchFacilityCycleCountRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchFacilityCycleCountRequest(validTimestamp)
       );
@@ -1352,7 +1355,7 @@ describe('DGCommon reducer', () => {
     it('should set the totalDataCount state and reset error and loading state when given a FetchFacilityCycleCountSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchFacilityCycleCountSuccess(15, validTimestamp)
       );
@@ -1364,7 +1367,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading and data state when given a FetchFacilityCycleCountFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchFacilityCycleCountFailure('Test error message')
       );
@@ -1396,14 +1399,14 @@ describe('DGCommon reducer', () => {
       it('should set the loading state when given a FetchDownloadCartRequest action', () => {
         expect(state.loading).toBe(false);
 
-        let updatedState = DGCommonReducer(state, fetchDownloadCartRequest());
+        const updatedState = DGCommonReducer(state, fetchDownloadCartRequest());
         expect(updatedState.loading).toBe(true);
       });
 
       it('should set the downloadCart state and reset loading state when given a FetchDownloadCartSuccess action', () => {
         state.loading = true;
 
-        let updatedState = DGCommonReducer(
+        const updatedState = DGCommonReducer(
           state,
           fetchDownloadCartSuccess(mockData)
         );
@@ -1414,7 +1417,7 @@ describe('DGCommon reducer', () => {
       it('should set the error state and reset loading state when given a FetchDownloadCartFailure action', () => {
         state.loading = true;
 
-        let updatedState = DGCommonReducer(
+        const updatedState = DGCommonReducer(
           state,
           fetchDownloadCartFailure('Test error message')
         );
@@ -1427,14 +1430,14 @@ describe('DGCommon reducer', () => {
       it('should set the loading state when given a AddToCartRequest action', () => {
         expect(state.loading).toBe(false);
 
-        let updatedState = DGCommonReducer(state, addToCartRequest());
+        const updatedState = DGCommonReducer(state, addToCartRequest());
         expect(updatedState.loading).toBe(true);
       });
 
       it('should set the downloadCart state and reset loading state when given a AddToCartSuccess action', () => {
         state.loading = true;
 
-        let updatedState = DGCommonReducer(state, addToCartSuccess(mockData));
+        const updatedState = DGCommonReducer(state, addToCartSuccess(mockData));
         expect(updatedState.loading).toBe(false);
         expect(updatedState.cartItems).toEqual(mockData.cartItems);
       });
@@ -1442,7 +1445,7 @@ describe('DGCommon reducer', () => {
       it('should set the error state and reset loading state when given a AddToCartFailure action', () => {
         state.loading = true;
 
-        let updatedState = DGCommonReducer(
+        const updatedState = DGCommonReducer(
           state,
           addToCartFailure('Test error message')
         );
@@ -1455,14 +1458,14 @@ describe('DGCommon reducer', () => {
       it('should set the loading state when given a RemoveFromCartRequest action', () => {
         expect(state.loading).toBe(false);
 
-        let updatedState = DGCommonReducer(state, removeFromCartRequest());
+        const updatedState = DGCommonReducer(state, removeFromCartRequest());
         expect(updatedState.loading).toBe(true);
       });
 
       it('should set the downloadCart state and reset loading state when given a RemoveFromCartSuccess action', () => {
         state.loading = true;
 
-        let updatedState = DGCommonReducer(
+        const updatedState = DGCommonReducer(
           state,
           removeFromCartSuccess(mockData)
         );
@@ -1473,7 +1476,7 @@ describe('DGCommon reducer', () => {
       it('should set the error state and reset loading state when given a RemoveFromCartFailure action', () => {
         state.loading = true;
 
-        let updatedState = DGCommonReducer(
+        const updatedState = DGCommonReducer(
           state,
           removeFromCartFailure('Test error message')
         );
@@ -1487,7 +1490,7 @@ describe('DGCommon reducer', () => {
     it('should set the loading state when given a FetchAllIdsRequest action', () => {
       expect(state.loading).toBe(false);
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchAllIdsRequest(validTimestamp)
       );
@@ -1497,7 +1500,7 @@ describe('DGCommon reducer', () => {
     it('should set the allIds state and reset loading state when given a FetchAllIdsSuccess action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchAllIdsSuccess([1, 2, 3], validTimestamp)
       );
@@ -1508,7 +1511,7 @@ describe('DGCommon reducer', () => {
     it('should set the error state and reset loading state when given a FetchAllIdsFailure action', () => {
       state.loading = true;
 
-      let updatedState = DGCommonReducer(
+      const updatedState = DGCommonReducer(
         state,
         fetchAllIdsFailure('Test error message')
       );
