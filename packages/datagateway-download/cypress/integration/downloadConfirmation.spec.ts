@@ -157,10 +157,10 @@ describe('Download Confirmation', () => {
   });
 
   it('should be able to close the download confirmation dialog', () => {
-    cy.get('[aria-label="download-confirmation-close"]').should('exist');
+    cy.get('[aria-label="Close download confirmation dialog"]').should('exist');
 
-    cy.get('[aria-label="download-confirmation-close"]').click();
+    cy.get('[aria-label="Close download confirmation dialog"]').click();
 
-    cy.get('[aria-label="download-confirm-dialog"]').should('not.exist');
+    cy.get('[aria-label="Download confirmation dialog"]').should('not.exist');
   });
 });
