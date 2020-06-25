@@ -3,14 +3,14 @@
 exports[`Dataset details panel component renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="dataset-details-tabs"
+    aria-label="datasets.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
       id="dataset-details-tab"
-      label="Dataset Details"
+      label="datasets.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -24,7 +24,8 @@ exports[`Dataset details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.name
+        :
       </b>
        
       Test 1
@@ -33,7 +34,8 @@ exports[`Dataset details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -44,20 +46,20 @@ exports[`Dataset details panel component renders correctly 1`] = `
 exports[`Dataset details panel component renders type tab when present in the data 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="dataset-details-tabs"
+    aria-label="datasets.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
       id="dataset-details-tab"
-      label="Dataset Details"
+      label="datasets.details.label"
       value="details"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-type-panel"
       id="dataset-type-tab"
-      label="Dataset Type"
+      label="datasets.details.type.label"
       value="type"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -71,7 +73,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.name
+        :
       </b>
        
       Test 1
@@ -80,7 +83,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -95,7 +99,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.type.name
+        :
       </b>
        
       Test type
@@ -104,7 +109,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.type.description
+        :
       </b>
        
       Test type description

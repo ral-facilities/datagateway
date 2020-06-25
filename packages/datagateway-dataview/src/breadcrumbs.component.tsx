@@ -21,6 +21,7 @@ import {
 import { StyleRules } from '@material-ui/core/styles';
 
 import { BreadcrumbSettings } from './state/actions/actions.types';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface Breadcrumb {
   id: string;
@@ -29,7 +30,9 @@ interface Breadcrumb {
   url: string;
 }
 
-interface PageBreadcrumbsProps {
+type PageBreadcrumbsProps = WithTranslation & PageBreadcrumbsStateProps;
+
+interface PageBreadcrumbsStateProps {
   apiUrl: string;
   location: string;
   breadcrumbSettings: BreadcrumbSettings;
@@ -248,12 +251,9 @@ class PageBreadcrumbs extends React.Component<
         base: {
           entityName: baseEntityName,
 
-          // TODO: This display name requires internationalisation,
-          //       as currently it adds an 's' to the word disregarding
-          //       the current language the application is being served in.
-          displayName:
-            `${baseEntityName}`.charAt(0).toUpperCase() +
-            `${baseEntityName}s`.slice(1),
+          displayName: this.props.t(`breadcrumbs.${baseEntityName}`, {
+            count: 100,
+          }),
           url: `/${this.currentPathnames.slice(0, 2).join('/')}`,
           isLast: false,
         },
@@ -339,19 +339,21 @@ class PageBreadcrumbs extends React.Component<
 
           // Create the entity url to request the name, this is pluralised to get the API endpoint.
           let requestEntityUrl;
+          // TODO: check this is sufficient for pluralising API entity names...
+          const pluralisedApiEntity =
+            apiEntity.charAt(apiEntity.length - 1) === 'y'
+              ? `${apiEntity.slice(0, apiEntity.length - 1)}ies`
+              : `${apiEntity}s`;
           if (EntityTypes.includes(entity)) {
-            // TODO: Internationalisation may not be required here, though it
-            //       is adding an 's' to get the API endpoint.
-            requestEntityUrl = `${apiEntity}s`.toLowerCase() + `/${entityId}`;
+            requestEntityUrl =
+              pluralisedApiEntity.toLowerCase() + `/${entityId}`;
           } else {
             // If we are searching for proposal, we know that there is no investigation
             // information in the current path. We will need to query and select one investigation
             // from all investigations with the entity id (which is the proposal/investigation name).
 
-            // TODO: Internationalisation; pluralising the entity name
-            //       to get API endpoint.
             requestEntityUrl =
-              `${apiEntity}s`.toLowerCase() +
+              pluralisedApiEntity.toLowerCase() +
               '/findone?where=' +
               JSON.stringify({ NAME: { eq: entityId } });
           }
@@ -381,10 +383,9 @@ class PageBreadcrumbs extends React.Component<
           updatedState = {
             ...updatedState,
             last: {
-              // TODO: Internationalisation; display name is pluralised
-              //       irrespective of the language the application is being served in.
-              displayName:
-                `${entity}`.charAt(0).toUpperCase() + `${entity}s`.slice(1),
+              displayName: this.props.t(`breadcrumbs.${entity}`, {
+                count: 100,
+              }),
             },
           };
         } else {
@@ -456,7 +457,7 @@ class PageBreadcrumbs extends React.Component<
           {this.currentPathnames.length > 0 ? (
             <StyledBreadcrumbs aria-label="breadcrumb" separator="">
               <WrappedBreadcrumb
-                displayName="Home"
+                displayName={this.props.t('breadcrumbs.home')}
                 ariaLabel="Breadcrumb-home"
               />
 
@@ -512,10 +513,13 @@ class PageBreadcrumbs extends React.Component<
   }
 }
 
-const mapStateToProps = (state: StateType): PageBreadcrumbsProps => ({
+const mapStateToProps = (state: StateType): PageBreadcrumbsStateProps => ({
   apiUrl: state.dgcommon.urls.apiUrl,
   location: state.router.location.pathname,
   breadcrumbSettings: state.dgdataview.breadcrumbSettings,
 });
 
-export default connect(mapStateToProps)(PageBreadcrumbs);
+export const TranslatedBreadcrumbs = withTranslation()(PageBreadcrumbs);
+TranslatedBreadcrumbs.displayName = 'TranslatedBreadcrumbs';
+
+export default connect(mapStateToProps)(TranslatedBreadcrumbs);

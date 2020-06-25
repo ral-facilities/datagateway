@@ -32,6 +32,7 @@ import { TableCellProps, IndexRange } from 'react-virtualized';
 import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component';
 import { GetApp } from '@material-ui/icons';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
@@ -99,6 +100,8 @@ const ISISDatasetsTable = (
     fetchAllIds,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -163,7 +166,7 @@ const ISISDatasetsTable = (
           const datasetData = rowData as Dataset;
           return (
             <IconButton
-              aria-label="Download"
+              aria-label={t('datasets.download')}
               key="download"
               size="small"
               onClick={() => {
@@ -177,7 +180,7 @@ const ISISDatasetsTable = (
       ]}
       columns={[
         {
-          label: 'Name',
+          label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
@@ -187,7 +190,7 @@ const ISISDatasetsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          label: t('datasets.size'),
           dataKey: 'SIZE',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
@@ -195,12 +198,12 @@ const ISISDatasetsTable = (
           disableSort: true,
         },
         {
-          label: 'Create Time',
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
-          label: 'Modified Time',
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

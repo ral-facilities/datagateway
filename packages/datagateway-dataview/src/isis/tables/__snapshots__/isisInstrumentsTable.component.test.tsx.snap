@@ -8,7 +8,7 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "FULLNAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "label": "instruments.name",
       },
     ]
   }
@@ -39,14 +39,14 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
 exports[`ISIS Instruments table component renders details panel correctly and it sends off an FetchInstrumentDetails action 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="instrument-details-tabs"
+    aria-label="instruments.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="instrument-details-panel"
       id="instrument-details-tab"
-      label="Instrument Details"
+      label="instruments.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -60,7 +60,8 @@ exports[`ISIS Instruments table component renders details panel correctly and it
       variant="body2"
     >
       <b>
-        Name:
+        instruments.details.name
+        :
       </b>
        
       Test instrument 1
@@ -69,7 +70,8 @@ exports[`ISIS Instruments table component renders details panel correctly and it
       variant="body2"
     >
       <b>
-        Description:
+        instruments.details.description
+        :
       </b>
        
       foo bar
@@ -78,7 +80,8 @@ exports[`ISIS Instruments table component renders details panel correctly and it
       variant="body2"
     >
       <b>
-        Type:
+        instruments.details.type
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>

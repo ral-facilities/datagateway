@@ -8,22 +8,22 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "label": "facilitycycles.name",
       },
       Object {
         "dataKey": "DESCRIPTION",
         "filterComponent": [Function],
-        "label": "Description",
+        "label": "facilitycycles.description",
       },
       Object {
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
-        "label": "Start Date",
+        "label": "facilitycycles.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
-        "label": "End Date",
+        "label": "facilitycycles.end_date",
       },
     ]
   }

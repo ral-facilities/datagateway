@@ -20,6 +20,7 @@ import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import { Preloader } from 'datagateway-common';
 import { saveApiUrlMiddleware } from './idCheckFunctions';
+import { Translation } from 'react-i18next';
 
 import {
   createGenerateClassName,
@@ -108,16 +109,20 @@ class App extends React.Component<unknown, { hasError: boolean }> {
     if (this.state.hasError) {
       return (
         <div className="error">
-          <div
-            style={{
-              padding: 20,
-              background: 'red',
-              color: 'white',
-              margin: 5,
-            }}
+          <React.Suspense
+            fallback={<Preloader loading={true}>Finished loading</Preloader>}
           >
-            Something went wrong...
-          </div>
+            <div
+              style={{
+                padding: 20,
+                background: 'red',
+                color: 'white',
+                margin: 5,
+              }}
+            >
+              <Translation>{(t) => t('app.error')}</Translation>
+            </div>
+          </React.Suspense>
         </div>
       );
     } else
@@ -127,7 +132,13 @@ class App extends React.Component<unknown, { hasError: boolean }> {
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
                 <ConnectedPreloader>
-                  <PageContainer />
+                  <React.Suspense
+                    fallback={
+                      <Preloader loading={true}>Finished loading</Preloader>
+                    }
+                  >
+                    <PageContainer />
+                  </React.Suspense>
                 </ConnectedPreloader>
               </StylesProvider>
             </ConnectedRouter>

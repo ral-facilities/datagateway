@@ -3,14 +3,14 @@
 exports[`Dataset details panel component renders calculate size button when size has not been calculated 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="dataset-details-tabs"
+    aria-label="datasets.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
       id="dataset-details-tab"
-      label="Dataset Details"
+      label="datasets.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -24,7 +24,8 @@ exports[`Dataset details panel component renders calculate size button when size
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.name
+        :
       </b>
        
       Test 1
@@ -33,7 +34,8 @@ exports[`Dataset details panel component renders calculate size button when size
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -41,7 +43,8 @@ exports[`Dataset details panel component renders calculate size button when size
       variant="body2"
     >
       <b>
-        Start Date:
+        datasets.details.start_date
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -49,7 +52,8 @@ exports[`Dataset details panel component renders calculate size button when size
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.end_date
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -57,7 +61,8 @@ exports[`Dataset details panel component renders calculate size button when size
       variant="body2"
     >
       <b>
-        Total File Size:
+        datasets.details.size
+        :
       </b>
        
       <WithStyles(ForwardRef(Button))
@@ -67,7 +72,7 @@ exports[`Dataset details panel component renders calculate size button when size
         size="small"
         variant="outlined"
       >
-        Calculate
+        datasets.details.calculate
       </WithStyles(ForwardRef(Button))>
     </WithStyles(ForwardRef(Typography))>
   </div>
@@ -77,14 +82,14 @@ exports[`Dataset details panel component renders calculate size button when size
 exports[`Dataset details panel component renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="dataset-details-tabs"
+    aria-label="datasets.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
       id="dataset-details-tab"
-      label="Dataset Details"
+      label="datasets.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -98,7 +103,8 @@ exports[`Dataset details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.name
+        :
       </b>
        
       Test 1
@@ -107,7 +113,8 @@ exports[`Dataset details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -115,7 +122,8 @@ exports[`Dataset details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Start Date:
+        datasets.details.start_date
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -123,7 +131,8 @@ exports[`Dataset details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.end_date
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -131,7 +140,8 @@ exports[`Dataset details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Total File Size:
+        datasets.details.size
+        :
       </b>
        
       <WithStyles(ForwardRef(Button))
@@ -141,7 +151,7 @@ exports[`Dataset details panel component renders correctly 1`] = `
         size="small"
         variant="outlined"
       >
-        Calculate
+        datasets.details.calculate
       </WithStyles(ForwardRef(Button))>
     </WithStyles(ForwardRef(Typography))>
   </div>
@@ -151,20 +161,20 @@ exports[`Dataset details panel component renders correctly 1`] = `
 exports[`Dataset details panel component renders type tab when present in the data 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="dataset-details-tabs"
+    aria-label="datasets.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
       id="dataset-details-tab"
-      label="Dataset Details"
+      label="datasets.details.label"
       value="details"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-type-panel"
       id="dataset-type-tab"
-      label="Dataset Type"
+      label="datasets.details.types.label"
       value="type"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -178,7 +188,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.name
+        :
       </b>
        
       Test 1
@@ -187,7 +198,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -195,7 +207,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Start Date:
+        datasets.details.start_date
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -203,7 +216,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.end_date
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -211,7 +225,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Total File Size:
+        datasets.details.size
+        :
       </b>
        
       <WithStyles(ForwardRef(Button))
@@ -221,7 +236,7 @@ exports[`Dataset details panel component renders type tab when present in the da
         size="small"
         variant="outlined"
       >
-        Calculate
+        datasets.details.calculate
       </WithStyles(ForwardRef(Button))>
     </WithStyles(ForwardRef(Typography))>
   </div>
@@ -235,7 +250,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.type.name
+        :
       </b>
        
       Test type
@@ -244,7 +260,8 @@ exports[`Dataset details panel component renders type tab when present in the da
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.type.description
+        :
       </b>
        
       Test type description

@@ -12,23 +12,23 @@ exports[`DLS datafiles table component renders correctly 1`] = `
       Object {
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "label": "datafiles.name",
       },
       Object {
         "dataKey": "LOCATION",
         "filterComponent": [Function],
-        "label": "Location",
+        "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "FILESIZE",
         "filterComponent": [Function],
-        "label": "Size",
+        "label": "datafiles.size",
       },
       Object {
         "dataKey": "CREATE_TIME",
         "filterComponent": [Function],
-        "label": "Create Time",
+        "label": "datafiles.create_time",
       },
     ]
   }
@@ -62,7 +62,8 @@ exports[`DLS datafiles table component renders details panel correctly 1`] = `
     variant="body2"
   >
     <b>
-      Name:
+      datafiles.name
+      :
     </b>
      
     Test 1
@@ -71,7 +72,8 @@ exports[`DLS datafiles table component renders details panel correctly 1`] = `
     variant="body2"
   >
     <b>
-      Description:
+      datafiles.description
+      :
     </b>
      
   </WithStyles(ForwardRef(Typography))>
@@ -79,7 +81,8 @@ exports[`DLS datafiles table component renders details panel correctly 1`] = `
     variant="body2"
   >
     <b>
-      File Size:
+      datafiles.size
+      :
     </b>
      
     1 B
@@ -88,7 +91,8 @@ exports[`DLS datafiles table component renders details panel correctly 1`] = `
     variant="body2"
   >
     <b>
-      Location:
+      datafiles.location
+      :
     </b>
      
     /test1

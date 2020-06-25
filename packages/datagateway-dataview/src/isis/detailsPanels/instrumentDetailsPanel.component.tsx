@@ -1,6 +1,7 @@
 import React from 'react';
 import { Entity, Instrument } from 'datagateway-common';
 import { Typography, Tabs, Tab, Link } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 interface InstrumentDetailsPanelProps {
   rowData: Entity;
@@ -13,6 +14,7 @@ const InstrumentDetailsPanel = (
 ): React.ReactElement => {
   const { rowData, detailsPanelResize, fetchDetails } = props;
   const [value, setValue] = React.useState<'details' | 'users'>('details');
+  const [t] = useTranslation();
 
   const instrumentData = rowData as Instrument;
 
@@ -31,19 +33,19 @@ const InstrumentDetailsPanel = (
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
-        aria-label="instrument-details-tabs"
+        aria-label={t('instruments.details.tabs_label')}
       >
         <Tab
           id="instrument-details-tab"
           aria-controls="instrument-details-panel"
-          label="Instrument Details"
+          label={t('instruments.details.label')}
           value="details"
         />
         {instrumentData.INSTRUMENTSCIENTIST && (
           <Tab
             id="instrument-users-tab"
             aria-controls="instrument-users-panel"
-            label="Instrument Scientists"
+            label={t('instruments.details.instrument_scientists.label')}
             value="users"
           />
         )}
@@ -55,17 +57,18 @@ const InstrumentDetailsPanel = (
         hidden={value !== 'details'}
       >
         <Typography variant="body2">
-          <b>Name:</b> {instrumentData.FULLNAME}
+          <b>{t('instruments.details.name')}:</b> {instrumentData.FULLNAME}
         </Typography>
         <Typography variant="body2">
-          <b>Description:</b> {instrumentData.DESCRIPTION}
+          <b>{t('instruments.details.description')}:</b>{' '}
+          {instrumentData.DESCRIPTION}
         </Typography>
         <Typography variant="body2">
-          <b>Type:</b> {instrumentData.TYPE}
+          <b>{t('instruments.details.type')}:</b> {instrumentData.TYPE}
         </Typography>
         {instrumentData.URL && (
           <Typography variant="body2">
-            <b>URL:</b>{' '}
+            <b>{t('instruments.details.url')}:</b>{' '}
             <Link href={instrumentData.URL}>{instrumentData.URL}</Link>
           </Typography>
         )}
@@ -81,7 +84,7 @@ const InstrumentDetailsPanel = (
             if (instrumentScientist.USER_) {
               return (
                 <Typography key={instrumentScientist.USER_ID} variant="body2">
-                  <b>Name:</b>{' '}
+                  <b>{t('instruments.details.instrument_scientists.name')}:</b>{' '}
                   {instrumentScientist.USER_.FULL_NAME ||
                     instrumentScientist.USER_.NAME}
                 </Typography>

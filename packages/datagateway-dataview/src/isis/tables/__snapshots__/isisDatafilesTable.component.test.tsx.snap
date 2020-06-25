@@ -17,23 +17,23 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
       Object {
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "label": "datafiles.name",
       },
       Object {
         "dataKey": "LOCATION",
         "filterComponent": [Function],
-        "label": "Location",
+        "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "FILESIZE",
         "filterComponent": [Function],
-        "label": "Size",
+        "label": "datafiles.size",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
-        "label": "Modified Time",
+        "label": "datafiles.modified_time",
       },
     ]
   }
@@ -64,14 +64,14 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
 exports[`ISIS datafiles table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="datafile-details-tabs"
+    aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="datafile-details-panel"
       id="datafile-details-tab"
-      label="Datafile Details"
+      label="datafiles.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -85,7 +85,8 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
       variant="body2"
     >
       <b>
-        Name:
+        datafiles.details.name
+        :
       </b>
        
       Test 1
@@ -94,7 +95,8 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
       variant="body2"
     >
       <b>
-        Description:
+        datafiles.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -102,7 +104,8 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
       variant="body2"
     >
       <b>
-        Location:
+        datafiles.details.location
+        :
       </b>
        
       /test1
