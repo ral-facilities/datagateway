@@ -10,9 +10,7 @@ describe('ISIS - MyData Table', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
       '/browse/instrument/5/facilityCycle/10/investigation/1/dataset'
@@ -30,25 +28,21 @@ describe('ISIS - MyData Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = (windowWidth - 40 - 40) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(2)
-      .as('titleColumn');
-    cy.get('[role="columnheader"]')
-      .eq(3)
-      .as('doiColumn');
+    cy.get('[role="columnheader"]').eq(2).as('titleColumn');
+    cy.get('[role="columnheader"]').eq(3).as('doiColumn');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@doiColumn').should($column => {
+    cy.get('@doiColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -59,26 +53,25 @@ describe('ISIS - MyData Table', () => {
       .trigger('mousemove', { clientX: 200 })
       .trigger('mouseup');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@doiColumn').should($column => {
+    cy.get('@doiColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
   });
 
-  // we only have one row - so can't properly test sorting
-  describe.skip('should be able to sort by', () => {});
+  describe.skip('should be able to sort by', () => {
+    // we only have one row - so can't properly test sorting
+  });
 
   describe('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('invalid');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
@@ -91,13 +84,11 @@ describe('ISIS - MyData Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Start Date date filter to"]').should(
@@ -116,9 +107,7 @@ describe('ISIS - MyData Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('invalid');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
@@ -134,11 +123,9 @@ describe('ISIS - MyData Table', () => {
     });
 
     it('when not other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Proposal: INVESTIGATION 1').should('be.visible');
+      cy.contains('Name: INVESTIGATION 1').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -146,9 +133,7 @@ describe('ISIS - MyData Table', () => {
     // as well since we are currently limited to 1 investigation to test.
 
     it('and view investigation details, users, samples and publications', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-controls="investigation-details-panel"]').should(
         'be.visible'
@@ -183,13 +168,9 @@ describe('ISIS - MyData Table', () => {
     });
 
     it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Hide details"]').first().click();
 
       cy.contains('Proposal: INVESTIGATION 1').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');

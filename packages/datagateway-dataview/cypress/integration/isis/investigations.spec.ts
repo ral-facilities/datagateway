@@ -174,7 +174,7 @@ describe('ISIS - Investigations Table', () => {
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Proposal: INVESTIGATION 107').should('be.visible');
+      cy.contains('Name: INVESTIGATION 107').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 

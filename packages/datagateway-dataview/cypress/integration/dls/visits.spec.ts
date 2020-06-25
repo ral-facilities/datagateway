@@ -148,7 +148,7 @@ describe('DLS - Visits Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Visit Id"]').find('input').type('64');
 
-      cy.get('[aria-label="Filter by Beamline')
+      cy.get('[aria-label="Filter by Instrument')
         .find('input')
         .type('INSTRUMENT 8');
 
