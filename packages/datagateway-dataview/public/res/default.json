@@ -17,7 +17,7 @@
     "type": "Type",
     "url": "URL",
     "details": {
-      "tabs_label": "instrument-details-tabs",
+      "tabs_label": "Instrument Details Tabs",
       "label": "Instrument Details",
       "name": "Name",
       "description": "Description",
@@ -42,12 +42,12 @@
     "start_date": "Start Date",
     "size": "Size",
     "instrument": "Instrument",
-    "visit_id": "Visit ID",
+    "visit_id": "Visit Id",
     "rb_number": "RB Number",
     "doi": "DOI",
     "dataset_count": "Dataset Count",
     "details": {
-      "tabs_label": "investigation-details-tabs",
+      "tabs_label": "Investigation Details Tabs",
       "label": "Investigation Details",
       "title": "Title",
       "name": "Name",
@@ -80,7 +80,7 @@
     "size": "Size",
     "datafile_count": "Datafile Count",
     "details": {
-      "tabs_label": "datasets-details-tabs",
+      "tabs_label": "Dataset Details Tabs",
       "label": "Dataset Details",
       "name": "Name",
       "description": "Description",
@@ -104,7 +104,7 @@
     "location": "Location",
     "size": "Size",
     "details": {
-      "tabs_label": "datafiles-details-tabs",
+      "tabs_label": "Datafile Details Tabs",
       "label": "Datafile Details",
       "name": "Name",
       "description": "Description",
