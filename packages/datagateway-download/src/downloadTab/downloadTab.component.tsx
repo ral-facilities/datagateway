@@ -17,6 +17,7 @@ import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component
 
 import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles({
   root: {
@@ -75,6 +76,7 @@ const DownloadTabs: React.FC = () => {
   const [selectedTab, setSelectedTab] = React.useState(getTab());
   const [refreshDownloads, setRefreshDownloads] = React.useState(false);
   const [lastChecked, setLastChecked] = React.useState('');
+  const [t] = useTranslation();
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -94,11 +96,23 @@ const DownloadTabs: React.FC = () => {
         textColor="primary"
         centered
       >
-        <Tab label="Cart" aria-label="Cart tab" {...a11yProps(0)} />
-        <Tab label="Downloads" aria-label="Downloads tab" {...a11yProps(1)} />
+        <Tab
+          label="Cart"
+          aria-label={t('downloadTab.cart_tab_arialabel')}
+          {...a11yProps(0)}
+        />
+        <Tab
+          label="Downloads"
+          aria-label={t('downloadTab.downloads_tab_arialabel')}
+          {...a11yProps(1)}
+        />
       </Tabs>
 
-      <TabPanel value={selectedTab} index={0} aria-label="Download cart panel">
+      <TabPanel
+        value={selectedTab}
+        index={0}
+        aria-label={t('downloadTab.download_cart_panel_arialabel')}
+      >
         {/* Provide a link to the status table for the download confirmation dialog to use */}
         <DownloadCartTable statusTabRedirect={() => setSelectedTab(1)} />
       </TabPanel>
@@ -106,11 +120,15 @@ const DownloadTabs: React.FC = () => {
       <TabPanel
         value={selectedTab}
         index={1}
-        aria-label="Download status panel"
+        aria-label={t('downloadTab.download_status_panel_arialabel')}
       >
         <Grid container spacing={1}>
           {/* Place the last updated time above the table. */}
-          <Grid item xs={12} aria-label="Last updated time">
+          <Grid
+            item
+            xs={12}
+            aria-label={t('downloadTab.last_updated_time_arialabel')}
+          >
             <Typography
               style={{
                 display: 'inline-flex',
@@ -125,7 +143,9 @@ const DownloadTabs: React.FC = () => {
                 <BlackTooltip title="Refresh Downloads" enterDelay={500}>
                   <IconButton
                     color="secondary"
-                    aria-label="Refresh download status table"
+                    aria-label={t(
+                      'downloadTab.refresh_download_status_arialabel'
+                    )}
                     onClick={() => setRefreshDownloads(true)}
                   >
                     <RefreshIcon />
@@ -137,11 +157,11 @@ const DownloadTabs: React.FC = () => {
 
               {!refreshDownloads ? (
                 <p style={{ paddingLeft: '10px ' }}>
-                  <b>Last checked: </b> {lastChecked}
+                  <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
                 </p>
               ) : (
                 <p style={{ paddingLeft: '20px ' }}>
-                  <i>Refreshing downloads...</i>
+                  <i>{t('downloadTab.refreshing_downloads')}</i>
                 </p>
               )}
             </Typography>

@@ -14,6 +14,7 @@ import { TableCellProps } from 'react-virtualized';
 import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { useTranslation } from 'react-i18next';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -36,6 +37,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { refreshTable, setRefreshTable, setLastChecked } = props;
+  const [t] = useTranslation();
 
   React.useEffect(() => {
     if (!dataLoaded || refreshTable) {
@@ -193,17 +195,17 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           <Table
             columns={[
               {
-                label: 'Download Name',
+                label: t('downloadStatus.filename'),
                 dataKey: 'fileName',
                 filterComponent: textFilter,
               },
               {
-                label: 'Access Method',
+                label: t('downloadStatus.transport'),
                 dataKey: 'transport',
                 filterComponent: textFilter,
               },
               {
-                label: 'Availability',
+                label: t('downloadStatus.status'),
                 dataKey: 'status',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
@@ -217,7 +219,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 filterComponent: availabilityFilter,
               },
               {
-                label: 'Requested Date',
+                label: t('downloadStatus.createdAt'),
                 dataKey: 'createdAt',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
@@ -253,7 +255,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const [clicked, setClicked] = React.useState(false);
                 return (
                   <BlackTooltip
-                    title={`Instant download not supported for ${downloadItem.transport} download type`}
+                    title={t('downloadStatus.download_disabled_tooltip', {
+                      transport: downloadItem.transport,
+                    })}
                     enterDelay={500}
                     // Disable tooltip for access methods that are not http/https.
                     disableHoverListener={isDownloadable}
@@ -268,7 +272,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                             downloadItem.fileName
                           )}
                           target="_blank"
-                          aria-label={`Download ${downloadItem.fileName}`}
+                          aria-label={t('downloadStatus.download', {
+                            filename: downloadItem.fileName,
+                          })}
                           key="download"
                           size="small"
                           onClick={() => {
@@ -282,7 +288,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                         </IconButton>
                       ) : (
                         <IconButton
-                          aria-label={`Instant download not supported for ${downloadItem.fileName}`}
+                          aria-label={t(
+                            'downloadStatus.download_disabled_button',
+                            {
+                              filename: downloadItem.fileName,
+                            }
+                          )}
                           key="non-downloadable"
                           size="small"
                           // Set the button to be disabled if the transport type is not "https" (cover http?).
@@ -304,7 +315,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
                 return (
                   <IconButton
-                    aria-label={`Remove ${downloadItem.fileName} from downloads`}
+                    aria-label={t('downloadStatus.remove', {
+                      filename: downloadItem.fileName,
+                    })}
                     key="remove"
                     size="small"
                     onClick={() => {
