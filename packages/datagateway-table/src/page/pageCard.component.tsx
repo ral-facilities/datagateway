@@ -1,17 +1,17 @@
 import React from 'react';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 
-import InvestigationCardView from '../card/investigationCardView.component';
-import DatasetCardView from '../card/datasetCardView.component';
+import InvestigationCardView from '../views/card/investigationCardView.component';
+import DatasetCardView from '../views/card/datasetCardView.component';
 
-import ISISInstrumentsCardView from '../card/isis/isisInstrumentsCardView.component';
-import ISISFacilityCyclesCardView from '../card/isis/isisFacilityCyclesCardView.component';
-import ISISInvestigationsCardView from '../card/isis/isisInvestigationCardView.component';
-import ISISDatasetsCardView from '../card/isis/isisDatasetsCardView.component';
+import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
+import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
+import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationCardView.component';
+import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
 
-import DLSProposalsCardView from '../card/dls/dlsProposalsCardView.component';
-import DLSVisitsCardView from '../card/dls/dlsVisitsCardView.component';
-import DLSDatasetsCardView from '../card/dls/dlsDatasetsCardView.component';
+import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
+import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
+import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
 
 export const supportedPaths = {
   investigation: '/browse/investigation',

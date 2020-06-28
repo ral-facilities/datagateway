@@ -13,22 +13,22 @@ import { initialState as dgTableInitialState } from '../state/reducers/dgtable.r
 import { dGCommonInitialState } from 'datagateway-common';
 import { Link } from 'react-router-dom';
 
-import InvestigationTable from '../table/investigationTable.component';
-import DatasetTable from '../table/datasetTable.component';
-import DatafileTable from '../table/datafileTable.component';
+import InvestigationTable from '../views/table/investigationTable.component';
+import DatasetTable from '../views/table/datasetTable.component';
+import DatafileTable from '../views/table/datafileTable.component';
 
-import DLSProposalsTable from '../table/dls/tables/dlsProposalsTable.component';
-import DLSVisitsTable from '../table/dls/tables/dlsVisitsTable.component';
-import DLSDatasetsTable from '../table/dls/tables/dlsDatasetsTable.component';
-import DLSDatafilesTable from '../table/dls/tables/dlsDatafilesTable.component';
+import DLSProposalsTable from '../views/table/dls/dlsProposalsTable.component';
+import DLSVisitsTable from '../views/table/dls/dlsVisitsTable.component';
+import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
+import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
-import ISISInstrumentsTable from '../table/isis/tables/isisInstrumentsTable.component';
-import ISISFacilityCyclesTable from '../table/isis/tables/isisFacilityCyclesTable.component';
-import ISISInvestigationsTable from '../table/isis/tables/isisInvestigationsTable.component';
-import ISISDatasetsTable from '../table/isis/tables/isisDatasetsTable.component';
-import ISISDatafilesTable from '../table/isis/tables/isisDatafilesTable.component';
-import ISISMyDataTable from '../table/isis/tables/isisMyDataTable.component';
-import DLSMyDataTable from '../table/dls/tables/dlsMyDataTable.component';
+import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
+import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
+import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
+import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
+import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component';
+import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
+import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
 
 jest.mock('loglevel');
 
