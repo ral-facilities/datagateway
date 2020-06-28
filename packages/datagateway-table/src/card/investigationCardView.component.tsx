@@ -139,7 +139,7 @@ const InvestigationCardView = (
         },
       }}
       description={{ dataKey: 'SUMMARY' }}
-      furtherInformation={[
+      information={[
         {
           label: 'DOI',
           dataKey: 'DOI',

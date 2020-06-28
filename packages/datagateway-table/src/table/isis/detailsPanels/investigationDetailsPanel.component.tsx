@@ -4,14 +4,14 @@ import { Typography, Tabs, Tab, Link } from '@material-ui/core';
 
 interface InvestigationDetailsPanelProps {
   rowData: Entity;
-  detailsPanelResize: () => void;
   fetchDetails: (investigationId: number) => Promise<void>;
+  detailsPanelResize?: () => void;
 }
 
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails } = props;
+  const { rowData, fetchDetails, detailsPanelResize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
@@ -35,7 +35,7 @@ const InvestigationDetailsPanel = (
   ]);
 
   React.useLayoutEffect(() => {
-    detailsPanelResize();
+    if (detailsPanelResize) detailsPanelResize();
   }, [value, detailsPanelResize]);
 
   return (

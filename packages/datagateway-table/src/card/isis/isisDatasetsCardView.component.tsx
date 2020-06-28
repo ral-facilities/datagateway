@@ -115,7 +115,7 @@ const ISISDatasetsCardView = (
           ),
       }}
       description={{ dataKey: 'DESCRIPTION' }}
-      furtherInformation={[
+      information={[
         {
           label: 'Size',
           dataKey: 'SIZE',

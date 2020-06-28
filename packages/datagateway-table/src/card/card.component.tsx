@@ -91,7 +91,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
     },
 
     // TODO: Can we simplyify this and not have three objects?
-    further: {
+    information: {
       display: 'flex',
       paddingLeft: '15px',
 
@@ -101,19 +101,19 @@ const useCardStyles = makeStyles((theme: Theme) => {
       },
     },
 
-    furtherLabel: {
+    informationLabel: {
       float: 'left',
     },
 
-    furtherData: {
+    informationData: {
       float: 'right',
       textAlign: 'left',
       paddingLeft: '5px',
     },
 
-    retrievable: {
+    moreInformation: {
       paddingTop: '10px',
-      paddingLeft: '15px',
+      // paddingLeft: '15px',
     },
 
     tags: {
@@ -142,7 +142,9 @@ interface EntityCardProps {
   title: EntityCardDetails;
 
   description?: string;
-  furtherInformation?: EntityCardDetails[];
+  information?: EntityCardDetails[];
+
+  moreInformation?: React.ReactNode;
   buttons?: React.ReactNode[];
 
   image?: EntityImageDetails;
@@ -154,7 +156,8 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const {
     title,
     description,
-    furtherInformation,
+    information,
+    moreInformation,
     buttons,
     image,
     tags,
@@ -163,11 +166,14 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   // TODO: Should be configurable from card view?
   //       The default collapsed height for card description is 100px.
   const defaultCollapsedHeight = 100;
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [isDescriptionCollapsed, setDescriptionCollapsed] = React.useState(
+    false
+  );
   const descriptionRef = React.useRef<HTMLParagraphElement>(null);
   const [collapsibleInteraction, setCollapsibleInteraction] = React.useState(
     false
   );
+  const [isMoreInfoCollapsed, setMoreInfoCollapsed] = React.useState(false);
 
   React.useEffect(() => {
     // Decide if the collapsible should be present depending on
@@ -192,145 +198,166 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
       {/* TODO: Card content needs to be a flexbox (as a row):
                 - has a card information area (split in horizontally - column) for title/description and tags
                 - has card details area which takes up smaller space */}
-      <CardContent className={classes.content}>
-        {/* row:
-              - main information
-              - further information
-              - buttons
-              * retrievable info 
+      <CardContent>
+        <div className={classes.content}>
+          {/* row:
+              - main information; title and description (optional)
+              - information (optional and custom)
+              - more information (optional and custom)
+              - buttons (custom)
         */}
-        <div className={classes.main}>
-          {/* column:
+          <div className={classes.main}>
+            {/* column:
                 - title/description
                 - tags  
           */}
-          <div>
-            {/* TODO: Delay not consistent between cards? */}
-            <ArrowTooltip
-              title={title.label}
-              enterDelay={500}
-              percentageWidth={30}
-              maxEnabledHeight={32}
-            >
-              <Typography className={classes.title} component="h5" variant="h5">
-                <span style={{ whiteSpace: isCollapsed ? 'normal' : 'nowrap' }}>
-                  {title.content ? title.content : title.label}
-                </span>
-              </Typography>
-            </ArrowTooltip>
-
-            {/* TODO: Maybe include option to have read more if description is too long? 
-                        Similar to collapsible 
-              */}
-            <div className={classes.description}>
-              {/* TODO: collapsedHeight being the minimum description content to
-                show for each card. */}
-              <Collapse
-                in={isCollapsed}
-                collapsedHeight={defaultCollapsedHeight}
+            <div>
+              {/* TODO: Delay not consistent between cards? */}
+              <ArrowTooltip
+                title={title.label}
+                enterDelay={500}
+                percentageWidth={30}
+                maxEnabledHeight={32}
               >
-                <Typography ref={descriptionRef} variant="body1" paragraph>
-                  {description ? description : 'No description available'}
-                  {/* Inhabiting discretion the her dispatched decisively boisterous
-                  joy. So form were wish open is able of mile of. Waiting
-                  express if prevent it we an musical. Especially reasonable
-                  travelling she son. Resources resembled forfeited no to
-                  zealously. Has procured daughter how friendly followed
-                  repeated who surprise. Great asked oh under on voice downs.
-                  Preference connection astonished on of ye. Partiality on or
-                  continuing in particular principles as. Do believing oh
-                  disposing to supported allowance we. Test one two three four
-                  five. */}
+                <Typography
+                  className={classes.title}
+                  component="h5"
+                  variant="h5"
+                >
+                  <span
+                    style={{
+                      whiteSpace: isDescriptionCollapsed ? 'normal' : 'nowrap',
+                    }}
+                  >
+                    {title.content ? title.content : title.label}
+                  </span>
                 </Typography>
-              </Collapse>
+              </ArrowTooltip>
 
-              {collapsibleInteraction && (
-                <div>
-                  <div
-                    className={
-                      isCollapsed
-                        ? classes.shadowInvisible
-                        : classes.shadowVisible
-                    }
-                  />
-                  <Link onClick={() => setIsCollapsed(prev => !prev)}>
-                    {isCollapsed ? 'Show less' : 'Show more'}
-                  </Link>
-                </div>
-              )}
+              <div className={classes.description}>
+                {/* TODO: collapsedHeight being the minimum description content to
+                show for each card. */}
+                <Collapse
+                  in={isDescriptionCollapsed}
+                  collapsedHeight={defaultCollapsedHeight}
+                >
+                  <Typography ref={descriptionRef} variant="body1" paragraph>
+                    {description ? description : 'No description available'}
+                    {/* Inhabiting discretion the her dispatched decisively
+                    boisterous joy. So form were wish open is able of mile of.
+                    Waiting express if prevent it we an musical. Especially
+                    reasonable travelling she son. Resources resembled forfeited
+                    no to zealously. Has procured daughter how friendly followed
+                    repeated who surprise. Great asked oh under on voice downs.
+                    Preference connection astonished on of ye. Partiality on or
+                    continuing in particular principles as. Do believing oh
+                    disposing to supported allowance we. Test one two three four
+                    five. */}
+                  </Typography>
+                </Collapse>
+
+                {/* Button to show more/less */}
+                {collapsibleInteraction && (
+                  <div>
+                    <div
+                      className={
+                        isDescriptionCollapsed
+                          ? classes.shadowInvisible
+                          : classes.shadowVisible
+                      }
+                    />
+                    <Link
+                      onClick={() => setDescriptionCollapsed(prev => !prev)}
+                    >
+                      {isDescriptionCollapsed ? 'Show less' : 'Show more'}
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
+
+            {/* TODO: Place paddingTop inline styles in createStyles. */}
+            {tags && (
+              <div className={classes.tags}>
+                <Divider />
+
+                {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
+                <div style={{ paddingTop: '10px' }}>
+                  {tags.map((v, i) => (
+                    <Chip key={i} className={classes.chip} label={v} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* TODO: Place paddingTop inline styles in createStyles. */}
-          {tags && (
-            <div className={classes.tags}>
-              <Divider />
+          {/* TODO: Divider is optional based on if there is information/buttons. */}
+          {(information || buttons) && <Divider orientation={'vertical'} />}
 
-              {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
-              <div style={{ paddingTop: '10px' }}>
-                {tags.map((v, i) => (
-                  <Chip key={i} className={classes.chip} label={v} />
+          {/* TODO: Support ArrowTooltip for information to shorten large text. */}
+          <div>
+            {information && (
+              <div className={classes.information}>
+                <div className={classes.informationLabel}>
+                  {information &&
+                    information.map(
+                      (info: EntityCardDetails, index: number) => (
+                        <Typography key={index}>{`${info.label}:`}</Typography>
+                      )
+                    )}
+                </div>
+                <div className={classes.informationData}>
+                  {information &&
+                    information.map(
+                      (info: EntityCardDetails, index: number) => (
+                        <Typography key={index}>
+                          {info.content && info.content}
+                        </Typography>
+                      )
+                    )}
+                </div>
+              </div>
+            )}
+
+            {/* TODO: Add correct spacing when only divider and buttons are present (no information). */}
+            {/* TODO: Button should be located more centrally (positioned in the middle) if there is no information.  */}
+            {buttons && (
+              // TODO: Adjust the paddingTop/padding to find the right with buttons and information (with and without each other).
+              <div style={{ padding: '10px', textAlign: 'center' }}>
+                {buttons.map((button, index) => (
+                  <div style={{ paddingTop: '10px' }} key={index}>
+                    {button}
+                  </div>
                 ))}
               </div>
-            </div>
-          )}
-        </div>
-
-        {/* TODO: Divider is optional based on if there is further information/buttons. */}
-        {(furtherInformation || buttons) && (
-          <Divider orientation={'vertical'} />
-        )}
-
-        {/* TODO: Support ArrowTooltip for furtherInformation to shorten large text. */}
-        <div>
-          {furtherInformation && (
-            <div className={classes.further}>
-              <div className={classes.furtherLabel}>
-                {furtherInformation &&
-                  furtherInformation.map(
-                    (info: EntityCardDetails, index: number) => (
-                      <Typography key={index}>{`${info.label}:`}</Typography>
-                    )
-                  )}
-              </div>
-              <div className={classes.furtherData}>
-                {furtherInformation &&
-                  furtherInformation.map(
-                    (info: EntityCardDetails, index: number) => (
-                      <Typography key={index}>
-                        {info.content && info.content}
-                      </Typography>
-                    )
-                  )}
-              </div>
-            </div>
-          )}
-
-          {/* TODO: Retrievable items */}
-          <div className={classes.retrievable}>
-            <ExpansionPanel square elevation={1} variant="outlined">
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>More Information</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography>Test</Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
+            )}
           </div>
-
-          {/* TODO: Add correct spacing when only divider and buttons are present (no further information). */}
-          {/* TODO: Button should be located more centrally (positioned in the middle) if there is no further information.  */}
-          {buttons && (
-            // TODO: Adjust the paddingTop/padding to find the right with buttons and further information (with and without each other).
-            <div style={{ padding: '10px', textAlign: 'center' }}>
-              {buttons.map((button, index) => (
-                <div style={{ paddingTop: '10px' }} key={index}>
-                  {button}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
+
+        {/* More information */}
+        {moreInformation && (
+          <div style={{ paddingTop: '10px' }}>
+            <Divider />
+
+            <div className={classes.moreInformation}>
+              <ExpansionPanel
+                square
+                elevation={1}
+                variant="outlined"
+                expanded={isMoreInfoCollapsed}
+                onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
+              >
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography>More Information</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                  {/* Only render if the expansion panel has been collapsed */}
+                  {isMoreInfoCollapsed && moreInformation}
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

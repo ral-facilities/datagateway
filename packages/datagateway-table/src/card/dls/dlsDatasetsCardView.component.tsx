@@ -132,7 +132,7 @@ const DLSDatasetsCardView = (
           ),
       }}
       description={{ dataKey: 'DESCRIPTION' }}
-      furtherInformation={[
+      information={[
         {
           label: 'Datafile Count',
           dataKey: 'DATAFILE_COUNT',

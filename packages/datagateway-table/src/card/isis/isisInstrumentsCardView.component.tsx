@@ -80,7 +80,7 @@ const ISISInstrumentsCardView = (
           ),
       }}
       description={{ dataKey: 'DESCRIPTION' }}
-      furtherInformation={[
+      information={[
         {
           label: 'Type',
           dataKey: 'TYPE',

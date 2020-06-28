@@ -101,7 +101,7 @@ const DLSVisitsCardView = (
           ),
       }}
       description={{ dataKey: 'SUMMARY' }}
-      furtherInformation={[
+      information={[
         {
           label: 'Beamline',
           dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME',

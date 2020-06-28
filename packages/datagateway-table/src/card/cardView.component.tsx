@@ -82,12 +82,13 @@ interface CardViewProps {
   // represented by data.
   title: CardViewDetails;
   description?: CardViewDetails;
-  furtherInformation?: CardViewDetails[];
+  information?: CardViewDetails[];
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  moreInformation?: (data?: any) => React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttons?: ((data?: any) => React.ReactNode)[];
 
-  // TODO: Provide filtering options (array of dataKeys?).
   cardFilters?: { label: string; dataKey: string; filterItems: string[] }[];
   image?: EntityImageDetails;
 }
@@ -151,7 +152,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   } = props;
 
   // Get card information.
-  const { title, description, furtherInformation, image } = props;
+  const { title, description, information, moreInformation, image } = props;
 
   // Card data.
   const [viewData, setViewData] = React.useState<Entity[]>([]);
@@ -511,7 +512,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
             <List>
               {/* TODO: The width of the card should take up more room when 
-                        there is no further information or buttons. */}
+                        there is no information or buttons. */}
               {viewData.map((data, index) => {
                 return (
                   <ListItem
@@ -529,9 +530,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       description={
                         description && nestedValue(data, description.dataKey)
                       }
-                      furtherInformation={
-                        furtherInformation &&
-                        furtherInformation
+                      information={
+                        information &&
+                        information
                           .map(details => ({
                             // TODO: Create a separate type just for details label?
                             //       We can say the data key is the label if not defined.
@@ -545,7 +546,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           // Filter afterwards to only show content with information.
                           .filter(v => v.content)
                       }
-                      image={image}
+                      moreInformation={moreInformation && moreInformation(data)}
                       // Pass in the react nodes with the data to the card.
                       buttons={buttons && buttons.map(button => button(data))}
                       // Pass tag names to the card given the specified data key for the filter.
@@ -553,6 +554,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                         cardFilters &&
                         cardFilters.map(f => nestedValue(data, f.dataKey))
                       }
+                      image={image}
                     />
                   </ListItem>
                 );

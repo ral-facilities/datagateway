@@ -23,6 +23,7 @@ import {
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
 import { IndexRange } from 'react-virtualized';
+import InvestigationDetailsPanel from '../../table/isis/detailsPanels/investigationDetailsPanel.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsCardViewProps {
@@ -67,6 +68,7 @@ const ISISInvestigationsCardView = (
     cartItems,
     fetchData,
     fetchCount,
+    fetchDetails,
     addToCart,
     removeFromCart,
     view,
@@ -129,9 +131,7 @@ const ISISInvestigationsCardView = (
           ),
       }}
       description={{ dataKey: 'SUMMARY' }}
-      furtherInformation={[
-        // TODO: Do Visit Id and RB Number need links
-        //       to the same dataset as the title?
+      information={[
         {
           label: 'Visit Id',
           dataKey: 'VISIT_ID',
@@ -140,7 +140,6 @@ const ISISInvestigationsCardView = (
           label: 'RB Number',
           dataKey: 'NAME',
         },
-        // TODO: Change behaviour to not show label cases where content returns nothing?
         {
           label: 'DOI',
           dataKey: 'STUDYINVESTIGATION[0].STUDY.PID',
@@ -151,6 +150,7 @@ const ISISInvestigationsCardView = (
           content: (investigation: Investigation) =>
             formatBytes(investigation.SIZE),
         },
+        // TODO: Needs tooltip to handle overflowing text.
         // {
         //   label: 'Instrument',
         //   dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
@@ -164,6 +164,12 @@ const ISISInvestigationsCardView = (
           dataKey: 'ENDDATE',
         },
       ]}
+      moreInformation={(investigation: Investigation) => (
+        <InvestigationDetailsPanel
+          rowData={investigation}
+          fetchDetails={fetchDetails}
+        />
+      )}
       buttons={[
         function cartButton(investigation: Investigation) {
           return !(

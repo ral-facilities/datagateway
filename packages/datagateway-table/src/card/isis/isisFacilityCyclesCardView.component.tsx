@@ -72,7 +72,7 @@ const ISISFacilityCyclesCardView = (
           ),
       }}
       description={{ dataKey: 'DESCRIPTION' }}
-      furtherInformation={[
+      information={[
         {
           label: 'Start Date',
           dataKey: 'STARTDATE',

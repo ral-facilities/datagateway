@@ -96,7 +96,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
         },
       }}
       description={{ dataKey: 'DESCRIPTION' }}
-      furtherInformation={[
+      information={[
         {
           label: 'Datafile Count',
           dataKey: 'DATAFILE_COUNT',
