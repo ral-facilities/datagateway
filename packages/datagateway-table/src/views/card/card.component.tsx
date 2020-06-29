@@ -24,6 +24,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
   const styles = createStyles({
     root: {
       display: 'flex',
+      // flexDirection: 'row',
       maxWidth: 1000,
       backgroundColor: theme.palette.background.paper,
     },
@@ -35,6 +36,11 @@ const useCardStyles = makeStyles((theme: Theme) => {
     },
 
     content: {
+      display: 'flex',
+      flexDirection: 'column', // row
+    },
+
+    highlight: {
       display: 'flex',
       flexDirection: 'row',
     },
@@ -198,19 +204,18 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
       {/* TODO: Card content needs to be a flexbox (as a row):
                 - has a card information area (split in horizontally - column) for title/description and tags
                 - has card details area which takes up smaller space */}
-      <CardContent>
-        <div className={classes.content}>
-          {/* row:
+      <CardContent className={classes.content}>
+        {/* row:
               - main information; title and description (optional)
               - information (optional and custom)
               - more information (optional and custom)
               - buttons (custom)
         */}
+        <div className={classes.highlight}>
           <div className={classes.main}>
             {/* column:
-                - title/description
-                - tags  
-          */}
+                - title/description 
+            */}
             <div>
               {/* TODO: Delay not consistent between cards? */}
               <ArrowTooltip
@@ -275,24 +280,13 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 )}
               </div>
             </div>
-
-            {/* TODO: Place paddingTop inline styles in createStyles. */}
-            {tags && (
-              <div className={classes.tags}>
-                <Divider />
-
-                {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
-                <div style={{ paddingTop: '10px' }}>
-                  {tags.map((v, i) => (
-                    <Chip key={i} className={classes.chip} label={v} />
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* TODO: Divider is optional based on if there is information/buttons. */}
-          {(information || buttons) && <Divider orientation={'vertical'} />}
+          {(information || buttons) && (
+            // TODO: Set flexItem to true to allow it to show when flex direction is column for content.
+            <Divider flexItem={true} orientation={'vertical'} />
+          )}
 
           {/* TODO: Support ArrowTooltip for information to shorten large text. */}
           <div>
@@ -355,6 +349,20 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   {isMoreInfoCollapsed && moreInformation}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
+            </div>
+          </div>
+        )}
+
+        {/* TODO: Place paddingTop inline styles in createStyles. */}
+        {tags && (
+          <div className={classes.tags}>
+            <Divider />
+
+            {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
+            <div style={{ paddingTop: '10px' }}>
+              {tags.map((v, i) => (
+                <Chip key={i} className={classes.chip} label={v} />
+              ))}
             </div>
           </div>
         )}

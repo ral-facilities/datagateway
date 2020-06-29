@@ -1,7 +1,6 @@
 import {
   Box,
   Chip,
-  CircularProgress,
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
@@ -16,6 +15,7 @@ import {
   Select,
   TextField,
   Typography,
+  LinearProgress,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -323,7 +323,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
   }, [totalDataCount]);
 
-  // TODO: If fetchPaginated is false, data will only be set to view data once.
   React.useEffect(() => {
     // TODO: Need to handle sort and search as well.
     // Reload the count on filter update.
@@ -333,16 +332,19 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
 
     if (!loading && dataCount > 0) {
-      // Calculate the maximum pages needed for pagination.
-      setNumPages(~~((dataCount + maxResults - 1) / maxResults));
-
-      // Calculate the start/end indexes for the data.
-      const startIndex = page * maxResults - (maxResults - 1) - 1;
-
-      // End index not incremented for slice method.
-      const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-
       if (!loadedData) {
+        // Calculate the maximum pages needed for pagination.
+        setNumPages(~~((dataCount + maxResults - 1) / maxResults));
+        console.log('num pages: ', numPages);
+
+        // Calculate the start/end indexes for the data.
+        const startIndex = page * maxResults - (maxResults - 1) - 1;
+        console.log('startIndex: ', startIndex);
+
+        // End index not incremented for slice method.
+        const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
+        console.log('stopIndex: ', stopIndex);
+
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
           // Clear data in the state before loading new data.
           clearData();
@@ -371,11 +373,24 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   return (
     <Grid container direction="column" alignItems="center">
       <Grid container direction="row" justify="center">
-        {/* TODO: Search bar */}
+        {loading && (
+          <Grid item xs={12}>
+            <LinearProgress color="secondary" />
+          </Grid>
+        )}
+        {/* TODO: Search bar; needs to be aligned correctly with the max results */}
         {/* TODO: Provide dropdown additional filters */}
-        <Grid item xs={10} style={{ paddingLeft: '700px' }}>
+        <Grid
+          item
+          xs={dataCount > 10 ? 10 : 12}
+          style={{ textAlign: 'center' }}
+        >
           <TextField
-            style={{ width: '500px' }}
+            style={
+              dataCount > 10
+                ? { width: '30vw', float: 'right', paddingRight: '20vw' }
+                : { width: '30vw' }
+            }
             label="Search Data"
             type="search"
             margin="normal"
@@ -391,28 +406,31 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         </Grid>
 
         {/* Maximum results selection */}
-        <Grid item xs style={{ paddingTop: '10px' }}>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="select-max-results-label">Max Results</InputLabel>
-            <Select
-              labelId="select-max-results-label"
-              id="select-max-results"
-              value={maxResults}
-              onChange={e => {
-                setMaxResults(e.target.value as number);
-                pushResults(e.target.value as number);
-                setLoadedData(false);
-              }}
-              // Disable if the number of data is smaller than the
-              // smallest amount of results to display (10).
-              disabled={dataCount <= 10}
-            >
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={30}>30</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+        {/* TODO: Do not show if the dataCount is smaller the smallest option. */}
+        {dataCount > 10 && (
+          <Grid item xs style={{ paddingTop: '10px' }}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="select-max-results-label">Max Results</InputLabel>
+              <Select
+                labelId="select-max-results-label"
+                id="select-max-results"
+                value={maxResults}
+                onChange={e => {
+                  setMaxResults(e.target.value as number);
+                  pushResults(e.target.value as number);
+                  setLoadedData(false);
+                }}
+                // Disable if the number of data is smaller than the
+                // smallest amount of results to display (10) or the smallest amount available.
+                disabled={dataCount <= 10}
+              >
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={30}>30</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
       </Grid>
 
       <Grid
@@ -422,10 +440,12 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         alignItems="flex-start"
         spacing={10}
         xs={12}
+        // TODO: Define in card view styles.
+        style={{ paddingTop: '5vh' }}
       >
         {/* Filtering options */}
-        <Grid item xs={3}>
-          {cardFilters && (
+        {cardFilters && (
+          <Grid item xs={3}>
             <Paper>
               <Grid
                 item
@@ -484,88 +504,94 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 </Box>
               </Grid>
             </Paper>
-          )}
-        </Grid>
+          </Grid>
+        )}
 
         {/* Card data */}
-        {loadedData ? (
-          <Grid item xs>
-            {/* Selected filters array */}
-            {selectedFilters.length > 0 && (
-              <Paper component="ul" className={classes.selectedChips}>
-                {selectedFilters.map((filter, filterIndex) => (
-                  <li key={filterIndex}>
-                    {filter.items.map((item, itemIndex) => (
-                      <Chip
-                        key={itemIndex}
-                        className={classes.chip}
-                        label={`${filter.label} - ${item}`}
-                        onDelete={() => {
-                          changeFilter(filter.filterKey, item, true);
-                        }}
-                      />
-                    ))}
-                  </li>
-                ))}
-              </Paper>
-            )}
-
-            <List>
-              {/* TODO: The width of the card should take up more room when 
-                        there is no information or buttons. */}
-              {viewData.map((data, index) => {
-                return (
-                  <ListItem
-                    key={index}
-                    alignItems="flex-start"
-                    className={classes.root}
-                  >
-                    {/* Create an individual card */}
-                    <EntityCard
-                      title={{
-                        // TODO: Is this the best way to handle label/dataKey?
-                        label: nestedValue(data, title.dataKey),
-                        content: title.content && title.content(data),
+        {/* {!loading ? ( */}
+        <Grid item xs>
+          {/* Selected filters array */}
+          {selectedFilters.length > 0 && (
+            <Paper component="ul" className={classes.selectedChips}>
+              {selectedFilters.map((filter, filterIndex) => (
+                <li key={filterIndex}>
+                  {filter.items.map((item, itemIndex) => (
+                    <Chip
+                      key={itemIndex}
+                      className={classes.chip}
+                      label={`${filter.label} - ${item}`}
+                      onDelete={() => {
+                        changeFilter(filter.filterKey, item, true);
                       }}
-                      description={
-                        description && nestedValue(data, description.dataKey)
-                      }
-                      information={
-                        information &&
-                        information
-                          .map(details => ({
-                            // TODO: Create a separate type just for details label?
-                            //       We can say the data key is the label if not defined.
-                            label: details.label
-                              ? details.label
-                              : details.dataKey,
-                            content: details.content
-                              ? details.content(data)
-                              : nestedValue(data, details.dataKey),
-                          }))
-                          // Filter afterwards to only show content with information.
-                          .filter(v => v.content)
-                      }
-                      moreInformation={moreInformation && moreInformation(data)}
-                      // Pass in the react nodes with the data to the card.
-                      buttons={buttons && buttons.map(button => button(data))}
-                      // Pass tag names to the card given the specified data key for the filter.
-                      tags={
-                        cardFilters &&
-                        cardFilters.map(f => nestedValue(data, f.dataKey))
-                      }
-                      image={image}
                     />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </Grid>
-        ) : (
+                  ))}
+                </li>
+              ))}
+            </Paper>
+          )}
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justify="center"
+          ></Grid>
+
+          <List>
+            {/* TODO: The width of the card should take up more room when 
+                        there is no information or buttons. */}
+            {viewData.map((data, index) => {
+              return (
+                <ListItem
+                  key={index}
+                  alignItems="flex-start"
+                  className={classes.root}
+                >
+                  {/* Create an individual card */}
+                  <EntityCard
+                    title={{
+                      // TODO: Is this the best way to handle label/dataKey?
+                      label: nestedValue(data, title.dataKey),
+                      content: title.content && title.content(data),
+                    }}
+                    description={
+                      description && nestedValue(data, description.dataKey)
+                    }
+                    information={
+                      information &&
+                      information
+                        .map(details => ({
+                          // TODO: Create a separate type just for details label?
+                          //       We can say the data key is the label if not defined.
+                          label: details.label
+                            ? details.label
+                            : details.dataKey,
+                          content: details.content
+                            ? details.content(data)
+                            : nestedValue(data, details.dataKey),
+                        }))
+                        // Filter afterwards to only show content with information.
+                        .filter(v => v.content)
+                    }
+                    moreInformation={moreInformation && moreInformation(data)}
+                    // Pass in the react nodes with the data to the card.
+                    buttons={buttons && buttons.map(button => button(data))}
+                    // Pass tag names to the card given the specified data key for the filter.
+                    tags={
+                      cardFilters &&
+                      cardFilters.map(f => nestedValue(data, f.dataKey))
+                    }
+                    image={image}
+                  />
+                </ListItem>
+              );
+            })}
+          </List>
+        </Grid>
+        {/* ) : (
           <Grid item xs>
             <CircularProgress size={50} />
           </Grid>
-        )}
+        )} */}
       </Grid>
 
       {/* Pagination  */}

@@ -4,14 +4,14 @@ import { Typography, Tabs, Tab } from '@material-ui/core';
 
 interface DatafileDetailsPanelProps {
   rowData: Entity;
-  detailsPanelResize: () => void;
   fetchDetails: (datafileId: number) => Promise<void>;
+  detailsPanelResize: () => void;
 }
 
 const DatafileDetailsPanel = (
   props: DatafileDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails } = props;
+  const { rowData, fetchDetails, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'parameters'>('details');
 
   const datafileData = rowData as Datafile;
