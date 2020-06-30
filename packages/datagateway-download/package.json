@@ -18,7 +18,7 @@
     "react-dom": "^16.11.0",
     "react-scripts": "3.4.1",
     "react-virtualized": "^9.21.1",
-    "single-spa-react": "^2.10.2",
+    "single-spa-react": "^3.0.0",
     "typescript": "3.9.5"
   },
   "devDependencies": {
