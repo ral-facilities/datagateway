@@ -16,8 +16,9 @@ import {
   fetchDatasetCount,
   fetchAllIds,
   sortTable,
-  filterTable,
   clearTable,
+  pushPageFilter,
+  DateFilter,
 } from 'datagateway-common';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
@@ -48,7 +49,8 @@ interface DatasetTableStoreProps {
 
 interface DatasetTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (
     investigationId: number,
     offsetParams: IndexRange
@@ -73,7 +75,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     investigationId,
     cartItems,
     addToCart,
@@ -109,15 +112,19 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
@@ -186,8 +193,10 @@ const mapDispatchToProps = (
 ): DatasetTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
     dispatch(fetchDatasets({ investigationId, offsetParams })),
   fetchCount: (investigationId: number) =>
