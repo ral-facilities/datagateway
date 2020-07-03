@@ -91,7 +91,7 @@ const DLSProposalsTable = (
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `/browse/proposal/${investigationData.NAME}/investigation/`,
+              `/browse/proposal/${investigationData.NAME}/investigation`,
               investigationData.TITLE
             );
           },
