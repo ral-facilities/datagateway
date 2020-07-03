@@ -240,11 +240,11 @@ export const EntityTypes: string[] = [
 
 // TODO: type this properly
 // TODO: Do we need number[]?
-export type Filter =
-  | string
-  | string[]
-  | number
-  | { startDate?: string; endDate?: string };
+export interface DateFilter {
+  startDate?: string;
+  endDate?: string;
+}
+export type Filter = string | string[] | number | DateFilter;
 
 export type Order = 'asc' | 'desc';
 

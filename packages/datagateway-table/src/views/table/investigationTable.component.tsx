@@ -18,6 +18,7 @@ import {
   sortTable,
   clearTable,
   pushPageFilter,
+  DateFilter,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
@@ -102,6 +103,7 @@ const InvestigationTable = (
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
         // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
