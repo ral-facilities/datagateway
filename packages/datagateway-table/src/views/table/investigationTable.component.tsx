@@ -16,8 +16,8 @@ import {
   fetchInvestigationCount,
   fetchAllIds,
   sortTable,
-  filterTable,
   clearTable,
+  pushPageFilter,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
@@ -43,7 +43,8 @@ interface InvestigationTableProps {
 
 interface InvestigationTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
@@ -67,7 +68,8 @@ const InvestigationTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     cartItems,
     addToCart,
     removeFromCart,
@@ -91,7 +93,9 @@ const InvestigationTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
@@ -99,7 +103,8 @@ const InvestigationTable = (
     <DateColumnFilter
       label={label}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
@@ -208,8 +213,10 @@ const mapDispatchToProps = (
 ): InvestigationTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),

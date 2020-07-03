@@ -226,7 +226,8 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     downloading: false,
     error: null,
     sort: {},
-    filters: {},
+    // TODO: Disabled as we clear filters on load URL query.
+    // filters: {},
   };
 }
 

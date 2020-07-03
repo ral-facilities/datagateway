@@ -41,7 +41,6 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: theme.palette.background.paper,
-      // margin: '10px',
     },
     formControl: {
       margin: theme.spacing(1),
@@ -53,7 +52,6 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
       flexWrap: 'wrap',
       listStyle: 'none',
       padding: theme.spacing(1),
-      // margin: '15px',
     },
     chip: {
       margin: theme.spacing(0.5),
@@ -69,6 +67,8 @@ interface CardViewDetails {
   label?: string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   content?: (data?: any) => React.ReactNode;
+
+  filterComponent?: (label: string, dataKey: string) => React.ReactElement;
 }
 
 interface CardViewProps {

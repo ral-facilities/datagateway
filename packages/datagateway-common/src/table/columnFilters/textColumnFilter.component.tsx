@@ -3,16 +3,17 @@ import { Input } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 
 export default class TextColumnFilter extends React.Component<
-  { label: string; onChange: (value: string) => void },
+  { label: string; onChange: (value: string) => void; value?: string },
   { value: string }
 > {
   public constructor(props: {
     label: string;
     onChange: (value: string) => void;
+    value?: string;
   }) {
     super(props);
     this.state = {
-      value: '',
+      value: this.props.value ? this.props.value : '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.updateValue = this.updateValue.bind(this);
