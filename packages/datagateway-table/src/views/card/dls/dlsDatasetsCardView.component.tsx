@@ -12,7 +12,6 @@ import {
   Dataset,
   tableLink,
   fetchFilter,
-  // formatBytes,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import {

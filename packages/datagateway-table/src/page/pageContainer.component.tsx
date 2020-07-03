@@ -8,6 +8,7 @@ import {
   Paper,
   Switch,
   FormControlLabel,
+  LinearProgress,
 } from '@material-ui/core';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
@@ -35,6 +36,7 @@ interface PageContainerProps {
   path: string;
   query: QueryParams;
   savedView: SavedView;
+  loading: boolean;
 }
 
 type PageContainerCombinedProps = PageContainerProps &
@@ -197,6 +199,13 @@ class PageContainer extends React.Component<
           />
         </Grid>
 
+        {/* TODO: Show loading progress if data is still being loaded */}
+        {this.state.toggleCard && this.props.loading && (
+          <Grid item xs={12}>
+            <LinearProgress color="secondary" />
+          </Grid>
+        )}
+
         {/* Hold the table for remainder of the page */}
         <Grid item xs={12} aria-label="container-table">
           {!this.state.toggleCard ? (
@@ -224,6 +233,7 @@ const mapStateToProps = (state: StateType): PageContainerProps => ({
   path: state.router.location.pathname,
   query: state.dgcommon.query,
   savedView: state.dgcommon.savedView,
+  loading: state.dgcommon.loading,
 });
 
 const mapDispatchToProps = (

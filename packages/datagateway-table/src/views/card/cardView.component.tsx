@@ -15,7 +15,6 @@ import {
   Select,
   TextField,
   Typography,
-  LinearProgress,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -281,6 +280,16 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
   };
 
+  const changePage = React.useCallback(
+    (pageNumber: number): void => {
+      setPage(pageNumber);
+      pushPage(pageNumber);
+      setPageChange(true);
+      setLoadedData(false);
+    },
+    [pushPage]
+  );
+
   React.useEffect(() => {
     // console.log('Page number (page): ', page);
     // console.log('Current pageNum (query): ', query.page);
@@ -296,6 +305,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         //       then default the initial page (we treat this as the initial page load).
         setPage(1);
       }
+    } else {
+      // TODO: Manually scroll to top of the page as the pagination click isn't doing so.
+      window.scrollTo(0, 0);
     }
 
     // Ensure the max results change according to the query parameter.
@@ -327,6 +339,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     // TODO: Need to handle sort and search as well.
     // Reload the count on filter update.
     if (!loading && filterChange) {
+      // Set page to 1 if there was a filter change.
+      changePage(1);
       loadCount();
       setFilterChange(false);
     }
@@ -368,16 +382,12 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     clearData,
     loading,
     filterChange,
+    changePage,
   ]);
 
   return (
     <Grid container direction="column" alignItems="center">
       <Grid container direction="row" justify="center">
-        {loading && (
-          <Grid item xs={12}>
-            <LinearProgress color="secondary" />
-          </Grid>
-        )}
         {/* TODO: Search bar; needs to be aligned correctly with the max results */}
         {/* TODO: Provide dropdown additional filters */}
         <Grid
@@ -508,7 +518,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         )}
 
         {/* Card data */}
-        {/* {!loading ? ( */}
         <Grid item xs>
           {/* Selected filters array */}
           {selectedFilters.length > 0 && (
@@ -587,11 +596,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             })}
           </List>
         </Grid>
-        {/* ) : (
-          <Grid item xs>
-            <CircularProgress size={50} />
-          </Grid>
-        )} */}
       </Grid>
 
       {/* Pagination  */}
@@ -606,10 +610,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             onChange={(e, p) => {
               // If we are not clicking on the same page.
               if (p !== page) {
-                setPage(p);
-                pushPage(p);
-                setPageChange(true);
-                setLoadedData(false);
+                changePage(p);
               }
             }}
             showFirstButton
