@@ -41,7 +41,7 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: theme.palette.background.paper,
-      margin: '10px',
+      // margin: '10px',
     },
     formControl: {
       margin: theme.spacing(1),
@@ -52,8 +52,8 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       flexWrap: 'wrap',
       listStyle: 'none',
-      padding: theme.spacing(0.5),
-      margin: 0,
+      padding: theme.spacing(1),
+      // margin: '15px',
     },
     chip: {
       margin: theme.spacing(0.5),
@@ -521,7 +521,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         <Grid item xs>
           {/* Selected filters array */}
           {selectedFilters.length > 0 && (
-            <Paper component="ul" className={classes.selectedChips}>
+            <div className={classes.selectedChips}>
               {selectedFilters.map((filter, filterIndex) => (
                 <li key={filterIndex}>
                   {filter.items.map((item, itemIndex) => (
@@ -536,15 +536,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   ))}
                 </li>
               ))}
-            </Paper>
+            </div>
           )}
-          <Grid
-            container
-            direction="column"
-            alignItems="center"
-            justify="center"
-          ></Grid>
 
+          {/* List of cards */}
           <List>
             {/* TODO: The width of the card should take up more room when 
                         there is no information or buttons. */}

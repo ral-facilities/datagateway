@@ -24,7 +24,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
   const styles = createStyles({
     root: {
       display: 'flex',
-      // flexDirection: 'row',
       maxWidth: 1000,
       backgroundColor: theme.palette.background.paper,
     },
@@ -35,10 +34,10 @@ const useCardStyles = makeStyles((theme: Theme) => {
       height: 150,
     },
 
-    content: {
-      display: 'flex',
-      flexDirection: 'column', // row
-    },
+    // content: {
+    //   display: 'flex',
+    //   flexDirection: 'column', // row
+    // },
 
     highlight: {
       display: 'flex',
@@ -119,7 +118,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
 
     moreInformation: {
       paddingTop: '10px',
-      // paddingLeft: '15px',
     },
 
     tags: {
@@ -204,7 +202,8 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
       {/* TODO: Card content needs to be a flexbox (as a row):
                 - has a card information area (split in horizontally - column) for title/description and tags
                 - has card details area which takes up smaller space */}
-      <CardContent className={classes.content}>
+      {/* className={classes.content} */}
+      <CardContent>
         {/* row:
               - main information; title and description (optional)
               - information (optional and custom)
