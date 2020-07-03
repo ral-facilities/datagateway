@@ -102,7 +102,7 @@ const DLSProposalsTable = (
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             return tableLink(
-              `/browse/proposal/${props.rowData.NAME}/investigation/`,
+              `/browse/proposal/${props.rowData.NAME}/investigation`,
               props.rowData.NAME
             );
           },
