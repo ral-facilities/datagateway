@@ -10,6 +10,7 @@ import {
   fetchDatasetDetails,
   fetchDatasets,
   Filter,
+  FiltersType,
   Order,
   pushPageFilter,
   removeFromCart,
@@ -36,9 +37,7 @@ interface DLSDatasetsTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

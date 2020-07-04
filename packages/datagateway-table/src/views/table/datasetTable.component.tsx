@@ -1,31 +1,31 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
 import {
+  addToCart,
+  clearTable,
+  Dataset,
+  datasetLink,
+  DateColumnFilter,
+  DateFilter,
+  DownloadCartItem,
+  Entity,
+  fetchAllIds,
+  fetchDatasetCount,
+  fetchDatasets,
+  Filter,
+  FiltersType,
+  Order,
+  pushPageFilter,
+  removeFromCart,
+  sortTable,
   Table,
   TextColumnFilter,
-  DateColumnFilter,
-  datasetLink,
-  Order,
-  Filter,
-  Dataset,
-  Entity,
-  DownloadCartItem,
-  fetchDatasets,
-  addToCart,
-  removeFromCart,
-  fetchDatasetCount,
-  fetchAllIds,
-  sortTable,
-  clearTable,
-  pushPageFilter,
-  DateFilter,
 } from 'datagateway-common';
-import { AnyAction } from 'redux';
-import { StateType } from '../../state/app.types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../state/app.types';
 import useAfterMountEffect from '../../utils';
 
 interface DatasetTableProps {
@@ -36,9 +36,7 @@ interface DatasetTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

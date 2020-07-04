@@ -5,6 +5,7 @@ import {
   fetchInstrumentDetails,
   fetchInstruments,
   Filter,
+  FiltersType,
   Instrument,
   Order,
   pushPageFilter,
@@ -27,9 +28,7 @@ interface ISISInstrumentsTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

@@ -23,11 +23,12 @@ import { Pagination } from '@material-ui/lab';
 import {
   clearData,
   Entity,
+  Filter,
+  FiltersType,
   nestedValue,
   pushPageFilter,
   pushPageNum,
   pushPageResults,
-  Filter,
 } from 'datagateway-common';
 import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
@@ -95,9 +96,7 @@ interface CardViewProps {
 interface CardViewStateProps {
   loading: boolean;
   query: QueryParams;
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
 }
 
 interface CardViewDispatchProps {

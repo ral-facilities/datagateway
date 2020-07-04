@@ -1,39 +1,38 @@
-import React from 'react';
 import { Typography } from '@material-ui/core';
 import {
-  Table,
-  TextColumnFilter,
+  addToCart,
+  clearTable,
   DateColumnFilter,
+  DateFilter,
+  DownloadCartItem,
+  Entity,
+  fetchAllIds,
+  fetchInvestigationCount,
+  fetchInvestigations,
+  Filter,
+  FiltersType,
+  Investigation,
   investigationLink,
   Order,
-  Filter,
-  Investigation,
-  Entity,
-  DownloadCartItem,
-  fetchInvestigations,
-  addToCart,
-  removeFromCart,
-  fetchInvestigationCount,
-  fetchAllIds,
-  sortTable,
-  clearTable,
   pushPageFilter,
-  DateFilter,
+  removeFromCart,
+  sortTable,
+  Table,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { StateType } from '../../state/app.types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../state/app.types';
 import useAfterMountEffect from '../../utils';
 
 interface InvestigationTableProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

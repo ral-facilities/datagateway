@@ -10,6 +10,7 @@ import {
   fetchISISInvestigationCount,
   fetchISISInvestigations,
   Filter,
+  FiltersType,
   formatBytes,
   Investigation,
   Order,
@@ -40,9 +41,7 @@ interface ISISInvestigationsTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

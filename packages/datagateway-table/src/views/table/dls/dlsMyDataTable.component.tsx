@@ -7,6 +7,7 @@ import {
   fetchInvestigationDetails,
   fetchInvestigations,
   Filter,
+  FiltersType,
   Investigation,
   Order,
   pushPageFilter,
@@ -29,9 +30,7 @@ interface DLSMyDataTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

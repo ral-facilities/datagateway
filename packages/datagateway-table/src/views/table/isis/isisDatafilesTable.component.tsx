@@ -14,6 +14,7 @@ import {
   fetchDatafileDetails,
   fetchDatafiles,
   Filter,
+  FiltersType,
   formatBytes,
   Order,
   pushPageFilter,
@@ -42,9 +43,7 @@ interface ISISDatafilesTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

@@ -1,33 +1,34 @@
-import React from 'react';
-import { Typography, IconButton } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
+import { GetApp } from '@material-ui/icons';
 import {
+  addToCart,
+  clearTable,
+  Datafile,
+  DateColumnFilter,
+  DateFilter,
+  DownloadCartItem,
+  downloadDatafile,
+  Entity,
+  fetchAllIds,
+  fetchDatafileCount,
+  fetchDatafiles,
+  Filter,
+  FiltersType,
+  formatBytes,
+  Order,
+  pushPageFilter,
+  removeFromCart,
+  sortTable,
   Table,
   TableActionProps,
-  formatBytes,
   TextColumnFilter,
-  DateColumnFilter,
-  Order,
-  Filter,
-  Datafile,
-  Entity,
-  DownloadCartItem,
-  fetchDatafiles,
-  downloadDatafile,
-  fetchDatafileCount,
-  addToCart,
-  removeFromCart,
-  fetchAllIds,
-  sortTable,
-  clearTable,
-  pushPageFilter,
-  DateFilter,
 } from 'datagateway-common';
-import { GetApp } from '@material-ui/icons';
-import { ThunkDispatch } from 'redux-thunk';
+import React from 'react';
 import { connect } from 'react-redux';
-import { StateType } from '../../state/app.types';
-import { Action, AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../state/app.types';
 import useAfterMountEffect from '../../utils';
 
 interface DatafileTableProps {
@@ -38,9 +39,7 @@ interface DatafileTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

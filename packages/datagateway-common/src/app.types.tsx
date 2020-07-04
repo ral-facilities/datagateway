@@ -248,7 +248,6 @@ export type Filter = string | string[] | number | DateFilter;
 
 export type Order = 'asc' | 'desc';
 
-// TODO: Replace this in all files.
 export interface FiltersType {
   [column: string]: Filter;
 }

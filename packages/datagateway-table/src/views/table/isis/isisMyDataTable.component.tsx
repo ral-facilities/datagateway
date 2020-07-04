@@ -10,6 +10,7 @@ import {
   fetchInvestigationDetails,
   fetchInvestigations,
   Filter,
+  FiltersType,
   formatBytes,
   Investigation,
   Order,
@@ -35,9 +36,7 @@ interface ISISMyDataTableStoreProps {
   sort: {
     [column: string]: Order;
   };
-  filters: {
-    [column: string]: Filter;
-  };
+  filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;

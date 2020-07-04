@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router';
 import { Action } from 'redux';
-import { Entity, Filter, Order, FiltersType } from '../../app.types';
+import { Entity, Filter, FiltersType, Order } from '../../app.types';
 import {
   ActionType,
   QueryParams,
@@ -10,6 +10,7 @@ import {
 } from '../app.types';
 import {
   ClearDataType,
+  ClearFiltersType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -20,19 +21,18 @@ import {
   SaveViewPayload,
   SortTablePayload,
   SortTableType,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
   UpdatePagePayload,
   UpdatePageType,
   UpdateQueriesPayload,
-  UpdateSaveViewType,
+  UpdateQueriesType,
   UpdateResultsPayload,
   UpdateResultsType,
+  UpdateSaveViewType,
   UpdateViewPayload,
   UpdateViewType,
   URLs,
-  UpdateFiltersPayload,
-  UpdateFiltersType,
-  UpdateQueriesType,
-  ClearFiltersType,
 } from './actions.types';
 
 export * from './cart';
@@ -42,8 +42,8 @@ export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
 
-// TODO: Get the nested value from an Entity object given a dataKey
-//       which drills specifies the property or array indexes.
+// Get the nested value from an Entity object given a dataKey
+// which drills specifies the property or array indexes.
 export const nestedValue = (data: Entity, dataKey: string): string => {
   const v = dataKey.split(/[.[\]]+/).reduce(function(prev, curr) {
     return prev ? prev[curr] : null;
