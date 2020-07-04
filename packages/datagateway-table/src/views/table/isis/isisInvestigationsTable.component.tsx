@@ -1,32 +1,33 @@
-import React from 'react';
 import {
-  TextColumnFilter,
+  addToCart,
+  clearTable,
+  DateColumnFilter,
+  DateFilter,
+  DownloadCartItem,
+  Entity,
+  fetchAllISISInvestigationIds,
+  fetchInvestigationDetails,
+  fetchISISInvestigationCount,
+  fetchISISInvestigations,
+  Filter,
+  formatBytes,
+  Investigation,
+  Order,
+  pushPageFilter,
+  removeFromCart,
+  sortTable,
   Table,
   tableLink,
-  Order,
-  Filter,
-  Entity,
-  Investigation,
-  DateColumnFilter,
-  DownloadCartItem,
-  formatBytes,
-  fetchInvestigationDetails,
-  fetchISISInvestigations,
-  fetchISISInvestigationCount,
-  addToCart,
-  removeFromCart,
-  fetchAllISISInvestigationIds,
-  sortTable,
-  filterTable,
-  clearTable,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { StateType } from '../../../state/app.types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
+import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsTableProps {
@@ -53,7 +54,8 @@ interface ISISInvestigationsTableStoreProps {
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (
     instrumentId: number,
     facilityCycleId: number,
@@ -83,7 +85,8 @@ const ISISInvestigationsTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     instrumentId,
     facilityCycleId,
     loading,
@@ -109,15 +112,19 @@ const ISISInvestigationsTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
@@ -262,8 +269,10 @@ const mapDispatchToProps = (
 ): ISISInvestigationsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (
     instrumentId: number,
     facilityCycleId: number,

@@ -1,33 +1,34 @@
-import React from 'react';
 import {
-  TextColumnFilter,
-  Table,
-  tableLink,
-  Order,
-  Filter,
-  Entity,
-  Investigation,
+  addToCart,
+  clearTable,
   DateColumnFilter,
+  DateFilter,
   DownloadCartItem,
-  formatBytes,
+  Entity,
+  fetchAllIds,
+  fetchInvestigationCount,
   fetchInvestigationDetails,
   fetchInvestigations,
-  fetchInvestigationCount,
-  addToCart,
+  Filter,
+  formatBytes,
+  Investigation,
+  Order,
+  pushPageFilter,
+  readSciGatewayToken,
   removeFromCart,
   sortTable,
-  filterTable,
-  clearTable,
-  fetchAllIds,
-  readSciGatewayToken,
+  Table,
+  tableLink,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { StateType } from '../../../state/app.types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
+import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISMyDataTableStoreProps {
@@ -48,7 +49,8 @@ interface ISISMyDataTableStoreProps {
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISMyDataTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (username: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (username: string) => Promise<void>;
   clearTable: () => Action;
@@ -73,7 +75,8 @@ const ISISMyDataTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     loading,
     cartItems,
     addToCart,
@@ -99,15 +102,19 @@ const ISISMyDataTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
@@ -276,8 +283,10 @@ const mapDispatchToProps = (
 ): ISISMyDataTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (username: string, offsetParams: IndexRange) =>
     dispatch(
       fetchInvestigations({

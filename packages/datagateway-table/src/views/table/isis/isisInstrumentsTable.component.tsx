@@ -1,26 +1,26 @@
-import React from 'react';
 import {
-  TextColumnFilter,
+  clearTable,
+  Entity,
+  fetchInstrumentCount,
+  fetchInstrumentDetails,
+  fetchInstruments,
+  Filter,
+  Instrument,
+  Order,
+  pushPageFilter,
+  sortTable,
   Table,
   tableLink,
-  Order,
-  Filter,
-  Entity,
-  Instrument,
-  sortTable,
-  filterTable,
-  fetchInstruments,
-  fetchInstrumentDetails,
-  fetchInstrumentCount,
-  clearTable,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { StateType } from '../../../state/app.types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
+import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInstrumentsTableStoreProps {
@@ -39,7 +39,8 @@ interface ISISInstrumentsTableStoreProps {
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInstrumentsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   clearTable: () => Action;
@@ -61,14 +62,17 @@ const ISISInstrumentsTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     loading,
   } = props;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
@@ -121,8 +125,10 @@ const mapDispatchToProps = (
 ): ISISInstrumentsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInstruments(offsetParams)),
   fetchCount: () => dispatch(fetchInstrumentCount()),
