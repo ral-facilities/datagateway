@@ -1,28 +1,29 @@
-import React from 'react';
 import {
-  TextColumnFilter,
-  Table,
-  tableLink,
-  Order,
+  clearTable,
+  DateColumnFilter,
+  DateFilter,
+  Entity,
+  fetchInvestigationCount,
+  fetchInvestigationDetails,
+  fetchInvestigations,
   Filter,
   Investigation,
-  Entity,
-  DateColumnFilter,
-  fetchInvestigations,
-  fetchInvestigationDetails,
-  fetchInvestigationCount,
-  sortTable,
-  filterTable,
-  clearTable,
+  Order,
+  pushPageFilter,
   readSciGatewayToken,
+  sortTable,
+  Table,
+  tableLink,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { StateType } from '../../../state/app.types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
+import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 interface DLSMyDataTableStoreProps {
   sort: {
@@ -39,7 +40,8 @@ interface DLSMyDataTableStoreProps {
 
 interface DLSMyDataTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (username: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (username: string) => Promise<void>;
   clearTable: () => Action;
@@ -61,7 +63,8 @@ const DLSMyDataTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     loading,
   } = props;
 
@@ -70,15 +73,19 @@ const DLSMyDataTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
@@ -86,10 +93,13 @@ const DLSMyDataTable = (
   React.useEffect(() => {
     clearTable();
     sortTable('STARTDATE', 'desc');
-    filterTable('STARTDATE', {
+    // filterTable('STARTDATE', {
+    //   endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
+    // });
+    pushFilters('STARTDATE', {
       endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
     });
-  }, [clearTable, sortTable, filterTable]);
+  }, [clearTable, sortTable, pushFilters]); // filterTable
 
   useAfterMountEffect(() => {
     fetchCount(username);
@@ -180,8 +190,10 @@ const mapDispatchToProps = (
 ): DLSMyDataTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (username: string, offsetParams: IndexRange) =>
     dispatch(
       fetchInvestigations({

@@ -1,29 +1,30 @@
-import React from 'react';
+import { Typography } from '@material-ui/core';
 import {
-  TextColumnFilter,
-  Table,
-  formatBytes,
-  Filter,
-  Order,
-  Entity,
+  addToCart,
+  clearTable,
   Datafile,
   DateColumnFilter,
+  DateFilter,
   DownloadCartItem,
-  fetchDatafiles,
-  fetchDatafileCount,
-  addToCart,
-  removeFromCart,
+  Entity,
   fetchAllIds,
+  fetchDatafileCount,
+  fetchDatafiles,
+  Filter,
+  formatBytes,
+  Order,
+  pushPageFilter,
+  removeFromCart,
   sortTable,
-  filterTable,
-  clearTable,
+  Table,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { Typography } from '@material-ui/core';
-import { ThunkDispatch } from 'redux-thunk';
+import React from 'react';
 import { connect } from 'react-redux';
-import { StateType } from '../../../state/app.types';
-import { Action, AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
 
 interface DLSDatafilesTableProps {
@@ -47,7 +48,8 @@ interface DLSDatafilesTableStoreProps {
 
 interface DLSDatafilesTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
   clearTable: () => Action;
@@ -72,7 +74,8 @@ const DLSDatafilesTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     datasetId,
     loading,
     cartItems,
@@ -107,19 +110,22 @@ const DLSDatafilesTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
-
   return (
     <Table
       loading={loading}
@@ -186,8 +192,10 @@ const mapDispatchToProps = (
 ): DLSDatafilesTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
     dispatch(fetchDatafiles(datasetId, offsetParams)),
   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),

@@ -1,27 +1,28 @@
-import React from 'react';
 import {
-  TextColumnFilter,
-  Table,
-  tableLink,
-  Order,
+  clearTable,
+  DateColumnFilter,
+  DateFilter,
+  Entity,
+  fetchInvestigationCount,
+  fetchInvestigationDetails,
+  fetchInvestigations,
   Filter,
   Investigation,
-  Entity,
-  DateColumnFilter,
-  fetchInvestigations,
-  fetchInvestigationDetails,
-  fetchInvestigationCount,
+  Order,
+  pushPageFilter,
   sortTable,
-  filterTable,
-  clearTable,
+  Table,
+  tableLink,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { StateType } from '../../../state/app.types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
+import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 interface DLSVisitsTableProps {
   proposalName: string;
@@ -42,7 +43,8 @@ interface DLSVisitsTableStoreProps {
 
 interface DLSVisitsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (proposalName: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (proposalName: string) => Promise<void>;
   clearTable: () => Action;
@@ -65,7 +67,8 @@ const DLSVisitsTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     proposalName,
     loading,
   } = props;
@@ -73,15 +76,19 @@ const DLSVisitsTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
@@ -167,8 +174,10 @@ const mapDispatchToProps = (
 ): DLSVisitsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (proposalName: string, offsetParams: IndexRange) =>
     dispatch(
       fetchInvestigations({

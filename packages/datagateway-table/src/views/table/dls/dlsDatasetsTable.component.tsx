@@ -1,32 +1,31 @@
-import React from 'react';
 import {
-  TextColumnFilter,
-  Table,
-  tableLink,
+  addToCart,
+  clearTable,
+  DateColumnFilter,
+  DateFilter,
+  DownloadCartItem,
+  Entity,
+  fetchAllIds,
+  fetchDatasetCount,
+  fetchDatasetDetails,
+  fetchDatasets,
   Filter,
   Order,
-  Entity,
-  DateColumnFilter,
-  DownloadCartItem,
-  sortTable,
-  filterTable,
-  fetchDatasets,
-  fetchDatasetDetails,
-  fetchDatasetCount,
-  addToCart,
+  pushPageFilter,
   removeFromCart,
-  fetchAllIds,
-  clearTable,
+  sortTable,
+  Table,
+  tableLink,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { AnyAction } from 'redux';
-import { StateType } from '../../../state/app.types';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from 'redux';
+import React from 'react';
 import { connect } from 'react-redux';
-import { TableCellProps } from 'react-virtualized';
-import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
-import { IndexRange } from 'react-virtualized';
+import { IndexRange, TableCellProps } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
+import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 
 interface DLSDatasetsTableProps {
   proposalName: string;
@@ -50,7 +49,8 @@ interface DLSDatasetsTableStoreProps {
 
 interface DLSDatasetsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (
     investigationId: number,
     offsetParams: IndexRange
@@ -79,7 +79,8 @@ const DLSDatasetsTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     investigationId,
     proposalName,
     loading,
@@ -115,15 +116,19 @@ const DLSDatasetsTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
   const dateFilter = (label: string, dataKey: string): React.ReactElement => (
     <DateColumnFilter
       label={label}
+      value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
       }
     />
   );
@@ -186,8 +191,10 @@ const mapDispatchToProps = (
 ): DLSDatasetsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
     dispatch(
       fetchDatasets({

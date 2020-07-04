@@ -1,23 +1,23 @@
-import React from 'react';
 import {
-  TextColumnFilter,
-  Table,
-  tableLink,
-  Order,
+  clearTable,
+  Entity,
+  fetchInvestigationCount,
+  fetchInvestigations,
   Filter,
   Investigation,
-  Entity,
-  fetchInvestigations,
-  fetchInvestigationCount,
+  Order,
+  pushPageFilter,
   sortTable,
-  filterTable,
-  clearTable,
+  Table,
+  tableLink,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { StateType } from '../../../state/app.types';
+import React from 'react';
 import { connect } from 'react-redux';
+import { IndexRange, TableCellProps } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
-import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../../state/app.types';
 import useAfterMountEffect from '../../../utils';
 
 interface DLSProposalsTableStoreProps {
@@ -35,7 +35,8 @@ interface DLSProposalsTableStoreProps {
 
 interface DLSProposalsTableDispatchProps {
   sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
+  // filterTable: (column: string, filter: Filter | null) => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   clearTable: () => Action;
@@ -55,7 +56,8 @@ const DLSProposalsTable = (
     sort,
     sortTable,
     filters,
-    filterTable,
+    // filterTable,
+    pushFilters,
     clearTable,
     loading,
   } = props;
@@ -63,7 +65,9 @@ const DLSProposalsTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
 
@@ -118,8 +122,10 @@ const mapDispatchToProps = (
 ): DLSProposalsTableDispatchProps => ({
   sortTable: (column: string, order: Order | null) =>
     dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
+  // filterTable: (column: string, filter: Filter | null) =>
+  //   dispatch(filterTable(column, filter)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
   fetchData: (offsetParams: IndexRange) =>
     dispatch(
       fetchInvestigations({
