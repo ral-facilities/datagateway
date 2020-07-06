@@ -15,8 +15,8 @@ import {
   investigationLink,
   Order,
   pushPageFilter,
+  pushPageSort,
   removeFromCart,
-  sortTable,
   Table,
   TextColumnFilter,
 } from 'datagateway-common';
@@ -42,7 +42,8 @@ interface InvestigationTableProps {
 }
 
 interface InvestigationTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
@@ -66,7 +67,8 @@ const InvestigationTable = (
     fetchCount,
     clearTable,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
@@ -127,7 +129,8 @@ const InvestigationTable = (
       loadMoreRows={fetchData}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
@@ -212,8 +215,10 @@ const InvestigationTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): InvestigationTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>

@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router';
 import { Action } from 'redux';
-import { Entity, Filter, FiltersType, Order } from '../../app.types';
+import { Entity, Filter, FiltersType, Order, SortType } from '../../app.types';
 import {
   ActionType,
   QueryParams,
@@ -11,6 +11,7 @@ import {
 import {
   ClearDataType,
   ClearFiltersType,
+  ClearSortType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -30,6 +31,8 @@ import {
   UpdateResultsPayload,
   UpdateResultsType,
   UpdateSaveViewType,
+  UpdateSortPayload,
+  UpdateSortType,
   UpdateViewPayload,
   UpdateViewType,
   URLs,
@@ -89,6 +92,10 @@ export const clearFilters = (): Action => ({
   type: ClearFiltersType,
 });
 
+export const clearSort = (): Action => ({
+  type: ClearSortType,
+});
+
 export const updateQueryParams = (
   queries: QueryParams
 ): ActionType<UpdateQueriesPayload> => ({
@@ -107,6 +114,13 @@ export const updateFilters = (
   },
 });
 
+export const updateSort = (sort: SortType): ActionType<UpdateSortPayload> => ({
+  type: UpdateSortType,
+  payload: {
+    sort,
+  },
+});
+
 export const loadURLQuery = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     // Get the URLSearchParams object from the search query.
@@ -117,10 +131,13 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     const page = query.get('page');
     const results = query.get('results');
     const filters = query.get('filters');
+    const sort = query.get('sort');
+
+    // TODO: Create one method to parse the filters/sort objects.
 
     // Parse filters in the query.
     let parsedFilters: FiltersType = {};
-    let parsed = false;
+    let isFiltersParsed = false;
     if (filters) {
       try {
         const fq: FiltersType = JSON.parse(filters);
@@ -132,19 +149,41 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
           if (Array.isArray(v)) {
             if (v.length > 0) {
               parsedFilters[f] = v;
+              console.log(`Added ${f} with values: ${v}`);
             }
           } else {
             parsedFilters[f] = v;
+            console.log(`Added ${f} with values: ${v}`);
           }
-          console.log(`Added ${f} with values: ${v}`);
         }
 
         // Ensure at least one filter has been added.
         if (Object.keys(parsedFilters).length > 0) {
-          parsed = true;
+          isFiltersParsed = true;
         }
       } catch (e) {
         console.error('Filter queries provided in an incorrect format.');
+      }
+    }
+
+    let parsedSort: SortType = {};
+    let isSortParsed = false;
+    if (sort) {
+      try {
+        const sq: SortType = JSON.parse(sort);
+        console.log('parsed sort: ', sq);
+
+        // Create the entries for sort.
+        for (const [s, v] of Object.entries(sq)) {
+          parsedSort[s] = v;
+          console.log(`Added ${s} with value: ${v}`);
+        }
+
+        if (Object.keys(parsedSort).length > 0) {
+          isSortParsed = true;
+        }
+      } catch (e) {
+        console.error('Sort queries provided in an incorrect format.');
       }
     }
 
@@ -158,14 +197,24 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     // Clear filters currently in state.
     dispatch(clearFilters());
 
+    // Clear sort currently in state.
+    dispatch(clearSort());
+
     // Update with the new query parameters.
     dispatch(updateQueryParams(params));
 
     // Dispatch and update the filter object in state.
-    console.log('Parsed filters: ', parsed);
+    console.log('Parsed filters: ', isFiltersParsed);
     console.log(parsedFilters);
-    if (parsed) {
+    if (isFiltersParsed) {
       dispatch(updateFilters(parsedFilters));
+    }
+
+    // Dispatch and update sort object in state.
+    console.log('Parsed sort: ', isSortParsed);
+    console.log(parsedSort);
+    if (isSortParsed) {
+      dispatch(updateSort(parsedSort));
     }
   };
 };
@@ -174,6 +223,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
 export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   const query = getState().dgcommon.query;
   const filters = getState().dgcommon.filters;
+  const sort = getState().dgcommon.sort;
 
   let queryParams = new URLSearchParams();
 
@@ -186,18 +236,29 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   }
 
   // Add filters.
+  let addFilters: FiltersType = {};
   for (const [f, v] of Object.entries(filters)) {
     if (Array.isArray(v)) {
       if (v.length > 0) {
-        filters[f] = v;
+        addFilters[f] = v;
       }
     } else {
-      filters[f] = v;
+      addFilters[f] = v;
     }
   }
-  if (Object.keys(filters).length > 0) {
-    console.log('Add filters: ', filters);
-    queryParams.append('filters', JSON.stringify(filters));
+  if (Object.keys(addFilters).length > 0) {
+    console.log('Add filters: ', addFilters);
+    queryParams.append('filters', JSON.stringify(addFilters));
+  }
+
+  // Add sort.
+  let addSort: SortType = {};
+  for (const [s, v] of Object.entries(sort)) {
+    addSort[s] = v;
+  }
+  if (Object.keys(addSort).length > 0) {
+    console.log('Add sort: ', addSort);
+    queryParams.append('sort', JSON.stringify(addSort));
   }
 
   console.log(`Final URLSearchParams - getURLQuery: ${queryParams.toString()}`);
@@ -336,6 +397,17 @@ export const pushPageFilter = (
   return async (dispatch, getState) => {
     // Make use of already present filterTable.
     dispatch(filterTable(filterKey, data));
+    dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};
+
+export const pushPageSort = (
+  sortKey: string,
+  order: Order | null
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    // Use sortTable present already.
+    dispatch(sortTable(sortKey, order));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
 };

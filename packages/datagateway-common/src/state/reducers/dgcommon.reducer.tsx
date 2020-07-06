@@ -4,6 +4,8 @@ import {
   AddToCartRequestType,
   AddToCartSuccessType,
   ClearDataType,
+  ClearFiltersType,
+  ClearSortType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -92,21 +94,22 @@ import {
   RemoveFromCartRequestType,
   RemoveFromCartSuccessType,
   RequestPayload,
+  SaveViewPayload,
   SortTablePayload,
   SortTableType,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
   UpdatePagePayload,
   UpdatePageType,
   UpdateQueriesPayload,
   UpdateQueriesType,
   UpdateResultsPayload,
   UpdateResultsType,
+  UpdateSaveViewType,
+  UpdateSortPayload,
+  UpdateSortType,
   UpdateViewPayload,
   UpdateViewType,
-  UpdateFiltersPayload,
-  UpdateFiltersType,
-  SaveViewPayload,
-  UpdateSaveViewType,
-  ClearFiltersType,
 } from '../actions/actions.types';
 import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
@@ -225,8 +228,8 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     loading: false,
     downloading: false,
     error: null,
-    sort: {},
-    // TODO: Disabled as we clear filters on load URL query.
+    // TODO: Disabled as we clear filters, sort on load URL query.
+    // sort: {},
     // filters: {},
   };
 }
@@ -242,6 +245,13 @@ export function handleClearFilters(state: DGCommonState): DGCommonState {
   return {
     ...state,
     filters: {},
+  };
+}
+
+export function handleClearSort(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    sort: {},
   };
 }
 
@@ -291,6 +301,18 @@ export function handleUpdateFilters(
   return {
     ...state,
     filters: payload.filters,
+    data: [],
+    totalDataCount: 0,
+  };
+}
+
+export function handleUpdateSort(
+  state: DGCommonState,
+  payload: UpdateSortPayload
+): DGCommonState {
+  return {
+    ...state,
+    sort: payload.sort,
     data: [],
     totalDataCount: 0,
   };
@@ -705,10 +727,12 @@ const dGCommonReducer = createReducer(initialState, {
   [ClearTableType]: handleClearTable,
   [ClearDataType]: handleClearData,
   [ClearFiltersType]: handleClearFilters,
+  [ClearSortType]: handleClearSort,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
   [UpdateResultsType]: handleUpdateResults,
   [UpdateFiltersType]: handleUpdateFilters,
+  [UpdateSortType]: handleUpdateSort,
   [UpdateQueriesType]: handleUpdateQueries,
   [UpdateSaveViewType]: handleSaveView,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,

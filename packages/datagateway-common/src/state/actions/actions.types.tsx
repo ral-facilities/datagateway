@@ -2,8 +2,9 @@ import {
   DownloadCart,
   Entity,
   Filter,
-  Order,
   FiltersType,
+  Order,
+  SortType,
 } from '../../app.types';
 import { QueryParams, ViewsType } from '../app.types';
 
@@ -24,8 +25,10 @@ export const FilterTableType = 'datagateway_common:filter_table';
 export const ClearTableType = 'datagateway_common:clear_table';
 export const ClearDataType = 'datagateway_common:clear_data';
 export const ClearFiltersType = 'datagateway_common:clear_filters';
+export const ClearSortType = 'datagateway_common:clear_sort';
 
 export const UpdateFiltersType = 'datagateway_common:update_filters';
+export const UpdateSortType = 'datagateway_common:update_sort';
 export const UpdateQueriesType = 'datagateway_common:update_queries';
 
 export const UpdateViewType = 'datagateway_common:update_view';
@@ -244,6 +247,10 @@ export interface UpdateResultsPayload {
 
 export interface UpdateFiltersPayload {
   filters: FiltersType;
+}
+
+export interface UpdateSortPayload {
+  sort: SortType;
 }
 
 export interface UpdateQueriesPayload {
