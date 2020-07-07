@@ -1,6 +1,6 @@
 import {
   addToCart,
-  clearTable,
+  // clearTable,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -14,18 +14,19 @@ import {
   Order,
   pushPageFilter,
   removeFromCart,
-  sortTable,
+  // sortTable,
   Table,
   tableLink,
   TextColumnFilter,
+  pushPageSort,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import useAfterMountEffect from '../../../utils';
+// import useAfterMountEffect from '../../../utils';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 
 interface DLSDatasetsTableProps {
@@ -47,7 +48,8 @@ interface DLSDatasetsTableStoreProps {
 }
 
 interface DLSDatasetsTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (
@@ -55,7 +57,7 @@ interface DLSDatasetsTableDispatchProps {
     offsetParams: IndexRange
   ) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
   fetchDetails: (datasetId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
@@ -74,9 +76,10 @@ const DLSDatasetsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    clearTable,
+    // clearTable,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
@@ -102,11 +105,17 @@ const DLSDatasetsTable = (
     [cartItems, allIds]
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable]);
+  // React.useEffect(() => {
+  //   clearTable();
+  // }, [clearTable]);
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   fetchCount(parseInt(investigationId));
+  //   fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
+  //   fetchAllIds();
+  // }, [fetchCount, fetchData, sort, filters, investigationId, fetchAllIds]);
+
+  React.useEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
     fetchAllIds();
@@ -139,7 +148,8 @@ const DLSDatasetsTable = (
       loadMoreRows={params => fetchData(parseInt(investigationId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
@@ -188,8 +198,10 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
   ownProps: DLSDatasetsTableProps
 ): DLSDatasetsTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
@@ -204,7 +216,7 @@ const mapDispatchToProps = (
     ),
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
