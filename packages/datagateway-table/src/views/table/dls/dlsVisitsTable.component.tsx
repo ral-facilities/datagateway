@@ -1,5 +1,5 @@
 import {
-  clearTable,
+  // clearTable,
   DateColumnFilter,
   DateFilter,
   Entity,
@@ -11,18 +11,19 @@ import {
   Investigation,
   Order,
   pushPageFilter,
-  sortTable,
+  // sortTable,
   Table,
   tableLink,
   TextColumnFilter,
+  pushPageSort,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import useAfterMountEffect from '../../../utils';
+// import useAfterMountEffect from '../../../utils';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 interface DLSVisitsTableProps {
@@ -41,12 +42,13 @@ interface DLSVisitsTableStoreProps {
 }
 
 interface DLSVisitsTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (proposalName: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (proposalName: string) => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
   fetchDetails: (investigationId: number) => Promise<void>;
 }
 
@@ -62,9 +64,10 @@ const DLSVisitsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    clearTable,
+    // clearTable,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
@@ -92,11 +95,16 @@ const DLSVisitsTable = (
     />
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable]);
+  // React.useEffect(() => {
+  //   clearTable();
+  // }, [clearTable]);
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   fetchCount(proposalName);
+  //   fetchData(proposalName, { startIndex: 0, stopIndex: 49 });
+  // }, [fetchCount, fetchData, sort, filters, proposalName]);
+
+  React.useEffect(() => {
     fetchCount(proposalName);
     fetchData(proposalName, { startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, sort, filters, proposalName]);
@@ -108,7 +116,8 @@ const DLSVisitsTable = (
       loadMoreRows={params => fetchData(proposalName, params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <VisitDetailsPanel
@@ -171,8 +180,10 @@ const DLSVisitsTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DLSVisitsTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
@@ -205,7 +216,7 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
 });
