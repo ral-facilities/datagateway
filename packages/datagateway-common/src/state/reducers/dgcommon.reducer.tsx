@@ -335,6 +335,11 @@ export function handleSaveView(
 ): DGCommonState {
   return {
     ...state,
+    // Clear current information to reload on new view.
+    data: [],
+    totalDataCount: 0,
+
+    // Switch view and save view information.
     sort: state.savedView.sort,
     filters: state.savedView.filters,
     query: state.savedView.queries ? state.savedView.queries : initialQuery,
