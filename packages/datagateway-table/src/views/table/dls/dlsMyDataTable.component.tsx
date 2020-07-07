@@ -1,5 +1,5 @@
 import {
-  clearTable,
+  // clearTable,
   DateColumnFilter,
   DateFilter,
   Entity,
@@ -12,18 +12,19 @@ import {
   Order,
   pushPageFilter,
   readSciGatewayToken,
-  sortTable,
+  // sortTable,
   Table,
   tableLink,
   TextColumnFilter,
+  pushPageSort,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import useAfterMountEffect from '../../../utils';
+// import useAfterMountEffect from '../../../utils';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 interface DLSMyDataTableStoreProps {
@@ -38,12 +39,13 @@ interface DLSMyDataTableStoreProps {
 }
 
 interface DLSMyDataTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (username: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (username: string) => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
   fetchDetails: (investigationId: number) => Promise<void>;
 }
 
@@ -58,9 +60,10 @@ const DLSMyDataTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    clearTable,
+    // clearTable,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
@@ -90,17 +93,26 @@ const DLSMyDataTable = (
   );
 
   React.useEffect(() => {
-    clearTable();
-    sortTable('STARTDATE', 'desc');
+    // TODO: No need to use clearTable here anymore.
+    // clearTable();
+
+    // Sort and filter by STARTDATE upon load.
+    // sortTable('STARTDATE', 'desc');
+    pushSort('STARTDATE', 'desc');
     // filterTable('STARTDATE', {
     //   endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
     // });
     pushFilters('STARTDATE', {
       endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
     });
-  }, [clearTable, sortTable, pushFilters]); // filterTable
+  }, [pushSort, pushFilters]); // clearTable, sortTable, filterTable
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   fetchCount(username);
+  //   fetchData(username, { startIndex: 0, stopIndex: 49 });
+  // }, [fetchCount, fetchData, sort, filters, username]);
+
+  React.useEffect(() => {
     fetchCount(username);
     fetchData(username, { startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, sort, filters, username]);
@@ -112,7 +124,8 @@ const DLSMyDataTable = (
       loadMoreRows={params => fetchData(username, params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <VisitDetailsPanel
@@ -187,8 +200,10 @@ const DLSMyDataTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DLSMyDataTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
@@ -232,7 +247,7 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
 });
