@@ -1,5 +1,5 @@
 import {
-  clearTable,
+  // clearTable,
   Entity,
   fetchInvestigationCount,
   fetchInvestigations,
@@ -8,18 +8,19 @@ import {
   Investigation,
   Order,
   pushPageFilter,
-  sortTable,
+  // sortTable,
   Table,
   tableLink,
   TextColumnFilter,
+  pushPageSort,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import useAfterMountEffect from '../../../utils';
+// import useAfterMountEffect from '../../../utils';
 
 interface DLSProposalsTableStoreProps {
   sort: {
@@ -33,12 +34,13 @@ interface DLSProposalsTableStoreProps {
 }
 
 interface DLSProposalsTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
 }
 
 type DLSProposalsTableCombinedProps = DLSProposalsTableStoreProps &
@@ -53,11 +55,12 @@ const DLSProposalsTable = (
     fetchData,
     fetchCount,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
-    clearTable,
+    // clearTable,
     loading,
   } = props;
 
@@ -70,11 +73,16 @@ const DLSProposalsTable = (
     />
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable]);
+  // React.useEffect(() => {
+  //   clearTable();
+  // }, [clearTable]);
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   fetchCount();
+  //   fetchData({ startIndex: 0, stopIndex: 49 });
+  // }, [fetchCount, fetchData, sort, filters]);
+
+  React.useEffect(() => {
     fetchCount();
     fetchData({ startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, sort, filters]);
@@ -86,7 +94,8 @@ const DLSProposalsTable = (
       loadMoreRows={fetchData}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       columns={[
         {
           label: 'Title',
@@ -119,8 +128,10 @@ const DLSProposalsTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DLSProposalsTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
@@ -146,7 +157,7 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (state: StateType): DLSProposalsTableStoreProps => {
