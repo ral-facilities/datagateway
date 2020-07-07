@@ -1,8 +1,6 @@
-import { IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
 import {
   addToCart,
-  clearTable,
+  // clearTable,
   Datafile,
   DateColumnFilter,
   DateFilter,
@@ -19,19 +17,23 @@ import {
   Order,
   pushPageFilter,
   removeFromCart,
-  sortTable,
+  // sortTable,
   Table,
   TableActionProps,
   TextColumnFilter,
+  pushPageSort,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import useAfterMountEffect from '../../../utils';
+// import useAfterMountEffect from '../../../utils';
 import DatafileDetailsPanel from '../../detailsPanels/isis/datafileDetailsPanel.component';
+
+import { IconButton } from '@material-ui/core';
+import { GetApp } from '@material-ui/icons';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatafilesTableProps {
@@ -54,12 +56,13 @@ interface ISISDatafilesTableStoreProps {
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISDatafilesTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   fetchDetails: (datasetId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
@@ -79,9 +82,10 @@ const ISISDatafilesTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    clearTable,
+    // clearTable,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
@@ -108,11 +112,17 @@ const ISISDatafilesTable = (
     [cartItems, allIds]
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable]);
+  // React.useEffect(() => {
+  //   clearTable();
+  // }, [clearTable]);
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   fetchCount(parseInt(datasetId));
+  //   fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
+  //   fetchAllIds();
+  // }, [fetchCount, fetchData, sort, filters, datasetId, fetchAllIds]);
+
+  React.useEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
     fetchAllIds();
@@ -145,7 +155,8 @@ const ISISDatafilesTable = (
       loadMoreRows={params => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
@@ -214,8 +225,10 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
   ownProps: ISISDatafilesTableProps
 ): ISISDatafilesTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
@@ -223,7 +236,7 @@ const mapDispatchToProps = (
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
     dispatch(fetchDatafiles(datasetId, offsetParams)),
   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
   fetchDetails: (datafileId: number) =>
     dispatch(fetchDatafileDetails(datafileId)),
   downloadData: (datafileId: number, filename: string) =>
