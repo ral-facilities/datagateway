@@ -38,6 +38,7 @@ export interface SavedView {
   view: ViewsType;
   queries: QueryParams | null;
   filters: FiltersType;
+  sort: SortType;
 }
 
 export interface FilterDataType {

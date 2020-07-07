@@ -131,6 +131,7 @@ export const initialState: DGCommonState = {
   error: null,
   sort: {},
   filters: {},
+  filterData: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
   allIdsTimestamp: Date.now(),
@@ -146,8 +147,8 @@ export const initialState: DGCommonState = {
     view: null,
     queries: null,
     filters: {},
+    sort: {},
   },
-  filterData: {},
 };
 
 export function handleSortTable(
@@ -334,12 +335,14 @@ export function handleSaveView(
 ): DGCommonState {
   return {
     ...state,
+    sort: state.savedView.sort,
     filters: state.savedView.filters,
     query: state.savedView.queries ? state.savedView.queries : initialQuery,
     savedView: {
       view: payload.view,
       queries: state.query,
       filters: state.filters,
+      sort: state.sort,
     },
   };
 }
