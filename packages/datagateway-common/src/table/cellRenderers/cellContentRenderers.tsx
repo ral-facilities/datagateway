@@ -22,6 +22,7 @@ export function datasetLink(
   view?: ViewsType
 ): React.ReactElement {
   let link = `/browse/investigation/${investigationId}/dataset/${datasetId}/datafile`;
+  // NOTE: Allow the link to specify the view to keep the same view when navigating.
   if (view) link += `?view=${view}`;
   return (
     <Link component={RouterLink} to={link}>
@@ -36,6 +37,7 @@ export function investigationLink(
   view?: ViewsType
 ): React.ReactElement {
   let link = `/browse/investigation/${investigationId}/dataset`;
+  // NOTE: Allow the link to specify the view to keep the same view when navigating.
   if (view) link += `?view=${view}`;
   return (
     <Link component={RouterLink} to={link}>
@@ -50,6 +52,7 @@ export function tableLink(
   view?: ViewsType
 ): React.ReactElement {
   if (view) linkUrl += `?view=${view}`;
+  // NOTE: Allow the link to specify the view to keep the same view when navigating.
   return (
     <Link component={RouterLink} to={linkUrl}>
       {linkText}

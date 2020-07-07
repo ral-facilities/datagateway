@@ -24,8 +24,8 @@ export const FilterTableType = 'datagateway_common:filter_table';
 
 export const ClearTableType = 'datagateway_common:clear_table';
 export const ClearDataType = 'datagateway_common:clear_data';
-export const ClearFiltersType = 'datagateway_common:clear_filters';
-export const ClearSortType = 'datagateway_common:clear_sort';
+// export const ClearFiltersType = 'datagateway_common:clear_filters';
+// export const ClearSortType = 'datagateway_common:clear_sort';
 
 export const UpdateFiltersType = 'datagateway_common:update_filters';
 export const UpdateSortType = 'datagateway_common:update_sort';

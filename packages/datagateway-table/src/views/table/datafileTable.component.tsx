@@ -2,7 +2,7 @@ import { IconButton, Typography } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
 import {
   addToCart,
-  clearTable,
+  // clearTable,
   Datafile,
   DateColumnFilter,
   DateFilter,
@@ -18,18 +18,19 @@ import {
   Order,
   pushPageFilter,
   removeFromCart,
-  sortTable,
+  // sortTable,
   Table,
   TableActionProps,
   TextColumnFilter,
+  pushPageSort,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../state/app.types';
-import useAfterMountEffect from '../../utils';
+// import useAfterMountEffect from '../../utils';
 
 interface DatafileTableProps {
   datasetId: string;
@@ -49,7 +50,8 @@ interface DatafileTableStoreProps {
 }
 
 interface DatafileTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
@@ -58,7 +60,7 @@ interface DatafileTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
 }
 
 type DatafileTableCombinedProps = DatafileTableProps &
@@ -74,7 +76,8 @@ const DatafileTable = (
     fetchData,
     fetchCount,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
@@ -83,7 +86,7 @@ const DatafileTable = (
     cartItems,
     addToCart,
     removeFromCart,
-    clearTable,
+    // clearTable,
     allIds,
     fetchAllIds,
     loading,
@@ -101,11 +104,17 @@ const DatafileTable = (
     [cartItems, allIds]
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable]);
+  // React.useEffect(() => {
+  //   clearTable();
+  // }, [clearTable]);
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   fetchCount(parseInt(datasetId));
+  //   fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
+  //   fetchAllIds();
+  // }, [fetchCount, fetchData, fetchAllIds, sort, filters, datasetId]);
+
+  React.useEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
     fetchAllIds();
@@ -138,7 +147,8 @@ const DatafileTable = (
       loadMoreRows={params => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
@@ -212,8 +222,10 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
   ownProps: DatafileTableProps
 ): DatafileTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
@@ -238,13 +250,10 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
 });
 
-const mapStateToProps = (
-  state: StateType,
-  ownProps: DatafileTableProps
-): DatafileTableStoreProps => {
+const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
   return {
     sort: state.dgcommon.sort,
     filters: state.dgcommon.filters,

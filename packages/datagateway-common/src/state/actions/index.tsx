@@ -10,8 +10,8 @@ import {
 } from '../app.types';
 import {
   ClearDataType,
-  ClearFiltersType,
-  ClearSortType,
+  // ClearFiltersType,
+  // ClearSortType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -88,13 +88,13 @@ export const clearData = (): Action => ({
   type: ClearDataType,
 });
 
-export const clearFilters = (): Action => ({
-  type: ClearFiltersType,
-});
+// export const clearFilters = (): Action => ({
+//   type: ClearFiltersType,
+// });
 
-export const clearSort = (): Action => ({
-  type: ClearSortType,
-});
+// export const clearSort = (): Action => ({
+//   type: ClearSortType,
+// });
 
 export const updateQueryParams = (
   queries: QueryParams
@@ -194,11 +194,13 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       results: results ? Number(results) : null,
     };
 
-    // Clear filters currently in state.
-    dispatch(clearFilters());
+    dispatch(clearTable());
 
-    // Clear sort currently in state.
-    dispatch(clearSort());
+    // // Clear filters currently in state.
+    // dispatch(clearFilters());
+
+    // // Clear sort currently in state.
+    // dispatch(clearSort());
 
     // Update with the new query parameters.
     dispatch(updateQueryParams(params));

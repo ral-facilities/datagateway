@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import {
   addToCart,
-  clearTable,
+  // clearTable,
   Dataset,
   datasetLink,
   DateColumnFilter,
@@ -16,17 +16,18 @@ import {
   Order,
   pushPageFilter,
   removeFromCart,
-  sortTable,
+  // sortTable,
   Table,
   TextColumnFilter,
+  pushPageSort,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../state/app.types';
-import useAfterMountEffect from '../../utils';
+// import useAfterMountEffect from '../../utils';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -46,7 +47,8 @@ interface DatasetTableStoreProps {
 }
 
 interface DatasetTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
+  // sortTable: (column: string, order: Order | null) => Action;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (
@@ -54,7 +56,7 @@ interface DatasetTableDispatchProps {
     offsetParams: IndexRange
   ) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
@@ -71,7 +73,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     fetchData,
     fetchCount,
     sort,
-    sortTable,
+    // sortTable,
+    pushSort,
     filters,
     // filterTable,
     pushFilters,
@@ -79,7 +82,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     cartItems,
     addToCart,
     removeFromCart,
-    clearTable,
+    // clearTable,
     allIds,
     fetchAllIds,
     loading,
@@ -97,11 +100,17 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     [cartItems, allIds]
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable]);
+  // React.useEffect(() => {
+  //   clearTable();
+  // }, [clearTable]);
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   fetchCount(parseInt(investigationId));
+  //   fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
+  //   fetchAllIds();
+  // }, [fetchCount, fetchData, fetchAllIds, sort, filters, investigationId]);
+
+  React.useEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
     fetchAllIds();
@@ -134,7 +143,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       loadMoreRows={params => fetchData(parseInt(investigationId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      // onSort={sortTable}
+      onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
@@ -189,8 +199,10 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
   ownProps: DatasetTableProps
 ): DatasetTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
+  // sortTable: (column: string, order: Order | null) =>
+  //   dispatch(sortTable(column, order)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   // filterTable: (column: string, filter: Filter | null) =>
   //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
@@ -199,7 +211,7 @@ const mapDispatchToProps = (
     dispatch(fetchDatasets({ investigationId, offsetParams })),
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),

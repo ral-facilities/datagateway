@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import {
   addToCart,
-  clearTable,
+  // clearTable,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -23,10 +23,10 @@ import {
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux'; // Action
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../state/app.types';
-import useAfterMountEffect from '../../utils';
+// import useAfterMountEffect from '../../utils';
 
 interface InvestigationTableProps {
   sort: {
@@ -51,7 +51,7 @@ interface InvestigationTableDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   fetchAllIds: () => Promise<void>;
-  clearTable: () => Action;
+  // clearTable: () => Action;
 }
 
 type InvestigationTableCombinedProps = InvestigationTableProps &
@@ -65,7 +65,7 @@ const InvestigationTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    clearTable,
+    // clearTable,
     sort,
     // sortTable,
     pushSort,
@@ -112,11 +112,18 @@ const InvestigationTable = (
     />
   );
 
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable]);
+  // React.useEffect(() => {
+  //   clearTable();
+  // }, [clearTable]);
 
-  useAfterMountEffect(() => {
+  // useAfterMountEffect(() => {
+  //   console.log('Fetch data');
+  //   fetchCount();
+  //   fetchData({ startIndex: 0, stopIndex: 49 });
+  //   fetchAllIds();
+  // }, [fetchCount, fetchData, fetchAllIds]);
+
+  React.useEffect(() => {
     fetchCount();
     fetchData({ startIndex: 0, stopIndex: 49 });
     fetchAllIds();
@@ -226,7 +233,7 @@ const mapDispatchToProps = (
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
-  clearTable: () => dispatch(clearTable()),
+  // clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) =>
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>

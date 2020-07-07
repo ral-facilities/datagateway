@@ -4,8 +4,8 @@ import {
   AddToCartRequestType,
   AddToCartSuccessType,
   ClearDataType,
-  ClearFiltersType,
-  ClearSortType,
+  // ClearFiltersType,
+  // ClearSortType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -228,9 +228,9 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     loading: false,
     downloading: false,
     error: null,
-    // TODO: Disabled as we clear filters, sort on load URL query.
-    // sort: {},
-    // filters: {},
+    // TODO: We clear filters, sort on load URL query.
+    sort: {},
+    filters: {},
   };
 }
 
@@ -241,19 +241,19 @@ export function handleClearData(state: DGCommonState): DGCommonState {
   };
 }
 
-export function handleClearFilters(state: DGCommonState): DGCommonState {
-  return {
-    ...state,
-    filters: {},
-  };
-}
+// export function handleClearFilters(state: DGCommonState): DGCommonState {
+//   return {
+//     ...state,
+//     filters: {},
+//   };
+// }
 
-export function handleClearSort(state: DGCommonState): DGCommonState {
-  return {
-    ...state,
-    sort: {},
-  };
-}
+// export function handleClearSort(state: DGCommonState): DGCommonState {
+//   return {
+//     ...state,
+//     sort: {},
+//   };
+// }
 
 export function handleUpdateView(
   state: DGCommonState,
@@ -726,8 +726,8 @@ const dGCommonReducer = createReducer(initialState, {
   [FilterTableType]: handleFilterTable,
   [ClearTableType]: handleClearTable,
   [ClearDataType]: handleClearData,
-  [ClearFiltersType]: handleClearFilters,
-  [ClearSortType]: handleClearSort,
+  // [ClearFiltersType]: handleClearFilters,
+  // [ClearSortType]: handleClearSort,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
   [UpdateResultsType]: handleUpdateResults,
