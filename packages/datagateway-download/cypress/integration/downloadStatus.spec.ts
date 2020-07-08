@@ -45,7 +45,7 @@ describe('Download Status', () => {
     cy.get('[aria-label="Refresh download status table"]').should('exist');
     cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
       'have.text',
-      'test-file-1'
+      'test-file-4'
     );
     cy.get('[aria-label="Refresh download status table"]').click();
   });
@@ -98,12 +98,12 @@ describe('Download Status', () => {
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-1'
+        'test-file-4'
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
-        'Complete'
+        'Expired'
       );
     });
 
@@ -128,7 +128,7 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
         'have.text',
-        'Complete'
+        'Expired'
       );
     });
 
@@ -137,9 +137,20 @@ describe('Download Status', () => {
         '2020-01-31'
       );
 
+      let date = new Date();
+      const month = date.toLocaleString('default', { month: 'long' });
+      const year = date.getFullYear();
+
       cy.get('[aria-label="Requested Date date filter to"]')
         .parent()
         .find('button')
+        .click();
+
+      cy.contains(`${month} ${year}`)
+        .parent()
+        .parent()
+        .find('button')
+        .first()
         .click();
 
       cy.get('.MuiPickersDay-day[tabindex="0"]')
@@ -148,15 +159,15 @@ describe('Download Status', () => {
 
       cy.contains('OK').click();
 
-      let date = new Date();
       date.setDate(1);
+      date.setMonth(date.getMonth() - 1);
 
       cy.get('[aria-label="Requested Date date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
-      // There should be results for this time period.
+      // There should not be results for this time period.
       cy.get('[aria-rowcount="0"]').should('exist');
 
       let currDate = new Date();
@@ -171,12 +182,12 @@ describe('Download Status', () => {
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-1'
+        'test-file-4'
       );
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
         'have.text',
-        'https'
+        'globus'
       );
 
       cy.get('[aria-rowcount="4"]').should('exist');

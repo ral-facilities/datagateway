@@ -9,6 +9,7 @@ node_modules/
 coverage/
 screenshots/
 **/cypress/logs/
+**/cypress/fixtures/example.json
 
 # production
 build/
@@ -26,5 +27,5 @@ yarn-debug.log*
 yarn-error.log*
 
 **/public/settings.json
-**/public/datagateway-table-settings.json
+**/public/datagateway-dataview-settings.json
 **/public/datagateway-download-settings.json

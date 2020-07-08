@@ -68,7 +68,7 @@ export const fetchDatafiles = (
     const timestamp = Date.now();
     dispatch(fetchDatafilesRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
     const { apiUrl } = getState().dgcommon.urls;
 
@@ -87,10 +87,10 @@ export const fetchDatafiles = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatafilesSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatafilesFailure(error.message));
       });
@@ -133,7 +133,7 @@ export const fetchDatafileCount = (
     const timestamp = Date.now();
     dispatch(fetchDatafileCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
     params.append('where', JSON.stringify({ DATASET_ID: { eq: datasetId } }));
     const { apiUrl } = getState().dgcommon.urls;
@@ -145,10 +145,10 @@ export const fetchDatafileCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatafileCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatafileCountFailure(error.message));
       });
@@ -221,7 +221,7 @@ export const fetchDatasetDatafilesCount = (
           },
           cancelToken: source.token,
         })
-        .then(response => {
+        .then((response) => {
           dispatch(
             fetchDatasetDatafilesCountSuccess(
               datasetId,
@@ -230,7 +230,7 @@ export const fetchDatasetDatafilesCount = (
             )
           );
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchDatasetDatafilesCountFailure(error.message));
         });
@@ -266,7 +266,7 @@ export const fetchDatafileDetails = (
   return async (dispatch, getState) => {
     dispatch(fetchDatafileDetailsRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
     params.append(
@@ -282,10 +282,10 @@ export const fetchDatafileDetails = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatafileDetailsSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatafileDetailsFailure(error.message));
       });

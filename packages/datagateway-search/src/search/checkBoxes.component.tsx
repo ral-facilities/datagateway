@@ -54,7 +54,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
   const handleChange = (name: string, checked: boolean) => (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
-    let toggleOption = !checked;
+    const toggleOption = !checked;
     if (name === 'Investigation') {
       toggleInvestigation(toggleOption);
     } else if (name === 'Datafile') {

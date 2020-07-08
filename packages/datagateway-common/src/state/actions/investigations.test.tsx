@@ -269,6 +269,13 @@ describe('Investigation actions', () => {
       })
     );
 
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+        facilityName: 'LILS',
+      },
+    });
+
     const asyncAction = fetchInvestigationSize(1);
     await asyncAction(dispatch, getState, null);
 

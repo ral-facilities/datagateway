@@ -5,14 +5,16 @@ import {
   FiltersType,
   Order,
   SortType,
+  MicroFrontendId,
 } from '../../app.types';
 import { QueryParams, ViewsType } from '../app.types';
 
 // parent app actions
-export const MicroFrontendMessageId = 'scigateway';
-export const CustomFrontendMessageType = `${MicroFrontendMessageId}:api:`;
-export const RegisterRouteType = `${MicroFrontendMessageId}:api:register_route`;
-export const RequestPluginRerenderType = `${MicroFrontendMessageId}:api:plugin_rerender`;
+export const CustomFrontendMessageType = `${MicroFrontendId}:api`;
+export const NotificationType = `${CustomFrontendMessageType}:notification`;
+export const InvalidateTokenType = `${CustomFrontendMessageType}:invalidate_token`;
+export const RegisterRouteType = `${CustomFrontendMessageType}:register_route`;
+export const RequestPluginRerenderType = `${CustomFrontendMessageType}:plugin_rerender`;
 
 // internal actions
 export const ConfigureFacilityNameType =

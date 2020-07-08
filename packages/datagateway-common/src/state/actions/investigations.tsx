@@ -92,7 +92,8 @@ export const fetchInvestigationSize = (
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationSizeRequest());
 
-    // We request the size from the download API.
+    // Make use of the facility name and download API url for the request.
+    const { facilityName } = getState().dgcommon;
     const { downloadApiUrl } = getState().dgcommon.urls;
     const currentCache = getState().dgcommon.investigationCache[
       investigationId
@@ -112,17 +113,17 @@ export const fetchInvestigationSize = (
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
             sessionId: readSciGatewayToken().sessionId,
-            facilityName: 'LILS',
+            facilityName: facilityName,
             entityType: 'investigation',
             entityId: investigationId,
           },
         })
-        .then(response => {
+        .then((response) => {
           dispatch(
             fetchInvestigationSizeSuccess(investigationId, response.data)
           );
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchInvestigationSizeFailure(error.message));
         });
@@ -147,7 +148,7 @@ export const fetchInvestigations = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     if (optionalParams && optionalParams.offsetParams) {
       params.append(
         'skip',
@@ -165,7 +166,7 @@ export const fetchInvestigations = (
     const { apiUrl } = getState().dgcommon.urls;
 
     if (optionalParams && optionalParams.additionalFilters) {
-      optionalParams.additionalFilters.forEach(filter => {
+      optionalParams.additionalFilters.forEach((filter) => {
         params.append(filter.filterType, filter.filterValue);
       });
     }
@@ -177,7 +178,7 @@ export const fetchInvestigations = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
         if (optionalParams) {
           if (optionalParams.getDatasetCount) {
@@ -196,7 +197,7 @@ export const fetchInvestigations = (
           }
         }
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
@@ -218,7 +219,7 @@ export const fetchISISInvestigations = ({
     const timestamp = Date.now();
     dispatch(fetchInvestigationsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
 
     params.append(
       'include',
@@ -248,7 +249,7 @@ export const fetchISISInvestigations = ({
           },
         }
       )
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationsSuccess(response.data, timestamp));
 
         // Once investigation has been fetched successfully,
@@ -261,7 +262,7 @@ export const fetchISISInvestigations = ({
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationsFailure(error.message));
       });
@@ -316,7 +317,7 @@ export const fetchInvestigationDetails = (
   return async (dispatch, getState) => {
     dispatch(fetchInvestigationDetailsRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: investigationId } }));
     params.append(
@@ -333,10 +334,10 @@ export const fetchInvestigationDetails = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationDetailsSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationDetailsFailure(error.message));
       });
@@ -362,10 +363,10 @@ export const fetchInvestigationCount = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
 
     if (additionalFilters) {
-      additionalFilters.forEach(filter => {
+      additionalFilters.forEach((filter) => {
         params.append(filter.filterType, filter.filterValue);
       });
     }
@@ -381,10 +382,10 @@ export const fetchInvestigationCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });
@@ -399,7 +400,7 @@ export const fetchISISInvestigationCount = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
 
     const { apiUrl } = getState().dgcommon.urls;
@@ -414,10 +415,10 @@ export const fetchISISInvestigationCount = (
           },
         }
       )
-      .then(response => {
+      .then((response) => {
         dispatch(fetchInvestigationCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
       });
@@ -461,10 +462,10 @@ export const fetchFilter = (
   return async (dispatch, getState) => {
     dispatch(fetchFilterRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
     // Allow for other additional filters to be applied.
     if (additionalFilters) {
-      additionalFilters.forEach(filter => {
+      additionalFilters.forEach((filter) => {
         params.append(filter.filterType, filter.filterValue);
       });
     }
@@ -493,15 +494,15 @@ export const fetchFilter = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(
           fetchFilterSuccess(
             filterKey,
-            response.data.map(x => nestedValue(x, filterKey))
+            response.data.map((x) => nestedValue(x, filterKey))
           )
         );
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchFilterFailure(error.message));
       });

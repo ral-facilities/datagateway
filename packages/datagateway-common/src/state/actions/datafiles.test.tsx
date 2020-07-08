@@ -291,7 +291,7 @@ describe('Datafile actions', () => {
     expect(actions[0]).toEqual(downloadDatafileRequest(1));
 
     expect(document.createElement).toHaveBeenCalledWith('a');
-    let link = document.createElement('a');
+    const link = document.createElement('a');
     link.href = `/getData?sessionId=${null}&datafileIds=${1}&compress=${false}&outname=${'test.txt'}`;
     link.target = '_blank';
     link.style.display = 'none';

@@ -47,6 +47,7 @@ const styles = (theme: Theme): StyleRules =>
       flexDirection: 'column',
       alignItems: 'left',
       boxSizing: 'border-box',
+      justifyContent: 'flex-end',
     },
     tableRow: {},
     tableRowHover: {
@@ -58,14 +59,6 @@ const styles = (theme: Theme): StyleRules =>
       flex: 1,
       overflow: 'hidden',
       height: rowHeight,
-    },
-    dataCellContent: {
-      '&:hover': {
-        overflow: 'visible',
-        zIndex: 10000,
-        position: 'absolute',
-        backgroundColor: theme.palette.grey[200],
-      },
     },
     headerTableCell: {
       flex: 1,
@@ -183,7 +176,7 @@ const VirtualizedTable = (
           >
             {({ onRowsRendered, registerChild }) => (
               <Table
-                ref={ref => {
+                ref={(ref) => {
                   tableRef = ref;
                   registerChild(ref);
                 }}
@@ -206,7 +199,7 @@ const VirtualizedTable = (
                   )
                 }
                 rowGetter={({ index }) => data[index]}
-                rowRenderer={props => {
+                rowRenderer={(props) => {
                   if (detailsPanel && props.index === expandedIndex) {
                     return (
                       <DetailsPanelRow
@@ -227,18 +220,18 @@ const VirtualizedTable = (
                     flexShrink={0}
                     key="Select"
                     dataKey="Select"
-                    headerRenderer={props => (
+                    headerRenderer={(props) => (
                       <SelectHeader
                         {...props}
                         className={clsx(
                           classes.headerTableCell,
-                          classes.flexContainer
+                          classes.headerFlexContainer
                         )}
                         selectedRows={selectedRows}
                         totalRowCount={rowCount}
                         allIds={
                           allIds ||
-                          data.map(d => {
+                          data.map((d) => {
                             const icatEntity = d as ICATEntity;
                             return icatEntity.ID;
                           })
@@ -250,7 +243,7 @@ const VirtualizedTable = (
                     )}
                     className={classes.flexContainer}
                     headerClassName={classes.flexContainer}
-                    cellRenderer={props => (
+                    cellRenderer={(props) => (
                       <SelectCell
                         {...props}
                         selectedRows={selectedRows}
@@ -288,7 +281,7 @@ const VirtualizedTable = (
                     )}
                     className={classes.flexContainer}
                     headerClassName={classes.flexContainer}
-                    cellRenderer={props => (
+                    cellRenderer={(props) => (
                       <ExpandCell
                         {...props}
                         expandedIndex={expandedIndex}
@@ -319,7 +312,7 @@ const VirtualizedTable = (
                         dataKey={dataKey}
                         label={label}
                         disableSort={disableSort}
-                        headerRenderer={headerProps => (
+                        headerRenderer={(headerProps) => (
                           <DataHeader
                             {...headerProps}
                             className={clsx(
@@ -331,7 +324,7 @@ const VirtualizedTable = (
                             filterComponent={
                               filterComponent && filterComponent(label, dataKey)
                             }
-                            resizeColumn={deltaX => {
+                            resizeColumn={(deltaX) => {
                               const columnDataKeys = Object.keys(widths);
                               const percentDelta = deltaX / dataColumnsWidth;
                               const dividedPercentDelta =
@@ -354,7 +347,7 @@ const VirtualizedTable = (
                           />
                         )}
                         className={clsx(classes.flexContainer, className)}
-                        cellRenderer={props => (
+                        cellRenderer={(props) => (
                           <DataCell
                             {...props}
                             cellContentRenderer={cellContentRenderer}
@@ -362,7 +355,6 @@ const VirtualizedTable = (
                               classes.tableCell,
                               classes.flexContainer
                             )}
-                            contentClassName={classes.dataCellContent}
                           />
                         )}
                       />
@@ -376,7 +368,7 @@ const VirtualizedTable = (
                     key="Actions"
                     dataKey="actions"
                     className={classes.flexContainer}
-                    headerRenderer={headerProps => (
+                    headerRenderer={(headerProps) => (
                       <TableCell
                         size="small"
                         component="div"
@@ -389,7 +381,7 @@ const VirtualizedTable = (
                         Actions
                       </TableCell>
                     )}
-                    cellRenderer={props => (
+                    cellRenderer={(props) => (
                       <ActionCell
                         {...props}
                         actions={actions}

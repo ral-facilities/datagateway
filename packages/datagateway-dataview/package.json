@@ -1,0 +1,128 @@
+{
+  "name": "datagateway-dataview",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:5000/",
+  "dependencies": {
+    "@material-ui/core": "^4.10.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.55",
+    "@types/jest": "^26.0.3",
+    "@types/node": "^14.0.14",
+    "@types/react": "^16.9.41",
+    "@types/react-dom": "^16.9.8",
+    "axios": "^0.19.0",
+    "connected-react-router": "^6.5.2",
+    "custom-event-polyfill": "^1.0.7",
+    "datagateway-common": "0.1.0",
+    "loglevel": "^1.6.8",
+    "react": "^16.13.1",
+    "react-app-polyfill": "^1.0.6",
+    "react-dom": "^16.11.0",
+    "react-redux": "^7.1.0",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.4.1",
+    "react-virtualized": "^9.21.1",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-mock-store": "^1.5.4",
+    "redux-thunk": "^2.3.0",
+    "single-spa-react": "^3.0.0",
+    "typescript": "3.9.5",
+    "url-search-params-polyfill": "^8.1.0"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "serve:build": "yarn build & serve -l 5001 build",
+    "test": "craco test --env=jsdom --coverage --watchAll=false",
+    "test:watch": "craco test --env=jsdom --watch",
+    "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false craco build",
+    "e2e:serve": "yarn build:e2e && node ./server/e2e-test-server.js",
+    "e2e:interactive": "start-server-and-test e2e:serve http://localhost:3000 cy:open",
+    "e2e": "start-server-and-test e2e:serve http://localhost:3000 cy:run",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "lint:js": "eslint --ext=tsx --ext=ts --ext=js --ext=jsx --fix ./src && yarn build",
+    "eject": "react-scripts eject",
+    "pre-commit": "lint-staged"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ]
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{tsx,ts,js,jsx}",
+      "!src/index.tsx",
+      "!src/serviceWorker.ts",
+      "!src/setupTests.ts",
+      "!src/**/*.d.ts",
+      "!src/state/app.types.tsx"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{tsx,ts,js,jsx,json}": [
+      "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx  --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "cypress/**/*.{tsx,ts,js,jsx}": [
+      "eslint --max-warnings=0 --fix",
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "@craco/craco": "^5.6.4",
+    "@types/enzyme": "^3.10.3",
+    "@types/jsrsasign": "^8.0.3",
+    "@types/loglevel": "^1.6.3",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router": "^5.1.8",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-virtualized": "^9.21.10",
+    "@types/redux-logger": "^3.0.8",
+    "@types/redux-mock-store": "^1.0.1",
+    "@types/single-spa-react": "^2.8.3",
+    "@typescript-eslint/eslint-plugin": "^3.5.0",
+    "@typescript-eslint/parser": "^3.5.0",
+    "@welldone-software/why-did-you-render": "^4.2.5",
+    "babel-eslint": "10.1.0",
+    "cross-env": "^7.0.2",
+    "cypress": "4.9.0",
+    "cypress-failed-log": "^2.7.0",
+    "cypress-plugin-retries": "^1.5.2",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-to-json": "^3.3.5",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-flowtype": "^5.1.3",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.4",
+    "express": "^4.17.1",
+    "jsrsasign": "^8.0.20",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "serve": "^11.3.2",
+    "start-server-and-test": "^1.11.0"
+  }
+}

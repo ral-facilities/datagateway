@@ -48,7 +48,7 @@ export * from './investigations';
 // Get the nested value from an Entity object given a dataKey
 // which drills specifies the property or array indexes.
 export const nestedValue = (data: Entity, dataKey: string): string => {
-  const v = dataKey.split(/[.[\]]+/).reduce(function(prev, curr) {
+  const v = dataKey.split(/[.[\]]+/).reduce(function (prev, curr) {
     return prev ? prev[curr] : null;
   }, data);
   if (v) {
@@ -136,7 +136,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     // TODO: Create one method to parse the filters/sort objects.
 
     // Parse filters in the query.
-    let parsedFilters: FiltersType = {};
+    const parsedFilters: FiltersType = {};
     let isFiltersParsed = false;
     if (filters) {
       try {
@@ -166,7 +166,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       }
     }
 
-    let parsedSort: SortType = {};
+    const parsedSort: SortType = {};
     let isSortParsed = false;
     if (sort) {
       try {
@@ -227,10 +227,10 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   const filters = getState().dgcommon.filters;
   const sort = getState().dgcommon.sort;
 
-  let queryParams = new URLSearchParams();
+  const queryParams = new URLSearchParams();
 
   // Loop and add all the query parameters which is in use.
-  for (let [q, v] of Object.entries(query)) {
+  for (const [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters') {
       console.log(`Adding ${q} with value: ${v}`);
       queryParams.append(q, v);
@@ -238,7 +238,7 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   }
 
   // Add filters.
-  let addFilters: FiltersType = {};
+  const addFilters: FiltersType = {};
   for (const [f, v] of Object.entries(filters)) {
     if (Array.isArray(v)) {
       if (v.length > 0) {
@@ -254,7 +254,7 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   }
 
   // Add sort.
-  let addSort: SortType = {};
+  const addSort: SortType = {};
   for (const [s, v] of Object.entries(sort)) {
     addSort[s] = v;
   }
@@ -272,16 +272,16 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgcommon.sort;
   const filters = getState().dgcommon.filters;
 
-  let searchParams = new URLSearchParams();
+  const searchParams = new URLSearchParams();
 
-  for (let [key, value] of Object.entries(sort)) {
+  for (const [key, value] of Object.entries(sort)) {
     searchParams.append('order', JSON.stringify(`${key} ${value}`));
   }
 
   // sort by ID first to guarantee order
   searchParams.append('order', JSON.stringify(`ID asc`));
 
-  for (let [column, filter] of Object.entries(filters)) {
+  for (const [column, filter] of Object.entries(filters)) {
     if (typeof filter === 'object') {
       if (!Array.isArray(filter)) {
         if ('startDate' in filter && filter.startDate) {
@@ -415,7 +415,7 @@ export const pushPageSort = (
 };
 
 export const saveView = (view: ViewsType): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch) => {
     // Save the current view.
     dispatch(updateSaveView(view));
   };

@@ -1,0 +1,448 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Visit details panel component gracefully handles InvestigationUsers without Users 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="visit-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-details-panel"
+      id="visit-details-tab"
+      label="Visit Details"
+      value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-users-panel"
+      id="visit-users-tab"
+      label="Visit Users"
+      value="users"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="visit-details-tab"
+    hidden={false}
+    id="visit-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Proposal:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Visit Id:
+      </b>
+       
+      1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Title:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Summary:
+      </b>
+       
+      foo bar
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Start Date:
+      </b>
+       
+      2019-06-10
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      2019-06-11
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Total File Size:
+      </b>
+       
+      1 B
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+  <div
+    aria-labelledby="visit-users-tab"
+    hidden={true}
+    id="visit-users-panel"
+    role="tabpanel"
+  />
+</div>
+`;
+
+exports[`Visit details panel component renders calculate size button when size has not been calculated 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="visit-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-details-panel"
+      id="visit-details-tab"
+      label="Visit Details"
+      value="details"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="visit-details-tab"
+    hidden={false}
+    id="visit-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Proposal:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Visit Id:
+      </b>
+       
+      1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Title:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Summary:
+      </b>
+       
+      foo bar
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Start Date:
+      </b>
+       
+      2019-06-10
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      2019-06-11
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Total File Size:
+      </b>
+       
+      <WithStyles(ForwardRef(Button))
+        color="primary"
+        id="calculate-size-btn"
+        onClick={[Function]}
+        size="small"
+        variant="outlined"
+      >
+        Calculate
+      </WithStyles(ForwardRef(Button))>
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+</div>
+`;
+
+exports[`Visit details panel component renders correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="visit-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-details-panel"
+      id="visit-details-tab"
+      label="Visit Details"
+      value="details"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="visit-details-tab"
+    hidden={false}
+    id="visit-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Proposal:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Visit Id:
+      </b>
+       
+      1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Title:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Summary:
+      </b>
+       
+      foo bar
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Start Date:
+      </b>
+       
+      2019-06-10
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      2019-06-11
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Total File Size:
+      </b>
+       
+      1 B
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+</div>
+`;
+
+exports[`Visit details panel component renders user, sample and publication tabs when present in the data 1`] = `
+<div>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="visit-details-tabs"
+    onChange={[Function]}
+    value="details"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-details-panel"
+      id="visit-details-tab"
+      label="Visit Details"
+      value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-users-panel"
+      id="visit-users-tab"
+      label="Visit Users"
+      value="users"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-samples-panel"
+      id="visit-samples-tab"
+      label="Visit Samples"
+      value="samples"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="visit-publications-panel"
+      id="visit-publications-tab"
+      label="Publications"
+      value="publications"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="visit-details-tab"
+    hidden={false}
+    id="visit-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Proposal:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Visit Id:
+      </b>
+       
+      1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Title:
+      </b>
+       
+      Test 1
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Summary:
+      </b>
+       
+      foo bar
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Start Date:
+      </b>
+       
+      2019-06-10
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Description:
+      </b>
+       
+      2019-06-11
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      variant="body2"
+    >
+      <b>
+        Total File Size:
+      </b>
+       
+      1 B
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+  <div
+    aria-labelledby="visit-users-tab"
+    hidden={true}
+    id="visit-users-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      key="5"
+      variant="body2"
+    >
+      <b>
+        Investigator:
+      </b>
+       
+      Louise Davies
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      key="10"
+      variant="body2"
+    >
+      <b>
+        Investigator:
+      </b>
+       
+      Louise
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+  <div
+    aria-labelledby="visit-samples-tab"
+    hidden={true}
+    id="visit-samples-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      key="7"
+      variant="body2"
+    >
+      <b>
+        Sample:
+      </b>
+       
+      Test sample
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+  <div
+    aria-labelledby="visit-publications-tab"
+    hidden={true}
+    id="visit-publications-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Typography))
+      key="8"
+      variant="body2"
+    >
+      <b>
+        Reference:
+      </b>
+       
+      Test publication
+    </WithStyles(ForwardRef(Typography))>
+  </div>
+</div>
+`;

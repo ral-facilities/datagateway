@@ -3,19 +3,21 @@ import { Preloader } from 'datagateway-common';
 import * as log from 'loglevel';
 import React from 'react';
 
+export interface DownloadSettingsAccessMethod {
+  [type: string]: {
+    idsUrl: string;
+    displayName?: string;
+    description?: string;
+  };
+}
+
 export interface DownloadSettings {
   facilityName: string;
   apiUrl: string;
   downloadApiUrl: string;
   idsUrl: string;
 
-  accessMethods: {
-    [type: string]: {
-      idsUrl: string;
-      displayName?: string;
-      description?: string;
-    };
-  };
+  accessMethods: DownloadSettingsAccessMethod;
 }
 
 const initialConfiguration = {
@@ -47,10 +49,10 @@ class ConfigProvider extends React.Component<
     this.updateConfigurationState();
   }
 
-  private updateConfigurationState = async () => {
+  private updateConfigurationState = async (): Promise<void> => {
     const settings = await axios
       .get<DownloadSettings>('/datagateway-download-settings.json')
-      .then(res => {
+      .then((res) => {
         const settings = res.data;
 
         if (typeof settings !== 'object') {
@@ -97,7 +99,7 @@ class ConfigProvider extends React.Component<
 
         return settings;
       })
-      .catch(error => {
+      .catch((error) => {
         log.error(
           `Error loading datagateway-download-settings.json: ${error.message}`
         );

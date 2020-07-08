@@ -2,6 +2,10 @@ import { AxiosError } from 'axios';
 import * as log from 'loglevel';
 import handleICATError from './handleICATError';
 import { AnyAction } from 'redux';
+import {
+  NotificationType,
+  InvalidateTokenType,
+} from './state/actions/actions.types';
 
 jest.mock('loglevel');
 
@@ -21,7 +25,7 @@ describe('handleICATError', () => {
       isAxiosError: true,
       config: {},
       response: {
-        data: {},
+        data: { message: 'Test error message (response data)' },
         status: 500,
         statusText: 'Internal Server Error',
         headers: {},
@@ -36,18 +40,54 @@ describe('handleICATError', () => {
   it('logs an error and sends a notification to SciGateway', () => {
     handleICATError(error);
 
+    expect(log.error).toHaveBeenCalledWith(
+      'Test error message (response data)'
+    );
+    expect(events.length).toBe(1);
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'error',
+        message: 'Test error message (response data)',
+      },
+    });
+  });
+
+  it('logs fallback error.message if there is no response message', () => {
+    error = {
+      isAxiosError: true,
+      config: {},
+      response: {
+        data: {},
+        status: 500,
+        statusText: 'Internal Server Error',
+        headers: {},
+        config: {},
+      },
+      name: 'Test error name',
+      message: 'Test error message',
+      toJSON: jest.fn(),
+    };
+
+    handleICATError(error);
+
     expect(log.error).toHaveBeenCalledWith('Test error message');
     expect(events.length).toBe(1);
     expect(events[0].detail).toEqual({
-      type: 'scigateway:api:notification',
-      payload: { severity: 'error', message: 'Test error message' },
+      type: NotificationType,
+      payload: {
+        severity: 'error',
+        message: 'Test error message',
+      },
     });
   });
 
   it('just logs an error if broadcast is false', () => {
     handleICATError(error, false);
 
-    expect(log.error).toHaveBeenCalledWith('Test error message');
+    expect(log.error).toHaveBeenCalledWith(
+      'Test error message (response data)'
+    );
     expect(events.length).toBe(0);
   });
 
@@ -55,10 +95,12 @@ describe('handleICATError', () => {
     if (error.response) error.response.status = 403;
     handleICATError(error);
 
-    expect(log.error).toHaveBeenCalledWith('Test error message');
+    expect(log.error).toHaveBeenCalledWith(
+      'Test error message (response data)'
+    );
     expect(events.length).toBe(2);
     expect(events[1].detail).toEqual({
-      type: 'scigateway:api:invalidate_token',
+      type: InvalidateTokenType,
     });
   });
 
@@ -69,10 +111,12 @@ describe('handleICATError', () => {
       };
     handleICATError(error);
 
-    expect(log.error).toHaveBeenCalledWith('Test error message');
+    expect(log.error).toHaveBeenCalledWith(
+      'Unable to find user by sessionid: null'
+    );
     expect(events.length).toBe(2);
     expect(events[1].detail).toEqual({
-      type: 'scigateway:api:invalidate_token',
+      type: InvalidateTokenType,
     });
 
     (log.error as jest.Mock).mockClear();
@@ -84,10 +128,10 @@ describe('handleICATError', () => {
       };
     handleICATError(error);
 
-    expect(log.error).toHaveBeenCalledWith('Test error message');
+    expect(log.error).toHaveBeenCalledWith('Session id:null has expired');
     expect(events.length).toBe(2);
     expect(events[1].detail).toEqual({
-      type: 'scigateway:api:invalidate_token',
+      type: InvalidateTokenType,
     });
   });
 });

@@ -96,6 +96,8 @@ export const fetchDatasetSize = (
   return async (dispatch, getState) => {
     dispatch(fetchDatasetSizeRequest());
 
+    // Make use of the facility name and download API url for the request.
+    const { facilityName } = getState().dgcommon;
     const { downloadApiUrl } = getState().dgcommon.urls;
     const currentCache = getState().dgcommon.datasetCache[datasetId];
 
@@ -110,15 +112,15 @@ export const fetchDatasetSize = (
         .get(`${downloadApiUrl}/user/getSize`, {
           params: {
             sessionId: readSciGatewayToken().sessionId,
-            facilityName: 'LILS',
+            facilityName: facilityName,
             entityType: 'dataset',
             entityId: datasetId,
           },
         })
-        .then(response => {
+        .then((response) => {
           dispatch(fetchDatasetSizeSuccess(datasetId, response.data));
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchDatasetSizeFailure(error.message));
         });
@@ -144,7 +146,7 @@ export const fetchDatasets = ({
     const timestamp = Date.now();
     dispatch(fetchDatasetsRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.append(
       'where',
       JSON.stringify({ INVESTIGATION_ID: { eq: investigationId } })
@@ -165,7 +167,7 @@ export const fetchDatasets = ({
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatasetsSuccess(response.data, timestamp));
         if (optionalParams) {
           if (optionalParams.getDatafileCount) {
@@ -187,7 +189,7 @@ export const fetchDatasets = ({
           }
         }
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatasetsFailure(error.message));
       });
@@ -230,7 +232,7 @@ export const fetchDatasetCount = (
     const timestamp = Date.now();
     dispatch(fetchDatasetCountRequest(timestamp));
 
-    let params = getApiFilter(getState);
+    const params = getApiFilter(getState);
     params.delete('order');
     params.append(
       'where',
@@ -245,10 +247,10 @@ export const fetchDatasetCount = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatasetCountSuccess(response.data, timestamp));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatasetCountFailure(error.message));
       });
@@ -376,7 +378,7 @@ export const fetchInvestigationDatasetsCount = (
           },
           cancelToken: source.token,
         })
-        .then(response => {
+        .then((response) => {
           dispatch(
             fetchInvestigationDatasetsCountSuccess(
               investigationId,
@@ -385,7 +387,7 @@ export const fetchInvestigationDatasetsCount = (
             )
           );
         })
-        .catch(error => {
+        .catch((error) => {
           handleICATError(error, false);
           dispatch(fetchInvestigationDatasetsCountFailure(error.message));
         });
@@ -421,7 +423,7 @@ export const fetchDatasetDetails = (
   return async (dispatch, getState) => {
     dispatch(fetchDatasetDetailsRequest());
 
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
     params.append('include', JSON.stringify('DATASETTYPE'));
@@ -435,10 +437,10 @@ export const fetchDatasetDetails = (
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
         },
       })
-      .then(response => {
+      .then((response) => {
         dispatch(fetchDatasetDetailsSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         handleICATError(error);
         dispatch(fetchDatasetDetailsFailure(error.message));
       });

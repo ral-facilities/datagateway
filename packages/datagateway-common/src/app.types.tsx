@@ -1,3 +1,7 @@
+// Parent app name and token in localstorage.
+export const MicroFrontendId = 'scigateway';
+export const MicroFrontendToken = `${MicroFrontendId}:token`;
+
 // TODO: type entities properly; DownloadCartItem does not
 //       include string indexing due to DownloadCartTableItem
 export interface Investigation {

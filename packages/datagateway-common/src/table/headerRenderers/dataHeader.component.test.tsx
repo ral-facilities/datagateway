@@ -38,7 +38,7 @@ describe('Data column header component', () => {
       <DataHeader
         {...dataHeaderProps}
         disableSort={true}
-        filterComponent={<TextColumnFilter label="test" onChange={() => {}} />}
+        filterComponent={<TextColumnFilter label="test" onChange={jest.fn()} />}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -48,7 +48,7 @@ describe('Data column header component', () => {
     const wrapper = shallow(
       <DataHeader
         {...dataHeaderProps}
-        filterComponent={<TextColumnFilter label="test" onChange={() => {}} />}
+        filterComponent={<TextColumnFilter label="test" onChange={jest.fn()} />}
       />
     );
     expect(wrapper).toMatchSnapshot();

@@ -20,7 +20,7 @@ describe('Date filter component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <DateColumnFilter label="test" onChange={() => {}} />
+      <DateColumnFilter label="test" onChange={jest.fn()} />
     );
     expect(wrapper).toMatchSnapshot();
   });
@@ -107,7 +107,7 @@ describe('Date filter component', () => {
     it('calls onChange with null if both date and otherDate are null or invalid', () => {
       const onChange = jest.fn();
       let otherDate = null;
-      let prevDate = new Date('2019-09-18');
+      const prevDate = new Date('2019-09-18');
 
       updateFilter({
         date: null,
@@ -132,7 +132,7 @@ describe('Date filter component', () => {
 
     it('calls onChange with updated filter if one of date or otherDate are valid', () => {
       const onChange = jest.fn();
-      let prevDate = null;
+      const prevDate = null;
 
       updateFilter({
         date: new Date('2019-09-18'),
@@ -292,11 +292,8 @@ describe('Date filter component', () => {
     endDateFilterInput.simulate('change');
 
     expect(wrapper.find('p.Mui-error')).toHaveLength(2);
-    expect(
-      wrapper
-        .find('p.Mui-error')
-        .first()
-        .text()
-    ).toEqual('Invalid date range');
+    expect(wrapper.find('p.Mui-error').first().text()).toEqual(
+      'Invalid date range'
+    );
   });
 });

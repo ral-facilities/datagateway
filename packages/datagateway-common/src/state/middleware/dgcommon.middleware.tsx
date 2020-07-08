@@ -3,24 +3,22 @@ import log from 'loglevel';
 import {
   RegisterRouteType,
   RequestPluginRerenderType,
-  MicroFrontendMessageId,
   CustomFrontendMessageType,
 } from '../actions/actions.types';
 import axios from 'axios';
+import { MicroFrontendId } from '../../app.types';
 
 const CancelToken = axios.CancelToken;
 export let source = CancelToken.source();
 
 const broadcastMessage = (action: AnyAction): void => {
-  document.dispatchEvent(
-    new CustomEvent(MicroFrontendMessageId, { detail: action })
-  );
+  document.dispatchEvent(new CustomEvent(MicroFrontendId, { detail: action }));
 };
 
 type microFrontendMessageType = CustomEvent<AnyAction>;
 
 export const listenToMessages = (dispatch: Dispatch): void => {
-  document.addEventListener(MicroFrontendMessageId, event => {
+  document.addEventListener(MicroFrontendId, (event) => {
     const pluginMessage = event as microFrontendMessageType;
 
     if (

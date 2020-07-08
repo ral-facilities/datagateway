@@ -75,14 +75,14 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       fetchDownloadCartItems({
         facilityName: settings.facilityName,
         downloadApiUrl: settings.downloadApiUrl,
-      }).then(cartItems => {
-        setData(cartItems.map(cartItem => ({ ...cartItem, size: -1 })));
+      }).then((cartItems) => {
+        setData(cartItems.map((cartItem) => ({ ...cartItem, size: -1 })));
         setDataLoaded(true);
         setSizesLoaded(false);
         setSizesFinished(false);
         getCartDatafileCount(cartItems, {
           apiUrl: settings.apiUrl,
-        }).then(count => setFileCount(count));
+        }).then((count) => setFileCount(count));
       });
   }, [settings.facilityName, settings.apiUrl, settings.downloadApiUrl]);
 
@@ -101,7 +101,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             facilityName: settings.facilityName,
             apiUrl: settings.apiUrl,
             downloadApiUrl: settings.downloadApiUrl,
-          }).then(size => {
+          }).then((size) => {
             updatedData[chunkIndexOffset + index].size = size;
           });
           chunkPromises.push(promise);
@@ -145,8 +145,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   );
 
   const sortedAndFilteredData = React.useMemo(() => {
-    const filteredData = data.filter(item => {
-      for (let [key, value] of Object.entries(filters)) {
+    const filteredData = data.filter((item) => {
+      for (const [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (
           tableValue === undefined ||
@@ -162,7 +162,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
       a: DownloadCartTableItem,
       b: DownloadCartTableItem
     ): number {
-      for (let [sortColumn, sortDirection] of Object.entries(sort)) {
+      for (const [sortColumn, sortDirection] of Object.entries(sort)) {
         if (sortDirection === 'asc') {
           if (a[sortColumn] > b[sortColumn]) {
             return 1;
@@ -203,7 +203,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 {
                   label: 'Size',
                   dataKey: 'size',
-                  cellContentRenderer: props => {
+                  cellContentRenderer: (props) => {
                     return formatBytes(props.cellData);
                   },
                 },
@@ -243,7 +243,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                             ).then(() =>
                               setData(
                                 data.filter(
-                                  item => item.entityId !== cartItem.entityId
+                                  (item) => item.entityId !== cartItem.entityId
                                 )
                               )
                             ),

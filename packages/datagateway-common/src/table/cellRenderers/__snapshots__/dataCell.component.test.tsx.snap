@@ -5,12 +5,17 @@ exports[`Data cell component renders correctly 1`] = `
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
 >
-  <WithStyles(ForwardRef(Typography))
-    noWrap={true}
-    variant="body2"
+  <ArrowTooltip
+    enterDelay={500}
+    title="non nested property"
   >
-    non nested property
-  </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      noWrap={true}
+      variant="body2"
+    >
+      non nested property
+    </WithStyles(ForwardRef(Typography))>
+  </ArrowTooltip>
 </div>
 `;
 
@@ -19,12 +24,17 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
 >
-  <WithStyles(ForwardRef(Typography))
-    noWrap={true}
-    variant="body2"
+  <ArrowTooltip
+    enterDelay={500}
+    title="nested property"
   >
-    nested property
-  </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      noWrap={true}
+      variant="body2"
+    >
+      nested property
+    </WithStyles(ForwardRef(Typography))>
+  </ArrowTooltip>
 </div>
 `;
 
@@ -33,11 +43,16 @@ exports[`Data cell component renders provided cell data correctly 1`] = `
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
 >
-  <WithStyles(ForwardRef(Typography))
-    noWrap={true}
-    variant="body2"
+  <ArrowTooltip
+    enterDelay={500}
+    title="non nested property"
   >
-    provided test
-  </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))
+      noWrap={true}
+      variant="body2"
+    >
+      provided test
+    </WithStyles(ForwardRef(Typography))>
+  </ArrowTooltip>
 </div>
 `;

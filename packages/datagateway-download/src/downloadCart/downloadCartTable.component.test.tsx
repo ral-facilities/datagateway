@@ -140,13 +140,9 @@ describe('Download cart table component', () => {
     });
 
     expect(getSize).toHaveBeenCalledTimes(4);
-    expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .first()
-        .text()
-    ).toEqual('1 B');
+    expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
+      '1 B'
+    );
     expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
       expect.stringContaining('Total size: 4 B')
     );
@@ -190,8 +186,18 @@ describe('Download cart table component', () => {
       false
     );
 
-    act(() => {
-      wrapper.find('button#downloadCartButton').simulate('click');
+    wrapper.find('button#downloadCartButton').simulate('click');
+
+    // Update the wrapper with the loading dialog.
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Update the wrapper with the download confirmation dialog.
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
     });
 
     expect(wrapper.exists('[aria-labelledby="downloadCartConfirmation"]')).toBe(
@@ -208,8 +214,6 @@ describe('Download cart table component', () => {
       .find('button[aria-label="download-confirmation-close"]')
       .simulate('click');
   });
-
-  it('calls clearCart function once the download cart is closed', async () => {});
 
   it('removes all items from cart when Remove All button is clicked', async () => {
     const wrapper = mount(
@@ -286,10 +290,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    const firstNameCell = wrapper
-      .find('[aria-colindex=1]')
-      .find('p')
-      .first();
+    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
 
     const typeSortLabel = wrapper
       .find('[role="columnheader"] span[role="button"]')

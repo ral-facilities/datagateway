@@ -177,6 +177,13 @@ describe('Dataset actions', () => {
       })
     );
 
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...initialState,
+        facilityName: 'LILS',
+      },
+    });
+
     const asyncAction = fetchDatasetSize(1);
     await asyncAction(dispatch, getState, null);
 
@@ -466,7 +473,7 @@ describe('Dataset actions', () => {
     expect(actions[0]).toEqual(downloadDatasetRequest(1));
 
     expect(document.createElement).toHaveBeenCalledWith('a');
-    let link = document.createElement('a');
+    const link = document.createElement('a');
     link.href = `/getData?sessionId=${null}&datasetIds=${1}&compress=${false}&zip=${true}&outname=${'test'}`;
     link.target = '_blank';
     link.style.display = 'none';

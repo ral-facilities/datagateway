@@ -52,7 +52,7 @@ exports[`Data column header component renders correctly with filter but no sort 
   </div>
   <TextColumnFilter
     label="test"
-    onChange={[Function]}
+    onChange={[MockFunction]}
   />
 </div>
 `;
@@ -119,7 +119,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
   </div>
   <TextColumnFilter
     label="test"
-    onChange={[Function]}
+    onChange={[MockFunction]}
   />
 </div>
 `;
