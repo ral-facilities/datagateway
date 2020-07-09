@@ -69,7 +69,7 @@ exports[`DLS Proposals table component renders title and name as links 1`] = `
       "render": [Function],
     }
   }
-  to="/browse/proposal/Test 1/investigation/"
+  to="/browse/proposal/Test 1/investigation"
 >
   <ForwardRef(Link)
     classes={
@@ -96,7 +96,7 @@ exports[`DLS Proposals table component renders title and name as links 1`] = `
         "render": [Function],
       }
     }
-    to="/browse/proposal/Test 1/investigation/"
+    to="/browse/proposal/Test 1/investigation"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
@@ -117,7 +117,7 @@ exports[`DLS Proposals table component renders title and name as links 1`] = `
       }
       onBlur={[Function]}
       onFocus={[Function]}
-      to="/browse/proposal/Test 1/investigation/"
+      to="/browse/proposal/Test 1/investigation"
       variant="inherit"
     >
       <ForwardRef(Typography)
@@ -173,25 +173,25 @@ exports[`DLS Proposals table component renders title and name as links 1`] = `
         }
         onBlur={[Function]}
         onFocus={[Function]}
-        to="/browse/proposal/Test 1/investigation/"
+        to="/browse/proposal/Test 1/investigation"
         variant="inherit"
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
           onBlur={[Function]}
           onFocus={[Function]}
-          to="/browse/proposal/Test 1/investigation/"
+          to="/browse/proposal/Test 1/investigation"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-            href="/browse/proposal/Test 1/investigation/"
+            href="/browse/proposal/Test 1/investigation"
             navigate={[Function]}
             onBlur={[Function]}
             onFocus={[Function]}
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-              href="/browse/proposal/Test 1/investigation/"
+              href="/browse/proposal/Test 1/investigation"
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}

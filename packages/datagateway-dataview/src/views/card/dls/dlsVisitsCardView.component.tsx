@@ -15,6 +15,7 @@ import {
   Investigation,
   tableLink,
   fetchFilter,
+  fetchInvestigationSize,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
@@ -29,6 +30,7 @@ interface DLSVisitsCVDispatchProps {
   fetchData: (proposalName: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (proposalName: string) => Promise<void>;
   fetchDetails: (investigationId: number) => Promise<void>;
+  fetchSize: (investigationId: number) => Promise<void>;
   fetchTypeFilter: (proposalName: string) => Promise<void>;
 }
 
@@ -53,6 +55,7 @@ const DLSVisitsCardView = (
     fetchCount,
     fetchTypeFilter,
     fetchDetails,
+    fetchSize,
     filterData,
     proposalName,
     view,
@@ -90,7 +93,7 @@ const DLSVisitsCardView = (
     <CardView
       data={data}
       totalDataCount={totalDatCount}
-      loadData={params => fetchData(proposalName, params)}
+      loadData={(params) => fetchData(proposalName, params)}
       loadCount={() => fetchCount(proposalName)}
       title={{
         dataKey: 'VISIT_ID',
@@ -124,6 +127,7 @@ const DLSVisitsCardView = (
         <VisitDetailsPanel
           rowData={investigation}
           fetchDetails={fetchDetails}
+          fetchSize={fetchSize}
         />
       )}
       cardFilters={[
@@ -170,6 +174,8 @@ const mapDispatchToProps = (
     ),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
+  fetchSize: (investigationId: number) =>
+    dispatch(fetchInvestigationSize(investigationId)),
   fetchTypeFilter: (proposalName: string) =>
     dispatch(
       fetchFilter('investigation', 'TYPE_ID', [

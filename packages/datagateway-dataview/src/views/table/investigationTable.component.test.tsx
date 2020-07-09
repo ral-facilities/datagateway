@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import InvestigationTable from './investigationTable.component';
-import { initialState } from '../state/reducers/dgdataview.reducer';
+import { initialState } from '../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../state/app.types';
 import {
@@ -41,6 +41,7 @@ describe('Investigation table component', () => {
         dgdataview: initialState,
       })
     );
+    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
@@ -191,10 +192,7 @@ describe('Investigation table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(addToCartRequest());
   });
@@ -219,10 +217,7 @@ describe('Investigation table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
   });
@@ -286,10 +281,7 @@ describe('Investigation table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=3]').find('p').children()
     ).toMatchSnapshot();
   });
 
@@ -302,19 +294,13 @@ describe('Investigation table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=9]')
-        .find('p')
-        .text()
-    ).toEqual('2019-07-23');
+    expect(wrapper.find('[aria-colindex=9]').find('p').text()).toEqual(
+      '2019-07-23'
+    );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=10]')
-        .find('p')
-        .text()
-    ).toEqual('2019-07-24');
+    expect(wrapper.find('[aria-colindex=10]').find('p').text()).toEqual(
+      '2019-07-24'
+    );
   });
 
   it('renders fine with incomplete data', () => {

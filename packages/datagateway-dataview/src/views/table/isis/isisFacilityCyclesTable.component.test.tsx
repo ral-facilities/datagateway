@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import ISISFacilityCyclesTable from './isisFacilityCyclesTable.component';
-import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
@@ -38,6 +38,7 @@ describe('ISIS FacilityCycles table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
@@ -182,10 +183,7 @@ describe('ISIS FacilityCycles table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=1]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=1]').find('p').children()
     ).toMatchSnapshot();
   });
 });

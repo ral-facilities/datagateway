@@ -3,8 +3,8 @@ import { ReactWrapper } from 'enzyme';
 
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
-import { StateType } from './state/app.types';
-import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
+import { StateType } from '../state/app.types';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 
 import { createShallow } from '@material-ui/core/test-utils';

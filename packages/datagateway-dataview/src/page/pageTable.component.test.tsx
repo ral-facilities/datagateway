@@ -9,32 +9,32 @@ import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter } from 'react-router';
 import PageTable from './pageTable.component';
 import { Provider } from 'react-redux';
-import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import { Link } from 'react-router-dom';
 
-import InvestigationTable from './table/investigationTable.component';
-import DatasetTable from './table/datasetTable.component';
-import DatafileTable from './table/datafileTable.component';
+import InvestigationTable from '../views/table/investigationTable.component';
+import DatasetTable from '../views/table/datasetTable.component';
+import DatafileTable from '../views/table/datafileTable.component';
 
-import DLSProposalsTable from './dls/tables/dlsProposalsTable.component';
-import DLSVisitsTable from './dls/tables/dlsVisitsTable.component';
-import DLSDatasetsTable from './dls/tables/dlsDatasetsTable.component';
-import DLSDatafilesTable from './dls/tables/dlsDatafilesTable.component';
+import DLSProposalsTable from '../views/table/dls/dlsProposalsTable.component';
+import DLSVisitsTable from '../views/table/dls/dlsVisitsTable.component';
+import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
+import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
-import ISISInstrumentsTable from './isis/tables/isisInstrumentsTable.component';
-import ISISFacilityCyclesTable from './isis/tables/isisFacilityCyclesTable.component';
-import ISISInvestigationsTable from './isis/tables/isisInvestigationsTable.component';
-import ISISDatasetsTable from './isis/tables/isisDatasetsTable.component';
-import ISISDatafilesTable from './isis/tables/isisDatafilesTable.component';
-import ISISMyDataTable from './isis/tables/isisMyDataTable.component';
-import DLSMyDataTable from './dls/tables/dlsMyDataTable.component';
+import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
+import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
+import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
+import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
+import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component';
+import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
+import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
 import {
   checkInstrumentAndFacilityCycleId,
   checkInvestigationId,
   checkProposalName,
 } from './idCheckFunctions';
-import { flushPromises } from './setupTests';
+import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 
 jest.mock('loglevel');

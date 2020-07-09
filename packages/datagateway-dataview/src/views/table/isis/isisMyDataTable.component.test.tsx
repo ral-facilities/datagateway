@@ -1,7 +1,7 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import ISISMyDataTable from './isisMyDataTable.component';
-import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
 import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
@@ -42,6 +42,7 @@ describe('ISIS Investigations table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
@@ -222,10 +223,7 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[2]).toEqual(addToCartRequest());
   });
@@ -250,10 +248,7 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[2]).toEqual(removeFromCartRequest());
   });
@@ -332,17 +327,11 @@ describe('ISIS Investigations table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=3]').find('p').children()
     ).toMatchSnapshot();
 
     expect(
-      wrapper
-        .find('[aria-colindex=6]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=6]').find('p').children()
     ).toMatchSnapshot();
   });
 
@@ -370,19 +359,13 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .text()
-    ).toEqual('Test 1 title');
+    expect(wrapper.find('[aria-colindex=3]').find('p').text()).toEqual(
+      'Test 1 title'
+    );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=6]')
-        .find('p')
-        .text()
-    ).toEqual('Test 1 name');
+    expect(wrapper.find('[aria-colindex=6]').find('p').text()).toEqual(
+      'Test 1 name'
+    );
 
     // now check that blank is returned if objects are missing
     state.dgcommon.data[0] = {
@@ -414,18 +397,8 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=4]')
-        .find('p')
-        .text()
-    ).toEqual('');
+    expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
 
-    expect(
-      wrapper
-        .find('[aria-colindex=7]')
-        .find('p')
-        .text()
-    ).toEqual('');
+    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
   });
 });

@@ -12,6 +12,7 @@ import {
   Dataset,
   tableLink,
   fetchFilter,
+  fetchDatasetSize,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import {
@@ -47,6 +48,7 @@ interface DLSDatasetsCVDispatchProps {
   ) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
   fetchDetails: (datasetId: number) => Promise<void>;
+  fetchSize: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchTypeFilter: (datasetId: number) => Promise<void>;
@@ -68,6 +70,7 @@ const DLSDatasetsCardView = (
     fetchCount,
     fetchTypeFilter,
     fetchDetails,
+    fetchSize,
     cartItems,
     filterData,
     addToCart,
@@ -82,11 +85,11 @@ const DLSDatasetsCardView = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'dataset' &&
             datasetIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, datasetIds]
   );
 
@@ -97,7 +100,7 @@ const DLSDatasetsCardView = (
 
   React.useEffect(() => {
     // TODO: React.useMemo?
-    setDatasetIds(data.map(dataset => dataset.ID));
+    setDatasetIds(data.map((dataset) => dataset.ID));
 
     if (!fetchedCount) {
       fetchCount(parseInt(investigationId));
@@ -120,7 +123,7 @@ const DLSDatasetsCardView = (
   return (
     <CardView
       data={data}
-      loadData={params => fetchData(parseInt(investigationId), params)}
+      loadData={(params) => fetchData(parseInt(investigationId), params)}
       loadCount={() => fetchCount(parseInt(investigationId))}
       totalDataCount={totalDataCount}
       title={{
@@ -155,7 +158,11 @@ const DLSDatasetsCardView = (
         },
       ]}
       moreInformation={(dataset: Dataset) => (
-        <DatasetDetailsPanel rowData={dataset} fetchDetails={fetchDetails} />
+        <DatasetDetailsPanel
+          rowData={dataset}
+          fetchDetails={fetchDetails}
+          fetchSize={fetchSize}
+        />
       )}
       buttons={[
         function cartButton(dataset: Dataset) {
@@ -212,6 +219,7 @@ const mapDispatchToProps = (
   fetchCount: (investigationId: number) =>
     dispatch(fetchDatasetCount(investigationId)),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
+  fetchSize: (datasetId: number) => dispatch(fetchDatasetSize(datasetId)),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),

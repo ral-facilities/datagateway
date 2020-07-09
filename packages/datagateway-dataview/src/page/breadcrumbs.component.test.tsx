@@ -6,12 +6,12 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { dGCommonInitialState } from 'datagateway-common';
-import { initialState as dgDataViewInitialState } from './state/reducers/dgdataview.reducer';
-import { StateType } from './state/app.types';
+import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
+import { StateType } from '../state/app.types';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createLocation } from 'history';
-import { flushPromises } from './setupTests';
+import { flushPromises } from '../setupTests';
 import PageBreadcrumbs from './breadcrumbs.component';
 import axios from 'axios';
 import { ReactWrapper } from 'enzyme';
