@@ -27,7 +27,7 @@ import SelectCell from './cellRenderers/selectCell.component';
 import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
-const headerHeight = 120;
+const headerHeight = 70;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
@@ -44,10 +44,10 @@ const styles = (theme: Theme): StyleRules =>
     },
     headerFlexContainer: {
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       alignItems: 'left',
       boxSizing: 'border-box',
-      justifyContent: 'flex-end',
+      overflow: 'hidden',
     },
     tableRow: {},
     tableRowHover: {
@@ -63,6 +63,9 @@ const styles = (theme: Theme): StyleRules =>
     headerTableCell: {
       flex: 1,
       height: headerHeight,
+    },
+    header: {
+      overflow: 'hidden',
     },
   });
 
@@ -312,6 +315,10 @@ const VirtualizedTable = (
                         dataKey={dataKey}
                         label={label}
                         disableSort={disableSort}
+                        headerClassName={clsx(
+                          classes.flexContainer,
+                          classes.header
+                        )}
                         headerRenderer={(headerProps) => (
                           <DataHeader
                             {...headerProps}
