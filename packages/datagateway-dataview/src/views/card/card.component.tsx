@@ -14,7 +14,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
-import ArrowTooltip from '../../page/arrowtooltip.component';
+import { ArrowTooltip } from 'datagateway-common';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
@@ -271,7 +271,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                       }
                     />
                     <Link
-                      onClick={() => setDescriptionCollapsed(prev => !prev)}
+                      onClick={() => setDescriptionCollapsed((prev) => !prev)}
                     >
                       {isDescriptionCollapsed ? 'Show less' : 'Show more'}
                     </Link>

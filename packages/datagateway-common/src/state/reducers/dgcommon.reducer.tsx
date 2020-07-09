@@ -229,9 +229,17 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     loading: false,
     downloading: false,
     error: null,
-    // TODO: We clear filters, sort on load URL query.
     sort: {},
     filters: {},
+
+    // TODO: Reset saved view if location has changed
+    //       as these will no longer apply.
+    // savedView: {
+    //   view: null,
+    //   queries: null,
+    //   filters: {},
+    //   sort: {},
+    // },
   };
 }
 
@@ -241,20 +249,6 @@ export function handleClearData(state: DGCommonState): DGCommonState {
     data: [],
   };
 }
-
-// export function handleClearFilters(state: DGCommonState): DGCommonState {
-//   return {
-//     ...state,
-//     filters: {},
-//   };
-// }
-
-// export function handleClearSort(state: DGCommonState): DGCommonState {
-//   return {
-//     ...state,
-//     sort: {},
-//   };
-// }
 
 export function handleUpdateView(
   state: DGCommonState,
