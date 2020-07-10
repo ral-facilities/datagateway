@@ -15,7 +15,7 @@ import {
   listenToMessages,
   RegisterRouteType,
   MicroFrontendId,
-  SendThemeOptionsType,
+  DGThemeProvider,
 } from 'datagateway-common';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
@@ -25,10 +25,7 @@ import { saveApiUrlMiddleware } from './idCheckFunctions';
 import {
   createGenerateClassName,
   StylesProvider,
-  MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-
 import PageContainer from './pageContainer.component';
 
 const generateClassName = createGenerateClassName({
@@ -48,9 +45,6 @@ const middleware = [
   saveApiUrlMiddleware,
 ];
 
-// Store the parent theme options when received.
-let parentThemeOptions: Theme | null = null;
-
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const logger = (createLogger as any)();
@@ -69,20 +63,6 @@ const store = createStore(
   AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))
 );
-
-// Handle theme options sent from the parent app.
-document.addEventListener(MicroFrontendId, (e) => {
-  const action = (e as CustomEvent).detail;
-  console.log('Got action: ', action);
-  if (
-    action.type === SendThemeOptionsType &&
-    action.payload &&
-    action.payload.theme
-  ) {
-    console.log('Received theme options: ', action.payload);
-    parentThemeOptions = action.payload.theme;
-  }
-});
 
 listenToMessages(store.dispatch);
 
@@ -146,11 +126,11 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <MuiThemeProvider theme={parentThemeOptions}>
+                <DGThemeProvider>
                   <ConnectedPreloader>
                     <PageContainer />
                   </ConnectedPreloader>
-                </MuiThemeProvider>
+                </DGThemeProvider>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>

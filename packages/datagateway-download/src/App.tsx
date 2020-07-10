@@ -6,11 +6,9 @@ import DownloadTabs from './downloadTab/downloadTab.component';
 import {
   createGenerateClassName,
   StylesProvider,
-  MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import ConfigProvider from './ConfigProvider';
-import { MicroFrontendId, SendThemeOptionsType } from 'datagateway-common';
+import { DGThemeProvider } from 'datagateway-common';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
@@ -19,23 +17,6 @@ const generateClassName = createGenerateClassName({
   // ensures class selectors are working on tests.
   disableGlobal:
     process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
-});
-
-// Store the parent theme options when received.
-let parentThemeOptions: Theme | null = null;
-
-// Handle theme options sent from the parent app.
-document.addEventListener(MicroFrontendId, (e) => {
-  const action = (e as CustomEvent).detail;
-  console.log('Got action: ', action);
-  if (
-    action.type === SendThemeOptionsType &&
-    action.payload &&
-    action.payload.theme
-  ) {
-    console.log('Received theme options: ', action.payload);
-    parentThemeOptions = action.payload.theme;
-  }
 });
 
 class App extends Component<unknown, { hasError: boolean }> {
@@ -70,11 +51,11 @@ class App extends Component<unknown, { hasError: boolean }> {
     return (
       <div className="App">
         <StylesProvider generateClassName={generateClassName}>
-          <MuiThemeProvider theme={parentThemeOptions}>
+          <DGThemeProvider>
             <ConfigProvider>
               <DownloadTabs />
             </ConfigProvider>
-          </MuiThemeProvider>
+          </DGThemeProvider>
         </StylesProvider>
       </div>
     );
