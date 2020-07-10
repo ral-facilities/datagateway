@@ -13,6 +13,7 @@ describe('DGThemeProvider', () => {
   });
 
   it('receives and uses the theme options', () => {
+    // Create a basic theme.
     const theme = createMuiTheme({
       palette: {
         type: 'dark',
