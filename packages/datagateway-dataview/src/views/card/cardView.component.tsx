@@ -207,7 +207,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           // Update the selected count for each filter.
           data[filter.dataKey].selectedCount = Object.values(
             data[filter.dataKey].items
-          ).filter(v => v).length;
+          ).filter((v) => v).length;
           return data;
         }, {})
       : [];
@@ -230,7 +230,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           }),
           []
         )
-        .filter(v => v.items.length > 0);
+        .filter((v) => v.items.length > 0);
       // console.log(selected);
       setSelectedFilters(selected);
     }
@@ -424,7 +424,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 labelId="select-max-results-label"
                 id="select-max-results"
                 value={maxResults}
-                onChange={e => {
+                onChange={(e) => {
                   setMaxResults(e.target.value as number);
                   pushResults(e.target.value as number);
                   setLoadedData(false);
@@ -562,7 +562,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                     information={
                       information &&
                       information
-                        .map(details => ({
+                        .map((details) => ({
                           // TODO: Create a separate type just for details label?
                           //       We can say the data key is the label if not defined.
                           label: details.label
@@ -573,15 +573,15 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                             : nestedValue(data, details.dataKey),
                         }))
                         // Filter afterwards to only show content with information.
-                        .filter(v => v.content)
+                        .filter((v) => v.content)
                     }
                     moreInformation={moreInformation && moreInformation(data)}
                     // Pass in the react nodes with the data to the card.
-                    buttons={buttons && buttons.map(button => button(data))}
+                    buttons={buttons && buttons.map((button) => button(data))}
                     // Pass tag names to the card given the specified data key for the filter.
                     tags={
                       cardFilters &&
-                      cardFilters.map(f => nestedValue(data, f.dataKey))
+                      cardFilters.map((f) => nestedValue(data, f.dataKey))
                     }
                     image={image}
                   />

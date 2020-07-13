@@ -80,22 +80,6 @@ export const filterTable = (
   },
 });
 
-export const clearTable = (): Action => ({
-  type: ClearTableType,
-});
-
-export const clearData = (): Action => ({
-  type: ClearDataType,
-});
-
-// export const clearFilters = (): Action => ({
-//   type: ClearFiltersType,
-// });
-
-// export const clearSort = (): Action => ({
-//   type: ClearSortType,
-// });
-
 export const updateQueryParams = (
   queries: QueryParams
 ): ActionType<UpdateQueriesPayload> => ({
@@ -119,6 +103,14 @@ export const updateSort = (sort: SortType): ActionType<UpdateSortPayload> => ({
   payload: {
     sort,
   },
+});
+
+export const clearTable = (): Action => ({
+  type: ClearTableType,
+});
+
+export const clearData = (): Action => ({
+  type: ClearDataType,
 });
 
 export const loadURLQuery = (): ThunkResult<Promise<void>> => {
@@ -194,13 +186,8 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
       results: results ? Number(results) : null,
     };
 
+    // Clear data in state already.
     dispatch(clearTable());
-
-    // // Clear filters currently in state.
-    // dispatch(clearFilters());
-
-    // // Clear sort currently in state.
-    // dispatch(clearSort());
 
     // Update with the new query parameters.
     dispatch(updateQueryParams(params));

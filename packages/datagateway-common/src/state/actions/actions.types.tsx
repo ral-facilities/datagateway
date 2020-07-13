@@ -24,11 +24,6 @@ export const ConfigureURLsType = 'datagateway_common:configure_urls';
 export const SortTableType = 'datagateway_common:sort_table';
 export const FilterTableType = 'datagateway_common:filter_table';
 
-export const ClearTableType = 'datagateway_common:clear_table';
-export const ClearDataType = 'datagateway_common:clear_data';
-// export const ClearFiltersType = 'datagateway_common:clear_filters';
-// export const ClearSortType = 'datagateway_common:clear_sort';
-
 export const UpdateFiltersType = 'datagateway_common:update_filters';
 export const UpdateSortType = 'datagateway_common:update_sort';
 export const UpdateQueriesType = 'datagateway_common:update_queries';
@@ -38,6 +33,9 @@ export const UpdatePageType = 'datagateway_common:update_page';
 export const UpdateResultsType = 'datagateway_common:update_results';
 
 export const UpdateSaveViewType = 'datagateway_common:update_save_view';
+
+export const ClearTableType = 'datagateway_common:clear_table';
+export const ClearDataType = 'datagateway_common:clear_data';
 
 export const FetchInvestigationsRequestType =
   'datagateway_common:fetch_investigations_request';

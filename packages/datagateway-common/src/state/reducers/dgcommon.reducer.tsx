@@ -221,35 +221,6 @@ export function handleConfigureFacilityName(
   };
 }
 
-export function handleClearTable(state: DGCommonState): DGCommonState {
-  return {
-    ...state,
-    data: [],
-    totalDataCount: 0,
-    loading: false,
-    downloading: false,
-    error: null,
-    sort: {},
-    filters: {},
-
-    // TODO: Reset saved view if location has changed
-    //       as these will no longer apply.
-    // savedView: {
-    //   view: null,
-    //   queries: null,
-    //   filters: {},
-    //   sort: {},
-    // },
-  };
-}
-
-export function handleClearData(state: DGCommonState): DGCommonState {
-  return {
-    ...state,
-    data: [],
-  };
-}
-
 export function handleUpdateView(
   state: DGCommonState,
   payload: UpdateViewPayload
@@ -343,6 +314,32 @@ export function handleSaveView(
       filters: state.filters,
       sort: state.sort,
     },
+  };
+}
+
+export function handleClearTable(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    data: [],
+    totalDataCount: 0,
+    loading: false,
+    downloading: false,
+    error: null,
+    sort: {},
+    filters: {},
+    savedView: {
+      view: null,
+      queries: null,
+      filters: {},
+      sort: {},
+    },
+  };
+}
+
+export function handleClearData(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    data: [],
   };
 }
 
@@ -726,10 +723,6 @@ const dGCommonReducer = createReducer(initialState, {
   [ConfigureURLsType]: handleConfigureUrls,
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
-  [ClearTableType]: handleClearTable,
-  [ClearDataType]: handleClearData,
-  // [ClearFiltersType]: handleClearFilters,
-  // [ClearSortType]: handleClearSort,
   [UpdateViewType]: handleUpdateView,
   [UpdatePageType]: handleUpdatePage,
   [UpdateResultsType]: handleUpdateResults,
@@ -737,6 +730,8 @@ const dGCommonReducer = createReducer(initialState, {
   [UpdateSortType]: handleUpdateSort,
   [UpdateQueriesType]: handleUpdateQueries,
   [UpdateSaveViewType]: handleSaveView,
+  [ClearTableType]: handleClearTable,
+  [ClearDataType]: handleClearData,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

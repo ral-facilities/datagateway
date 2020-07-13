@@ -94,7 +94,7 @@ class PageContainer extends React.Component<
     // console.log('supported: ', this.props.path.match('/browse/investigation'));
 
     // console.log('match supported: ', Object.values(supportedPaths));
-    const res = Object.values(supportedPaths).some(p => {
+    const res = Object.values(supportedPaths).some((p) => {
       // console.log('match input: ', p.replace(/(:[^./]*)/g, '(.)+'));
       // Look for the character set where the parameter for ID would be
       // replaced with the regex to catch any character between the forward slashes.
@@ -119,13 +119,14 @@ class PageContainer extends React.Component<
       : false;
   };
 
-  public storeDataView = (view: 'table' | 'card'): void =>
-    localStorage.setItem('dataView', view);
+  public storeDataView = (view: ViewsType): void => {
+    if (view) localStorage.setItem('dataView', view);
+  };
 
   public getView = (): string => {
     // We store the view into localStorage so the user can
     // return to the view they were on the next time they open the page.
-    let savedView = localStorage.getItem('dataView');
+    const savedView = localStorage.getItem('dataView');
 
     // We set to 'table' initially if there is none present.
     if (!savedView) this.storeDataView('table');
@@ -133,7 +134,9 @@ class PageContainer extends React.Component<
     return 'table';
   };
 
-  public handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  public handleToggleChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     const nextView = event.target.checked ? 'card' : 'table';
 
     // Save the current view information to state and restore the previous view information.
