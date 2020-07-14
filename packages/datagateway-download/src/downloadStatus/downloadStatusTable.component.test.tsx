@@ -19,11 +19,13 @@ const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
   }, [props.refresh]);
 
   return (
-    <DownloadStatusTable
-      refreshTable={refreshTable}
-      setRefreshTable={setRefreshTable}
-      setLastChecked={jest.fn()}
-    />
+    <div id="datagateway-download">
+      <DownloadStatusTable
+        refreshTable={refreshTable}
+        setRefreshTable={setRefreshTable}
+        setLastChecked={jest.fn()}
+      />
+    </div>
   );
 };
 
@@ -137,11 +139,13 @@ describe('Download Status Table', () => {
 
   it('fetches the download items on load', async () => {
     const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </div>
     );
 
     await act(async () => {
@@ -181,11 +185,13 @@ describe('Download Status Table', () => {
 
   it('should have a link for a download item', async () => {
     const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </div>
     );
 
     await act(async () => {
@@ -209,7 +215,10 @@ describe('Download Status Table', () => {
 
     // Check to see if the href contains the correct call.
     expect(
-      wrapper.find('a[aria-label="Download test-file-3"]').at(0).props().href
+      wrapper
+        .find('a[aria-label="Download test-file-3"]')
+        .at(0)
+        .props().href
     ).toContain('/getData');
 
     wrapper.find('a[aria-label="Download test-file-3"]').simulate('click');
@@ -230,11 +239,13 @@ describe('Download Status Table', () => {
 
   it("removes an item when said item's remove button is clicked", async () => {
     const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </div>
     );
 
     await act(async () => {
@@ -272,11 +283,13 @@ describe('Download Status Table', () => {
 
   it('sorts data when headers are clicked', async () => {
     const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </div>
     );
 
     await act(async () => {
@@ -284,7 +297,10 @@ describe('Download Status Table', () => {
       wrapper.update();
     });
 
-    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
+    const firstNameCell = wrapper
+      .find('[aria-colindex=1]')
+      .find('p')
+      .first();
 
     // Get the access method sort header.
     const accessMethodSortLabel = wrapper
@@ -319,11 +335,13 @@ describe('Download Status Table', () => {
 
   it('filters data when text fields are typed into', async () => {
     const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </div>
     );
 
     await act(async () => {
@@ -383,11 +401,13 @@ describe('Download Status Table', () => {
 
   it('filters data when date filter is altered', async () => {
     const wrapper = mount(
-      <DownloadStatusTable
-        refreshTable={false}
-        setRefreshTable={jest.fn()}
-        setLastChecked={jest.fn()}
-      />
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </div>
     );
 
     await act(async () => {
