@@ -26,7 +26,7 @@
     "@types/jsrsasign": "^8.0.3",
     "@types/lodash.chunk": "^4.2.6",
     "@typescript-eslint/eslint-plugin": "^3.6.0",
-    "@typescript-eslint/parser": "^3.6.0",
+    "@typescript-eslint/parser": "^3.6.1",
     "babel-eslint": "10.1.0",
     "cross-env": "^7.0.2",
     "cypress": "4.9.0",
