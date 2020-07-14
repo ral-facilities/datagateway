@@ -114,9 +114,11 @@ describe('Download cart table component', () => {
 
   it('fetches the download cart on load', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -127,7 +129,7 @@ describe('Download cart table component', () => {
     expect(fetchDownloadCartItems).toHaveBeenCalled();
   });
 
-  it('calculates sizes once cart items have been fetched', async () => {
+  it('does not fetch the download cart on load if no dg-download element exists', async () => {
     const wrapper = mount(
       <DownloadSettingsContext.Provider value={mockedSettings}>
         <DownloadCartTable statusTabRedirect={jest.fn()} />
@@ -139,10 +141,31 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    expect(getSize).toHaveBeenCalledTimes(4);
-    expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
-      '1 B'
+    expect(fetchDownloadCartItems).not.toHaveBeenCalled();
+  });
+
+  it('calculates sizes once cart items have been fetched', async () => {
+    const wrapper = mount(
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(getSize).toHaveBeenCalledTimes(4);
+    expect(
+      wrapper
+        .find('[aria-colindex=3]')
+        .find('p')
+        .first()
+        .text()
+    ).toEqual('1 B');
     expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
       expect.stringContaining('Total size: 4 B')
     );
@@ -150,9 +173,11 @@ describe('Download cart table component', () => {
 
   it('calculates total file count once cart items have been fetched', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -168,9 +193,11 @@ describe('Download cart table component', () => {
 
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     expect(wrapper.find('button#downloadCartButton').prop('disabled')).toBe(
@@ -217,9 +244,11 @@ describe('Download cart table component', () => {
 
   it('removes all items from cart when Remove All button is clicked', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -240,9 +269,11 @@ describe('Download cart table component', () => {
 
   it("removes an item when said item's remove button is clicked", async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -280,9 +311,11 @@ describe('Download cart table component', () => {
 
   it('sorts data when headers are clicked', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -290,7 +323,10 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
+    const firstNameCell = wrapper
+      .find('[aria-colindex=1]')
+      .find('p')
+      .first();
 
     const typeSortLabel = wrapper
       .find('[role="columnheader"] span[role="button"]')
@@ -323,9 +359,11 @@ describe('Download cart table component', () => {
 
   it('filters data when text fields are typed into', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
