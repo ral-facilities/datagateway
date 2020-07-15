@@ -14,6 +14,11 @@ import {
   investigationLink,
   removeFromCart,
   FiltersType,
+  TextColumnFilter,
+  DateColumnFilter,
+  pushPageFilter,
+  Filter,
+  DateFilter,
 } from 'datagateway-common';
 import {
   FilterDataType,
@@ -34,6 +39,7 @@ interface InvestigationCVDispatchProps {
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchTypeFilter: () => Promise<void>;
   fetchFacilityFilter: () => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 interface InvestigationCVStateProps {
@@ -55,6 +61,7 @@ const InvestigationCardView = (
     data,
     totalDataCount,
     filterData,
+    filters,
     cartItems,
     fetchData,
     fetchCount,
@@ -62,6 +69,7 @@ const InvestigationCardView = (
     fetchFacilityFilter,
     addToCart,
     removeFromCart,
+    pushFilters,
     view,
   } = props;
 
@@ -86,17 +94,37 @@ const InvestigationCardView = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'investigation' &&
             investigationIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, investigationIds]
+  );
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      value={filters[dataKey] as DateFilter}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
+      }
+    />
   );
 
   React.useEffect(() => {
     // Set the IDs of the data.
-    setInvestigationIds(data.map(investigation => investigation.ID));
+    setInvestigationIds(data.map((investigation) => investigation.ID));
 
     // Fetch count.
     if (!fetchedCount) {
@@ -121,9 +149,7 @@ const InvestigationCardView = (
 
   return (
     // TODO: Since CardView is a separate component, we should not couple the data from redux to it,
-    //       and pass it through here.
-    // TODO: Support for more simpler data types i.e. strings to directly passed or different ways
-    //       of passing data to the card view (how can we achieve this if the data is not Entity[]).
+    //       pass it through here.
     // TODO: card widths, sort.
     <CardView
       data={data}
@@ -132,37 +158,50 @@ const InvestigationCardView = (
       loadCount={fetchCount}
       // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
-        // Provide both the dataKey (for tooltip) and link to render.
+        // Provide label for filter component.
+        label: 'Title',
+        // Provide both the dataKey (for tooltip) and content to render.
         dataKey: 'TITLE',
         content: (investigation: Investigation) => {
           return investigationLink(investigation.ID, investigation.TITLE, view);
         },
+        filterComponent: textFilter,
       }}
-      description={{ dataKey: 'SUMMARY' }}
+      description={{
+        label: 'Description',
+        dataKey: 'SUMMARY',
+        filterComponent: textFilter,
+      }}
       information={[
         {
           label: 'DOI',
           dataKey: 'DOI',
+          filterComponent: textFilter,
         },
         {
           label: 'Visit ID',
           dataKey: 'VISIT_ID',
+          filterComponent: textFilter,
         },
         {
           label: 'RB Number',
           dataKey: 'RB_NUMBER',
+          filterComponent: textFilter,
         },
         {
           label: 'Dataset Count',
           dataKey: 'DATASET_COUNT',
+          filterComponent: textFilter,
         },
         {
           label: 'Start Date',
           dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
         },
         {
           label: 'End Date',
           dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
         },
       ]}
       buttons={[
@@ -198,11 +237,11 @@ const InvestigationCardView = (
         },
       ]}
       // TODO: Test image.
-      // image={{
-      //   url:
-      //     'https://www.iconbolt.com/iconsets/streamline-regular/lab-flask-experiment.svg',
-      //   title: 'Investigation Image',
-      // }}
+      image={{
+        url:
+          'https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2018/09/918/516/image-of-hydrogen-atom-1.jpg',
+        title: 'Investigation Image',
+      }}
       // TODO: Provide all types from data from API using filter.
       cardFilters={[
         {
@@ -244,6 +283,8 @@ const mapDispatchToProps = (
   fetchTypeFilter: () => dispatch(fetchFilter('investigation', 'TYPE_ID')),
   fetchFacilityFilter: () =>
     dispatch(fetchFilter('investigation', 'FACILITY_ID')),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 export default connect(

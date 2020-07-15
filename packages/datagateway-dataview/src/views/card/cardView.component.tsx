@@ -15,6 +15,8 @@ import {
   Select,
   TextField,
   Typography,
+  Collapse,
+  Link,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -42,6 +44,21 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: theme.palette.background.paper,
+    },
+    advancedSearch: {
+      display: 'flex',
+      textAlign: 'center',
+    },
+    filters: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      '& div': {
+        display: 'flex',
+        flexDirection: 'row',
+        paddingBottom: '5px',
+      },
+      padding: '25px',
     },
     formControl: {
       margin: theme.spacing(1),
@@ -171,6 +188,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     CVSelectedFilter[]
   >([]);
 
+  // Advanced search.
+  const [advSearchCollapsed, setAdvSearchCollapsed] = React.useState(false);
+
   // Set the filter information based on what was provided.
   React.useEffect(() => {
     const getSelectedFilter = (
@@ -279,6 +299,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
   };
 
+  // Actions to take when changing a page.
   const changePage = React.useCallback(
     (pageNumber: number): void => {
       setPage(pageNumber);
@@ -305,7 +326,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         setPage(1);
       }
     } else {
-      // TODO: Manually scroll to top of the page as the pagination click isn't doing so.
+      // Manually scroll to top of the page as the pagination click isn't doing so.
       window.scrollTo(0, 0);
     }
 
@@ -338,7 +359,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     // TODO: Need to handle sort and search as well.
     // Reload the count on filter update.
     if (!loading && filterChange) {
-      // Set page to 1 if there was a filter change.
+      // Set page to 1 on filter change.
       changePage(1);
       loadCount();
       setFilterChange(false);
@@ -392,26 +413,35 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         <Grid
           item
           xs={dataCount > 10 ? 10 : 12}
-          style={{ textAlign: 'center' }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center',
+          }}
         >
-          <TextField
-            style={
-              dataCount > 10
-                ? { width: '30vw', float: 'right', paddingRight: '20vw' }
-                : { width: '30vw' }
-            }
-            label="Search Data"
-            type="search"
-            margin="normal"
-            variant="outlined"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
+          <Link onClick={() => setAdvSearchCollapsed((prev) => !prev)}>
+            {!advSearchCollapsed ? 'Advanced Search' : 'Hide Advanced Search'}
+          </Link>
+          <div>
+            <TextField
+              style={
+                dataCount > 10
+                  ? { width: '30vw', float: 'right', paddingRight: '20vw' }
+                  : { width: '30vw' }
+              }
+              label="Search Data"
+              type="search"
+              margin="normal"
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
         </Grid>
 
         {/* Maximum results selection */}
@@ -440,6 +470,83 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
             </FormControl>
           </Grid>
         )}
+
+        <Grid item xs={12} className={classes.advancedSearch}>
+          {/* TODO: This should be open as long as filters are applied */}
+          <Collapse in={advSearchCollapsed}>
+            <div className={classes.filters}>
+              {/* Filters for title and description provided on card */}
+              <div>
+                {title && title.filterComponent && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      padding: '10px',
+                    }}
+                  >
+                    <Typography variant="subtitle1">{title.label}</Typography>
+                    {title.filterComponent &&
+                      title.filterComponent(
+                        title.label ? title.label : title.dataKey,
+                        title.dataKey
+                      )}
+                  </div>
+                )}
+                {description && description.filterComponent && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      padding: '10px',
+                    }}
+                  >
+                    <Typography variant="subtitle1">
+                      {description.label
+                        ? description.label
+                        : description.dataKey}
+                    </Typography>
+                    {description.filterComponent(
+                      description.label
+                        ? description.label
+                        : description.dataKey,
+                      description.dataKey
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Filters for other information provided on card */}
+              <div>
+                {information &&
+                  information.map(
+                    (info, index) =>
+                      info.filterComponent && (
+                        <div
+                          key={index}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            padding: '10px',
+                          }}
+                        >
+                          <Typography variant="subtitle1">
+                            {info.label ? info.label : info.dataKey}
+                          </Typography>
+                          {info.filterComponent(
+                            info.label ? info.label : info.dataKey,
+                            info.dataKey
+                          )}
+                        </div>
+                      )
+                  )}
+              </div>
+            </div>
+          </Collapse>
+        </Grid>
       </Grid>
 
       <Grid
