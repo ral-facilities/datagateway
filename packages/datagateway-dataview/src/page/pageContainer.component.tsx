@@ -24,6 +24,7 @@ import {
 import { Route } from 'react-router';
 import PageCard from './pageCard.component';
 import { supportedPaths } from './pageCard.component';
+import PageSearch from './pageSearch.component';
 
 interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
@@ -208,6 +209,16 @@ class PageContainer extends React.Component<
             <LinearProgress color="secondary" />
           </Grid>
         )}
+
+        <Grid
+          item
+          style={{
+            textAlign: 'center',
+          }}
+          xs={12}
+        >
+          <PageSearch />
+        </Grid>
 
         {/* Hold the table for remainder of the page */}
         <Grid item xs={12} aria-label="container-table">

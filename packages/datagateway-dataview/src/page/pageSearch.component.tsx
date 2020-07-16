@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, TextField, InputAdornment } from '@material-ui/core';
+import { TextField, InputAdornment } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
 // TODO: This will need to use data-search components from
@@ -11,31 +11,20 @@ class PageSearch extends React.Component<unknown> {
 
   public render(): React.ReactElement {
     return (
-      <Grid container direction="row" justify="center">
-        <Grid
-          item
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            textAlign: 'center',
-          }}
-        >
-          <TextField
-            style={{ width: '30vw' }}
-            label="Search Data"
-            type="search"
-            margin="normal"
-            variant="outlined"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Grid>
-      </Grid>
+      <TextField
+        style={{ width: '30vw' }}
+        label="Search Data"
+        type="search"
+        margin="normal"
+        variant="outlined"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
     );
   }
 }
