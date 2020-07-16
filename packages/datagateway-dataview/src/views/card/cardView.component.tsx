@@ -17,6 +17,7 @@ import {
   Typography,
   Collapse,
   Link,
+  Container,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -45,20 +46,36 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
     root: {
       backgroundColor: theme.palette.background.paper,
     },
-    advancedSearch: {
-      display: 'flex',
+    advLink: {
       textAlign: 'center',
+      cursor: 'pointer',
     },
-    filters: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      '& div': {
-        display: 'flex',
-        flexDirection: 'row',
-        paddingBottom: '5px',
-      },
-      padding: '25px',
+    // advancedSearch: {
+    //   display: 'flex',
+    //   textAlign: 'center',
+    // },
+    // filters: {
+    //   display: 'flex',
+    //   flexDirection: 'column',
+    //   alignItems: 'center',
+    //   '& div': {
+    //     display: 'flex',
+    //     flexDirection: 'row',
+    //     paddingBottom: '5px',
+    //   },
+    //   padding: '25px',
+    // },
+    advancedFilters: {
+      display: 'grid',
+      gridGap: '1rem',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+      padding: '20px',
+    },
+    filter: {
+      // display: 'flex',
+      // flexDirection: 'column',
+      // alignItems: 'flex-start',
+      padding: '10px',
     },
     formControl: {
       margin: theme.spacing(1),
@@ -86,7 +103,9 @@ interface CardViewDetails {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   content?: (data?: any) => React.ReactNode;
 
+  // Filter and sort options.
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
+  disableSort?: boolean;
 }
 
 interface CardViewProps {
@@ -133,7 +152,7 @@ interface CVFilterInfo {
     items: {
       [data: string]: boolean;
     };
-    selectedCount: number;
+    hasSelectedItems: boolean;
   };
 }
 
@@ -174,7 +193,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [loadedData, setLoadedData] = React.useState(false);
 
   // Pagination.
-  // TODO: This page is not reset when component is changed.
   const [page, setPage] = React.useState(-1);
   const [dataCount, setDataCount] = React.useState(-1);
   const [numPages, setNumPages] = React.useState(-1);
@@ -220,18 +238,22 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 }),
                 {}
               ),
-              selectedCount: -1,
+              // TODO: Make use of selected items.
+              hasSelectedItems: false,
             },
           };
 
           // Update the selected count for each filter.
-          data[filter.dataKey].selectedCount = Object.values(
-            data[filter.dataKey].items
-          ).filter((v) => v).length;
+          const selectedItems = Object.values(data[filter.dataKey].items).find(
+            (v) => v === true
+          );
+          if (selectedItems) {
+            data[filter.dataKey].hasSelectedItems = true;
+          }
           return data;
         }, {})
       : [];
-    // console.log('info: ', info);
+    console.log('info: ', info);
     setFiltersInfo(info);
   }, [cardFilters, filters]);
 
@@ -355,6 +377,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     }
   }, [totalDataCount]);
 
+  // TODO: Creates duplicate count request.
+  React.useEffect(() => setFilterChange(true), [filters]);
+
   React.useEffect(() => {
     // TODO: Need to handle sort and search as well.
     // Reload the count on filter update.
@@ -406,323 +431,278 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   ]);
 
   return (
-    <Grid container direction="column" alignItems="center">
-      <Grid container direction="row" justify="center">
-        {/* TODO: Search bar; needs to be aligned correctly with the max results */}
+    <Container>
+      <Grid container direction="row" justify="center" alignItems="center">
         {/* TODO: Provide dropdown additional filters */}
-        <Grid
-          item
-          xs={dataCount > 10 ? 10 : 12}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            textAlign: 'center',
-          }}
-        >
-          <Link onClick={() => setAdvSearchCollapsed((prev) => !prev)}>
-            {!advSearchCollapsed ? 'Advanced Search' : 'Hide Advanced Search'}
-          </Link>
-          <div>
-            <TextField
-              style={
-                dataCount > 10
-                  ? { width: '30vw', float: 'right', paddingRight: '20vw' }
-                  : { width: '30vw' }
-              }
-              label="Search Data"
-              type="search"
-              margin="normal"
-              variant="outlined"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
-        </Grid>
-
-        {/* Maximum results selection */}
-        {/* TODO: Do not show if the dataCount is smaller the smallest option. */}
-        {dataCount > 10 && (
-          <Grid item xs style={{ paddingTop: '10px' }}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="select-max-results-label">Max Results</InputLabel>
-              <Select
-                labelId="select-max-results-label"
-                id="select-max-results"
-                value={maxResults}
-                onChange={(e) => {
-                  setMaxResults(e.target.value as number);
-                  pushResults(e.target.value as number);
-                  setLoadedData(false);
-                }}
-                // Disable if the number of data is smaller than the
-                // smallest amount of results to display (10) or the smallest amount available.
-                disabled={dataCount <= 10}
-              >
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={30}>30</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-
-        <Grid item xs={12} className={classes.advancedSearch}>
+        <Grid item xs={12}>
           {/* TODO: This should be open as long as filters are applied */}
           <Collapse in={advSearchCollapsed}>
-            <div className={classes.filters}>
+            <div className={classes.advancedFilters}>
               {/* Filters for title and description provided on card */}
-              <div>
-                {title && title.filterComponent && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      padding: '10px',
-                    }}
-                  >
-                    <Typography variant="subtitle1">{title.label}</Typography>
-                    {title.filterComponent &&
-                      title.filterComponent(
-                        title.label ? title.label : title.dataKey,
-                        title.dataKey
-                      )}
-                  </div>
-                )}
-                {description && description.filterComponent && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      padding: '10px',
-                    }}
-                  >
-                    <Typography variant="subtitle1">
-                      {description.label
-                        ? description.label
-                        : description.dataKey}
-                    </Typography>
-                    {description.filterComponent(
-                      description.label
-                        ? description.label
-                        : description.dataKey,
-                      description.dataKey
+              {title && title.filterComponent && (
+                <div className={classes.filter}>
+                  <Typography variant="subtitle1">{title.label}</Typography>
+                  {title.filterComponent &&
+                    title.filterComponent(
+                      title.label ? title.label : title.dataKey,
+                      title.dataKey
                     )}
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
+              {description && description.filterComponent && (
+                <div className={classes.filter}>
+                  <Typography variant="subtitle1">
+                    {description.label
+                      ? description.label
+                      : description.dataKey}
+                  </Typography>
+                  {description.filterComponent(
+                    description.label ? description.label : description.dataKey,
+                    description.dataKey
+                  )}
+                </div>
+              )}
 
               {/* Filters for other information provided on card */}
-              <div>
-                {information &&
-                  information.map(
-                    (info, index) =>
-                      info.filterComponent && (
-                        <div
-                          key={index}
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'flex-start',
-                            padding: '10px',
-                          }}
-                        >
-                          <Typography variant="subtitle1">
-                            {info.label ? info.label : info.dataKey}
-                          </Typography>
-                          {info.filterComponent(
-                            info.label ? info.label : info.dataKey,
-                            info.dataKey
-                          )}
-                        </div>
-                      )
-                  )}
-              </div>
+              {information &&
+                information.map(
+                  (info, index) =>
+                    info.filterComponent && (
+                      <div key={index} className={classes.filter}>
+                        <Typography variant="subtitle1">
+                          {info.label ? info.label : info.dataKey}
+                        </Typography>
+                        {info.filterComponent(
+                          info.label ? info.label : info.dataKey,
+                          info.dataKey
+                        )}
+                      </div>
+                    )
+                )}
             </div>
           </Collapse>
         </Grid>
-      </Grid>
-
-      <Grid
-        container
-        direction="row"
-        justify="flex-start"
-        alignItems="flex-start"
-        spacing={10}
-        xs={12}
-        // TODO: Define in card view styles.
-        style={{ paddingTop: '5vh' }}
-      >
-        {/* Filtering options */}
-        {cardFilters && (
-          <Grid item xs={3}>
-            <Paper>
-              <Grid
-                item
-                direction="column"
-                justify="flex-start"
-                alignItems="stretch"
-              >
-                <Box p={2}>
-                  <Typography variant="h5">Filter By</Typography>
-                </Box>
-
-                {/* Show the specific options available to filter by */}
-                <Box>
-                  {filtersInfo &&
-                    Object.entries(filtersInfo).map(
-                      ([filterKey, filter], filterIndex) => {
-                        return (
-                          // TODO: Expand filter panel if any options are selected.
-                          <ExpansionPanel
-                            key={filterIndex}
-                            // TODO: Since this is value which changes depending on the filter,
-                            //       this will produce an error.s
-                            // defaultExpanded={filter.selectedCount > 0}
-                          >
-                            <ExpansionPanelSummary
-                              expandIcon={<ExpandMoreIcon />}
-                            >
-                              <Typography>{filter.label}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                              <div style={{ maxWidth: 360, width: '100%' }}>
-                                <List component="nav">
-                                  {Object.entries(filter.items).map(
-                                    ([item, selected], valueIndex) => (
-                                      <ListItem
-                                        key={valueIndex}
-                                        button
-                                        disabled={selected}
-                                        onClick={() => {
-                                          changeFilter(filterKey, item);
-                                        }}
-                                      >
-                                        {/* TODO: The label chip could have its contents overflow
-                                                  (requires tooltip in future)  */}
-                                        <Chip label={item} />
-                                      </ListItem>
-                                    )
-                                  )}
-                                </List>
-                              </div>
-                            </ExpansionPanelDetails>
-                          </ExpansionPanel>
-                        );
-                      }
-                    )}
-                </Box>
-              </Grid>
-            </Paper>
-          </Grid>
-        )}
-
-        {/* Card data */}
-        <Grid item xs>
-          {/* Selected filters array */}
-          {selectedFilters.length > 0 && (
-            <div className={classes.selectedChips}>
-              {selectedFilters.map((filter, filterIndex) => (
-                <li key={filterIndex}>
-                  {filter.items.map((item, itemIndex) => (
-                    <Chip
-                      key={itemIndex}
-                      className={classes.chip}
-                      label={`${filter.label} - ${item}`}
-                      onDelete={() => {
-                        changeFilter(filter.filterKey, item, true);
-                      }}
-                    />
-                  ))}
-                </li>
-              ))}
-            </div>
-          )}
-
-          {/* List of cards */}
-          <List>
-            {/* TODO: The width of the card should take up more room when 
-                        there is no information or buttons. */}
-            {viewData.map((data, index) => {
-              return (
-                <ListItem
-                  key={index}
-                  alignItems="flex-start"
-                  className={classes.root}
-                >
-                  {/* Create an individual card */}
-                  <EntityCard
-                    title={{
-                      // TODO: Is this the best way to handle label/dataKey?
-                      label: nestedValue(data, title.dataKey),
-                      content: title.content && title.content(data),
-                    }}
-                    description={
-                      description && nestedValue(data, description.dataKey)
-                    }
-                    information={
-                      information &&
-                      information
-                        .map((details) => ({
-                          // TODO: Create a separate type just for details label?
-                          //       We can say the data key is the label if not defined.
-                          label: details.label
-                            ? details.label
-                            : details.dataKey,
-                          content: details.content
-                            ? details.content(data)
-                            : nestedValue(data, details.dataKey),
-                        }))
-                        // Filter afterwards to only show content with information.
-                        .filter((v) => v.content)
-                    }
-                    moreInformation={moreInformation && moreInformation(data)}
-                    // Pass in the react nodes with the data to the card.
-                    buttons={buttons && buttons.map((button) => button(data))}
-                    // Pass tag names to the card given the specified data key for the filter.
-                    tags={
-                      cardFilters &&
-                      cardFilters.map((f) => nestedValue(data, f.dataKey))
-                    }
-                    image={image}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
+        <Grid item xs className={classes.advLink}>
+          <Link onClick={() => setAdvSearchCollapsed((prev) => !prev)}>
+            {!advSearchCollapsed
+              ? 'Show Advanced Search'
+              : 'Hide Advanced Search'}
+          </Link>
         </Grid>
       </Grid>
+    </Container>
 
-      {/* Pagination  */}
-      {loadedData && (
-        <Grid item xs style={{ padding: '50px' }}>
-          <Pagination
-            size="large"
-            color="secondary"
-            style={{ textAlign: 'center' }}
-            count={numPages}
-            page={page}
-            onChange={(e, p) => {
-              // If we are not clicking on the same page.
-              if (p !== page) {
-                changePage(p);
-              }
-            }}
-            showFirstButton
-            hidePrevButton={page === 1}
-            hideNextButton={page >= numPages}
-            showLastButton
-          />
-        </Grid>
-      )}
-    </Grid>
+    // <Grid
+    //   container
+    //   direction="row"
+    //   justify="flex-start"
+    //   alignItems="flex-start"
+    //   spacing={10}
+    //   xs={12}
+    //   // TODO: Define in card view styles.
+    //   style={{ paddingTop: '5vh' }}
+    // >
+    //   <Grid
+    //     container
+    //     direction="column"
+    //     justify="flex-start"
+    //     alignItems="flex-start"
+    //     spacing={10}
+    //     xs={12}
+    //   >
+    //     {/* Maximum results selection */}
+    //     {/* TODO: Do not show if the dataCount is smaller the smallest option. */}
+    //     {dataCount > 10 && (
+    //       <Grid item xs style={{ paddingTop: '10px' }}>
+    //         <FormControl className={classes.formControl}>
+    //           <InputLabel id="select-max-results-label">
+    //             Max Results
+    //           </InputLabel>
+    //           <Select
+    //             labelId="select-max-results-label"
+    //             id="select-max-results"
+    //             value={maxResults}
+    //             onChange={(e) => {
+    //               setMaxResults(e.target.value as number);
+    //               pushResults(e.target.value as number);
+    //               setLoadedData(false);
+    //             }}
+    //             // Disable if the number of data is smaller than the
+    //             // smallest amount of results to display (10) or the smallest amount available.
+    //             disabled={dataCount <= 10}
+    //           >
+    //             <MenuItem value={10}>10</MenuItem>
+    //             <MenuItem value={20}>20</MenuItem>
+    //             <MenuItem value={30}>30</MenuItem>
+    //           </Select>
+    //         </FormControl>
+    //       </Grid>
+    //     )}
+
+    //     {/* Filtering options */}
+    //     {cardFilters && (
+    //       <Grid item xs={3}>
+    //         <Paper>
+    //           <Grid
+    //             item
+    //             direction="column"
+    //             justify="flex-start"
+    //             alignItems="stretch"
+    //           >
+    //             <Box p={2}>
+    //               <Typography variant="h5">Filter By</Typography>
+    //             </Box>
+
+    //             {/* Show the specific options available to filter by */}
+    //             <Box>
+    //               {filtersInfo &&
+    //                 Object.entries(filtersInfo).map(
+    //                   ([filterKey, filter], filterIndex) => {
+    //                     return (
+    //                       // TODO: Expand filter panel if any options are selected.
+    //                       <ExpansionPanel
+    //                         key={filterIndex}
+    //                         // TODO: Default expanded changes upon state update.
+    //                         defaultExpanded={filter.hasSelectedItems}
+    //                       >
+    //                         <ExpansionPanelSummary
+    //                           expandIcon={<ExpandMoreIcon />}
+    //                         >
+    //                           <Typography>{filter.label}</Typography>
+    //                         </ExpansionPanelSummary>
+    //                         <ExpansionPanelDetails>
+    //                           <div style={{ maxWidth: 360, width: '100%' }}>
+    //                             <List component="nav">
+    //                               {Object.entries(filter.items).map(
+    //                                 ([item, selected], valueIndex) => (
+    //                                   <ListItem
+    //                                     key={valueIndex}
+    //                                     button
+    //                                     disabled={selected}
+    //                                     onClick={() => {
+    //                                       changeFilter(filterKey, item);
+    //                                     }}
+    //                                   >
+    //                                     {/* TODO: The label chip could have its contents overflow
+    //                                             (requires tooltip in future)  */}
+    //                                     <Chip label={item} />
+    //                                   </ListItem>
+    //                                 )
+    //                               )}
+    //                             </List>
+    //                           </div>
+    //                         </ExpansionPanelDetails>
+    //                       </ExpansionPanel>
+    //                     );
+    //                   }
+    //                 )}
+    //             </Box>
+    //           </Grid>
+    //         </Paper>
+    //       </Grid>
+    //     )}
+    //   </Grid>
+
+    //   {/* Card data */}
+    //   <Grid item xs>
+    //     {/* Selected filters array */}
+    //     {selectedFilters.length > 0 && (
+    //       <div className={classes.selectedChips}>
+    //         {selectedFilters.map((filter, filterIndex) => (
+    //           <li key={filterIndex}>
+    //             {filter.items.map((item, itemIndex) => (
+    //               <Chip
+    //                 key={itemIndex}
+    //                 className={classes.chip}
+    //                 label={`${filter.label} - ${item}`}
+    //                 onDelete={() => {
+    //                   changeFilter(filter.filterKey, item, true);
+    //                 }}
+    //               />
+    //             ))}
+    //           </li>
+    //         ))}
+    //       </div>
+    //     )}
+
+    //     {/* List of cards */}
+    //     <List>
+    //       {/* TODO: The width of the card should take up more room when
+    //                   there is no information or buttons. */}
+    //       {viewData.map((data, index) => {
+    //         return (
+    //           <ListItem
+    //             key={index}
+    //             alignItems="flex-start"
+    //             className={classes.root}
+    //           >
+    //             {/* Create an individual card */}
+    //             <EntityCard
+    //               title={{
+    //                 // TODO: Is this the best way to handle label/dataKey?
+    //                 label: nestedValue(data, title.dataKey),
+    //                 content: title.content && title.content(data),
+    //               }}
+    //               description={
+    //                 description && nestedValue(data, description.dataKey)
+    //               }
+    //               information={
+    //                 information &&
+    //                 information
+    //                   .map((details) => ({
+    //                     // TODO: Create a separate type just for details label?
+    //                     //       We can say the data key is the label if not defined.
+    //                     label: details.label
+    //                       ? details.label
+    //                       : details.dataKey,
+    //                     content: details.content
+    //                       ? details.content(data)
+    //                       : nestedValue(data, details.dataKey),
+    //                   }))
+    //                   // Filter afterwards to only show content with information.
+    //                   .filter((v) => v.content)
+    //               }
+    //               moreInformation={moreInformation && moreInformation(data)}
+    //               // Pass in the react nodes with the data to the card.
+    //               buttons={buttons && buttons.map((button) => button(data))}
+    //               // Pass tag names to the card given the specified data key for the filter.
+    //               tags={
+    //                 cardFilters &&
+    //                 cardFilters.map((f) => nestedValue(data, f.dataKey))
+    //               }
+    //               image={image}
+    //             />
+    //           </ListItem>
+    //         );
+    //       })}
+    //     </List>
+    //   </Grid>
+    // </Grid>
   );
+
+  // {/* Pagination  */}
+  // {loadedData && (
+  //   <Grid item xs style={{ padding: '50px' }}>
+  //     <Pagination
+  //       size="large"
+  //       color="secondary"
+  //       style={{ textAlign: 'center' }}
+  //       count={numPages}
+  //       page={page}
+  //       onChange={(e, p) => {
+  //         // If we are not clicking on the same page.
+  //         if (p !== page) {
+  //           changePage(p);
+  //         }
+  //       }}
+  //       showFirstButton
+  //       hidePrevButton={page === 1}
+  //       hideNextButton={page >= numPages}
+  //       showLastButton
+  //     />
+  //   </Grid>
+  // )}
+  // </Grid>
 };
 
 const mapStateToProps = (state: StateType): CardViewStateProps => {
