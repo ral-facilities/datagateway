@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactWrapper } from 'enzyme';
+import { ReactWrapper, mount } from 'enzyme';
 
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
@@ -51,5 +51,41 @@ describe('PageContainer - Tests', () => {
     const wrapper = createWrapper(state);
 
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('fetches cart on load', () => {
+    // Mock getElementById so that it returns truthy.
+    const testElement = document.createElement('DIV');
+    document.getElementById = jest.fn(() => testElement);
+
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    mount(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageContainer store={testStore} />
+      </MemoryRouter>
+    );
+
+    expect(document.getElementById.mock.calls[0][0]).toBe(
+      'datagateway-dataview'
+    );
+
+    expect(testStore.getActions()[0]).toEqual({
+      type: 'datagateway_common:fetch_download_cart_request',
+    });
+
+    document.getElementById.mockReset();
+  });
+
+  it('does not fetch cart on load if no dg-dataview element exists', () => {
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    mount(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageContainer store={testStore} />
+      </MemoryRouter>
+    );
+
+    expect(testStore.getActions()).toHaveLength(0);
   });
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
@@ -9,7 +9,6 @@ import { Route } from 'react-router';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { fetchDownloadCart } from 'datagateway-common';
-import { useDetectElement } from './utils';
 
 interface PageContainerStoreProps {
   entityCount: number;
@@ -27,9 +26,13 @@ const PageContainer = (
 ): React.ReactElement => {
   const { entityCount, fetchDownloadCart } = props;
 
-  useDetectElement(() => {
-    fetchDownloadCart();
-  }, []);
+  const dgDataviewElement = document.getElementById('datagateway-dataview');
+
+  useEffect(() => {
+    if (dgDataviewElement) {
+      fetchDownloadCart();
+    }
+  }, [dgDataviewElement, fetchDownloadCart]);
 
   return (
     <Grid container>

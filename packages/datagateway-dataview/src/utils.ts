@@ -24,7 +24,6 @@ export const useDetectElement = (
 ): void => {
   React.useEffect(() => {
     if (document.getElementById('datagateway-dataview')) {
-      console.log('useDetectElement');
       func();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
