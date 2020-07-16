@@ -17,17 +17,4 @@ const useAfterMountEffect = (
   }, deps);
 };
 
-export const useDetectElement = (
-  func: () => void,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  deps?: any[]
-): void => {
-  React.useEffect(() => {
-    if (document.getElementById('datagateway-dataview')) {
-      func();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
-};
-
 export default useAfterMountEffect;

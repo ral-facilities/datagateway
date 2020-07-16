@@ -34,13 +34,13 @@ export const configureStrings = (
 });
 
 export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch) => {
     await axios
       .get(path)
-      .then(res => {
+      .then((res) => {
         dispatch(configureStrings(res.data));
       })
-      .catch(error =>
+      .catch((error) =>
         log.error(`Failed to read strings from ${path}: ${error}`)
       );
   };
@@ -65,10 +65,10 @@ export const loadBreadcrumbSettings = (
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
-  return async dispatch => {
+  return async (dispatch) => {
     await axios
       .get('/datagateway-dataview-settings.json')
-      .then(res => {
+      .then((res) => {
         const settings = res.data;
 
         // invalid settings.json
@@ -130,7 +130,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                 },
               }
             )
-            .then(response => {
+            .then((response) => {
               axios
                 .get(`${settings['apiUrl']}/sessions`, {
                   headers: {
@@ -152,7 +152,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
                   window.localStorage.setItem(MicroFrontendToken, jwt);
                 })
-                .catch(error => {
+                .catch((error) => {
                   log.error(
                     `datagateway-api cannot verify ICAT session id: ${error.message}.
                      This is likely caused if datagateway-api is pointing to a
@@ -160,7 +160,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                   );
                 });
             })
-            .catch(error =>
+            .catch((error) =>
               log.error(`Can't log in to ICAT: ${error.message}`)
             );
         }
@@ -174,7 +174,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         dispatch(settingsLoaded());
       })
-      .catch(error => {
+      .catch((error) => {
         log.error(
           `Error loading datagateway-dataview-settings.json: ${error.message}`
         );

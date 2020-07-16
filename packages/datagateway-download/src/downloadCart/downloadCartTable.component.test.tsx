@@ -159,13 +159,9 @@ describe('Download cart table component', () => {
     });
 
     expect(getSize).toHaveBeenCalledTimes(4);
-    expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .first()
-        .text()
-    ).toEqual('1 B');
+    expect(wrapper.find('[aria-colindex=3]').find('p').first().text()).toEqual(
+      '1 B'
+    );
     expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
       expect.stringContaining('Total size: 4 B')
     );
@@ -323,10 +319,7 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    const firstNameCell = wrapper
-      .find('[aria-colindex=1]')
-      .find('p')
-      .first();
+    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
 
     const typeSortLabel = wrapper
       .find('[role="columnheader"] span[role="button"]')

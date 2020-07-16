@@ -215,10 +215,7 @@ describe('Download Status Table', () => {
 
     // Check to see if the href contains the correct call.
     expect(
-      wrapper
-        .find('a[aria-label="Download test-file-3"]')
-        .at(0)
-        .props().href
+      wrapper.find('a[aria-label="Download test-file-3"]').at(0).props().href
     ).toContain('/getData');
 
     wrapper.find('a[aria-label="Download test-file-3"]').simulate('click');
@@ -297,10 +294,7 @@ describe('Download Status Table', () => {
       wrapper.update();
     });
 
-    const firstNameCell = wrapper
-      .find('[aria-colindex=1]')
-      .find('p')
-      .first();
+    const firstNameCell = wrapper.find('[aria-colindex=1]').find('p').first();
 
     // Get the access method sort header.
     const accessMethodSortLabel = wrapper
