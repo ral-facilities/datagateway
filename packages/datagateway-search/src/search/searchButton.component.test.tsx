@@ -33,6 +33,12 @@ describe('Search Button component tests', () => {
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
+    state.dgcommon = {
+      urls: {
+        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+      },
+    };
+
     state.dgsearch = {
       searchText: '',
       text: '',

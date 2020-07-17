@@ -32,6 +32,7 @@ interface SearchButtonStoreProps {
   datafileTab: boolean;
   datasetTab: boolean;
   investigationTab: boolean;
+  downloadApiUrl: string;
 }
 
 interface SearchButtonDispatchProps {
@@ -117,27 +118,29 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     return queryParams;
   };
 
-  public handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  public handleClick = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
     if (this.props.dataset === true) {
-      let datasetParams = this.urlParamsBuilder('Dataset');
+      const datasetParams = this.urlParamsBuilder('Dataset');
       const luceneResults = await this.fetchLuceneResults(datasetParams);
-      const luceneResultIds = luceneResults.map(result => result.id);
+      const luceneResultIds = luceneResults.map((result) => result.id);
       this.props.storeDatasetLucene(luceneResultIds);
 
       this.props.toggleLuceneRequestReceived(true);
     }
     if (this.props.datafile === true) {
-      let datafileParams = this.urlParamsBuilder('Datafile');
+      const datafileParams = this.urlParamsBuilder('Datafile');
       const luceneResults = await this.fetchLuceneResults(datafileParams);
-      const luceneResultIds = luceneResults.map(result => result.id);
+      const luceneResultIds = luceneResults.map((result) => result.id);
       this.props.storeDatafileLucene(luceneResultIds);
 
       this.props.toggleLuceneRequestReceived(true);
     }
     if (this.props.investigation === true) {
-      let investigationParams = this.urlParamsBuilder('Investigation');
+      const investigationParams = this.urlParamsBuilder('Investigation');
       const luceneResults = await this.fetchLuceneResults(investigationParams);
-      const luceneResultIds = luceneResults.map(result => result.id);
+      const luceneResultIds = luceneResults.map((result) => result.id);
       this.props.storeInvestigationLucene(luceneResultIds);
 
       this.props.toggleLuceneRequestReceived(true);
@@ -152,10 +155,11 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     queryParams: LuceneParameters
     // eslint-disable-next-line
   ): Promise<any[]> {
-    const response = await axios.get(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
-      { params: queryParams }
-    );
+    const splitUrl = this.props.downloadApiUrl.split('/');
+    const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
+    const response = await axios.get(`${icatUrl}/lucene/data`, {
+      params: queryParams,
+    });
     return response.data;
   }
 
@@ -211,6 +215,7 @@ const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
     datafileTab: state.dgsearch.tabs.datafileTab,
     datasetTab: state.dgsearch.tabs.datasetTab,
     investigationTab: state.dgsearch.tabs.investigationTab,
+    downloadApiUrl: state.dgcommon.urls.downloadApiUrl,
   };
 };
 
