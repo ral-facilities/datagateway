@@ -12,7 +12,7 @@ class PageSearch extends React.Component<unknown> {
   public render(): React.ReactElement {
     return (
       <TextField
-        style={{ width: '30vw' }}
+        style={{ width: '40vw' }}
         label="Search Data"
         type="search"
         margin="normal"

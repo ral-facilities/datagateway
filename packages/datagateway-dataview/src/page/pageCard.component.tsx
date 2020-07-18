@@ -12,21 +12,7 @@ import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.compon
 import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
 import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
 import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
-
-export const supportedPaths = {
-  investigation: '/browse/investigation',
-  dataset: '/browse/investigation/:investigationId/dataset',
-  isisInstrument: '/browse/instrument',
-  isisFacilityCycle: '/browse/instrument/:instrumentId/facilityCycle',
-  isisInvestigation:
-    '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation',
-  isisDataset:
-    '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset',
-  dlsProposal: '/browse/proposal',
-  dlsVisit: '/browse/proposal/:proposalName/investigation',
-  dlsDataset:
-    '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
-};
+import { supportedPaths } from './pageContainer.component';
 
 class PageCard extends React.Component {
   public render(): React.ReactNode {

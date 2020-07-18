@@ -22,9 +22,25 @@ import {
   SavedView,
 } from 'datagateway-common/lib/state/app.types';
 import { Route } from 'react-router';
+
 import PageCard from './pageCard.component';
-import { supportedPaths } from './pageCard.component';
 import PageSearch from './pageSearch.component';
+
+// TODO: Define an object of all the relevant paths for views.
+export const supportedPaths = {
+  investigation: '/browse/investigation',
+  dataset: '/browse/investigation/:investigationId/dataset',
+  isisInstrument: '/browse/instrument',
+  isisFacilityCycle: '/browse/instrument/:instrumentId/facilityCycle',
+  isisInvestigation:
+    '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation',
+  isisDataset:
+    '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset',
+  dlsProposal: '/browse/proposal',
+  dlsVisit: '/browse/proposal/:proposalName/investigation',
+  dlsDataset:
+    '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
+};
 
 interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
@@ -173,11 +189,18 @@ class PageContainer extends React.Component<
           xs={2}
           aria-label="container-table-count"
         >
-          <Paper square>
-            <Typography variant="h6" component="h3">
-              <b>Results:</b> {this.props.entityCount}
-            </Typography>
-          </Paper>
+          <Route
+            path={['/browse', '/my-data']}
+            render={() => {
+              return (
+                <Paper square>
+                  <Typography variant="h6" component="h3">
+                    <b>Results:</b> {this.props.entityCount}
+                  </Typography>
+                </Paper>
+              );
+            }}
+          />
         </Grid>
 
         {/* Toggle between the table and card view */}
@@ -203,22 +226,37 @@ class PageContainer extends React.Component<
           />
         </Grid>
 
-        {/* TODO: Show loading progress if data is still being loaded */}
+        {/* Show loading progress if data is still being loaded */}
         {this.state.toggleCard && this.props.loading && (
-          <Grid item xs={12}>
-            <LinearProgress color="secondary" />
-          </Grid>
+          <Route
+            path={['/browse', '/my-data']}
+            render={() => {
+              return (
+                <Grid item xs={12}>
+                  <LinearProgress color="secondary" />
+                </Grid>
+              );
+            }}
+          />
         )}
 
-        <Grid
-          item
-          style={{
-            textAlign: 'center',
+        {/* TODO: Show the page search component on all views */}
+        <Route
+          path={['/browse', '/my-data']}
+          render={() => {
+            return (
+              <Grid
+                item
+                style={{
+                  textAlign: 'center',
+                }}
+                xs={12}
+              >
+                <PageSearch />
+              </Grid>
+            );
           }}
-          xs={12}
-        >
-          <PageSearch />
-        </Grid>
+        />
 
         {/* Hold the table for remainder of the page */}
         <Grid item xs={12} aria-label="container-table">

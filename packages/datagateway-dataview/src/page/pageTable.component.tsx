@@ -92,7 +92,7 @@ class PageTable extends React.PureComponent {
                   parseInt(match.params.investigationId),
                   parseInt(match.params.datasetId)
                 ),
-              ]).then(values => !values.includes(false))
+              ]).then((values) => !values.includes(false))
             )(DLSDatafilesTable);
             return <SafeDLSDatafilesTable datasetId={match.params.datasetId} />;
           }}
@@ -174,7 +174,7 @@ class PageTable extends React.PureComponent {
                   parseInt(match.params.investigationId),
                   parseInt(match.params.datasetId)
                 ),
-              ]).then(values => !values.includes(false))
+              ]).then((values) => !values.includes(false))
             )(ISISDatafilesTable);
             return (
               <SafeISISDatafilesTable datasetId={match.params.datasetId} />
