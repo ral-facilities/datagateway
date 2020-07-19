@@ -1,32 +1,31 @@
-import React from 'react';
-import './App.css';
-import * as log from 'loglevel';
-import thunk, { ThunkDispatch } from 'redux-thunk';
-import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
-import AppReducer from './state/reducers/app.reducer';
-import { Provider, connect } from 'react-redux';
-import { createLogger } from 'redux-logger';
-import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createBrowserHistory } from 'history';
-import {
-  DGCommonMiddleware,
-  listenToMessages,
-  RegisterRouteType,
-  MicroFrontendId,
-} from 'datagateway-common';
-import { configureApp } from './state/actions';
-import { StateType } from './state/app.types';
-import { Preloader } from 'datagateway-common';
-import { saveApiUrlMiddleware } from './page/idCheckFunctions';
-
 import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import {
+  DGCommonMiddleware,
+  DGThemeProvider,
+  listenToMessages,
+  MicroFrontendId,
+  Preloader,
+  RegisterRouteType,
+} from 'datagateway-common';
+// history package is part of react-router, which we depend on
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { createBrowserHistory } from 'history';
+import * as log from 'loglevel';
+import React from 'react';
+import { connect, Provider } from 'react-redux';
+import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
+import { createLogger } from 'redux-logger';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import './App.css';
+import { saveApiUrlMiddleware } from './page/idCheckFunctions';
 import PageContainer from './page/pageContainer.component';
+import { configureApp } from './state/actions';
+import { StateType } from './state/app.types';
+import AppReducer from './state/reducers/app.reducer';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
@@ -126,9 +125,11 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <ConnectedPreloader>
-                  <PageContainer />
-                </ConnectedPreloader>
+                <DGThemeProvider>
+                  <ConnectedPreloader>
+                    <PageContainer />
+                  </ConnectedPreloader>
+                </DGThemeProvider>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>
