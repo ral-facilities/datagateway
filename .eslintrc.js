@@ -23,6 +23,7 @@ module.exports = {
       {
         singleQuote: true,
         trailingComma: 'es5',
+        endOfLine: 'auto',
       },
     ],
     '@typescript-eslint/explicit-function-return-type': [
