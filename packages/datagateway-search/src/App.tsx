@@ -1,25 +1,26 @@
-import React from 'react';
-import './App.css';
-import * as log from 'loglevel';
-import SearchPageContainer from './searchPageContainer.component';
-import thunk, { ThunkDispatch } from 'redux-thunk';
-import { applyMiddleware, createStore, compose, AnyAction } from 'redux';
-import AppReducer from './state/reducers/app.reducer';
-import { createLogger } from 'redux-logger';
-import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createBrowserHistory } from 'history';
-import { DGCommonMiddleware, Preloader } from 'datagateway-common';
 import {
   createGenerateClassName,
   StylesProvider,
-  MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { Provider, connect } from 'react-redux';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import {
+  DGCommonMiddleware,
+  DGThemeProvider,
+  Preloader,
+} from 'datagateway-common';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { createBrowserHistory } from 'history';
+import * as log from 'loglevel';
+import React from 'react';
+import { connect, Provider } from 'react-redux';
+import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
+import { createLogger } from 'redux-logger';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import './App.css';
+import SearchPageContainer from './searchPageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { MicroFrontendId, SendThemeOptionsType } from 'datagateway-common';
+import AppReducer from './state/reducers/app.reducer';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -60,23 +61,6 @@ function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
 
 export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
-// Store the parent theme options when received.
-let parentThemeOptions: Theme | null = null;
-
-// Handle theme options sent from the parent app.
-document.addEventListener(MicroFrontendId, e => {
-  const action = (e as CustomEvent).detail;
-  console.log('Got action: ', action);
-  if (
-    action.type === SendThemeOptionsType &&
-    action.payload &&
-    action.payload.theme
-  ) {
-    console.log('Received theme options: ', action.payload);
-    parentThemeOptions = action.payload.theme;
-  }
-});
-
 class App extends React.Component<unknown, { hasError: boolean }> {
   public constructor(props: unknown) {
     super(props);
@@ -116,11 +100,11 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <MuiThemeProvider theme={parentThemeOptions}>
+                <DGThemeProvider>
                   <ConnectedPreloader>
                     <SearchPageContainer />
                   </ConnectedPreloader>
-                </MuiThemeProvider>
+                </DGThemeProvider>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>
