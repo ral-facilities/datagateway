@@ -631,7 +631,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           )}
 
           {/* List of cards */}
-          {/* <Container> */}
           <List>
             {/* TODO: The width of the card should take up more room when
                       there is no information or buttons. */}

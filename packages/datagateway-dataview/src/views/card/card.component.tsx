@@ -24,11 +24,13 @@ const useCardStyles = makeStyles((theme: Theme) => {
   const styles = createStyles({
     root: {
       display: 'flex',
-      maxWidth: 1000,
+      // Width of 1000 + 150 for the image.
+      maxWidth: 1150,
       backgroundColor: theme.palette.background.paper,
     },
 
     // TODO: Automatically size to card size?
+    // TODO: With image the information is squashed, extend maxWidth with image.
     cardImage: {
       width: 150,
       height: 150,
