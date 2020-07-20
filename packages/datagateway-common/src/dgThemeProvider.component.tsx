@@ -1,6 +1,6 @@
-import React from 'react';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { MuiThemeProvider } from '@material-ui/core';
+import { Theme } from '@material-ui/core/styles/createMuiTheme';
+import React from 'react';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
@@ -26,6 +26,7 @@ class DGThemeProvider extends React.Component<{ children: React.ReactNode }> {
 
   public render(): React.ReactElement {
     return (
+      // TODO: Theme not assignable to null issue, even though it accepts null.
       <MuiThemeProvider theme={parentThemeOptions}>
         {this.props.children}
       </MuiThemeProvider>
