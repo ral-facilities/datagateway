@@ -25,6 +25,7 @@ import { Route } from 'react-router';
 
 import PageCard from './pageCard.component';
 import PageSearch from './pageSearch.component';
+import { useSticky } from './sticky.component';
 
 // TODO: Define an object of all the relevant paths for views.
 export const supportedPaths = {
@@ -42,13 +43,57 @@ export const supportedPaths = {
     '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
 };
 
+// const useNavBarStyles = makeStyles() => {
+
+// }
+
+interface NavBarProps {
+  entityCount: number;
+}
+
+const NavBar = (props: NavBarProps): React.ReactElement => {
+  const { element } = useSticky(); // isSticky,
+
+  return (
+    <Grid container ref={element}>
+      {/* Hold the breadcrumbs at top left of the page. */}
+      <Grid item xs aria-label="container-breadcrumbs">
+        {/* don't show breadcrumbs on /my-data - only on browse */}
+        <Route path="/browse" component={PageBreadcrumbs} />
+      </Grid>
+
+      {/* The table entity count takes up an xs of 2, where the breadcrumbs
+      will take the remainder of the space. */}
+      <Grid
+        style={{ textAlign: 'center' }}
+        item
+        xs={2}
+        aria-label="container-table-count"
+      >
+        <Route
+          path={['/browse', '/my-data']}
+          render={() => {
+            return (
+              <Paper square>
+                <Typography variant="h6" component="h3">
+                  <b>Results:</b> {props.entityCount}
+                </Typography>
+              </Paper>
+            );
+          }}
+        />
+      </Grid>
+    </Grid>
+  );
+};
+
 interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
   pushView: (view: ViewsType) => Promise<void>;
   saveView: (view: ViewsType) => Promise<void>;
 }
 
-interface PageContainerProps {
+interface PageContainerStateProps {
   entityCount: number;
   path: string;
   query: QueryParams;
@@ -56,7 +101,7 @@ interface PageContainerProps {
   loading: boolean;
 }
 
-type PageContainerCombinedProps = PageContainerProps &
+type PageContainerCombinedProps = PageContainerStateProps &
   PageContainerDispatchProps;
 
 interface PageContainerState {
@@ -174,113 +219,89 @@ class PageContainer extends React.Component<
 
   public render(): React.ReactElement {
     return (
-      <Grid container>
-        {/* Hold the breadcrumbs at top left of the page. */}
-        <Grid item xs aria-label="container-breadcrumbs">
-          {/* don't show breadcrumbs on /my-data - only on browse */}
-          <Route path="/browse" component={PageBreadcrumbs} />
-        </Grid>
+      <div>
+        <NavBar entityCount={this.props.entityCount} />
 
-        {/* The table entity count takes up an xs of 2, where the breadcrumbs
-            will take the remainder of the space. */}
-        <Grid
-          style={{ textAlign: 'center' }}
-          item
-          xs={2}
-          aria-label="container-table-count"
-        >
+        <Grid container>
+          {/* Toggle between the table and card view */}
+          <Grid item xs={12}>
+            <Route
+              exact
+              path={this.state.paths}
+              render={() => (
+                <FormControlLabel
+                  value="start"
+                  control={
+                    <Switch
+                      checked={this.state.toggleCard}
+                      onChange={this.handleToggleChange}
+                      name="toggleCard"
+                      inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    />
+                  }
+                  label="Toggle Cards"
+                  labelPlacement="start"
+                />
+              )}
+            />
+          </Grid>
+
+          {/* Show loading progress if data is still being loaded */}
+          {this.state.toggleCard && this.props.loading && (
+            <Route
+              path={['/browse', '/my-data']}
+              render={() => {
+                return (
+                  <Grid item xs={12}>
+                    <LinearProgress color="secondary" />
+                  </Grid>
+                );
+              }}
+            />
+          )}
+
+          {/* TODO: Show the page search component on all views */}
           <Route
             path={['/browse', '/my-data']}
             render={() => {
               return (
-                <Paper square>
-                  <Typography variant="h6" component="h3">
-                    <b>Results:</b> {this.props.entityCount}
-                  </Typography>
-                </Paper>
-              );
-            }}
-          />
-        </Grid>
-
-        {/* Toggle between the table and card view */}
-        <Grid item xs={12}>
-          <Route
-            exact
-            path={this.state.paths}
-            render={() => (
-              <FormControlLabel
-                value="start"
-                control={
-                  <Switch
-                    checked={this.state.toggleCard}
-                    onChange={this.handleToggleChange}
-                    name="toggleCard"
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                  />
-                }
-                label="Toggle Cards"
-                labelPlacement="start"
-              />
-            )}
-          />
-        </Grid>
-
-        {/* Show loading progress if data is still being loaded */}
-        {this.state.toggleCard && this.props.loading && (
-          <Route
-            path={['/browse', '/my-data']}
-            render={() => {
-              return (
-                <Grid item xs={12}>
-                  <LinearProgress color="secondary" />
+                <Grid
+                  item
+                  style={{
+                    textAlign: 'center',
+                  }}
+                  xs={12}
+                >
+                  <PageSearch />
                 </Grid>
               );
             }}
           />
-        )}
 
-        {/* TODO: Show the page search component on all views */}
-        <Route
-          path={['/browse', '/my-data']}
-          render={() => {
-            return (
-              <Grid
-                item
-                style={{
-                  textAlign: 'center',
-                }}
-                xs={12}
+          {/* Hold the table for remainder of the page */}
+          <Grid item xs={12} aria-label="container-table">
+            {!this.state.toggleCard ? (
+              // Place table in Paper component which adjusts for the height
+              // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
+              <Paper
+                square
+                style={{ height: 'calc(100vh - 95px)', width: '100%' }}
               >
-                <PageSearch />
-              </Grid>
-            );
-          }}
-        />
-
-        {/* Hold the table for remainder of the page */}
-        <Grid item xs={12} aria-label="container-table">
-          {!this.state.toggleCard ? (
-            // Place table in Paper component which adjusts for the height
-            // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
-            <Paper
-              square
-              style={{ height: 'calc(100vh - 95px)', width: '100%' }}
-            >
-              <PageTable />
-            </Paper>
-          ) : (
-            <Paper square>
-              <PageCard />
-            </Paper>
-          )}
+                <PageTable />
+              </Paper>
+            ) : (
+              <Paper square>
+                <PageCard />
+              </Paper>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     );
   }
 }
 
-const mapStateToProps = (state: StateType): PageContainerProps => ({
+const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   entityCount: state.dgcommon.totalDataCount,
   path: state.router.location.pathname,
   query: state.dgcommon.query,
