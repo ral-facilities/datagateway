@@ -53,7 +53,7 @@ function a11yProps(index: string): React.ReactFragment {
 
 // eslint-disable-next-line
 const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
-  let [value, setValue] = React.useState('investigation');
+  const [value, setValue] = React.useState('investigation');
 
   useEffect(() => {
     let newState = 'investigation';
@@ -72,7 +72,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
   }, [props.investigationTab, props.datasetTab, props.datafileTab]);
 
   const handleChange = (
-    event: React.ChangeEvent<{}>,
+    event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
     setValue(newValue);
