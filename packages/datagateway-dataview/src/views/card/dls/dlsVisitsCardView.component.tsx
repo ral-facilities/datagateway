@@ -16,6 +16,12 @@ import {
   tableLink,
   fetchFilter,
   fetchInvestigationSize,
+  FiltersType,
+  Filter,
+  pushPageFilter,
+  DateFilter,
+  DateColumnFilter,
+  TextColumnFilter,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
@@ -32,6 +38,7 @@ interface DLSVisitsCVDispatchProps {
   fetchDetails: (investigationId: number) => Promise<void>;
   fetchSize: (investigationId: number) => Promise<void>;
   fetchTypeFilter: (proposalName: string) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 interface DLSVisitsCVStateProps {
@@ -39,6 +46,7 @@ interface DLSVisitsCVStateProps {
   totalDatCount: number;
   filterData: FilterDataType;
   view: ViewsType;
+  filters: FiltersType;
 }
 
 type DLSVisitsCVCombinedProps = DLSVisitsCVProps &
@@ -59,6 +67,8 @@ const DLSVisitsCardView = (
     filterData,
     proposalName,
     view,
+    filters,
+    pushFilters,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
@@ -67,6 +77,26 @@ const DLSVisitsCardView = (
   const typeFilteredItems = React.useMemo(
     () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
     [filterData]
+  );
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      value={filters[dataKey] as DateFilter}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
+      }
+    />
   );
 
   React.useEffect(() => {
@@ -96,6 +126,7 @@ const DLSVisitsCardView = (
       loadData={(params) => fetchData(proposalName, params)}
       loadCount={() => fetchCount(proposalName)}
       title={{
+        label: 'Visit ID',
         dataKey: 'VISIT_ID',
         content: (investigation: Investigation) =>
           tableLink(
@@ -103,24 +134,33 @@ const DLSVisitsCardView = (
             investigation.VISIT_ID,
             view
           ),
+        filterComponent: textFilter,
       }}
-      description={{ dataKey: 'SUMMARY' }}
+      description={{
+        label: 'Description',
+        dataKey: 'SUMMARY',
+        filterComponent: textFilter,
+      }}
       information={[
         {
           label: 'Beamline',
           dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME',
+          filterComponent: textFilter,
         },
         {
           label: 'Dataset Count',
           dataKey: 'DATASET_COUNT',
+          // disableSort: true
         },
         {
           label: 'Start Date',
           dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
         },
         {
           label: 'End Date',
           dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
         },
       ]}
       moreInformation={(investigation: Investigation) => (
@@ -185,6 +225,8 @@ const mapDispatchToProps = (
         },
       ])
     ),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): DLSVisitsCVStateProps => {
@@ -193,6 +235,7 @@ const mapStateToProps = (state: StateType): DLSVisitsCVStateProps => {
     totalDatCount: state.dgcommon.totalDataCount,
     filterData: state.dgcommon.filterData,
     view: state.dgcommon.query.view,
+    filters: state.dgcommon.filters,
   };
 };
 

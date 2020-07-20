@@ -13,6 +13,12 @@ import {
   tableLink,
   fetchFilter,
   fetchDatasetSize,
+  FiltersType,
+  pushPageFilter,
+  Filter,
+  TextColumnFilter,
+  DateColumnFilter,
+  DateFilter,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import {
@@ -39,6 +45,7 @@ interface DLSDatasetsCVStateProps {
   totalDataCount: number;
   cartItems: DownloadCartItem[];
   filterData: FilterDataType;
+  filters: FiltersType;
 }
 
 interface DLSDatasetsCVDispatchProps {
@@ -52,6 +59,7 @@ interface DLSDatasetsCVDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchTypeFilter: (datasetId: number) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 type DLSDatasetsCVCombinedProps = DLSDatasetsCVProps &
@@ -75,6 +83,8 @@ const DLSDatasetsCardView = (
     filterData,
     addToCart,
     removeFromCart,
+    filters,
+    pushFilters,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
@@ -96,6 +106,26 @@ const DLSDatasetsCardView = (
   const typeFilteredItems = React.useMemo(
     () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
     [filterData]
+  );
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      value={filters[dataKey] as DateFilter}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
+      }
+    />
   );
 
   React.useEffect(() => {
@@ -127,34 +157,45 @@ const DLSDatasetsCardView = (
       loadCount={() => fetchCount(parseInt(investigationId))}
       totalDataCount={totalDataCount}
       title={{
+        label: 'Name',
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
           tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
             dataset.NAME
           ),
+        filterComponent: textFilter,
       }}
-      description={{ dataKey: 'DESCRIPTION' }}
+      description={{
+        label: 'Description',
+        dataKey: 'DESCRIPTION',
+        filterComponent: textFilter,
+      }}
       information={[
         {
           label: 'Datafile Count',
           dataKey: 'DATAFILE_COUNT',
+          // disableSort: true
         },
         {
           label: 'Create Time',
           dataKey: 'CREATE_TIME',
+          filterComponent: dateFilter,
         },
         {
           label: 'Modified Time',
           dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
         },
         {
           label: 'Start Date',
           dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
         },
         {
           label: 'End Date',
           dataKey: 'END_DATE',
+          filterComponent: dateFilter,
         },
       ]}
       moreInformation={(dataset: Dataset) => (
@@ -234,6 +275,8 @@ const mapDispatchToProps = (
         },
       ])
     ),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
@@ -242,6 +285,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
     filterData: state.dgcommon.filterData,
+    filters: state.dgcommon.filters,
   };
 };
 
