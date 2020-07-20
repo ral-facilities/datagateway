@@ -1,29 +1,35 @@
-import React from 'react';
-import CardView from '../cardView.component';
-import {
-  DownloadCartItem,
-  Entity,
-  fetchISISInvestigations,
-  fetchISISInvestigationCount,
-  fetchInvestigationDetails,
-  addToCart,
-  removeFromCart,
-  Investigation,
-  tableLink,
-  formatBytes,
-  clearData,
-} from 'datagateway-common';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
-import { AnyAction, Action } from 'redux';
-import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
+import {
+  addToCart,
+  clearData,
+  DateColumnFilter,
+  DateFilter,
+  DownloadCartItem,
+  Entity,
+  fetchInvestigationDetails,
+  fetchISISInvestigationCount,
+  fetchISISInvestigations,
+  Filter,
+  FiltersType,
+  formatBytes,
+  Investigation,
+  pushPageFilter,
+  removeFromCart,
+  tableLink,
+  TextColumnFilter,
+} from 'datagateway-common';
+import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
+import React from 'react';
+import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
+import CardView from '../cardView.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInvestigationsCardViewProps {
@@ -37,6 +43,7 @@ interface ISISInvestigationsCVStateProps {
   totalDataCount: number;
   cartItems: DownloadCartItem[];
   view: ViewsType;
+  filters: FiltersType;
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -51,6 +58,7 @@ interface ISISInvestigationsCVDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   clearData: () => Action;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 type ISISInvestigationsCVCombinedProps = ISISInvestigationsCVDispatchProps &
@@ -73,6 +81,8 @@ const ISISInvestigationsCardView = (
     removeFromCart,
     view,
     clearData,
+    filters,
+    pushFilters,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
@@ -84,18 +94,38 @@ const ISISInvestigationsCardView = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'investigation' &&
             investigationIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, investigationIds]
+  );
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      value={filters[dataKey] as DateFilter}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
+      }
+    />
   );
 
   React.useEffect(() => {
     // TODO: React.useMemo?
     // Set the IDs of the investigation data.
-    setInvestigationIds(data.map(investigation => investigation.ID));
+    setInvestigationIds(data.map((investigation) => investigation.ID));
 
     if (!fetchedCount) {
       fetchCount(parseInt(instrumentId), parseInt(facilityCycleId));
@@ -115,13 +145,14 @@ const ISISInvestigationsCardView = (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loadData={params =>
+      loadData={(params) =>
         fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
       }
       loadCount={() =>
         fetchCount(parseInt(instrumentId), parseInt(facilityCycleId))
       }
       title={{
+        label: 'Title',
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
           tableLink(
@@ -129,39 +160,51 @@ const ISISInvestigationsCardView = (
             investigation.TITLE,
             view
           ),
+        filterComponent: textFilter,
       }}
-      description={{ dataKey: 'SUMMARY' }}
+      description={{
+        label: 'Description',
+        dataKey: 'SUMMARY',
+        filterComponent: textFilter,
+      }}
       information={[
         {
           label: 'Visit Id',
           dataKey: 'VISIT_ID',
+          filterComponent: textFilter,
         },
         {
           label: 'RB Number',
           dataKey: 'NAME',
+          filterComponent: textFilter,
         },
         {
           label: 'DOI',
           dataKey: 'STUDYINVESTIGATION[0].STUDY.PID',
+          filterComponent: textFilter,
         },
         {
           label: 'Size',
           dataKey: 'SIZE',
           content: (investigation: Investigation) =>
             formatBytes(investigation.SIZE),
+          // TODO: implement disableSort for this
         },
         // TODO: Needs tooltip to handle overflowing text.
         // {
         //   label: 'Instrument',
         //   dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
+        //   filterComponent: textFilter
         // },
         {
           label: 'Start Date',
           dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
         },
         {
           label: 'End Date',
           dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
         },
       ]}
       moreInformation={(investigation: Investigation) => (
@@ -231,6 +274,8 @@ const mapDispatchToProps = (
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
   clearData: () => dispatch(clearData()),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {
@@ -239,6 +284,7 @@ const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
     view: state.dgcommon.query.view,
+    filters: state.dgcommon.filters,
   };
 };
 

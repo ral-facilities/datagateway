@@ -1,27 +1,32 @@
-import React from 'react';
-import CardView from '../cardView.component';
-import { StateType } from '../../../state/app.types';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { connect } from 'react-redux';
+import { Link } from '@material-ui/core';
 import {
   Entity,
   fetchInstrumentCount,
-  fetchInstruments,
   fetchInstrumentDetails,
+  fetchInstruments,
+  Filter,
+  FiltersType,
   Instrument,
+  pushPageFilter,
   tableLink,
+  TextColumnFilter,
 } from 'datagateway-common';
-import { IndexRange } from 'react-virtualized';
 import { ViewsType } from 'datagateway-common/lib/state/app.types';
-import { Link } from '@material-ui/core';
+import React from 'react';
+import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
+import CardView from '../cardView.component';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISInstrumentsCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   fetchDetails: (instrumentId: number) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -29,6 +34,7 @@ interface ISISInstrumentsCVStateProps {
   data: Entity[];
   totalDataCount: number;
   view: ViewsType;
+  filters: FiltersType;
 }
 
 type ISISInstrumentsCVCombinedProps = ISISInstrumentsCVDispatchProps &
@@ -44,9 +50,20 @@ const ISISInstrumentsCardView = (
     fetchCount,
     fetchDetails,
     view,
+    filters,
+    pushFilters,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
 
   React.useEffect(() => {
     // Load count to trigger data to be fetched.
@@ -63,6 +80,7 @@ const ISISInstrumentsCardView = (
       loadData={fetchData}
       loadCount={fetchCount}
       title={{
+        label: 'Name',
         dataKey: 'FULLNAME',
         content: (instrument: Instrument) =>
           tableLink(
@@ -70,12 +88,18 @@ const ISISInstrumentsCardView = (
             instrument.FULLNAME || instrument.NAME,
             view
           ),
+        filterComponent: textFilter,
       }}
-      description={{ dataKey: 'DESCRIPTION' }}
+      description={{
+        label: 'Description',
+        dataKey: 'DESCRIPTION',
+        filterComponent: textFilter,
+      }}
       information={[
         {
           label: 'Type',
           dataKey: 'TYPE',
+          filterComponent: textFilter,
         },
         {
           label: 'URL',
@@ -84,6 +108,7 @@ const ISISInstrumentsCardView = (
           content: (instrument: Instrument) => (
             <Link href={instrument.URL}>{instrument.URL}</Link>
           ),
+          filterComponent: textFilter,
         },
       ]}
       moreInformation={(instrument: Instrument) => (
@@ -101,6 +126,7 @@ const mapStateToProps = (state: StateType): ISISInstrumentsCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     view: state.dgcommon.query.view,
+    filters: state.dgcommon.filters,
   };
 };
 
@@ -112,6 +138,8 @@ const mapDispatchToProps = (
   fetchCount: () => dispatch(fetchInstrumentCount()),
   fetchDetails: (instrumentId: number) =>
     dispatch(fetchInstrumentDetails(instrumentId)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 export default connect(
