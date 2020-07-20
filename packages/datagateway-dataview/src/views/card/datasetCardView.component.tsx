@@ -1,26 +1,31 @@
-import React from 'react';
-
-import CardView from './cardView.component';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from 'datagateway-common/lib/state/app.types';
-import { AnyAction } from 'redux';
-import { IndexRange } from 'react-virtualized';
-import {
-  fetchDatasets,
-  fetchDatasetCount,
-  Dataset,
-  datasetLink,
-  Entity,
-  DownloadCartItem,
-  addToCart,
-  removeFromCart,
-} from 'datagateway-common';
-import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
+import {
+  addToCart,
+  Dataset,
+  datasetLink,
+  DateColumnFilter,
+  DateFilter,
+  DownloadCartItem,
+  Entity,
+  fetchDatasetCount,
+  fetchDatasets,
+  Filter,
+  FiltersType,
+  pushPageFilter,
+  removeFromCart,
+  TextColumnFilter,
+} from 'datagateway-common';
+import { StateType } from 'datagateway-common/lib/state/app.types';
+import React from 'react';
+import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import CardView from './cardView.component';
 
 interface DatasetCVDispatchProps {
   fetchData: (
@@ -30,12 +35,14 @@ interface DatasetCVDispatchProps {
   fetchCount: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 interface DatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
+  filters: FiltersType;
 }
 
 interface DatasetCardViewProps {
@@ -56,7 +63,10 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     fetchCount,
     addToCart,
     removeFromCart,
+    pushFilters,
+    filters,
   } = props;
+
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
 
@@ -64,17 +74,37 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'dataset' &&
             datasetIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, datasetIds]
+  );
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      value={filters[dataKey] as DateFilter}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
+      }
+    />
   );
 
   React.useEffect(() => {
     // TODO: React.useMemo?
-    setDatasetIds(data.map(dataset => dataset.ID));
+    setDatasetIds(data.map((dataset) => dataset.ID));
 
     // Fetch the dataset count based on the investigation ID.
     if (!fetchedCount) {
@@ -86,16 +116,22 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
   return (
     <CardView
       data={data}
-      loadData={params => fetchData(parseInt(investigationId), params)}
+      loadData={(params) => fetchData(parseInt(investigationId), params)}
       loadCount={() => fetchCount(parseInt(investigationId))}
       totalDataCount={totalDataCount}
       title={{
+        label: 'Name',
         dataKey: 'NAME',
         content: (dataset: Dataset) => {
           return datasetLink(investigationId, dataset.ID, dataset.NAME);
         },
+        filterComponent: textFilter,
       }}
-      description={{ dataKey: 'DESCRIPTION' }}
+      description={{
+        label: 'Description',
+        dataKey: 'DESCRIPTION',
+        filterComponent: textFilter,
+      }}
       information={[
         {
           label: 'Datafile Count',
@@ -104,10 +140,12 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
         {
           label: 'Created Time',
           dataKey: 'CREATE_TIME',
+          filterComponent: dateFilter,
         },
         {
           label: 'Modified Time',
           dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
         },
       ]}
       // TODO: Can we make defining buttons more cleaner?
@@ -151,6 +189,7 @@ const mapStateToProps = (state: StateType): DatasetCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
+    filters: state.dgcommon.filters,
   };
 };
 
@@ -164,6 +203,8 @@ const mapDispatchToProps = (
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatasetCardView);
