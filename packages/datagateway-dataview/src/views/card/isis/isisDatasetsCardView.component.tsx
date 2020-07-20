@@ -14,6 +14,12 @@ import {
   Dataset,
   tableLink,
   formatBytes,
+  FiltersType,
+  TextColumnFilter,
+  DateColumnFilter,
+  DateFilter,
+  Filter,
+  pushPageFilter,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -38,6 +44,7 @@ interface ISISDatasetCVDispatchProps {
   downloadData: (datasetId: number, name: string) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -45,6 +52,7 @@ interface ISISDatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
+  filters: FiltersType;
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
@@ -74,6 +82,8 @@ const ISISDatasetsCardView = (
     addToCart,
     removeFromCart,
     downloadData,
+    filters,
+    pushFilters,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
@@ -83,17 +93,37 @@ const ISISDatasetsCardView = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'dataset' &&
             datasetIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, datasetIds]
+  );
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      value={filters[dataKey] as DateFilter}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
+      }
+    />
   );
 
   React.useEffect(() => {
     // TODO: React.useMemo?
-    setDatasetIds(data.map(dataset => dataset.ID));
+    setDatasetIds(data.map((dataset) => dataset.ID));
 
     if (!fetchedCount) {
       fetchCount(parseInt(investigationId));
@@ -104,31 +134,40 @@ const ISISDatasetsCardView = (
   return (
     <CardView
       data={data}
-      loadData={params => fetchData(parseInt(investigationId), params)}
+      loadData={(params) => fetchData(parseInt(investigationId), params)}
       loadCount={() => fetchCount(parseInt(investigationId))}
       totalDataCount={totalDataCount}
       title={{
+        label: 'Name',
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
           tableLink(
             `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
             dataset.NAME
           ),
+        filterComponent: textFilter,
       }}
-      description={{ dataKey: 'DESCRIPTION' }}
+      description={{
+        label: 'Description',
+        dataKey: 'DESCRIPTION',
+        filterComponent: textFilter,
+      }}
       information={[
         {
           label: 'Size',
           dataKey: 'SIZE',
           content: (dataset: Dataset) => formatBytes(dataset.SIZE),
+          // disableSort: true,
         },
         {
           label: 'Create Time',
           dataKey: 'CREATE_TIME',
+          filterComponent: dateFilter,
         },
         {
           label: 'Modified Time',
           dataKey: 'MOD_TIME',
+          filterComponent: dateFilter,
         },
       ]}
       moreInformation={(dataset: Dataset) => (
@@ -203,6 +242,8 @@ const mapDispatchToProps = (
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {
@@ -210,6 +251,7 @@ const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
+    filters: state.dgcommon.filters,
   };
 };
 

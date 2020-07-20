@@ -6,6 +6,12 @@ import {
   fetchFacilityCycles,
   tableLink,
   FacilityCycle,
+  TextColumnFilter,
+  DateColumnFilter,
+  Filter,
+  FiltersType,
+  DateFilter,
+  pushPageFilter,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
@@ -23,12 +29,14 @@ interface ISISFacilityCyclesCVStateProps {
   data: Entity[];
   totalDataCount: number;
   view: ViewsType;
+  filters: FiltersType;
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 interface ISISFacilityCyclesCVDispatchProps {
   fetchData: (instrumentId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (instrumentId: number) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
 }
 
 type ISISFacilityCyclesCVCombinedProps = ISISFacilityCyclesCVDispatchProps &
@@ -45,9 +53,31 @@ const ISISFacilityCyclesCardView = (
     fetchData,
     fetchCount,
     view,
+    filters,
+    pushFilters,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      value={filters[dataKey] as DateFilter}
+      onChange={(value: { startDate?: string; endDate?: string } | null) =>
+        // filterTable(dataKey, value)
+        pushFilters(dataKey, value ? value : null)
+      }
+    />
+  );
 
   React.useEffect(() => {
     if (!fetchedCount) {
@@ -60,9 +90,10 @@ const ISISFacilityCyclesCardView = (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loadData={params => fetchData(parseInt(instrumentId), params)}
+      loadData={(params) => fetchData(parseInt(instrumentId), params)}
       loadCount={() => fetchCount(parseInt(instrumentId))}
       title={{
+        label: 'Name',
         dataKey: 'NAME',
         content: (facilityCycle: FacilityCycle) =>
           tableLink(
@@ -70,16 +101,19 @@ const ISISFacilityCyclesCardView = (
             facilityCycle.NAME,
             view
           ),
+        filterComponent: textFilter,
       }}
       description={{ dataKey: 'DESCRIPTION' }}
       information={[
         {
           label: 'Start Date',
           dataKey: 'STARTDATE',
+          filterComponent: dateFilter,
         },
         {
           label: 'End Date',
           dataKey: 'ENDDATE',
+          filterComponent: dateFilter,
         },
       ]}
     />
@@ -93,6 +127,8 @@ const mapDispatchToProps = (
     dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
   fetchCount: (instrumentId: number) =>
     dispatch(fetchFacilityCycleCount(instrumentId)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): ISISFacilityCyclesCVStateProps => {
@@ -100,6 +136,7 @@ const mapStateToProps = (state: StateType): ISISFacilityCyclesCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     view: state.dgcommon.query.view,
+    filters: state.dgcommon.filters,
   };
 };
 
