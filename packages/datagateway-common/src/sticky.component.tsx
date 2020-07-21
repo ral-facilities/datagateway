@@ -1,6 +1,7 @@
 import React from 'react';
+import debounce from 'lodash.debounce';
 
-export function useSticky(): {
+function useSticky(): {
   isSticky: boolean;
   element: React.RefObject<HTMLDivElement>;
 } {
@@ -28,7 +29,7 @@ export function useSticky(): {
 
   React.useEffect(() => {
     // TODO: Use lodash.debounce for handleScroll with wait of 20ms.
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', debounce(handleScroll, 20));
 
     return () => {
       window.removeEventListener('scroll', () => handleScroll);
@@ -37,3 +38,5 @@ export function useSticky(): {
 
   return { isSticky, element };
 }
+
+export default useSticky;

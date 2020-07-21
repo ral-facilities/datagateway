@@ -15,7 +15,12 @@ import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import { loadURLQuery, pushPageView, saveView } from 'datagateway-common';
+import {
+  loadURLQuery,
+  pushPageView,
+  saveView,
+  useSticky,
+} from 'datagateway-common';
 
 import {
   QueryParams,
@@ -26,7 +31,6 @@ import { Route } from 'react-router';
 
 import PageCard from './pageCard.component';
 import PageSearch from './pageSearch.component';
-import { useSticky } from './sticky.component';
 
 // TODO: Define an object of all the relevant paths for views.
 export const supportedPaths = {
@@ -58,11 +62,11 @@ const useNavBarStyles = makeStyles({
     zIndex: 9,
   },
   navbarSticky: {
-    // TODO: Having 'sticky' instead of 'fixed' shows toggle cards.
-    //       Can we have 'fixed'?
-    position: 'sticky',
+    // NOTE: We can use 'sticky' instead of 'fixed' but this is
+    //       not supported in all browsers. The width must be 100% when using 'fixed'.
+    position: 'fixed',
+    width: '100%',
     top: 0,
-    left: 0,
 
     // Animate the navbar moving down into view.
     animation: '$moveDown 0.5s ease-in-out',
