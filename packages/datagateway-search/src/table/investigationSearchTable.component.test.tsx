@@ -198,10 +198,7 @@ describe('Investigation Search Table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(addToCartRequest());
   });
@@ -226,10 +223,7 @@ describe('Investigation Search Table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
   });
@@ -269,6 +263,24 @@ describe('Investigation Search Table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
+  it('renders details panel correctly', () => {
+    const wrapper = shallow(
+      <MemoryRouter>
+        <InvestigationSearchTable
+          store={mockStore(state)}
+          instrumentId="4"
+          facilityCycleId="5"
+        />
+      </MemoryRouter>
+    );
+    const detailsPanelWrapper = shallow(
+      wrapper.prop('detailsPanel')({
+        rowData: state.dgcommon.data[0],
+      })
+    );
+    expect(detailsPanelWrapper).toMatchSnapshot();
+  });
+
   it('renders title, visit ID, RB number and DOI as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -279,31 +291,19 @@ describe('Investigation Search Table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=3]').find('p').children()
     ).toMatchSnapshot();
 
     expect(
-      wrapper
-        .find('[aria-colindex=4]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=4]').find('p').children()
     ).toMatchSnapshot();
 
     expect(
-      wrapper
-        .find('[aria-colindex=5]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=5]').find('p').children()
     ).toMatchSnapshot();
 
     expect(
-      wrapper
-        .find('[aria-colindex=6]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=6]').find('p').children()
     ).toMatchSnapshot();
   });
 
