@@ -1,11 +1,15 @@
 import React from 'react';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { MuiThemeProvider } from '@material-ui/core';
+import {
+  MuiThemeProvider,
+  Theme,
+  createMuiTheme,
+} from '@material-ui/core/styles';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
 // Store the parent theme options when received.
-let parentThemeOptions: Theme | null = null;
+// Otherwise, set to an empty theme.
+let parentThemeOptions: Theme = createMuiTheme({});
 
 // Handle theme options sent from the parent app.
 document.addEventListener(MicroFrontendId, (e) => {
