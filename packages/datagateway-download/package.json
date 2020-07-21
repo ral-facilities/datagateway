@@ -29,7 +29,7 @@
     "@typescript-eslint/parser": "^3.6.0",
     "babel-eslint": "10.1.0",
     "cross-env": "^7.0.2",
-    "cypress": "4.9.0",
+    "cypress": "4.10.0",
     "cypress-failed-log": "^2.7.0",
     "cypress-plugin-retries": "^1.5.2",
     "enzyme": "^3.10.0",
@@ -49,7 +49,7 @@
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "serve": "^11.3.2",
-    "start-server-and-test": "^1.11.0"
+    "start-server-and-test": "^1.11.2"
   },
   "scripts": {
     "start": "craco start",
