@@ -27,6 +27,7 @@ export function useSticky(): {
   }, [element]);
 
   React.useEffect(() => {
+    // TODO: Use lodash.debounce for handleScroll with wait of 20ms.
     window.addEventListener('scroll', handleScroll);
 
     return () => {

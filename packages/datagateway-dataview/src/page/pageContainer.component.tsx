@@ -1,7 +1,6 @@
 import React from 'react';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
-
 import {
   Grid,
   Typography,
@@ -9,7 +8,9 @@ import {
   Switch,
   FormControlLabel,
   LinearProgress,
+  makeStyles,
 } from '@material-ui/core';
+
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { ThunkDispatch } from 'redux-thunk';
@@ -43,47 +44,83 @@ export const supportedPaths = {
     '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
 };
 
-// const useNavBarStyles = makeStyles() => {
+const useNavBarStyles = makeStyles({
+  '@keyframes moveDown': {
+    from: {
+      transform: 'translateY(-5rem)',
+    },
+    to: {
+      transform: 'translateY(0rem)',
+    },
+  },
+  navbar: {
+    // Allow for the element to always be on top.
+    zIndex: 9,
+  },
+  navbarSticky: {
+    // TODO: Having 'sticky' instead of 'fixed' shows toggle cards.
+    //       Can we have 'fixed'?
+    position: 'sticky',
+    top: 0,
+    left: 0,
 
-// }
+    // Animate the navbar moving down into view.
+    animation: '$moveDown 0.5s ease-in-out',
+  },
+});
 
 interface NavBarProps {
   entityCount: number;
 }
 
 const NavBar = (props: NavBarProps): React.ReactElement => {
-  const { element } = useSticky(); // isSticky,
+  const classes = useNavBarStyles();
+  const { isSticky, element } = useSticky(); // isSticky,
 
   return (
-    <Grid container ref={element}>
-      {/* Hold the breadcrumbs at top left of the page. */}
-      <Grid item xs aria-label="container-breadcrumbs">
-        {/* don't show breadcrumbs on /my-data - only on browse */}
-        <Route path="/browse" component={PageBreadcrumbs} />
-      </Grid>
+    // Wrap navbar components in Paper to allow for when
+    // it is sticky to stand out on the page when scrolling.
+    <Paper
+      square
+      elevation={!isSticky ? 0 : 1}
+      // TODO: Use clsx in this case.
+      className={
+        !isSticky
+          ? `${classes.navbar}`
+          : `${classes.navbar} ${classes.navbarSticky}`
+      }
+      ref={element}
+    >
+      <Grid container>
+        {/* Hold the breadcrumbs at top left of the page. */}
+        <Grid item xs aria-label="container-breadcrumbs">
+          {/* don't show breadcrumbs on /my-data - only on browse */}
+          <Route path="/browse" component={PageBreadcrumbs} />
+        </Grid>
 
-      {/* The table entity count takes up an xs of 2, where the breadcrumbs
+        {/* The table entity count takes up an xs of 2, where the breadcrumbs
       will take the remainder of the space. */}
-      <Grid
-        style={{ textAlign: 'center' }}
-        item
-        xs={2}
-        aria-label="container-table-count"
-      >
-        <Route
-          path={['/browse', '/my-data']}
-          render={() => {
-            return (
-              <Paper square>
-                <Typography variant="h6" component="h3">
-                  <b>Results:</b> {props.entityCount}
-                </Typography>
-              </Paper>
-            );
-          }}
-        />
+        <Grid
+          style={{ textAlign: 'center' }}
+          item
+          xs={2}
+          aria-label="container-table-count"
+        >
+          <Route
+            path={['/browse', '/my-data']}
+            render={() => {
+              return (
+                <Paper square>
+                  <Typography variant="h6" component="h3">
+                    <b>Results:</b> {props.entityCount}
+                  </Typography>
+                </Paper>
+              );
+            }}
+          />
+        </Grid>
       </Grid>
-    </Grid>
+    </Paper>
   );
 };
 

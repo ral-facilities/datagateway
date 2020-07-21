@@ -29,6 +29,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       backgroundColor: theme.palette.background.paper,
     },
 
+    // NOTE: Image code has been commented until it is supported by the API.
     // TODO: Automatically size to card size?
     // TODO: With image the information is squashed, extend maxWidth with image.
     cardImage: {
