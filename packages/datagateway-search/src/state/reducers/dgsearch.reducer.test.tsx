@@ -10,6 +10,10 @@ import {
   setInvestigationTab,
   selectStartDate,
   selectEndDate,
+  toggleLuceneRequestReceived,
+  storeDatasetLucene,
+  storeDatafileLucene,
+  storeInvestigationLucene,
 } from '../actions/actions';
 import { settingsLoaded } from '../actions';
 
@@ -110,5 +114,40 @@ describe('dgsearch reducer', () => {
     );
 
     expect(updatedState.selectDate.endDate).toEqual(new Date('2013-11-11'));
+  });
+
+  it('should set request received property when toggle request received action is sent', () => {
+    expect(state.requestReceived).toEqual(false);
+
+    const updatedState = DGSearchReducer(
+      state,
+      toggleLuceneRequestReceived(true)
+    );
+
+    expect(updatedState.requestReceived).toEqual(true);
+  });
+
+  it('should store dataset results when store dataset results action is sent', () => {
+    expect(state.searchData.dataset).toEqual([]);
+
+    const updatedState = DGSearchReducer(state, storeDatasetLucene([0]));
+
+    expect(updatedState.searchData.dataset).toEqual([0]);
+  });
+
+  it('should store datafile results when store datafile results action is sent', () => {
+    expect(state.searchData.datafile).toEqual([]);
+
+    const updatedState = DGSearchReducer(state, storeDatafileLucene([0]));
+
+    expect(updatedState.searchData.datafile).toEqual([0]);
+  });
+
+  it('should store investigation results when store investigation results action is sent', () => {
+    expect(state.searchData.investigation).toEqual([]);
+
+    const updatedState = DGSearchReducer(state, storeInvestigationLucene([0]));
+
+    expect(updatedState.searchData.investigation).toEqual([0]);
   });
 });
