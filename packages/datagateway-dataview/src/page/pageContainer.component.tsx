@@ -8,7 +8,6 @@ import {
   Switch,
   FormControlLabel,
   LinearProgress,
-  makeStyles,
 } from '@material-ui/core';
 
 import PageBreadcrumbs from './breadcrumbs.component';
@@ -19,7 +18,7 @@ import {
   loadURLQuery,
   pushPageView,
   saveView,
-  useSticky,
+  Sticky,
 } from 'datagateway-common';
 
 import {
@@ -48,53 +47,9 @@ export const supportedPaths = {
     '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
 };
 
-const useNavBarStyles = makeStyles({
-  '@keyframes moveDown': {
-    from: {
-      transform: 'translateY(-5rem)',
-    },
-    to: {
-      transform: 'translateY(0rem)',
-    },
-  },
-  navbar: {
-    // Allow for the element to always be on top.
-    zIndex: 9,
-  },
-  navbarSticky: {
-    // NOTE: We can use 'sticky' instead of 'fixed' but this is
-    //       not supported in all browsers. The width must be 100% when using 'fixed'.
-    position: 'fixed',
-    width: '100%',
-    top: 0,
-
-    // Animate the navbar moving down into view.
-    animation: '$moveDown 0.5s ease-in-out',
-  },
-});
-
-interface NavBarProps {
-  entityCount: number;
-}
-
-const NavBar = (props: NavBarProps): React.ReactElement => {
-  const classes = useNavBarStyles();
-  const { isSticky, element } = useSticky(); // isSticky,
-
+const NavBar = (props: { entityCount: number }): React.ReactElement => {
   return (
-    // Wrap navbar components in Paper to allow for when
-    // it is sticky to stand out on the page when scrolling.
-    <Paper
-      square
-      elevation={!isSticky ? 0 : 1}
-      // TODO: Use clsx in this case.
-      className={
-        !isSticky
-          ? `${classes.navbar}`
-          : `${classes.navbar} ${classes.navbarSticky}`
-      }
-      ref={element}
-    >
+    <Sticky>
       <Grid container>
         {/* Hold the breadcrumbs at top left of the page. */}
         <Grid item xs aria-label="container-breadcrumbs">
@@ -124,7 +79,7 @@ const NavBar = (props: NavBarProps): React.ReactElement => {
           />
         </Grid>
       </Grid>
-    </Paper>
+    </Sticky>
   );
 };
 

@@ -30,7 +30,6 @@ class DGThemeProvider extends React.Component<{ children: React.ReactNode }> {
 
   public render(): React.ReactElement {
     return (
-      // TODO: Theme not assignable to null issue, even though it accepts null.
       <MuiThemeProvider theme={parentThemeOptions}>
         {this.props.children}
       </MuiThemeProvider>
