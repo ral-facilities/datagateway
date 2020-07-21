@@ -43,7 +43,6 @@ const DataHeader = (
       active={dataKey in sort}
       direction={currSortDirection}
       onClick={() => onSort(dataKey, nextSortDirection)}
-      style={{ flex: '0 1 auto', flexDirection: 'row' }}
     >
       {label}
     </TableSortLabel>
@@ -62,6 +61,7 @@ const DataHeader = (
       <div
         style={{
           overflow: 'hidden',
+          flex: 1,
         }}
       >
         {inner}
