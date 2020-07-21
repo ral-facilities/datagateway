@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`] = `
+<div
+  computedMatch={
+    Object {
+      "isExact": false,
+      "params": Object {},
+      "path": "/",
+      "url": "/",
+    }
+  }
+  location={
+    Object {
+      "hash": "",
+      "key": "testKey",
+      "pathname": "/search/data",
+      "search": "",
+    }
+  }
+  style={
+    Object {
+      "width": "calc(100vw)",
+    }
+  }
+>
+  <WithStyles(ForwardRef(Grid))
+    alignItems="flex-start"
+    container={true}
+    direction="row"
+    justify="flex-start"
+    spacing={2}
+  >
+    <WithStyles(ForwardRef(Grid))
+      aria-label="container-search-filters"
+      item={true}
+    >
+      <WithStyles(ForwardRef(Paper))
+        style={
+          Object {
+            "height": "100%",
+            "width": "100%",
+          }
+        }
+      >
+        <SearchBoxContainer />
+      </WithStyles(ForwardRef(Paper))>
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      aria-label="container-search-table"
+      item={true}
+    >
+      <WithStyles(ForwardRef(Paper))
+        style={
+          Object {
+            "height": "calc(90vh)",
+            "width": "calc(70vw)",
+          }
+        }
+      >
+        <Connect(SearchPageTable) />
+      </WithStyles(ForwardRef(Paper))>
+    </WithStyles(ForwardRef(Grid))>
+  </WithStyles(ForwardRef(Grid))>
+</div>
+`;
+
+exports[`SearchPageContainer - Tests renders searchPageContainer correctly 1`] = `
+<a
+  href="/search/data"
+  onClick={[Function]}
+>
+  Search data
+</a>
+`;

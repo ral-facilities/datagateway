@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
+<div
+  aria-label="container-searchbox"
+  className="MuiGrid-root MuiGrid-item MuiGrid-direction-xs-column"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Styled(MuiBox)
+      px={2}
+    >
+      <Connect(SearchTextBox) />
+    </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Styled(MuiBox)
+      px={2}
+    >
+      <Connect(SelectDates) />
+    </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Connect(CheckboxesGroup) />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Styled(MuiBox)
+      mx={5}
+      pb={2}
+    >
+      <Connect(SearchButton) />
+    </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+</div>
+`;

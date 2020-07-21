@@ -291,8 +291,8 @@ exports[`Investigation Search Table component renders title, visit ID, RB number
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 2`] = `null`;
+exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 2`] = `"1"`;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 3`] = `null`;
+exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 3`] = `"Test 1"`;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 4`] = `null`;
+exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 4`] = `"doi 1"`;

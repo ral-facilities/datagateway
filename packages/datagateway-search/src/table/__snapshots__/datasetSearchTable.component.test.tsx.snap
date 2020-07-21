@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dataset table component renders Dataset title as a link 1`] = `null`;
+exports[`Dataset table component renders Dataset title as a link 1`] = `"Test 1"`;
 
 exports[`Dataset table component renders correctly 1`] = `
 <WithStyles(VirtualizedTable)
