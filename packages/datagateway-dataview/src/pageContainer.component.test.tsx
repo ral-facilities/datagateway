@@ -20,6 +20,7 @@ jest.mock('loglevel');
 describe('PageContainer - Tests', () => {
   let shallow;
   let state: StateType;
+  document.getElementById = jest.fn();
 
   const createWrapper = (state: StateType): ReactWrapper => {
     const mockStore = configureStore([thunk]);
@@ -44,6 +45,10 @@ describe('PageContainer - Tests', () => {
         },
       })
     );
+  });
+
+  afterEach(() => {
+    document.getElementById.mockReset();
   });
 
   it('displays the correct entity count', () => {
@@ -73,8 +78,6 @@ describe('PageContainer - Tests', () => {
     expect(testStore.getActions()[0]).toEqual({
       type: 'datagateway_common:fetch_download_cart_request',
     });
-
-    document.getElementById.mockReset();
   });
 
   it('does not fetch cart on load if no dg-dataview element exists', () => {
