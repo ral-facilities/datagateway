@@ -10,9 +10,7 @@ describe('DLS - Proposals Table', () => {
   });
 
   it('should be able to click a proposal to see its investigations', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
 
     cy.location('pathname').should(
       'eq',
@@ -30,25 +28,21 @@ describe('DLS - Proposals Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = windowWidth / 2;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(0)
-      .as('titleColumn');
-    cy.get('[role="columnheader"]')
-      .eq(1)
-      .as('nameColumn');
+    cy.get('[role="columnheader"]').eq(0).as('titleColumn');
+    cy.get('[role="columnheader"]').eq(1).as('nameColumn');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -59,14 +53,33 @@ describe('DLS - Proposals Table', () => {
       .trigger('mousemove', { clientX: 500 })
       .trigger('mouseup');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@nameColumn').should($column => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
+    });
+
+    // table width should grow if a column grows too large
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 1000 })
+      .trigger('mouseup');
+
+    cy.get('@nameColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.equal(70);
+    });
+
+    cy.get('[aria-label="grid"]').then(($grid) => {
+      const { width } = $grid[0].getBoundingClientRect();
+      cy.window().should(($window) => {
+        expect(width).to.be.greaterThan($window.innerWidth);
+      });
     });
   });
 
@@ -127,9 +140,7 @@ describe('DLS - Proposals Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
 
       cy.get('[aria-rowcount="4"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
@@ -138,9 +149,7 @@ describe('DLS - Proposals Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
 
       cy.get('[aria-label="Filter by Name"]')
         .find('input')

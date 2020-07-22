@@ -131,20 +131,14 @@ describe('Table component', () => {
     ]);
   });
 
-  it('resizes all data columns correctly when a column is resized', () => {
+  it('resizes data columns correctly when a column is resized', () => {
     const wrapper = mount(<Table {...tableProps} />);
 
     wrapper.update();
 
     expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('400px'),
-      })
-    );
-
-    expect(wrapper.find('[role="columnheader"]').at(1).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('400px'),
+        flex: expect.stringContaining('1 1 512px'),
       })
     );
 
@@ -156,13 +150,7 @@ describe('Table component', () => {
 
     expect(wrapper.find('[role="columnheader"]').at(0).prop('style')).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('450px'),
-      })
-    );
-
-    expect(wrapper.find('[role="columnheader"]').at(1).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('350px'),
+        flex: expect.stringContaining('0 0 562px'),
       })
     );
   });
@@ -185,13 +173,7 @@ describe('Table component', () => {
 
     expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('325px'),
-      })
-    );
-
-    expect(wrapper.find('[role="columnheader"]').at(3).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('325px'),
+        flex: expect.stringContaining('1 1 512px'),
       })
     );
 
@@ -203,13 +185,7 @@ describe('Table component', () => {
 
     expect(wrapper.find('[role="columnheader"]').at(2).prop('style')).toEqual(
       expect.objectContaining({
-        flex: expect.stringContaining('365px'),
-      })
-    );
-
-    expect(wrapper.find('[role="columnheader"]').at(3).prop('style')).toEqual(
-      expect.objectContaining({
-        flex: expect.stringContaining('285px'),
+        flex: expect.stringContaining('0 0 552px'),
       })
     );
   });
