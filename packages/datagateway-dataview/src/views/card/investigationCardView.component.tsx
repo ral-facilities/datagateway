@@ -236,12 +236,11 @@ const InvestigationCardView = (
           );
         },
       ]}
-      // TODO: Test image.
-      image={{
-        url:
-          'https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2018/09/918/516/image-of-hydrogen-atom-1.jpg',
-        title: 'Investigation Image',
-      }}
+      // TODO: Add image into card views when image is supported by API.
+      // image={{
+      //   url: '[IMAGE URL]',
+      //   title: 'Investigation Image',
+      // }}
       // TODO: Provide all types from data from API using filter.
       cardFilters={[
         {

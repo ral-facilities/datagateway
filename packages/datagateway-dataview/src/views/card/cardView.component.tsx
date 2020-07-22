@@ -35,10 +35,7 @@ import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import EntityCard, { EntityImageDetails } from './card.component';
-
-// TODO: Disable max results options if results are lower.
-// TODO: Hide/disable pagination and filters if no results retrieved.
+import EntityCard from './card.component'; // { EntityImageDetails }
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,21 +46,6 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       '& a': { cursor: 'pointer' },
     },
-    // advancedSearch: {
-    //   display: 'flex',
-    //   textAlign: 'center',
-    // },
-    // filters: {
-    //   display: 'flex',
-    //   flexDirection: 'column',
-    //   alignItems: 'center',
-    //   '& div': {
-    //     display: 'flex',
-    //     flexDirection: 'row',
-    //     paddingBottom: '5px',
-    //   },
-    //   padding: '25px',
-    // },
     advancedFilters: {
       display: 'grid',
       gridGap: '1rem',
@@ -71,9 +53,6 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
       padding: '20px',
     },
     filter: {
-      // display: 'flex',
-      // flexDirection: 'column',
-      // alignItems: 'flex-start',
       padding: '5px',
     },
     formControl: {
@@ -96,8 +75,6 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
 interface CardViewDetails {
   dataKey: string;
 
-  // TODO: Pass in a label for the dataKey to be shown under.
-  //       Pass a Link component to wrap the data.
   label?: string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   content?: (data?: any) => React.ReactNode;
@@ -125,7 +102,8 @@ interface CardViewProps {
   buttons?: ((data?: any) => React.ReactNode)[];
 
   cardFilters?: { label: string; dataKey: string; filterItems: string[] }[];
-  image?: EntityImageDetails;
+  // TODO: Add back in when images are supported.
+  // image?: EntityImageDetails;
 }
 
 interface CardViewStateProps {
@@ -161,6 +139,7 @@ interface CVSelectedFilter {
   items: string[];
 }
 
+// TODO: Hide/disable pagination and filters if no results retrieved.
 // TODO: CardView needs URL support:
 //        - sort (?sort=); will it require sort?
 //        - searching (?search=)
@@ -185,7 +164,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   } = props;
 
   // Get card information.
-  const { title, description, information, moreInformation, image } = props;
+  const { title, description, information, moreInformation } = props; // image
 
   // Card data.
   const [viewData, setViewData] = React.useState<Entity[]>([]);
@@ -526,6 +505,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   // smallest amount of results to display (10) or the smallest amount available.
                   disabled={dataCount <= 10}
                 >
+                  {/* TODO: Disable a max results option if the result is greater than data available to show. */}
                   <MenuItem value={10}>10</MenuItem>
                   <MenuItem value={20}>20</MenuItem>
                   <MenuItem value={30}>30</MenuItem>
@@ -675,7 +655,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       cardFilters &&
                       cardFilters.map((f) => nestedValue(data, f.dataKey))
                     }
-                    image={image}
+                    // TODO: Add back in when image is supported.
+                    // image={image}
                   />
                 </ListItem>
               );

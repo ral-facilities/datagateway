@@ -1,7 +1,7 @@
 import {
   Card,
   CardContent,
-  CardMedia,
+  // CardMedia,
   Chip,
   Collapse,
   Divider,
@@ -24,22 +24,17 @@ const useCardStyles = makeStyles((theme: Theme) => {
   const styles = createStyles({
     root: {
       display: 'flex',
-      // Width of 1000 + 150 for the image.
-      maxWidth: 1150,
+      // Width of 1000 + 150 for the image (should be 1150 if we have an image).
+      maxWidth: 1000,
       backgroundColor: theme.palette.background.paper,
     },
 
     // NOTE: Image code has been commented until it is supported by the API.
     // TODO: Automatically size to card size?
     // TODO: With image the information is squashed, extend maxWidth with image.
-    cardImage: {
-      width: 150,
-      height: 150,
-    },
-
-    // content: {
-    //   display: 'flex',
-    //   flexDirection: 'column', // row
+    // cardImage: {
+    //   width: 150,
+    //   height: 150,
     // },
 
     highlight: {
@@ -98,7 +93,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       transition: 'visibility 0s, opacity 0.5s linear',
     },
 
-    // TODO: Can we simplyify this and not have three objects?
+    // TODO: Can we simplify this and not have three objects?
     information: {
       display: 'flex',
       paddingLeft: '15px',
@@ -134,10 +129,10 @@ const useCardStyles = makeStyles((theme: Theme) => {
   return styles;
 });
 
-export interface EntityImageDetails {
-  url: string;
-  title?: string;
-}
+// export interface EntityImageDetails {
+//   url: string;
+//   title?: string;
+// }
 
 export interface EntityCardDetails {
   label: string;
@@ -154,7 +149,8 @@ interface EntityCardProps {
   moreInformation?: React.ReactNode;
   buttons?: React.ReactNode[];
 
-  image?: EntityImageDetails;
+  // TODO: Add back in when we have an image.
+  // image?: EntityImageDetails;
   tags?: string[];
 }
 
@@ -166,7 +162,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     information,
     moreInformation,
     buttons,
-    image,
+    // image,
     tags,
   } = props;
 
@@ -192,16 +188,17 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
   }, [setCollapsibleInteraction]);
 
   return (
-    // TODO: Fix width issue when having an image in the card.
     <Card id="card" className={classes.root}>
-      {image && (
+      {/* TODO: We allow for additional width when having an image in the card (see card styles). */}
+      {/* {image && (
         <CardMedia
           component="img"
           className={classes.cardImage}
           image={image.url}
           title={image.title && image.title}
         />
-      )}
+      )} */}
+
       {/* TODO: Card content needs to be a flexbox (as a row):
                 - has a card information area (split in horizontally - column) for title/description and tags
                 - has card details area which takes up smaller space */}
