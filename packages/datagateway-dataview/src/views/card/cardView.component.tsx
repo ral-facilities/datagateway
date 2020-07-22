@@ -15,6 +15,9 @@ import {
   Paper,
   Select,
   Typography,
+  ListItemText,
+  ListItemIcon,
+  TableSortLabel,
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -28,6 +31,9 @@ import {
   pushPageFilter,
   pushPageNum,
   pushPageResults,
+  SortType,
+  Order,
+  pushPageSort,
 } from 'datagateway-common';
 import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
@@ -109,13 +115,16 @@ interface CardViewProps {
 interface CardViewStateProps {
   loading: boolean;
   query: QueryParams;
+
   filters: FiltersType;
+  sort: SortType;
 }
 
 interface CardViewDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   clearData: () => Action;
 }
 
@@ -139,6 +148,11 @@ interface CVSelectedFilter {
   items: string[];
 }
 
+interface CVSort {
+  label: string;
+  dataKey: string;
+}
+
 // TODO: Hide/disable pagination and filters if no results retrieved.
 // TODO: CardView needs URL support:
 //        - sort (?sort=); will it require sort?
@@ -152,6 +166,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     totalDataCount,
     query,
     filters,
+    sort,
     cardFilters,
     loadData,
     loadCount,
@@ -160,6 +175,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     pushPage,
     pushResults,
     pushFilters,
+    pushSort,
     clearData,
   } = props;
 
@@ -176,13 +192,18 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
   const [pageChange, setPageChange] = React.useState(false);
+
   const [filterChange, setFilterChange] = React.useState(false);
+  const [sortChange, setSortChange] = React.useState(false);
 
   // Filters.
   const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
   const [selectedFilters, setSelectedFilters] = React.useState<
     CVSelectedFilter[]
   >([]);
+
+  // Sort.
+  const [cardSort, setCardSort] = React.useState<CVSort[] | null>(null);
 
   // Advanced search.
   const [advSearchCollapsed, setAdvSearchCollapsed] = React.useState(false);
@@ -231,9 +252,43 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           return data;
         }, {})
       : [];
-    console.log('info: ', info);
+
+    // console.log('info: ', info);
     setFiltersInfo(info);
   }, [cardFilters, filters]);
+
+  React.useEffect(() => {
+    // Get sort information from title, description and information lists.
+    let sortList: CVSort[] = [];
+
+    if (!title.disableSort) {
+      sortList.push({
+        label: title.label ? title.label : title.dataKey,
+        dataKey: title.dataKey,
+      });
+    }
+
+    if (description && !description.disableSort) {
+      sortList.push({
+        label: description.label ? description.label : description.dataKey,
+        dataKey: description.dataKey,
+      });
+    }
+
+    if (information) {
+      sortList = sortList.concat(
+        information
+          .filter((i) => !i.disableSort)
+          .map((i) => ({
+            label: i.label ? i.label : i.dataKey,
+            dataKey: i.dataKey,
+          }))
+      );
+    }
+
+    // console.log('Sort list: ', sortList);
+    setCardSort(sortList);
+  }, [description, information, title.dataKey, title.disableSort, title.label]);
 
   // TODO: Set the selected filters.
   React.useEffect(() => {
@@ -310,6 +365,17 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     [pushPage]
   );
 
+  const nextSortDirection = (dataKey: string): Order | null => {
+    switch (sort[dataKey]) {
+      case 'asc':
+        return 'desc';
+      case 'desc':
+        return null;
+      case undefined:
+        return 'asc';
+    }
+  };
+
   React.useEffect(() => {
     // console.log('Page number (page): ', page);
     // console.log('Current pageNum (query): ', query.page);
@@ -361,11 +427,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   React.useEffect(() => {
     // TODO: Need to handle sort and search as well.
     // Reload the count on filter update.
-    if (!loading && filterChange) {
-      // Set page to 1 on filter change.
+    if (!loading && (filterChange || sortChange)) {
+      // Set page to 1 on filter/sort change.
       changePage(1);
       loadCount();
-      setFilterChange(false);
+
+      if (filterChange) setFilterChange(false);
+      if (sortChange) setSortChange(false);
     }
 
     if (!loading && dataCount > 0) {
@@ -405,6 +473,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     clearData,
     loading,
     filterChange,
+    sortChange,
     changePage,
   ]);
 
@@ -516,6 +585,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         </Grid>
       </Grid>
 
+      {/* TODO: Have sort/filters in a separate container to the cards list? */}
       <Grid
         container
         direction="row"
@@ -524,17 +594,56 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         spacing={10}
         xs={12}
       >
-        {/* Filtering options */}
-        {/* TODO: When browser width changes this is smaller in width */}
-        {cardFilters && (
-          <Grid item xs={3}>
+        <Grid
+          container
+          direction="column"
+          justify="flex-start"
+          alignItems="stretch"
+          xs={3}
+          spacing={5}
+          style={{ padding: '1%' }}
+        >
+          <Grid item xs>
             <Paper>
-              <Grid
-                item
-                direction="column"
-                justify="flex-start"
-                alignItems="stretch"
-              >
+              <Box p={2}>
+                <Typography variant="h5">Sort By</Typography>
+              </Box>
+
+              {/* TODO: Show all the available sort options: 
+                        TITLE, DESCRIPTION and the further information (if provided) */}
+              <Box>
+                <List component="nav">
+                  {cardSort &&
+                    cardSort.map((s, i) => (
+                      <ListItem
+                        key={i}
+                        button
+                        onClick={() => {
+                          pushSort(s.dataKey, nextSortDirection(s.dataKey));
+                          setSortChange(true);
+                        }}
+                      >
+                        <ListItemText primary={s.label} />
+                        <ListItemIcon>
+                          <TableSortLabel
+                            active={s.dataKey in sort}
+                            direction={sort[s.dataKey]}
+                          >
+                            {s.dataKey in sort && sort[s.dataKey]}
+                          </TableSortLabel>
+                        </ListItemIcon>
+                      </ListItem>
+                    ))}
+                </List>
+              </Box>
+            </Paper>
+          </Grid>
+          {/* Filtering options */}
+          {/* TODO: When browser width becomes smaller this is smaller in width 
+                    (needs to expand to take up full width) */}
+          {cardFilters && (
+            <Grid item xs>
+              <Paper>
                 <Box p={2}>
                   <Typography variant="h5">Filter By</Typography>
                 </Box>
@@ -583,10 +692,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       }
                     )}
                 </Box>
-              </Grid>
-            </Paper>
-          </Grid>
-        )}
+              </Paper>
+            </Grid>
+          )}
+        </Grid>
 
         {/* Card data */}
         <Grid item>
@@ -697,7 +806,10 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
   return {
     loading: state.dgcommon.loading,
     query: state.dgcommon.query,
+
+    // TODO: Possible move these out into separate components.
     filters: state.dgcommon.filters,
+    sort: state.dgcommon.sort,
   };
 };
 
@@ -710,6 +822,8 @@ const mapDispatchToProps = (
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   clearData: () => dispatch(clearData()),
 });
 

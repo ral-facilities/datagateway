@@ -192,6 +192,7 @@ const InvestigationTable = (
         {
           label: 'Dataset Count',
           dataKey: 'DATASET_COUNT',
+          disableSort: true,
         },
         {
           label: 'Instrument',

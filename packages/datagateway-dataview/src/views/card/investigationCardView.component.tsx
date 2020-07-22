@@ -192,6 +192,7 @@ const InvestigationCardView = (
           label: 'Dataset Count',
           dataKey: 'DATASET_COUNT',
           filterComponent: textFilter,
+          disableSort: true,
         },
         {
           label: 'Start Date',
