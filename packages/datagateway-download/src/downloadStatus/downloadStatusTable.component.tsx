@@ -37,6 +37,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   const { refreshTable, setRefreshTable, setLastChecked } = props;
 
+  const dgDownloadElement = document.getElementById('datagateway-download');
+
   React.useEffect(() => {
     if (!dataLoaded || refreshTable) {
       // Clear the current contents, this will make sure
@@ -49,7 +51,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         setRefreshTable(false);
       }
 
-      if (!dataLoaded) {
+      if (!dataLoaded && dgDownloadElement) {
         fetchDownloads({
           facilityName: settings.facilityName,
           downloadApiUrl: settings.downloadApiUrl,
@@ -69,6 +71,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     setLastChecked,
     settings.facilityName,
     settings.downloadApiUrl,
+    dgDownloadElement,
   ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (

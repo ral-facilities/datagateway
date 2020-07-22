@@ -49,6 +49,8 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [showConfirmation, setShowConfirmation] = React.useState(false);
   const [isTwoLevel, setIsTwoLevel] = React.useState(false);
 
+  const dgDownloadElement = document.getElementById('datagateway-download');
+
   const totalSize = React.useMemo(() => {
     if (sizesFinished) {
       return data.reduce((accumulator, nextItem) => {
@@ -69,9 +71,13 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
     if (settings.idsUrl) checkTwoLevel();
   }, [settings.idsUrl]);
-
   React.useEffect(() => {
-    if (settings.facilityName && settings.apiUrl && settings.downloadApiUrl)
+    if (
+      settings.facilityName &&
+      settings.apiUrl &&
+      settings.downloadApiUrl &&
+      dgDownloadElement
+    )
       fetchDownloadCartItems({
         facilityName: settings.facilityName,
         downloadApiUrl: settings.downloadApiUrl,
@@ -84,7 +90,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           apiUrl: settings.apiUrl,
         }).then((count) => setFileCount(count));
       });
-  }, [settings.facilityName, settings.apiUrl, settings.downloadApiUrl]);
+  }, [
+    settings.facilityName,
+    settings.apiUrl,
+    settings.downloadApiUrl,
+    dgDownloadElement,
+  ]);
 
   React.useEffect(() => {
     if (!sizesLoaded) {
