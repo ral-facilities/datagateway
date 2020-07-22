@@ -397,6 +397,7 @@ const VirtualizedTable = (
                     key="Actions"
                     dataKey="actions"
                     className={classes.flexContainer}
+                    headerClassName={classes.headerFlexContainer}
                     headerRenderer={(headerProps) => (
                       <TableCell
                         size="small"
