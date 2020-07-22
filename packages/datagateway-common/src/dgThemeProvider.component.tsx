@@ -1,9 +1,9 @@
+import React from 'react';
 import {
   MuiThemeProvider,
   Theme,
   createMuiTheme,
 } from '@material-ui/core/styles';
-import React from 'react';
 import { MicroFrontendId } from './app.types';
 import { SendThemeOptionsType } from './state/actions/actions.types';
 
