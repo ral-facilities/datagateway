@@ -1,7 +1,6 @@
 import { Typography } from '@material-ui/core';
 import {
   addToCart,
-  // clearTable,
   Datafile,
   DateColumnFilter,
   DateFilter,
@@ -16,27 +15,24 @@ import {
   Order,
   pushPageFilter,
   removeFromCart,
-  // sortTable,
   Table,
   TextColumnFilter,
   pushPageSort,
+  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux'; // Action
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-// import useAfterMountEffect from '../../../utils';
 
 interface DLSDatafilesTableProps {
   datasetId: string;
 }
 
 interface DLSDatafilesTableStoreProps {
-  sort: {
-    [column: string]: Order;
-  };
+  sort: SortType;
   filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
@@ -47,13 +43,10 @@ interface DLSDatafilesTableStoreProps {
 }
 
 interface DLSDatafilesTableDispatchProps {
-  // sortTable: (column: string, order: Order | null) => Action;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
-  // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
-  // clearTable: () => Action;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
@@ -71,12 +64,9 @@ const DLSDatafilesTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    // clearTable,
     sort,
-    // sortTable,
     pushSort,
     filters,
-    // filterTable,
     pushFilters,
     datasetId,
     loading,
@@ -99,16 +89,6 @@ const DLSDatafilesTable = (
     [cartItems, allIds]
   );
 
-  // React.useEffect(() => {
-  //   clearTable();
-  // }, [clearTable]);
-
-  // useAfterMountEffect(() => {
-  //   fetchCount(parseInt(datasetId));
-  //   fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  //   fetchAllIds();
-  // }, [fetchCount, fetchData, sort, filters, datasetId, fetchAllIds]);
-
   React.useEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
@@ -119,7 +99,6 @@ const DLSDatafilesTable = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -129,7 +108,6 @@ const DLSDatafilesTable = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
@@ -141,7 +119,6 @@ const DLSDatafilesTable = (
       loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      // onSort={sortTable}
       onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
@@ -199,18 +176,13 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
   ownProps: DLSDatafilesTableProps
 ): DLSDatafilesTableDispatchProps => ({
-  // sortTable: (column: string, order: Order | null) =>
-  //   dispatch(sortTable(column, order)),
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
-  // filterTable: (column: string, filter: Filter | null) =>
-  //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
     dispatch(fetchDatafiles(datasetId, offsetParams)),
   fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
-  // clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) =>
     dispatch(addToCart('datafile', entityIds)),
   removeFromCart: (entityIds: number[]) =>

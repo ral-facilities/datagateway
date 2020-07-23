@@ -14,6 +14,7 @@ import {
   tableLink,
   TextColumnFilter,
   pushPageSort,
+  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -28,9 +29,7 @@ interface ISISFacilityCyclesTableProps {
 }
 
 interface ISISFacilityCyclesTableStoreProps {
-  sort: {
-    [column: string]: Order;
-  };
+  sort: SortType;
   filters: FiltersType;
   data: Entity[];
   totalDataCount: number;

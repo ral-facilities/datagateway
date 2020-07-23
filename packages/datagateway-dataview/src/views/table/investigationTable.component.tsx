@@ -1,7 +1,6 @@
 import { Typography } from '@material-ui/core';
 import {
   addToCart,
-  // clearTable,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -19,19 +18,17 @@ import {
   removeFromCart,
   Table,
   TextColumnFilter,
+  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux'; // Action
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../state/app.types';
-// import useAfterMountEffect from '../../utils';
 
 interface InvestigationTableProps {
-  sort: {
-    [column: string]: Order;
-  };
+  sort: SortType;
   filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
@@ -42,16 +39,13 @@ interface InvestigationTableProps {
 }
 
 interface InvestigationTableDispatchProps {
-  // sortTable: (column: string, order: Order | null) => Action;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
-  // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   fetchAllIds: () => Promise<void>;
-  // clearTable: () => Action;
 }
 
 type InvestigationTableCombinedProps = InvestigationTableProps &
@@ -65,12 +59,9 @@ const InvestigationTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    // clearTable,
     sort,
-    // sortTable,
     pushSort,
     filters,
-    // filterTable,
     pushFilters,
     cartItems,
     addToCart,
@@ -96,7 +87,6 @@ const InvestigationTable = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -106,22 +96,10 @@ const InvestigationTable = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
   );
-
-  // React.useEffect(() => {
-  //   clearTable();
-  // }, [clearTable]);
-
-  // useAfterMountEffect(() => {
-  //   console.log('Fetch data');
-  //   fetchCount();
-  //   fetchData({ startIndex: 0, stopIndex: 49 });
-  //   fetchAllIds();
-  // }, [fetchCount, fetchData, fetchAllIds]);
 
   React.useEffect(() => {
     fetchCount();
@@ -136,7 +114,6 @@ const InvestigationTable = (
       loadMoreRows={fetchData}
       totalRowCount={totalDataCount}
       sort={sort}
-      // onSort={sortTable}
       onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
@@ -223,18 +200,15 @@ const InvestigationTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): InvestigationTableDispatchProps => ({
-  // sortTable: (column: string, order: Order | null) =>
-  //   dispatch(sortTable(column, order)),
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
-  // filterTable: (column: string, filter: Filter | null) =>
-  //   dispatch(filterTable(column, filter)),
+
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
-  // clearTable: () => dispatch(clearTable()),
+
   addToCart: (entityIds: number[]) =>
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>

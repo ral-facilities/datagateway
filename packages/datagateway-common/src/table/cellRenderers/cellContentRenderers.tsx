@@ -15,17 +15,19 @@ export function formatBytes(bytes: number | undefined): string {
   return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+// NOTE: Allow the link to specify the view to keep the same view when navigating.
+const appendView = (link: string, view?: ViewsType): string =>
+  view ? (link += `?view=${view}`) : link;
+
 export function datasetLink(
   investigationId: string,
   datasetId: number,
   datasetName: string,
   view?: ViewsType
 ): React.ReactElement {
-  let link = `/browse/investigation/${investigationId}/dataset/${datasetId}/datafile`;
-  // NOTE: Allow the link to specify the view to keep the same view when navigating.
-  if (view) link += `?view=${view}`;
+  const link = `/browse/investigation/${investigationId}/dataset/${datasetId}/datafile`;
   return (
-    <Link component={RouterLink} to={link}>
+    <Link component={RouterLink} to={appendView(link, view)}>
       {datasetName}
     </Link>
   );
@@ -36,11 +38,9 @@ export function investigationLink(
   investigationTitle: string,
   view?: ViewsType
 ): React.ReactElement {
-  let link = `/browse/investigation/${investigationId}/dataset`;
-  // NOTE: Allow the link to specify the view to keep the same view when navigating.
-  if (view) link += `?view=${view}`;
+  const link = `/browse/investigation/${investigationId}/dataset`;
   return (
-    <Link component={RouterLink} to={link}>
+    <Link component={RouterLink} to={appendView(link, view)}>
       {investigationTitle}
     </Link>
   );
@@ -51,10 +51,8 @@ export function tableLink(
   linkText: string,
   view?: ViewsType
 ): React.ReactElement {
-  if (view) linkUrl += `?view=${view}`;
-  // NOTE: Allow the link to specify the view to keep the same view when navigating.
   return (
-    <Link component={RouterLink} to={linkUrl}>
+    <Link component={RouterLink} to={appendView(linkUrl, view)}>
       {linkText}
     </Link>
   );

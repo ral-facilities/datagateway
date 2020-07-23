@@ -4,8 +4,6 @@ import {
   AddToCartRequestType,
   AddToCartSuccessType,
   ClearDataType,
-  // ClearFiltersType,
-  // ClearSortType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -110,12 +108,14 @@ import {
   UpdateSortType,
   UpdateViewPayload,
   UpdateViewType,
+  UpdateSearchPayload,
 } from '../actions/actions.types';
 import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
 
 const initialQuery: QueryParams = {
   view: null,
+  search: null,
   page: null,
   results: null,
 };
@@ -230,6 +230,19 @@ export function handleUpdateView(
     query: {
       ...state.query,
       view: payload.view,
+    },
+  };
+}
+
+export function handleUpdateSearch(
+  state: DGCommonState,
+  payload: UpdateSearchPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      search: payload.search,
     },
   };
 }

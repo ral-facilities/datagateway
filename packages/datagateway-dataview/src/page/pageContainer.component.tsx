@@ -31,7 +31,8 @@ import { Route } from 'react-router';
 import PageCard from './pageCard.component';
 import PageSearch from './pageSearch.component';
 
-// TODO: Define an object of all the relevant paths for views.
+// TODO: Define an object of all the relevant paths for views
+//       (support both table and card view).
 export const supportedPaths = {
   investigation: '/browse/investigation',
   dataset: '/browse/investigation/:investigationId/dataset',
@@ -256,7 +257,7 @@ class PageContainer extends React.Component<
             />
           )}
 
-          {/* TODO: Show the page search component on all views */}
+          {/* Show the page search component on all views */}
           <Route
             path={['/browse', '/my-data']}
             render={() => {

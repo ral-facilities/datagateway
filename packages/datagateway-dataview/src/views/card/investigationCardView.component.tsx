@@ -150,13 +150,12 @@ const InvestigationCardView = (
   return (
     // TODO: Since CardView is a separate component, we should not couple the data from redux to it,
     //       pass it through here.
-    // TODO: card widths, sort.
+    // TODO: Pass in card widths, sort/filters.
     <CardView
       data={data}
       totalDataCount={totalDataCount}
       loadData={fetchData}
       loadCount={fetchCount}
-      // TODO: Simplify title usage; look at the need for dataKey, label and link.
       title={{
         // Provide label for filter component.
         label: 'Title',
@@ -242,7 +241,6 @@ const InvestigationCardView = (
       //   url: '[IMAGE URL]',
       //   title: 'Investigation Image',
       // }}
-      // TODO: Provide all types from data from API using filter.
       cardFilters={[
         {
           label: 'Type ID',

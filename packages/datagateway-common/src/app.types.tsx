@@ -242,8 +242,7 @@ export const EntityTypes: string[] = [
   'facility',
 ];
 
-// TODO: type this properly
-// TODO: Do we need number[]?
+// TODO: type these properly
 export interface DateFilter {
   startDate?: string;
   endDate?: string;
@@ -256,7 +255,6 @@ export interface FiltersType {
   [column: string]: Filter;
 }
 
-// TODO: Replace this in all files.
 export interface SortType {
   [column: string]: Order;
 }

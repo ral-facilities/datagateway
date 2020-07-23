@@ -1,3 +1,24 @@
+import React from 'react';
+import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+import {
+  clearData,
+  Entity,
+  Filter,
+  FiltersType,
+  nestedValue,
+  pushPageFilter,
+  pushPageNum,
+  pushPageResults,
+  SortType,
+  Order,
+  pushPageSort,
+} from 'datagateway-common';
+import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
+
 import {
   Box,
   Chip,
@@ -22,26 +43,8 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
-import {
-  clearData,
-  Entity,
-  Filter,
-  FiltersType,
-  nestedValue,
-  pushPageFilter,
-  pushPageNum,
-  pushPageResults,
-  SortType,
-  Order,
-  pushPageSort,
-} from 'datagateway-common';
-import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
-import React from 'react';
-import { connect } from 'react-redux';
-import { IndexRange } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import EntityCard from './card.component'; // { EntityImageDetails }
+
+import EntityCard from './card.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -107,6 +110,7 @@ interface CardViewProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttons?: ((data?: any) => React.ReactNode)[];
 
+  // TODO: Change name to customFilters.
   cardFilters?: { label: string; dataKey: string; filterItems: string[] }[];
   // TODO: Add back in when images are supported.
   // image?: EntityImageDetails;
@@ -153,9 +157,9 @@ interface CVSort {
   dataKey: string;
 }
 
-// TODO: Hide/disable pagination and filters if no results retrieved.
+// TODO: Duplicate count and data requests for filter and page changes.
+// TODO: Hide/disable pagination and sort/filters if no results retrieved.
 // TODO: CardView needs URL support:
-//        - sort (?sort=); will it require sort?
 //        - searching (?search=)
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
@@ -237,7 +241,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 }),
                 {}
               ),
-              // TODO: Make use of selected items.
+              // TODO: Make use of selected items
+              //       (for expansion panel expanded by default on page render).
               hasSelectedItems: false,
             },
           };
@@ -290,7 +295,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     setCardSort(sortList);
   }, [description, information, title.dataKey, title.disableSort, title.label]);
 
-  // TODO: Set the selected filters.
   React.useEffect(() => {
     if (Object.keys(filtersInfo).length > 0) {
       // Get selected items only and remove any arrays without items.
@@ -425,10 +429,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   React.useEffect(() => setFilterChange(true), [filters]);
 
   React.useEffect(() => {
-    // TODO: Need to handle sort and search as well.
-    // Reload the count on filter update.
+    // TODO: Needs to handle search as well.
     if (!loading && (filterChange || sortChange)) {
-      // Set page to 1 on filter/sort change.
+      // Go to the first page and load count on
+      // filter/sort change.
       changePage(1);
       loadCount();
 
@@ -440,15 +444,15 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       if (!loadedData) {
         // Calculate the maximum pages needed for pagination.
         setNumPages(~~((dataCount + maxResults - 1) / maxResults));
-        console.log('num pages: ', numPages);
+        // console.log('num pages: ', numPages);
 
         // Calculate the start/end indexes for the data.
         const startIndex = page * maxResults - (maxResults - 1) - 1;
-        console.log('startIndex: ', startIndex);
+        // console.log('startIndex: ', startIndex);
 
         // End index not incremented for slice method.
         const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-        console.log('stopIndex: ', stopIndex);
+        // console.log('stopIndex: ', stopIndex);
 
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
           // Clear data in the state before loading new data.
@@ -470,11 +474,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     loadCount,
     loadData,
     loadedData,
-    clearData,
     loading,
     filterChange,
     sortChange,
     changePage,
+    clearData,
   ]);
 
   return (
@@ -638,6 +642,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
               </Box>
             </Paper>
           </Grid>
+
           {/* Filtering options */}
           {/* TODO: When browser width becomes smaller this is smaller in width 
                     (needs to expand to take up full width) */}
@@ -679,7 +684,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                                         }}
                                       >
                                         {/* TODO: The label chip could have its contents overflow
-                                                  (requires tooltip in future)  */}
+                                                  (requires ArrowTooltip)  */}
                                         <Chip label={item} />
                                       </ListItem>
                                     )
@@ -813,8 +818,9 @@ const mapStateToProps = (state: StateType): CardViewStateProps => {
   };
 };
 
-// TODO: Should pushPage, pushResults, clearData be passed in or
-//       present in the card view by default?
+// TODO: Should pushPage, pushResults, pushFilters, pushSort and clearData
+//       be passed in or present in the card view by default?
+//       Provide options to pass in functions that get called to handle this.
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): CardViewDispatchProps => ({

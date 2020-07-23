@@ -30,6 +30,7 @@ export const UpdateSortType = 'datagateway_common:update_sort';
 export const UpdateQueriesType = 'datagateway_common:update_queries';
 
 export const UpdateViewType = 'datagateway_common:update_view';
+export const UpdateSearchType = 'datagateway_common:update_search';
 export const UpdatePageType = 'datagateway_common:update_page';
 export const UpdateResultsType = 'datagateway_common:update_results';
 
@@ -236,6 +237,10 @@ export interface URLs {
 
 export interface UpdateViewPayload {
   view: ViewsType;
+}
+
+export interface UpdateSearchPayload {
+  search: string | null;
 }
 
 export interface UpdatePagePayload {

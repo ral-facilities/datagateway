@@ -1,5 +1,4 @@
 import {
-  // clearTable,
   Entity,
   fetchInstrumentCount,
   fetchInstrumentDetails,
@@ -9,25 +8,22 @@ import {
   Instrument,
   Order,
   pushPageFilter,
-  // sortTable,
   Table,
   tableLink,
   TextColumnFilter,
   pushPageSort,
+  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux'; // Action
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-// import useAfterMountEffect from '../../../utils';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
 interface ISISInstrumentsTableStoreProps {
-  sort: {
-    [column: string]: Order;
-  };
+  sort: SortType;
   filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
@@ -36,13 +32,10 @@ interface ISISInstrumentsTableStoreProps {
 }
 
 interface ISISInstrumentsTableDispatchProps {
-  // sortTable: (column: string, order: Order | null) => Action;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
-  // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
-  // clearTable: () => Action;
   fetchDetails: (instrumentId: number) => Promise<void>;
 }
 
@@ -57,12 +50,9 @@ const ISISInstrumentsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    // clearTable,
     sort,
-    // sortTable,
     pushSort,
     filters,
-    // filterTable,
     pushFilters,
     loading,
   } = props;
@@ -71,19 +61,9 @@ const ISISInstrumentsTable = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
-
-  // React.useEffect(() => {
-  //   clearTable();
-  // }, [clearTable]);
-
-  // useAfterMountEffect(() => {
-  //   fetchCount();
-  //   fetchData({ startIndex: 0, stopIndex: 49 });
-  // }, [fetchData, fetchCount, sort, filters]);
 
   React.useEffect(() => {
     fetchCount();
@@ -97,7 +77,6 @@ const ISISInstrumentsTable = (
       loadMoreRows={fetchData}
       totalRowCount={totalDataCount}
       sort={sort}
-      // onSort={sortTable}
       onSort={pushSort}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
@@ -129,18 +108,13 @@ const ISISInstrumentsTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISInstrumentsTableDispatchProps => ({
-  // sortTable: (column: string, order: Order | null) =>
-  //   dispatch(sortTable(column, order)),
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
-  // filterTable: (column: string, filter: Filter | null) =>
-  //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInstruments(offsetParams)),
   fetchCount: () => dispatch(fetchInstrumentCount()),
-  // clearTable: () => dispatch(clearTable()),
   fetchDetails: (instrumentId: number) =>
     dispatch(fetchInstrumentDetails(instrumentId)),
 });

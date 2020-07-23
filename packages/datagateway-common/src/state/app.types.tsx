@@ -30,6 +30,7 @@ export type ViewsType = 'table' | 'card' | null;
 
 export interface QueryParams {
   view: ViewsType;
+  search: string | null;
   page: number | null;
   results: number | null;
 }

@@ -450,6 +450,7 @@ export const fetchFilterFailure = (
 });
 
 // TODO: Should be moved out of investigations and placed somewhere generic (index).
+// TODO: Add support for nested values (filter key for API may differ from data key we use in code)
 export const fetchFilter = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   filterKey: string,

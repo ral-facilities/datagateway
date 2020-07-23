@@ -16,6 +16,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { ArrowTooltip } from 'datagateway-common';
 
+// TODO: Remove uses of 'px' hardcoded where possible.
+
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
@@ -72,8 +74,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
       },
     },
 
-    // TODO: The height/top does not completely fade out the next line of the description.
-    //       You can still make out a the top of the sentence even with the fade.
     shadowVisible: {
       position: 'absolute',
       height: 30,
@@ -140,7 +140,6 @@ export interface EntityCardDetails {
 }
 
 interface EntityCardProps {
-  // TODO: Test how card appears when optional info is not provided.
   title: EntityCardDetails;
 
   description?: string;
@@ -199,10 +198,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         />
       )} */}
 
-      {/* TODO: Card content needs to be a flexbox (as a row):
-                - has a card information area (split in horizontally - column) for title/description and tags
-                - has card details area which takes up smaller space */}
-      {/* className={classes.content} */}
+      {/* Card content is a flexbox (as a row):
+            - has a card information area (split in horizontally - column) for title/description and tags
+            - has card details area which takes up smaller space */}
       <CardContent>
         {/* row:
               - main information; title and description (optional)
@@ -281,13 +279,13 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             </div>
           </div>
 
-          {/* TODO: Divider is optional based on if there is information/buttons. */}
+          {/* Divider is optional based on if there is information/buttons. */}
           {(information || buttons) && (
-            // TODO: Set flexItem to true to allow it to show when flex direction is column for content.
+            // Set flexItem to true to allow it to show when flex direction is column for content.
             <Divider flexItem={true} orientation={'vertical'} />
           )}
 
-          {/* TODO: Support ArrowTooltip for information to shorten large text. */}
+          {/* TODO: Support ArrowTooltip for information for large text. */}
           <div>
             {information && (
               <div className={classes.information}>
@@ -312,8 +310,6 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
               </div>
             )}
 
-            {/* TODO: Add correct spacing when only divider and buttons are present (no information). */}
-            {/* TODO: Button should be located more centrally (positioned in the middle) if there is no information.  */}
             {buttons && (
               // TODO: Adjust the paddingTop/padding to find the right with buttons and information (with and without each other).
               <div style={{ padding: '10px', textAlign: 'center' }}>
@@ -357,7 +353,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           <div className={classes.tags}>
             <Divider />
 
-            {/* TODO: Maybe this should be an array of tags? What would these tags be based on? */}
+            {/* Render the array of tags passed through */}
             <div style={{ paddingTop: '10px' }}>
               {tags.map((v, i) => (
                 <Chip key={i} className={classes.chip} label={v} />

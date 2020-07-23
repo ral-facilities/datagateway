@@ -10,8 +10,6 @@ import {
 } from '../app.types';
 import {
   ClearDataType,
-  // ClearFiltersType,
-  // ClearSortType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -36,6 +34,8 @@ import {
   UpdateViewPayload,
   UpdateViewType,
   URLs,
+  UpdateSearchPayload,
+  UpdateSearchType,
 } from './actions.types';
 
 export * from './cart';
@@ -117,15 +117,15 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     // Get the URLSearchParams object from the search query.
     const query = new URLSearchParams(getState().router.location.search);
-    console.log('loading search: ', query.toString());
+    console.log('parsing query: ', query.toString());
 
     // Get filters in URL.
+    // TODO: Support a search query for search box.
+    const search = query.get('search');
     const page = query.get('page');
     const results = query.get('results');
     const filters = query.get('filters');
     const sort = query.get('sort');
-
-    // TODO: Create one method to parse the filters/sort objects.
 
     // Parse filters in the query.
     const parsedFilters: FiltersType = {};
@@ -182,6 +182,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     // Create the query parameters object.
     const params: QueryParams = {
       view: query.get('view') as ViewsType,
+      search: search ? search : null,
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
     };
@@ -254,7 +255,6 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   return queryParams;
 };
 
-// TODO: API filters should be part of the query parameters.
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
   const sort = getState().dgcommon.sort;
   const filters = getState().dgcommon.filters;
@@ -327,6 +327,15 @@ export const updateView = (view: ViewsType): ActionType<UpdateViewPayload> => ({
   },
 });
 
+export const updateSearch = (
+  search: string | null
+): ActionType<UpdateSearchPayload> => ({
+  type: UpdateSearchType,
+  payload: {
+    search,
+  },
+});
+
 export const updatePage = (
   page: number | null
 ): ActionType<UpdatePagePayload> => ({
@@ -357,6 +366,15 @@ export const updateSaveView = (
 export const pushPageView = (view: ViewsType): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(updateView(view));
+    dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};
+
+export const pushPageSearch = (
+  search: string | null
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(updateSearch(search));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
 };

@@ -2,7 +2,6 @@ import { IconButton, Typography } from '@material-ui/core';
 import { GetApp } from '@material-ui/icons';
 import {
   addToCart,
-  // clearTable,
   Datafile,
   DateColumnFilter,
   DateFilter,
@@ -18,28 +17,25 @@ import {
   Order,
   pushPageFilter,
   removeFromCart,
-  // sortTable,
   Table,
   TableActionProps,
   TextColumnFilter,
   pushPageSort,
+  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux'; // Action
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../state/app.types';
-// import useAfterMountEffect from '../../utils';
 
 interface DatafileTableProps {
   datasetId: string;
 }
 
 interface DatafileTableStoreProps {
-  sort: {
-    [column: string]: Order;
-  };
+  sort: SortType;
   filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
@@ -50,9 +46,7 @@ interface DatafileTableStoreProps {
 }
 
 interface DatafileTableDispatchProps {
-  // sortTable: (column: string, order: Order | null) => Action;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
-  // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (datasetId: number) => Promise<void>;
@@ -60,7 +54,6 @@ interface DatafileTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
-  // clearTable: () => Action;
 }
 
 type DatafileTableCombinedProps = DatafileTableProps &
@@ -76,17 +69,14 @@ const DatafileTable = (
     fetchData,
     fetchCount,
     sort,
-    // sortTable,
     pushSort,
     filters,
-    // filterTable,
     pushFilters,
     datasetId,
     downloadData,
     cartItems,
     addToCart,
     removeFromCart,
-    // clearTable,
     allIds,
     fetchAllIds,
     loading,
@@ -104,16 +94,6 @@ const DatafileTable = (
     [cartItems, allIds]
   );
 
-  // React.useEffect(() => {
-  //   clearTable();
-  // }, [clearTable]);
-
-  // useAfterMountEffect(() => {
-  //   fetchCount(parseInt(datasetId));
-  //   fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  //   fetchAllIds();
-  // }, [fetchCount, fetchData, fetchAllIds, sort, filters, datasetId]);
-
   React.useEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
@@ -124,7 +104,6 @@ const DatafileTable = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -134,7 +113,6 @@ const DatafileTable = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
@@ -147,7 +125,6 @@ const DatafileTable = (
       loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      // onSort={sortTable}
       onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
@@ -221,12 +198,9 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
   ownProps: DatafileTableProps
 ): DatafileTableDispatchProps => ({
-  // sortTable: (column: string, order: Order | null) =>
-  //   dispatch(sortTable(column, order)),
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
-  // filterTable: (column: string, filter: Filter | null) =>
-  //   dispatch(filterTable(column, filter)),
+
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
@@ -249,7 +223,6 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  // clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (state: StateType): DatafileTableStoreProps => {

@@ -1,6 +1,5 @@
 import {
   addToCart,
-  // clearTable,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -17,25 +16,22 @@ import {
   pushPageFilter,
   readSciGatewayToken,
   removeFromCart,
-  // sortTable,
   Table,
   tableLink,
   TextColumnFilter,
   pushPageSort,
+  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux'; // Action
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-// import useAfterMountEffect from '../../../utils';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
 interface ISISMyDataTableStoreProps {
-  sort: {
-    [column: string]: Order;
-  };
+  sort: SortType;
   filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
@@ -46,13 +42,12 @@ interface ISISMyDataTableStoreProps {
 }
 
 interface ISISMyDataTableDispatchProps {
-  // sortTable: (column: string, order: Order | null) => Action;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
-  // filterTable: (column: string, filter: Filter | null) => Action;
+
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (username: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (username: string) => Promise<void>;
-  // clearTable: () => Action;
+
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
@@ -70,12 +65,10 @@ const ISISMyDataTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    // clearTable,
     sort,
-    // sortTable,
+
     pushSort,
     filters,
-    // filterTable,
     pushFilters,
     loading,
     cartItems,
@@ -103,7 +96,6 @@ const ISISMyDataTable = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -113,29 +105,15 @@ const ISISMyDataTable = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
   );
 
   React.useEffect(() => {
-    // TODO: We no longer require clearTable here.
-    // clearTable();
-
     // Sort by STARTDATE on load.
-    // sortTable('STARTDATE', 'desc');
     pushSort('STARTDATE', 'desc');
-  }, [pushSort]); // clearTable, sortTable
-
-  // useAfterMountEffect(() => {
-  //   fetchCount(username);
-  //   fetchData(username, {
-  //     startIndex: 0,
-  //     stopIndex: 49,
-  //   });
-  //   fetchAllIds(username);
-  // }, [fetchData, username, sort, filters, fetchAllIds]);
+  }, [pushSort]);
 
   React.useEffect(() => {
     fetchCount(username);
@@ -153,7 +131,6 @@ const ISISMyDataTable = (
       loadMoreRows={(params) => fetchData(username, params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      // onSort={sortTable}
       onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
@@ -295,12 +272,8 @@ const ISISMyDataTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISMyDataTableDispatchProps => ({
-  // sortTable: (column: string, order: Order | null) =>
-  //   dispatch(sortTable(column, order)),
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
-  // filterTable: (column: string, filter: Filter | null) =>
-  //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (username: string, offsetParams: IndexRange) =>
@@ -344,7 +317,6 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  // clearTable: () => dispatch(clearTable()),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
   addToCart: (entityIds: number[]) =>

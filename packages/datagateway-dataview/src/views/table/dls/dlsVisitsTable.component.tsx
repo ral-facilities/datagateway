@@ -1,5 +1,4 @@
 import {
-  // clearTable,
   DateColumnFilter,
   DateFilter,
   Entity,
@@ -11,20 +10,20 @@ import {
   Investigation,
   Order,
   pushPageFilter,
-  // sortTable,
   Table,
   tableLink,
   TextColumnFilter,
   pushPageSort,
   fetchInvestigationSize,
+  SortType,
 } from 'datagateway-common';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux'; // Action
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-// import useAfterMountEffect from '../../../utils';
+
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 interface DLSVisitsTableProps {
@@ -32,9 +31,7 @@ interface DLSVisitsTableProps {
 }
 
 interface DLSVisitsTableStoreProps {
-  sort: {
-    [column: string]: Order;
-  };
+  sort: SortType;
   filters: FiltersType;
   data: Entity[];
   totalDataCount: number;
@@ -43,13 +40,12 @@ interface DLSVisitsTableStoreProps {
 }
 
 interface DLSVisitsTableDispatchProps {
-  // sortTable: (column: string, order: Order | null) => Action;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
-  // filterTable: (column: string, filter: Filter | null) => Action;
+
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (proposalName: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (proposalName: string) => Promise<void>;
-  // clearTable: () => Action;
+
   fetchDetails: (investigationId: number) => Promise<void>;
   fetchSize: (investigationId: number) => Promise<void>;
 }
@@ -66,12 +62,12 @@ const DLSVisitsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    // clearTable,
+
     sort,
-    // sortTable,
+
     pushSort,
     filters,
-    // filterTable,
+
     pushFilters,
     proposalName,
     loading,
@@ -81,7 +77,6 @@ const DLSVisitsTable = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -91,20 +86,10 @@ const DLSVisitsTable = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
   );
-
-  // React.useEffect(() => {
-  //   clearTable();
-  // }, [clearTable]);
-
-  // useAfterMountEffect(() => {
-  //   fetchCount(proposalName);
-  //   fetchData(proposalName, { startIndex: 0, stopIndex: 49 });
-  // }, [fetchCount, fetchData, sort, filters, proposalName]);
 
   React.useEffect(() => {
     fetchCount(proposalName);
@@ -115,10 +100,9 @@ const DLSVisitsTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(proposalName, params)}
+      loadMoreRows={(params) => fetchData(proposalName, params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      // onSort={sortTable}
       onSort={pushSort}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
@@ -183,12 +167,9 @@ const DLSVisitsTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DLSVisitsTableDispatchProps => ({
-  // sortTable: (column: string, order: Order | null) =>
-  //   dispatch(sortTable(column, order)),
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
-  // filterTable: (column: string, filter: Filter | null) =>
-  //   dispatch(filterTable(column, filter)),
+
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (proposalName: string, offsetParams: IndexRange) =>
@@ -219,7 +200,7 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  // clearTable: () => dispatch(clearTable()),
+
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
   fetchSize: (investigationId: number) =>
