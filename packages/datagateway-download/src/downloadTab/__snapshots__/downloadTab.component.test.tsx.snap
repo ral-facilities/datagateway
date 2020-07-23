@@ -16,13 +16,13 @@ exports[`DownloadTab renders correctly 1`] = `
       aria-controls="tabpanel-0"
       aria-label="downloadTab.cart_tab_arialabel"
       id="tab-0"
-      label="Cart"
+      label="downloadTab.cart_tab"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="tabpanel-1"
       aria-label="downloadTab.downloads_tab_arialabel"
       id="tab-1"
-      label="Downloads"
+      label="downloadTab.downloads_tab"
     />
   </WithStyles(ForwardRef(Tabs))>
   <TabPanel

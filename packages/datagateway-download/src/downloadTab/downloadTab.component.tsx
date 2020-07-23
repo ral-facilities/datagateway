@@ -97,12 +97,12 @@ const DownloadTabs: React.FC = () => {
         centered
       >
         <Tab
-          label="Cart"
+          label={t('downloadTab.cart_tab')}
           aria-label={t('downloadTab.cart_tab_arialabel')}
           {...a11yProps(0)}
         />
         <Tab
-          label="Downloads"
+          label={'downloadTab.downloads_tab'}
           aria-label={t('downloadTab.downloads_tab_arialabel')}
           {...a11yProps(1)}
         />

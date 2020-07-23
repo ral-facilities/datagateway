@@ -1,5 +1,7 @@
 {
   "downloadTab": {
+    "cart_tab": "Cart",
+    "downloads_tab": "Downloads",
     "cart_tab_arialabel": "Cart tab",
     "downloads_tab_arialabel": "Downloads tab",
     "download_cart_panel_arialabel": "Download cart panel",
