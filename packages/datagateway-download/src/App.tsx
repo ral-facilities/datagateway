@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core/styles';
 import ConfigProvider from './ConfigProvider';
 import { Preloader } from 'datagateway-common';
+import { DGThemeProvider } from 'datagateway-common';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
@@ -51,13 +52,17 @@ class App extends Component<unknown, { hasError: boolean }> {
     return (
       <div className="App">
         <StylesProvider generateClassName={generateClassName}>
-          <ConfigProvider>
-            <React.Suspense
-              fallback={<Preloader loading={true}>Finished loading</Preloader>}
-            >
-              <DownloadTabs />
-            </React.Suspense>
-          </ConfigProvider>
+          <DGThemeProvider>
+            <ConfigProvider>
+              <React.Suspense
+                fallback={
+                  <Preloader loading={true}>Finished loading</Preloader>
+                }
+              >
+                <DownloadTabs />
+              </React.Suspense>
+            </ConfigProvider>
+          </DGThemeProvider>
         </StylesProvider>
       </div>
     );

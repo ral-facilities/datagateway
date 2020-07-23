@@ -15,6 +15,7 @@ import {
   listenToMessages,
   RegisterRouteType,
   MicroFrontendId,
+  DGThemeProvider,
 } from 'datagateway-common';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
@@ -26,7 +27,6 @@ import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-
 import PageContainer from './pageContainer.component';
 
 const generateClassName = createGenerateClassName({
@@ -131,15 +131,17 @@ class App extends React.Component<unknown, { hasError: boolean }> {
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
-                <ConnectedPreloader>
-                  <React.Suspense
-                    fallback={
-                      <Preloader loading={true}>Finished loading</Preloader>
-                    }
-                  >
-                    <PageContainer />
-                  </React.Suspense>
-                </ConnectedPreloader>
+                <DGThemeProvider>
+                  <ConnectedPreloader>
+                    <React.Suspense
+                      fallback={
+                        <Preloader loading={true}>Finished loading</Preloader>
+                      }
+                    >
+                      <PageContainer />
+                    </React.Suspense>
+                  </ConnectedPreloader>
+                </DGThemeProvider>
               </StylesProvider>
             </ConnectedRouter>
           </Provider>
