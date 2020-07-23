@@ -72,6 +72,7 @@ exports[`Download cart table component renders correctly 1`] = `
         >
           Number of files: 
           Calculating...
+           / 0
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))
           id="totalSizeDisplay"
@@ -79,6 +80,7 @@ exports[`Download cart table component renders correctly 1`] = `
           Total size:
            
           0 B
+           / 0 B
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
