@@ -3,20 +3,20 @@
 exports[`Investigation details panel component gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="investigation-details-tabs"
+    aria-label="investigations.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
       id="investigation-details-tab"
-      label="Visit Details"
+      label="investigations.details.label"
       value="details"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-users-panel"
       id="investigation-users-tab"
-      label="Visit Users"
+      label="investigations.details.users.label"
       value="users"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -30,7 +30,8 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       variant="body2"
     >
       <b>
-        Proposal:
+        investigations.details.name
+        :
       </b>
        
       Test 1
@@ -39,7 +40,8 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       variant="body2"
     >
       <b>
-        Visit Id:
+        investigations.details.visit_id
+        :
       </b>
        
       1
@@ -48,7 +50,8 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       variant="body2"
     >
       <b>
-        Title:
+        investigations.details.title
+        :
       </b>
        
       Test 1
@@ -57,7 +60,8 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       variant="body2"
     >
       <b>
-        Summary:
+        investigations.details.summary
+        :
       </b>
        
       foo bar
@@ -66,7 +70,8 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       variant="body2"
     >
       <b>
-        Part DOI:
+        investigations.details.doi
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -79,7 +84,8 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       variant="body2"
     >
       <b>
-        Start Date:
+        investigations.details.start_date
+        :
       </b>
        
       2019-06-10
@@ -88,7 +94,8 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       variant="body2"
     >
       <b>
-        End Date:
+        investigations.details.end_date
+        :
       </b>
        
       2019-06-11
@@ -106,14 +113,14 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
 exports[`Investigation details panel component renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="investigation-details-tabs"
+    aria-label="investigations.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
       id="investigation-details-tab"
-      label="Visit Details"
+      label="investigations.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -127,7 +134,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Proposal:
+        investigations.details.name
+        :
       </b>
        
       Test 1
@@ -136,7 +144,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Visit Id:
+        investigations.details.visit_id
+        :
       </b>
        
       1
@@ -145,7 +154,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Title:
+        investigations.details.title
+        :
       </b>
        
       Test 1
@@ -154,7 +164,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Summary:
+        investigations.details.summary
+        :
       </b>
        
       foo bar
@@ -164,7 +175,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        DOI:
+        investigations.details.pid
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -177,7 +189,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Part DOI:
+        investigations.details.doi
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -190,7 +203,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Start Date:
+        investigations.details.start_date
+        :
       </b>
        
       2019-06-10
@@ -199,7 +213,8 @@ exports[`Investigation details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        End Date:
+        investigations.details.end_date
+        :
       </b>
        
       2019-06-11
@@ -211,32 +226,32 @@ exports[`Investigation details panel component renders correctly 1`] = `
 exports[`Investigation details panel component renders user, sample and publication tabs when present in the data 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="investigation-details-tabs"
+    aria-label="investigations.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
       id="investigation-details-tab"
-      label="Visit Details"
+      label="investigations.details.label"
       value="details"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-users-panel"
       id="investigation-users-tab"
-      label="Visit Users"
+      label="investigations.details.users.label"
       value="users"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-samples-panel"
       id="investigation-samples-tab"
-      label="Visit Samples"
+      label="investigations.details.samples.label"
       value="samples"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-publications-panel"
       id="investigation-publications-tab"
-      label="Publications"
+      label="investigations.details.publications.label"
       value="publications"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -250,7 +265,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Proposal:
+        investigations.details.name
+        :
       </b>
        
       Test 1
@@ -259,7 +275,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Visit Id:
+        investigations.details.visit_id
+        :
       </b>
        
       1
@@ -268,7 +285,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Title:
+        investigations.details.title
+        :
       </b>
        
       Test 1
@@ -277,7 +295,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Summary:
+        investigations.details.summary
+        :
       </b>
        
       foo bar
@@ -287,7 +306,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        DOI:
+        investigations.details.pid
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -300,7 +320,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Part DOI:
+        investigations.details.doi
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -313,7 +334,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Start Date:
+        investigations.details.start_date
+        :
       </b>
        
       2019-06-10
@@ -322,7 +344,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        End Date:
+        investigations.details.end_date
+        :
       </b>
        
       2019-06-11
@@ -339,7 +362,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Name:
+        investigations.details.users.name
+        :
       </b>
        
       Louise Davies
@@ -349,7 +373,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Name:
+        investigations.details.users.name
+        :
       </b>
        
       Louise
@@ -366,7 +391,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Sample:
+        investigations.details.samples.name
+        :
       </b>
        
       Test sample
@@ -383,7 +409,8 @@ exports[`Investigation details panel component renders user, sample and publicat
       variant="body2"
     >
       <b>
-        Reference:
+        investigations.details.publications.reference
+        :
       </b>
        
       Test publication

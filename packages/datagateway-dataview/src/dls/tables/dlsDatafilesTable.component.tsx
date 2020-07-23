@@ -25,6 +25,7 @@ import { StateType } from '../../state/app.types';
 import { Action, AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 interface DLSDatafilesTableProps {
   datasetId: string;
@@ -82,6 +83,8 @@ const DLSDatafilesTable = (
     fetchAllIds,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -137,33 +140,33 @@ const DLSDatafilesTable = (
         return (
           <div>
             <Typography variant="body2">
-              <b>Name:</b> {datafileData.NAME}
+              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
             </Typography>
             <Typography variant="body2">
-              <b>Description:</b> {datafileData.DESCRIPTION}
+              <b>{t('datafiles.description')}:</b> {datafileData.DESCRIPTION}
             </Typography>
             <Typography variant="body2">
-              <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
+              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
             </Typography>
             <Typography variant="body2">
-              <b>Location:</b> {datafileData.LOCATION}
+              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
             </Typography>
           </div>
         );
       }}
       columns={[
         {
-          label: 'Name',
+          label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
-          label: 'Location',
+          label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
@@ -171,7 +174,7 @@ const DLSDatafilesTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Create Time',
+          label: t('datafiles.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },

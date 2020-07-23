@@ -26,6 +26,7 @@ import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../utils';
+import { useTranslation } from 'react-i18next';
 
 interface DatasetTableProps {
   investigationId: string;
@@ -84,6 +85,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -139,17 +142,17 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         return (
           <div>
             <Typography>
-              <b>Name:</b> {datasetData.NAME}
+              <b>{t('datasets.name')}:</b> {datasetData.NAME}
             </Typography>
             <Typography>
-              <b>Description:</b> {datasetData.NAME}
+              <b>{t('datasets.description')}:</b> {datasetData.NAME}
             </Typography>
           </div>
         );
       }}
       columns={[
         {
-          label: 'Name',
+          label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props) => {
             const datasetData = props.rowData as Dataset;
@@ -162,16 +165,16 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           filterComponent: textFilter,
         },
         {
-          label: 'Datafile Count',
+          label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
         },
         {
-          label: 'Create Time',
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
-          label: 'Modified Time',
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

@@ -6,6 +6,7 @@ import { Grid, Typography, Paper } from '@material-ui/core';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { Route } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { fetchDownloadCart } from 'datagateway-common';
@@ -26,6 +27,7 @@ const PageContainer = (
 ): React.ReactElement => {
   const { entityCount, fetchDownloadCart } = props;
 
+  const [t] = useTranslation();
   const dgDataviewElement = document.getElementById('datagateway-dataview');
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const PageContainer = (
       >
         <Paper square>
           <Typography variant="h6" component="h3">
-            <b>Results:</b> {entityCount}
+            <b>{t('app.results')}:</b> {entityCount}
           </Typography>
         </Paper>
       </Grid>

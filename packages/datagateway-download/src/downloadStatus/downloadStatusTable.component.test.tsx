@@ -202,27 +202,34 @@ describe('Download Status Table', () => {
     // Expect globus download items to have been disabled.
     expect(
       wrapper.exists(
-        '[aria-label="Instant download not supported for test-file-2"]'
+        '[aria-label="downloadStatus.download_disabled_button {filename:test-file-2}"]'
       )
     ).toBe(true);
     expect(
       wrapper
         .find(
-          'button[aria-label="Instant download not supported for test-file-2"]'
+          'button[aria-label="downloadStatus.download_disabled_button {filename:test-file-2}"]'
         )
         .prop('disabled')
     ).toBe(true);
 
     // Check to see if the href contains the correct call.
     expect(
-      wrapper.find('a[aria-label="Download test-file-3"]').at(0).props().href
+      wrapper
+        .find('a[aria-label="downloadStatus.download {filename:test-file-3}"]')
+        .at(0)
+        .props().href
     ).toContain('/getData');
 
-    wrapper.find('a[aria-label="Download test-file-3"]').simulate('click');
+    wrapper
+      .find('a[aria-label="downloadStatus.download {filename:test-file-3}"]')
+      .simulate('click');
 
     expect(
       wrapper
-        .find('a[aria-label="Download test-file-3"] svg')
+        .find(
+          'a[aria-label="downloadStatus.download {filename:test-file-3}"] svg'
+        )
         .parent()
         .prop('color')
     ).toEqual('primary');
@@ -251,12 +258,14 @@ describe('Download Status Table', () => {
     });
 
     wrapper
-      .find('button[aria-label="Remove test-file-1 from downloads"]')
+      .find('button[aria-label="downloadStatus.remove {filename:test-file-1}"]')
       .simulate('click');
 
     expect(
       wrapper
-        .find('button[aria-label="Remove test-file-1 from downloads"] svg')
+        .find(
+          'button[aria-label="downloadStatus.remove {filename:test-file-1}"] svg'
+        )
         .parent()
         .prop('color')
     ).toEqual('error');
@@ -273,7 +282,9 @@ describe('Download Status Table', () => {
       facilityName: '',
     });
     expect(
-      wrapper.exists('[aria-label="Remove test-file-1 from downloads"]')
+      wrapper.exists(
+        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
+      )
     ).toBe(false);
     expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
   });
@@ -344,18 +355,20 @@ describe('Download Status Table', () => {
     });
 
     const downloadNameFilterInput = wrapper.find(
-      '[aria-label="Filter by Download Name"] input'
+      '[aria-label="Filter by downloadStatus.filename"] input'
     );
     downloadNameFilterInput.instance().value = '1';
     downloadNameFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove test-file-1 from downloads"]')
+      wrapper.exists(
+        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
+      )
     ).toBe(true);
 
     const accessMethodFilterInput = wrapper.find(
-      '[aria-label="Filter by Access Method"] input'
+      '[aria-label="Filter by downloadStatus.transport"] input'
     );
 
     downloadNameFilterInput.instance().value = '';
@@ -365,10 +378,14 @@ describe('Download Status Table', () => {
 
     expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove test-file-2 from downloads"]')
+      wrapper.exists(
+        '[aria-label="downloadStatus.remove {filename:test-file-2}"]'
+      )
     ).toBe(false);
     expect(
-      wrapper.exists('[aria-label="Remove test-file-4 from downloads"]')
+      wrapper.exists(
+        '[aria-label="downloadStatus.remove {filename:test-file-4}"]'
+      )
     ).toBe(false);
 
     accessMethodFilterInput.instance().value = '';
@@ -376,7 +393,7 @@ describe('Download Status Table', () => {
 
     // Test varying download availabilities.
     const availabilityFilterInput = wrapper.find(
-      '[aria-label="Filter by Availability"] input'
+      '[aria-label="Filter by downloadStatus.status"] input'
     );
 
     availabilityFilterInput.instance().value = 'complete';
@@ -384,7 +401,9 @@ describe('Download Status Table', () => {
 
     expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove test-file-1 from downloads"]')
+      wrapper.exists(
+        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
+      )
     ).toBe(true);
 
     availabilityFilterInput.instance().value = '';
@@ -410,7 +429,7 @@ describe('Download Status Table', () => {
     });
 
     const dateFromFilterInput = wrapper.find(
-      '[aria-label="Requested Date date filter from"]'
+      '[aria-label="downloadStatus.createdAt date filter from"]'
     );
 
     dateFromFilterInput.instance().value = '2020-01-01';
@@ -419,7 +438,7 @@ describe('Download Status Table', () => {
     expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
 
     const dateToFilterInput = wrapper.find(
-      '[aria-label="Requested Date date filter to"]'
+      '[aria-label="downloadStatus.createdAt date filter to"]'
     );
 
     dateToFilterInput.instance().value = '2020-01-02';
@@ -434,10 +453,14 @@ describe('Download Status Table', () => {
 
     expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove test-file-1 from downloads"]')
+      wrapper.exists(
+        '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
+      )
     ).toBe(false);
     expect(
-      wrapper.exists('[aria-label="Remove test-file-4 from downloads"]')
+      wrapper.exists(
+        '[aria-label="downloadStatus.remove {filename:test-file-4}"]'
+      )
     ).toBe(false);
 
     // Test when both date inputs are empty.

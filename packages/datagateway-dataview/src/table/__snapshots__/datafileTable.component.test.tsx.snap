@@ -17,22 +17,22 @@ exports[`Datafile table component renders correctly 1`] = `
       Object {
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "label": "datafiles.name",
       },
       Object {
         "dataKey": "LOCATION",
         "filterComponent": [Function],
-        "label": "Location",
+        "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "FILESIZE",
-        "label": "Size",
+        "label": "datafiles.size",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
-        "label": "Modified Time",
+        "label": "datafiles.modified_time",
       },
     ]
   }
@@ -64,21 +64,24 @@ exports[`Datafile table component renders details panel correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Name:
+      datafiles.name
+      :
     </b>
      
     Test 1
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      File Size:
+      datafiles.size
+      :
     </b>
      
     1 B
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Location:
+      datafiles.location
+      :
     </b>
      
     /test1

@@ -163,7 +163,7 @@ describe('Download cart table component', () => {
       '1 B'
     );
     expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
-      expect.stringContaining('Total size: 4 B')
+      expect.stringContaining('downloadCart.total_size: 4 B')
     );
   });
 
@@ -183,7 +183,7 @@ describe('Download cart table component', () => {
 
     expect(getCartDatafileCount).toHaveBeenCalled();
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('Number of files: 7')
+      expect.stringContaining('downloadCart.number_of_files: 7')
     );
   });
 
@@ -234,7 +234,7 @@ describe('Download cart table component', () => {
 
     // Close the confirmation dialog.
     wrapper
-      .find('button[aria-label="download-confirmation-close"]')
+      .find('button[aria-label="downloadConfirmDialog.close_arialabel"]')
       .simulate('click');
   });
 
@@ -278,12 +278,14 @@ describe('Download cart table component', () => {
     });
 
     wrapper
-      .find('button[aria-label="Remove INVESTIGATION 2 from cart"]')
+      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
       .simulate('click');
 
     expect(
       wrapper
-        .find('button[aria-label="Remove INVESTIGATION 2 from cart"] svg')
+        .find(
+          `button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"] svg`
+        )
         .parent()
         .prop('color')
     ).toEqual('error');
@@ -300,7 +302,9 @@ describe('Download cart table component', () => {
       downloadApiUrl: mockedSettings.downloadApiUrl,
     });
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
+      wrapper.exists(
+        `[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`
+      )
     ).toBe(false);
     expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
   });
@@ -364,22 +368,30 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    const nameFilterInput = wrapper.find('[aria-label="Filter by Name"] input');
+    const nameFilterInput = wrapper.find(
+      '[aria-label="Filter by downloadCart.name"] input'
+    );
     nameFilterInput.instance().value = '1';
     nameFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]'
+      )
     ).toBe(false);
 
-    const typeFilterInput = wrapper.find('[aria-label="Filter by Type"] input');
+    const typeFilterInput = wrapper.find(
+      '[aria-label="Filter by downloadCart.type"] input'
+    );
     typeFilterInput.instance().value = 'data';
     typeFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 1 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]'
+      )
     ).toBe(false);
 
     typeFilterInput.instance().value = '';
@@ -387,7 +399,9 @@ describe('Download cart table component', () => {
 
     expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 1 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]'
+      )
     ).toBe(true);
 
     nameFilterInput.instance().value = '';
@@ -395,7 +409,9 @@ describe('Download cart table component', () => {
 
     expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]'
+      )
     ).toBe(true);
   });
 });

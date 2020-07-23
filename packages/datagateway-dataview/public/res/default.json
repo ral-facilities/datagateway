@@ -1,8 +1,123 @@
 {
+  "app": {
+    "results": "Results"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "instrument_plural": "Instruments",
+    "facilityCycle_plural": "Facility Cycles",
+    "proposal_plural": "Proposals",
+    "investigation_plural": "Investigations",
+    "dataset_plural": "Datasets",
+    "datafile_plural": "Datafiles"
+  },
+  "instruments": {
+    "name": "Name",
+    "description": "Description",
+    "type": "Type",
+    "url": "URL",
+    "details": {
+      "tabs_label": "Instrument Details Tabs",
+      "label": "Instrument Details",
+      "name": "Name",
+      "description": "Description",
+      "type": "Type",
+      "url": "URL",
+      "instrument_scientists": {
+        "label": "Instrument Scientists",
+        "name": "Name"
+      }
+    }
+  },
+  "facilitycycles": {
+    "name": "Name",
+    "description": "Description",
+    "end_date": "End Date",
+    "start_date": "Start Date"
+  },
   "investigations": {
-    "title": "Title"
+    "title": "Title",
+    "name": "Name",
+    "end_date": "End Date",
+    "start_date": "Start Date",
+    "size": "Size",
+    "instrument": "Instrument",
+    "visit_id": "Visit ID",
+    "rb_number": "RB Number",
+    "doi": "DOI",
+    "dataset_count": "Dataset Count",
+    "details": {
+      "tabs_label": "Investigation Details Tabs",
+      "label": "Investigation Details",
+      "title": "Title",
+      "name": "Name",
+      "end_date": "End Date",
+      "start_date": "Start Date",
+      "visit_id": "Visit ID",
+      "pid": "Part DOI",
+      "summary": "Summary",
+      "doi": "DOI",
+      "size": "Size",
+      "calculate": "Calculate",
+      "users": {
+        "label": "Investigation Users",
+        "name": "Name"
+      },
+      "samples": {
+        "label": "Investigation Samples",
+        "name": "Sample"
+      },
+      "publications": {
+        "label": "Publications",
+        "reference": "Reference"
+      }
+    }
   },
   "datasets": {
-    "name": "Name"
+    "name": "Name",
+    "create_time": "Create Time",
+    "modified_time": "Modified Time",
+    "size": "Size",
+    "datafile_count": "Datafile Count",
+    "details": {
+      "tabs_label": "Dataset Details Tabs",
+      "label": "Dataset Details",
+      "name": "Name",
+      "description": "Description",
+      "size": "Size",
+      "end_date": "End Date",
+      "start_date": "Start Date",
+      "calculate": "Calculate",
+      "type": {
+        "label": "Dataset Types",
+        "name": "Name",
+        "description": "Description"
+      }
+    },
+    "download": "Download"
+  },
+  "datafiles": {
+    "name": "Name",
+    "create_time": "Create Time",
+    "modified_time": "Modified Time",
+    "description": "Description",
+    "location": "Location",
+    "size": "Size",
+    "details": {
+      "tabs_label": "Datafile Details Tabs",
+      "label": "Datafile Details",
+      "name": "Name",
+      "description": "Description",
+      "location": "Location",
+      "parameters": {
+        "label": "Datafile Parameters"
+      }
+    },
+    "download": "Download"
+  },
+  "loading": {
+    "verifying": "Verifying URL",
+    "oops": "Oops!",
+    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>."
   }
 }
