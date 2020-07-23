@@ -109,6 +109,7 @@ import {
   UpdateViewPayload,
   UpdateViewType,
   UpdateSearchPayload,
+  UpdateSearchType,
 } from '../actions/actions.types';
 import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
@@ -737,6 +738,7 @@ const dGCommonReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
   [FilterTableType]: handleFilterTable,
   [UpdateViewType]: handleUpdateView,
+  [UpdateSearchType]: handleUpdateSearch,
   [UpdatePageType]: handleUpdatePage,
   [UpdateResultsType]: handleUpdateResults,
   [UpdateFiltersType]: handleUpdateFilters,
