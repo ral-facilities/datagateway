@@ -15,7 +15,7 @@
     "datagateway-common": "0.1.0",
     "i18next": "^19.4.5",
     "i18next-browser-languagedetector": "^4.2.0",
-    "i18next-http-backend": "^1.0.15",
+    "i18next-http-backend": "^1.0.17",
     "loglevel": "^1.6.8",
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",
