@@ -120,7 +120,6 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     console.log('parsing query: ', query.toString());
 
     // Get filters in URL.
-    // TODO: Support a search query for search box.
     const search = query.get('search');
     const page = query.get('page');
     const results = query.get('results');
@@ -363,10 +362,16 @@ export const updateSaveView = (
   },
 });
 
-export const pushPageView = (view: ViewsType): ThunkResult<Promise<void>> => {
+export const pushPageView = (
+  view: ViewsType,
+  path: string
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(updateView(view));
-    dispatch(push(`?${getURLQuery(getState).toString()}`));
+    // Trim any trailing slashes which may prevent toggling between views.
+    dispatch(
+      push(path.replace(/\/$/, '') + `?${getURLQuery(getState).toString()}`)
+    );
   };
 };
 

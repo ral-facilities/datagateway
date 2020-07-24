@@ -31,21 +31,36 @@ import { Route } from 'react-router';
 import PageCard from './pageCard.component';
 import PageSearch from './pageSearch.component';
 
-// TODO: Define an object of all the relevant paths for views
-//       (support both table and card view).
-export const supportedPaths = {
-  investigation: '/browse/investigation',
-  dataset: '/browse/investigation/:investigationId/dataset',
-  isisInstrument: '/browse/instrument',
-  isisFacilityCycle: '/browse/instrument/:instrumentId/facilityCycle',
-  isisInvestigation:
-    '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation',
-  isisDataset:
-    '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset',
-  dlsProposal: '/browse/proposal',
-  dlsVisit: '/browse/proposal/:proposalName/investigation',
-  dlsDataset:
-    '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
+// Define all the supported paths for data-view.
+export const paths = {
+  root: '/browse',
+  myData: {
+    root: '/my-data',
+    dls: '/my-data/DLS',
+    isis: '/my-data/ISIS',
+  },
+  toggle: {
+    investigation: '/browse/investigation',
+    dataset: '/browse/investigation/:investigationId/dataset',
+    isisInstrument: '/browse/instrument',
+    isisFacilityCycle: '/browse/instrument/:instrumentId/facilityCycle',
+    isisInvestigation:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation',
+    isisDataset:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset',
+    dlsProposal: '/browse/proposal',
+    dlsVisit: '/browse/proposal/:proposalName/investigation',
+    dlsDataset:
+      '/browse/proposal/:proposalName/investigation/:investigationId/dataset',
+  },
+  standard: {
+    datafile:
+      '/browse/investigation/:investigationId/dataset/:datasetId/datafile',
+    isisDatafile:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId/datafile',
+    dlsDatafile:
+      '/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile',
+  },
 };
 
 const NavBar = (props: { entityCount: number }): React.ReactElement => {
@@ -55,7 +70,7 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
         {/* Hold the breadcrumbs at top left of the page. */}
         <Grid item xs aria-label="container-breadcrumbs">
           {/* don't show breadcrumbs on /my-data - only on browse */}
-          <Route path="/browse" component={PageBreadcrumbs} />
+          <Route path={paths.root} component={PageBreadcrumbs} />
         </Grid>
 
         {/* The table entity count takes up an xs of 2, where the breadcrumbs
@@ -67,7 +82,7 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
           aria-label="container-table-count"
         >
           <Route
-            path={['/browse', '/my-data']}
+            path={[paths.root, paths.myData.root]}
             render={() => {
               return (
                 <Paper square>
@@ -86,7 +101,7 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
 
 interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
-  pushView: (view: ViewsType) => Promise<void>;
+  pushView: (view: ViewsType, path: string) => Promise<void>;
   saveView: (view: ViewsType) => Promise<void>;
 }
 
@@ -112,7 +127,6 @@ class PageContainer extends React.Component<
 > {
   public constructor(props: PageContainerCombinedProps) {
     super(props);
-    // console.log('Support paths: ', Object.values(supportedPaths));
 
     // Load the current URL query parameters.
     this.props.loadQuery();
@@ -120,7 +134,7 @@ class PageContainer extends React.Component<
     // Allow for query parameter to override the
     // toggle state in the localStorage.
     this.state = {
-      paths: Object.values(supportedPaths),
+      paths: Object.values(paths.toggle),
       toggleCard: this.getToggle(),
     };
   }
@@ -128,13 +142,13 @@ class PageContainer extends React.Component<
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // Ensure if the location changes, then we update the query parameters.
     if (prevProps.path !== this.props.path) {
-      // console.log('Path changed: ', this.props.path);
       this.props.loadQuery();
     }
 
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
-    if (this.getToggle() && !this.props.query.view) this.props.pushView('card');
+    if (this.getToggle() && !this.props.query.view)
+      this.props.pushView('card', this.props.path);
 
     // Keep the query parameter for view and the state in sync, by getting the latest update.
     if (prevProps.query.view !== this.props.query.view) {
@@ -146,23 +160,12 @@ class PageContainer extends React.Component<
   }
 
   public getPathMatch = (): boolean => {
-    // console.log(
-    //   'supported path: ',
-    //   Object.values(supportedPaths).some(p => this.props.path.match(p))
-    // );
-    // console.log('supported: ', this.props.path.match('/browse/investigation'));
-
-    // console.log('match supported: ', Object.values(supportedPaths));
-    const res = Object.values(supportedPaths).some((p) => {
-      // console.log('match input: ', p.replace(/(:[^./]*)/g, '(.)+'));
+    const res = Object.values(paths.toggle).some((p) => {
       // Look for the character set where the parameter for ID would be
       // replaced with the regex to catch any character between the forward slashes.
       const match = this.props.path.match(p.replace(/(:[^./]*)/g, '(.)+'));
-      // console.log('match: ', match);
-      // console.log('match string: ', match && this.props.path === match[0]);
       return match && this.props.path === match[0];
     });
-    // console.log('supported: ', res);
     return res;
   };
 
@@ -205,7 +208,7 @@ class PageContainer extends React.Component<
     this.storeDataView(nextView);
 
     // Add the view and push the final query parameters.
-    this.props.pushView(nextView);
+    this.props.pushView(nextView, this.props.path);
 
     // Set the state with the toggled card option and the saved queries.
     this.setState({
@@ -246,7 +249,7 @@ class PageContainer extends React.Component<
           {/* Show loading progress if data is still being loaded */}
           {this.state.toggleCard && this.props.loading && (
             <Route
-              path={['/browse', '/my-data']}
+              path={[paths.root, paths.myData.root]}
               render={() => {
                 return (
                   <Grid item xs={12}>
@@ -259,7 +262,7 @@ class PageContainer extends React.Component<
 
           {/* Show the page search component on all views */}
           <Route
-            path={['/browse', '/my-data']}
+            path={[paths.root, paths.myData.root]}
             render={() => {
               return (
                 <Grid
@@ -310,7 +313,8 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): PageContainerDispatchProps => ({
   loadQuery: () => dispatch(loadURLQuery()),
-  pushView: (view: ViewsType) => dispatch(pushPageView(view)),
+  pushView: (view: ViewsType, path: string) =>
+    dispatch(pushPageView(view, path)),
   saveView: (view: ViewsType) => dispatch(saveView(view)),
 });
 

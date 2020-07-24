@@ -17,14 +17,18 @@ import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable
 import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
 import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
 import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component';
+
 import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
 import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
+
 import withIdCheck from './withIdCheck';
 import {
   checkProposalName,
   checkInvestigationId,
   checkInstrumentAndFacilityCycleId,
 } from './idCheckFunctions';
+
+import { paths } from './pageContainer.component';
 
 class PageTable extends React.PureComponent {
   public render(): React.ReactNode {
@@ -34,15 +38,19 @@ class PageTable extends React.PureComponent {
           exact
           path="/"
           render={() => (
-            <Link to="/browse/investigation">Browse investigations</Link>
+            <Link to={paths.toggle.investigation}>Browse investigations</Link>
           )}
         />
-        <Route path="/my-data/DLS" component={DLSMyDataTable} />
-        <Route path="/my-data/ISIS" component={ISISMyDataTable} />
-        <Route exact path="/browse/proposal/" component={DLSProposalsTable} />
+        <Route path={paths.myData.dls} component={DLSMyDataTable} />
+        <Route path={paths.myData.isis} component={ISISMyDataTable} />
         <Route
           exact
-          path="/browse/proposal/:proposalName/investigation"
+          path={paths.toggle.dlsProposal}
+          component={DLSProposalsTable}
+        />
+        <Route
+          exact
+          path={paths.toggle.dlsVisit}
           render={({
             match,
           }: RouteComponentProps<{ proposalName: string }>) => (
@@ -51,7 +59,7 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/proposal/:proposalName/investigation/:investigationId/dataset"
+          path={paths.toggle.dlsDataset}
           render={({
             match,
           }: RouteComponentProps<{
@@ -74,7 +82,7 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile"
+          path={paths.standard.dlsDatafile}
           render={({
             match,
           }: RouteComponentProps<{
@@ -99,12 +107,12 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/instrument/"
+          path={paths.toggle.isisInstrument}
           component={ISISInstrumentsTable}
         />
         <Route
           exact
-          path="/browse/instrument/:instrumentId/facilityCycle"
+          path={paths.toggle.isisFacilityCycle}
           render={({
             match,
           }: RouteComponentProps<{ instrumentId: string }>) => (
@@ -113,7 +121,7 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation"
+          path={paths.toggle.isisInvestigation}
           render={({
             match,
           }: RouteComponentProps<{
@@ -128,7 +136,7 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset"
+          path={paths.toggle.isisDataset}
           render={({
             match,
           }: RouteComponentProps<{
@@ -154,7 +162,7 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId/datafile"
+          path={paths.standard.isisDatafile}
           render={({
             match,
           }: RouteComponentProps<{
@@ -183,12 +191,12 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/investigation/"
+          path={paths.toggle.investigation}
           component={InvestigationTable}
         />
         <Route
           exact
-          path="/browse/investigation/:investigationId/dataset"
+          path={paths.toggle.dataset}
           render={({
             match,
           }: RouteComponentProps<{ investigationId: string }>) => (
@@ -197,7 +205,7 @@ class PageTable extends React.PureComponent {
         />
         <Route
           exact
-          path="/browse/investigation/:investigationId/dataset/:datasetId/datafile"
+          path={paths.standard.datafile}
           render={({
             match,
           }: RouteComponentProps<{

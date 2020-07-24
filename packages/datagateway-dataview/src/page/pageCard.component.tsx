@@ -12,7 +12,8 @@ import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.compon
 import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
 import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
 import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
-import { supportedPaths } from './pageContainer.component';
+
+import { paths } from './pageContainer.component';
 
 class PageCard extends React.Component {
   public render(): React.ReactNode {
@@ -20,12 +21,12 @@ class PageCard extends React.Component {
       <Switch>
         <Route
           exact
-          path={supportedPaths['investigation']}
+          path={paths.toggle.investigation}
           render={() => <InvestigationCardView />}
         />
         <Route
           exact
-          path={supportedPaths['dataset']}
+          path={paths.toggle.dataset}
           render={({
             match,
           }: RouteComponentProps<{ investigationId: string }>) => (
@@ -34,12 +35,12 @@ class PageCard extends React.Component {
         />
         <Route
           exact
-          path={supportedPaths['isisInstrument']}
+          path={paths.toggle.isisInstrument}
           render={() => <ISISInstrumentsCardView />}
         />
         <Route
           exact
-          path={supportedPaths['isisFacilityCycle']}
+          path={paths.toggle.isisFacilityCycle}
           render={({
             match,
           }: RouteComponentProps<{ instrumentId: string }>) => (
@@ -50,7 +51,7 @@ class PageCard extends React.Component {
         />
         <Route
           exact
-          path={supportedPaths['isisInvestigation']}
+          path={paths.toggle.isisInvestigation}
           render={({
             match,
           }: RouteComponentProps<{
@@ -65,7 +66,7 @@ class PageCard extends React.Component {
         />
         <Route
           exact
-          path={supportedPaths['isisDataset']}
+          path={paths.toggle.isisDataset}
           render={({
             match,
           }: RouteComponentProps<{
@@ -82,12 +83,12 @@ class PageCard extends React.Component {
         />
         <Route
           exact
-          path={supportedPaths['dlsProposal']}
+          path={paths.toggle.dlsProposal}
           component={DLSProposalsCardView}
         />
         <Route
           exact
-          path={supportedPaths['dlsVisit']}
+          path={paths.toggle.dlsVisit}
           render={({
             match,
           }: RouteComponentProps<{ proposalName: string }>) => (
@@ -96,7 +97,7 @@ class PageCard extends React.Component {
         />
         <Route
           exact
-          path={supportedPaths['dlsDataset']}
+          path={paths.toggle.dlsDataset}
           render={({
             match,
           }: RouteComponentProps<{

@@ -613,8 +613,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 <Typography variant="h5">Sort By</Typography>
               </Box>
 
-              {/* TODO: Show all the available sort options: 
-                        TITLE, DESCRIPTION and the further information (if provided) */}
+              {/* Show all the available sort options: 
+                  TITLE, DESCRIPTION and the further information (if provided) */}
               <Box>
                 <List component="nav">
                   {cardSort &&
@@ -738,7 +738,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   {/* Create an individual card */}
                   <EntityCard
                     title={{
-                      // TODO: Is this the best way to handle label/dataKey?
                       label: nestedValue(data, title.dataKey),
                       content: title.content && title.content(data),
                     }}
@@ -749,8 +748,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       information &&
                       information
                         .map((details) => ({
-                          // TODO: Create a separate type just for details label?
-                          //       We can say the data key is the label if not defined.
+                          // We can say the data key is the label if not defined.
                           label: details.label
                             ? details.label
                             : details.dataKey,
