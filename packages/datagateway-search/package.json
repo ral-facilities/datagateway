@@ -87,7 +87,7 @@
   "devDependencies": {
     "@craco/craco": "^5.6.4",
     "@types/enzyme": "^3.10.3",
-    "@types/jsrsasign": "^8.0.3",
+    "@types/jsrsasign": "^8.0.4",
     "@types/loglevel": "^1.6.3",
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.8",
