@@ -42,10 +42,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
 
-  // TODO: Determine fileCountMax and totalSizeMax from settings.
   const [fileCount, setFileCount] = React.useState<number>(-1);
-  const [fileCountMax, setFileCountMax] = React.useState<number>(-1);
-  const [totalSizeMax, setTotalSizeMax] = React.useState<number>(-1);
+  const fileCountMax = settings.fileCountMax;
+  const totalSizeMax = settings.totalSizeMax;
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
   const [isTwoLevel, setIsTwoLevel] = React.useState(false);
@@ -137,11 +136,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     settings.apiUrl,
     settings.downloadApiUrl,
   ]);
-
-  React.useEffect(() => {
-    setFileCountMax(5000);
-    setTotalSizeMax(1000000000000);
-  }, [setFileCount, setFileCountMax, setTotalSizeMax]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
