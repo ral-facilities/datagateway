@@ -22,6 +22,7 @@ import chunk from 'lodash.chunk';
 
 import DownloadConfirmDialog from '../downloadConfirmation/downloadConfirmDialog.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { useTranslation } from 'react-i18next';
 
 interface DownloadCartTableProps {
   statusTabRedirect: () => void;
@@ -41,13 +42,15 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
   const [sizesFinished, setSizesFinished] = React.useState(true);
 
-  // TODO: Determine fileCountMax and totalSizeMax from settings.
   const [fileCount, setFileCount] = React.useState<number>(-1);
-  const [fileCountMax, setFileCountMax] = React.useState<number>(-1);
-  const [totalSizeMax, setTotalSizeMax] = React.useState<number>(-1);
+  const fileCountMax = settings.fileCountMax;
+  const totalSizeMax = settings.totalSizeMax;
 
   const [showConfirmation, setShowConfirmation] = React.useState(false);
   const [isTwoLevel, setIsTwoLevel] = React.useState(false);
+
+  const [t] = useTranslation();
+  const dgDownloadElement = document.getElementById('datagateway-download');
 
   const totalSize = React.useMemo(() => {
     if (sizesFinished) {
@@ -69,9 +72,13 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
 
     if (settings.idsUrl) checkTwoLevel();
   }, [settings.idsUrl]);
-
   React.useEffect(() => {
-    if (settings.facilityName && settings.apiUrl && settings.downloadApiUrl)
+    if (
+      settings.facilityName &&
+      settings.apiUrl &&
+      settings.downloadApiUrl &&
+      dgDownloadElement
+    )
       fetchDownloadCartItems({
         facilityName: settings.facilityName,
         downloadApiUrl: settings.downloadApiUrl,
@@ -84,7 +91,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           apiUrl: settings.apiUrl,
         }).then((count) => setFileCount(count));
       });
-  }, [settings.facilityName, settings.apiUrl, settings.downloadApiUrl]);
+  }, [
+    settings.facilityName,
+    settings.apiUrl,
+    settings.downloadApiUrl,
+    dgDownloadElement,
+  ]);
 
   React.useEffect(() => {
     if (!sizesLoaded) {
@@ -124,11 +136,6 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
     settings.apiUrl,
     settings.downloadApiUrl,
   ]);
-
-  React.useEffect(() => {
-    setFileCountMax(5000);
-    setTotalSizeMax(1000000000000);
-  }, [setFileCount, setFileCountMax, setTotalSizeMax]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -191,17 +198,17 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             <Table
               columns={[
                 {
-                  label: 'Name',
+                  label: t('downloadCart.name'),
                   dataKey: 'name',
                   filterComponent: textFilter,
                 },
                 {
-                  label: 'Type',
+                  label: t('downloadCart.type'),
                   dataKey: 'entityType',
                   filterComponent: textFilter,
                 },
                 {
-                  label: 'Size',
+                  label: t('downloadCart.size'),
                   dataKey: 'size',
                   cellContentRenderer: (props) => {
                     return formatBytes(props.cellData);
@@ -225,7 +232,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   const [isDeleting, setIsDeleting] = React.useState(false);
                   return (
                     <IconButton
-                      aria-label={`Remove ${cartItem.name} from cart`}
+                      aria-label={t('downloadCart.remove', {
+                        name: cartItem.name,
+                      })}
                       key="remove"
                       size="small"
                       // Remove the download when clicked.
@@ -275,11 +284,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             style={{ marginRight: '1.2em' }}
           >
             <Typography id="fileCountDisplay">
-              Number of files: {fileCount !== -1 ? fileCount : 'Calculating...'}
+              {t('downloadCart.number_of_files')}:{' '}
+              {fileCount !== -1 ? fileCount : 'Calculating...'}
               {fileCountMax !== -1 && ` / ${fileCountMax}`}
             </Typography>
             <Typography id="totalSizeDisplay">
-              Total size:{' '}
+              {t('downloadCart.total_size')}:{' '}
               {totalSize !== -1 ? formatBytes(totalSize) : 'Calculating...'}
               {totalSizeMax !== -1 && ` / ${formatBytes(totalSizeMax)}`}
             </Typography>
@@ -305,7 +315,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                 }
                 disabled={fileCount <= 0 || totalSize <= 0}
               >
-                Remove All
+                {t('downloadCart.remove_all')}
               </Button>
             </Grid>
             <Grid item>
@@ -321,7 +331,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
                   (totalSizeMax !== -1 && totalSize > totalSizeMax)
                 }
               >
-                Download Cart
+                {t('downloadCart.download')}
               </Button>
             </Grid>
           </Grid>

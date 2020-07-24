@@ -8,28 +8,28 @@ exports[`DLS Visits table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
-        "label": "Visit Id",
+        "label": "investigations.visit_id",
       },
       Object {
         "dataKey": "DATASET_COUNT",
         "disableSort": true,
-        "label": "Dataset Count",
+        "label": "investigations.dataset_count",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME",
         "filterComponent": [Function],
-        "label": "Beamline",
+        "label": "investigations.instrument",
       },
       Object {
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
-        "label": "Start Date",
+        "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
-        "label": "End Date",
+        "label": "investigations.end_date",
       },
     ]
   }
@@ -72,14 +72,14 @@ exports[`DLS Visits table component renders correctly 1`] = `
 exports[`DLS Visits table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="visit-details-tabs"
+    aria-label="investigations.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="visit-details-panel"
       id="visit-details-tab"
-      label="Visit Details"
+      label="investigations.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -93,7 +93,8 @@ exports[`DLS Visits table component renders details panel correctly and it sends
       variant="body2"
     >
       <b>
-        Proposal:
+        investigations.details.name
+        :
       </b>
        
       Test 1
@@ -102,7 +103,8 @@ exports[`DLS Visits table component renders details panel correctly and it sends
       variant="body2"
     >
       <b>
-        Visit Id:
+        investigations.details.visit_id
+        :
       </b>
        
       1
@@ -111,7 +113,8 @@ exports[`DLS Visits table component renders details panel correctly and it sends
       variant="body2"
     >
       <b>
-        Title:
+        investigations.details.title
+        :
       </b>
        
       Test 1
@@ -120,7 +123,8 @@ exports[`DLS Visits table component renders details panel correctly and it sends
       variant="body2"
     >
       <b>
-        Summary:
+        investigations.details.summary
+        :
       </b>
        
       foo bar
@@ -129,7 +133,8 @@ exports[`DLS Visits table component renders details panel correctly and it sends
       variant="body2"
     >
       <b>
-        Start Date:
+        investigations.details.start_date
+        :
       </b>
        
       2019-06-10
@@ -138,7 +143,8 @@ exports[`DLS Visits table component renders details panel correctly and it sends
       variant="body2"
     >
       <b>
-        Description:
+        investigations.details.end_date
+        :
       </b>
        
       2019-06-11
@@ -147,7 +153,8 @@ exports[`DLS Visits table component renders details panel correctly and it sends
       variant="body2"
     >
       <b>
-        Total File Size:
+        investigations.details.size
+        :
       </b>
        
       1 B

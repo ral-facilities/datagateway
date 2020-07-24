@@ -1,6 +1,7 @@
 import React from 'react';
 import { Entity, Dataset, formatBytes } from 'datagateway-common';
 import { Typography, Tabs, Tab, Button } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
@@ -14,6 +15,7 @@ const DatasetDetailsPanel = (
 ): React.ReactElement => {
   const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
+  const [t] = useTranslation();
 
   const datasetData = rowData as Dataset;
 
@@ -32,19 +34,19 @@ const DatasetDetailsPanel = (
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
-        aria-label="dataset-details-tabs"
+        aria-label={t('datasets.details.tabs_label')}
       >
         <Tab
           id="dataset-details-tab"
           aria-controls="dataset-details-panel"
-          label="Dataset Details"
+          label={t('datasets.details.label')}
           value="details"
         />
         {datasetData.DATASETTYPE && (
           <Tab
             id="dataset-type-tab"
             aria-controls="dataset-type-panel"
-            label="Dataset Type"
+            label={t('datasets.details.types.label')}
             value="type"
           />
         )}
@@ -56,19 +58,19 @@ const DatasetDetailsPanel = (
         hidden={value !== 'details'}
       >
         <Typography variant="body2">
-          <b>Name:</b> {datasetData.NAME}
+          <b>{t('datasets.details.name')}:</b> {datasetData.NAME}
         </Typography>
         <Typography variant="body2">
-          <b>Description:</b> {datasetData.DESCRIPTION}
+          <b>{t('datasets.details.description')}:</b> {datasetData.DESCRIPTION}
         </Typography>
         <Typography variant="body2">
-          <b>Start Date:</b> {datasetData.STARTDATE}
+          <b>{t('datasets.details.start_date')}:</b> {datasetData.STARTDATE}
         </Typography>
         <Typography variant="body2">
-          <b>Description:</b> {datasetData.ENDDATE}
+          <b>{t('datasets.details.end_date')}:</b> {datasetData.ENDDATE}
         </Typography>
         <Typography variant="body2">
-          <b>Total File Size:</b>{' '}
+          <b>{t('datasets.details.size')}:</b>{' '}
           {datasetData.SIZE ? (
             formatBytes(datasetData.SIZE)
           ) : (
@@ -81,7 +83,7 @@ const DatasetDetailsPanel = (
               size="small"
               id="calculate-size-btn"
             >
-              Calculate
+              {t('datasets.details.calculate')}
             </Button>
           )}
         </Typography>
@@ -94,10 +96,12 @@ const DatasetDetailsPanel = (
           hidden={value !== 'type'}
         >
           <Typography variant="body2">
-            <b>Name:</b> {datasetData.DATASETTYPE.NAME}
+            <b>{t('datasets.details.type.name')}:</b>{' '}
+            {datasetData.DATASETTYPE.NAME}
           </Typography>
           <Typography variant="body2">
-            <b>Description:</b> {datasetData.DATASETTYPE.DESCRIPTION}
+            <b>{t('datasets.details.type.description')}:</b>{' '}
+            {datasetData.DATASETTYPE.DESCRIPTION}
           </Typography>
         </div>
       )}

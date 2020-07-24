@@ -15,7 +15,6 @@ import {
   loadFacilityName,
   MicroFrontendToken,
 } from 'datagateway-common';
-import { fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -172,9 +171,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
             : settings['ui-strings'];
           dispatch(loadStrings(uiStringResourcesPath));
         }
-
-        // fetch initial download cart
-        dispatch(fetchDownloadCart());
 
         dispatch(settingsLoaded());
       })

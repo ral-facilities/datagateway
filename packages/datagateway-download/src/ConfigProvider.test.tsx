@@ -45,6 +45,8 @@ describe('ConfigProvider', () => {
       idsUrl: 'ids',
       apiUrl: 'api',
       downloadApiUrl: 'download-api',
+      fileCountMax: 5000,
+      totalSizeMax: 1000000000000,
       accessMethods: {
         https: {
           idsUrl: 'https-ids',
@@ -86,6 +88,8 @@ describe('ConfigProvider', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
               idsUrl: 'https-ids',
@@ -120,6 +124,8 @@ describe('ConfigProvider', () => {
       Promise.resolve({
         data: {
           facilityName: 'Generic',
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
               idsUrl: 'https-ids',
@@ -155,6 +161,8 @@ describe('ConfigProvider', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
         },
       })
     );
@@ -183,6 +191,8 @@ describe('ConfigProvider', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
               idsUrl: 'https-ids',
@@ -222,6 +232,8 @@ describe('ConfigProvider', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
           accessMethods: {},
         },
       })
@@ -282,6 +294,45 @@ describe('ConfigProvider', () => {
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading datagateway-download-settings.json: undefined'
+    );
+  });
+
+  it('logs an error if fileCountMax or totalSizeMax are undefined in the settings', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download-api',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+            globus: {
+              displayName: 'Globus',
+              description: 'Globus description',
+            },
+          },
+        },
+      })
+    );
+
+    // Create the wrapper and wait for it to load.
+    const wrapper = createWrapper();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-download-settings.json: fileCountMax or totalSizeMax is undefined in settings'
     );
   });
 });

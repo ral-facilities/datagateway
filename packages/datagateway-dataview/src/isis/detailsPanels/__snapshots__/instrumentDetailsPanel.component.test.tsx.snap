@@ -3,20 +3,20 @@
 exports[`Instrument details panel component gracefully handles InstrumentScientists without Users 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="instrument-details-tabs"
+    aria-label="instruments.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="instrument-details-panel"
       id="instrument-details-tab"
-      label="Instrument Details"
+      label="instruments.details.label"
       value="details"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="instrument-users-panel"
       id="instrument-users-tab"
-      label="Instrument Scientists"
+      label="instruments.details.instrument_scientists.label"
       value="users"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -30,7 +30,8 @@ exports[`Instrument details panel component gracefully handles InstrumentScienti
       variant="body2"
     >
       <b>
-        Name:
+        instruments.details.name
+        :
       </b>
        
       Test Instrument
@@ -39,7 +40,8 @@ exports[`Instrument details panel component gracefully handles InstrumentScienti
       variant="body2"
     >
       <b>
-        Description:
+        instruments.details.description
+        :
       </b>
        
       An instrument purely for testing
@@ -48,7 +50,8 @@ exports[`Instrument details panel component gracefully handles InstrumentScienti
       variant="body2"
     >
       <b>
-        Type:
+        instruments.details.type
+        :
       </b>
        
       testing
@@ -57,7 +60,8 @@ exports[`Instrument details panel component gracefully handles InstrumentScienti
       variant="body2"
     >
       <b>
-        URL:
+        instruments.details.url
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -79,14 +83,14 @@ exports[`Instrument details panel component gracefully handles InstrumentScienti
 exports[`Instrument details panel component renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="instrument-details-tabs"
+    aria-label="instruments.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="instrument-details-panel"
       id="instrument-details-tab"
-      label="Instrument Details"
+      label="instruments.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -100,7 +104,8 @@ exports[`Instrument details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Name:
+        instruments.details.name
+        :
       </b>
        
       Test Instrument
@@ -109,7 +114,8 @@ exports[`Instrument details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Description:
+        instruments.details.description
+        :
       </b>
        
       An instrument purely for testing
@@ -118,7 +124,8 @@ exports[`Instrument details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Type:
+        instruments.details.type
+        :
       </b>
        
       testing
@@ -127,7 +134,8 @@ exports[`Instrument details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        URL:
+        instruments.details.url
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -143,20 +151,20 @@ exports[`Instrument details panel component renders correctly 1`] = `
 exports[`Instrument details panel component renders users tab when present in the data 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="instrument-details-tabs"
+    aria-label="instruments.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="instrument-details-panel"
       id="instrument-details-tab"
-      label="Instrument Details"
+      label="instruments.details.label"
       value="details"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="instrument-users-panel"
       id="instrument-users-tab"
-      label="Instrument Scientists"
+      label="instruments.details.instrument_scientists.label"
       value="users"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -170,7 +178,8 @@ exports[`Instrument details panel component renders users tab when present in th
       variant="body2"
     >
       <b>
-        Name:
+        instruments.details.name
+        :
       </b>
        
       Test Instrument
@@ -179,7 +188,8 @@ exports[`Instrument details panel component renders users tab when present in th
       variant="body2"
     >
       <b>
-        Description:
+        instruments.details.description
+        :
       </b>
        
       An instrument purely for testing
@@ -188,7 +198,8 @@ exports[`Instrument details panel component renders users tab when present in th
       variant="body2"
     >
       <b>
-        Type:
+        instruments.details.type
+        :
       </b>
        
       testing
@@ -197,7 +208,8 @@ exports[`Instrument details panel component renders users tab when present in th
       variant="body2"
     >
       <b>
-        URL:
+        instruments.details.url
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -218,7 +230,8 @@ exports[`Instrument details panel component renders users tab when present in th
       variant="body2"
     >
       <b>
-        Name:
+        instruments.details.instrument_scientists.name
+        :
       </b>
        
       Louise Davies
@@ -228,7 +241,8 @@ exports[`Instrument details panel component renders users tab when present in th
       variant="body2"
     >
       <b>
-        Name:
+        instruments.details.instrument_scientists.name
+        :
       </b>
        
       Louise

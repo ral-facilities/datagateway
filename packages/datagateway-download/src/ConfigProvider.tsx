@@ -17,6 +17,9 @@ export interface DownloadSettings {
   downloadApiUrl: string;
   idsUrl: string;
 
+  fileCountMax: number;
+  totalSizeMax: number;
+
   accessMethods: DownloadSettingsAccessMethod;
 }
 
@@ -25,6 +28,8 @@ const initialConfiguration = {
   apiUrl: '',
   downloadApiUrl: '',
   idsUrl: '',
+  fileCountMax: -1,
+  totalSizeMax: -1,
   accessMethods: {},
 };
 
@@ -74,6 +79,13 @@ class ConfigProvider extends React.Component<
         ) {
           throw new Error(
             'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+          );
+        }
+
+        // Ensure all fileCountMax and totalSizeMax are present.
+        if (!('fileCountMax' in settings && 'totalSizeMax' in settings)) {
+          throw new Error(
+            'fileCountMax or totalSizeMax is undefined in settings'
           );
         }
 

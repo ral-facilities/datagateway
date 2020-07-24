@@ -118,7 +118,9 @@ describe('DLS datafiles table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('[aria-label="Filter by Name"] input');
+    const filterInput = wrapper.find(
+      '[aria-label="Filter by datafiles.name"] input'
+    );
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -141,7 +143,7 @@ describe('DLS datafiles table component', () => {
     );
 
     const filterInput = wrapper.find(
-      '[aria-label="Create Time date filter to"]'
+      '[aria-label="datafiles.create_time date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');

@@ -122,7 +122,7 @@ describe('Datafile table component', () => {
     );
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by Name"] input')
+      .find('[aria-label="Filter by datafiles.name"] input')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
@@ -146,7 +146,7 @@ describe('Datafile table component', () => {
     );
 
     const filterInput = wrapper.find(
-      '[aria-label="Modified Time date filter to"]'
+      '[aria-label="datafiles.modified_time date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
@@ -264,7 +264,7 @@ describe('Datafile table component', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="Download"]').simulate('click');
+    wrapper.find('button[aria-label="datafiles.download"]').simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
   });
@@ -283,7 +283,9 @@ describe('Datafile table component', () => {
       </Provider>
     );
 
-    expect(wrapper.find('button[aria-label="Download"]')).toHaveLength(0);
+    expect(
+      wrapper.find('button[aria-label="datafiles.download"]')
+    ).toHaveLength(0);
   });
 
   it('renders details panel correctly', () => {

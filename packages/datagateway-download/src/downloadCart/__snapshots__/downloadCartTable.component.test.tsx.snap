@@ -27,17 +27,17 @@ exports[`Download cart table component renders correctly 1`] = `
               Object {
                 "dataKey": "name",
                 "filterComponent": [Function],
-                "label": "Name",
+                "label": "downloadCart.name",
               },
               Object {
                 "dataKey": "entityType",
                 "filterComponent": [Function],
-                "label": "Type",
+                "label": "downloadCart.type",
               },
               Object {
                 "cellContentRenderer": [Function],
                 "dataKey": "size",
-                "label": "Size",
+                "label": "downloadCart.size",
               },
             ]
           }
@@ -70,13 +70,16 @@ exports[`Download cart table component renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           id="fileCountDisplay"
         >
-          Number of files: 
+          downloadCart.number_of_files
+          :
+           
           Calculating...
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))
           id="totalSizeDisplay"
         >
-          Total size:
+          downloadCart.total_size
+          :
            
           0 B
         </WithStyles(ForwardRef(Typography))>
@@ -103,7 +106,7 @@ exports[`Download cart table component renders correctly 1`] = `
             onClick={[Function]}
             variant="contained"
           >
-            Remove All
+            downloadCart.remove_all
           </WithStyles(ForwardRef(Button))>
         </WithStyles(ForwardRef(Grid))>
         <WithStyles(ForwardRef(Grid))
@@ -116,7 +119,7 @@ exports[`Download cart table component renders correctly 1`] = `
             onClick={[Function]}
             variant="contained"
           >
-            Download Cart
+            downloadCart.download
           </WithStyles(ForwardRef(Button))>
         </WithStyles(ForwardRef(Grid))>
       </WithStyles(ForwardRef(Grid))>

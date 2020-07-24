@@ -15,7 +15,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
           "$$typeof": Symbol(react.memo),
           "WrappedComponent": [Function],
           "compare": null,
-          "displayName": "Connect(PageBreadcrumbs)",
+          "displayName": "Connect(TranslatedBreadcrumbs)",
           "type": [Function],
         }
       }
@@ -40,7 +40,8 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
         variant="h6"
       >
         <b>
-          Results:
+          app.results
+          :
         </b>
          
         101
