@@ -170,7 +170,7 @@ const DLSVisitsCardView = (
           fetchSize={fetchSize}
         />
       )}
-      cardFilters={[
+      customFilters={[
         {
           label: 'Type ID',
           dataKey: 'TYPE_ID',

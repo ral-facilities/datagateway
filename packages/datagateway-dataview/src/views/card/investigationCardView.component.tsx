@@ -241,7 +241,7 @@ const InvestigationCardView = (
       //   url: '[IMAGE URL]',
       //   title: 'Investigation Image',
       // }}
-      cardFilters={[
+      customFilters={[
         {
           label: 'Type ID',
           dataKey: 'TYPE_ID',

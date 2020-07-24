@@ -111,7 +111,8 @@ interface CardViewProps {
   buttons?: ((data?: any) => React.ReactNode)[];
 
   // TODO: Change name to customFilters.
-  cardFilters?: { label: string; dataKey: string; filterItems: string[] }[];
+  customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
+  resultsOptions?: number[];
   // TODO: Add back in when images are supported.
   // image?: EntityImageDetails;
 }
@@ -171,7 +172,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     query,
     filters,
     sort,
-    cardFilters,
+    customFilters,
+    resultsOptions,
     loadData,
     loadCount,
     buttons,
@@ -185,6 +187,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
   // Get card information.
   const { title, description, information, moreInformation } = props; // image
+
+  // Results options (by default it is 10, 20 and 30).
+  const resOptions = resultsOptions
+    ? resultsOptions.sort((a, b) => a - b)
+    : [10, 20, 30];
 
   // Card data.
   const [viewData, setViewData] = React.useState<Entity[]>([]);
@@ -228,8 +235,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     };
 
     // Get the updated info.
-    const info = cardFilters
-      ? Object.values(cardFilters).reduce((o, filter) => {
+    const info = customFilters
+      ? Object.values(customFilters).reduce((o, filter) => {
           const data: CVFilterInfo = {
             ...o,
             [filter.dataKey]: {
@@ -260,7 +267,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
     // console.log('info: ', info);
     setFiltersInfo(info);
-  }, [cardFilters, filters]);
+  }, [customFilters, filters]);
 
   React.useEffect(() => {
     // Get sort information from title, description and information lists.
@@ -390,9 +397,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       if (query.page) {
         setPage(query.page);
       } else {
-        // TODO: Workaround for issue where page remains same on pagination on investigation/dataset.
-        //       If this is not a page change and there is no page query parameter,
-        //       then default the initial page (we treat this as the initial page load).
+        // Workaround for issue where page remains same on pagination on investigation/dataset.
+        // If this is not a page change and there is no page query parameter,
+        // then default the initial page (we treat this as the initial page load).
         setPage(1);
       }
     } else {
@@ -402,17 +409,17 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
     // Ensure the max results change according to the query parameter.
     if (query.results) {
-      if (dataCount > 10 && maxResults !== query.results) {
+      if (dataCount > resOptions[0] && maxResults !== query.results) {
         setMaxResults(query.results);
       }
     } else {
-      // TODO: Reset the max results back to the default value
-      //       when switching between pages (this is the same issue as
-      //       the pagination, page, holding the same value between
-      //       investigation/dataset card views).
-      setMaxResults(10);
+      // Reset the max results back to the default value
+      // when switching between pages (this is the same issue as
+      // the pagination, page, holding the same value between
+      // investigation/dataset card views).
+      setMaxResults(resOptions[0]);
     }
-  }, [page, pageChange, query, maxResults, dataCount]);
+  }, [page, pageChange, query, maxResults, dataCount, resOptions]);
 
   // TODO: Work-around for the pagination, start/stop index
   //       working incorrectly due to the totalDataCount being updated later on
@@ -429,7 +436,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   React.useEffect(() => setFilterChange(true), [filters]);
 
   React.useEffect(() => {
-    // TODO: Needs to handle search as well.
     if (!loading && (filterChange || sortChange)) {
       // Go to the first page and load count on
       // filter/sort change.
@@ -540,7 +546,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           </Collapse>
         </Grid>
 
-        {/* TODO: Advanced filters link */}
+        {/* Advanced filters link */}
         <Grid item xs={12} className={classes.advLink}>
           <Link onClick={() => setAdvSearchCollapsed((prev) => !prev)}>
             {!advSearchCollapsed
@@ -551,8 +557,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
 
         <Grid item xs={12}>
           {/* Maximum results selection */}
-          {/* TODO: Do not show if the dataCount is smaller the smallest option. */}
-          {dataCount > 10 && (
+          {/* Do not show if the number of data is smaller than the 
+              smallest amount of results to display (10) or the smallest amount available. */}
+          {dataCount > resOptions[0] && (
             <Grid
               item
               xs
@@ -574,14 +581,14 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                     pushResults(e.target.value as number);
                     setLoadedData(false);
                   }}
-                  // Disable if the number of data is smaller than the
-                  // smallest amount of results to display (10) or the smallest amount available.
-                  disabled={dataCount <= 10}
                 >
-                  {/* TODO: Disable a max results option if the result is greater than data available to show. */}
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={20}>20</MenuItem>
-                  <MenuItem value={30}>30</MenuItem>
+                  {resOptions
+                    .filter((n) => dataCount > n)
+                    .map((n, i) => (
+                      <MenuItem key={i} value={n}>
+                        {n}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -593,8 +600,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
       <Grid
         container
         direction="row"
-        justify={cardFilters ? 'flex-start' : 'center'}
-        alignItems={cardFilters ? 'flex-start' : 'center'}
+        justify={customFilters ? 'flex-start' : 'center'}
+        alignItems={customFilters ? 'flex-start' : 'center'}
         spacing={10}
         xs={12}
       >
@@ -646,7 +653,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           {/* Filtering options */}
           {/* TODO: When browser width becomes smaller this is smaller in width 
                     (needs to expand to take up full width) */}
-          {cardFilters && (
+          {customFilters && (
             <Grid item xs>
               <Paper>
                 <Box p={2}>
@@ -764,8 +771,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                     buttons={buttons && buttons.map((button) => button(data))}
                     // Pass tag names to the card given the specified data key for the filter.
                     tags={
-                      cardFilters &&
-                      cardFilters.map((f) => nestedValue(data, f.dataKey))
+                      customFilters &&
+                      customFilters.map((f) => nestedValue(data, f.dataKey))
                     }
                     // TODO: Add back in when image is supported.
                     // image={image}
@@ -773,8 +780,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                 </ListItem>
               );
             })}
-            {/* TODO: Show a no data message if there has been no data retrieved */}
-            {/* loadedData && <Typography>No data to show</Typography>} */}
           </List>
         </Grid>
       </Grid>

@@ -235,7 +235,7 @@ const DLSDatasetsCardView = (
           );
         },
       ]}
-      cardFilters={[
+      customFilters={[
         {
           label: 'Type ID',
           dataKey: 'TYPE_ID',
