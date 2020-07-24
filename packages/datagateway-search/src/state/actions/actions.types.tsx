@@ -1,5 +1,4 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { ApplicationStrings } from 'datagateway-common/lib/state/app.types';
 
 export const SearchTextType = 'datagateway_search:input_text';
 export const ToggleDatasetType = 'datagateway_search:toggle_dataset';
@@ -20,12 +19,7 @@ export const SetDatasetTabType = 'datagateway_search:set_dataset_tab';
 export const SetDatafileTabType = 'datagateway_search:set_datafile_tab';
 export const SetInvestigationTabType =
   'datagateway_search:set_investigation_tab';
-export const ConfigureStringsType = 'datagateway_search:configure_strings';
 export const SettingsLoadedType = 'datagateway_search:settings_loaded';
-
-export interface ConfigureStringsPayload {
-  res: ApplicationStrings;
-}
 
 export interface TogglePayload {
   toggleOption: boolean;

@@ -2,6 +2,5 @@
   "facilityName": "Generic",
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
-  "downloadApiUrl": "example.download.api.url",
-  "ui-strings": "/res/default.json"
+  "downloadApiUrl": "example.download.api.url"
 }
