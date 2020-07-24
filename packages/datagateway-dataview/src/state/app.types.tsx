@@ -17,14 +17,6 @@ export interface EntityCache {
   };
 }
 
-export interface AppStrings {
-  [id: string]: string;
-}
-
-export interface ApplicationStrings {
-  [section: string]: AppStrings;
-}
-
 export type StateType = {
   dgdataview: DGDataViewState;
 } & DGCommonState;
