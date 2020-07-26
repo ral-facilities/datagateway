@@ -1,6 +1,7 @@
 import React from 'react';
 import { Entity, Datafile } from 'datagateway-common';
 import { Typography, Tabs, Tab } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 interface DatafileDetailsPanelProps {
   rowData: Entity;
@@ -13,6 +14,7 @@ const DatafileDetailsPanel = (
 ): React.ReactElement => {
   const { rowData, fetchDetails, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'parameters'>('details');
+  const [t] = useTranslation();
 
   const datafileData = rowData as Datafile;
 
@@ -31,19 +33,19 @@ const DatafileDetailsPanel = (
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
-        aria-label="datafile-details-tabs"
+        aria-label={t('datafiles.details.tabs_label')}
       >
         <Tab
           id="datafile-details-tab"
           aria-controls="datafile-details-panel"
-          label="Datafile Details"
+          label={t('datafiles.details.label')}
           value="details"
         />
         {datafileData.DATAFILEPARAMETER && (
           <Tab
             id="datafile-parameters-tab"
             aria-controls="datafile-parameters-panel"
-            label="Datafile Parameters"
+            label={t('datafiles.details.parameters.label')}
             value="parameters"
           />
         )}
@@ -55,13 +57,14 @@ const DatafileDetailsPanel = (
         hidden={value !== 'details'}
       >
         <Typography variant="body2">
-          <b>Name:</b> {datafileData.NAME}
+          <b>{t('datafiles.details.name')}:</b> {datafileData.NAME}
         </Typography>
         <Typography variant="body2">
-          <b>Description:</b> {datafileData.DESCRIPTION}
+          <b>{t('datafiles.details.description')}:</b>{' '}
+          {datafileData.DESCRIPTION}
         </Typography>
         <Typography variant="body2">
-          <b>Location:</b> {datafileData.LOCATION}
+          <b>{t('datafiles.details.location')}:</b> {datafileData.LOCATION}
         </Typography>
       </div>
       {datafileData.DATAFILEPARAMETER && (

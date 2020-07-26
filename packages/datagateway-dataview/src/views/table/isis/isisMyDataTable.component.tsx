@@ -14,15 +14,16 @@ import {
   Investigation,
   Order,
   pushPageFilter,
+  pushPageSort,
   readSciGatewayToken,
   removeFromCart,
+  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  pushPageSort,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { AnyAction } from 'redux';
@@ -77,6 +78,8 @@ const ISISMyDataTable = (
     allIds,
     fetchAllIds,
   } = props;
+
+  const [t] = useTranslation();
 
   const username = readSciGatewayToken().username || '';
 
@@ -147,7 +150,7 @@ const ISISMyDataTable = (
       }}
       columns={[
         {
-          label: 'Title',
+          label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -178,7 +181,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'DOI',
+          label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION.STUDY.PID',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -194,12 +197,12 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Visit Id',
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
-          label: 'RB Number',
+          label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -230,7 +233,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Instrument',
+          label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -247,7 +250,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          label: t('investigations.size'),
           dataKey: 'SIZE',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
@@ -255,12 +258,12 @@ const ISISMyDataTable = (
           disableSort: true,
         },
         {
-          label: 'Start Date',
+          label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
-          label: 'End Date',
+          label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },

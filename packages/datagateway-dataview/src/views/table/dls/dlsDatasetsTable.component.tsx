@@ -8,19 +8,20 @@ import {
   fetchDatasetCount,
   fetchDatasetDetails,
   fetchDatasets,
+  fetchDatasetSize,
   Filter,
   FiltersType,
   Order,
   pushPageFilter,
-  fetchDatasetSize,
+  pushPageSort,
   removeFromCart,
+  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  pushPageSort,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { AnyAction } from 'redux';
@@ -85,6 +86,8 @@ const DLSDatasetsTable = (
     fetchAllIds,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -145,7 +148,7 @@ const DLSDatasetsTable = (
       }}
       columns={[
         {
-          label: 'Name',
+          label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
@@ -155,17 +158,17 @@ const DLSDatasetsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Datafile Count',
+          label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
           disableSort: true,
         },
         {
-          label: 'Create Time',
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
-          label: 'Modified Time',
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

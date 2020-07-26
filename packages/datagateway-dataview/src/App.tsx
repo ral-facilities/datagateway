@@ -16,6 +16,7 @@ import {
 import { createBrowserHistory } from 'history';
 import * as log from 'loglevel';
 import React from 'react';
+import { Translation } from 'react-i18next';
 import { connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
@@ -107,16 +108,20 @@ class App extends React.Component<unknown, { hasError: boolean }> {
     if (this.state.hasError) {
       return (
         <div className="error">
-          <div
-            style={{
-              padding: 20,
-              background: 'red',
-              color: 'white',
-              margin: 5,
-            }}
+          <React.Suspense
+            fallback={<Preloader loading={true}>Finished loading</Preloader>}
           >
-            Something went wrong...
-          </div>
+            <div
+              style={{
+                padding: 20,
+                background: 'red',
+                color: 'white',
+                margin: 5,
+              }}
+            >
+              <Translation>{(t) => t('app.error')}</Translation>
+            </div>
+          </React.Suspense>
         </div>
       );
     } else
@@ -127,7 +132,13 @@ class App extends React.Component<unknown, { hasError: boolean }> {
               <StylesProvider generateClassName={generateClassName}>
                 <DGThemeProvider>
                   <ConnectedPreloader>
-                    <PageContainer />
+                    <React.Suspense
+                      fallback={
+                        <Preloader loading={true}>Finished loading</Preloader>
+                      }
+                    >
+                      <PageContainer />
+                    </React.Suspense>
                   </ConnectedPreloader>
                 </DGThemeProvider>
               </StylesProvider>

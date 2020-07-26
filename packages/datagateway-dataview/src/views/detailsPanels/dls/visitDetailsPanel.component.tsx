@@ -1,6 +1,7 @@
 import React from 'react';
 import { Entity, Investigation, formatBytes } from 'datagateway-common';
 import { Typography, Tabs, Tab, Button } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
@@ -16,6 +17,7 @@ const VisitDetailsPanel = (
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
+  const [t] = useTranslation();
 
   const investigationData = rowData as Investigation;
 
@@ -44,19 +46,19 @@ const VisitDetailsPanel = (
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
-        aria-label="visit-details-tabs"
+        aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
           id="visit-details-tab"
           aria-controls="visit-details-panel"
-          label="Visit Details"
+          label={t('investigations.details.label')}
           value="details"
         />
         {investigationData.INVESTIGATIONUSER && (
           <Tab
             id="visit-users-tab"
             aria-controls="visit-users-panel"
-            label="Visit Users"
+            label={t('investigations.details.users.label')}
             value="users"
           />
         )}
@@ -64,7 +66,7 @@ const VisitDetailsPanel = (
           <Tab
             id="visit-samples-tab"
             aria-controls="visit-samples-panel"
-            label="Visit Samples"
+            label={t('investigations.details.samples.label')}
             value="samples"
           />
         )}
@@ -72,7 +74,7 @@ const VisitDetailsPanel = (
           <Tab
             id="visit-publications-tab"
             aria-controls="visit-publications-panel"
-            label="Publications"
+            label={t('investigations.details.publications.label')}
             value="publications"
           />
         )}
@@ -84,25 +86,29 @@ const VisitDetailsPanel = (
         hidden={value !== 'details'}
       >
         <Typography variant="body2">
-          <b>Proposal:</b> {investigationData.NAME}
+          <b>{t('investigations.details.name')}:</b> {investigationData.NAME}
         </Typography>
         <Typography variant="body2">
-          <b>Visit Id:</b> {investigationData.VISIT_ID}
+          <b>{t('investigations.details.visit_id')}:</b>{' '}
+          {investigationData.VISIT_ID}
         </Typography>
         <Typography variant="body2">
-          <b>Title:</b> {investigationData.TITLE}
+          <b>{t('investigations.details.title')}:</b> {investigationData.TITLE}
         </Typography>
         <Typography variant="body2">
-          <b>Summary:</b> {investigationData.SUMMARY}
+          <b>{t('investigations.details.summary')}:</b>{' '}
+          {investigationData.SUMMARY}
         </Typography>
         <Typography variant="body2">
-          <b>Start Date:</b> {investigationData.STARTDATE}
+          <b>{t('investigations.details.start_date')}:</b>{' '}
+          {investigationData.STARTDATE}
         </Typography>
         <Typography variant="body2">
-          <b>Description:</b> {investigationData.ENDDATE}
+          <b>{t('investigations.details.end_date')}:</b>{' '}
+          {investigationData.ENDDATE}
         </Typography>
         <Typography variant="body2">
-          <b>Total File Size:</b>{' '}
+          <b>{t('investigations.details.size')}:</b>{' '}
           {investigationData.SIZE ? (
             formatBytes(investigationData.SIZE)
           ) : (
@@ -115,7 +121,7 @@ const VisitDetailsPanel = (
               size="small"
               id="calculate-size-btn"
             >
-              Calculate
+              {t('investigations.details.calculate')}
             </Button>
           )}
         </Typography>
@@ -131,7 +137,7 @@ const VisitDetailsPanel = (
             if (investigationUser.USER_) {
               return (
                 <Typography key={investigationUser.USER_ID} variant="body2">
-                  <b>Investigator:</b>{' '}
+                  <b>{t('investigations.details.users.name')}:</b>{' '}
                   {investigationUser.USER_.FULL_NAME ||
                     investigationUser.USER_.NAME}
                 </Typography>
@@ -152,7 +158,7 @@ const VisitDetailsPanel = (
           {investigationData.SAMPLE.map(sample => {
             return (
               <Typography key={sample.ID} variant="body2">
-                <b>Sample:</b> {sample.NAME}
+                <b>{t('investigations.details.samples.name')}:</b> {sample.NAME}
               </Typography>
             );
           })}
@@ -168,7 +174,8 @@ const VisitDetailsPanel = (
           {investigationData.PUBLICATION.map(publication => {
             return (
               <Typography key={publication.ID} variant="body2">
-                <b>Reference:</b> {publication.FULLREFERENCE}
+                <b>{t('investigations.details.publications.reference')}:</b>{' '}
+                {publication.FULLREFERENCE}
               </Typography>
             );
           })}

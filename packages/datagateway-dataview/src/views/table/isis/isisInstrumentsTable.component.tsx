@@ -8,13 +8,14 @@ import {
   Instrument,
   Order,
   pushPageFilter,
+  pushPageSort,
+  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  pushPageSort,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { AnyAction } from 'redux';
@@ -57,6 +58,8 @@ const ISISInstrumentsTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -89,7 +92,7 @@ const ISISInstrumentsTable = (
       }}
       columns={[
         {
-          label: 'Name',
+          label: t('instruments.name'),
           dataKey: 'FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {
             const instrumentData = props.rowData as Instrument;

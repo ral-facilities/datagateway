@@ -5,20 +5,21 @@ import {
   fetchInvestigationCount,
   fetchInvestigationDetails,
   fetchInvestigations,
+  fetchInvestigationSize,
   Filter,
   FiltersType,
   Investigation,
   Order,
   pushPageFilter,
-  fetchInvestigationSize,
+  pushPageSort,
   readSciGatewayToken,
+  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  pushPageSort,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { AnyAction } from 'redux';
@@ -63,6 +64,8 @@ const DLSMyDataTable = (
     pushFilters,
     loading,
   } = props;
+
+  const [t] = useTranslation();
 
   const username = readSciGatewayToken().username || '';
 
@@ -117,7 +120,7 @@ const DLSMyDataTable = (
       }}
       columns={[
         {
-          label: 'Title',
+          label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -129,7 +132,7 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Visit Id',
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -141,12 +144,12 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Dataset Count',
+          label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
           disableSort: true,
         },
         {
-          label: 'Beamline',
+          label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -163,12 +166,12 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Start Date',
+          label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
-          label: 'End Date',
+          label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },

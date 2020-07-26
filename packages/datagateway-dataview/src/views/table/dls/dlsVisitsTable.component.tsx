@@ -5,25 +5,25 @@ import {
   fetchInvestigationCount,
   fetchInvestigationDetails,
   fetchInvestigations,
+  fetchInvestigationSize,
   Filter,
   FiltersType,
   Investigation,
   Order,
   pushPageFilter,
+  pushPageSort,
+  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  pushPageSort,
-  fetchInvestigationSize,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 
 interface DLSVisitsTableProps {
@@ -73,6 +73,8 @@ const DLSVisitsTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -116,7 +118,7 @@ const DLSVisitsTable = (
       }}
       columns={[
         {
-          label: 'Visit Id',
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -128,12 +130,12 @@ const DLSVisitsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Dataset Count',
+          label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
           disableSort: true,
         },
         {
-          label: 'Beamline',
+          label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -150,12 +152,12 @@ const DLSVisitsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Start Date',
+          label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
-          label: 'End Date',
+          label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },

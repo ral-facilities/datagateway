@@ -15,12 +15,7 @@ import {
 import axios from 'axios';
 import * as log from 'loglevel';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
-import {
-  fetchDownloadCartRequest,
-  fetchDownloadCartSuccess,
-  loadUrls,
-  loadFacilityName,
-} from 'datagateway-common';
+import { loadUrls, loadFacilityName } from 'datagateway-common';
 
 jest.mock('loglevel');
 
@@ -100,7 +95,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(8);
+    expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
@@ -120,8 +115,6 @@ describe('Actions', () => {
         },
       })
     );
-    expect(actions).toContainEqual(fetchDownloadCartRequest());
-    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
   });
 
@@ -149,7 +142,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(6);
+    expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       configureStrings({ testSection: { test: 'string' } })
@@ -161,8 +154,6 @@ describe('Actions', () => {
         downloadApiUrl: 'download-api',
       })
     );
-    expect(actions).toContainEqual(fetchDownloadCartRequest());
-    expect(actions).toContainEqual(fetchDownloadCartSuccess({}));
     expect(actions).toContainEqual(settingsLoaded());
   });
 

@@ -27,24 +27,24 @@ exports[`Download Status Table renders correctly 1`] = `
             Object {
               "dataKey": "fileName",
               "filterComponent": [Function],
-              "label": "Download Name",
+              "label": "downloadStatus.filename",
             },
             Object {
               "dataKey": "transport",
               "filterComponent": [Function],
-              "label": "Access Method",
+              "label": "downloadStatus.transport",
             },
             Object {
               "cellContentRenderer": [Function],
               "dataKey": "status",
               "filterComponent": [Function],
-              "label": "Availability",
+              "label": "downloadStatus.status",
             },
             Object {
               "cellContentRenderer": [Function],
               "dataKey": "createdAt",
               "filterComponent": [Function],
-              "label": "Requested Date",
+              "label": "downloadStatus.createdAt",
             },
           ]
         }

@@ -14,19 +14,19 @@ exports[`DownloadTab renders correctly 1`] = `
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="tabpanel-0"
-      aria-label="Cart tab"
+      aria-label="downloadTab.cart_tab_arialabel"
       id="tab-0"
-      label="Cart"
+      label="downloadTab.cart_tab"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="tabpanel-1"
-      aria-label="Downloads tab"
+      aria-label="downloadTab.downloads_tab_arialabel"
       id="tab-1"
-      label="Downloads"
+      label="downloadTab.downloads_tab"
     />
   </WithStyles(ForwardRef(Tabs))>
   <TabPanel
-    aria-label="Download cart panel"
+    aria-label="downloadTab.download_cart_panel_arialabel"
     index={0}
     value={0}
   >
@@ -35,7 +35,7 @@ exports[`DownloadTab renders correctly 1`] = `
     />
   </TabPanel>
   <TabPanel
-    aria-label="Download status panel"
+    aria-label="downloadTab.download_status_panel_arialabel"
     index={1}
     value={0}
   >
@@ -44,7 +44,7 @@ exports[`DownloadTab renders correctly 1`] = `
       spacing={1}
     >
       <WithStyles(ForwardRef(Grid))
-        aria-label="Last updated time"
+        aria-label="downloadTab.last_updated_time_arialabel"
         item={true}
         xs={12}
       >
@@ -64,7 +64,7 @@ exports[`DownloadTab renders correctly 1`] = `
             title="Refresh Downloads"
           >
             <WithStyles(ForwardRef(IconButton))
-              aria-label="Refresh download status table"
+              aria-label="downloadTab.refresh_download_status_arialabel"
               color="secondary"
               onClick={[Function]}
             >
@@ -79,7 +79,8 @@ exports[`DownloadTab renders correctly 1`] = `
             }
           >
             <b>
-              Last checked: 
+              downloadTab.last_checked
+              : 
             </b>
              
           </p>

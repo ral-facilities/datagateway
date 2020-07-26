@@ -1,35 +1,34 @@
-import React from 'react';
-import { StateType } from '../state/app.types';
-import { connect } from 'react-redux';
 import {
+  FormControlLabel,
   Grid,
-  Typography,
+  LinearProgress,
   Paper,
   Switch,
-  FormControlLabel,
-  LinearProgress,
+  Typography,
 } from '@material-ui/core';
-
-import PageBreadcrumbs from './breadcrumbs.component';
-import PageTable from './pageTable.component';
-import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import {
+  fetchDownloadCart,
   loadURLQuery,
   pushPageView,
   saveView,
   Sticky,
 } from 'datagateway-common';
-
 import {
   QueryParams,
-  ViewsType,
   SavedView,
+  ViewsType,
 } from 'datagateway-common/lib/state/app.types';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 import { Route } from 'react-router';
-
+import { AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../state/app.types';
+import PageBreadcrumbs from './breadcrumbs.component';
 import PageCard from './pageCard.component';
 import PageSearch from './pageSearch.component';
+import PageTable from './pageTable.component';
 
 // Define all the supported paths for data-view.
 export const paths = {
@@ -64,6 +63,8 @@ export const paths = {
 };
 
 const NavBar = (props: { entityCount: number }): React.ReactElement => {
+  const [t] = useTranslation();
+
   return (
     <Sticky>
       <Grid container>
@@ -87,7 +88,7 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
               return (
                 <Paper square>
                   <Typography variant="h6" component="h3">
-                    <b>Results:</b> {props.entityCount}
+                    <b>{t('app.results')}:</b> {props.entityCount}
                   </Typography>
                 </Paper>
               );
@@ -103,6 +104,7 @@ interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
   pushView: (view: ViewsType, path: string) => Promise<void>;
   saveView: (view: ViewsType) => Promise<void>;
+  fetchDownloadCart: () => Promise<void>;
 }
 
 interface PageContainerStateProps {
@@ -119,6 +121,7 @@ type PageContainerCombinedProps = PageContainerStateProps &
 interface PageContainerState {
   paths: string[];
   toggleCard: boolean;
+  isCartFetched: boolean;
 }
 
 class PageContainer extends React.Component<
@@ -136,6 +139,7 @@ class PageContainer extends React.Component<
     this.state = {
       paths: Object.values(paths.toggle),
       toggleCard: this.getToggle(),
+      isCartFetched: false,
     };
   }
 
@@ -155,6 +159,20 @@ class PageContainer extends React.Component<
       this.setState({
         ...this.state,
         toggleCard: this.getToggle(),
+      });
+    }
+
+    // Fetch the download cart on mount,
+    // ensuring that dataview element is present.
+    if (
+      !this.state.isCartFetched &&
+      document.getElementById('datagateway-dataview')
+    ) {
+      this.props.fetchDownloadCart();
+      console.log('fetched download cart');
+      this.setState({
+        ...this.state,
+        isCartFetched: true,
       });
     }
   }
@@ -316,6 +334,7 @@ const mapDispatchToProps = (
   pushView: (view: ViewsType, path: string) =>
     dispatch(pushPageView(view, path)),
   saveView: (view: ViewsType) => dispatch(saveView(view)),
+  fetchDownloadCart: () => dispatch(fetchDownloadCart()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);

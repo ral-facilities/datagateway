@@ -13,47 +13,47 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "TITLE",
         "filterComponent": [Function],
-        "label": "Title",
+        "label": "investigations.title",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
-        "label": "Visit Id",
+        "label": "investigations.visit_id",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "RB Number",
+        "label": "investigations.name",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "STUDYINVESTIGATION.STUDY.PID",
         "filterComponent": [Function],
-        "label": "DOI",
+        "label": "investigations.doi",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "SIZE",
         "disableSort": true,
-        "label": "Size",
+        "label": "investigations.size",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME",
         "filterComponent": [Function],
-        "label": "Instrument",
+        "label": "investigations.instrument",
       },
       Object {
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
-        "label": "Start Date",
+        "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
-        "label": "End Date",
+        "label": "investigations.end_date",
       },
     ]
   }
@@ -110,14 +110,14 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
 exports[`ISIS Investigations table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="investigation-details-tabs"
+    aria-label="investigations.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
       id="investigation-details-tab"
-      label="Visit Details"
+      label="investigations.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -131,7 +131,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        Proposal:
+        investigations.details.name
+        :
       </b>
        
       Test 1
@@ -140,7 +141,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        Visit Id:
+        investigations.details.visit_id
+        :
       </b>
        
       1
@@ -149,7 +151,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        Title:
+        investigations.details.title
+        :
       </b>
        
       Test 1
@@ -158,7 +161,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        Summary:
+        investigations.details.summary
+        :
       </b>
        
       foo bar
@@ -168,7 +172,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        DOI:
+        investigations.details.pid
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -181,7 +186,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        Part DOI:
+        investigations.details.doi
+        :
       </b>
        
       <WithStyles(ForwardRef(Link))
@@ -194,7 +200,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        Start Date:
+        investigations.details.start_date
+        :
       </b>
        
       2019-06-10
@@ -203,7 +210,8 @@ exports[`ISIS Investigations table component renders details panel correctly and
       variant="body2"
     >
       <b>
-        End Date:
+        investigations.details.end_date
+        :
       </b>
        
       2019-06-11

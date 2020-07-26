@@ -41,6 +41,7 @@ import {
   StyleRules,
 } from '@material-ui/core/styles';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import { useTranslation, Trans } from 'react-i18next';
 
 const dialogTitleStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -81,13 +82,14 @@ interface DialogTitleProps extends WithStyles<typeof dialogTitleStyles> {
 
 const DialogTitle = withStyles(dialogTitleStyles)((props: DialogTitleProps) => {
   const { classes, children, onClose, ...other } = props;
+  const [t] = useTranslation();
 
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
       {onClose && (
         <IconButton
-          aria-label="download-confirmation-close"
+          aria-label={t('downloadConfirmDialog.close_arialabel')}
           className={classes.closeButton}
           onClick={onClose}
         >
@@ -193,9 +195,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const [selectedMethod, setSelectedMethod] = React.useState('');
   const [emailAddress, setEmailAddress] = React.useState('');
 
+  const [t] = useTranslation();
+
   // Email validation.
-  const emailHelpText = 'Send me download status messages via email.';
-  const emailErrorText = 'Please ensure the email you have entered is valid.';
+  const emailHelpText = t('downloadConfirmDialog.email_help');
+  const emailErrorText = t('downloadConfirmDialog.email_error');
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const [emailValid, setEmailValid] = React.useState(true);
   const [emailHelperText, setEmailHelperText] = React.useState(emailHelpText);
@@ -304,14 +308,14 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
         if (statusErrors.length < Object.keys(statusMethods).length) {
           for (const method of statusErrors) {
             broadcastError(
-              `The status of access method ${method.toUpperCase()} is unable to be fetched. If required, use an alternative method.`
+              t('downloadConfirmDialog.access_method_error', {
+                method: method.toUpperCase(),
+              })
             );
           }
         } else {
           setMethodsUnavailable(true);
-          broadcastError(
-            'Download access method statuses unable to be fetched. Please try again later.'
-          );
+          broadcastError(t('downloadConfirmDialog.access_methods_error'));
         }
 
         // Set the status information to have been loaded.
@@ -363,6 +367,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
     sortMethods,
     isSorted,
     showDialog,
+    t,
   ]);
 
   const getDefaultFileName = (): string => {
@@ -382,14 +387,29 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
     const dDisplay =
       d > 0
-        ? d + (d === 1 ? ' day' : ' days') + (h + m + s > 0 ? ', ' : '')
+        ? d +
+          ` ${t('downloadConfirmDialog.day', { count: d })}` +
+          (h + m + s > 0 ? ', ' : '')
         : '';
     const hDisplay =
-      h > 0 ? h + (h === 1 ? ' hour' : ' hours') + (m + s > 0 ? ', ' : '') : '';
-    const mDisplay = m > 0 ? m + (s > 0 ? ' min, ' : ' min') : '';
-    const sDisplay = s > 0 ? s + ' sec' : '';
+      h > 0
+        ? h +
+          ` ${t('downloadConfirmDialog.hour', { count: h })}` +
+          (m + s > 0 ? ', ' : '')
+        : '';
+    const mDisplay =
+      m > 0
+        ? m +
+          ` ${t('downloadConfirmDialog.minute', { count: m })}` +
+          (s > 0 ? ', ' : '')
+        : '';
+    const sDisplay =
+      s > 0 ? s + ` ${t('downloadConfirmDialog.second', { count: s })}` : '';
 
-    return dDisplay + hDisplay + mDisplay + sDisplay || '< 1 second';
+    return (
+      dDisplay + hDisplay + mDisplay + sDisplay ||
+      `< 1 ${t('downloadConfirmDialog.second', { count: 1 })}`
+    );
   };
 
   const processDownload = async (): Promise<void> => {
@@ -445,7 +465,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
       open={props.open}
       fullWidth={true}
       maxWidth={'sm'}
-      aria-label="download-confirm-dialog"
+      aria-label={t('downloadConfirmDialog.dialog_arialabel')}
     >
       {!isSubmitted ? (
         !showDialog ? (
@@ -453,7 +473,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             <div style={{ textAlign: 'center', padding: '25px' }}>
               <CircularProgress />
               <Typography style={{ paddingTop: '10px' }}>
-                Loading Confirmation...
+                {t('downloadConfirmDialog.loading_confirmation')}
               </Typography>
             </div>
           </DialogContent>
@@ -464,7 +484,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               id="download-confirm-dialog-title"
               onClose={dialogClose}
             >
-              Confirm Your Download
+              {t('downloadConfirmDialog.dialog_title')}
             </DialogTitle>
 
             {/* The download confirmation form  */}
@@ -474,7 +494,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <Grid item xs={12}>
                   <TextField
                     id="confirm-download-name"
-                    label="Download Name (optional)"
+                    label={t('downloadConfirmDialog.download_name_label')}
                     placeholder={`${getDefaultFileName()}`}
                     fullWidth={true}
                     inputProps={{
@@ -483,7 +503,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     onChange={(e) => {
                       setDownloadName(e.target.value as string);
                     }}
-                    helperText="Enter a custom file name or leave as the default format (facility_date_time)."
+                    helperText={t(
+                      'downloadConfirmDialog.download_name_helpertext'
+                    )}
                   />
                 </Grid>
 
@@ -497,12 +519,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     }
                   >
                     <InputLabel id="confirm-access-method-label">
-                      Access Method
+                      {t('downloadConfirmDialog.access_method_label')}
                     </InputLabel>
                     <Select
                       labelId="confirm-access-method"
                       id="confirm-access-method"
-                      aria-label="confirm-access-method"
                       defaultValue={`${
                         methodsUnavailable ? '' : selectedMethod
                       }`}
@@ -533,15 +554,21 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                       {(() => {
                         const method = statusMethods[selectedMethod];
                         if (methodsUnavailable) {
-                          return 'Access methods currently unavailable.';
+                          return t(
+                            'downloadConfirmDialog.access_method_helpertext_all_disabled_error'
+                          );
                         } else if (method.disabled) {
                           if (method.message) {
                             return method.message;
                           } else {
-                            return 'This access method is currently disabled.';
+                            return t(
+                              'downloadConfirmDialog.access_method_helpertext_disabled_error'
+                            );
                           }
                         } else {
-                          return 'Select an access method for download.';
+                          return t(
+                            'downloadConfirmDialog.access_method_helpertext'
+                          );
                         }
                       })()}
                     </FormHelperText>
@@ -559,7 +586,9 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     .map(([type, methodInfo], index) => (
                       <span key={index} style={{ paddingTop: '20px' }}>
                         <Typography>
-                          <b>Access Method Information:</b>
+                          <b>
+                            {t('downloadConfirmDialog.access_method_info')}:
+                          </b>
                         </Typography>
 
                         <Typography
@@ -573,20 +602,26 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
                 {/* Get the size of the download  */}
                 <Grid item xs={12}>
-                  <Typography aria-label="confirm-download-size">
-                    <b>Download size:</b> {formatBytes(totalSize)}
+                  <Typography>
+                    <b>{t('downloadConfirmDialog.download_size')}:</b>{' '}
+                    {formatBytes(totalSize)}
                   </Typography>
                 </Grid>
 
                 {/* Show the estimated download times */}
                 {showDownloadTime && (
                   <Grid item xs={12}>
-                    <Typography>Estimated download times:</Typography>
+                    <Typography id="estimated-download-times">
+                      {t('downloadConfirmDialog.estimated_download_times')}:
+                    </Typography>
                     <div
                       style={{ paddingTop: '10px' }}
                       className={classes.tableContent}
                     >
-                      <table aria-label="download-table">
+                      <table
+                        id="download-table"
+                        aria-labelledby="estimated-download-times"
+                      >
                         <tbody>
                           <tr>
                             <th>1 Mbps</th>
@@ -594,13 +629,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                             <th>100 Mbps</th>
                           </tr>
                           <tr>
-                            <td aria-label="download-table-one">
+                            <td id="download-table-one">
                               {secondsToDHMS(timeAtOne)}
                             </td>
-                            <td aria-label="download-table-thirty">
+                            <td id="download-table-thirty">
                               {secondsToDHMS(timeAtThirty)}
                             </td>
-                            <td aria-label="download-table-hundred">
+                            <td id="download-table-hundred">
                               {secondsToDHMS(timeAtHundred)}
                             </td>
                           </tr>
@@ -614,7 +649,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 <Grid item xs={12}>
                   <TextField
                     id="confirm-download-email"
-                    label="Email Address (optional)"
+                    label={t('downloadConfirmDialog.email_label')}
                     fullWidth={true}
                     helperText={emailHelperText}
                     error={!emailValid}
@@ -662,7 +697,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                 color="primary"
                 variant="contained"
               >
-                Download
+                {t('downloadConfirmDialog.download')}
               </Button>
             </DialogActions>
           </div>
@@ -699,7 +734,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
               {isSubmitSuccessful ? (
                 <Grid item xs>
                   <Typography id="download-confirmation-success">
-                    Successfully submitted download request
+                    {t('downloadConfirmDialog.download_success')}
                   </Typography>
                 </Grid>
               ) : (
@@ -708,10 +743,11 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   style={{ textAlign: 'center' }}
                 >
                   <Typography>
-                    <b>Your download request was unsuccessful</b>
-                  </Typography>
-                  <Typography>
-                    (No download information was received)
+                    <Trans t={t} i18nKey="downloadConfirmDialog.download_error">
+                      <b>Your download request was unsuccessful</b>
+                      <br />
+                      (No download information was received)
+                    </Trans>
                   </Typography>
                 </div>
               )}
@@ -722,14 +758,26 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                   <div style={{ textAlign: 'center', margin: '0 auto' }}>
                     <div style={{ float: 'left', textAlign: 'right' }}>
                       <Typography>
-                        <b>Download Name: </b>
+                        <b>
+                          {t(
+                            'downloadConfirmDialog.confirmation_download_name'
+                          )}
+                          :{' '}
+                        </b>
                       </Typography>
                       <Typography>
-                        <b>Access Method: </b>
+                        <b>
+                          {t(
+                            'downloadConfirmDialog.confirmation_access_method'
+                          )}
+                          :{' '}
+                        </b>
                       </Typography>
                       {emailAddress && (
                         <Typography>
-                          <b>Email Address: </b>
+                          <b>
+                            {t('downloadConfirmDialog.confirmation_email')}:{' '}
+                          </b>
                         </Typography>
                       )}
                     </div>
@@ -764,7 +812,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
                     color="primary"
                     onClick={redirectToStatusTab}
                   >
-                    View My Downloads
+                    {t('downloadConfirmDialog.view_my_downloads')}
                   </Button>
                 </Grid>
               )}

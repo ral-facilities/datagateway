@@ -111,7 +111,7 @@ describe('ISIS - Investigations Table', () => {
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
@@ -156,7 +156,7 @@ describe('ISIS - Investigations Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Title"]').find('input').type('series');
 
-      cy.get('[aria-label="Filter by Visit Id"]').find('input').type('15');
+      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('15');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
@@ -174,7 +174,7 @@ describe('ISIS - Investigations Table', () => {
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Proposal: INVESTIGATION 107').should('be.visible');
+      cy.contains('Name: INVESTIGATION 107').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 

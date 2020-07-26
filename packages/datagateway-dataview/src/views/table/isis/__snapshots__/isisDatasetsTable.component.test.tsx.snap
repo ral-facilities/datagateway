@@ -18,23 +18,23 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "label": "datasets.name",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "SIZE",
         "disableSort": true,
-        "label": "Size",
+        "label": "datasets.size",
       },
       Object {
         "dataKey": "CREATE_TIME",
         "filterComponent": [Function],
-        "label": "Create Time",
+        "label": "datasets.create_time",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
-        "label": "Modified Time",
+        "label": "datasets.modified_time",
       },
     ]
   }
@@ -218,14 +218,14 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 exports[`ISIS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="dataset-details-tabs"
+    aria-label="datasets.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
       id="dataset-details-tab"
-      label="Dataset Details"
+      label="datasets.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -239,7 +239,8 @@ exports[`ISIS Dataset table component renders details panel correctly and it sen
       variant="body2"
     >
       <b>
-        Name:
+        datasets.details.name
+        :
       </b>
        
       Test 1
@@ -248,7 +249,8 @@ exports[`ISIS Dataset table component renders details panel correctly and it sen
       variant="body2"
     >
       <b>
-        Description:
+        datasets.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>

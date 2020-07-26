@@ -23,14 +23,14 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
     totalSize={100}
   >
     <WithStyles(ForwardRef(Dialog))
-      aria-label="download-confirm-dialog"
+      aria-label="downloadConfirmDialog.dialog_arialabel"
       fullWidth={true}
       maxWidth="sm"
       onClose={[Function]}
       open={true}
     >
       <ForwardRef(Dialog)
-        aria-label="download-confirm-dialog"
+        aria-label="downloadConfirmDialog.dialog_arialabel"
         classes={
           Object {
             "container": "MuiDialog-container",
@@ -357,7 +357,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
               },
             }
           }
-          aria-label="download-confirm-dialog"
+          aria-label="downloadConfirmDialog.dialog_arialabel"
           className="MuiDialog-root"
           closeAfterTransition={true}
           disableBackdropClick={false}
@@ -379,7 +379,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                     id="app"
                   />
                   <div
-                    aria-label="download-confirm-dialog"
+                    aria-label="downloadConfirmDialog.dialog_arialabel"
                     class="MuiDialog-root"
                     role="presentation"
                     style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px;"
@@ -411,10 +411,10 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                             <h6
                               class="MuiTypography-root MuiTypography-h6"
                             >
-                              Confirm Your Download
+                              downloadConfirmDialog.dialog_title
                             </h6>
                             <button
-                              aria-label="download-confirmation-close"
+                              aria-label="downloadConfirmDialog.close_arialabel"
                               class="MuiButtonBase-root MuiIconButton-root Component-closeButton-431"
                               tabindex="0"
                               type="button"
@@ -457,7 +457,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     for="confirm-download-name"
                                     id="confirm-download-name-label"
                                   >
-                                    Download Name (optional)
+                                    downloadConfirmDialog.download_name_label
                                   </label>
                                   <div
                                     class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -477,7 +477,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     class="MuiFormHelperText-root"
                                     id="confirm-download-name-helper-text"
                                   >
-                                    Enter a custom file name or leave as the default format (facility_date_time).
+                                    downloadConfirmDialog.download_name_helpertext
                                   </p>
                                 </div>
                               </div>
@@ -493,10 +493,9 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     data-shrink="true"
                                     id="confirm-access-method-label"
                                   >
-                                    Access Method
+                                    downloadConfirmDialog.access_method_label
                                   </label>
                                   <div
-                                    aria-label="confirm-access-method"
                                     class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
                                   >
                                     <div
@@ -529,7 +528,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     class="MuiFormHelperText-root MuiFormHelperText-filled"
                                     id="confirm-access-method-help"
                                   >
-                                    Select an access method for download.
+                                    downloadConfirmDialog.access_method_helpertext
                                   </p>
                                 </div>
                               </div>
@@ -543,7 +542,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     class="MuiTypography-root MuiTypography-body1"
                                   >
                                     <b>
-                                      Access Method Information:
+                                      downloadConfirmDialog.access_method_info
+                                      :
                                     </b>
                                   </p>
                                   <p
@@ -558,11 +558,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                 class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                               >
                                 <p
-                                  aria-label="confirm-download-size"
                                   class="MuiTypography-root MuiTypography-body1"
                                 >
                                   <b>
-                                    Download size:
+                                    downloadConfirmDialog.download_size
+                                    :
                                   </b>
                                    
                                   100 B
@@ -580,7 +580,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     for="confirm-download-email"
                                     id="confirm-download-email-label"
                                   >
-                                    Email Address (optional)
+                                    downloadConfirmDialog.email_label
                                   </label>
                                   <div
                                     class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -599,7 +599,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     class="MuiFormHelperText-root"
                                     id="confirm-download-email-helper-text"
                                   >
-                                    Send me download status messages via email.
+                                    downloadConfirmDialog.email_help
                                   </p>
                                 </div>
                               </div>
@@ -617,7 +617,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                               <span
                                 class="MuiButton-label"
                               >
-                                Download
+                                downloadConfirmDialog.download
                               </span>
                               <span
                                 class="MuiTouchRipple-root"
@@ -636,7 +636,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
               }
             >
               <div
-                aria-label="download-confirm-dialog"
+                aria-label="downloadConfirmDialog.dialog_arialabel"
                 className="MuiDialog-root"
                 onKeyDown={[Function]}
                 role="presentation"
@@ -906,17 +906,17 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                               <h6
                                                 className="MuiTypography-root MuiTypography-h6"
                                               >
-                                                Confirm Your Download
+                                                downloadConfirmDialog.dialog_title
                                               </h6>
                                             </ForwardRef(Typography)>
                                           </WithStyles(ForwardRef(Typography))>
                                           <WithStyles(ForwardRef(IconButton))
-                                            aria-label="download-confirmation-close"
+                                            aria-label="downloadConfirmDialog.close_arialabel"
                                             className="Component-closeButton-431"
                                             onClick={[Function]}
                                           >
                                             <ForwardRef(IconButton)
-                                              aria-label="download-confirmation-close"
+                                              aria-label="downloadConfirmDialog.close_arialabel"
                                               className="Component-closeButton-431"
                                               classes={
                                                 Object {
@@ -934,7 +934,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                               onClick={[Function]}
                                             >
                                               <WithStyles(ForwardRef(ButtonBase))
-                                                aria-label="download-confirmation-close"
+                                                aria-label="downloadConfirmDialog.close_arialabel"
                                                 centerRipple={true}
                                                 className="MuiIconButton-root Component-closeButton-431"
                                                 disabled={false}
@@ -942,7 +942,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                 onClick={[Function]}
                                               >
                                                 <ForwardRef(ButtonBase)
-                                                  aria-label="download-confirmation-close"
+                                                  aria-label="downloadConfirmDialog.close_arialabel"
                                                   centerRipple={true}
                                                   className="MuiIconButton-root Component-closeButton-431"
                                                   classes={
@@ -957,7 +957,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                   onClick={[Function]}
                                                 >
                                                   <button
-                                                    aria-label="download-confirmation-close"
+                                                    aria-label="downloadConfirmDialog.close_arialabel"
                                                     className="MuiButtonBase-root MuiIconButton-root Component-closeButton-431"
                                                     disabled={false}
                                                     onBlur={[Function]}
@@ -1307,14 +1307,14 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                   >
                                                     <WithStyles(ForwardRef(TextField))
                                                       fullWidth={true}
-                                                      helperText="Enter a custom file name or leave as the default format (facility_date_time)."
+                                                      helperText="downloadConfirmDialog.download_name_helpertext"
                                                       id="confirm-download-name"
                                                       inputProps={
                                                         Object {
                                                           "maxLength": 255,
                                                         }
                                                       }
-                                                      label="Download Name (optional)"
+                                                      label="downloadConfirmDialog.download_name_label"
                                                       onChange={[Function]}
                                                       placeholder="LILS_2020-1-1_1-1-1"
                                                     >
@@ -1325,14 +1325,14 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                           }
                                                         }
                                                         fullWidth={true}
-                                                        helperText="Enter a custom file name or leave as the default format (facility_date_time)."
+                                                        helperText="downloadConfirmDialog.download_name_helpertext"
                                                         id="confirm-download-name"
                                                         inputProps={
                                                           Object {
                                                             "maxLength": 255,
                                                           }
                                                         }
-                                                        label="Download Name (optional)"
+                                                        label="downloadConfirmDialog.download_name_label"
                                                         onChange={[Function]}
                                                         placeholder="LILS_2020-1-1_1-1-1"
                                                       >
@@ -1428,7 +1428,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         htmlFor="confirm-download-name"
                                                                         id="confirm-download-name-label"
                                                                       >
-                                                                        Download Name (optional)
+                                                                        downloadConfirmDialog.download_name_label
                                                                       </label>
                                                                     </ForwardRef(FormLabel)>
                                                                   </WithStyles(ForwardRef(FormLabel))>
@@ -1598,7 +1598,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     className="MuiFormHelperText-root"
                                                                     id="confirm-download-name-helper-text"
                                                                   >
-                                                                    Enter a custom file name or leave as the default format (facility_date_time).
+                                                                    downloadConfirmDialog.download_name_helpertext
                                                                   </p>
                                                                 </ForwardRef(FormHelperText)>
                                                               </WithStyles(ForwardRef(FormHelperText))>
@@ -1818,21 +1818,19 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     data-shrink={true}
                                                                     id="confirm-access-method-label"
                                                                   >
-                                                                    Access Method
+                                                                    downloadConfirmDialog.access_method_label
                                                                   </label>
                                                                 </ForwardRef(FormLabel)>
                                                               </WithStyles(ForwardRef(FormLabel))>
                                                             </ForwardRef(InputLabel)>
                                                           </WithStyles(ForwardRef(InputLabel))>
                                                           <WithStyles(ForwardRef(Select))
-                                                            aria-label="confirm-access-method"
                                                             defaultValue="https"
                                                             id="confirm-access-method"
                                                             labelId="confirm-access-method"
                                                             onChange={[Function]}
                                                           >
                                                             <ForwardRef(Select)
-                                                              aria-label="confirm-access-method"
                                                               classes={
                                                                 Object {
                                                                   "disabled": "Mui-disabled",
@@ -1853,7 +1851,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                               onChange={[Function]}
                                                             >
                                                               <WithStyles(ForwardRef(Input))
-                                                                aria-label="confirm-access-method"
                                                                 defaultValue="https"
                                                                 inputComponent={
                                                                   Object {
@@ -1951,7 +1948,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                 select={true}
                                                               >
                                                                 <ForwardRef(Input)
-                                                                  aria-label="confirm-access-method"
                                                                   classes={
                                                                     Object {
                                                                       "colorSecondary": "MuiInput-colorSecondary",
@@ -2066,7 +2062,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   select={true}
                                                                 >
                                                                   <WithStyles(ForwardRef(InputBase))
-                                                                    aria-label="confirm-access-method"
                                                                     classes={
                                                                       Object {
                                                                         "colorSecondary": "MuiInput-colorSecondary",
@@ -2184,7 +2179,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     type="text"
                                                                   >
                                                                     <ForwardRef(InputBase)
-                                                                      aria-label="confirm-access-method"
                                                                       classes={
                                                                         Object {
                                                                           "adornedEnd": "MuiInputBase-adornedEnd",
@@ -2308,7 +2302,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       type="text"
                                                                     >
                                                                       <div
-                                                                        aria-label="confirm-access-method"
                                                                         className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
                                                                         onClick={[Function]}
                                                                       >
@@ -2590,7 +2583,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                           id="app"
                                                                                         />
                                                                                         <div
-                                                                                          aria-label="download-confirm-dialog"
+                                                                                          aria-label="downloadConfirmDialog.dialog_arialabel"
                                                                                           class="MuiDialog-root"
                                                                                           role="presentation"
                                                                                           style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px;"
@@ -2622,10 +2615,10 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                   <h6
                                                                                                     class="MuiTypography-root MuiTypography-h6"
                                                                                                   >
-                                                                                                    Confirm Your Download
+                                                                                                    downloadConfirmDialog.dialog_title
                                                                                                   </h6>
                                                                                                   <button
-                                                                                                    aria-label="download-confirmation-close"
+                                                                                                    aria-label="downloadConfirmDialog.close_arialabel"
                                                                                                     class="MuiButtonBase-root MuiIconButton-root Component-closeButton-431"
                                                                                                     tabindex="0"
                                                                                                     type="button"
@@ -2668,7 +2661,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           for="confirm-download-name"
                                                                                                           id="confirm-download-name-label"
                                                                                                         >
-                                                                                                          Download Name (optional)
+                                                                                                          downloadConfirmDialog.download_name_label
                                                                                                         </label>
                                                                                                         <div
                                                                                                           class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -2688,7 +2681,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           class="MuiFormHelperText-root"
                                                                                                           id="confirm-download-name-helper-text"
                                                                                                         >
-                                                                                                          Enter a custom file name or leave as the default format (facility_date_time).
+                                                                                                          downloadConfirmDialog.download_name_helpertext
                                                                                                         </p>
                                                                                                       </div>
                                                                                                     </div>
@@ -2704,10 +2697,9 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           data-shrink="true"
                                                                                                           id="confirm-access-method-label"
                                                                                                         >
-                                                                                                          Access Method
+                                                                                                          downloadConfirmDialog.access_method_label
                                                                                                         </label>
                                                                                                         <div
-                                                                                                          aria-label="confirm-access-method"
                                                                                                           class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
                                                                                                         >
                                                                                                           <div
@@ -2740,7 +2732,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           class="MuiFormHelperText-root MuiFormHelperText-filled"
                                                                                                           id="confirm-access-method-help"
                                                                                                         >
-                                                                                                          Select an access method for download.
+                                                                                                          downloadConfirmDialog.access_method_helpertext
                                                                                                         </p>
                                                                                                       </div>
                                                                                                     </div>
@@ -2754,7 +2746,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           class="MuiTypography-root MuiTypography-body1"
                                                                                                         >
                                                                                                           <b>
-                                                                                                            Access Method Information:
+                                                                                                            downloadConfirmDialog.access_method_info
+                                                                                                            :
                                                                                                           </b>
                                                                                                         </p>
                                                                                                         <p
@@ -2769,11 +2762,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                                                                                                     >
                                                                                                       <p
-                                                                                                        aria-label="confirm-download-size"
                                                                                                         class="MuiTypography-root MuiTypography-body1"
                                                                                                       >
                                                                                                         <b>
-                                                                                                          Download size:
+                                                                                                          downloadConfirmDialog.download_size
+                                                                                                          :
                                                                                                         </b>
                                                                                                          
                                                                                                         100 B
@@ -2791,7 +2784,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           for="confirm-download-email"
                                                                                                           id="confirm-download-email-label"
                                                                                                         >
-                                                                                                          Email Address (optional)
+                                                                                                          downloadConfirmDialog.email_label
                                                                                                         </label>
                                                                                                         <div
                                                                                                           class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -2810,7 +2803,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           class="MuiFormHelperText-root"
                                                                                                           id="confirm-download-email-helper-text"
                                                                                                         >
-                                                                                                          Send me download status messages via email.
+                                                                                                          downloadConfirmDialog.email_help
                                                                                                         </p>
                                                                                                       </div>
                                                                                                     </div>
@@ -2828,7 +2821,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                     <span
                                                                                                       class="MuiButton-label"
                                                                                                     >
-                                                                                                      Download
+                                                                                                      downloadConfirmDialog.download
                                                                                                     </span>
                                                                                                     <span
                                                                                                       class="MuiTouchRipple-root"
@@ -2883,7 +2876,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                 className="MuiFormHelperText-root MuiFormHelperText-filled"
                                                                 id="confirm-access-method-help"
                                                               >
-                                                                Select an access method for download.
+                                                                downloadConfirmDialog.access_method_helpertext
                                                               </p>
                                                             </ForwardRef(FormHelperText)>
                                                           </WithStyles(ForwardRef(FormHelperText))>
@@ -3060,7 +3053,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             className="MuiTypography-root MuiTypography-body1"
                                                           >
                                                             <b>
-                                                              Access Method Information:
+                                                              downloadConfirmDialog.access_method_info
+                                                              :
                                                             </b>
                                                           </p>
                                                         </ForwardRef(Typography)>
@@ -3235,11 +3229,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                   <div
                                                     className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                                                   >
-                                                    <WithStyles(ForwardRef(Typography))
-                                                      aria-label="confirm-download-size"
-                                                    >
+                                                    <WithStyles(ForwardRef(Typography))>
                                                       <ForwardRef(Typography)
-                                                        aria-label="confirm-download-size"
                                                         classes={
                                                           Object {
                                                             "alignCenter": "MuiTypography-alignCenter",
@@ -3276,11 +3267,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                         }
                                                       >
                                                         <p
-                                                          aria-label="confirm-download-size"
                                                           className="MuiTypography-root MuiTypography-body1"
                                                         >
                                                           <b>
-                                                            Download size:
+                                                            downloadConfirmDialog.download_size
+                                                            :
                                                           </b>
                                                            
                                                           100 B
@@ -3411,14 +3402,14 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                     <WithStyles(ForwardRef(TextField))
                                                       error={false}
                                                       fullWidth={true}
-                                                      helperText="Send me download status messages via email."
+                                                      helperText="downloadConfirmDialog.email_help"
                                                       id="confirm-download-email"
                                                       inputProps={
                                                         Object {
                                                           "maxLength": 254,
                                                         }
                                                       }
-                                                      label="Email Address (optional)"
+                                                      label="downloadConfirmDialog.email_label"
                                                       onChange={[Function]}
                                                     >
                                                       <ForwardRef(TextField)
@@ -3429,14 +3420,14 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                         }
                                                         error={false}
                                                         fullWidth={true}
-                                                        helperText="Send me download status messages via email."
+                                                        helperText="downloadConfirmDialog.email_help"
                                                         id="confirm-download-email"
                                                         inputProps={
                                                           Object {
                                                             "maxLength": 254,
                                                           }
                                                         }
-                                                        label="Email Address (optional)"
+                                                        label="downloadConfirmDialog.email_label"
                                                         onChange={[Function]}
                                                       >
                                                         <WithStyles(ForwardRef(FormControl))
@@ -3531,7 +3522,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         htmlFor="confirm-download-email"
                                                                         id="confirm-download-email-label"
                                                                       >
-                                                                        Email Address (optional)
+                                                                        downloadConfirmDialog.email_label
                                                                       </label>
                                                                     </ForwardRef(FormLabel)>
                                                                   </WithStyles(ForwardRef(FormLabel))>
@@ -3696,7 +3687,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     className="MuiFormHelperText-root"
                                                                     id="confirm-download-email-helper-text"
                                                                   >
-                                                                    Send me download status messages via email.
+                                                                    downloadConfirmDialog.email_help
                                                                   </p>
                                                                 </ForwardRef(FormHelperText)>
                                                               </WithStyles(ForwardRef(FormHelperText))>
@@ -3829,7 +3820,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                   <span
                                                     className="MuiButton-label"
                                                   >
-                                                    Download
+                                                    downloadConfirmDialog.download
                                                   </span>
                                                   <NoSsr>
                                                     <WithStyles(undefined)
@@ -3915,14 +3906,14 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
     totalSize={100}
   >
     <WithStyles(ForwardRef(Dialog))
-      aria-label="download-confirm-dialog"
+      aria-label="downloadConfirmDialog.dialog_arialabel"
       fullWidth={true}
       maxWidth="sm"
       onClose={[Function]}
       open={true}
     >
       <ForwardRef(Dialog)
-        aria-label="download-confirm-dialog"
+        aria-label="downloadConfirmDialog.dialog_arialabel"
         classes={
           Object {
             "container": "MuiDialog-container",
@@ -4249,7 +4240,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
               },
             }
           }
-          aria-label="download-confirm-dialog"
+          aria-label="downloadConfirmDialog.dialog_arialabel"
           className="MuiDialog-root"
           closeAfterTransition={true}
           disableBackdropClick={false}
@@ -4271,7 +4262,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                     id="app"
                   />
                   <div
-                    aria-label="download-confirm-dialog"
+                    aria-label="downloadConfirmDialog.dialog_arialabel"
                     class="MuiDialog-root"
                     role="presentation"
                     style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px;"
@@ -4303,10 +4294,10 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                             <h6
                               class="MuiTypography-root MuiTypography-h6"
                             >
-                              Confirm Your Download
+                              downloadConfirmDialog.dialog_title
                             </h6>
                             <button
-                              aria-label="download-confirmation-close"
+                              aria-label="downloadConfirmDialog.close_arialabel"
                               class="MuiButtonBase-root MuiIconButton-root Component-closeButton-92"
                               tabindex="0"
                               type="button"
@@ -4349,7 +4340,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     for="confirm-download-name"
                                     id="confirm-download-name-label"
                                   >
-                                    Download Name (optional)
+                                    downloadConfirmDialog.download_name_label
                                   </label>
                                   <div
                                     class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -4369,7 +4360,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     class="MuiFormHelperText-root"
                                     id="confirm-download-name-helper-text"
                                   >
-                                    Enter a custom file name or leave as the default format (facility_date_time).
+                                    downloadConfirmDialog.download_name_helpertext
                                   </p>
                                 </div>
                               </div>
@@ -4385,10 +4376,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     data-shrink="true"
                                     id="confirm-access-method-label"
                                   >
-                                    Access Method
+                                    downloadConfirmDialog.access_method_label
                                   </label>
                                   <div
-                                    aria-label="confirm-access-method"
                                     class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
                                   >
                                     <div
@@ -4421,7 +4411,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     class="MuiFormHelperText-root MuiFormHelperText-filled"
                                     id="confirm-access-method-help"
                                   >
-                                    Select an access method for download.
+                                    downloadConfirmDialog.access_method_helpertext
                                   </p>
                                 </div>
                               </div>
@@ -4435,7 +4425,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     class="MuiTypography-root MuiTypography-body1"
                                   >
                                     <b>
-                                      Access Method Information:
+                                      downloadConfirmDialog.access_method_info
+                                      :
                                     </b>
                                   </p>
                                   <p
@@ -4450,11 +4441,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                 class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                               >
                                 <p
-                                  aria-label="confirm-download-size"
                                   class="MuiTypography-root MuiTypography-body1"
                                 >
                                   <b>
-                                    Download size:
+                                    downloadConfirmDialog.download_size
+                                    :
                                   </b>
                                    
                                   100 B
@@ -4465,15 +4456,18 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                               >
                                 <p
                                   class="MuiTypography-root MuiTypography-body1"
+                                  id="estimated-download-times"
                                 >
-                                  Estimated download times:
+                                  downloadConfirmDialog.estimated_download_times
+                                  :
                                 </p>
                                 <div
                                   class="DownloadConfirmDialog-tableContent-1"
                                   style="padding-top: 10px;"
                                 >
                                   <table
-                                    aria-label="download-table"
+                                    aria-labelledby="estimated-download-times"
+                                    id="download-table"
                                   >
                                     <tbody>
                                       <tr>
@@ -4489,19 +4483,19 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       </tr>
                                       <tr>
                                         <td
-                                          aria-label="download-table-one"
+                                          id="download-table-one"
                                         >
-                                          &lt; 1 second
+                                          &lt; 1 downloadConfirmDialog.second {count:1}
                                         </td>
                                         <td
-                                          aria-label="download-table-thirty"
+                                          id="download-table-thirty"
                                         >
-                                          &lt; 1 second
+                                          &lt; 1 downloadConfirmDialog.second {count:1}
                                         </td>
                                         <td
-                                          aria-label="download-table-hundred"
+                                          id="download-table-hundred"
                                         >
-                                          &lt; 1 second
+                                          &lt; 1 downloadConfirmDialog.second {count:1}
                                         </td>
                                       </tr>
                                     </tbody>
@@ -4520,7 +4514,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     for="confirm-download-email"
                                     id="confirm-download-email-label"
                                   >
-                                    Email Address (optional)
+                                    downloadConfirmDialog.email_label
                                   </label>
                                   <div
                                     class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -4539,7 +4533,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     class="MuiFormHelperText-root"
                                     id="confirm-download-email-helper-text"
                                   >
-                                    Send me download status messages via email.
+                                    downloadConfirmDialog.email_help
                                   </p>
                                 </div>
                               </div>
@@ -4557,7 +4551,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                               <span
                                 class="MuiButton-label"
                               >
-                                Download
+                                downloadConfirmDialog.download
                               </span>
                               <span
                                 class="MuiTouchRipple-root"
@@ -4576,7 +4570,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
               }
             >
               <div
-                aria-label="download-confirm-dialog"
+                aria-label="downloadConfirmDialog.dialog_arialabel"
                 className="MuiDialog-root"
                 onKeyDown={[Function]}
                 role="presentation"
@@ -4846,17 +4840,17 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                               <h6
                                                 className="MuiTypography-root MuiTypography-h6"
                                               >
-                                                Confirm Your Download
+                                                downloadConfirmDialog.dialog_title
                                               </h6>
                                             </ForwardRef(Typography)>
                                           </WithStyles(ForwardRef(Typography))>
                                           <WithStyles(ForwardRef(IconButton))
-                                            aria-label="download-confirmation-close"
+                                            aria-label="downloadConfirmDialog.close_arialabel"
                                             className="Component-closeButton-92"
                                             onClick={[Function]}
                                           >
                                             <ForwardRef(IconButton)
-                                              aria-label="download-confirmation-close"
+                                              aria-label="downloadConfirmDialog.close_arialabel"
                                               className="Component-closeButton-92"
                                               classes={
                                                 Object {
@@ -4874,7 +4868,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                               onClick={[Function]}
                                             >
                                               <WithStyles(ForwardRef(ButtonBase))
-                                                aria-label="download-confirmation-close"
+                                                aria-label="downloadConfirmDialog.close_arialabel"
                                                 centerRipple={true}
                                                 className="MuiIconButton-root Component-closeButton-92"
                                                 disabled={false}
@@ -4882,7 +4876,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                 onClick={[Function]}
                                               >
                                                 <ForwardRef(ButtonBase)
-                                                  aria-label="download-confirmation-close"
+                                                  aria-label="downloadConfirmDialog.close_arialabel"
                                                   centerRipple={true}
                                                   className="MuiIconButton-root Component-closeButton-92"
                                                   classes={
@@ -4897,7 +4891,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                   onClick={[Function]}
                                                 >
                                                   <button
-                                                    aria-label="download-confirmation-close"
+                                                    aria-label="downloadConfirmDialog.close_arialabel"
                                                     className="MuiButtonBase-root MuiIconButton-root Component-closeButton-92"
                                                     disabled={false}
                                                     onBlur={[Function]}
@@ -5247,14 +5241,14 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                   >
                                                     <WithStyles(ForwardRef(TextField))
                                                       fullWidth={true}
-                                                      helperText="Enter a custom file name or leave as the default format (facility_date_time)."
+                                                      helperText="downloadConfirmDialog.download_name_helpertext"
                                                       id="confirm-download-name"
                                                       inputProps={
                                                         Object {
                                                           "maxLength": 255,
                                                         }
                                                       }
-                                                      label="Download Name (optional)"
+                                                      label="downloadConfirmDialog.download_name_label"
                                                       onChange={[Function]}
                                                       placeholder="LILS_2020-1-1_1-1-1"
                                                     >
@@ -5265,14 +5259,14 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                           }
                                                         }
                                                         fullWidth={true}
-                                                        helperText="Enter a custom file name or leave as the default format (facility_date_time)."
+                                                        helperText="downloadConfirmDialog.download_name_helpertext"
                                                         id="confirm-download-name"
                                                         inputProps={
                                                           Object {
                                                             "maxLength": 255,
                                                           }
                                                         }
-                                                        label="Download Name (optional)"
+                                                        label="downloadConfirmDialog.download_name_label"
                                                         onChange={[Function]}
                                                         placeholder="LILS_2020-1-1_1-1-1"
                                                       >
@@ -5368,7 +5362,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         htmlFor="confirm-download-name"
                                                                         id="confirm-download-name-label"
                                                                       >
-                                                                        Download Name (optional)
+                                                                        downloadConfirmDialog.download_name_label
                                                                       </label>
                                                                     </ForwardRef(FormLabel)>
                                                                   </WithStyles(ForwardRef(FormLabel))>
@@ -5538,7 +5532,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     className="MuiFormHelperText-root"
                                                                     id="confirm-download-name-helper-text"
                                                                   >
-                                                                    Enter a custom file name or leave as the default format (facility_date_time).
+                                                                    downloadConfirmDialog.download_name_helpertext
                                                                   </p>
                                                                 </ForwardRef(FormHelperText)>
                                                               </WithStyles(ForwardRef(FormHelperText))>
@@ -5758,21 +5752,19 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     data-shrink={true}
                                                                     id="confirm-access-method-label"
                                                                   >
-                                                                    Access Method
+                                                                    downloadConfirmDialog.access_method_label
                                                                   </label>
                                                                 </ForwardRef(FormLabel)>
                                                               </WithStyles(ForwardRef(FormLabel))>
                                                             </ForwardRef(InputLabel)>
                                                           </WithStyles(ForwardRef(InputLabel))>
                                                           <WithStyles(ForwardRef(Select))
-                                                            aria-label="confirm-access-method"
                                                             defaultValue="https"
                                                             id="confirm-access-method"
                                                             labelId="confirm-access-method"
                                                             onChange={[Function]}
                                                           >
                                                             <ForwardRef(Select)
-                                                              aria-label="confirm-access-method"
                                                               classes={
                                                                 Object {
                                                                   "disabled": "Mui-disabled",
@@ -5793,7 +5785,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                               onChange={[Function]}
                                                             >
                                                               <WithStyles(ForwardRef(Input))
-                                                                aria-label="confirm-access-method"
                                                                 defaultValue="https"
                                                                 inputComponent={
                                                                   Object {
@@ -5891,7 +5882,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                 select={true}
                                                               >
                                                                 <ForwardRef(Input)
-                                                                  aria-label="confirm-access-method"
                                                                   classes={
                                                                     Object {
                                                                       "colorSecondary": "MuiInput-colorSecondary",
@@ -6006,7 +5996,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   select={true}
                                                                 >
                                                                   <WithStyles(ForwardRef(InputBase))
-                                                                    aria-label="confirm-access-method"
                                                                     classes={
                                                                       Object {
                                                                         "colorSecondary": "MuiInput-colorSecondary",
@@ -6124,7 +6113,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     type="text"
                                                                   >
                                                                     <ForwardRef(InputBase)
-                                                                      aria-label="confirm-access-method"
                                                                       classes={
                                                                         Object {
                                                                           "adornedEnd": "MuiInputBase-adornedEnd",
@@ -6248,7 +6236,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       type="text"
                                                                     >
                                                                       <div
-                                                                        aria-label="confirm-access-method"
                                                                         className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
                                                                         onClick={[Function]}
                                                                       >
@@ -6530,7 +6517,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                           id="app"
                                                                                         />
                                                                                         <div
-                                                                                          aria-label="download-confirm-dialog"
+                                                                                          aria-label="downloadConfirmDialog.dialog_arialabel"
                                                                                           class="MuiDialog-root"
                                                                                           role="presentation"
                                                                                           style="position: fixed; z-index: 1300; right: 0px; bottom: 0px; top: 0px; left: 0px;"
@@ -6562,10 +6549,10 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                   <h6
                                                                                                     class="MuiTypography-root MuiTypography-h6"
                                                                                                   >
-                                                                                                    Confirm Your Download
+                                                                                                    downloadConfirmDialog.dialog_title
                                                                                                   </h6>
                                                                                                   <button
-                                                                                                    aria-label="download-confirmation-close"
+                                                                                                    aria-label="downloadConfirmDialog.close_arialabel"
                                                                                                     class="MuiButtonBase-root MuiIconButton-root Component-closeButton-92"
                                                                                                     tabindex="0"
                                                                                                     type="button"
@@ -6608,7 +6595,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           for="confirm-download-name"
                                                                                                           id="confirm-download-name-label"
                                                                                                         >
-                                                                                                          Download Name (optional)
+                                                                                                          downloadConfirmDialog.download_name_label
                                                                                                         </label>
                                                                                                         <div
                                                                                                           class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -6628,7 +6615,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           class="MuiFormHelperText-root"
                                                                                                           id="confirm-download-name-helper-text"
                                                                                                         >
-                                                                                                          Enter a custom file name or leave as the default format (facility_date_time).
+                                                                                                          downloadConfirmDialog.download_name_helpertext
                                                                                                         </p>
                                                                                                       </div>
                                                                                                     </div>
@@ -6644,10 +6631,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           data-shrink="true"
                                                                                                           id="confirm-access-method-label"
                                                                                                         >
-                                                                                                          Access Method
+                                                                                                          downloadConfirmDialog.access_method_label
                                                                                                         </label>
                                                                                                         <div
-                                                                                                          aria-label="confirm-access-method"
                                                                                                           class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl"
                                                                                                         >
                                                                                                           <div
@@ -6680,7 +6666,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           class="MuiFormHelperText-root MuiFormHelperText-filled"
                                                                                                           id="confirm-access-method-help"
                                                                                                         >
-                                                                                                          Select an access method for download.
+                                                                                                          downloadConfirmDialog.access_method_helpertext
                                                                                                         </p>
                                                                                                       </div>
                                                                                                     </div>
@@ -6694,7 +6680,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           class="MuiTypography-root MuiTypography-body1"
                                                                                                         >
                                                                                                           <b>
-                                                                                                            Access Method Information:
+                                                                                                            downloadConfirmDialog.access_method_info
+                                                                                                            :
                                                                                                           </b>
                                                                                                         </p>
                                                                                                         <p
@@ -6709,11 +6696,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                       class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                                                                                                     >
                                                                                                       <p
-                                                                                                        aria-label="confirm-download-size"
                                                                                                         class="MuiTypography-root MuiTypography-body1"
                                                                                                       >
                                                                                                         <b>
-                                                                                                          Download size:
+                                                                                                          downloadConfirmDialog.download_size
+                                                                                                          :
                                                                                                         </b>
                                                                                                          
                                                                                                         100 B
@@ -6724,15 +6711,18 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                     >
                                                                                                       <p
                                                                                                         class="MuiTypography-root MuiTypography-body1"
+                                                                                                        id="estimated-download-times"
                                                                                                       >
-                                                                                                        Estimated download times:
+                                                                                                        downloadConfirmDialog.estimated_download_times
+                                                                                                        :
                                                                                                       </p>
                                                                                                       <div
                                                                                                         class="DownloadConfirmDialog-tableContent-1"
                                                                                                         style="padding-top: 10px;"
                                                                                                       >
                                                                                                         <table
-                                                                                                          aria-label="download-table"
+                                                                                                          aria-labelledby="estimated-download-times"
+                                                                                                          id="download-table"
                                                                                                         >
                                                                                                           <tbody>
                                                                                                             <tr>
@@ -6748,19 +6738,19 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                             </tr>
                                                                                                             <tr>
                                                                                                               <td
-                                                                                                                aria-label="download-table-one"
+                                                                                                                id="download-table-one"
                                                                                                               >
-                                                                                                                &lt; 1 second
+                                                                                                                &lt; 1 downloadConfirmDialog.second {count:1}
                                                                                                               </td>
                                                                                                               <td
-                                                                                                                aria-label="download-table-thirty"
+                                                                                                                id="download-table-thirty"
                                                                                                               >
-                                                                                                                &lt; 1 second
+                                                                                                                &lt; 1 downloadConfirmDialog.second {count:1}
                                                                                                               </td>
                                                                                                               <td
-                                                                                                                aria-label="download-table-hundred"
+                                                                                                                id="download-table-hundred"
                                                                                                               >
-                                                                                                                &lt; 1 second
+                                                                                                                &lt; 1 downloadConfirmDialog.second {count:1}
                                                                                                               </td>
                                                                                                             </tr>
                                                                                                           </tbody>
@@ -6779,7 +6769,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           for="confirm-download-email"
                                                                                                           id="confirm-download-email-label"
                                                                                                         >
-                                                                                                          Email Address (optional)
+                                                                                                          downloadConfirmDialog.email_label
                                                                                                         </label>
                                                                                                         <div
                                                                                                           class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
@@ -6798,7 +6788,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           class="MuiFormHelperText-root"
                                                                                                           id="confirm-download-email-helper-text"
                                                                                                         >
-                                                                                                          Send me download status messages via email.
+                                                                                                          downloadConfirmDialog.email_help
                                                                                                         </p>
                                                                                                       </div>
                                                                                                     </div>
@@ -6816,7 +6806,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                     <span
                                                                                                       class="MuiButton-label"
                                                                                                     >
-                                                                                                      Download
+                                                                                                      downloadConfirmDialog.download
                                                                                                     </span>
                                                                                                     <span
                                                                                                       class="MuiTouchRipple-root"
@@ -6871,7 +6861,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                 className="MuiFormHelperText-root MuiFormHelperText-filled"
                                                                 id="confirm-access-method-help"
                                                               >
-                                                                Select an access method for download.
+                                                                downloadConfirmDialog.access_method_helpertext
                                                               </p>
                                                             </ForwardRef(FormHelperText)>
                                                           </WithStyles(ForwardRef(FormHelperText))>
@@ -7048,7 +7038,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             className="MuiTypography-root MuiTypography-body1"
                                                           >
                                                             <b>
-                                                              Access Method Information:
+                                                              downloadConfirmDialog.access_method_info
+                                                              :
                                                             </b>
                                                           </p>
                                                         </ForwardRef(Typography)>
@@ -7223,11 +7214,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                   <div
                                                     className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                                                   >
-                                                    <WithStyles(ForwardRef(Typography))
-                                                      aria-label="confirm-download-size"
-                                                    >
+                                                    <WithStyles(ForwardRef(Typography))>
                                                       <ForwardRef(Typography)
-                                                        aria-label="confirm-download-size"
                                                         classes={
                                                           Object {
                                                             "alignCenter": "MuiTypography-alignCenter",
@@ -7264,11 +7252,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                         }
                                                       >
                                                         <p
-                                                          aria-label="confirm-download-size"
                                                           className="MuiTypography-root MuiTypography-body1"
                                                         >
                                                           <b>
-                                                            Download size:
+                                                            downloadConfirmDialog.download_size
+                                                            :
                                                           </b>
                                                            
                                                           100 B
@@ -7396,7 +7384,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                   <div
                                                     className="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12"
                                                   >
-                                                    <WithStyles(ForwardRef(Typography))>
+                                                    <WithStyles(ForwardRef(Typography))
+                                                      id="estimated-download-times"
+                                                    >
                                                       <ForwardRef(Typography)
                                                         classes={
                                                           Object {
@@ -7432,11 +7422,14 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             "subtitle2": "MuiTypography-subtitle2",
                                                           }
                                                         }
+                                                        id="estimated-download-times"
                                                       >
                                                         <p
                                                           className="MuiTypography-root MuiTypography-body1"
+                                                          id="estimated-download-times"
                                                         >
-                                                          Estimated download times:
+                                                          downloadConfirmDialog.estimated_download_times
+                                                          :
                                                         </p>
                                                       </ForwardRef(Typography)>
                                                     </WithStyles(ForwardRef(Typography))>
@@ -7449,7 +7442,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                       }
                                                     >
                                                       <table
-                                                        aria-label="download-table"
+                                                        aria-labelledby="estimated-download-times"
+                                                        id="download-table"
                                                       >
                                                         <tbody>
                                                           <tr>
@@ -7465,19 +7459,19 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                           </tr>
                                                           <tr>
                                                             <td
-                                                              aria-label="download-table-one"
+                                                              id="download-table-one"
                                                             >
-                                                              &lt; 1 second
+                                                              &lt; 1 downloadConfirmDialog.second {count:1}
                                                             </td>
                                                             <td
-                                                              aria-label="download-table-thirty"
+                                                              id="download-table-thirty"
                                                             >
-                                                              &lt; 1 second
+                                                              &lt; 1 downloadConfirmDialog.second {count:1}
                                                             </td>
                                                             <td
-                                                              aria-label="download-table-hundred"
+                                                              id="download-table-hundred"
                                                             >
-                                                              &lt; 1 second
+                                                              &lt; 1 downloadConfirmDialog.second {count:1}
                                                             </td>
                                                           </tr>
                                                         </tbody>
@@ -7607,14 +7601,14 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                     <WithStyles(ForwardRef(TextField))
                                                       error={false}
                                                       fullWidth={true}
-                                                      helperText="Send me download status messages via email."
+                                                      helperText="downloadConfirmDialog.email_help"
                                                       id="confirm-download-email"
                                                       inputProps={
                                                         Object {
                                                           "maxLength": 254,
                                                         }
                                                       }
-                                                      label="Email Address (optional)"
+                                                      label="downloadConfirmDialog.email_label"
                                                       onChange={[Function]}
                                                     >
                                                       <ForwardRef(TextField)
@@ -7625,14 +7619,14 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                         }
                                                         error={false}
                                                         fullWidth={true}
-                                                        helperText="Send me download status messages via email."
+                                                        helperText="downloadConfirmDialog.email_help"
                                                         id="confirm-download-email"
                                                         inputProps={
                                                           Object {
                                                             "maxLength": 254,
                                                           }
                                                         }
-                                                        label="Email Address (optional)"
+                                                        label="downloadConfirmDialog.email_label"
                                                         onChange={[Function]}
                                                       >
                                                         <WithStyles(ForwardRef(FormControl))
@@ -7727,7 +7721,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         htmlFor="confirm-download-email"
                                                                         id="confirm-download-email-label"
                                                                       >
-                                                                        Email Address (optional)
+                                                                        downloadConfirmDialog.email_label
                                                                       </label>
                                                                     </ForwardRef(FormLabel)>
                                                                   </WithStyles(ForwardRef(FormLabel))>
@@ -7892,7 +7886,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     className="MuiFormHelperText-root"
                                                                     id="confirm-download-email-helper-text"
                                                                   >
-                                                                    Send me download status messages via email.
+                                                                    downloadConfirmDialog.email_help
                                                                   </p>
                                                                 </ForwardRef(FormHelperText)>
                                                               </WithStyles(ForwardRef(FormHelperText))>
@@ -8025,7 +8019,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                   <span
                                                     className="MuiButton-label"
                                                   >
-                                                    Download
+                                                    downloadConfirmDialog.download
                                                   </span>
                                                   <NoSsr>
                                                     <WithStyles(undefined)

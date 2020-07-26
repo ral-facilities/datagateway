@@ -1,3 +1,5 @@
+import { IconButton } from '@material-ui/core';
+import { GetApp } from '@material-ui/icons';
 import {
   addToCart,
   Datafile,
@@ -15,23 +17,21 @@ import {
   formatBytes,
   Order,
   pushPageFilter,
+  pushPageSort,
   removeFromCart,
+  SortType,
   Table,
   TableActionProps,
   TextColumnFilter,
-  pushPageSort,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import DatafileDetailsPanel from '../../detailsPanels/isis/datafileDetailsPanel.component';
-
-import { IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
@@ -86,6 +86,8 @@ const ISISDatafilesTable = (
     allIds,
     fetchAllIds,
   } = props;
+
+  const [t] = useTranslation();
 
   const selectedRows = React.useMemo(
     () =>
@@ -150,7 +152,7 @@ const ISISDatafilesTable = (
           if (LOCATION) {
             return (
               <IconButton
-                aria-label="Download"
+                aria-label={t('datafiles.download')}
                 key="download"
                 size="small"
                 onClick={() => {
@@ -167,17 +169,17 @@ const ISISDatafilesTable = (
       ]}
       columns={[
         {
-          label: 'Name',
+          label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
-          label: 'Location',
+          label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
@@ -185,7 +187,7 @@ const ISISDatafilesTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Modified Time',
+          label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

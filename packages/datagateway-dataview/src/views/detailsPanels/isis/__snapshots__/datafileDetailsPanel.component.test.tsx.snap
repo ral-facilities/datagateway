@@ -3,14 +3,14 @@
 exports[`Datafile details panel component renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="datafile-details-tabs"
+    aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="datafile-details-panel"
       id="datafile-details-tab"
-      label="Datafile Details"
+      label="datafiles.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -24,7 +24,8 @@ exports[`Datafile details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Name:
+        datafiles.details.name
+        :
       </b>
        
       Test 1
@@ -33,7 +34,8 @@ exports[`Datafile details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Description:
+        datafiles.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -41,7 +43,8 @@ exports[`Datafile details panel component renders correctly 1`] = `
       variant="body2"
     >
       <b>
-        Location:
+        datafiles.details.location
+        :
       </b>
        
       /test/location
@@ -53,20 +56,20 @@ exports[`Datafile details panel component renders correctly 1`] = `
 exports[`Datafile details panel component renders parameters tab when present in the data 1`] = `
 <div>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="datafile-details-tabs"
+    aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="datafile-details-panel"
       id="datafile-details-tab"
-      label="Datafile Details"
+      label="datafiles.details.label"
       value="details"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="datafile-parameters-panel"
       id="datafile-parameters-tab"
-      label="Datafile Parameters"
+      label="datafiles.details.parameters.label"
       value="parameters"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -80,7 +83,8 @@ exports[`Datafile details panel component renders parameters tab when present in
       variant="body2"
     >
       <b>
-        Name:
+        datafiles.details.name
+        :
       </b>
        
       Test 1
@@ -89,7 +93,8 @@ exports[`Datafile details panel component renders parameters tab when present in
       variant="body2"
     >
       <b>
-        Description:
+        datafiles.details.description
+        :
       </b>
        
     </WithStyles(ForwardRef(Typography))>
@@ -97,7 +102,8 @@ exports[`Datafile details panel component renders parameters tab when present in
       variant="body2"
     >
       <b>
-        Location:
+        datafiles.details.location
+        :
       </b>
        
       /test/location

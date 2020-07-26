@@ -16,14 +16,16 @@ import {
   formatBytes,
   Order,
   pushPageFilter,
+  pushPageSort,
   removeFromCart,
+  SortType,
   Table,
   TableActionProps,
   TextColumnFilter,
-  pushPageSort,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+// import useAfterMountEffect from '../utils';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { AnyAction } from 'redux';
@@ -82,6 +84,8 @@ const DatafileTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -135,13 +139,13 @@ const DatafileTable = (
         return (
           <div>
             <Typography>
-              <b>Name:</b> {datafileData.NAME}
+              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
             </Typography>
             <Typography>
-              <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
+              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
             </Typography>
             <Typography>
-              <b>Location:</b> {datafileData.LOCATION}
+              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
             </Typography>
           </div>
         );
@@ -152,7 +156,7 @@ const DatafileTable = (
           if (LOCATION) {
             return (
               <IconButton
-                aria-label="Download"
+                aria-label={t('datafiles.download')}
                 key="download"
                 onClick={() => {
                   downloadData(ID, LOCATION);
@@ -168,24 +172,24 @@ const DatafileTable = (
       ]}
       columns={[
         {
-          label: 'Name',
+          label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
-          label: 'Location',
+          label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
         },
         {
-          label: 'Modified Time',
+          label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

@@ -7,13 +7,14 @@ import {
   Investigation,
   Order,
   pushPageFilter,
+  pushPageSort,
+  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  pushPageSort,
-  SortType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { AnyAction } from 'redux';
@@ -57,6 +58,8 @@ const DLSProposalsTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -80,7 +83,7 @@ const DLSProposalsTable = (
       onSort={pushSort}
       columns={[
         {
-          label: 'Title',
+          label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -92,7 +95,7 @@ const DLSProposalsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Name',
+          label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             return tableLink(

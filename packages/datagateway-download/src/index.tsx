@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './i18n';
 import App from './App';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';

@@ -119,7 +119,9 @@ describe('ISIS FacilityCycles table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('[aria-label="Filter by Name"] input');
+    const filterInput = wrapper.find(
+      '[aria-label="Filter by facilitycycles.name"] input'
+    );
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -141,7 +143,9 @@ describe('ISIS FacilityCycles table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('[aria-label="End Date date filter to"]');
+    const filterInput = wrapper.find(
+      '[aria-label="facilitycycles.end_date date filter to"]'
+    );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
