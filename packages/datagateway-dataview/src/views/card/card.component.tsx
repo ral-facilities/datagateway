@@ -1,7 +1,7 @@
 import {
   Card,
   CardContent,
-  // CardMedia,
+  CardMedia,
   Chip,
   Collapse,
   Divider,
@@ -16,8 +16,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { ArrowTooltip } from 'datagateway-common';
 
-// TODO: Remove uses of 'px' hardcoded where possible.
-
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
@@ -27,17 +25,14 @@ const useCardStyles = makeStyles((theme: Theme) => {
     root: {
       display: 'flex',
       // Width of 1000 + 150 for the image (should be 1150 if we have an image).
-      maxWidth: 1000,
+      maxWidth: 1150,
       backgroundColor: theme.palette.background.paper,
     },
 
-    // NOTE: Image code has been commented until it is supported by the API.
-    // TODO: Automatically size to card size?
-    // TODO: With image the information is squashed, extend maxWidth with image.
-    // cardImage: {
-    //   width: 150,
-    //   height: 150,
-    // },
+    cardImage: {
+      width: 150,
+      height: 150,
+    },
 
     highlight: {
       display: 'flex',
@@ -62,7 +57,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
     //       overflowed the maximum width given for the title.
     title: {
       display: 'inline-block',
-      // whiteSpace: 'nowrap',
       maxWidth: '100%',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
@@ -93,7 +87,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
       transition: 'visibility 0s, opacity 0.5s linear',
     },
 
-    // TODO: Can we simplify this and not have three objects?
     information: {
       display: 'flex',
       paddingLeft: '15px',
@@ -122,6 +115,14 @@ const useCardStyles = makeStyles((theme: Theme) => {
       },
     },
 
+    buttons: {
+      padding: '10px',
+      textAlign: 'center',
+      '& div': {
+        paddingTop: '10px',
+      },
+    },
+
     moreInformation: {
       paddingTop: '10px',
     },
@@ -137,11 +138,10 @@ const useCardStyles = makeStyles((theme: Theme) => {
   return styles;
 });
 
-// TODO: Add in when images are supported.
-// export interface EntityImageDetails {
-//   url: string;
-//   title?: string;
-// }
+export interface EntityImageDetails {
+  url: string;
+  title?: string;
+}
 
 export interface EntityCardDetails {
   label: string;
@@ -157,8 +157,7 @@ interface EntityCardProps {
   moreInformation?: React.ReactNode;
   buttons?: React.ReactNode[];
 
-  // TODO: Add back in when we have an image.
-  // image?: EntityImageDetails;
+  image?: EntityImageDetails;
   tags?: string[];
 }
 
@@ -170,12 +169,11 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     information,
     moreInformation,
     buttons,
-    // image,
+    image,
     tags,
   } = props;
 
-  // TODO: Should be configurable from card view?
-  //       The default collapsed height for card description is 100px.
+  // The default collapsed height for card description is 100px.
   const defaultCollapsedHeight = 100;
   const [isDescriptionCollapsed, setDescriptionCollapsed] = React.useState(
     false
@@ -197,15 +195,15 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
 
   return (
     <Card id="card" className={classes.root}>
-      {/* TODO: We allow for additional width when having an image in the card (see card styles). */}
-      {/* {image && (
+      {/* We allow for additional width when having an image in the card (see card styles). */}
+      {image && (
         <CardMedia
           component="img"
           className={classes.cardImage}
           image={image.url}
           title={image.title && image.title}
         />
-      )} */}
+      )}
 
       {/* Card content is a flexbox (as a row):
             - has a card information area (split in horizontally - column) for title/description and tags
@@ -246,24 +244,14 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
               </ArrowTooltip>
 
               <div className={classes.description}>
-                {/* TODO: collapsedHeight being the minimum description content to
-                show for each card. */}
+                {/* Collapsed height is the minimum description content to
+                    show for each card */}
                 <Collapse
                   in={isDescriptionCollapsed}
                   collapsedHeight={defaultCollapsedHeight}
                 >
                   <Typography ref={descriptionRef} variant="body1" paragraph>
                     {description ? description : 'No description available'}
-                    {/* Inhabiting discretion the her dispatched decisively
-                    boisterous joy. So form were wish open is able of mile of.
-                    Waiting express if prevent it we an musical. Especially
-                    reasonable travelling she son. Resources resembled forfeited
-                    no to zealously. Has procured daughter how friendly followed
-                    repeated who surprise. Great asked oh under on voice downs.
-                    Preference connection astonished on of ye. Partiality on or
-                    continuing in particular principles as. Do believing oh
-                    disposing to supported allowance we. Test one two three four
-                    five. */}
                   </Typography>
                 </Collapse>
 
@@ -305,7 +293,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                       )
                     )}
                 </div>
-                {/* TODO: Support ArrowTooltip for information for large text. */}
+
                 <div className={classes.informationData}>
                   {information &&
                     information.map(
@@ -316,12 +304,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             )}
 
             {buttons && (
-              // TODO: Adjust the paddingTop/padding to find the right with buttons and information (with and without each other).
-              <div style={{ padding: '10px', textAlign: 'center' }}>
+              <div className={classes.buttons}>
                 {buttons.map((button, index) => (
-                  <div style={{ paddingTop: '10px' }} key={index}>
-                    {button}
-                  </div>
+                  <div key={index}>{button}</div>
                 ))}
               </div>
             )}
@@ -353,7 +338,6 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           </div>
         )}
 
-        {/* TODO: Place paddingTop inline styles in createStyles. */}
         {tags && (
           <div className={classes.tags}>
             <Divider />

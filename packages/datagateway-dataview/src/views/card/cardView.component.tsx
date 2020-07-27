@@ -45,7 +45,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 
-import EntityCard from './card.component';
+import EntityCard, { EntityImageDetails } from './card.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -111,11 +111,9 @@ interface CardViewProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buttons?: ((data?: any) => React.ReactNode)[];
 
-  // TODO: Change name to customFilters.
   customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
   resultsOptions?: number[];
-  // TODO: Add back in when images are supported.
-  // image?: EntityImageDetails;
+  image?: EntityImageDetails;
 }
 
 interface CardViewStateProps {
@@ -161,8 +159,6 @@ interface CVSort {
 
 // TODO: Duplicate count and data requests for filter and page changes.
 // TODO: Hide/disable pagination and sort/filters if no results retrieved.
-// TODO: CardView needs URL support:
-//        - searching (?search=)
 const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
@@ -177,7 +173,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     resultsOptions,
     loadData,
     loadCount,
-    buttons,
     loading,
     pushPage,
     pushResults,
@@ -187,7 +182,14 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   } = props;
 
   // Get card information.
-  const { title, description, information, moreInformation } = props; // image
+  const {
+    title,
+    description,
+    information,
+    moreInformation,
+    image,
+    buttons,
+  } = props;
 
   // Results options (by default it is 10, 20 and 30).
   const resOptions = resultsOptions
@@ -773,6 +775,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                         }))
                         // Filter afterwards to only show content with information.
                         .filter((v) => v.content)
+                        // Add in tooltips to the content we have filtered.
                         .map((details) => ({
                           ...details,
                           content: (
@@ -793,7 +796,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                       customFilters.map((f) => nestedValue(data, f.dataKey))
                     }
                     // TODO: Add back in when image is supported.
-                    // image={image}
+                    image={image}
                   />
                 </ListItem>
               );
