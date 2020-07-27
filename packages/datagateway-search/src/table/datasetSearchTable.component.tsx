@@ -136,10 +136,10 @@ const DatasetSearchTable = (
         return (
           <div>
             <Typography>
-              <b>{t('datasets.details.name')}:</b> {datasetData.NAME}
+              <b>{t('datasets.name')}:</b> {datasetData.NAME}
             </Typography>
             <Typography>
-              <b>{t('datasets.details.description')}:</b> {datasetData.NAME}
+              <b>{t('datasets.description')}:</b> {datasetData.NAME}
             </Typography>
           </div>
         );
