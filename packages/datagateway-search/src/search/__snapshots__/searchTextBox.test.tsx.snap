@@ -15,7 +15,7 @@ exports[`Search text box component tests renders correctly 1`] = `
     }
     fullWidth={true}
     id="filled-search"
-    label="Search Text"
+    label="searchBox.search_text"
     margin="normal"
     onChange={[Function]}
     type="search"

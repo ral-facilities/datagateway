@@ -43,9 +43,9 @@ exports[`SearchPageTable renders SearchPageTable correctly 1`] = `
           className="MuiBox-root MuiBox-root-2"
         >
           <h2>
-            Search
+            searchPageTable.header
           </h2>
-          Fill out form to the left and then click search.
+          searchPageTable.text
         </div>
       </Styled(MuiBox)>
     </SearchPageTable>

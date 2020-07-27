@@ -25,6 +25,7 @@ import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import useAfterMountEffect from '../state/utils';
+import { useTranslation } from 'react-i18next';
 
 interface InvestigationTableProps {
   sort: {
@@ -78,15 +79,17 @@ const InvestigationSearchTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'investigation' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -120,7 +123,7 @@ const InvestigationSearchTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(luceneData, params)}
+      loadMoreRows={(params) => fetchData(luceneData, params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -133,23 +136,25 @@ const InvestigationSearchTable = (
         return (
           <div>
             <Typography>
-              <b>Proposal:</b> {investigationData.RB_NUMBER}
+              <b>{t('investigations.rb_number')}:</b>{' '}
+              {investigationData.RB_NUMBER}
             </Typography>
             <Typography>
-              <b>Title:</b> {investigationData.TITLE}
+              <b>{t('investigations.title')}:</b> {investigationData.TITLE}
             </Typography>
             <Typography>
-              <b>Start Date:</b> {investigationData.STARTDATE}
+              <b>{t('investigations.start_date')}:</b>{' '}
+              {investigationData.STARTDATE}
             </Typography>
             <Typography>
-              <b>End Date:</b> {investigationData.ENDDATE}
+              <b>{t('investigations.end_date')}:</b> {investigationData.ENDDATE}
             </Typography>
           </div>
         );
       }}
       columns={[
         {
-          label: 'Title',
+          label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -161,27 +166,27 @@ const InvestigationSearchTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Visit ID',
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
-          label: 'RB Number',
-          dataKey: 'NAME',
+          label: t('investigations.rb_number'),
+          dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
         },
         {
-          label: 'DOI',
+          label: t('investigations.doi'),
           dataKey: 'DOI',
           filterComponent: textFilter,
         },
         {
-          label: 'Dataset Count',
+          label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
           disableSort: true,
         },
         {
-          label: 'Instrument',
+          label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -198,7 +203,7 @@ const InvestigationSearchTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Start Date',
+          label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {
@@ -206,7 +211,7 @@ const InvestigationSearchTable = (
           },
         },
         {
-          label: 'End Date',
+          label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {

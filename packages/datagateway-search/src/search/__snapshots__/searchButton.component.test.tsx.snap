@@ -2,7 +2,7 @@
 
 exports[`Search Button component tests renders correctly 1`] = `
 <div>
-  <Connect(SearchButton)
+  <Connect(TranslatedSearchButton)
     store={
       Object {
         "clearActions": [Function],

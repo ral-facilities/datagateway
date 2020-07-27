@@ -14,6 +14,7 @@ import {
   toggleDatafile,
   toggleInvestigation,
 } from '../state/actions/actions';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,6 +67,8 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
 
   const error = ![investigation, dataset, datafile].includes(true);
 
+  const [t] = useTranslation();
+
   return (
     <div className={classes.root}>
       <FormControl
@@ -74,7 +77,9 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
         component="fieldset"
         className={classes.formControl}
       >
-        <FormLabel component="legend">Please select at least one</FormLabel>
+        <FormLabel component="legend">
+          {t('searchBox.checkboxes.text')}
+        </FormLabel>
         <FormGroup>
           <FormControlLabel
             control={
@@ -85,7 +90,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 inputProps={{ 'aria-label': 'investigation checkbox' }}
               />
             }
-            label="Investigation"
+            label={t('searchBox.checkboxes.investigation')}
           />
           <FormControlLabel
             control={
@@ -96,7 +101,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 inputProps={{ 'aria-label': 'dataset checkbox' }}
               />
             }
-            label="Dataset"
+            label={t('searchBox.checkboxes.dataset')}
           />
           <FormControlLabel
             control={
@@ -107,7 +112,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 inputProps={{ 'aria-label': 'datafile checkbox' }}
               />
             }
-            label="Datafile"
+            label={t('searchBox.checkboxes.datafile')}
           />
         </FormGroup>
       </FormControl>

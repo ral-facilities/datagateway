@@ -26,9 +26,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-rowcount="4"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
-      'INVESTIGATION 17'
-    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-942080-93-9');
   });
 
   it('should be able to search by instrument text', () => {
@@ -44,9 +42,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-rowcount="32"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
-      'INVESTIGATION 30'
-    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-682-97787-X');
   });
 
   it('should be able to search by date range', () => {
@@ -61,9 +57,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-rowcount="12"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
-      'INVESTIGATION 4'
-    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-7285-7613-9');
   });
 
   it('should be hidden if investigation checkbox is unchecked', () => {

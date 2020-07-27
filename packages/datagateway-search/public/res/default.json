@@ -1,39 +1,24 @@
 {
-  "app": {
-    "results": "Results"
-  },
-  "breadcrumbs": {
-    "home": "Home",
-    "instrument_plural": "Instruments",
-    "facilityCycle_plural": "Facility Cycles",
-    "proposal_plural": "Proposals",
-    "investigation_plural": "Investigations",
-    "dataset_plural": "Datasets",
-    "datafile_plural": "Datafiles"
-  },
-  "instruments": {
-    "name": "Name",
-    "description": "Description",
-    "type": "Type",
-    "url": "URL",
-    "details": {
-      "tabs_label": "Instrument Details Tabs",
-      "label": "Instrument Details",
-      "name": "Name",
-      "description": "Description",
-      "type": "Type",
-      "url": "URL",
-      "instrument_scientists": {
-        "label": "Instrument Scientists",
-        "name": "Name"
-      }
-    }
-  },
-  "facilitycycles": {
-    "name": "Name",
-    "description": "Description",
+  "searchBox": {
+    "search_text": "Search Text",
+    "start_date": "Start Date",
     "end_date": "End Date",
-    "start_date": "Start Date"
+    "checkboxes": {
+      "text": "Please select at least one",
+      "investigation": "Investigation",
+      "dataset": "Dataset",
+      "datafile": "Datafile"
+    },
+    "search_button": "Search"
+  },
+  "searchPageTable": {
+    "header": "Search",
+    "text": "Fill out form to the left and then click search."
+  },
+  "tabs": {
+    "investigation": "Investigation",
+    "dataset": "Dataset",
+    "datafile": "Datafile"
   },
   "investigations": {
     "title": "Title",
@@ -119,5 +104,8 @@
     "verifying": "Verifying URL",
     "oops": "Oops!",
     "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>."
+  },
+  "app": {
+    "error": "Something went wrong..."
   }
 }

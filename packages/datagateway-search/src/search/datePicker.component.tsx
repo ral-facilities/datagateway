@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { useTranslation } from 'react-i18next';
 
 interface DatePickerStoreProps {
   startDate: MaterialUiPickersDate;
@@ -36,6 +37,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { startDate, endDate, selectStartDate, selectEndDate } = props;
   const classes = useStyles();
 
+  const [t] = useTranslation();
+
   return (
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -53,7 +56,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             selectStartDate(date);
           }}
           animateYearScrolling
-          placeholder="Start Date"
+          placeholder={t('searchBox.start_date')}
           inputProps={{ 'aria-label': 'start date input' }}
         />
         <br></br>
@@ -71,7 +74,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             selectEndDate(date);
           }}
           animateYearScrolling
-          placeholder="End Date"
+          placeholder={t('searchBox.end_date')}
           inputProps={{ 'aria-label': 'end date input' }}
         />
       </MuiPickersUtilsProvider>

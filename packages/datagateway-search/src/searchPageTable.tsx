@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import InvestigationSearchTable from './table/investigationSearchTable.component';
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
+import { useTranslation } from 'react-i18next';
 
 interface SearchTableStoreProps {
   requestReceived: boolean;
@@ -54,6 +55,7 @@ function a11yProps(index: string): React.ReactFragment {
 // eslint-disable-next-line
 const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
   const [value, setValue] = React.useState('investigation');
+  const [t] = useTranslation();
 
   useEffect(() => {
     let newState = 'investigation';
@@ -89,17 +91,21 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           >
             {props.investigationTab ? (
               <Tab
-                label="Investigation"
+                label={t('tabs.investigation')}
                 value="investigation"
                 {...a11yProps('investigation')}
               />
             ) : null}
             {props.datasetTab ? (
-              <Tab label="Dataset" value="dataset" {...a11yProps('dataset')} />
+              <Tab
+                label={t('tabs.dataset')}
+                value="dataset"
+                {...a11yProps('dataset')}
+              />
             ) : null}
             {props.datafileTab ? (
               <Tab
-                label="Datafile"
+                label={t('tabs.datafile')}
                 value="datafile"
                 {...a11yProps('datafile')}
               />
@@ -151,8 +157,8 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
   } else
     return (
       <Box color="primary.main" px={3} py={1}>
-        <h2>Search</h2>
-        Fill out form to the left and then click search.
+        <h2>{t('searchPageTable.header')}</h2>
+        {t('searchPageTable.text')}
       </Box>
     );
 };

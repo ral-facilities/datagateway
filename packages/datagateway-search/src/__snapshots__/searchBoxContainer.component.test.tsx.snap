@@ -35,7 +35,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       mx={5}
       pb={2}
     >
-      <Connect(SearchButton) />
+      <Connect(TranslatedSearchButton) />
     </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
 </div>
