@@ -106,7 +106,6 @@ const ISISInvestigationsCardView = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -116,14 +115,12 @@ const ISISInvestigationsCardView = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
   );
 
   React.useEffect(() => {
-    // TODO: React.useMemo?
     // Set the IDs of the investigation data.
     setInvestigationIds(data.map((investigation) => investigation.ID));
 
@@ -188,14 +185,14 @@ const ISISInvestigationsCardView = (
           dataKey: 'SIZE',
           content: (investigation: Investigation) =>
             formatBytes(investigation.SIZE),
-          // TODO: implement disableSort for this
+          disableSort: true,
         },
         // TODO: Needs tooltip to handle overflowing text.
-        // {
-        //   label: 'Instrument',
-        //   dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
-        //   filterComponent: textFilter
-        // },
+        {
+          label: 'Instrument',
+          dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
+          filterComponent: textFilter,
+        },
         {
           label: 'Start Date',
           dataKey: 'STARTDATE',

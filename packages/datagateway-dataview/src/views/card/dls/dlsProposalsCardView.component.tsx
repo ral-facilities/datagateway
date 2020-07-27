@@ -52,7 +52,6 @@ const DLSProposalsCardView = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -82,7 +81,6 @@ const DLSProposalsCardView = (
           ),
         filterComponent: textFilter,
       }}
-      // TODO: Is NAME correct here for description/or other way wrong?
       description={{
         label: 'Name',
         dataKey: 'NAME',

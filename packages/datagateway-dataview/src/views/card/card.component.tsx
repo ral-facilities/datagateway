@@ -112,6 +112,14 @@ const useCardStyles = makeStyles((theme: Theme) => {
       float: 'right',
       textAlign: 'left',
       paddingLeft: '5px',
+
+      '& p': {
+        display: 'block',
+        whiteSpace: 'nowrap',
+        maxWidth: '10vw',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      },
     },
 
     moreInformation: {
@@ -129,6 +137,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
   return styles;
 });
 
+// TODO: Add in when images are supported.
 // export interface EntityImageDetails {
 //   url: string;
 //   title?: string;
@@ -285,7 +294,6 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             <Divider flexItem={true} orientation={'vertical'} />
           )}
 
-          {/* TODO: Support ArrowTooltip for information for large text. */}
           <div>
             {information && (
               <div className={classes.information}>
@@ -297,14 +305,11 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                       )
                     )}
                 </div>
+                {/* TODO: Support ArrowTooltip for information for large text. */}
                 <div className={classes.informationData}>
                   {information &&
                     information.map(
-                      (info: EntityCardDetails, index: number) => (
-                        <Typography key={index}>
-                          {info.content && info.content}
-                        </Typography>
-                      )
+                      (info: EntityCardDetails) => info.content && info.content
                     )}
                 </div>
               </div>

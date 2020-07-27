@@ -16,6 +16,7 @@ import {
   SortType,
   Order,
   pushPageSort,
+  ArrowTooltip,
 } from 'datagateway-common';
 import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
 
@@ -690,9 +691,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                                           changeFilter(filterKey, item);
                                         }}
                                       >
-                                        {/* TODO: The label chip could have its contents overflow
-                                                  (requires ArrowTooltip)  */}
-                                        <Chip label={item} />
+                                        <Chip
+                                          label={
+                                            <ArrowTooltip title={item}>
+                                              <Typography>{item}</Typography>
+                                            </ArrowTooltip>
+                                          }
+                                        />
                                       </ListItem>
                                     )
                                   )}
@@ -762,9 +767,22 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           content: details.content
                             ? details.content(data)
                             : nestedValue(data, details.dataKey),
+                          // Keep the dataKey in so we can use it for adding the tooltip
+                          // once content has been created.
+                          dataKey: details.dataKey,
                         }))
                         // Filter afterwards to only show content with information.
                         .filter((v) => v.content)
+                        .map((details) => ({
+                          ...details,
+                          content: (
+                            <ArrowTooltip
+                              title={nestedValue(data, details.dataKey)}
+                            >
+                              <Typography>{details.content}</Typography>
+                            </ArrowTooltip>
+                          ),
+                        }))
                     }
                     moreInformation={moreInformation && moreInformation(data)}
                     // Pass in the react nodes with the data to the card.

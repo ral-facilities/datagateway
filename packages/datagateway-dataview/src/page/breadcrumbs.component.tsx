@@ -62,8 +62,6 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
   }
 
   public render(): React.ReactElement {
-    // console.log(this.props.displayName);
-
     return (
       // We give the tooltip component the content (title) as the display content.
       // Passing the 20 as it is the viewport width we allow text to be shown before displaying the tooltip.

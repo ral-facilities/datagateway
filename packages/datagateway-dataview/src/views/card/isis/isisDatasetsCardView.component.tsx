@@ -105,7 +105,6 @@ const ISISDatasetsCardView = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -115,14 +114,12 @@ const ISISDatasetsCardView = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
   );
 
   React.useEffect(() => {
-    // TODO: React.useMemo?
     setDatasetIds(data.map((dataset) => dataset.ID));
 
     if (!fetchedCount) {
@@ -157,7 +154,7 @@ const ISISDatasetsCardView = (
           label: 'Size',
           dataKey: 'SIZE',
           content: (dataset: Dataset) => formatBytes(dataset.SIZE),
-          // disableSort: true,
+          disableSort: true,
         },
         {
           label: 'Create Time',
