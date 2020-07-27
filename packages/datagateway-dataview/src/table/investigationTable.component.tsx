@@ -134,18 +134,20 @@ const InvestigationTable = (
         return (
           <div>
             <Typography>
-              <b>{t('investigations.rb_number')}:</b>{' '}
+              <b>{t('investigations.details.rb_number')}:</b>{' '}
               {investigationData.RB_NUMBER}
             </Typography>
             <Typography>
-              <b>{t('investigations.title')}:</b> {investigationData.TITLE}
+              <b>{t('investigations.details.title')}:</b>{' '}
+              {investigationData.TITLE}
             </Typography>
             <Typography>
-              <b>{t('investigations.start_date')}:</b>{' '}
+              <b>{t('investigations.details.start_date')}:</b>{' '}
               {investigationData.STARTDATE}
             </Typography>
             <Typography>
-              <b>{t('investigations.end_date')}:</b> {investigationData.ENDDATE}
+              <b>{t('investigations.details.end_date')}:</b>{' '}
+              {investigationData.ENDDATE}
             </Typography>
           </div>
         );
