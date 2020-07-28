@@ -67,7 +67,6 @@ const ISISMyDataTable = (
     fetchData,
     fetchCount,
     sort,
-
     pushSort,
     filters,
     pushFilters,
@@ -80,7 +79,6 @@ const ISISMyDataTable = (
   } = props;
 
   const [t] = useTranslation();
-
   const username = readSciGatewayToken().username || '';
 
   const selectedRows = React.useMemo(

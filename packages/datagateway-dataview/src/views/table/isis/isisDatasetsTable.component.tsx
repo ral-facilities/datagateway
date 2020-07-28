@@ -80,12 +80,9 @@ const ISISDatasetsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-
     sort,
-
     pushSort,
     filters,
-
     pushFilters,
     investigationId,
     facilityCycleId,

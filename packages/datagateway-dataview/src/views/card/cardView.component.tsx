@@ -1,36 +1,24 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 
 import {
-  clearData,
   Entity,
   Filter,
   FiltersType,
   nestedValue,
-  pushPageFilter,
-  pushPageNum,
-  pushPageResults,
   SortType,
   Order,
-  pushPageSort,
   ArrowTooltip,
 } from 'datagateway-common';
-import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
+import { QueryParams } from 'datagateway-common/lib/state/app.types';
 
 import {
   Box,
   Chip,
-  Collapse,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
   FormControl,
   Grid,
   InputLabel,
-  Link,
   List,
   ListItem,
   MenuItem,
@@ -40,34 +28,29 @@ import {
   ListItemText,
   ListItemIcon,
   TableSortLabel,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Pagination } from '@material-ui/lab';
 
 import EntityCard, { EntityImageDetails } from './card.component';
+import AdvancedFilter from './advancedFilter.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: theme.palette.background.paper,
     },
-    advLink: {
-      textAlign: 'center',
-      '& a': { cursor: 'pointer' },
-    },
-    advancedFilters: {
-      display: 'grid',
-      gridGap: '1rem',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      padding: '20px',
-    },
-    filter: {
-      padding: '5px',
-    },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
+    },
+    expandDetails: {
+      maxWidth: 360,
+      width: '100%',
     },
     selectedChips: {
       display: 'inline-flex',
@@ -82,7 +65,8 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface CardViewDetails {
+// TODO: Should be moved to somewhere central.
+export interface CardViewDetails {
   dataKey: string;
 
   label?: string;
@@ -94,11 +78,38 @@ interface CardViewDetails {
   disableSort?: boolean;
 }
 
+// interface CardViewStateProps {
+//   loading: boolean;
+//   query: QueryParams;
+
+//   filters: FiltersType;
+//   sort: SortType;
+// }
+
+// interface CardViewDispatchProps {
+// pushPage: (page: number) => Promise<void>;
+// pushResults: (results: number) => Promise<void>;
+// pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+// pushSort: (sort: string, order: Order | null) => Promise<void>;
+// clearData: () => Action;
+// }
+
 interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
+  loading: boolean;
+  // TODO: Provide query page and results instead of the whole object.
+  query: QueryParams;
+  sort: SortType;
+  filters: FiltersType;
+
   loadData: (offsetParams: IndexRange) => Promise<void>;
   loadCount: () => Promise<void>;
+  onPageChange: (page: number) => Promise<void>;
+  onResultsChange: (results: number) => Promise<void>;
+  onSort: (sort: string, order: Order | null) => Promise<void>;
+  onFilter: (filter: string, data: Filter | null) => Promise<void>;
+  clearData: () => Action;
 
   // Props to get title, description of the card
   // represented by data.
@@ -116,25 +127,9 @@ interface CardViewProps {
   image?: EntityImageDetails;
 }
 
-interface CardViewStateProps {
-  loading: boolean;
-  query: QueryParams;
-
-  filters: FiltersType;
-  sort: SortType;
-}
-
-interface CardViewDispatchProps {
-  pushPage: (page: number) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  clearData: () => Action;
-}
-
-type CardViewCombinedProps = CardViewProps &
-  CardViewStateProps &
-  CardViewDispatchProps;
+// type CardViewCombinedProps = CardViewProps &
+//   CardViewStateProps &
+//   CardViewDispatchProps;
 
 interface CVFilterInfo {
   [filterKey: string]: {
@@ -142,7 +137,7 @@ interface CVFilterInfo {
     items: {
       [data: string]: boolean;
     };
-    hasSelectedItems: boolean;
+    // hasSelectedItems: boolean;
   };
 }
 
@@ -159,7 +154,7 @@ interface CVSort {
 
 // TODO: Duplicate count and data requests for filter and page changes.
 // TODO: Hide/disable pagination and sort/filters if no results retrieved.
-const CardView = (props: CardViewCombinedProps): React.ReactElement => {
+const CardView = (props: CardViewProps): React.ReactElement => {
   const classes = useCardViewStyles();
 
   // Props.
@@ -174,10 +169,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     loadData,
     loadCount,
     loading,
-    pushPage,
-    pushResults,
-    pushFilters,
-    pushSort,
+    onPageChange,
+    onResultsChange,
+    onFilter,
+    onSort,
     clearData,
   } = props;
 
@@ -219,8 +214,37 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   // Sort.
   const [cardSort, setCardSort] = React.useState<CVSort[] | null>(null);
 
-  // Advanced search.
-  const [advSearchCollapsed, setAdvSearchCollapsed] = React.useState(false);
+  React.useEffect(() => {
+    // Get sort information from title, description and information lists.
+    let sortList: CVSort[] = [];
+
+    if (!title.disableSort) {
+      sortList.push({
+        label: title.label ? title.label : title.dataKey,
+        dataKey: title.dataKey,
+      });
+    }
+
+    if (description && !description.disableSort) {
+      sortList.push({
+        label: description.label ? description.label : description.dataKey,
+        dataKey: description.dataKey,
+      });
+    }
+
+    if (information) {
+      sortList = sortList.concat(
+        information
+          .filter((i) => !i.disableSort)
+          .map((i) => ({
+            label: i.label ? i.label : i.dataKey,
+            dataKey: i.dataKey,
+          }))
+      );
+    }
+
+    setCardSort(sortList);
+  }, [description, information, title.dataKey, title.disableSort, title.label]);
 
   // Set the filter information based on what was provided.
   React.useEffect(() => {
@@ -253,57 +277,23 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
               ),
               // TODO: Make use of selected items
               //       (for expansion panel expanded by default on page render).
-              hasSelectedItems: false,
+              // hasSelectedItems: false,
             },
           };
 
           // Update the selected count for each filter.
-          const selectedItems = Object.values(data[filter.dataKey].items).find(
-            (v) => v === true
-          );
-          if (selectedItems) {
-            data[filter.dataKey].hasSelectedItems = true;
-          }
+          // const selectedItems = Object.values(data[filter.dataKey].items).find(
+          //   (v) => v === true
+          // );
+          // if (selectedItems) {
+          //   data[filter.dataKey].hasSelectedItems = true;
+          // }
           return data;
         }, {})
       : [];
 
-    // console.log('info: ', info);
     setFiltersInfo(info);
   }, [customFilters, filters]);
-
-  React.useEffect(() => {
-    // Get sort information from title, description and information lists.
-    let sortList: CVSort[] = [];
-
-    if (!title.disableSort) {
-      sortList.push({
-        label: title.label ? title.label : title.dataKey,
-        dataKey: title.dataKey,
-      });
-    }
-
-    if (description && !description.disableSort) {
-      sortList.push({
-        label: description.label ? description.label : description.dataKey,
-        dataKey: description.dataKey,
-      });
-    }
-
-    if (information) {
-      sortList = sortList.concat(
-        information
-          .filter((i) => !i.disableSort)
-          .map((i) => ({
-            label: i.label ? i.label : i.dataKey,
-            dataKey: i.dataKey,
-          }))
-      );
-    }
-
-    // console.log('Sort list: ', sortList);
-    setCardSort(sortList);
-  }, [description, information, title.dataKey, title.disableSort, title.label]);
 
   React.useEffect(() => {
     if (Object.keys(filtersInfo).length > 0) {
@@ -347,7 +337,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
     if (!remove && !updateItems.includes(filterValue)) {
       // Add a filter item.
       updateItems.push(filterValue);
-      pushFilters(filterKey, updateItems);
+      // pushFilters(filterKey, updateItems);
+      // TODO: Trigger filter update.
+      onFilter(filterKey, updateItems);
       setFilterChange(true);
     } else {
       if (updateItems.length > 0 && updateItems.includes(filterValue)) {
@@ -358,10 +350,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           // Remove the filter value from the update items.
           updateItems.splice(i, 1);
           if (updateItems.length > 0) {
-            pushFilters(filterKey, updateItems);
+            // pushFilters(filterKey, updateItems);
+            onFilter(filterKey, updateItems);
           } else {
-            pushFilters(filterKey, null);
+            // pushFilters(filterKey, null);
+            onFilter(filterKey, null);
           }
+          // TODO: Trigger filter update.
           setFilterChange(true);
         }
       }
@@ -372,11 +367,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   const changePage = React.useCallback(
     (pageNumber: number): void => {
       setPage(pageNumber);
-      pushPage(pageNumber);
+      // TODO: Trigger data update.
+      // pushPage(pageNumber);
+      onPageChange(pageNumber);
       setPageChange(true);
       setLoadedData(false);
     },
-    [pushPage]
+    [onPageChange] // pushPage
   );
 
   const nextSortDirection = (dataKey: string): Order | null => {
@@ -406,8 +403,10 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         setPage(1);
       }
     } else {
+      // TODO: Scroll is triggered on clicking buttons (fixed).
       // Manually scroll to top of the page as the pagination click isn't doing so.
       window.scrollTo(0, 0);
+      setPageChange(false);
     }
 
     // Ensure the max results change according to the query parameter.
@@ -436,9 +435,13 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   }, [totalDataCount]);
 
   // TODO: Creates duplicate count request.
+  // TODO: This should be not how filter/sort changes work; make it simpler (may require a big change).
   React.useEffect(() => setFilterChange(true), [filters]);
+  React.useEffect(() => setSortChange(true), [sort]);
 
   React.useEffect(() => {
+    // TODO: Move this separately so that sort and filters are handled separately
+    //       (tied to only one load count/data).
     if (!loading && (filterChange || sortChange)) {
       // Go to the first page and load count on
       // filter/sort change.
@@ -499,63 +502,12 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         alignItems="center"
         style={{ paddingBottom: '5vh' }}
       >
-        {/* TODO: Provide dropdown additional filters */}
         <Grid item xs={12}>
-          {/* TODO: This should be open as long as filters are applied */}
-          <Collapse in={advSearchCollapsed}>
-            <div className={classes.advancedFilters}>
-              {/* Filters for title and description provided on card */}
-              {title && title.filterComponent && (
-                <div className={classes.filter}>
-                  <Typography variant="subtitle1">{title.label}</Typography>
-                  {title.filterComponent &&
-                    title.filterComponent(
-                      title.label ? title.label : title.dataKey,
-                      title.dataKey
-                    )}
-                </div>
-              )}
-              {description && description.filterComponent && (
-                <div className={classes.filter}>
-                  <Typography variant="subtitle1">
-                    {description.label
-                      ? description.label
-                      : description.dataKey}
-                  </Typography>
-                  {description.filterComponent(
-                    description.label ? description.label : description.dataKey,
-                    description.dataKey
-                  )}
-                </div>
-              )}
-
-              {/* Filters for other information provided on card */}
-              {information &&
-                information.map(
-                  (info, index) =>
-                    info.filterComponent && (
-                      <div key={index} className={classes.filter}>
-                        <Typography variant="subtitle1">
-                          {info.label ? info.label : info.dataKey}
-                        </Typography>
-                        {info.filterComponent(
-                          info.label ? info.label : info.dataKey,
-                          info.dataKey
-                        )}
-                      </div>
-                    )
-                )}
-            </div>
-          </Collapse>
-        </Grid>
-
-        {/* Advanced filters link */}
-        <Grid item xs={12} className={classes.advLink}>
-          <Link onClick={() => setAdvSearchCollapsed((prev) => !prev)}>
-            {!advSearchCollapsed
-              ? 'Show Advanced Search'
-              : 'Hide Advanced Search'}
-          </Link>
+          <AdvancedFilter
+            title={title}
+            description={description}
+            information={information}
+          />
         </Grid>
 
         <Grid item xs={12}>
@@ -580,8 +532,11 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                   id="select-max-results"
                   value={maxResults}
                   onChange={(e) => {
+                    // TODO: Do we need a separate max results?
                     setMaxResults(e.target.value as number);
-                    pushResults(e.target.value as number);
+                    // TODO: Trigger data update.
+                    // pushResults(e.target.value as number);
+                    onResultsChange(e.target.value as number);
                     setLoadedData(false);
                   }}
                 >
@@ -608,6 +563,8 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
         spacing={10}
         xs={12}
       >
+        {/* TODO: When browser width becomes smaller this is smaller in width 
+                    (needs to expand to take up full width) */}
         <Grid
           container
           direction="column"
@@ -633,7 +590,9 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                         key={i}
                         button
                         onClick={() => {
-                          pushSort(s.dataKey, nextSortDirection(s.dataKey));
+                          // TODO: Trigger sort update.
+                          // pushSort(s.dataKey, nextSortDirection(s.dataKey));
+                          onSort(s.dataKey, nextSortDirection(s.dataKey));
                           setSortChange(true);
                         }}
                       >
@@ -654,8 +613,6 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
           </Grid>
 
           {/* Filtering options */}
-          {/* TODO: When browser width becomes smaller this is smaller in width 
-                    (needs to expand to take up full width) */}
           {customFilters && (
             <Grid item xs>
               <Paper>
@@ -673,7 +630,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                           <ExpansionPanel
                             key={filterIndex}
                             // TODO: Default expanded changes upon state update.
-                            defaultExpanded={filter.hasSelectedItems}
+                            // defaultExpanded={filter.hasSelectedItems}
                           >
                             <ExpansionPanelSummary
                               expandIcon={<ExpandMoreIcon />}
@@ -681,7 +638,7 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
                               <Typography>{filter.label}</Typography>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
-                              <div style={{ maxWidth: 360, width: '100%' }}>
+                              <div className={classes.expandDetails}>
                                 <List component="nav">
                                   {Object.entries(filter.items).map(
                                     ([item, selected], valueIndex) => (
@@ -831,30 +788,30 @@ const CardView = (props: CardViewCombinedProps): React.ReactElement => {
   );
 };
 
-const mapStateToProps = (state: StateType): CardViewStateProps => {
-  return {
-    loading: state.dgcommon.loading,
-    query: state.dgcommon.query,
+// const mapStateToProps = (state: StateType): CardViewStateProps => {
+//   return {
+//     loading: state.dgcommon.loading,
+//     query: state.dgcommon.query,
 
-    // TODO: Possible move these out into separate components.
-    filters: state.dgcommon.filters,
-    sort: state.dgcommon.sort,
-  };
-};
+//     // TODO: Possible move these out into separate components.
+//     filters: state.dgcommon.filters,
+//     sort: state.dgcommon.sort,
+//   };
+// };
 
 // TODO: Should pushPage, pushResults, pushFilters, pushSort and clearData
 //       be passed in or present in the card view by default?
 //       Provide options to pass in functions that get called to handle this.
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): CardViewDispatchProps => ({
-  pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  clearData: () => dispatch(clearData()),
-});
+// const mapDispatchToProps = (
+//   dispatch: ThunkDispatch<StateType, null, AnyAction>
+// ): CardViewDispatchProps => ({
+//   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+//   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+//   pushFilters: (filter: string, data: Filter | null) =>
+//     dispatch(pushPageFilter(filter, data)),
+//   pushSort: (sort: string, order: Order | null) =>
+//     dispatch(pushPageSort(sort, order)),
+//   clearData: () => dispatch(clearData()),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardView);
+export default CardView;

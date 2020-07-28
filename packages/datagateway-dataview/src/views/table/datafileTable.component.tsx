@@ -24,7 +24,6 @@ import {
   TextColumnFilter,
 } from 'datagateway-common';
 import React from 'react';
-// import useAfterMountEffect from '../utils';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';

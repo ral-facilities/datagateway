@@ -19,16 +19,23 @@ import {
   pushPageFilter,
   Filter,
   DateFilter,
+  Order,
+  pushPageSort,
+  pushPageResults,
+  clearData,
+  pushPageNum,
+  SortType,
 } from 'datagateway-common';
 import {
   FilterDataType,
   StateType,
   ViewsType,
+  QueryParams,
 } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import { AnyAction, Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import CardView from './cardView.component';
 
@@ -39,15 +46,22 @@ interface InvestigationCVDispatchProps {
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchTypeFilter: () => Promise<void>;
   fetchFacilityFilter: () => Promise<void>;
+  pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushResults: (results: number) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
+  clearData: () => Action;
 }
 
 interface InvestigationCVStateProps {
   data: Entity[];
   totalDataCount: number;
+  loading: boolean;
+  query: QueryParams;
+  sort: SortType;
+  filters: FiltersType;
   filterData: FilterDataType;
   cartItems: DownloadCartItem[];
-  filters: FiltersType;
   view: ViewsType;
 }
 
@@ -60,16 +74,23 @@ const InvestigationCardView = (
   const {
     data,
     totalDataCount,
-    filterData,
+    loading,
+    query,
+    sort,
     filters,
+    filterData,
     cartItems,
+    pushPage,
+    pushResults,
+    pushFilters,
+    pushSort,
+    clearData,
     fetchData,
     fetchCount,
     fetchTypeFilter,
     fetchFacilityFilter,
     addToCart,
     removeFromCart,
-    pushFilters,
     view,
   } = props;
 
@@ -106,7 +127,6 @@ const InvestigationCardView = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -116,7 +136,6 @@ const InvestigationCardView = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
@@ -154,8 +173,17 @@ const InvestigationCardView = (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
+      loading={loading}
+      sort={sort}
+      filters={filters}
+      query={query}
       loadData={fetchData}
       loadCount={fetchCount}
+      onPageChange={pushPage}
+      onResultsChange={pushResults}
+      onSort={pushSort}
+      onFilter={pushFilters}
+      clearData={clearData}
       title={{
         // Provide label for filter component.
         label: 'Title',
@@ -261,9 +289,12 @@ const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
+    loading: state.dgcommon.loading,
+    query: state.dgcommon.query,
+    sort: state.dgcommon.sort,
+    filters: state.dgcommon.filters,
     filterData: state.dgcommon.filterData,
     cartItems: state.dgcommon.cartItems,
-    filters: state.dgcommon.filters,
     view: state.dgcommon.query.view,
   };
 };
@@ -283,6 +314,11 @@ const mapDispatchToProps = (
     dispatch(fetchFilter('investigation', 'FACILITY_ID')),
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
+  pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  clearData: () => dispatch(clearData()),
 });
 
 export default connect(

@@ -4,14 +4,14 @@ import { Switch, Route, RouteComponentProps } from 'react-router';
 import InvestigationCardView from '../views/card/investigationCardView.component';
 import DatasetCardView from '../views/card/datasetCardView.component';
 
-import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
-import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
-import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationCardView.component';
-import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
+// import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
+// import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
+// import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationCardView.component';
+// import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
 
-import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
-import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
-import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
+// import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
+// import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
+// import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
 
 import { paths } from './pageContainer.component';
 
@@ -33,7 +33,7 @@ class PageCard extends React.Component {
             <DatasetCardView investigationId={match.params.investigationId} />
           )}
         />
-        <Route
+        {/* <Route
           exact
           path={paths.toggle.isisInstrument}
           render={() => <ISISInstrumentsCardView />}
@@ -109,7 +109,7 @@ class PageCard extends React.Component {
               investigationId={match.params.investigationId}
             />
           )}
-        />
+        /> */}
       </Switch>
     );
   }

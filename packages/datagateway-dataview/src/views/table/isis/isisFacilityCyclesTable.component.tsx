@@ -36,13 +36,10 @@ interface ISISFacilityCyclesTableStoreProps {
 }
 
 interface ISISFacilityCyclesTableDispatchProps {
-  // sortTable: (column: string, order: Order | null) => Action;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
-  // filterTable: (column: string, filter: Filter | null) => Action;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   fetchData: (instrumentId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (instrumentId: number) => Promise<void>;
-  // clearTable: () => Action;
 }
 
 type ISISFacilityCyclesTableCombinedProps = ISISFacilityCyclesTableProps &
@@ -57,12 +54,9 @@ const ISISFacilityCyclesTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    // clearTable,
     sort,
-    // sortTable,
     pushSort,
     filters,
-    // filterTable,
     pushFilters,
     instrumentId,
     loading,
@@ -74,7 +68,6 @@ const ISISFacilityCyclesTable = (
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -84,20 +77,10 @@ const ISISFacilityCyclesTable = (
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />
   );
-
-  // React.useEffect(() => {
-  //   clearTable();
-  // }, [clearTable]);
-
-  // useAfterMountEffect(() => {
-  //   fetchCount(parseInt(instrumentId));
-  //   fetchData(parseInt(instrumentId), { startIndex: 0, stopIndex: 49 });
-  // }, [fetchData, instrumentId, sort, filters]);
 
   React.useEffect(() => {
     fetchCount(parseInt(instrumentId));
@@ -111,7 +94,6 @@ const ISISFacilityCyclesTable = (
       loadMoreRows={(params) => fetchData(parseInt(instrumentId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
-      // onSort={sortTable}
       onSort={pushSort}
       columns={[
         {
@@ -147,19 +129,14 @@ const ISISFacilityCyclesTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISFacilityCyclesTableDispatchProps => ({
-  // sortTable: (column: string, order: Order | null) =>
-  //   dispatch(sortTable(column, order)),
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
-  // filterTable: (column: string, filter: Filter | null) =>
-  //   dispatch(filterTable(column, filter)),
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (instrumentId: number, offsetParams: IndexRange) =>
     dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
   fetchCount: (instrumentId: number) =>
     dispatch(fetchFacilityCycleCount(instrumentId)),
-  // clearTable: () => dispatch(clearTable()),
 });
 
 const mapStateToProps = (

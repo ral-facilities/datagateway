@@ -66,7 +66,6 @@ const DLSMyDataTable = (
   } = props;
 
   const [t] = useTranslation();
-
   const username = readSciGatewayToken().username || '';
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (

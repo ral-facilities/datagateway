@@ -74,12 +74,9 @@ const ISISInvestigationsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-
     sort,
-
     pushSort,
     filters,
-
     pushFilters,
     instrumentId,
     facilityCycleId,
@@ -285,7 +282,6 @@ const mapDispatchToProps = (
     ),
   fetchCount: (instrumentId: number, facilityCycleId: number) =>
     dispatch(fetchISISInvestigationCount(instrumentId, facilityCycleId)),
-
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
   addToCart: (entityIds: number[]) =>
