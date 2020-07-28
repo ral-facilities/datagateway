@@ -49,7 +49,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           disableFuture
           inputVariant="outlined"
           maxDate={endDate || new Date('2100-01-01')}
-          maxDateMessage="Invalid date range"
+          maxDateMessage={t('searchBox.invalid_date_message')}
           format="yyyy-MM-dd"
           value={startDate}
           onChange={(date) => {
@@ -57,7 +57,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           }}
           animateYearScrolling
           placeholder={t('searchBox.start_date')}
-          inputProps={{ 'aria-label': 'start date input' }}
+          inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
         />
         <br></br>
         <KeyboardDatePicker
@@ -67,7 +67,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           inputVariant="outlined"
           disableFuture
           minDate={startDate || new Date('1984-01-01')}
-          minDateMessage="Invalid date range"
+          minDateMessage={t('searchBox.invalid_date_message')}
           format="yyyy-MM-dd"
           value={endDate}
           onChange={(date) => {
@@ -75,7 +75,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           }}
           animateYearScrolling
           placeholder={t('searchBox.end_date')}
-          inputProps={{ 'aria-label': 'end date input' }}
+          inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
         />
       </MuiPickersUtilsProvider>
     </div>

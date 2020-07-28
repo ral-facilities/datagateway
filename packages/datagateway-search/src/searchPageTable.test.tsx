@@ -57,7 +57,10 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
+      wrapper
+        .find('[aria-label="searchPageTable.tabs_arialabel"]')
+        .first()
+        .prop('value')
     ).toEqual('investigation');
   });
 
@@ -86,7 +89,10 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
+      wrapper
+        .find('[aria-label="searchPageTable.tabs_arialabel"]')
+        .first()
+        .prop('value')
     ).toEqual('dataset');
   });
 
@@ -115,7 +121,10 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
+      wrapper
+        .find('[aria-label="searchPageTable.tabs_arialabel"]')
+        .first()
+        .prop('value')
     ).toEqual('datafile');
   });
 
@@ -138,7 +147,10 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
+      wrapper
+        .find('[aria-label="searchPageTable.tabs_arialabel"]')
+        .first()
+        .prop('value')
     ).toEqual('investigation');
 
     wrapper
@@ -147,7 +159,10 @@ describe('SearchPageTable', () => {
       .simulate('click');
 
     expect(
-      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
+      wrapper
+        .find('[aria-label="searchPageTable.tabs_arialabel"]')
+        .first()
+        .prop('value')
     ).toEqual('dataset');
   });
 });

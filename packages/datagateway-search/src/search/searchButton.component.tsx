@@ -172,7 +172,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
           variant="contained"
           color="primary"
           onClick={this.handleClick}
-          aria-label="submit search button"
+          aria-label={this.props.t('searchBox.search_button_arialabel')}
           size="large"
           fullWidth={true}
         >

@@ -41,7 +41,7 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
         fullWidth
         variant="outlined"
         InputProps={{
-          'aria-label': 'search text input',
+          'aria-label': t('searchBox.search_text_arialabel'),
           endAdornment: (
             <InputAdornment position="start">
               <SearchIcon />

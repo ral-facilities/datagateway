@@ -67,7 +67,9 @@ describe('DatePicker component tests', () => {
       </Provider>
     );
 
-    const startDateInput = wrapper.find('[aria-label="start date input"]');
+    const startDateInput = wrapper.find(
+      '[aria-label="searchBox.start_date_arialabel"]'
+    );
     startDateInput.instance().value = '2012 01 01';
     startDateInput.simulate('change');
 
@@ -86,7 +88,9 @@ describe('DatePicker component tests', () => {
       </Provider>
     );
 
-    const endDateInput = wrapper.find('[aria-label="end date input"]');
+    const endDateInput = wrapper.find(
+      '[aria-label="searchBox.end_date_arialabel"]'
+    );
     endDateInput.instance().value = '2000 01 01';
     endDateInput.simulate('change');
     expect(testStore.getActions()[0]).toEqual(

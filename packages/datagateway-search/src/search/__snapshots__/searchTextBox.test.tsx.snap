@@ -5,7 +5,7 @@ exports[`Search text box component tests renders correctly 1`] = `
   <WithStyles(ForwardRef(TextField))
     InputProps={
       Object {
-        "aria-label": "search text input",
+        "aria-label": "searchBox.search_text_arialabel",
         "endAdornment": <ForwardRef(WithStyles)
           position="start"
         >

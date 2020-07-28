@@ -86,7 +86,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           <Tabs
             value={value}
             onChange={handleChange}
-            aria-label="Search table tabs"
+            aria-label={t('searchPageTable.tabs_arialabel')}
           >
             {props.investigationTab ? (
               <Tab

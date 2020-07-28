@@ -22,7 +22,7 @@ exports[`Checkbox component tests renders correctly 1`] = `
             checked={false}
             inputProps={
               Object {
-                "aria-label": "investigation checkbox",
+                "aria-label": "searchBox.checkboxes.investigation_arialabel",
               }
             }
             onChange={[Function]}
@@ -37,7 +37,7 @@ exports[`Checkbox component tests renders correctly 1`] = `
             checked={true}
             inputProps={
               Object {
-                "aria-label": "dataset checkbox",
+                "aria-label": "searchBox.checkboxes.dataset_arialabel",
               }
             }
             onChange={[Function]}
@@ -52,7 +52,7 @@ exports[`Checkbox component tests renders correctly 1`] = `
             checked={true}
             inputProps={
               Object {
-                "aria-label": "datafile checkbox",
+                "aria-label": "searchBox.checkboxes.datafile_arialabel",
               }
             }
             onChange={[Function]}

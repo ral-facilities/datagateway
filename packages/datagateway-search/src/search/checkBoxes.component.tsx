@@ -87,7 +87,11 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 checked={investigation}
                 onChange={handleChange('Investigation', investigation)}
                 value="Investigation"
-                inputProps={{ 'aria-label': 'investigation checkbox' }}
+                inputProps={{
+                  'aria-label': t(
+                    'searchBox.checkboxes.investigation_arialabel'
+                  ),
+                }}
               />
             }
             label={t('searchBox.checkboxes.investigation')}
@@ -98,7 +102,9 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 checked={dataset}
                 onChange={handleChange('Dataset', dataset)}
                 value="Dataset"
-                inputProps={{ 'aria-label': 'dataset checkbox' }}
+                inputProps={{
+                  'aria-label': t('searchBox.checkboxes.dataset_arialabel'),
+                }}
               />
             }
             label={t('searchBox.checkboxes.dataset')}
@@ -109,7 +115,9 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
                 checked={datafile}
                 onChange={handleChange('Datafile', datafile)}
                 value="Datafile"
-                inputProps={{ 'aria-label': 'datafile checkbox' }}
+                inputProps={{
+                  'aria-label': t('searchBox.checkboxes.datafile_arialabel'),
+                }}
               />
             }
             label={t('searchBox.checkboxes.datafile')}

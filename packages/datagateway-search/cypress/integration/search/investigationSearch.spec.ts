@@ -8,17 +8,17 @@ describe('Investigation search tab', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
 
-    cy.get('[aria-label="container-search-filters"]').should('exist');
+    cy.get('#container-search-filters').should('exist');
 
-    cy.get('[aria-label="container-search-table"]').should('exist');
+    cy.get('#container-search-table').should('exist');
   });
 
   it('should be able to search by title text', () => {
-    cy.get('[aria-label="search text input"]')
+    cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('dog');
 
-    cy.get('[aria-label="submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
@@ -30,11 +30,11 @@ describe('Investigation search tab', () => {
   });
 
   it('should be able to search by instrument text', () => {
-    cy.get('[aria-label="search text input"]')
+    cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('knowledge media');
 
-    cy.get('[aria-label="submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
@@ -46,10 +46,10 @@ describe('Investigation search tab', () => {
   });
 
   it('should be able to search by date range', () => {
-    cy.get('[aria-label="start date input"]').type('2001-01-01');
-    cy.get('[aria-label="end date input"]').type('2001-12-31');
+    cy.get('[aria-label="Start date input"]').type('2001-01-01');
+    cy.get('[aria-label="End date input"]').type('2001-12-31');
 
-    cy.get('[aria-label="submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
@@ -61,9 +61,9 @@ describe('Investigation search tab', () => {
   });
 
   it('should be hidden if investigation checkbox is unchecked', () => {
-    cy.get('[aria-label="investigation checkbox"]').click();
+    cy.get('[aria-label="Investigation checkbox"]').click();
 
-    cy.get('[aria-label="submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
