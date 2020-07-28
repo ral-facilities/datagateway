@@ -111,7 +111,6 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             <Paper
               style={{
                 height: 'calc(80vh)',
-                width: 'calc(70vw)',
               }}
               elevation={0}
             >
@@ -124,7 +123,6 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             <Paper
               style={{
                 height: 'calc(80vh)',
-                width: 'calc(70vw)',
               }}
               elevation={0}
             >
@@ -137,7 +135,6 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             <Paper
               style={{
                 height: 'calc(80vh)',
-                width: 'calc(70vw)',
               }}
               elevation={0}
             >

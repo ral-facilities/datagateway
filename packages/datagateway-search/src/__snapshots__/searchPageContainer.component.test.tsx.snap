@@ -18,11 +18,6 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
       "search": "",
     }
   }
-  style={
-    Object {
-      "width": "calc(100vw)",
-    }
-  }
 >
   <WithStyles(ForwardRef(Grid))
     alignItems="flex-start"

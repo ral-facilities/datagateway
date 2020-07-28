@@ -22,7 +22,7 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
           path="/"
           render={() => <Link to="/search/data">Search data</Link>}
         />
-        <div style={{ width: 'calc(100vw)' }}>
+        <div>
           <Grid
             container
             direction="row"
