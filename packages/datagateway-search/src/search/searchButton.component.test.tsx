@@ -62,6 +62,7 @@ describe('Search Button component tests', () => {
         datafile: [],
         investigation: [],
       },
+      settingsLoaded: true,
     };
 
     mockStore = configureStore([thunk]);
@@ -78,29 +79,14 @@ describe('Search Button component tests', () => {
 
   it('builds correct parameters for datafile request if date and search text properties are in use', () => {
     state.dgsearch = {
+      ...state.dgsearch,
       searchText: 'hello',
-      text: '',
       selectDate: {
         startDate: new Date('2013-11-11'),
         endDate: new Date('2016-11-11'),
       },
-      checkBox: {
-        dataset: false,
-        datafile: true,
-        investigation: false,
-      },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
     };
+
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -130,27 +116,17 @@ describe('Search Button component tests', () => {
 
   it('builds correct parameters for dataset request if date and search text properties are in use', () => {
     state.dgsearch = {
+      ...state.dgsearch,
       searchText: 'hello',
-      text: '',
       selectDate: {
         startDate: new Date('2013-11-11'),
         endDate: new Date('2016-11-11'),
       },
       checkBox: {
+        ...state.dgsearch.checkBox,
         dataset: true,
         datafile: false,
         investigation: false,
-      },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
       },
     };
 
@@ -183,27 +159,17 @@ describe('Search Button component tests', () => {
 
   it('builds correct parameters for investigation request if date and search text properties are in use', () => {
     state.dgsearch = {
+      ...state.dgsearch,
       searchText: 'hello',
-      text: '',
       selectDate: {
         startDate: new Date('2013-11-11'),
         endDate: new Date('2016-11-11'),
       },
       checkBox: {
+        ...state.dgsearch.checkBox,
         dataset: false,
         datafile: false,
         investigation: true,
-      },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
       },
     };
 
@@ -235,31 +201,6 @@ describe('Search Button component tests', () => {
   });
 
   it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
-    state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
-      checkBox: {
-        dataset: false,
-        datafile: true,
-        investigation: false,
-      },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
-    };
-
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -283,29 +224,15 @@ describe('Search Button component tests', () => {
       }
     );
   });
+
   it('builds correct parameters for dataset request if date and search text properties are not in use', () => {
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
+      ...state.dgsearch,
       checkBox: {
+        ...state.dgsearch.checkBox,
         dataset: true,
         datafile: false,
         investigation: false,
-      },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
       },
     };
 
@@ -332,29 +259,15 @@ describe('Search Button component tests', () => {
       }
     );
   });
+
   it('builds correct parameters for investigation request if date and search text properties are not in use', () => {
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
+      ...state.dgsearch,
       checkBox: {
+        ...state.dgsearch.checkBox,
         dataset: false,
         datafile: false,
         investigation: true,
-      },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
       },
     };
 
@@ -381,31 +294,18 @@ describe('Search Button component tests', () => {
       }
     );
   });
+
   it('sends actions to update tabs when user clicks search button', async () => {
     state.dgsearch = {
-      searchText: 'hello',
-      text: '',
-      selectDate: {
-        startDate: new Date('2013-11-11'),
-        endDate: new Date('2016-11-11'),
-      },
+      ...state.dgsearch,
       checkBox: {
+        ...state.dgsearch.checkBox,
         dataset: false,
         datafile: false,
         investigation: false,
       },
-      tabs: {
-        datasetTab: true,
-        datafileTab: true,
-        investigationTab: true,
-      },
-      requestReceived: false,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
     };
+
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>

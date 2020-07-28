@@ -52,7 +52,6 @@ function a11yProps(index: string): React.ReactFragment {
   };
 }
 
-// eslint-disable-next-line
 const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
   const [value, setValue] = React.useState('investigation');
   const [t] = useTranslation();
@@ -87,7 +86,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           <Tabs
             value={value}
             onChange={handleChange}
-            aria-label="simple tabs example"
+            aria-label="Search table tabs"
           >
             {props.investigationTab ? (
               <Tab
@@ -118,7 +117,6 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             <Paper
               style={{
                 height: 'calc(80vh)',
-                width: 'calc(70vw)',
               }}
               elevation={0}
             >
@@ -131,7 +129,6 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             <Paper
               style={{
                 height: 'calc(80vh)',
-                width: 'calc(70vw)',
               }}
               elevation={0}
             >
@@ -144,7 +141,6 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             <Paper
               style={{
                 height: 'calc(80vh)',
-                width: 'calc(70vw)',
               }}
               elevation={0}
             >

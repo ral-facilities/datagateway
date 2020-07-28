@@ -20,7 +20,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="submit search button"]').click();
 
-    cy.get('[aria-label="simple tabs example"]')
+    cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
       .click();
 
@@ -36,7 +36,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="submit search button"]').click();
 
-    cy.get('[aria-label="simple tabs example"]')
+    cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
       .click();
 
@@ -51,7 +51,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="submit search button"]').click();
 
-    cy.get('[aria-label="simple tabs example"]')
+    cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
       .click();
 
@@ -67,7 +67,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
-    cy.get('[aria-label="simple tabs example"]')
+    cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
       .should('not.exist');
   });

@@ -8,8 +8,6 @@ import { initialState as dgSearchInitialState } from './state/reducers/dgsearch.
 import { dGCommonInitialState } from 'datagateway-common';
 
 import { createShallow } from '@material-ui/core/test-utils';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { MemoryRouter } from 'react-router';
 import SearchPageContainer from './searchPageContainer.component';
 
