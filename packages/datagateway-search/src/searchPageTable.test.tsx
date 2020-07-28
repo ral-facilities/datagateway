@@ -22,9 +22,12 @@ describe('SearchPageTable', () => {
     state = JSON.parse(
       JSON.stringify({ dgsearch: initialState, dgcommon: dGCommonInitialState })
     );
+
+    state.dgsearch.requestReceived = true;
   });
 
   it('renders SearchPageTable correctly', () => {
+    state.dgsearch.requestReceived = false;
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <div>
@@ -36,29 +39,14 @@ describe('SearchPageTable', () => {
 
   it('defaults to investigation tab', () => {
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
-      checkBox: {
-        dataset: true,
-        datafile: true,
-        investigation: true,
-      },
+      ...state.dgsearch,
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
       },
-      requestReceived: true,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
     };
+
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -69,20 +57,13 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-label="simple tabs example"]')
-        .first()
-        .prop('value')
+      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
     ).toEqual('investigation');
   });
+
   it('defaults to dataset tab when investigation tab is hidden', () => {
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
+      ...state.dgsearch,
       checkBox: {
         dataset: true,
         datafile: true,
@@ -93,13 +74,8 @@ describe('SearchPageTable', () => {
         datafileTab: true,
         investigationTab: false,
       },
-      requestReceived: true,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
     };
+
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -110,20 +86,13 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-label="simple tabs example"]')
-        .first()
-        .prop('value')
+      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
     ).toEqual('dataset');
   });
+
   it('defaults to datafile tab when investigation and dataset tab is hidden', () => {
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
+      ...state.dgsearch,
       checkBox: {
         dataset: false,
         datafile: true,
@@ -134,13 +103,8 @@ describe('SearchPageTable', () => {
         datafileTab: true,
         investigationTab: false,
       },
-      requestReceived: true,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
     };
+
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -151,36 +115,18 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-label="simple tabs example"]')
-        .first()
-        .prop('value')
+      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
     ).toEqual('datafile');
   });
+
   it('changes selected tab value on click of a new tab', () => {
     state.dgsearch = {
-      searchText: '',
-      text: '',
-      selectDate: {
-        startDate: null,
-        endDate: null,
-      },
-      checkBox: {
-        dataset: true,
-        datafile: true,
-        investigation: true,
-      },
+      ...state.dgsearch,
       tabs: {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
       },
-      requestReceived: true,
-      searchData: {
-        dataset: [],
-        datafile: [],
-        investigation: [],
-      },
     };
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
@@ -192,10 +138,7 @@ describe('SearchPageTable', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-label="simple tabs example"]')
-        .first()
-        .prop('value')
+      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
     ).toEqual('investigation');
 
     wrapper
@@ -204,10 +147,7 @@ describe('SearchPageTable', () => {
       .simulate('click');
 
     expect(
-      wrapper
-        .find('[aria-label="simple tabs example"]')
-        .first()
-        .prop('value')
+      wrapper.find('[aria-label="Search table tabs"]').first().prop('value')
     ).toEqual('dataset');
   });
 });

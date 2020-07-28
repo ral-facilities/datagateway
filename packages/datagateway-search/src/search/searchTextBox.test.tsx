@@ -46,6 +46,7 @@ describe('Search text box component tests', () => {
         datafile: [],
         investigation: [],
       },
+      settingsLoaded: true,
     };
 
     mockStore = configureStore([thunk]);
