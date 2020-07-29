@@ -30,6 +30,11 @@ import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../utils';
 import { useTranslation } from 'react-i18next';
 
+import TitleIcon from '@material-ui/icons/Title';
+import ExploreIcon from '@material-ui/icons/Explore';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 interface DatafileTableProps {
   datasetId: string;
 }
@@ -178,16 +183,19 @@ const DatafileTable = (
       ]}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
+          icon: <ExploreIcon />,
           label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
+          icon: <SaveIcon />,
           label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
@@ -195,6 +203,7 @@ const DatafileTable = (
           },
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,

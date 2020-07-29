@@ -28,6 +28,10 @@ import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../utils';
 import { useTranslation } from 'react-i18next';
 
+import TitleIcon from '@material-ui/icons/Title';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 interface DatasetTableProps {
   investigationId: string;
 }
@@ -152,6 +156,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props) => {
@@ -165,15 +170,18 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           filterComponent: textFilter,
         },
         {
+          icon: <ConfirmationNumberIcon />,
           label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
