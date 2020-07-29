@@ -8,21 +8,23 @@ import Draggable from 'react-draggable';
 const DataHeader = (
   props: TableHeaderProps & {
     className: string;
-    filterComponent?: React.ReactElement;
     sort: { [column: string]: Order };
     onSort: (column: string, order: Order | null) => void;
     resizeColumn: (deltaX: number) => void;
+    icon?: JSX.Element;
+    filterComponent?: React.ReactElement;
   }
 ): React.ReactElement => {
   const {
     className,
     dataKey,
-    filterComponent,
     sort,
     onSort,
     label,
     disableSort,
     resizeColumn,
+    icon,
+    filterComponent,
   } = props;
 
   const currSortDirection = sort[dataKey];
@@ -64,6 +66,7 @@ const DataHeader = (
           display: 'flex',
         }}
       >
+        {icon && icon}
         {inner}
         <Draggable
           axis="none"
