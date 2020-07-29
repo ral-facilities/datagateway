@@ -23,6 +23,10 @@ import {
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
 
+import TitleIcon from '@material-ui/icons/Title';
+import DescriptionIcon from '@material-ui/icons/Description';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 interface ISISFacilityCyclesTableProps {
   instrumentId: string;
 }
@@ -106,6 +110,7 @@ const ISISFacilityCyclesTable = (
       onSort={sortTable}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('facilitycycles.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
@@ -116,16 +121,19 @@ const ISISFacilityCyclesTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <DescriptionIcon />,
           label: t('facilitycycles.description'),
           dataKey: 'DESCRIPTION',
           filterComponent: textFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('facilitycycles.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('facilitycycles.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,

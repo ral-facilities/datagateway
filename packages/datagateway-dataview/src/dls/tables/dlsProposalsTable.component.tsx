@@ -22,7 +22,6 @@ import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
 
 import TitleIcon from '@material-ui/icons/Title';
-import DescriptionIcon from '@material-ui/icons/Description';
 
 interface DLSProposalsTableStoreProps {
   sort: {
@@ -105,7 +104,7 @@ const DLSProposalsTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <DescriptionIcon />,
+          icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {

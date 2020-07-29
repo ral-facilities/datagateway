@@ -22,7 +22,6 @@ import {
   clearTable,
 } from 'datagateway-common';
 import { IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
@@ -31,6 +30,12 @@ import DatafileDetailsPanel from '../detailsPanels/datafileDetailsPanel.componen
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
+
+import GetApp from '@material-ui/icons/GetApp';
+import TitleIcon from '@material-ui/icons/Title';
+import ExploreIcon from '@material-ui/icons/Explore';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
@@ -176,16 +181,19 @@ const ISISDatafilesTable = (
       ]}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
+          icon: <ExploreIcon />,
           label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
+          icon: <SaveIcon />,
           label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
@@ -194,6 +202,7 @@ const ISISDatafilesTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,

@@ -30,9 +30,13 @@ import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component';
-import { GetApp } from '@material-ui/icons';
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
+import GetApp from '@material-ui/icons/GetApp';
+
+import TitleIcon from '@material-ui/icons/Title';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
@@ -180,6 +184,7 @@ const ISISDatasetsTable = (
       ]}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
@@ -190,6 +195,7 @@ const ISISDatasetsTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <SaveIcon />,
           label: t('datasets.size'),
           dataKey: 'SIZE',
           cellContentRenderer: (props) => {
@@ -198,11 +204,14 @@ const ISISDatasetsTable = (
           disableSort: true,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
+
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,

@@ -30,7 +30,7 @@ import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
 
-import DescriptionIcon from '@material-ui/icons/Description';
+import TitleIcon from '@material-ui/icons/Title';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
@@ -161,7 +161,7 @@ const DLSDatasetsTable = (
       }}
       columns={[
         {
-          icon: <DescriptionIcon />,
+          icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
