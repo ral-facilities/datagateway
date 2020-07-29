@@ -28,7 +28,7 @@ import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../utils';
 import { useTranslation } from 'react-i18next';
 
-import TitleIcon from '@material-ui/icons/Title';
+import DescriptionIcon from '@material-ui/icons/Description';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
@@ -156,7 +156,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       }}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: <DescriptionIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props) => {
