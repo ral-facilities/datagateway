@@ -78,22 +78,6 @@ export interface CardViewDetails {
   disableSort?: boolean;
 }
 
-// interface CardViewStateProps {
-//   loading: boolean;
-//   query: QueryParams;
-
-//   filters: FiltersType;
-//   sort: SortType;
-// }
-
-// interface CardViewDispatchProps {
-// pushPage: (page: number) => Promise<void>;
-// pushResults: (results: number) => Promise<void>;
-// pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-// pushSort: (sort: string, order: Order | null) => Promise<void>;
-// clearData: () => Action;
-// }
-
 interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
@@ -126,10 +110,6 @@ interface CardViewProps {
   resultsOptions?: number[];
   image?: EntityImageDetails;
 }
-
-// type CardViewCombinedProps = CardViewProps &
-//   CardViewStateProps &
-//   CardViewDispatchProps;
 
 interface CVFilterInfo {
   [filterKey: string]: {
@@ -310,7 +290,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           []
         )
         .filter((v) => v.items.length > 0);
-      // console.log(selected);
       setSelectedFilters(selected);
     }
   }, [filtersInfo]);
@@ -337,8 +316,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     if (!remove && !updateItems.includes(filterValue)) {
       // Add a filter item.
       updateItems.push(filterValue);
-      // pushFilters(filterKey, updateItems);
-      // TODO: Trigger filter update.
       onFilter(filterKey, updateItems);
       setFilterChange(true);
     } else {
@@ -350,13 +327,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           // Remove the filter value from the update items.
           updateItems.splice(i, 1);
           if (updateItems.length > 0) {
-            // pushFilters(filterKey, updateItems);
             onFilter(filterKey, updateItems);
           } else {
-            // pushFilters(filterKey, null);
             onFilter(filterKey, null);
           }
-          // TODO: Trigger filter update.
           setFilterChange(true);
         }
       }
@@ -367,13 +341,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const changePage = React.useCallback(
     (pageNumber: number): void => {
       setPage(pageNumber);
-      // TODO: Trigger data update.
-      // pushPage(pageNumber);
       onPageChange(pageNumber);
       setPageChange(true);
       setLoadedData(false);
     },
-    [onPageChange] // pushPage
+    [onPageChange]
   );
 
   const nextSortDirection = (dataKey: string): Order | null => {
@@ -534,8 +506,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   onChange={(e) => {
                     // TODO: Do we need a separate max results?
                     setMaxResults(e.target.value as number);
-                    // TODO: Trigger data update.
-                    // pushResults(e.target.value as number);
                     onResultsChange(e.target.value as number);
                     setLoadedData(false);
                   }}
@@ -590,8 +560,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         key={i}
                         button
                         onClick={() => {
-                          // TODO: Trigger sort update.
-                          // pushSort(s.dataKey, nextSortDirection(s.dataKey));
                           onSort(s.dataKey, nextSortDirection(s.dataKey));
                           setSortChange(true);
                         }}
@@ -752,7 +720,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       customFilters &&
                       customFilters.map((f) => nestedValue(data, f.dataKey))
                     }
-                    // TODO: Add back in when image is supported.
                     image={image}
                   />
                 </ListItem>
@@ -787,31 +754,5 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     </Grid>
   );
 };
-
-// const mapStateToProps = (state: StateType): CardViewStateProps => {
-//   return {
-//     loading: state.dgcommon.loading,
-//     query: state.dgcommon.query,
-
-//     // TODO: Possible move these out into separate components.
-//     filters: state.dgcommon.filters,
-//     sort: state.dgcommon.sort,
-//   };
-// };
-
-// TODO: Should pushPage, pushResults, pushFilters, pushSort and clearData
-//       be passed in or present in the card view by default?
-//       Provide options to pass in functions that get called to handle this.
-// const mapDispatchToProps = (
-//   dispatch: ThunkDispatch<StateType, null, AnyAction>
-// ): CardViewDispatchProps => ({
-//   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-//   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-//   pushFilters: (filter: string, data: Filter | null) =>
-//     dispatch(pushPageFilter(filter, data)),
-//   pushSort: (sort: string, order: Order | null) =>
-//     dispatch(pushPageSort(sort, order)),
-//   clearData: () => dispatch(clearData()),
-// });
 
 export default CardView;
