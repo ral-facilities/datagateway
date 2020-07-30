@@ -212,8 +212,26 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
-    dispatch(fetchDatafiles(datasetId, offsetParams)),
-  fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
+    dispatch(
+      fetchDatafiles({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+          },
+        ],
+      })
+    ),
+  fetchCount: (datasetId: number) =>
+    dispatch(
+      fetchDatafileCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+        },
+      ])
+    ),
   clearTable: () => dispatch(clearTable()),
   fetchDetails: (datafileId: number) =>
     dispatch(fetchDatafileDetails(datafileId)),

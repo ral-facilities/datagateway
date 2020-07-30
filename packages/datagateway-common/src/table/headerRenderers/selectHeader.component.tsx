@@ -48,7 +48,7 @@ const SelectHeader = (props: SelectHeaderProps): React.ReactElement => {
         checked={totalRowCount !== 0 && selectedRows.length === totalRowCount}
         inputProps={{ 'aria-label': 'select all rows' }}
         onClick={() => {
-          if (allIds.every((x) => selectedRows.includes(x))) {
+          if (allIds.every(x => selectedRows.includes(x))) {
             onUncheck(allIds);
           } else {
             onCheck(allIds);

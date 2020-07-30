@@ -81,7 +81,14 @@ describe('Dataset actions', () => {
   });
 
   it('dispatches fetchDatasetsRequest and fetchDatasetsSuccess actions upon successful fetchDatasets action', async () => {
-    const asyncAction = fetchDatasets({ investigationId: 1 });
+    const asyncAction = fetchDatasets({
+      additionalFilters: [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+        },
+      ],
+    });
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
@@ -98,7 +105,14 @@ describe('Dataset actions', () => {
   });
 
   it('fetchDatasets action applies filters and sort state to request params', async () => {
-    const asyncAction = fetchDatasets({ investigationId: 1 });
+    const asyncAction = fetchDatasets({
+      additionalFilters: [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+        },
+      ],
+    });
     const getState = (): Partial<StateType> => ({
       dgcommon: {
         ...initialState,
@@ -127,8 +141,7 @@ describe('Dataset actions', () => {
 
   it('fetchDatasets action sends fetchDatafileCount actions when specified via optional parameters', async () => {
     const asyncAction = fetchDatasets({
-      investigationId: 1,
-      optionalParams: { getDatafileCount: true },
+      getDatafileCount: true,
     });
     await asyncAction(dispatch, getState, null);
 
@@ -145,7 +158,7 @@ describe('Dataset actions', () => {
       })
     );
 
-    const asyncAction = fetchDatasets({ investigationId: 1 });
+    const asyncAction = fetchDatasets();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetsRequest(1));
@@ -159,8 +172,7 @@ describe('Dataset actions', () => {
 
   it('fetchDataset action sends fetchDatasetSize actions when specified via optional parameters', async () => {
     const asyncAction = fetchDatasets({
-      investigationId: 1,
-      optionalParams: { getSize: true },
+      getSize: true,
     });
     await asyncAction(dispatch, getState, null);
 
@@ -248,7 +260,12 @@ describe('Dataset actions', () => {
       })
     );
 
-    const asyncAction = fetchDatasetCount(1);
+    const asyncAction = fetchDatasetCount([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+      },
+    ]);
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
@@ -270,7 +287,12 @@ describe('Dataset actions', () => {
       })
     );
 
-    const asyncAction = fetchDatasetCount(1);
+    const asyncAction = fetchDatasetCount([
+      {
+        filterType: 'where',
+        filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+      },
+    ]);
     const getState = (): Partial<StateType> => ({
       dgcommon: {
         ...initialState,
@@ -301,7 +323,7 @@ describe('Dataset actions', () => {
       })
     );
 
-    const asyncAction = fetchDatasetCount(1);
+    const asyncAction = fetchDatasetCount();
     await asyncAction(dispatch, getState, null);
 
     expect(actions[0]).toEqual(fetchDatasetCountRequest(1));
@@ -315,8 +337,13 @@ describe('Dataset actions', () => {
 
   it('fetchDatasets applies skip and limit when specified via optional parameters', async () => {
     const asyncAction = fetchDatasets({
-      investigationId: 1,
       offsetParams: { startIndex: 0, stopIndex: 49 },
+      additionalFilters: [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+        },
+      ],
     });
 
     const getState = (): Partial<StateType> => ({

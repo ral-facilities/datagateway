@@ -10,6 +10,10 @@ app.use(
   serveStatic(path.resolve('./build'), { index: ['index.html', 'index.htm'] })
 );
 
+app.get('/datagateway-search-settings.json', function(req, res) {
+  res.sendFile(path.resolve('./server/e2e-settings.json'));
+});
+
 app.get(/\/sessions|investigations|datasets|datafiles/, function(req, res) {
   axios
     .get('http://scigateway-preprod.esc.rl.ac.uk:5000' + req.url, {
