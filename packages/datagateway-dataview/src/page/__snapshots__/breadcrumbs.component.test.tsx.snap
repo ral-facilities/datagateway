@@ -61,46 +61,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
           dispatch={[Function]}
           location="/browse/investigation/1/dataset/1/datafile"
         >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-          <div>
-            <WithStyles(ForwardRef(Paper))
-              elevation={0}
-              square={true}
-            >
-              <ForwardRef(Paper)
-                classes={
-                  Object {
-                    "elevation0": "MuiPaper-elevation0",
-                    "elevation1": "MuiPaper-elevation1",
-                    "elevation10": "MuiPaper-elevation10",
-                    "elevation11": "MuiPaper-elevation11",
-                    "elevation12": "MuiPaper-elevation12",
-                    "elevation13": "MuiPaper-elevation13",
-                    "elevation14": "MuiPaper-elevation14",
-                    "elevation15": "MuiPaper-elevation15",
-                    "elevation16": "MuiPaper-elevation16",
-                    "elevation17": "MuiPaper-elevation17",
-                    "elevation18": "MuiPaper-elevation18",
-                    "elevation19": "MuiPaper-elevation19",
-                    "elevation2": "MuiPaper-elevation2",
-                    "elevation20": "MuiPaper-elevation20",
-                    "elevation21": "MuiPaper-elevation21",
-                    "elevation22": "MuiPaper-elevation22",
-                    "elevation23": "MuiPaper-elevation23",
-                    "elevation24": "MuiPaper-elevation24",
-                    "elevation3": "MuiPaper-elevation3",
-                    "elevation4": "MuiPaper-elevation4",
-                    "elevation5": "MuiPaper-elevation5",
-                    "elevation6": "MuiPaper-elevation6",
-                    "elevation7": "MuiPaper-elevation7",
-                    "elevation8": "MuiPaper-elevation8",
-                    "elevation9": "MuiPaper-elevation9",
-                    "outlined": "MuiPaper-outlined",
-                    "root": "MuiPaper-root",
-                    "rounded": "MuiPaper-rounded",
-                  }
-                }
-=======
           <PageBreadcrumbs
             apiUrl=""
             breadcrumbSettings={Object {}}
@@ -110,7 +70,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
           >
             <div>
               <WithStyles(ForwardRef(Paper))
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                 elevation={0}
                 square={true}
               >
@@ -142,6 +101,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                       "elevation7": "MuiPaper-elevation7",
                       "elevation8": "MuiPaper-elevation8",
                       "elevation9": "MuiPaper-elevation9",
+                      "outlined": "MuiPaper-outlined",
                       "root": "MuiPaper-root",
                       "rounded": "MuiPaper-rounded",
                     }
@@ -154,100 +114,38 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                   >
                     <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
                       aria-label="breadcrumb"
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                      classes={
-                        Object {
-                          "root": "WithStyles(ForwardRef(Breadcrumbs))-root-1",
-                        }
-                      }
-=======
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                       separator=""
                     >
                       <WithStyles(ForwardRef(Breadcrumbs))
                         aria-label="breadcrumb"
                         classes={
                           Object {
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                            "li": "MuiBreadcrumbs-li",
-                            "ol": "MuiBreadcrumbs-ol",
-                            "root": "MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1",
-                            "separator": "MuiBreadcrumbs-separator",
-=======
-                            "root": "WithStyles(ForwardRef(Breadcrumbs))-root-28",
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
+                            "root": "WithStyles(ForwardRef(Breadcrumbs))-root-1",
                           }
                         }
                         separator=""
                       >
                         <ForwardRef(Breadcrumbs)
                           aria-label="breadcrumb"
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                          className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1"
-                          color="textSecondary"
-                          component="nav"
-=======
                           classes={
                             Object {
                               "li": "MuiBreadcrumbs-li",
                               "ol": "MuiBreadcrumbs-ol",
-                              "root": "MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28",
+                              "root": "MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1",
                               "separator": "MuiBreadcrumbs-separator",
                             }
                           }
                           separator=""
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                         >
                           <WithStyles(ForwardRef(Typography))
                             aria-label="breadcrumb"
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
                             className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1"
-                            classes={
-                              Object {
-                                "alignCenter": "MuiTypography-alignCenter",
-                                "alignJustify": "MuiTypography-alignJustify",
-                                "alignLeft": "MuiTypography-alignLeft",
-                                "alignRight": "MuiTypography-alignRight",
-                                "body1": "MuiTypography-body1",
-                                "body2": "MuiTypography-body2",
-                                "button": "MuiTypography-button",
-                                "caption": "MuiTypography-caption",
-                                "colorError": "MuiTypography-colorError",
-                                "colorInherit": "MuiTypography-colorInherit",
-                                "colorPrimary": "MuiTypography-colorPrimary",
-                                "colorSecondary": "MuiTypography-colorSecondary",
-                                "colorTextPrimary": "MuiTypography-colorTextPrimary",
-                                "colorTextSecondary": "MuiTypography-colorTextSecondary",
-                                "displayBlock": "MuiTypography-displayBlock",
-                                "displayInline": "MuiTypography-displayInline",
-                                "gutterBottom": "MuiTypography-gutterBottom",
-                                "h1": "MuiTypography-h1",
-                                "h2": "MuiTypography-h2",
-                                "h3": "MuiTypography-h3",
-                                "h4": "MuiTypography-h4",
-                                "h5": "MuiTypography-h5",
-                                "h6": "MuiTypography-h6",
-                                "noWrap": "MuiTypography-noWrap",
-                                "overline": "MuiTypography-overline",
-                                "paragraph": "MuiTypography-paragraph",
-                                "root": "MuiTypography-root",
-                                "srOnly": "MuiTypography-srOnly",
-                                "subtitle1": "MuiTypography-subtitle1",
-                                "subtitle2": "MuiTypography-subtitle2",
-                              }
-                            }
-=======
-                            className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                             color="textSecondary"
                             component="nav"
                           >
                             <ForwardRef(Typography)
                               aria-label="breadcrumb"
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                              className="MuiTypography-root MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1 MuiTypography-body1 MuiTypography-colorTextSecondary"
-=======
-                              className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28"
+                              className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1"
                               classes={
                                 Object {
                                   "alignCenter": "MuiTypography-alignCenter",
@@ -284,11 +182,10 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                               }
                               color="textSecondary"
                               component="nav"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                             >
                               <nav
                                 aria-label="breadcrumb"
-                                className="MuiTypography-root MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28 MuiTypography-body1 MuiTypography-colorTextSecondary"
+                                className="MuiTypography-root MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1 MuiTypography-body1 MuiTypography-colorTextSecondary"
                               >
                                 <ol
                                   className="MuiBreadcrumbs-ol"
@@ -302,40 +199,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       displayName="breadcrumbs.home"
                                       key=".0"
                                     >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                      <WithStyles(ForwardRef(Tooltip))
-                                        PopperProps={
-                                          Object {
-                                            "popperOptions": Object {
-                                              "modifiers": Object {
-                                                "arrow": Object {
-                                                  "element": null,
-                                                  "enabled": false,
-                                                },
-                                              },
-                                            },
-                                          }
-                                        }
-                                        classes={
-                                          Object {
-                                            "popper": "makeStyles-popper-3",
-                                            "tooltip": "makeStyles-tooltip-2",
-                                          }
-                                        }
-                                        disableHoverListener={true}
-                                        title={
-                                          <React.Fragment>
-                                            Home
-                                            <span
-                                              className="makeStyles-arrow-4"
-                                            />
-                                          </React.Fragment>
-                                        }
-=======
                                       <ArrowTooltip
                                         percentageWidth={20}
                                         title="breadcrumbs.home"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -352,22 +218,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                              "arrow": "MuiTooltip-arrow",
-                                              "popper": "MuiTooltip-popper makeStyles-popper-3",
-                                              "popperArrow": "MuiTooltip-popperArrow",
-                                              "popperInteractive": "MuiTooltip-popperInteractive",
-                                              "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
-                                              "tooltipArrow": "MuiTooltip-tooltipArrow",
-                                              "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
-                                              "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
-                                              "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
-                                              "tooltipPlacementTop": "MuiTooltip-tooltipPlacementTop",
-                                              "touch": "MuiTooltip-touch",
-=======
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -395,9 +247,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -410,7 +265,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 breadcrumbs.home
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -482,24 +337,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                 <div
                                                   class=""
                                                 >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                                  <span>
-                                                    Home
-                                                  </span>
-                                                </p>
-                                              </div>
-                                            }
-                                            className="MuiTooltip-popper makeStyles-popper-3"
-                                            id={null}
-                                            open={false}
-                                            placement="bottom"
-                                            popperOptions={
-                                              Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-=======
                                                   <p
                                                     aria-label="Breadcrumb-home"
                                                     class="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
@@ -510,7 +347,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -521,34 +358,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                       "element": null,
                                                       "enabled": false,
                                                     },
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                                   },
                                                 }
                                               }
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                            }
-                                            transition={true}
-                                          />
-                                        </ForwardRef(Tooltip)>
-                                      </WithStyles(ForwardRef(Tooltip))>
-                                    </ArrowTooltip>
-                                  </WrappedBreadcrumb>
-                                </li>
-                                <li
-                                  aria-hidden={true}
-                                  className="MuiBreadcrumbs-separator"
-                                  key="separator-0"
-                                />
-                                <li
-                                  className="MuiBreadcrumbs-li"
-                                  key="child-1"
-                                >
-                                  <WrappedBreadcrumb
-                                    ariaLabel="Breadcrumb-base"
-                                    displayName="Investigations"
-                                    key=".1"
-                                    url="/browse/investigation"
-=======
                                               transition={true}
                                             />
                                           </ForwardRef(Tooltip)>
@@ -556,28 +368,14 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-0"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-1"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-base"
@@ -585,40 +383,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       key=".1"
                                       url="/browse/investigation"
                                     >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                      <WithStyles(ForwardRef(Tooltip))
-                                        PopperProps={
-                                          Object {
-                                            "popperOptions": Object {
-                                              "modifiers": Object {
-                                                "arrow": Object {
-                                                  "element": null,
-                                                  "enabled": false,
-                                                },
-                                              },
-                                            },
-                                          }
-                                        }
-                                        classes={
-                                          Object {
-                                            "popper": "makeStyles-popper-3",
-                                            "tooltip": "makeStyles-tooltip-2",
-                                          }
-                                        }
-                                        disableHoverListener={true}
-                                        title={
-                                          <React.Fragment>
-                                            Investigations
-                                            <span
-                                              className="makeStyles-arrow-4"
-                                            />
-                                          </React.Fragment>
-                                        }
-=======
                                       <ArrowTooltip
                                         percentageWidth={20}
                                         title="breadcrumbs.investigation"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -635,22 +402,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                              "arrow": "MuiTooltip-arrow",
-                                              "popper": "MuiTooltip-popper makeStyles-popper-3",
-                                              "popperArrow": "MuiTooltip-popperArrow",
-                                              "popperInteractive": "MuiTooltip-popperInteractive",
-                                              "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
-                                              "tooltipArrow": "MuiTooltip-tooltipArrow",
-                                              "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
-                                              "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
-                                              "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
-                                              "tooltipPlacementTop": "MuiTooltip-tooltipPlacementTop",
-                                              "touch": "MuiTooltip-touch",
-=======
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -678,9 +431,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -693,7 +449,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 breadcrumbs.investigation
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -872,24 +628,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                 <div
                                                   class=""
                                                 >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                                  <span>
-                                                    Investigations
-                                                  </span>
-                                                </a>
-                                              </div>
-                                            }
-                                            className="MuiTooltip-popper makeStyles-popper-3"
-                                            id={null}
-                                            open={false}
-                                            placement="bottom"
-                                            popperOptions={
-                                              Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-=======
                                                   <a
                                                     aria-label="Breadcrumb-base"
                                                     class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
@@ -901,7 +639,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </a>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -912,34 +650,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                       "element": null,
                                                       "enabled": false,
                                                     },
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                                   },
                                                 }
                                               }
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                            }
-                                            transition={true}
-                                          />
-                                        </ForwardRef(Tooltip)>
-                                      </WithStyles(ForwardRef(Tooltip))>
-                                    </ArrowTooltip>
-                                  </WrappedBreadcrumb>
-                                </li>
-                                <li
-                                  aria-hidden={true}
-                                  className="MuiBreadcrumbs-separator"
-                                  key="separator-1"
-                                />
-                                <li
-                                  className="MuiBreadcrumbs-li"
-                                  key="child-2"
-                                >
-                                  <WrappedBreadcrumb
-                                    ariaLabel="Breadcrumb-hierarchy-1"
-                                    displayName="Test 1"
-                                    key=".2:$breadcrumb-1"
-                                    url="/browse/investigation/1/dataset"
-=======
                                               transition={true}
                                             />
                                           </ForwardRef(Tooltip)>
@@ -947,28 +660,14 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-1"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-2"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-1"
@@ -976,40 +675,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       key=".2:$breadcrumb-1"
                                       url="/browse/investigation/1/dataset"
                                     >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                      <WithStyles(ForwardRef(Tooltip))
-                                        PopperProps={
-                                          Object {
-                                            "popperOptions": Object {
-                                              "modifiers": Object {
-                                                "arrow": Object {
-                                                  "element": null,
-                                                  "enabled": false,
-                                                },
-                                              },
-                                            },
-                                          }
-                                        }
-                                        classes={
-                                          Object {
-                                            "popper": "makeStyles-popper-3",
-                                            "tooltip": "makeStyles-tooltip-2",
-                                          }
-                                        }
-                                        disableHoverListener={true}
-                                        title={
-                                          <React.Fragment>
-                                            Test 1
-                                            <span
-                                              className="makeStyles-arrow-4"
-                                            />
-                                          </React.Fragment>
-                                        }
-=======
                                       <ArrowTooltip
                                         percentageWidth={20}
                                         title="Test 1"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -1026,22 +694,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                              "arrow": "MuiTooltip-arrow",
-                                              "popper": "MuiTooltip-popper makeStyles-popper-3",
-                                              "popperArrow": "MuiTooltip-popperArrow",
-                                              "popperInteractive": "MuiTooltip-popperInteractive",
-                                              "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
-                                              "tooltipArrow": "MuiTooltip-tooltipArrow",
-                                              "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
-                                              "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
-                                              "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
-                                              "tooltipPlacementTop": "MuiTooltip-tooltipPlacementTop",
-                                              "touch": "MuiTooltip-touch",
-=======
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -1069,9 +723,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -1084,7 +741,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 Test 1
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -1263,24 +920,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                 <div
                                                   class=""
                                                 >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                                  <span>
-                                                    Test 1
-                                                  </span>
-                                                </a>
-                                              </div>
-                                            }
-                                            className="MuiTooltip-popper makeStyles-popper-3"
-                                            id={null}
-                                            open={false}
-                                            placement="bottom"
-                                            popperOptions={
-                                              Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-=======
                                                   <a
                                                     aria-label="Breadcrumb-hierarchy-1"
                                                     class="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
@@ -1292,7 +931,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </a>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -1303,33 +942,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                       "element": null,
                                                       "enabled": false,
                                                     },
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                                   },
                                                 }
                                               }
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                            }
-                                            transition={true}
-                                          />
-                                        </ForwardRef(Tooltip)>
-                                      </WithStyles(ForwardRef(Tooltip))>
-                                    </ArrowTooltip>
-                                  </WrappedBreadcrumb>
-                                </li>
-                                <li
-                                  aria-hidden={true}
-                                  className="MuiBreadcrumbs-separator"
-                                  key="separator-2"
-                                />
-                                <li
-                                  className="MuiBreadcrumbs-li"
-                                  key="child-3"
-                                >
-                                  <WrappedBreadcrumb
-                                    ariaLabel="Breadcrumb-hierarchy-2"
-                                    displayName="INVESTIGATION 1"
-                                    key=".2:$breadcrumb-2"
-=======
                                               transition={true}
                                             />
                                           </ForwardRef(Tooltip)>
@@ -1337,68 +952,23 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-2"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-3"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-hierarchy-2"
                                       displayName="INVESTIGATION 1"
                                       key=".2:$breadcrumb-2"
                                     >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                      <WithStyles(ForwardRef(Tooltip))
-                                        PopperProps={
-                                          Object {
-                                            "popperOptions": Object {
-                                              "modifiers": Object {
-                                                "arrow": Object {
-                                                  "element": null,
-                                                  "enabled": false,
-                                                },
-                                              },
-                                            },
-                                          }
-                                        }
-                                        classes={
-                                          Object {
-                                            "popper": "makeStyles-popper-3",
-                                            "tooltip": "makeStyles-tooltip-2",
-                                          }
-                                        }
-                                        disableHoverListener={true}
-                                        title={
-                                          <React.Fragment>
-                                            INVESTIGATION 1
-                                            <span
-                                              className="makeStyles-arrow-4"
-                                            />
-                                          </React.Fragment>
-                                        }
-=======
                                       <ArrowTooltip
                                         percentageWidth={20}
                                         title="INVESTIGATION 1"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -1415,22 +985,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                              "arrow": "MuiTooltip-arrow",
-                                              "popper": "MuiTooltip-popper makeStyles-popper-3",
-                                              "popperArrow": "MuiTooltip-popperArrow",
-                                              "popperInteractive": "MuiTooltip-popperInteractive",
-                                              "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
-                                              "tooltipArrow": "MuiTooltip-tooltipArrow",
-                                              "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
-                                              "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
-                                              "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
-                                              "tooltipPlacementTop": "MuiTooltip-tooltipPlacementTop",
-                                              "touch": "MuiTooltip-touch",
-=======
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -1458,9 +1014,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -1473,7 +1032,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 INVESTIGATION 1
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -1545,24 +1104,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                 <div
                                                   class=""
                                                 >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                                  <span>
-                                                    INVESTIGATION 1
-                                                  </span>
-                                                </p>
-                                              </div>
-                                            }
-                                            className="MuiTooltip-popper makeStyles-popper-3"
-                                            id={null}
-                                            open={false}
-                                            placement="bottom"
-                                            popperOptions={
-                                              Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-=======
                                                   <p
                                                     aria-label="Breadcrumb-hierarchy-2"
                                                     class="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
@@ -1573,7 +1114,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -1584,34 +1125,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                       "element": null,
                                                       "enabled": false,
                                                     },
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                                   },
                                                 }
                                               }
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                            }
-                                            transition={true}
-                                          />
-                                        </ForwardRef(Tooltip)>
-                                      </WithStyles(ForwardRef(Tooltip))>
-                                    </ArrowTooltip>
-                                  </WrappedBreadcrumb>
-                                </li>
-                                <li
-                                  aria-hidden={true}
-                                  className="MuiBreadcrumbs-separator"
-                                  key="separator-3"
-                                />
-                                <li
-                                  className="MuiBreadcrumbs-li"
-                                  key="child-4"
-                                >
-                                  <WrappedBreadcrumb
-                                    ariaLabel="Breadcrumb-last"
-                                    displayName="Datafiles"
-                                    isLast={true}
-                                    key=".3"
-=======
                                               transition={true}
                                             />
                                           </ForwardRef(Tooltip)>
@@ -1619,28 +1135,14 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-3"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-4"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-last"
@@ -1648,40 +1150,9 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       isLast={true}
                                       key=".3"
                                     >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                      <WithStyles(ForwardRef(Tooltip))
-                                        PopperProps={
-                                          Object {
-                                            "popperOptions": Object {
-                                              "modifiers": Object {
-                                                "arrow": Object {
-                                                  "element": null,
-                                                  "enabled": false,
-                                                },
-                                              },
-                                            },
-                                          }
-                                        }
-                                        classes={
-                                          Object {
-                                            "popper": "makeStyles-popper-3",
-                                            "tooltip": "makeStyles-tooltip-2",
-                                          }
-                                        }
-                                        disableHoverListener={true}
-                                        title={
-                                          <React.Fragment>
-                                            Datafiles
-                                            <span
-                                              className="makeStyles-arrow-4"
-                                            />
-                                          </React.Fragment>
-                                        }
-=======
                                       <ArrowTooltip
                                         percentageWidth={20}
                                         title="breadcrumbs.datafile"
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -1698,22 +1169,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                              "arrow": "MuiTooltip-arrow",
-                                              "popper": "MuiTooltip-popper makeStyles-popper-3",
-                                              "popperArrow": "MuiTooltip-popperArrow",
-                                              "popperInteractive": "MuiTooltip-popperInteractive",
-                                              "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
-                                              "tooltipArrow": "MuiTooltip-tooltipArrow",
-                                              "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
-                                              "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
-                                              "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
-                                              "tooltipPlacementTop": "MuiTooltip-tooltipPlacementTop",
-                                              "touch": "MuiTooltip-touch",
-=======
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -1741,9 +1198,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -1756,7 +1216,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 breadcrumbs.datafile
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -1830,26 +1290,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                 <div
                                                   class=""
                                                 >
-<<<<<<< HEAD:packages/datagateway-dataview/src/page/__snapshots__/breadcrumbs.component.test.tsx.snap
-                                                  <span>
-                                                    <i>
-                                                      Datafiles
-                                                    </i>
-                                                  </span>
-                                                </p>
-                                              </div>
-                                            }
-                                            className="MuiTooltip-popper makeStyles-popper-3"
-                                            id={null}
-                                            open={false}
-                                            placement="bottom"
-                                            popperOptions={
-                                              Object {
-                                                "modifiers": Object {
-                                                  "arrow": Object {
-                                                    "element": null,
-                                                    "enabled": false,
-=======
                                                   <p
                                                     aria-label="Breadcrumb-last"
                                                     class="MuiTypography-root MuiTypography-body1 MuiTypography-colorTextPrimary"
@@ -1862,7 +1302,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -1873,7 +1313,6 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                       "element": null,
                                                       "enabled": false,
                                                     },
->>>>>>> master:packages/datagateway-dataview/src/__snapshots__/breadcrumbs.component.test.tsx.snap
                                                   },
                                                 }
                                               }

@@ -41,7 +41,9 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
           {/* Filters for title and description provided on card */}
           {title && title.filterComponent && (
             <div className={classes.filter}>
-              <Typography variant="subtitle1">{title.label}</Typography>
+              <Typography aria-label="title-label" variant="subtitle1">
+                {title.label}
+              </Typography>
               {title.filterComponent &&
                 title.filterComponent(
                   title.label ? title.label : title.dataKey,
@@ -51,7 +53,7 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
           )}
           {description && description.filterComponent && (
             <div className={classes.filter}>
-              <Typography variant="subtitle1">
+              <Typography aria-label="description-label" variant="subtitle1">
                 {description.label ? description.label : description.dataKey}
               </Typography>
               {description.filterComponent(
@@ -82,7 +84,10 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
 
       {/* Advanced filters link */}
       <div className={classes.link}>
-        <Link onClick={() => setAdvSearchCollapsed((prev) => !prev)}>
+        <Link
+          aria-label="advanced-filters-link"
+          onClick={() => setAdvSearchCollapsed((prev) => !prev)}
+        >
           {!advSearchCollapsed
             ? 'Show Advanced Search'
             : 'Hide Advanced Search'}
