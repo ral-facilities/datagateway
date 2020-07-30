@@ -33,7 +33,7 @@ describe('AdvancedFilter', () => {
     );
   });
 
-  it.skip('shows description correctly');
+  it.todo('shows description correctly');
 
-  it.skip('shows information correctly');
+  it.todo('shows information correctly');
 });

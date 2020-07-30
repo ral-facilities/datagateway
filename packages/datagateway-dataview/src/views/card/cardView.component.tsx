@@ -36,7 +36,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Pagination } from '@material-ui/lab';
 
-import EntityCard, { EntityImageDetails } from './card.component';
+import EntityCard, { EntityImageDetails } from './entityCard.component';
 import AdvancedFilter from './advancedFilter.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>

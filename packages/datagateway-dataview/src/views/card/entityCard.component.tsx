@@ -198,6 +198,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
       {/* We allow for additional width when having an image in the card (see card styles). */}
       {image && (
         <CardMedia
+          aria-label="card-image"
           component="img"
           className={classes.cardImage}
           image={image.url}
@@ -234,6 +235,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   variant="h5"
                 >
                   <span
+                    aria-label="card-title"
                     style={{
                       whiteSpace: isDescriptionCollapsed ? 'normal' : 'nowrap',
                     }}
