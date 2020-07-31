@@ -413,8 +413,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   // TODO: Creates duplicate count request.
   // TODO: This should be not how filter/sort changes work; make it simpler (may require a big change).
-  // React.useEffect(() => setFilterChange(true), [filters]);
-  // React.useEffect(() => setSortChange(true), [sort]);
+  React.useEffect(() => setFilterChange(true), [filters]);
+  React.useEffect(() => setSortChange(true), [sort]);
 
   React.useEffect(() => {
     // TODO: Move this separately so that sort and filters are handled separately
@@ -431,10 +431,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
     if (!loading && dataCount > 0) {
       if (!loadedData) {
-        // // Calculate the maximum pages needed for pagination.
-        // setNumPages(~~((dataCount + maxResults - 1) / maxResults));
-        // console.log('num pages: ', numPages);
-
         // Calculate the start/end indexes for the data.
         const startIndex = page * maxResults - (maxResults - 1) - 1;
         console.log('startIndex: ', startIndex);
@@ -443,7 +439,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
         console.log('stopIndex: ', stopIndex);
 
-        if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
+        if (numPages > -1 && startIndex > -1 && stopIndex > -1) {
           // Clear data in the state before loading new data.
           clearData();
           loadData({ startIndex, stopIndex });
