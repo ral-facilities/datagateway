@@ -99,6 +99,10 @@ const useCardStyles = makeStyles((theme: Theme) => {
 
     informationLabel: {
       float: 'left',
+      '& p': {
+        // Support aligning icons and label.
+        display: 'flex',
+      },
     },
 
     informationData: {
@@ -145,12 +149,15 @@ export interface EntityImageDetails {
 
 export interface EntityCardDetails {
   label: string;
+  icon?: JSX.Element;
   content?: React.ReactNode;
 }
 
 interface EntityCardProps {
+  // TODO: Does title need icon support?
   title: EntityCardDetails;
 
+  // TODO: Does description need icon support?
   description?: string;
   information?: EntityCardDetails[];
 
@@ -291,7 +298,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   {information &&
                     information.map(
                       (info: EntityCardDetails, index: number) => (
-                        <Typography key={index}>{`${info.label}:`}</Typography>
+                        <Typography key={index}>
+                          {info.icon}
+                          {`${info.label}:`}
+                        </Typography>
                       )
                     )}
                 </div>

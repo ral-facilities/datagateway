@@ -27,6 +27,11 @@
 // import { AnyAction } from 'redux';
 // import { connect } from 'react-redux';
 // import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
+// import {
+//   Assessment,
+//   CalendarToday,
+//   ConfirmationNumber,
+// } from '@material-ui/icons';
 
 // interface DLSVisitsCVProps {
 //   proposalName: string;
@@ -141,21 +146,25 @@
 //       }}
 //       information={[
 //         {
+//           icon: <Assessment />,
 //           label: 'Beamline',
 //           dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME',
 //           filterComponent: textFilter,
 //         },
 //         {
+//           icon: <ConfirmationNumber />,
 //           label: 'Dataset Count',
 //           dataKey: 'DATASET_COUNT',
 //           disableSort: true,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Start Date',
 //           dataKey: 'STARTDATE',
 //           filterComponent: dateFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'End Date',
 //           dataKey: 'ENDDATE',
 //           filterComponent: dateFilter,

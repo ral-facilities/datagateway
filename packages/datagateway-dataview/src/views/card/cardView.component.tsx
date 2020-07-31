@@ -69,6 +69,7 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
 export interface CardViewDetails {
   dataKey: string;
 
+  icon?: JSX.Element;
   label?: string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   content?: (data?: any) => React.ReactNode;
@@ -697,6 +698,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           // Keep the dataKey in so we can use it for adding the tooltip
                           // once content has been created.
                           dataKey: details.dataKey,
+                          icon: details.icon,
                         }))
                         // Filter afterwards to only show content with information.
                         .filter((v) => v.content)

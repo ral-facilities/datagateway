@@ -179,10 +179,6 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>,
   ownProps: DatasetTableProps
 ): DatasetTableDispatchProps => ({
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
     dispatch(
       fetchDatasets({
@@ -208,6 +204,7 @@ const mapDispatchToProps = (
         },
       ])
     ),
+
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
@@ -222,6 +219,11 @@ const mapDispatchToProps = (
         },
       ])
     ),
+
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {

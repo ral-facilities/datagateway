@@ -205,11 +205,6 @@ const InvestigationTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): InvestigationTableDispatchProps => ({
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
@@ -219,6 +214,11 @@ const mapDispatchToProps = (
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
   fetchAllIds: () => dispatch(fetchAllIds('investigation')),
+
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {

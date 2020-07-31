@@ -2,6 +2,8 @@ import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
+  ConfirmationNumber,
+  CalendarToday,
 } from '@material-ui/icons';
 import {
   addToCart,
@@ -163,15 +165,18 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       }}
       information={[
         {
+          icon: <ConfirmationNumber />,
           label: 'Datafile Count',
           dataKey: 'DATAFILE_COUNT',
         },
         {
+          icon: <CalendarToday />,
           label: 'Created Time',
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarToday />,
           label: 'Modified Time',
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
@@ -229,12 +234,35 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DatasetCVDispatchProps => ({
   fetchData: (investigationId: number, offsetParams?: IndexRange) =>
-    dispatch(fetchDatasets({ investigationId, offsetParams })),
+    dispatch(
+      fetchDatasets({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              INVESTIGATION_ID: { eq: investigationId },
+            }),
+          },
+        ],
+      })
+    ),
   fetchCount: (investigationId: number) =>
-    dispatch(fetchDatasetCount(investigationId)),
+    dispatch(
+      fetchDatasetCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: investigationId },
+          }),
+        },
+      ])
+    ),
+
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
+
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   pushSort: (sort: string, order: Order | null) =>

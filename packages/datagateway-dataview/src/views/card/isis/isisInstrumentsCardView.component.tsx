@@ -1,4 +1,5 @@
 // import { Link } from '@material-ui/core';
+// import { Title, Link as LinkIcon } from '@material-ui/icons';
 // import {
 //   Entity,
 //   fetchInstrumentCount,
@@ -96,11 +97,14 @@
 //       }}
 //       information={[
 //         {
+//           // TODO: Should this be Title icon?
+//           icon: <Title />,
 //           label: 'Type',
 //           dataKey: 'TYPE',
 //           filterComponent: textFilter,
 //         },
 //         {
+//           icon: <LinkIcon />,
 //           label: 'URL',
 //           dataKey: 'URL',
 //           // eslint-disable-next-line react/display-name

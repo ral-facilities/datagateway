@@ -2,6 +2,10 @@ import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
+  Public,
+  Fingerprint,
+  CalendarToday,
+  ConfirmationNumber,
 } from '@material-ui/icons';
 import {
   addToCart,
@@ -201,32 +205,38 @@ const InvestigationCardView = (
       }}
       information={[
         {
+          icon: <Public />,
           label: 'DOI',
           dataKey: 'DOI',
           filterComponent: textFilter,
         },
         {
+          icon: <Fingerprint />,
           label: 'Visit ID',
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
+          icon: <Fingerprint />,
           label: 'RB Number',
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
         },
         {
+          icon: <ConfirmationNumber />,
           label: 'Dataset Count',
           dataKey: 'DATASET_COUNT',
           filterComponent: textFilter,
           disableSort: true,
         },
         {
+          icon: <CalendarToday />,
           label: 'Start Date',
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarToday />,
           label: 'End Date',
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
@@ -264,11 +274,6 @@ const InvestigationCardView = (
           );
         },
       ]}
-      // TODO: Add image into card views when image is supported by API.
-      // image={{
-      //   url: '[IMAGE URL]',
-      //   title: 'Investigation Image',
-      // }}
       customFilters={[
         {
           label: 'Type ID',
@@ -305,6 +310,7 @@ const mapDispatchToProps = (
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInvestigations({ offsetParams })),
   fetchCount: () => dispatch(fetchInvestigationCount()),
+
   addToCart: (entityIds: number[]) =>
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
@@ -312,6 +318,7 @@ const mapDispatchToProps = (
   fetchTypeFilter: () => dispatch(fetchFilter('investigation', 'TYPE_ID')),
   fetchFacilityFilter: () =>
     dispatch(fetchFilter('investigation', 'FACILITY_ID')),
+
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   pushSort: (sort: string, order: Order | null) =>

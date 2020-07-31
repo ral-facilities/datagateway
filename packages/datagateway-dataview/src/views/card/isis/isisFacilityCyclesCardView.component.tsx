@@ -18,6 +18,7 @@
 // import { StateType, ViewsType } from 'datagateway-common/lib/state/app.types';
 // import { AnyAction } from 'redux';
 // import { connect } from 'react-redux';
+// import { CalendarToday } from '@material-ui/icons';
 
 // // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 // interface ISISFacilityCyclesCVProps {
@@ -104,11 +105,13 @@
 //       description={{ dataKey: 'DESCRIPTION' }}
 //       information={[
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Start Date',
 //           dataKey: 'STARTDATE',
 //           filterComponent: dateFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'End Date',
 //           dataKey: 'ENDDATE',
 //           filterComponent: dateFilter,

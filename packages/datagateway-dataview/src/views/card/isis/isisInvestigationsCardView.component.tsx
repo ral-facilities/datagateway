@@ -2,6 +2,11 @@
 // import {
 //   AddCircleOutlineOutlined,
 //   RemoveCircleOutlineOutlined,
+//   Fingerprint,
+//   Public,
+//   File,
+//   Assessment,
+//   CalendarToday,
 // } from '@material-ui/icons';
 // import {
 //   addToCart,
@@ -166,39 +171,45 @@
 //       }}
 //       information={[
 //         {
-//           label: 'Visit Id',
+//           icon: <Fingerprint />,
+//           label: 'Visit ID',
 //           dataKey: 'VISIT_ID',
 //           filterComponent: textFilter,
 //         },
 //         {
+//           icon: <Fingerprint />,
 //           label: 'RB Number',
 //           dataKey: 'NAME',
 //           filterComponent: textFilter,
 //         },
 //         {
+//           icon: <Public />,
 //           label: 'DOI',
 //           dataKey: 'STUDYINVESTIGATION[0].STUDY.PID',
 //           filterComponent: textFilter,
 //         },
 //         {
+//           icon: <File />,
 //           label: 'Size',
 //           dataKey: 'SIZE',
 //           content: (investigation: Investigation) =>
 //             formatBytes(investigation.SIZE),
 //           disableSort: true,
 //         },
-//         // TODO: Needs tooltip to handle overflowing text.
 //         {
+//           icon: <Assessment />,
 //           label: 'Instrument',
 //           dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
 //           filterComponent: textFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Start Date',
 //           dataKey: 'STARTDATE',
 //           filterComponent: dateFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'End Date',
 //           dataKey: 'ENDDATE',
 //           filterComponent: dateFilter,

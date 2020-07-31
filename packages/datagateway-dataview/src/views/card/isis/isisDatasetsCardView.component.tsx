@@ -30,6 +30,8 @@
 //   AddCircleOutlineOutlined,
 //   RemoveCircleOutlineOutlined,
 //   GetApp,
+//   File,
+//   CalendarToday,
 // } from '@material-ui/icons';
 // import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 
@@ -151,17 +153,20 @@
 //       }}
 //       information={[
 //         {
+//           icon: <File />,
 //           label: 'Size',
 //           dataKey: 'SIZE',
 //           content: (dataset: Dataset) => formatBytes(dataset.SIZE),
 //           disableSort: true,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Create Time',
 //           dataKey: 'CREATE_TIME',
 //           filterComponent: dateFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Modified Time',
 //           dataKey: 'MOD_TIME',
 //           filterComponent: dateFilter,

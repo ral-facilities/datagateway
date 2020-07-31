@@ -31,6 +31,8 @@
 // import {
 //   AddCircleOutlineOutlined,
 //   RemoveCircleOutlineOutlined,
+//   ConfirmationNumber,
+//   CalendarToday,
 // } from '@material-ui/icons';
 // import { Button } from '@material-ui/core';
 // import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
@@ -170,26 +172,31 @@
 //       }}
 //       information={[
 //         {
+//           icon: <ConfirmationNumber />,
 //           label: 'Datafile Count',
 //           dataKey: 'DATAFILE_COUNT',
 //           disableSort: true,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Create Time',
 //           dataKey: 'CREATE_TIME',
 //           filterComponent: dateFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Modified Time',
 //           dataKey: 'MOD_TIME',
 //           filterComponent: dateFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'Start Date',
 //           dataKey: 'STARTDATE',
 //           filterComponent: dateFilter,
 //         },
 //         {
+//           icon: <CalendarToday />,
 //           label: 'End Date',
 //           dataKey: 'END_DATE',
 //           filterComponent: dateFilter,
