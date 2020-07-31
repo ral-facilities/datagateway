@@ -101,6 +101,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                       "elevation7": "MuiPaper-elevation7",
                       "elevation8": "MuiPaper-elevation8",
                       "elevation9": "MuiPaper-elevation9",
+                      "outlined": "MuiPaper-outlined",
                       "root": "MuiPaper-root",
                       "rounded": "MuiPaper-rounded",
                     }
@@ -119,7 +120,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                         aria-label="breadcrumb"
                         classes={
                           Object {
-                            "root": "WithStyles(ForwardRef(Breadcrumbs))-root-28",
+                            "root": "WithStyles(ForwardRef(Breadcrumbs))-root-1",
                           }
                         }
                         separator=""
@@ -130,7 +131,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                             Object {
                               "li": "MuiBreadcrumbs-li",
                               "ol": "MuiBreadcrumbs-ol",
-                              "root": "MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28",
+                              "root": "MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1",
                               "separator": "MuiBreadcrumbs-separator",
                             }
                           }
@@ -138,13 +139,13 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                         >
                           <WithStyles(ForwardRef(Typography))
                             aria-label="breadcrumb"
-                            className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28"
+                            className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1"
                             color="textSecondary"
                             component="nav"
                           >
                             <ForwardRef(Typography)
                               aria-label="breadcrumb"
-                              className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28"
+                              className="MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1"
                               classes={
                                 Object {
                                   "alignCenter": "MuiTypography-alignCenter",
@@ -184,7 +185,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                             >
                               <nav
                                 aria-label="breadcrumb"
-                                className="MuiTypography-root MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-28 MuiTypography-body1 MuiTypography-colorTextSecondary"
+                                className="MuiTypography-root MuiBreadcrumbs-root WithStyles(ForwardRef(Breadcrumbs))-root-1 MuiTypography-body1 MuiTypography-colorTextSecondary"
                               >
                                 <ol
                                   className="MuiBreadcrumbs-ol"
@@ -217,8 +218,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -226,7 +227,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             <React.Fragment>
                                               breadcrumbs.home
                                               <span
-                                                className="makeStyles-arrow-65"
+                                                className="makeStyles-arrow-4"
                                               />
                                             </React.Fragment>
                                           }
@@ -246,9 +247,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -261,7 +265,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 breadcrumbs.home
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -343,7 +347,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -364,24 +368,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-0"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-1"
@@ -411,8 +402,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -420,7 +411,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             <React.Fragment>
                                               breadcrumbs.investigation
                                               <span
-                                                className="makeStyles-arrow-65"
+                                                className="makeStyles-arrow-4"
                                               />
                                             </React.Fragment>
                                           }
@@ -440,9 +431,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -455,7 +449,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 breadcrumbs.investigation
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -645,7 +639,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </a>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -666,24 +660,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-1"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-2"
@@ -713,8 +694,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -722,7 +703,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             <React.Fragment>
                                               Test 1
                                               <span
-                                                className="makeStyles-arrow-65"
+                                                className="makeStyles-arrow-4"
                                               />
                                             </React.Fragment>
                                           }
@@ -742,9 +723,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -757,7 +741,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 Test 1
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -947,7 +931,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </a>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -968,24 +952,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-2"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-3"
@@ -1014,8 +985,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -1023,7 +994,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             <React.Fragment>
                                               INVESTIGATION 1
                                               <span
-                                                className="makeStyles-arrow-65"
+                                                className="makeStyles-arrow-4"
                                               />
                                             </React.Fragment>
                                           }
@@ -1043,9 +1014,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -1058,7 +1032,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 INVESTIGATION 1
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -1140,7 +1114,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
@@ -1161,24 +1135,11 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                       </ArrowTooltip>
                                     </WrappedBreadcrumb>
                                   </li>
-                                  <WithStyles(BreadcrumbSeparator)
+                                  <li
+                                    aria-hidden={true}
                                     className="MuiBreadcrumbs-separator"
                                     key="separator-3"
-                                  >
-                                    <BreadcrumbSeparator
-                                      className="MuiBreadcrumbs-separator"
-                                      classes={
-                                        Object {
-                                          "root": "PrivateBreadcrumbSeparator-root-74",
-                                        }
-                                      }
-                                    >
-                                      <li
-                                        aria-hidden={true}
-                                        className="PrivateBreadcrumbSeparator-root-74 MuiBreadcrumbs-separator"
-                                      />
-                                    </BreadcrumbSeparator>
-                                  </WithStyles(BreadcrumbSeparator)>
+                                  />
                                   <li
                                     className="MuiBreadcrumbs-li"
                                     key="child-4"
@@ -1208,8 +1169,8 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           }
                                           classes={
                                             Object {
-                                              "popper": "makeStyles-popper-64",
-                                              "tooltip": "makeStyles-tooltip-63",
+                                              "popper": "makeStyles-popper-3",
+                                              "tooltip": "makeStyles-tooltip-2",
                                             }
                                           }
                                           disableHoverListener={true}
@@ -1217,7 +1178,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             <React.Fragment>
                                               breadcrumbs.datafile
                                               <span
-                                                className="makeStyles-arrow-65"
+                                                className="makeStyles-arrow-4"
                                               />
                                             </React.Fragment>
                                           }
@@ -1237,9 +1198,12 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             }
                                             classes={
                                               Object {
-                                                "popper": "MuiTooltip-popper makeStyles-popper-64",
+                                                "arrow": "MuiTooltip-arrow",
+                                                "popper": "MuiTooltip-popper makeStyles-popper-3",
+                                                "popperArrow": "MuiTooltip-popperArrow",
                                                 "popperInteractive": "MuiTooltip-popperInteractive",
-                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-63",
+                                                "tooltip": "MuiTooltip-tooltip makeStyles-tooltip-2",
+                                                "tooltipArrow": "MuiTooltip-tooltipArrow",
                                                 "tooltipPlacementBottom": "MuiTooltip-tooltipPlacementBottom",
                                                 "tooltipPlacementLeft": "MuiTooltip-tooltipPlacementLeft",
                                                 "tooltipPlacementRight": "MuiTooltip-tooltipPlacementRight",
@@ -1252,7 +1216,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                               <React.Fragment>
                                                 breadcrumbs.datafile
                                                 <span
-                                                  className="makeStyles-arrow-65"
+                                                  className="makeStyles-arrow-4"
                                                 />
                                               </React.Fragment>
                                             }
@@ -1338,7 +1302,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   </p>
                                                 </div>
                                               }
-                                              className="MuiTooltip-popper makeStyles-popper-64"
+                                              className="MuiTooltip-popper makeStyles-popper-3"
                                               id={null}
                                               open={false}
                                               placement="bottom"
