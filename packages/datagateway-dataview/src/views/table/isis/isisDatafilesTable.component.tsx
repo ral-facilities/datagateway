@@ -206,9 +206,26 @@ const mapDispatchToProps = (
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
-    dispatch(fetchDatafiles(datasetId, offsetParams)),
-  fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
-
+    dispatch(
+      fetchDatafiles({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+          },
+        ],
+      })
+    ),
+  fetchCount: (datasetId: number) =>
+    dispatch(
+      fetchDatafileCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+        },
+      ])
+    ),
   fetchDetails: (datafileId: number) =>
     dispatch(fetchDatafileDetails(datafileId)),
   downloadData: (datafileId: number, filename: string) =>

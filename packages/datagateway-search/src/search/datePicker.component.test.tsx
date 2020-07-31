@@ -35,6 +35,18 @@ describe('DatePicker component tests', () => {
         datafile: true,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+      settingsLoaded: true,
     };
 
     mockStore = configureStore([thunk]);
@@ -44,8 +56,6 @@ describe('DatePicker component tests', () => {
     const wrapper = shallow(<SelectDates store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
-
-  // test clicking and typing
 
   it('sends selectStartDate action when user types number into Start Date input', () => {
     const testStore = mockStore(state);

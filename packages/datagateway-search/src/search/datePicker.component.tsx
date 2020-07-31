@@ -44,6 +44,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           className={classes.root}
           allowKeyboardControl
           disableFuture
+          inputVariant="outlined"
           maxDate={endDate || new Date('2100-01-01')}
           maxDateMessage="Invalid date range"
           format="yyyy-MM-dd"
@@ -60,6 +61,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           clearable
           className={classes.root}
           allowKeyboardControl
+          inputVariant="outlined"
           disableFuture
           minDate={startDate || new Date('1984-01-01')}
           minDateMessage="Invalid date range"

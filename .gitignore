@@ -29,3 +29,4 @@ yarn-error.log*
 **/public/settings.json
 **/public/datagateway-dataview-settings.json
 **/public/datagateway-download-settings.json
+**/public/datagateway-search-settings.json

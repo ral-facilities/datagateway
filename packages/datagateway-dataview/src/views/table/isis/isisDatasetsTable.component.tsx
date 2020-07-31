@@ -217,13 +217,29 @@ const mapDispatchToProps = (
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
     dispatch(
       fetchDatasets({
-        investigationId,
         offsetParams,
-        optionalParams: { getSize: true },
+        getSize: true,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              INVESTIGATION_ID: { eq: investigationId },
+            }),
+          },
+        ],
       })
     ),
   fetchCount: (investigationId: number) =>
-    dispatch(fetchDatasetCount(investigationId)),
+    dispatch(
+      fetchDatasetCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: investigationId },
+          }),
+        },
+      ])
+    ),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
   downloadData: (datasetId: number, name: string) =>
     dispatch(downloadDataset(datasetId, name)),

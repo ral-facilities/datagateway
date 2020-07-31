@@ -10,9 +10,7 @@ describe('Investigations Table', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
   });
 
@@ -26,25 +24,21 @@ describe('Investigations Table', () => {
     let columnWidth = 0;
 
     cy.window()
-      .then(window => {
+      .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = (windowWidth - 40 - 40) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]')
-      .eq(2)
-      .as('titleColumn');
-    cy.get('[role="columnheader"]')
-      .eq(3)
-      .as('visitColumn');
+    cy.get('[role="columnheader"]').eq(2).as('titleColumn');
+    cy.get('[role="columnheader"]').eq(3).as('visitColumn');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@visitColumn').should($column => {
+    cy.get('@visitColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -55,14 +49,33 @@ describe('Investigations Table', () => {
       .trigger('mousemove', { clientX: 200 })
       .trigger('mouseup');
 
-    cy.get('@titleColumn').should($column => {
+    cy.get('@titleColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@visitColumn').should($column => {
+    cy.get('@visitColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
+    });
+
+    // table width should grow if a column grows too large
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 800 })
+      .trigger('mouseup');
+
+    cy.get('@visitColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.equal(70);
+    });
+
+    cy.get('[aria-label="grid"]').then(($grid) => {
+      const { width } = $grid[0].getBoundingClientRect();
+      cy.window().should(($window) => {
+        expect(width).to.be.greaterThan($window.innerWidth);
+      });
     });
   });
 
@@ -122,9 +135,7 @@ describe('Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
 
       cy.get('[aria-rowcount="4"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
@@ -138,13 +149,11 @@ describe('Investigations Table', () => {
         .find('button')
         .click();
 
-      cy.get('.MuiPickersDay-day[tabindex="0"]')
-        .first()
-        .click();
+      cy.get('.MuiPickersDay-day[tabindex="0"]').first().click();
 
       cy.contains('OK').click();
 
-      let date = new Date();
+      const date = new Date();
       date.setDate(1);
 
       cy.get('[aria-label="Start Date date filter to"]').should(
@@ -159,13 +168,9 @@ describe('Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]')
-        .find('input')
-        .type('dog');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
 
-      cy.get('[aria-label="Filter by Visit ID"]')
-        .find('input')
-        .type('9');
+      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('9');
 
       cy.get('[aria-rowcount="2"]').should('exist');
     });
@@ -173,9 +178,7 @@ describe('Investigations Table', () => {
 
   describe('should be able to view details', () => {
     it('when no other row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains(
         'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
@@ -184,13 +187,9 @@ describe('Investigations Table', () => {
     });
 
     it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]')
-        .eq(2)
-        .click();
+      cy.get('[aria-label="Show details"]').eq(2).click();
 
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
       cy.contains(
         'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
@@ -202,13 +201,9 @@ describe('Investigations Table', () => {
     });
 
     it('and then not view details anymore', () => {
-      cy.get('[aria-label="Show details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-label="Hide details"]')
-        .first()
-        .click();
+      cy.get('[aria-label="Hide details"]').first().click();
 
       cy.contains(
         'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'

@@ -35,6 +35,18 @@ describe('Search text box component tests', () => {
         datafile: true,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+      settingsLoaded: true,
     };
 
     mockStore = configureStore([thunk]);
@@ -56,7 +68,7 @@ describe('Search text box component tests', () => {
     );
 
     wrapper
-      .find('[aria-label="search text input"]')
+      .find('[aria-label="search text input"] input')
       .simulate('change', { target: { value: 'test' } });
 
     expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));

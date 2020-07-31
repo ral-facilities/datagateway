@@ -17,6 +17,7 @@ exports[`DatePicker component tests renders correctly 1`] = `
           "aria-label": "start date input",
         }
       }
+      inputVariant="outlined"
       invalidDateMessage="Invalid Date Format"
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
@@ -46,6 +47,7 @@ exports[`DatePicker component tests renders correctly 1`] = `
           "aria-label": "end date input",
         }
       }
+      inputVariant="outlined"
       invalidDateMessage="Invalid Date Format"
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"

@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Datafile search table component renders correctly 1`] = `
+<WithStyles(VirtualizedTable)
+  allIds={
+    Array [
+      1,
+    ]
+  }
+  columns={
+    Array [
+      Object {
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "label": "Name",
+      },
+      Object {
+        "dataKey": "LOCATION",
+        "filterComponent": [Function],
+        "label": "Location",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "FILESIZE",
+        "label": "Size",
+      },
+      Object {
+        "dataKey": "MOD_TIME",
+        "filterComponent": [Function],
+        "label": "Modified Time",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "DATASET_ID": 1,
+        "FILESIZE": 1,
+        "ID": 1,
+        "LOCATION": "/test1",
+        "MOD_TIME": "2019-07-23",
+        "NAME": "Test 1",
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  loadMoreRows={[Function]}
+  loading={false}
+  onCheck={[Function]}
+  onSort={[Function]}
+  onUncheck={[Function]}
+  selectedRows={Array []}
+  sort={Object {}}
+  totalRowCount={0}
+/>
+`;
+
+exports[`Datafile search table component renders details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Name:
+    </b>
+     
+    Test 1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      File Size:
+    </b>
+     
+    1 B
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      Location:
+    </b>
+     
+    /test1
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;
