@@ -361,9 +361,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   };
 
   React.useEffect(() => {
-    // console.log('Page number (page): ', page);
-    // console.log('Current pageNum (query): ', query.page);
-    // console.log('Page change: ', pageChange);
+    console.log('---------------------------------------');
+    console.log('Page number (page): ', page);
+    console.log('Current pageNum (query): ', query.page);
+    console.log('Page change: ', pageChange);
 
     // Set the page number if it was found in the parameters.
     if (!pageChange) {
@@ -403,14 +404,17 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     // Handle count and reloading of data based on pagination options.
     if (totalDataCount > 0) {
       setDataCount(totalDataCount);
+      // Calculate the maximum pages needed for pagination.
+      setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
+      console.log('num pages: ', numPages);
       setLoadedData(false);
     }
-  }, [totalDataCount]);
+  }, [maxResults, numPages, totalDataCount]);
 
   // TODO: Creates duplicate count request.
   // TODO: This should be not how filter/sort changes work; make it simpler (may require a big change).
-  React.useEffect(() => setFilterChange(true), [filters]);
-  React.useEffect(() => setSortChange(true), [sort]);
+  // React.useEffect(() => setFilterChange(true), [filters]);
+  // React.useEffect(() => setSortChange(true), [sort]);
 
   React.useEffect(() => {
     // TODO: Move this separately so that sort and filters are handled separately
@@ -427,17 +431,17 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
     if (!loading && dataCount > 0) {
       if (!loadedData) {
-        // Calculate the maximum pages needed for pagination.
-        setNumPages(~~((dataCount + maxResults - 1) / maxResults));
+        // // Calculate the maximum pages needed for pagination.
+        // setNumPages(~~((dataCount + maxResults - 1) / maxResults));
         // console.log('num pages: ', numPages);
 
         // Calculate the start/end indexes for the data.
         const startIndex = page * maxResults - (maxResults - 1) - 1;
-        // console.log('startIndex: ', startIndex);
+        console.log('startIndex: ', startIndex);
 
         // End index not incremented for slice method.
         const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-        // console.log('stopIndex: ', stopIndex);
+        console.log('stopIndex: ', stopIndex);
 
         if (numPages !== -1 && startIndex !== -1 && stopIndex !== -1) {
           // Clear data in the state before loading new data.
