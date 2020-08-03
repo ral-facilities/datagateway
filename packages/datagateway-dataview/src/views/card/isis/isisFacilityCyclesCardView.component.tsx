@@ -128,6 +128,7 @@
 //     dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
 //   fetchCount: (instrumentId: number) =>
 //     dispatch(fetchFacilityCycleCount(instrumentId)),
+
 //   pushFilters: (filter: string, data: Filter | null) =>
 //     dispatch(pushPageFilter(filter, data)),
 // });

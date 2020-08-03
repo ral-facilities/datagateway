@@ -282,6 +282,7 @@
 //   removeFromCart: (entityIds: number[]) =>
 //     dispatch(removeFromCart('investigation', entityIds)),
 //   clearData: () => dispatch(clearData()),
+
 //   pushFilters: (filter: string, data: Filter | null) =>
 //     dispatch(pushPageFilter(filter, data)),
 // });

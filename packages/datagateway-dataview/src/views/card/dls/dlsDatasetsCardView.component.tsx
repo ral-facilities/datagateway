@@ -256,13 +256,29 @@
 //   fetchData: (investigationId: number, offsetParams: IndexRange) =>
 //     dispatch(
 //       fetchDatasets({
-//         investigationId,
 //         offsetParams,
-//         optionalParams: { getDatafileCount: true },
+//         getDatafileCount: true,
+//         additionalFilters: [
+//           {
+//             filterType: 'where',
+//             filterValue: JSON.stringify({
+//               INVESTIGATION_ID: { eq: investigationId },
+//             }),
+//           },
+//         ],
 //       })
 //     ),
 //   fetchCount: (investigationId: number) =>
-//     dispatch(fetchDatasetCount(investigationId)),
+//     dispatch(
+//       fetchDatasetCount([
+//         {
+//           filterType: 'where',
+//           filterValue: JSON.stringify({
+//             INVESTIGATION_ID: { eq: investigationId },
+//           }),
+//         },
+//       ])
+//     ),
 //   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
 //   fetchSize: (datasetId: number) => dispatch(fetchDatasetSize(datasetId)),
 //   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),

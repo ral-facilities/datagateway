@@ -129,14 +129,15 @@ const ISISFacilityCyclesTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISFacilityCyclesTableDispatchProps => ({
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
   fetchData: (instrumentId: number, offsetParams: IndexRange) =>
     dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
   fetchCount: (instrumentId: number) =>
     dispatch(fetchFacilityCycleCount(instrumentId)),
+
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (

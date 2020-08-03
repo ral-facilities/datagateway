@@ -97,7 +97,6 @@
 //       }}
 //       information={[
 //         {
-//           // TODO: Should this be Title icon?
 //           icon: <Title />,
 //           label: 'Type',
 //           dataKey: 'TYPE',
@@ -141,6 +140,7 @@
 //   fetchCount: () => dispatch(fetchInstrumentCount()),
 //   fetchDetails: (instrumentId: number) =>
 //     dispatch(fetchInstrumentDetails(instrumentId)),
+
 //   pushFilters: (filter: string, data: Filter | null) =>
 //     dispatch(pushPageFilter(filter, data)),
 // });

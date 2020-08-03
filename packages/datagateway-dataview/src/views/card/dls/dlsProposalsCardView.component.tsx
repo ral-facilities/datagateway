@@ -114,6 +114,7 @@
 //         },
 //       ])
 //     ),
+
 //   pushFilters: (filter: string, data: Filter | null) =>
 //     dispatch(pushPageFilter(filter, data)),
 // });

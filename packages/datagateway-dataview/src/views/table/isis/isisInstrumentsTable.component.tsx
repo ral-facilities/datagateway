@@ -111,15 +111,16 @@ const ISISInstrumentsTable = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISInstrumentsTableDispatchProps => ({
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
   fetchData: (offsetParams: IndexRange) =>
     dispatch(fetchInstruments(offsetParams)),
   fetchCount: () => dispatch(fetchInstrumentCount()),
   fetchDetails: (instrumentId: number) =>
     dispatch(fetchInstrumentDetails(instrumentId)),
+
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
 });
 
 const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
