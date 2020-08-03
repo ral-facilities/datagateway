@@ -14,6 +14,9 @@ exports[`Data column header component renders correctly with filter but no sort 
       }
     }
   >
+    <div>
+      Test
+    </div>
     Test
     <TextColumnFilter
       label="test"
@@ -73,6 +76,9 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       }
     }
   >
+    <div>
+      Test
+    </div>
     <WithStyles(ForwardRef(TableSortLabel))
       active={false}
       onClick={[Function]}
@@ -137,6 +143,9 @@ exports[`Data column header component renders correctly with sort but no filter 
       }
     }
   >
+    <div>
+      Test
+    </div>
     <WithStyles(ForwardRef(TableSortLabel))
       active={false}
       onClick={[Function]}
@@ -197,6 +206,9 @@ exports[`Data column header component renders correctly without sort or filter 1
       }
     }
   >
+    <div>
+      Test
+    </div>
     Test
   </div>
   <Draggable
