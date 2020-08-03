@@ -49,7 +49,7 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
       minWidth: 120,
     },
     expandDetails: {
-      maxWidth: 360,
+      // maxWidth: 360,
       width: '100%',
     },
     selectedChips: {
@@ -478,7 +478,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         justify="center"
         alignItems="center"
         style={{ paddingBottom: '5vh' }}
+        xs={12}
       >
+        {/* Advanced filters  */}
         {(title.filterComponent ||
           (description && description.filterComponent) ||
           hasInfoFilters) && (
@@ -491,8 +493,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           </Grid>
         )}
 
+        {/* Maximum results selection */}
         <Grid item xs={12}>
-          {/* Maximum results selection */}
           {/* Do not show if the number of data is smaller than the 
               smallest amount of results to display (10) or the smallest amount available. */}
           {dataCount > resOptions[0] && (
@@ -533,209 +535,219 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         </Grid>
       </Grid>
 
-      {/* TODO: Have sort/filters in a separate container to the cards list? */}
-      <Grid
-        container
-        direction="row"
-        justify={customFilters ? 'flex-start' : 'center'}
-        alignItems={customFilters ? 'flex-start' : 'center'}
-        spacing={10}
-        xs={12}
-      >
-        {/* TODO: When browser width becomes smaller this is smaller in width 
+      {/* TODO: When browser width becomes smaller this is smaller in width 
                     (needs to expand to take up full width) */}
-        <Grid
-          container
-          direction="column"
-          justify="flex-start"
-          alignItems="stretch"
-          xs={3}
-          spacing={5}
-          style={{ padding: '1%' }}
-        >
-          <Grid item xs>
-            <Paper>
-              <Box p={2}>
-                <Typography variant="h5">Sort By</Typography>
-              </Box>
-
-              {/* Show all the available sort options: 
-                  TITLE, DESCRIPTION and the further information (if provided) */}
-              <Box>
-                <List component="nav">
-                  {cardSort &&
-                    cardSort.map((s, i) => (
-                      <ListItem
-                        key={i}
-                        button
-                        onClick={() => {
-                          onSort(s.dataKey, nextSortDirection(s.dataKey));
-                          setSortChange(true);
-                        }}
-                      >
-                        <ListItemText primary={s.label} />
-                        <ListItemIcon>
-                          <TableSortLabel
-                            active={s.dataKey in sort}
-                            direction={sort[s.dataKey]}
-                          >
-                            {s.dataKey in sort && sort[s.dataKey]}
-                          </TableSortLabel>
-                        </ListItemIcon>
-                      </ListItem>
-                    ))}
-                </List>
-              </Box>
-            </Paper>
-          </Grid>
-
-          {/* Filtering options */}
-          {customFilters && (
+      <Grid container direction="row">
+        <Grid item xs={3} style={{ padding: '1%' }}>
+          <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="stretch"
+            spacing={5}
+            // style={{ padding: '1%', width: '100%' }}
+            xs={12}
+          >
             <Grid item xs>
               <Paper>
                 <Box p={2}>
-                  <Typography variant="h5">Filter By</Typography>
+                  <Typography variant="h5">Sort By</Typography>
                 </Box>
 
-                {/* Show the specific options available to filter by */}
+                {/* Show all the available sort options: 
+                  TITLE, DESCRIPTION and the further information (if provided) */}
                 <Box>
-                  {filtersInfo &&
-                    Object.entries(filtersInfo).map(
-                      ([filterKey, filter], filterIndex) => {
-                        return (
-                          // TODO: Expand filter panel if any options are selected.
-                          <ExpansionPanel
-                            key={filterIndex}
-                            // TODO: Default expanded changes upon state update.
-                            // defaultExpanded={filter.hasSelectedItems}
-                          >
-                            <ExpansionPanelSummary
-                              expandIcon={<ExpandMoreIcon />}
+                  <List component="nav">
+                    {cardSort &&
+                      cardSort.map((s, i) => (
+                        <ListItem
+                          key={i}
+                          button
+                          onClick={() => {
+                            onSort(s.dataKey, nextSortDirection(s.dataKey));
+                            setSortChange(true);
+                          }}
+                        >
+                          <ListItemText primary={s.label} />
+                          <ListItemIcon>
+                            <TableSortLabel
+                              active={s.dataKey in sort}
+                              direction={sort[s.dataKey]}
                             >
-                              <Typography>{filter.label}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                              <div className={classes.expandDetails}>
-                                <List component="nav">
-                                  {Object.entries(filter.items).map(
-                                    ([item, selected], valueIndex) => (
-                                      <ListItem
-                                        key={valueIndex}
-                                        button
-                                        disabled={selected}
-                                        onClick={() => {
-                                          changeFilter(filterKey, item);
-                                        }}
-                                      >
-                                        <Chip
-                                          label={
-                                            <ArrowTooltip title={item}>
-                                              <Typography>{item}</Typography>
-                                            </ArrowTooltip>
-                                          }
-                                        />
-                                      </ListItem>
-                                    )
-                                  )}
-                                </List>
-                              </div>
-                            </ExpansionPanelDetails>
-                          </ExpansionPanel>
-                        );
-                      }
-                    )}
+                              {s.dataKey in sort && sort[s.dataKey]}
+                            </TableSortLabel>
+                          </ListItemIcon>
+                        </ListItem>
+                      ))}
+                  </List>
                 </Box>
               </Paper>
             </Grid>
-          )}
+
+            {/* Filtering options */}
+            {customFilters && (
+              <Grid item xs>
+                <Paper>
+                  <Box p={2}>
+                    <Typography variant="h5">Filter By</Typography>
+                  </Box>
+
+                  {/* Show the specific options available to filter by */}
+                  <Box>
+                    {filtersInfo &&
+                      Object.entries(filtersInfo).map(
+                        ([filterKey, filter], filterIndex) => {
+                          return (
+                            // TODO: Expand filter panel if any options are selected.
+                            <ExpansionPanel
+                              key={filterIndex}
+                              // TODO: Default expanded changes upon state update.
+                              // defaultExpanded={filter.hasSelectedItems}
+                            >
+                              <ExpansionPanelSummary
+                                expandIcon={<ExpandMoreIcon />}
+                              >
+                                <Typography>{filter.label}</Typography>
+                              </ExpansionPanelSummary>
+                              <ExpansionPanelDetails>
+                                <div className={classes.expandDetails}>
+                                  <List component="nav">
+                                    {Object.entries(filter.items).map(
+                                      ([item, selected], valueIndex) => (
+                                        <ListItem
+                                          key={valueIndex}
+                                          button
+                                          disabled={selected}
+                                          onClick={() => {
+                                            changeFilter(filterKey, item);
+                                          }}
+                                        >
+                                          <Chip
+                                            label={
+                                              <ArrowTooltip title={item}>
+                                                <Typography>{item}</Typography>
+                                              </ArrowTooltip>
+                                            }
+                                          />
+                                        </ListItem>
+                                      )
+                                    )}
+                                  </List>
+                                </div>
+                              </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                          );
+                        }
+                      )}
+                  </Box>
+                </Paper>
+              </Grid>
+            )}
+          </Grid>
         </Grid>
 
-        {/* Card data */}
-        <Grid item>
-          {/* Selected filters array */}
-          {selectedFilters.length > 0 && (
-            <div className={classes.selectedChips}>
-              {selectedFilters.map((filter, filterIndex) => (
-                <li key={filterIndex}>
-                  {filter.items.map((item, itemIndex) => (
-                    <Chip
-                      key={itemIndex}
-                      className={classes.chip}
-                      label={`${filter.label} - ${item}`}
-                      onDelete={() => {
-                        changeFilter(filter.filterKey, item, true);
-                      }}
-                    />
+        <Grid item xs>
+          {/* TODO: Have sort/filters in a separate container to the cards list? */}
+          <Grid
+            container
+            direction="row"
+            justify={customFilters ? 'flex-start' : 'center'}
+            alignItems={customFilters ? 'flex-start' : 'center'}
+            // spacing={10}
+            // xs={12}
+          >
+            {/* Card data */}
+            <Grid item>
+              {/* Selected filters array */}
+              {selectedFilters.length > 0 && (
+                <div className={classes.selectedChips}>
+                  {selectedFilters.map((filter, filterIndex) => (
+                    <li key={filterIndex}>
+                      {filter.items.map((item, itemIndex) => (
+                        <Chip
+                          key={itemIndex}
+                          className={classes.chip}
+                          label={`${filter.label} - ${item}`}
+                          onDelete={() => {
+                            changeFilter(filter.filterKey, item, true);
+                          }}
+                        />
+                      ))}
+                    </li>
                   ))}
-                </li>
-              ))}
-            </div>
-          )}
+                </div>
+              )}
 
-          {/* List of cards */}
-          <List>
-            {/* TODO: The width of the card should take up more room when
+              {/* List of cards */}
+              <List>
+                {/* TODO: The width of the card should take up more room when
                       there is no information or buttons. */}
-            {viewData.map((data, index) => {
-              return (
-                <ListItem
-                  key={index}
-                  alignItems="flex-start"
-                  className={classes.root}
-                >
-                  {/* Create an individual card */}
-                  <EntityCard
-                    title={{
-                      label: nestedValue(data, title.dataKey),
-                      content: title.content && title.content(data),
-                    }}
-                    description={
-                      description && nestedValue(data, description.dataKey)
-                    }
-                    information={
-                      information &&
-                      information
-                        .map((details) => ({
-                          // We can say the data key is the label if not defined.
-                          label: details.label
-                            ? details.label
-                            : details.dataKey,
-                          content: details.content
-                            ? details.content(data)
-                            : nestedValue(data, details.dataKey),
-                          // Keep the dataKey in so we can use it for adding the tooltip
-                          // once content has been created.
-                          dataKey: details.dataKey,
-                          icon: details.icon,
-                        }))
-                        // Filter afterwards to only show content with information.
-                        .filter((v) => v.content)
-                        // Add in tooltips to the content we have filtered.
-                        .map((details) => ({
-                          ...details,
-                          content: (
-                            <ArrowTooltip
-                              title={nestedValue(data, details.dataKey)}
-                            >
-                              <Typography>{details.content}</Typography>
-                            </ArrowTooltip>
-                          ),
-                        }))
-                    }
-                    moreInformation={moreInformation && moreInformation(data)}
-                    // Pass in the react nodes with the data to the card.
-                    buttons={buttons && buttons.map((button) => button(data))}
-                    // Pass tag names to the card given the specified data key for the filter.
-                    tags={
-                      customFilters &&
-                      customFilters.map((f) => nestedValue(data, f.dataKey))
-                    }
-                    image={image}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
+                {viewData.map((data, index) => {
+                  return (
+                    <ListItem
+                      key={index}
+                      alignItems="flex-start"
+                      className={classes.root}
+                    >
+                      {/* Create an individual card */}
+                      <EntityCard
+                        title={{
+                          label: nestedValue(data, title.dataKey),
+                          content: title.content && title.content(data),
+                        }}
+                        description={
+                          description && nestedValue(data, description.dataKey)
+                        }
+                        information={
+                          information &&
+                          information
+                            .map((details) => ({
+                              // We can say the data key is the label if not defined.
+                              label: details.label
+                                ? details.label
+                                : details.dataKey,
+                              content: details.content
+                                ? details.content(data)
+                                : nestedValue(data, details.dataKey),
+                              // Keep the dataKey in so we can use it for adding the tooltip
+                              // once content has been created.
+                              dataKey: details.dataKey,
+                              icon: details.icon,
+                            }))
+                            // Filter afterwards to only show content with information.
+                            .filter((v) => v.content)
+                            // Add in tooltips to the content we have filtered.
+                            .map((details) => ({
+                              ...details,
+                              content: (
+                                <ArrowTooltip
+                                  title={nestedValue(data, details.dataKey)}
+                                >
+                                  <Typography>{details.content}</Typography>
+                                </ArrowTooltip>
+                              ),
+                            }))
+                        }
+                        moreInformation={
+                          moreInformation && moreInformation(data)
+                        }
+                        // Pass in the react nodes with the data to the card.
+                        buttons={
+                          buttons && buttons.map((button) => button(data))
+                        }
+                        // Pass tag names to the card given the specified data key for the filter.
+                        tags={
+                          customFilters &&
+                          customFilters.map((f) => nestedValue(data, f.dataKey))
+                        }
+                        image={image}
+                      />
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
 
