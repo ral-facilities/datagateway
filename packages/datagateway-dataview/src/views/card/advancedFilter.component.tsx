@@ -31,9 +31,6 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
 
   const { title, description, information } = props;
 
-  // TODO: Decide whether to show or not depending on if there are filter components.
-  // const [showFilters, setShowFilters] = React.useState(false);
-
   // Set to collapsed or not.
   const [advSearchCollapsed, setAdvSearchCollapsed] = React.useState(false);
 

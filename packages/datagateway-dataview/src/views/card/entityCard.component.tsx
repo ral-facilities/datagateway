@@ -154,10 +154,8 @@ export interface EntityCardDetails {
 }
 
 interface EntityCardProps {
-  // TODO: Does title need icon support?
   title: EntityCardDetails;
 
-  // TODO: Does description need icon support?
   description?: string;
   information?: EntityCardDetails[];
 

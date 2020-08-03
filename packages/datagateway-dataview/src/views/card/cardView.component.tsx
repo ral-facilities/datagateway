@@ -183,10 +183,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [maxResults, setMaxResults] = React.useState(-1);
   const [pageChange, setPageChange] = React.useState(false);
 
+  // Change in data.
   const [filterChange, setFilterChange] = React.useState(false);
   const [sortChange, setSortChange] = React.useState(false);
 
   // Filters.
+  const hasInfoFilters = information
+    ? information.some((i) => i.filterComponent)
+    : false;
   const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
   const [selectedFilters, setSelectedFilters] = React.useState<
     CVSelectedFilter[]
@@ -475,13 +479,17 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         alignItems="center"
         style={{ paddingBottom: '5vh' }}
       >
-        <Grid item xs={12}>
-          <AdvancedFilter
-            title={title}
-            description={description}
-            information={information}
-          />
-        </Grid>
+        {(title.filterComponent ||
+          (description && description.filterComponent) ||
+          hasInfoFilters) && (
+          <Grid item xs={12}>
+            <AdvancedFilter
+              title={title}
+              description={description}
+              information={information}
+            />
+          </Grid>
+        )}
 
         <Grid item xs={12}>
           {/* Maximum results selection */}
