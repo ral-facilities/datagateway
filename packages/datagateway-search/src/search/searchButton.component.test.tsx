@@ -8,6 +8,13 @@ import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import { initialState } from '../state/reducers/dgsearch.reducer';
 import axios from 'axios';
+import {
+  setInvestigationTab,
+  setDatasetTab,
+  setDatafileTab,
+} from '../state/actions/actions';
+import { act } from 'react-dom/test-utils';
+import { flushPromises } from '../setupTests';
 
 jest.mock('loglevel');
 
@@ -26,18 +33,36 @@ describe('Search Button component tests', () => {
 
     state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
 
+    state.dgcommon = {
+      urls: {
+        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+      },
+    };
+
     state.dgsearch = {
-      searchText: 'hello',
+      searchText: '',
       text: '',
       selectDate: {
-        startDate: new Date('2013-11-11'),
-        endDate: new Date('2016-11-11'),
+        startDate: null,
+        endDate: null,
       },
       checkBox: {
-        dataset: true,
+        dataset: false,
         datafile: true,
-        investigation: true,
+        investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+      settingsLoaded: true,
     };
 
     mockStore = configureStore([thunk]);
@@ -52,7 +77,102 @@ describe('Search Button component tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('builds correct parameters for request if date and search text properties are in use', () => {
+  it('builds correct parameters for datafile request if date and search text properties are in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      searchText: 'hello',
+      selectDate: {
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+            lower: '201311110000',
+            text: 'hello',
+            upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for dataset request if date and search text properties are in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      searchText: 'hello',
+      selectDate: {
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: true,
+        datafile: false,
+        investigation: false,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Dataset',
+            lower: '201311110000',
+            text: 'hello',
+            upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for investigation request if date and search text properties are in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      searchText: 'hello',
+      selectDate: {
+        startDate: new Date('2013-11-11'),
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: false,
+        datafile: false,
+        investigation: true,
+      },
+    };
+
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -78,6 +198,19 @@ describe('Search Button component tests', () => {
         },
       }
     );
+  });
+
+  it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -85,14 +218,34 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Datafile',
-            lower: '201311110000',
-            text: 'hello',
-            upper: '201611112359',
           },
           sessionId: null,
         },
       }
     );
+  });
+
+  it('builds correct parameters for dataset request if date and search text properties are not in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: true,
+        datafile: false,
+        investigation: false,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -100,13 +253,77 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
-            lower: '201311110000',
-            text: 'hello',
-            upper: '201611112359',
           },
           sessionId: null,
         },
       }
     );
+  });
+
+  it('builds correct parameters for investigation request if date and search text properties are not in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: false,
+        datafile: false,
+        investigation: true,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Investigation',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('sends actions to update tabs when user clicks search button', async () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: false,
+        datafile: false,
+        investigation: false,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(testStore.getActions()[0]).toEqual(setDatasetTab(false));
+    expect(testStore.getActions()[1]).toEqual(setDatafileTab(false));
+    expect(testStore.getActions()[2]).toEqual(setInvestigationTab(false));
   });
 });

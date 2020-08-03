@@ -45,7 +45,6 @@ const DataHeader = (
       active={dataKey in sort}
       direction={currSortDirection}
       onClick={() => onSort(dataKey, nextSortDirection)}
-      style={{ flex: 'auto' }}
     >
       {label}
     </TableSortLabel>
@@ -63,24 +62,25 @@ const DataHeader = (
     >
       <div
         style={{
-          display: 'flex',
+          overflow: 'hidden',
+          flex: 1,
         }}
       >
         {icon && icon}
         {inner}
-        <Draggable
-          axis="none"
-          onDrag={(event, { deltaX }) => resizeColumn(deltaX)}
-        >
-          <DragIndicator
-            fontSize="small"
-            style={{
-              cursor: 'col-resize',
-            }}
-          />
-        </Draggable>
+        {filterComponent}
       </div>
-      {filterComponent}
+      <Draggable
+        axis="none"
+        onDrag={(event, { deltaX }) => resizeColumn(deltaX)}
+      >
+        <DragIndicator
+          fontSize="small"
+          style={{
+            cursor: 'col-resize',
+          }}
+        />
+      </Draggable>
     </TableCell>
   );
 };

@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchPageTable renders SearchPageTable correctly 1`] = `
+<div>
+  <Connect(SearchPageTable)
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+  >
+    <SearchPageTable
+      datafile={Array []}
+      datafileTab={false}
+      dataset={Array []}
+      datasetTab={false}
+      dispatch={[Function]}
+      investigation={Array []}
+      investigationTab={false}
+      requestReceived={false}
+      store={
+        Object {
+          "clearActions": [Function],
+          "dispatch": [Function],
+          "getActions": [Function],
+          "getState": [Function],
+          "replaceReducer": [Function],
+          "subscribe": [Function],
+        }
+      }
+    >
+      <Styled(MuiBox)
+        color="primary.main"
+        px={3}
+        py={1}
+      >
+        <div
+          className="MuiBox-root MuiBox-root-2"
+        >
+          <h2>
+            Search
+          </h2>
+          Fill out form to the left and then click search.
+        </div>
+      </Styled(MuiBox)>
+    </SearchPageTable>
+  </Connect(SearchPageTable)>
+</div>
+`;

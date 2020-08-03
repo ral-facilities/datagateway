@@ -27,10 +27,11 @@ import SelectCell from './cellRenderers/selectCell.component';
 import SelectHeader from './headerRenderers/selectHeader.component';
 
 const rowHeight = 30;
-const headerHeight = 120;
+const headerHeight = 110;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
+const dataColumnMinWidth = 70;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -44,10 +45,9 @@ const styles = (theme: Theme): StyleRules =>
     },
     headerFlexContainer: {
       display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'left',
+      flexDirection: 'row',
       boxSizing: 'border-box',
-      justifyContent: 'flex-end',
+      overflow: 'hidden',
     },
     tableRow: {},
     tableRowHover: {
@@ -63,6 +63,7 @@ const styles = (theme: Theme): StyleRules =>
     headerTableCell: {
       flex: 1,
       height: headerHeight,
+      justifyContent: 'space-between',
     },
   });
 
@@ -138,11 +139,36 @@ const VirtualizedTable = (
       'Only one of loadMoreRows and totalRowCount was defined - either define both for infinite loading functionality or neither for no infinite loading'
     );
 
-  const [widths, setWidths] = React.useState<{ [dataKey: string]: number }>(
-    columns.reduce((result: { [dataKey: string]: number }, item) => {
-      result[item.dataKey] = 1 / columns.length;
-      return result;
-    }, {})
+  const [widthProps, setWidthProps] = React.useState<{
+    [dataKey: string]: {
+      width: number;
+      flexGrow?: number;
+      flexShrink?: number;
+    };
+  }>(
+    columns.reduce(
+      (
+        result: {
+          [dataKey: string]: {
+            width: number;
+            flexGrow: number;
+            flexShrink: number;
+          };
+        },
+        item
+      ) => {
+        result[item.dataKey] = {
+          width: Math.max(
+            window.innerWidth / columns.length,
+            dataColumnMinWidth
+          ),
+          flexGrow: 1,
+          flexShrink: 1,
+        };
+        return result;
+      },
+      {}
+    )
   );
 
   const detailsPanelResize = (): void => {
@@ -162,10 +188,20 @@ const VirtualizedTable = (
   return (
     <AutoSizer>
       {({ height, width }) => {
-        const dataColumnsWidth =
-          (width || 800) -
-          (selectedRows && onCheck && onUncheck ? selectColumnWidth : 0) -
-          (detailsPanel ? detailsColumnWidth : 0) -
+        let min_table_width = Object.values(widthProps).reduce(
+          (result, item) => {
+            if (item.flexShrink === 0 && item.flexGrow === 0) {
+              result += item.width;
+            } else {
+              result += dataColumnMinWidth;
+            }
+            return result;
+          },
+          0
+        );
+        min_table_width +=
+          (selectedRows && onCheck && onUncheck ? selectColumnWidth : 0) +
+          (detailsPanel ? detailsColumnWidth : 0) +
           (actions ? actionsColumnWidth : 0);
         const rowCount = totalRowCount || data.length;
         return (
@@ -183,7 +219,7 @@ const VirtualizedTable = (
                 }}
                 className={classes.table}
                 height={height || 500}
-                width={width || 800}
+                width={Math.max(width, min_table_width)}
                 rowCount={data.length}
                 onRowsRendered={onRowsRendered}
                 headerHeight={headerHeight}
@@ -243,7 +279,7 @@ const VirtualizedTable = (
                       />
                     )}
                     className={classes.flexContainer}
-                    headerClassName={classes.flexContainer}
+                    headerClassName={classes.headerFlexContainer}
                     cellRenderer={(props) => (
                       <SelectCell
                         {...props}
@@ -281,7 +317,7 @@ const VirtualizedTable = (
                       />
                     )}
                     className={classes.flexContainer}
-                    headerClassName={classes.flexContainer}
+                    headerClassName={classes.headerFlexContainer}
                     cellRenderer={(props) => (
                       <ExpandCell
                         {...props}
@@ -307,13 +343,11 @@ const VirtualizedTable = (
                   }) => {
                     return (
                       <Column
-                        width={widths[dataKey] * dataColumnsWidth}
-                        flexGrow={1}
-                        flexShrink={0}
                         key={dataKey}
                         dataKey={dataKey}
                         label={label}
                         disableSort={disableSort}
+                        headerClassName={classes.headerFlexContainer}
                         headerRenderer={(headerProps) => (
                           <DataHeader
                             {...headerProps}
@@ -328,23 +362,16 @@ const VirtualizedTable = (
                               filterComponent && filterComponent(label, dataKey)
                             }
                             resizeColumn={(deltaX) => {
-                              const columnDataKeys = Object.keys(widths);
-                              const percentDelta = deltaX / dataColumnsWidth;
-                              const dividedPercentDelta =
-                                percentDelta / (columnDataKeys.length - 1);
-                              setWidths({
-                                ...columnDataKeys.reduce(
-                                  (
-                                    result: { [dataKey: string]: number },
-                                    item
-                                  ) => {
-                                    result[item] =
-                                      widths[item] - dividedPercentDelta;
-                                    return result;
-                                  },
-                                  {}
-                                ),
-                                [dataKey]: widths[dataKey] + percentDelta,
+                              const thisColumn = widthProps[dataKey];
+                              thisColumn.flexGrow = 0;
+                              thisColumn.flexShrink = 0;
+                              thisColumn.width = Math.max(
+                                thisColumn.width + deltaX,
+                                dataColumnMinWidth
+                              );
+                              setWidthProps({
+                                ...widthProps,
+                                [dataKey]: thisColumn,
                               });
                             }}
                           />
@@ -360,6 +387,8 @@ const VirtualizedTable = (
                             )}
                           />
                         )}
+                        minWidth={dataColumnMinWidth}
+                        {...widthProps[dataKey]}
                       />
                     );
                   }
@@ -371,6 +400,7 @@ const VirtualizedTable = (
                     key="Actions"
                     dataKey="actions"
                     className={classes.flexContainer}
+                    headerClassName={classes.headerFlexContainer}
                     headerRenderer={(headerProps) => (
                       <TableCell
                         size="small"
