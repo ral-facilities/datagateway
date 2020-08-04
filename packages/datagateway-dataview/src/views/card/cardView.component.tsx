@@ -49,7 +49,6 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
       minWidth: 120,
     },
     expandDetails: {
-      // maxWidth: 360,
       width: '100%',
     },
     selectedChips: {
@@ -191,6 +190,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const hasInfoFilters = information
     ? information.some((i) => i.filterComponent)
     : false;
+
   const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
   const [selectedFilters, setSelectedFilters] = React.useState<
     CVSelectedFilter[]
@@ -198,6 +198,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   // Sort.
   const [cardSort, setCardSort] = React.useState<CVSort[] | null>(null);
+  const hasSort =
+    !title.disableSort ||
+    (description ? !description.disableSort : false) ||
+    (information ? information.some((i) => !i.disableSort) : false);
 
   React.useEffect(() => {
     // Get sort information from title, description and information lists.
@@ -545,44 +549,46 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             justify="flex-start"
             alignItems="stretch"
             spacing={5}
-            // style={{ padding: '1%', width: '100%' }}
             xs={12}
           >
-            <Grid item xs>
-              <Paper>
-                <Box p={2}>
-                  <Typography variant="h5">Sort By</Typography>
-                </Box>
+            {hasSort && (
+              <Grid item xs>
+                <Paper>
+                  <Box p={2}>
+                    <Typography variant="h5">Sort By</Typography>
+                  </Box>
 
-                {/* Show all the available sort options: 
-                  TITLE, DESCRIPTION and the further information (if provided) */}
-                <Box>
-                  <List component="nav">
-                    {cardSort &&
-                      cardSort.map((s, i) => (
-                        <ListItem
-                          key={i}
-                          button
-                          onClick={() => {
-                            onSort(s.dataKey, nextSortDirection(s.dataKey));
-                            setSortChange(true);
-                          }}
-                        >
-                          <ListItemText primary={s.label} />
-                          <ListItemIcon>
-                            <TableSortLabel
-                              active={s.dataKey in sort}
-                              direction={sort[s.dataKey]}
-                            >
-                              {s.dataKey in sort && sort[s.dataKey]}
-                            </TableSortLabel>
-                          </ListItemIcon>
-                        </ListItem>
-                      ))}
-                  </List>
-                </Box>
-              </Paper>
-            </Grid>
+                  {/* Show all the available sort options: 
+                      TITLE, DESCRIPTION and the further information (if provided) 
+                  */}
+                  <Box>
+                    <List component="nav">
+                      {cardSort &&
+                        cardSort.map((s, i) => (
+                          <ListItem
+                            key={i}
+                            button
+                            onClick={() => {
+                              onSort(s.dataKey, nextSortDirection(s.dataKey));
+                              setSortChange(true);
+                            }}
+                          >
+                            <ListItemText primary={s.label} />
+                            <ListItemIcon>
+                              <TableSortLabel
+                                active={s.dataKey in sort}
+                                direction={sort[s.dataKey]}
+                              >
+                                {s.dataKey in sort && sort[s.dataKey]}
+                              </TableSortLabel>
+                            </ListItemIcon>
+                          </ListItem>
+                        ))}
+                    </List>
+                  </Box>
+                </Paper>
+              </Grid>
+            )}
 
             {/* Filtering options */}
             {customFilters && (
@@ -647,15 +653,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         </Grid>
 
         <Grid item xs>
-          {/* TODO: Have sort/filters in a separate container to the cards list? */}
-          <Grid
-            container
-            direction="row"
-            justify={customFilters ? 'flex-start' : 'center'}
-            alignItems={customFilters ? 'flex-start' : 'center'}
-            // spacing={10}
-            // xs={12}
-          >
+          <Grid container direction="row">
             {/* Card data */}
             <Grid item>
               {/* Selected filters array */}

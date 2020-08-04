@@ -171,9 +171,6 @@ const InvestigationCardView = (
   ]);
 
   return (
-    // TODO: Since CardView is a separate component, we should not couple the data from redux to it,
-    //       pass it through here.
-    // TODO: Pass in card widths, sort/filters.
     <CardView
       data={data}
       totalDataCount={totalDataCount}
