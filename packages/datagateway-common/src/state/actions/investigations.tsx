@@ -454,7 +454,7 @@ export const fetchFilterFailure = (
 export const fetchFilter = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   filterKey: string,
-  // dataKey: string,
+  dataKey?: string,
   additionalFilters?: {
     filterType: 'where' | 'distinct' | 'include';
     filterValue: string;
@@ -473,17 +473,24 @@ export const fetchFilter = (
 
     // Add in the distinct if it as not already been added.
     const distinctFilterString = params.get('distinct');
+    // Use the dataKey if provided, this allows for nested items
+    // to be read as requesting them from the API maybe in a different format.
+    // i.e. INVESTIGATIONINSTRUMENT[0].INSTRUMENT maybe requested as INVESTIGATIONINSTRUMENT.INSTRUMENT
+    const filterValue = dataKey ? dataKey : filterKey;
     if (distinctFilterString) {
       const distinctFilter: string | string[] = JSON.parse(
         distinctFilterString
       );
       if (typeof distinctFilter === 'string') {
-        params.set('distinct', JSON.stringify([distinctFilter, filterKey]));
+        params.set('distinct', JSON.stringify([distinctFilter, filterValue]));
       } else {
-        params.set('distinct', JSON.stringify([...distinctFilter, filterKey]));
+        params.set(
+          'distinct',
+          JSON.stringify([...distinctFilter, filterValue])
+        );
       }
     } else {
-      params.set('distinct', JSON.stringify(filterKey));
+      params.set('distinct', JSON.stringify(filterValue));
     }
 
     const { apiUrl } = getState().dgcommon.urls;

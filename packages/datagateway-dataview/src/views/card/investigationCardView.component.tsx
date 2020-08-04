@@ -274,6 +274,8 @@ const InvestigationCardView = (
           );
         },
       ]}
+      // If was a specific dataKey on the custom filter request,
+      // use that over the filterKey here.
       customFilters={[
         {
           label: 'Type ID',
