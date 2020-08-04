@@ -64,7 +64,6 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
   })
 );
 
-// TODO: Should be moved to somewhere central.
 export interface CardViewDetails {
   dataKey: string;
 

@@ -149,8 +149,8 @@ export interface EntityImageDetails {
 
 export interface EntityCardDetails {
   label: string;
-  icon?: JSX.Element;
   content?: React.ReactNode;
+  icon?: JSX.Element;
 }
 
 interface EntityCardProps {
@@ -257,14 +257,19 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   in={isDescriptionCollapsed}
                   collapsedHeight={defaultCollapsedHeight}
                 >
-                  <Typography ref={descriptionRef} variant="body1" paragraph>
+                  <Typography
+                    aria-label="card-description"
+                    ref={descriptionRef}
+                    variant="body1"
+                    paragraph
+                  >
                     {description ? description : 'No description available'}
                   </Typography>
                 </Collapse>
 
                 {/* Button to show more/less */}
                 {collapsibleInteraction && (
-                  <div>
+                  <div aria-label="card-description-link">
                     <div
                       className={
                         isDescriptionCollapsed
