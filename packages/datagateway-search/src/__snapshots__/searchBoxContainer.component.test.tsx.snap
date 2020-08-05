@@ -2,8 +2,8 @@
 
 exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
 <div
-  aria-label="container-searchbox"
   className="MuiGrid-root MuiGrid-item MuiGrid-direction-xs-column"
+  id="container-searchbox"
 >
   <WithStyles(ForwardRef(Grid))
     item={true}
@@ -35,7 +35,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       mx={5}
       pb={2}
     >
-      <Connect(SearchButton) />
+      <Connect(TranslatedSearchButton) />
     </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
 </div>

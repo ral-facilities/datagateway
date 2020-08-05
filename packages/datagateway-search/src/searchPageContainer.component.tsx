@@ -30,13 +30,13 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
             alignItems="flex-start"
             spacing={2}
           >
-            <Grid item aria-label="container-search-filters">
+            <Grid item id="container-search-filters">
               <Paper style={{ height: '100%', width: '100%' }}>
                 <SearchBoxContainer />
               </Paper>
             </Grid>
 
-            <Grid item aria-label="container-search-table">
+            <Grid item id="container-search-table">
               <Paper
                 style={{
                   height: 'calc(90vh)',

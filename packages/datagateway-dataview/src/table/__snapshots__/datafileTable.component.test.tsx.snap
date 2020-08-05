@@ -64,7 +64,7 @@ exports[`Datafile table component renders details panel correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      datafiles.name
+      datafiles.details.name
       :
     </b>
      
@@ -72,7 +72,7 @@ exports[`Datafile table component renders details panel correctly 1`] = `
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      datafiles.size
+      datafiles.details.size
       :
     </b>
      
@@ -80,7 +80,7 @@ exports[`Datafile table component renders details panel correctly 1`] = `
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      datafiles.location
+      datafiles.details.location
       :
     </b>
      

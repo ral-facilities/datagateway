@@ -121,7 +121,7 @@ describe('Datafile search table component', () => {
     );
 
     const filterInput = wrapper.find(
-      '[aria-label="Modified Time date filter to"]'
+      '[aria-label="datafiles.modified_time date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
@@ -164,10 +164,7 @@ describe('Datafile search table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(addToCartRequest());
   });
@@ -192,10 +189,7 @@ describe('Datafile search table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
   });
@@ -275,11 +269,6 @@ describe('Datafile search table component', () => {
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-colindex=5]')
-        .find('p')
-        .text()
-    ).toEqual('1 B');
+    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
   });
 });

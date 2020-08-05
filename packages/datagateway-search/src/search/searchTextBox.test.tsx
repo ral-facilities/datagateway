@@ -68,7 +68,7 @@ describe('Search text box component tests', () => {
     );
 
     wrapper
-      .find('[aria-label="search text input"] input')
+      .find('[aria-label="searchBox.search_text_arialabel"] input')
       .simulate('change', { target: { value: 'test' } });
 
     expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));

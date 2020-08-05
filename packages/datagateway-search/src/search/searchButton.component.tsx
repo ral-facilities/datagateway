@@ -17,6 +17,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { readSciGatewayToken } from 'datagateway-common';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -45,7 +46,8 @@ interface SearchButtonDispatchProps {
   setInvestigationTab: (toggleOption: boolean) => Action;
 }
 
-type SearchButtonCombinedProps = SearchButtonStoreProps &
+type SearchButtonCombinedProps = WithTranslation &
+  SearchButtonStoreProps &
   SearchButtonDispatchProps;
 
 interface QueryParameters {
@@ -170,11 +172,11 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
           variant="contained"
           color="primary"
           onClick={this.handleClick}
-          aria-label="submit search button"
+          aria-label={this.props.t('searchBox.search_button_arialabel')}
           size="large"
           fullWidth={true}
         >
-          Search
+          {this.props.t('searchBox.search_button')}
         </Button>
       </div>
     );
@@ -219,4 +221,10 @@ const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchButton);
+export const TranslatedSearchButton = withTranslation()(SearchButton);
+TranslatedSearchButton.displayName = 'TranslatedSearchButton';
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TranslatedSearchButton);
