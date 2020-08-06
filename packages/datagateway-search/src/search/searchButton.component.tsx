@@ -118,6 +118,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     return queryParams;
   };
 
+  // TODO: Handles search call to Lucene.
   public handleClick = async (
     event: React.MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
@@ -184,6 +185,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchButtonDispatchProps => ({
+  // TODO: These can be moved out.
   toggleLuceneRequestReceived: (requestReceived: boolean) =>
     dispatch(toggleLuceneRequestReceived(requestReceived)),
   storeDatasetLucene: (luceneData: number[]) =>
@@ -192,6 +194,7 @@ const mapDispatchToProps = (
     dispatch(storeDatafileLucene(luceneData)),
   storeInvestigationLucene: (luceneData: number[]) =>
     dispatch(storeInvestigationLucene(luceneData)),
+
   setDatasetTab: (toggleOption: boolean) =>
     dispatch(setDatasetTab(toggleOption)),
   setDatafileTab: (toggleOption: boolean) =>

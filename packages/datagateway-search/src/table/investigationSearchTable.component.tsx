@@ -82,11 +82,11 @@ const InvestigationSearchTable = (
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'investigation' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -120,7 +120,7 @@ const InvestigationSearchTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(luceneData, params)}
+      loadMoreRows={(params) => fetchData(luceneData, params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
