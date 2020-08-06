@@ -372,6 +372,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     console.log('Page number (page): ', page);
     console.log('Current pageNum (query): ', query.page);
     console.log('Page change: ', pageChange);
+    console.log('Page results: ', maxResults);
+    console.log('Query results: ', query.results);
 
     // Set the page number if it was found in the parameters.
     if (!pageChange) {
@@ -380,21 +382,20 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       } else {
         // Workaround for issue where page remains same on pagination on investigation/dataset.
         // If this is not a page change and there is no page query parameter,
-        // then default the initial page (we treat this as the initial page load).
+        // then default to the 1st page (we treat this as the initial page load).
         setPage(1);
       }
     } else {
-      // TODO: Scroll is triggered on clicking buttons (fixed).
       // Manually scroll to top of the page as the pagination click isn't doing so.
       window.scrollTo(0, 0);
       setPageChange(false);
     }
 
     // Ensure the max results change according to the query parameter.
-    if (query.results) {
-      if (dataCount > resOptions[0] && maxResults !== query.results) {
-        setMaxResults(query.results);
-      }
+    if (query.results && resOptions.includes(query.results)) {
+      // dataCount > resOptions[0]
+      // maxResults !== query.results
+      setMaxResults(query.results);
     } else {
       // Reset the max results back to the default value
       // when switching between pages (this is the same issue as
