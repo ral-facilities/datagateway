@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DownloadTab renders correctly 1`] = `
-<WithStyles(ForwardRef(Paper))
-  className="makeStyles-root-1"
+<WithStyles(WithStyles(ForwardRef(Paper)))
   square={true}
 >
   <WithStyles(ForwardRef(Tabs))
@@ -98,5 +97,5 @@ exports[`DownloadTab renders correctly 1`] = `
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
   </TabPanel>
-</WithStyles(ForwardRef(Paper))>
+</WithStyles(WithStyles(ForwardRef(Paper)))>
 `;
