@@ -96,6 +96,7 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
 const breadcrumbsStyles = (theme: Theme): StyleRules =>
   createStyles({
     root: {
+      backgroundColor: theme.palette.background.default,
       '& li': {
         '& a, p': {
           color: theme.palette.primary.contrastText,
