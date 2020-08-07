@@ -19,13 +19,14 @@ import { ArrowTooltip } from 'datagateway-common';
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
-  const mainWidth = '35vw';
+  //       Change this width in accordance with the maxWidth in root class.
+  const mainWidth = '45vw';
 
   const styles = createStyles({
     root: {
       display: 'flex',
-      // Width of 1000 + 150 for the image (should be 1150 if we have an image).
-      maxWidth: 1150,
+      // NOTE: This is the maximum width for the card (it will only use this even if you set the mainWidth to a greater value).
+      // maxWidth: 1500,
       backgroundColor: theme.palette.background.paper,
     },
 
