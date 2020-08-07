@@ -180,6 +180,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
   const [pageChange, setPageChange] = React.useState(false);
+  const [pageLoad, setPageLoad] = React.useState(false);
 
   // Change in data.
   const [filterChange, setFilterChange] = React.useState(false);
@@ -326,6 +327,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       updateItems.push(filterValue);
       onFilter(filterKey, updateItems);
       setFilterChange(true);
+      changePage(1);
     } else {
       if (updateItems.length > 0 && updateItems.includes(filterValue)) {
         // Set to null if this is the last item in the array.
@@ -340,6 +342,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             onFilter(filterKey, null);
           }
           setFilterChange(true);
+          changePage(1);
         }
       }
     }
@@ -376,8 +379,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     console.log('Query results: ', query.results);
 
     // Set the page number if it was found in the parameters.
-    if (!pageChange) {
+    if (!pageChange && !pageLoad) {
       if (query.page) {
+        console.log('Set to query page: ', query.page);
         setPage(query.page);
       } else {
         // Workaround for issue where page remains same on pagination on investigation/dataset.
@@ -385,6 +389,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         // then default to the 1st page (we treat this as the initial page load).
         setPage(1);
       }
+
+      setPageLoad(true);
     } else {
       // Manually scroll to top of the page as the pagination click isn't doing so.
       window.scrollTo(0, 0);
@@ -403,7 +409,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       // investigation/dataset card views).
       setMaxResults(resOptions[0]);
     }
-  }, [page, pageChange, query, maxResults, dataCount, resOptions]);
+  }, [page, pageChange, pageLoad, query, maxResults, dataCount, resOptions]);
 
   // TODO: Work-around for the pagination, start/stop index
   //       working incorrectly due to the totalDataCount being updated later on
@@ -428,9 +434,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     // TODO: Move this separately so that sort and filters are handled separately
     //       (tied to only one load count/data).
     if (!loading && (filterChange || sortChange)) {
-      // Go to the first page and load count on
-      // filter/sort change.
-      changePage(1);
+      // Load count again on filter/sort change.
       loadCount();
 
       if (filterChange) setFilterChange(false);
@@ -472,6 +476,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     sortChange,
     changePage,
     clearData,
+    pageLoad,
   ]);
 
   return (
@@ -571,6 +576,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             onClick={() => {
                               onSort(s.dataKey, nextSortDirection(s.dataKey));
                               setSortChange(true);
+                              changePage(1);
                             }}
                           >
                             <ListItemText primary={s.label} />
