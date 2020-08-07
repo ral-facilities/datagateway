@@ -193,6 +193,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     // Decide if the collapsible should be present depending on
     // if the description height exceeds the default collapsed height.
     if (descriptionRef && descriptionRef.current) {
+      // console.log('Client height: ', descriptionRef.current.clientHeight);
       if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
         setCollapsibleInteraction(true);
     }
@@ -301,7 +302,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                   {information &&
                     information.map(
                       (info: EntityCardDetails, index: number) => (
-                        <Typography key={index}>
+                        <Typography
+                          aria-label={`card-info-${info.label}`}
+                          key={index}
+                        >
                           {info.icon}
                           {`${info.label}:`}
                         </Typography>
@@ -312,16 +316,25 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 <div className={classes.informationData}>
                   {information &&
                     information.map(
-                      (info: EntityCardDetails) => info.content && info.content
+                      (info: EntityCardDetails, index: number) => (
+                        <div
+                          aria-label={`card-info-data-${info.label}`}
+                          key={index}
+                        >
+                          {info.content && info.content}
+                        </div>
+                      )
                     )}
                 </div>
               </div>
             )}
 
             {buttons && (
-              <div className={classes.buttons}>
+              <div aria-label="card-buttons" className={classes.buttons}>
                 {buttons.map((button, index) => (
-                  <div key={index}>{button}</div>
+                  <div aria-label={`card-button-${index + 1}`} key={index}>
+                    {button}
+                  </div>
                 ))}
               </div>
             )}
@@ -333,7 +346,10 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           <div style={{ paddingTop: '10px' }}>
             <Divider />
 
-            <div className={classes.moreInformation}>
+            <div
+              aria-label="card-more-information"
+              className={classes.moreInformation}
+            >
               <ExpansionPanel
                 square
                 elevation={1}
@@ -341,10 +357,13 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                 expanded={isMoreInfoCollapsed}
                 onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
               >
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <ExpansionPanelSummary
+                  aria-label="card-more-info-expand"
+                  expandIcon={<ExpandMoreIcon />}
+                >
                   <Typography>More Information</Typography>
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <ExpansionPanelDetails aria-label="card-more-info-details">
                   {/* Only render if the expansion panel has been collapsed */}
                   {isMoreInfoCollapsed && moreInformation}
                 </ExpansionPanelDetails>
@@ -354,13 +373,18 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         )}
 
         {tags && (
-          <div className={classes.tags}>
+          <div aria-label="card-tags" className={classes.tags}>
             <Divider />
 
             {/* Render the array of tags passed through */}
             <div style={{ paddingTop: '10px' }}>
               {tags.map((v, i) => (
-                <Chip key={i} className={classes.chip} label={v} />
+                <Chip
+                  aria-label={`card-tag-${v}`}
+                  key={i}
+                  className={classes.chip}
+                  label={v}
+                />
               ))}
             </div>
           </div>
