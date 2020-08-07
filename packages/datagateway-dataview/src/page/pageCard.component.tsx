@@ -11,7 +11,7 @@ import DatasetCardView from '../views/card/datasetCardView.component';
 // import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
 
 import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
-// import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
+import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
 // import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
 
 import { paths } from './pageContainer.component';
@@ -84,15 +84,7 @@ class PageCard extends React.Component {
           )}
         />
         
-        <Route
-          exact
-          path={paths.toggle.dlsVisit}
-          render={({
-            match,
-          }: RouteComponentProps<{ proposalName: string }>) => (
-            <DLSVisitsCardView proposalName={match.params.proposalName} />
-          )}
-        />
+        
         <Route
           exact
           path={paths.toggle.dlsDataset}
@@ -112,6 +104,15 @@ class PageCard extends React.Component {
           exact
           path={paths.toggle.dlsProposal}
           component={DLSProposalsCardView}
+        />
+        <Route
+          exact
+          path={paths.toggle.dlsVisit}
+          render={({
+            match,
+          }: RouteComponentProps<{ proposalName: string }>) => (
+            <DLSVisitsCardView proposalName={match.params.proposalName} />
+          )}
         />
       </Switch>
     );

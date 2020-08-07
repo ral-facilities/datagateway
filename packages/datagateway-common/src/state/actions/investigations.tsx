@@ -449,16 +449,16 @@ export const fetchFilterFailure = (
   },
 });
 
-// TODO: Should be moved out of investigations and placed somewhere generic (index).
-// TODO: Add support for nested values (filter key for API may differ from data key we use in code)
 export const fetchFilter = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   filterKey: string,
-  dataKey?: string,
   additionalFilters?: {
     filterType: 'where' | 'distinct' | 'include';
     filterValue: string;
-  }[]
+  }[],
+  // NOTE: Support for nested values by providing a dataKey for API request
+  //       which differs from filter key used in code.
+  dataKey?: string
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchFilterRequest());

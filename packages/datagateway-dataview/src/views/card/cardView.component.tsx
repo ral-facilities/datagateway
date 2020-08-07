@@ -81,7 +81,6 @@ interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
-  // TODO: Provide query page and results instead of the whole object.
   query: QueryParams;
   sort: SortType;
   filters: FiltersType;
@@ -131,7 +130,6 @@ interface CVSort {
   dataKey: string;
 }
 
-// TODO: Duplicate count and data requests for filter and page changes.
 // TODO: Hide/disable pagination and sort/filters if no results retrieved.
 const CardView = (props: CardViewProps): React.ReactElement => {
   const classes = useCardViewStyles();
@@ -180,7 +178,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
   const [pageChange, setPageChange] = React.useState(false);
-  const [pageLoad, setPageLoad] = React.useState(false);
 
   // Change in data.
   const [filterChange, setFilterChange] = React.useState(false);
@@ -371,7 +368,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   };
 
   React.useEffect(() => {
-    console.log('---------------------------------------');
     console.log('Page number (page): ', page);
     console.log('Current pageNum (query): ', query.page);
     console.log('Page change: ', pageChange);
@@ -379,7 +375,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     console.log('Query results: ', query.results);
 
     // Set the page number if it was found in the parameters.
-    if (!pageChange && !pageLoad) {
+    if (!pageChange) {
       if (query.page) {
         console.log('Set to query page: ', query.page);
         setPage(query.page);
@@ -389,8 +385,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         // then default to the 1st page (we treat this as the initial page load).
         setPage(1);
       }
-
-      setPageLoad(true);
     } else {
       // Manually scroll to top of the page as the pagination click isn't doing so.
       window.scrollTo(0, 0);
@@ -409,7 +403,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       // investigation/dataset card views).
       setMaxResults(resOptions[0]);
     }
-  }, [page, pageChange, pageLoad, query, maxResults, dataCount, resOptions]);
+  }, [page, pageChange, query, maxResults, dataCount, resOptions]);
 
   // TODO: Work-around for the pagination, start/stop index
   //       working incorrectly due to the totalDataCount being updated later on
@@ -419,17 +413,24 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     if (totalDataCount > 0) {
       setDataCount(totalDataCount);
       // Calculate the maximum pages needed for pagination.
-      setNumPages(~~((totalDataCount + maxResults - 1) / maxResults));
+      const p = ~~((totalDataCount + maxResults - 1) / maxResults);
+
+      // Check if the page query is correct, if not then set the page back to 1.
+      if (query.page && query.page > p) {
+        changePage(1);
+      }
+      setNumPages(p);
       console.log('num pages: ', numPages);
       setLoadedData(false);
     }
-  }, [maxResults, numPages, totalDataCount]);
+  }, [changePage, maxResults, numPages, query.page, totalDataCount]);
 
   // TODO: Creates duplicate count request.
   // TODO: This should be not how filter/sort changes work; make it simpler (may require a big change).
   React.useEffect(() => setFilterChange(true), [filters]);
   React.useEffect(() => setSortChange(true), [sort]);
 
+  // TODO: Duplicate count and data requests for filter and page changes.
   React.useEffect(() => {
     // TODO: Move this separately so that sort and filters are handled separately
     //       (tied to only one load count/data).
@@ -476,7 +477,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     sortChange,
     changePage,
     clearData,
-    pageLoad,
   ]);
 
   return (
