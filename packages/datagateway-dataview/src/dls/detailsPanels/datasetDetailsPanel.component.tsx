@@ -1,7 +1,28 @@
 import React from 'react';
 import { Entity, Dataset, formatBytes } from 'datagateway-common';
-import { Typography, Tabs, Tab, Button } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  Tabs,
+  Tab,
+  Button,
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
@@ -16,6 +37,7 @@ const DatasetDetailsPanel = (
   const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
+  const classes = useStyles();
 
   const datasetData = rowData as Dataset;
 
@@ -46,7 +68,7 @@ const DatasetDetailsPanel = (
           <Tab
             id="dataset-type-tab"
             aria-controls="dataset-type-panel"
-            label={t('datasets.details.types.label')}
+            label={t('datasets.details.type.label')}
             value="type"
           />
         )}
@@ -57,36 +79,62 @@ const DatasetDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Typography variant="body2">
-          <b>{t('datasets.details.name')}:</b> {datasetData.NAME}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('datasets.details.description')}:</b> {datasetData.DESCRIPTION}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('datasets.details.start_date')}:</b> {datasetData.STARTDATE}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('datasets.details.end_date')}:</b> {datasetData.ENDDATE}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('datasets.details.size')}:</b>{' '}
-          {datasetData.SIZE ? (
-            formatBytes(datasetData.SIZE)
-          ) : (
-            <Button
-              onClick={() => {
-                fetchSize(datasetData.ID);
-              }}
-              variant="outlined"
-              color="primary"
-              size="small"
-              id="calculate-size-btn"
-            >
-              {t('datasets.details.calculate')}
-            </Button>
-          )}
-        </Typography>
+        <Grid container className={classes.root} direction="column">
+          <Grid item xs>
+            <Typography variant="h6">
+              <b>{datasetData.NAME}</b>
+            </Typography>
+            <Divider className={classes.divider} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.description')}
+            </Typography>
+            <Typography>
+              <b>{datasetData.DESCRIPTION}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.start_date')}
+            </Typography>
+            <Typography>
+              <b>{datasetData.STARTDATE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.end_date')}
+            </Typography>
+            <Typography>
+              <b>{datasetData.ENDDATE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.size')}
+            </Typography>
+            <Typography>
+              <b>
+                {datasetData.SIZE ? (
+                  formatBytes(datasetData.SIZE)
+                ) : (
+                  <Button
+                    onClick={() => {
+                      fetchSize(datasetData.ID);
+                    }}
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    id="calculate-size-btn"
+                  >
+                    {t('datasets.details.calculate')}
+                  </Button>
+                )}
+              </b>
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
       {datasetData.DATASETTYPE && (
         <div
@@ -95,14 +143,22 @@ const DatasetDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'type'}
         >
-          <Typography variant="body2">
-            <b>{t('datasets.details.type.name')}:</b>{' '}
-            {datasetData.DATASETTYPE.NAME}
-          </Typography>
-          <Typography variant="body2">
-            <b>{t('datasets.details.type.description')}:</b>{' '}
-            {datasetData.DATASETTYPE.DESCRIPTION}
-          </Typography>
+          <Grid container className={classes.root} direction="column">
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datasetData.DATASETTYPE.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datasets.details.type.description')}
+              </Typography>
+              <Typography>
+                <b>{datasetData.DATASETTYPE.DESCRIPTION}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         </div>
       )}
     </div>

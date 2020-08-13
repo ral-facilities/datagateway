@@ -37,7 +37,10 @@ import { useTranslation } from 'react-i18next';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing(4),
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
     },
   })
 );
@@ -154,7 +157,7 @@ const InvestigationTable = (
               <Typography variant="h6">
                 <b>{investigationData.TITLE}</b>
               </Typography>
-              <Divider />
+              <Divider className={classes.divider} />
             </Grid>
             <Grid item xs>
               <Typography variant="overline">
