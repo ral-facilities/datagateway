@@ -1,8 +1,7 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import axios from 'axios';
 import { format } from 'date-fns';
 import { readSciGatewayToken } from '../..';
-import { ThunkResult } from '../app.types';
-import axios from 'axios';
 
 interface QueryParameters {
   target: string;
@@ -16,9 +15,14 @@ interface RequestParameters {
   maxCount: number;
 }
 
-type LuceneParameters = QueryParameters | RequestParameters;
+// TODO: Do we need this?
+// type LuceneParameters = QueryParameters | RequestParameters;
 
-type DatasearchType = 'Investigation' | 'Dataset' | 'Datafile';
+export type DatasearchType = 'Investigation' | 'Dataset' | 'Datafile';
+
+export type LuceneSearchParams = UrlBuilderParameters & {
+  maxCount?: number;
+};
 
 interface UrlBuilderParameters {
   searchText: string;
@@ -74,28 +78,39 @@ const urlParamsBuilder = (
   return query;
 };
 
-export const fetchLuceneData = (
+export const fetchLuceneData = async (
   datasearchType: DatasearchType,
-  params: UrlBuilderParameters & {
-    maxCount?: number;
+  params: LuceneSearchParams,
+  settings: {
+    downloadApiUrl: string;
   }
-): ThunkResult<Promise<void>> => {
-  return async (dispatch, getState) => {
-    const { downloadApiUrl } = getState().dgcommon.urls;
+): Promise<number[]> => {
+  // Create ICAT url.
+  const splitUrl = settings.downloadApiUrl.split('/');
+  const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
 
-    // Create ICAT url.
-    const splitUrl = downloadApiUrl.split('/');
-    const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
-
-    // Query params.
-    const queryParams = {
-      sessionId: readSciGatewayToken().sessionId,
-      query: urlParamsBuilder(datasearchType, params),
-      maxCount: params.maxCount ? params.maxCount : 300,
-    };
-
-    await axios.get(`${icatUrl}/lucene/data`, {
-      params: queryParams,
-    });
+  // Query params.
+  const queryParams = {
+    sessionId: readSciGatewayToken().sessionId,
+    query: urlParamsBuilder(datasearchType, params),
+    // Default maximum count is 300.
+    maxCount: params.maxCount ? params.maxCount : 300,
   };
+
+  let results = [];
+  results = await axios
+    .get(`${icatUrl}/lucene/data`, {
+      params: queryParams,
+    })
+    .then((response) => {
+      // Dispatch action to save the result IDs.
+      // TODO: Type this correctly.
+      console.log(
+        'IDs: ',
+        response.data.map((result: { id: unknown }) => result.id)
+      );
+      return response.data.map((result: { id: unknown }) => result.id);
+    });
+
+  return results;
 };

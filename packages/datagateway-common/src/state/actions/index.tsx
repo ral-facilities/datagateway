@@ -1,25 +1,26 @@
+import { Action } from 'redux';
+import { Filter, Order } from '../../app.types';
 import { ActionType, StateType } from '../app.types';
 import {
-  URLs,
-  ConfigureUrlsPayload,
-  ConfigureURLsType,
+  ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
-  SortTablePayload,
-  SortTableType,
+  ConfigureUrlsPayload,
+  ConfigureURLsType,
   FilterTablePayload,
   FilterTableType,
-  ClearTableType,
+  SortTablePayload,
+  SortTableType,
+  URLs,
 } from './actions.types';
-import { Filter, Order } from '../../app.types';
-import { Action } from 'redux';
 
-export * from './investigations';
-export * from './datasets';
-export * from './datafiles';
 export * from './cart';
-export * from './instruments';
+export * from './datafiles';
+export * from './datasets';
 export * from './facilityCycles';
+export * from './instruments';
+export * from './investigations';
+export * from './lucene';
 
 export const sortTable = (
   column: string,
