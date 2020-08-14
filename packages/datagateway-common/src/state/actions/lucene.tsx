@@ -1,7 +1,16 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { readSciGatewayToken } from '../..';
+import { handleICATError, readSciGatewayToken } from '../..';
+import { ActionType, ThunkResult } from '../app.types';
+import {
+  FailurePayload,
+  FetchIdsSuccessPayload,
+  FetchLuceneIdsFailureType,
+  FetchLuceneIdsRequestType,
+  FetchLuceneIdsSuccessType,
+  RequestPayload,
+} from './actions.types';
 
 interface QueryParameters {
   target: string;
@@ -10,10 +19,11 @@ interface QueryParameters {
   upper?: string;
 }
 
-interface RequestParameters {
-  sessionId: string | null;
-  maxCount: number;
-}
+// TODO: Do we need this?
+// interface RequestParameters {
+//   sessionId: string | null;
+//   maxCount: number;
+// }
 
 // TODO: Do we need this?
 // type LuceneParameters = QueryParameters | RequestParameters;
@@ -113,4 +123,56 @@ export const fetchLuceneData = async (
     });
 
   return results;
+};
+
+export const fetchLuceneIdsSuccess = (
+  luceneIds: number[],
+  timestamp: number
+): ActionType<FetchIdsSuccessPayload> => ({
+  type: FetchLuceneIdsSuccessType,
+  payload: {
+    data: luceneIds,
+    timestamp,
+  },
+});
+
+export const fetchLuceneIdsFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchLuceneIdsFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchLuceneIdsRequest = (
+  timestamp: number
+): ActionType<RequestPayload> => ({
+  type: FetchLuceneIdsRequestType,
+  payload: {
+    timestamp,
+  },
+});
+
+export const fetchLuceneIds = (
+  datasearchType: DatasearchType,
+  params: LuceneSearchParams
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    const { downloadApiUrl } = getState().dgcommon.urls;
+
+    const timestamp = Date.now();
+    dispatch(fetchLuceneIdsRequest(timestamp));
+
+    await fetchLuceneData(datasearchType, params, {
+      downloadApiUrl,
+    })
+      .then((results) => {
+        dispatch(fetchLuceneIdsSuccess(results, timestamp));
+      })
+      .catch((error) => {
+        handleICATError(error);
+        dispatch(fetchLuceneIdsFailure(error.message));
+      });
+  };
 };

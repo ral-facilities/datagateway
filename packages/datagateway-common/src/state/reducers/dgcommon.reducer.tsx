@@ -1,97 +1,100 @@
-import { DGCommonState } from '../app.types';
-import createReducer from './createReducer';
+import { Dataset, Entity, Investigation } from '../../app.types';
 import {
-  SortTablePayload,
-  SortTableType,
-  FetchInvestigationsRequestType,
-  FetchInvestigationsSuccessType,
-  FetchInvestigationsFailureType,
-  FilterTablePayload,
-  FilterTableType,
-  FetchDatasetsRequestType,
-  FetchDatasetsSuccessType,
-  FetchDatasetsFailureType,
-  FetchDatafilesRequestType,
-  FetchDatafilesSuccessType,
-  FetchDatafilesFailureType,
-  FetchInvestigationDatasetsCountRequestType,
-  FetchInvestigationDatasetsCountSuccessType,
-  FetchInvestigationDatasetsCountFailureType,
-  FetchDatasetDatafilesCountRequestType,
-  FetchDatasetDatafilesCountSuccessType,
-  FetchDatasetDatafilesCountFailureType,
-  FetchInstrumentsFailureType,
-  FetchInstrumentsSuccessType,
-  FetchInstrumentsRequestType,
-  FetchFacilityCyclesRequestType,
-  FetchFacilityCyclesSuccessType,
-  FetchFacilityCyclesFailureType,
-  DownloadDatafileFailureType,
-  DownloadDatafileRequestType,
-  DownloadDatafileSuccessType,
-  DownloadDatasetRequestType,
-  DownloadDatasetSuccessType,
-  DownloadDatasetFailureType,
-  FetchDataSuccessPayload,
-  FailurePayload,
-  FetchDataCountSuccessPayload,
-  FetchCountSuccessPayload,
-  FetchInvestigationCountRequestType,
-  FetchInvestigationCountSuccessType,
-  FetchInvestigationCountFailureType,
-  FetchInvestigationSizeRequestType,
-  FetchInvestigationSizeSuccessType,
-  FetchInvestigationSizeFailureType,
-  FetchDatasetCountRequestType,
-  FetchDatasetCountSuccessType,
-  FetchDatasetCountFailureType,
-  FetchDatafileCountRequestType,
-  FetchDatafileCountSuccessType,
-  FetchDatafileCountFailureType,
-  FetchInstrumentCountSuccessType,
-  FetchInstrumentCountRequestType,
-  FetchInstrumentCountFailureType,
-  FetchFacilityCycleCountRequestType,
-  FetchFacilityCycleCountSuccessType,
-  FetchFacilityCycleCountFailureType,
+  AddToCartFailureType,
+  AddToCartRequestType,
+  AddToCartSuccessType,
   ClearTableType,
-  RequestPayload,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
-  FetchInvestigationDetailsRequestType,
-  FetchInvestigationDetailsSuccessType,
-  FetchInvestigationDetailsFailureType,
-  FetchDatasetDetailsRequestType,
-  FetchDatasetDetailsSuccessType,
-  FetchDatasetDetailsFailureType,
-  FetchInstrumentDetailsRequestType,
-  FetchInstrumentDetailsSuccessType,
-  FetchInstrumentDetailsFailureType,
-  FetchDatafileDetailsFailureType,
-  FetchDatafileDetailsRequestType,
-  FetchDatafileDetailsSuccessType,
   DownloadCartPayload,
-  FetchDownloadCartRequestType,
-  FetchDownloadCartSuccessType,
-  FetchDownloadCartFailureType,
-  AddToCartRequestType,
-  AddToCartFailureType,
-  AddToCartSuccessType,
-  RemoveFromCartRequestType,
-  RemoveFromCartSuccessType,
-  RemoveFromCartFailureType,
+  DownloadDatafileFailureType,
+  DownloadDatafileRequestType,
+  DownloadDatafileSuccessType,
+  DownloadDatasetFailureType,
+  DownloadDatasetRequestType,
+  DownloadDatasetSuccessType,
+  FailurePayload,
   FetchAllIdsFailureType,
   FetchAllIdsRequestType,
   FetchAllIdsSuccessType,
-  FetchAllIdsSuccessPayload,
-  FetchSizeSuccessPayload,
+  FetchCountSuccessPayload,
+  FetchDataCountSuccessPayload,
+  FetchDatafileCountFailureType,
+  FetchDatafileCountRequestType,
+  FetchDatafileCountSuccessType,
+  FetchDatafileDetailsFailureType,
+  FetchDatafileDetailsRequestType,
+  FetchDatafileDetailsSuccessType,
+  FetchDatafilesFailureType,
+  FetchDatafilesRequestType,
+  FetchDatafilesSuccessType,
+  FetchDatasetCountFailureType,
+  FetchDatasetCountRequestType,
+  FetchDatasetCountSuccessType,
+  FetchDatasetDatafilesCountFailureType,
+  FetchDatasetDatafilesCountRequestType,
+  FetchDatasetDatafilesCountSuccessType,
+  FetchDatasetDetailsFailureType,
+  FetchDatasetDetailsRequestType,
+  FetchDatasetDetailsSuccessType,
+  FetchDatasetsFailureType,
+  FetchDatasetSizeFailureType,
   FetchDatasetSizeRequestType,
   FetchDatasetSizeSuccessType,
-  FetchDatasetSizeFailureType,
+  FetchDatasetsRequestType,
+  FetchDatasetsSuccessType,
+  FetchDataSuccessPayload,
+  FetchDownloadCartFailureType,
+  FetchDownloadCartRequestType,
+  FetchDownloadCartSuccessType,
+  FetchFacilityCycleCountFailureType,
+  FetchFacilityCycleCountRequestType,
+  FetchFacilityCycleCountSuccessType,
+  FetchFacilityCyclesFailureType,
+  FetchFacilityCyclesRequestType,
+  FetchFacilityCyclesSuccessType,
+  FetchIdsSuccessPayload,
+  FetchInstrumentCountFailureType,
+  FetchInstrumentCountRequestType,
+  FetchInstrumentCountSuccessType,
+  FetchInstrumentDetailsFailureType,
+  FetchInstrumentDetailsRequestType,
+  FetchInstrumentDetailsSuccessType,
+  FetchInstrumentsFailureType,
+  FetchInstrumentsRequestType,
+  FetchInstrumentsSuccessType,
+  FetchInvestigationCountFailureType,
+  FetchInvestigationCountRequestType,
+  FetchInvestigationCountSuccessType,
+  FetchInvestigationDatasetsCountFailureType,
+  FetchInvestigationDatasetsCountRequestType,
+  FetchInvestigationDatasetsCountSuccessType,
+  FetchInvestigationDetailsFailureType,
+  FetchInvestigationDetailsRequestType,
+  FetchInvestigationDetailsSuccessType,
+  FetchInvestigationsFailureType,
+  FetchInvestigationSizeFailureType,
+  FetchInvestigationSizeRequestType,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationsRequestType,
+  FetchInvestigationsSuccessType,
+  FetchLuceneIdsFailureType,
+  FetchLuceneIdsRequestType,
+  FetchLuceneIdsSuccessType,
+  FetchSizeSuccessPayload,
+  FilterTablePayload,
+  FilterTableType,
+  RemoveFromCartFailureType,
+  RemoveFromCartRequestType,
+  RemoveFromCartSuccessType,
+  RequestPayload,
+  SortTablePayload,
+  SortTableType,
 } from '../actions/actions.types';
-import { Entity, Investigation, Dataset } from '../../app.types';
+import { DGCommonState } from '../app.types';
+import createReducer from './createReducer';
 
 export const initialState: DGCommonState = {
   facilityName: '',
@@ -107,6 +110,7 @@ export const initialState: DGCommonState = {
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
   allIdsTimestamp: Date.now(),
+  luceneIdsTimestamp: Date.now(),
   urls: {
     idsUrl: '',
     apiUrl: '',
@@ -114,6 +118,7 @@ export const initialState: DGCommonState = {
   },
   cartItems: [],
   allIds: [],
+  luceneIds: [],
 };
 
 export function handleSortTable(
@@ -535,7 +540,7 @@ export function handleFetchAllIdsRequest(
 
 export function handleFetchAllIdsSuccess(
   state: DGCommonState,
-  payload: FetchAllIdsSuccessPayload
+  payload: FetchIdsSuccessPayload
 ): DGCommonState {
   if (payload.timestamp >= state.allIdsTimestamp) {
     return {
@@ -548,6 +553,38 @@ export function handleFetchAllIdsSuccess(
     return state;
   }
 }
+
+export function handleFetchLuceneIdsRequest(
+  state: DGCommonState,
+  payload: RequestPayload
+): DGCommonState {
+  if (payload.timestamp >= state.luceneIdsTimestamp) {
+    return {
+      ...state,
+      luceneIdsTimestamp: payload.timestamp,
+      loading: true,
+    };
+  } else {
+    return state;
+  }
+}
+
+export function handleFetchLuceneIdsSuccess(
+  state: DGCommonState,
+  payload: FetchIdsSuccessPayload
+): DGCommonState {
+  if (payload.timestamp >= state.luceneIdsTimestamp) {
+    return {
+      ...state,
+      loading: false,
+      luceneIds: payload.data,
+      luceneIdsTimestamp: payload.timestamp,
+    };
+  } else {
+    return state;
+  }
+}
+
 // remove things I want
 const dGCommonReducer = createReducer(initialState, {
   [SortTableType]: handleSortTable,
@@ -630,6 +667,9 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
   [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
   [FetchAllIdsFailureType]: handleFetchDataFailure,
+  [FetchLuceneIdsRequestType]: handleFetchLuceneIdsRequest,
+  [FetchLuceneIdsSuccessType]: handleFetchLuceneIdsSuccess,
+  [FetchLuceneIdsFailureType]: handleFetchDataFailure,
 });
 
 export default dGCommonReducer;

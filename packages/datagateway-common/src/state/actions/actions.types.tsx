@@ -1,9 +1,9 @@
 import {
-  Filter,
-  Order,
-  Entity,
   DownloadCart,
+  Entity,
+  Filter,
   MicroFrontendId,
+  Order,
 } from '../../app.types';
 
 // parent app actions
@@ -187,6 +187,13 @@ export const FetchAllIdsFailureType =
 export const FetchAllIdsSuccessType =
   'datagateway_common:fetch_all_ids_success';
 
+export const FetchLuceneIdsRequestType =
+  'datagateway_common:fetch_lucene_ids_request';
+export const FetchLuceneIdsFailureType =
+  'datagateway_common:fetch_lucene_ids_failure';
+export const FetchLuceneIdsSuccessType =
+  'datagateway_common:fetch_lucene_ids_success';
+
 export interface SortTablePayload {
   column: string;
   order: Order | null;
@@ -231,7 +238,7 @@ export interface FetchDetailsSuccessPayload {
   data: Entity[];
 }
 
-export interface FetchAllIdsSuccessPayload {
+export interface FetchIdsSuccessPayload {
   data: number[];
   timestamp: number;
 }

@@ -1,8 +1,8 @@
-import { ThunkAction } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { Order, Filter, Entity, DownloadCartItem } from '../app.types';
-import { URLs } from './actions/actions.types';
 import { RouterState } from 'connected-react-router';
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { DownloadCartItem, Entity, Filter, Order } from '../app.types';
+import { URLs } from './actions/actions.types';
 
 export interface DGCommonState {
   facilityName: string;
@@ -18,12 +18,14 @@ export interface DGCommonState {
   datasetCache: EntityCache;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  luceneIds: number[];
   loading: boolean;
   downloading: boolean;
   error: string | null;
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
+  luceneIdsTimestamp: number;
   urls: URLs;
 }
 
