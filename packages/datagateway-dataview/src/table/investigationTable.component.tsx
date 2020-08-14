@@ -152,7 +152,12 @@ const InvestigationTable = (
       detailsPanel={({ rowData }) => {
         const investigationData = rowData as Investigation;
         return (
-          <Grid container className={classes.root} direction="column">
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
             <Grid item xs>
               <Typography variant="h6">
                 <b>{investigationData.TITLE}</b>

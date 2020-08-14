@@ -18,7 +18,14 @@ import {
   filterTable,
   clearTable,
 } from 'datagateway-common';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
@@ -26,6 +33,17 @@ import { Action, AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DLSDatafilesTableProps {
   datasetId: string;
@@ -85,6 +103,8 @@ const DLSDatafilesTable = (
 
   const [t] = useTranslation();
 
+  const classes = useStyles();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -138,20 +158,35 @@ const DLSDatafilesTable = (
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
-          <div>
-            <Typography variant="body2">
-              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
-            </Typography>
-            <Typography variant="body2">
-              <b>{t('datafiles.description')}:</b> {datafileData.DESCRIPTION}
-            </Typography>
-            <Typography variant="body2">
-              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
-            </Typography>
-            <Typography variant="body2">
-              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datafileData.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.size')}
+              </Typography>
+              <Typography>
+                <b>{formatBytes(datafileData.FILESIZE)}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.location')}
+              </Typography>
+              <Typography>
+                <b>{datafileData.LOCATION}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       columns={[

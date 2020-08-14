@@ -164,7 +164,12 @@ const DatafileTable = (
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
-          <Grid container className={classes.root} direction="column">
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
             <Grid item xs>
               <Typography variant="h6">
                 <b>{datafileData.NAME}</b>

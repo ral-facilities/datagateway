@@ -180,9 +180,7 @@ describe('Investigations Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -191,12 +189,16 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('be.visible');
-      cy.contains(
-        'Title: Dog want single resource major. Necessary bit always available term small stock game.'
-      ).should('not.be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+        )
+        .should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Dog want single resource major. Necessary bit always available term small stock game.'
+        )
+        .should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -205,9 +207,7 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

@@ -160,7 +160,12 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       detailsPanel={({ rowData }) => {
         const datasetData = rowData as Dataset;
         return (
-          <Grid container className={classes.root} direction="column">
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
             <Grid item xs>
               <Typography variant="h6">
                 <b>{datasetData.NAME}</b>

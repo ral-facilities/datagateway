@@ -52,7 +52,7 @@ const InstrumentDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div>
+    <div id="details-panel">
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
