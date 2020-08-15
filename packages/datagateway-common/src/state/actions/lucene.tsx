@@ -114,12 +114,7 @@ export const fetchLuceneData = async (
     })
     .then((response) => {
       // Dispatch action to save the result IDs.
-      // TODO: Type this correctly.
-      console.log(
-        'IDs: ',
-        response.data.map((result: { id: unknown }) => result.id)
-      );
-      return response.data.map((result: { id: unknown }) => result.id);
+      return response.data.map((result: { id: number }) => result.id);
     });
 
   return results;
