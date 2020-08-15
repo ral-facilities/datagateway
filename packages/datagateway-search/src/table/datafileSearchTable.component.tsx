@@ -26,6 +26,7 @@ import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import useAfterMountEffect from '../state/utils';
+import { useTranslation } from 'react-i18next';
 
 interface DatafileSearchTableStoreProps {
   sort: {
@@ -82,15 +83,17 @@ const DatafileSearchTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'datafile' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -124,7 +127,7 @@ const DatafileSearchTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(luceneData, params)}
+      loadMoreRows={(params) => fetchData(luceneData, params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -137,37 +140,37 @@ const DatafileSearchTable = (
         return (
           <div>
             <Typography>
-              <b>Name:</b> {datafileData.NAME}
+              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
             </Typography>
             <Typography>
-              <b>File Size:</b> {formatBytes(datafileData.FILESIZE)}
+              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
             </Typography>
             <Typography>
-              <b>Location:</b> {datafileData.LOCATION}
+              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
             </Typography>
           </div>
         );
       }}
       columns={[
         {
-          label: 'Name',
+          label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
-          label: 'Location',
+          label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          label: t('datafiles.size'),
           dataKey: 'FILESIZE',
-          cellContentRenderer: props => {
+          cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
         },
         {
-          label: 'Modified Time',
+          label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

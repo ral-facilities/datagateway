@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { useTranslation } from 'react-i18next';
 
 interface DatePickerStoreProps {
   startDate: MaterialUiPickersDate;
@@ -36,6 +37,8 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   const { startDate, endDate, selectStartDate, selectEndDate } = props;
   const classes = useStyles();
 
+  const [t] = useTranslation();
+
   return (
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -46,15 +49,15 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           disableFuture
           inputVariant="outlined"
           maxDate={endDate || new Date('2100-01-01')}
-          maxDateMessage="Invalid date range"
+          maxDateMessage={t('searchBox.invalid_date_message')}
           format="yyyy-MM-dd"
           value={startDate}
           onChange={(date) => {
             selectStartDate(date);
           }}
           animateYearScrolling
-          placeholder="Start Date"
-          inputProps={{ 'aria-label': 'start date input' }}
+          placeholder={t('searchBox.start_date')}
+          inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
         />
         <br></br>
         <KeyboardDatePicker
@@ -64,15 +67,15 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           inputVariant="outlined"
           disableFuture
           minDate={startDate || new Date('1984-01-01')}
-          minDateMessage="Invalid date range"
+          minDateMessage={t('searchBox.invalid_date_message')}
           format="yyyy-MM-dd"
           value={endDate}
           onChange={(date) => {
             selectEndDate(date);
           }}
           animateYearScrolling
-          placeholder="End Date"
-          inputProps={{ 'aria-label': 'end date input' }}
+          placeholder={t('searchBox.end_date')}
+          inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
         />
       </MuiPickersUtilsProvider>
     </div>

@@ -14,18 +14,18 @@ exports[`DatePicker component tests renders correctly 1`] = `
       format="yyyy-MM-dd"
       inputProps={
         Object {
-          "aria-label": "start date input",
+          "aria-label": "searchBox.start_date_arialabel",
         }
       }
       inputVariant="outlined"
       invalidDateMessage="Invalid Date Format"
       maxDate={2100-01-01T00:00:00.000Z}
-      maxDateMessage="Invalid date range"
+      maxDateMessage="searchBox.invalid_date_message"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
       onChange={[Function]}
       openTo="date"
-      placeholder="Start Date"
+      placeholder="searchBox.start_date"
       value={null}
       views={
         Array [
@@ -44,7 +44,7 @@ exports[`DatePicker component tests renders correctly 1`] = `
       format="yyyy-MM-dd"
       inputProps={
         Object {
-          "aria-label": "end date input",
+          "aria-label": "searchBox.end_date_arialabel",
         }
       }
       inputVariant="outlined"
@@ -52,10 +52,10 @@ exports[`DatePicker component tests renders correctly 1`] = `
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
       minDate={1984-01-01T00:00:00.000Z}
-      minDateMessage="Invalid date range"
+      minDateMessage="searchBox.invalid_date_message"
       onChange={[Function]}
       openTo="date"
-      placeholder="End Date"
+      placeholder="searchBox.end_date"
       value={null}
       views={
         Array [

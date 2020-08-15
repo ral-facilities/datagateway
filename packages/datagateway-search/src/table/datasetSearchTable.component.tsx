@@ -25,6 +25,7 @@ import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../state/utils';
+import { useTranslation } from 'react-i18next';
 
 interface DatasetTableStoreProps {
   sort: {
@@ -78,15 +79,17 @@ const DatasetSearchTable = (
     luceneData,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
         .filter(
-          cartItem =>
+          (cartItem) =>
             cartItem.entityType === 'dataset' &&
             allIds.includes(cartItem.entityId)
         )
-        .map(cartItem => cartItem.entityId),
+        .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
 
@@ -120,7 +123,7 @@ const DatasetSearchTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={params => fetchData(luceneData, params)}
+      loadMoreRows={(params) => fetchData(luceneData, params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={sortTable}
@@ -133,32 +136,32 @@ const DatasetSearchTable = (
         return (
           <div>
             <Typography>
-              <b>Name:</b> {datasetData.NAME}
+              <b>{t('datasets.name')}:</b> {datasetData.NAME}
             </Typography>
             <Typography>
-              <b>Description:</b> {datasetData.NAME}
+              <b>{t('datasets.description')}:</b> {datasetData.NAME}
             </Typography>
           </div>
         );
       }}
       columns={[
         {
-          label: 'Name',
+          label: t('datasets.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
-          label: 'Datafile Count',
+          label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
           disableSort: true,
         },
         {
-          label: 'Create Time',
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
-          label: 'Modified Time',
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

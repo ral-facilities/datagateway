@@ -8,17 +8,17 @@ describe('Datafile search tab', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
 
-    cy.get('[aria-label="container-search-filters"]').should('exist');
+    cy.get('#container-search-filters').should('exist');
 
-    cy.get('[aria-label="container-search-table"]').should('exist');
+    cy.get('#container-search-table').should('exist');
   });
 
   it('should be able to search by text', () => {
-    cy.get('[aria-label="search text input"]')
+    cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('4961');
 
-    cy.get('[aria-label="submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-label="Search table tabs"]').contains('Datafile').click();
 
@@ -28,10 +28,10 @@ describe('Datafile search tab', () => {
   });
 
   it('should be able to search by date range', () => {
-    cy.get('[aria-label="start date input"]').type('2012-02-02');
-    cy.get('[aria-label="end date input"]').type('2012-02-03');
+    cy.get('[aria-label="Start date input"]').type('2012-02-02');
+    cy.get('[aria-label="End date input"]').type('2012-02-03');
 
-    cy.get('[aria-label="submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-label="Search table tabs"]').contains('Datafile').click();
 
@@ -41,9 +41,9 @@ describe('Datafile search tab', () => {
   });
 
   it('should be hidden if dataset checkbox is unchecked', () => {
-    cy.get('[aria-label="datafile checkbox"]').click();
+    cy.get('[aria-label="Datafile checkbox"]').click();
 
-    cy.get('[aria-label="submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-rowcount="50"]').should('exist');
 

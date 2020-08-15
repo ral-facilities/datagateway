@@ -13,45 +13,45 @@ exports[`Investigation Search Table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "TITLE",
         "filterComponent": [Function],
-        "label": "Title",
+        "label": "investigations.title",
       },
       Object {
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
-        "label": "Visit ID",
+        "label": "investigations.visit_id",
       },
       Object {
-        "dataKey": "NAME",
+        "dataKey": "RB_NUMBER",
         "filterComponent": [Function],
-        "label": "RB Number",
+        "label": "investigations.rb_number",
       },
       Object {
         "dataKey": "DOI",
         "filterComponent": [Function],
-        "label": "DOI",
+        "label": "investigations.doi",
       },
       Object {
         "dataKey": "DATASET_COUNT",
         "disableSort": true,
-        "label": "Dataset Count",
+        "label": "investigations.dataset_count",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME",
         "filterComponent": [Function],
-        "label": "Instrument",
+        "label": "investigations.instrument",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
-        "label": "Start Date",
+        "label": "investigations.start_date",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
-        "label": "End Date",
+        "label": "investigations.end_date",
       },
     ]
   }
@@ -109,28 +109,32 @@ exports[`Investigation Search Table component renders details panel correctly 1`
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Proposal:
+      investigations.rb_number
+      :
     </b>
      
     1
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Title:
+      investigations.title
+      :
     </b>
      
     Test 1
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      Start Date:
+      investigations.start_date
+      :
     </b>
      
     2019-06-10
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      End Date:
+      investigations.end_date
+      :
     </b>
      
     2019-06-11
@@ -293,6 +297,6 @@ exports[`Investigation Search Table component renders title, visit ID, RB number
 
 exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 2`] = `"1"`;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 3`] = `"Test 1"`;
+exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 3`] = `"1"`;
 
 exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 4`] = `"doi 1"`;

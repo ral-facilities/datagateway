@@ -27,7 +27,7 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
     spacing={2}
   >
     <WithStyles(ForwardRef(Grid))
-      aria-label="container-search-filters"
+      id="container-search-filters"
       item={true}
     >
       <WithStyles(ForwardRef(Paper))
@@ -42,7 +42,7 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
       </WithStyles(ForwardRef(Paper))>
     </WithStyles(ForwardRef(Grid))>
     <WithStyles(ForwardRef(Grid))
-      aria-label="container-search-table"
+      id="container-search-table"
       item={true}
     >
       <WithStyles(ForwardRef(Paper))
