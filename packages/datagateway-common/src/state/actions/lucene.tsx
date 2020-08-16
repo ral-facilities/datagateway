@@ -19,15 +19,6 @@ interface QueryParameters {
   upper?: string;
 }
 
-// TODO: Do we need this?
-// interface RequestParameters {
-//   sessionId: string | null;
-//   maxCount: number;
-// }
-
-// TODO: Do we need this?
-// type LuceneParameters = QueryParameters | RequestParameters;
-
 export type DatasearchType = 'Investigation' | 'Dataset' | 'Datafile';
 
 export type LuceneSearchParams = UrlBuilderParameters & {
@@ -40,8 +31,6 @@ interface UrlBuilderParameters {
   endDate: MaterialUiPickersDate;
 }
 
-// TODO: Move this out of here.
-// arguments: startDate, endDate, searchText
 const urlParamsBuilder = (
   datasearchtype: DatasearchType,
   params: UrlBuilderParameters
