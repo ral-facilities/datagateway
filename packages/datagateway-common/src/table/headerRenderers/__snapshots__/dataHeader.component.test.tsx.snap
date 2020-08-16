@@ -4,7 +4,6 @@ exports[`Data column header component renders correctly with filter but no sort 
 <div
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
 >
   <div
     style={
@@ -66,7 +65,6 @@ exports[`Data column header component renders correctly with sort and filter 1`]
 <div
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
 >
   <div
     style={
@@ -133,7 +131,6 @@ exports[`Data column header component renders correctly with sort but no filter 
 <div
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
 >
   <div
     style={
@@ -196,7 +193,6 @@ exports[`Data column header component renders correctly without sort or filter 1
 <div
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-sizeSmall"
-  role="cell"
 >
   <div
     style={
