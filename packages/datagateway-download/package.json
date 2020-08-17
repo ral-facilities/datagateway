@@ -19,7 +19,7 @@
     "loglevel": "^1.6.8",
     "react": "^16.13.1",
     "react-dom": "^16.11.0",
-    "react-i18next": "^11.5.0",
+    "react-i18next": "^11.7.0",
     "react-scripts": "3.4.1",
     "react-virtualized": "^9.22.2",
     "single-spa-react": "^3.0.0",
