@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Instrument details panel component gracefully handles InstrumentScientists without Users 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="instruments.details.tabs_label"
     onChange={[Function]}
@@ -113,7 +115,9 @@ exports[`Instrument details panel component gracefully handles InstrumentScienti
 `;
 
 exports[`Instrument details panel component renders correctly 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="instruments.details.tabs_label"
     onChange={[Function]}
@@ -207,7 +211,9 @@ exports[`Instrument details panel component renders correctly 1`] = `
 `;
 
 exports[`Instrument details panel component renders users tab when present in the data 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="instruments.details.tabs_label"
     onChange={[Function]}

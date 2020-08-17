@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Datafile details panel component renders correctly 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
@@ -74,7 +76,9 @@ exports[`Datafile details panel component renders correctly 1`] = `
 `;
 
 exports[`Datafile details panel component renders parameters tab when present in the data 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datafiles.details.tabs_label"
     onChange={[Function]}

@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Investigation details panel component gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
@@ -154,7 +156,9 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
 `;
 
 exports[`Investigation details panel component renders correctly 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
@@ -307,7 +311,9 @@ exports[`Investigation details panel component renders correctly 1`] = `
 `;
 
 exports[`Investigation details panel component renders user, sample and publication tabs when present in the data 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}

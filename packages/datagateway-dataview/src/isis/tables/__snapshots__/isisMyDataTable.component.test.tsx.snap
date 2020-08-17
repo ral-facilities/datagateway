@@ -118,7 +118,9 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
 `;
 
 exports[`ISIS Investigations table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}

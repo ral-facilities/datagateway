@@ -85,6 +85,7 @@ exports[`Investigation table component renders correctly 1`] = `
 exports[`Investigation table component renders details panel correctly 1`] = `
 <div
   className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
+  id="details-panel"
 >
   <WithStyles(ForwardRef(Grid))
     item={true}

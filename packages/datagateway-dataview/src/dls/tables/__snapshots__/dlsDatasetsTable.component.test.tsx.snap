@@ -210,7 +210,9 @@ exports[`DLS Dataset table component renders correctly 1`] = `
 `;
 
 exports[`DLS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}

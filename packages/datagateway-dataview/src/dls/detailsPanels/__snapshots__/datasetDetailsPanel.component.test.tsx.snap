@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Dataset details panel component renders calculate size button when size has not been calculated 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
@@ -108,7 +110,9 @@ exports[`Dataset details panel component renders calculate size button when size
 `;
 
 exports[`Dataset details panel component renders correctly 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
@@ -215,7 +219,9 @@ exports[`Dataset details panel component renders correctly 1`] = `
 `;
 
 exports[`Dataset details panel component renders type tab when present in the data 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}

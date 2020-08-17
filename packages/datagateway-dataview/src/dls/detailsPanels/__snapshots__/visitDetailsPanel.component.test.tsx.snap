@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Visit details panel component gracefully handles InvestigationUsers without Users 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
@@ -154,7 +156,9 @@ exports[`Visit details panel component gracefully handles InvestigationUsers wit
 `;
 
 exports[`Visit details panel component renders calculate size button when size has not been calculated 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
@@ -297,7 +301,9 @@ exports[`Visit details panel component renders calculate size button when size h
 `;
 
 exports[`Visit details panel component renders correctly 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
@@ -432,7 +438,9 @@ exports[`Visit details panel component renders correctly 1`] = `
 `;
 
 exports[`Visit details panel component renders user, sample and publication tabs when present in the data 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}

@@ -37,7 +37,9 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
 `;
 
 exports[`ISIS Instruments table component renders details panel correctly and it sends off an FetchInstrumentDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="instruments.details.tabs_label"
     onChange={[Function]}
