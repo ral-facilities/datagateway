@@ -109,7 +109,12 @@ const DatafileDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'parameters'}
         >
-          <Grid container className={classes.root} direction="column">
+          <Grid
+            id="parameter-grid"
+            container
+            className={classes.root}
+            direction="column"
+          >
             {datafileData.DATAFILEPARAMETER.map((parameter) => {
               if (parameter.PARAMETERTYPE) {
                 switch (parameter.PARAMETERTYPE.VALUETYPE) {

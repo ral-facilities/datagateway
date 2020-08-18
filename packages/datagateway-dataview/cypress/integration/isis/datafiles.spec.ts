@@ -206,7 +206,7 @@ describe('ISIS - Datafiles Table', () => {
       );
       cy.get('[aria-controls="datafile-parameters-panel"]').click();
 
-      cy.get('#details-panel').contains('accept410').should('be.visible');
+      cy.get('#parameter-grid').should('be.visible');
     });
 
     it('and then not view details anymore', () => {
