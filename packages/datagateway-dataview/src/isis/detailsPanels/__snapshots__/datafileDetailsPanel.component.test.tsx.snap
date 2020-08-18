@@ -163,6 +163,7 @@ exports[`Datafile details panel component renders parameters tab when present in
       className="makeStyles-root-1"
       container={true}
       direction="column"
+      id="parameter-grid"
     >
       <WithStyles(ForwardRef(Grid))
         item={true}
