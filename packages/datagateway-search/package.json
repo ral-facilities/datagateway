@@ -15,7 +15,7 @@
     "connected-react-router": "^6.5.2",
     "custom-event-polyfill": "^1.0.7",
     "datagateway-common": "0.1.0",
-    "i18next": "^19.6.3",
+    "i18next": "^19.7.0",
     "i18next-browser-languagedetector": "^6.0.0",
     "i18next-http-backend": "^1.0.15",
     "date-fns": "^2.15.0",
