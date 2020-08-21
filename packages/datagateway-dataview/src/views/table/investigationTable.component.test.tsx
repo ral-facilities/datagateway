@@ -68,20 +68,6 @@ describe('Investigation table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  // it('sends clearTable action on load', () => {
-  //   const testStore = mockStore(state);
-  //   mount(
-  //     <Provider store={testStore}>
-  //       <MemoryRouter>
-  //         <InvestigationTable />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
-
-  //   expect(testStore.getActions().length).toEqual(1);
-  //   expect(testStore.getActions()[0]).toEqual(clearTable());
-  // });
-
   it('sends fetchInvestigationCount, fetchInvestigations and fetchAllIds actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(

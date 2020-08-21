@@ -1,24 +1,23 @@
-import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatasetTable from './datasetTable.component';
-import { initialState } from '../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../state/app.types';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
+import axios from 'axios';
 import {
+  addToCartRequest,
+  dGCommonInitialState,
+  fetchAllIdsRequest,
+  fetchDatasetCountRequest,
   fetchDatasetsRequest,
   filterTable,
-  clearTable,
-  sortTable,
-  addToCartRequest,
   removeFromCartRequest,
-  fetchDatasetCountRequest,
-  fetchAllIdsRequest,
+  sortTable,
 } from 'datagateway-common';
+import React from 'react';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
-import axios from 'axios';
-import { dGCommonInitialState } from 'datagateway-common';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../../state/app.types';
+import { initialState } from '../../state/reducers/dgdataview.reducer';
+import DatasetTable from './datasetTable.component';
 
 describe('Dataset table component', () => {
   let shallow;
@@ -63,19 +62,19 @@ describe('Dataset table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends clearTable action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatasetTable investigationId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  // it('sends clearTable action on load', () => {
+  //   const testStore = mockStore(state);
+  //   mount(
+  //     <Provider store={testStore}>
+  //       <MemoryRouter>
+  //         <DatasetTable investigationId="1" />
+  //       </MemoryRouter>
+  //     </Provider>
+  //   );
 
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual(clearTable());
-  });
+  //   expect(testStore.getActions().length).toEqual(1);
+  //   expect(testStore.getActions()[0]).toEqual(clearTable());
+  // });
 
   it('sends fetchDatasetCount, fetchDatasets and fetchAllIds actions when watched store values change', () => {
     let testStore = mockStore(state);
@@ -94,9 +93,9 @@ describe('Dataset table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatasetCountRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest(1));
-    expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[0]).toEqual(fetchDatasetCountRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchDatasetsRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchAllIdsRequest(1));
   });
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {
@@ -126,12 +125,12 @@ describe('Dataset table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[3]).toEqual(filterTable('NAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -150,14 +149,14 @@ describe('Dataset table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[3]).toEqual(
       filterTable('MOD_TIME', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('MOD_TIME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -175,7 +174,7 @@ describe('Dataset table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[3]).toEqual(sortTable('NAME', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -190,7 +189,7 @@ describe('Dataset table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+    expect(testStore.getActions()[3]).toEqual(addToCartRequest());
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
@@ -215,7 +214,7 @@ describe('Dataset table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+    expect(testStore.getActions()[3]).toEqual(removeFromCartRequest());
   });
 
   it('selected rows only considers relevant cart items', () => {
