@@ -6,9 +6,9 @@ exports[`DownloadTab renders correctly 1`] = `
 >
   <WithStyles(ForwardRef(Tabs))
     centered={true}
-    indicatorColor="primary"
+    indicatorColor="secondary"
     onChange={[Function]}
-    textColor="primary"
+    textColor="secondary"
     value={0}
   >
     <WithStyles(ForwardRef(Tab))
