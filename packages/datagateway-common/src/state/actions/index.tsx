@@ -29,13 +29,13 @@ import {
   UpdateResultsPayload,
   UpdateResultsType,
   UpdateSaveViewType,
+  UpdateSearchPayload,
+  UpdateSearchType,
   UpdateSortPayload,
   UpdateSortType,
   UpdateViewPayload,
   UpdateViewType,
   URLs,
-  UpdateSearchPayload,
-  UpdateSearchType,
 } from './actions.types';
 
 export * from './cart';
@@ -117,7 +117,6 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     // Get the URLSearchParams object from the search query.
     const query = new URLSearchParams(getState().router.location.search);
-    console.log('parsing query: ', query.toString());
 
     // Get filters in URL.
     const search = query.get('search');
@@ -132,7 +131,6 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     if (filters) {
       try {
         const fq: FiltersType = JSON.parse(filters);
-        console.log('parsed filters: ', fq);
 
         // Create the entries for the filter.
         for (const [f, v] of Object.entries(fq)) {
@@ -140,11 +138,9 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
           if (Array.isArray(v)) {
             if (v.length > 0) {
               parsedFilters[f] = v;
-              console.log(`Added ${f} with values: ${v}`);
             }
           } else {
             parsedFilters[f] = v;
-            console.log(`Added ${f} with values: ${v}`);
           }
         }
 
@@ -162,12 +158,10 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     if (sort) {
       try {
         const sq: SortType = JSON.parse(sort);
-        console.log('parsed sort: ', sq);
 
         // Create the entries for sort.
         for (const [s, v] of Object.entries(sq)) {
           parsedSort[s] = v;
-          console.log(`Added ${s} with value: ${v}`);
         }
 
         if (Object.keys(parsedSort).length > 0) {
@@ -193,15 +187,11 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     dispatch(updateQueryParams(params));
 
     // Dispatch and update the filter object in state.
-    console.log('Parsed filters: ', isFiltersParsed);
-    console.log(parsedFilters);
     if (isFiltersParsed) {
       dispatch(updateFilters(parsedFilters));
     }
 
     // Dispatch and update sort object in state.
-    console.log('Parsed sort: ', isSortParsed);
-    console.log(parsedSort);
     if (isSortParsed) {
       dispatch(updateSort(parsedSort));
     }
@@ -219,7 +209,6 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   // Loop and add all the query parameters which is in use.
   for (const [q, v] of Object.entries(query)) {
     if (v !== null && q !== 'filters') {
-      console.log(`Adding ${q} with value: ${v}`);
       queryParams.append(q, v);
     }
   }
@@ -236,7 +225,6 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
     }
   }
   if (Object.keys(addFilters).length > 0) {
-    console.log('Add filters: ', addFilters);
     queryParams.append('filters', JSON.stringify(addFilters));
   }
 
@@ -246,11 +234,9 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
     addSort[s] = v;
   }
   if (Object.keys(addSort).length > 0) {
-    console.log('Add sort: ', addSort);
     queryParams.append('sort', JSON.stringify(addSort));
   }
 
-  console.log(`Final URLSearchParams - getURLQuery: ${queryParams.toString()}`);
   return queryParams;
 };
 

@@ -169,7 +169,6 @@ class PageContainer extends React.Component<
       document.getElementById('datagateway-dataview')
     ) {
       this.props.fetchDownloadCart();
-      console.log('fetched download cart');
       this.setState({
         ...this.state,
         isCartFetched: true,

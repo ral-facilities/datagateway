@@ -1,43 +1,40 @@
-import React from 'react';
-import { IndexRange } from 'react-virtualized';
-import { Action } from 'redux';
-
-import {
-  Entity,
-  Filter,
-  FiltersType,
-  nestedValue,
-  SortType,
-  Order,
-  ArrowTooltip,
-} from 'datagateway-common';
-import { QueryParams } from 'datagateway-common/lib/state/app.types';
-
 import {
   Box,
   Chip,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
   FormControl,
   Grid,
   InputLabel,
   List,
   ListItem,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Paper,
   Select,
-  Typography,
-  ListItemText,
-  ListItemIcon,
   TableSortLabel,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Typography,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
-
-import EntityCard, { EntityImageDetails } from './entityCard.component';
+import {
+  ArrowTooltip,
+  Entity,
+  Filter,
+  FiltersType,
+  nestedValue,
+  Order,
+  SortType,
+} from 'datagateway-common';
+import { QueryParams } from 'datagateway-common/lib/state/app.types';
+import React from 'react';
+import { IndexRange } from 'react-virtualized';
+import { Action } from 'redux';
 import AdvancedFilter from './advancedFilter.component';
+import EntityCard, { EntityImageDetails } from './entityCard.component';
 
 const useCardViewStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -368,16 +365,16 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   };
 
   React.useEffect(() => {
-    console.log('Page number (page): ', page);
-    console.log('Current pageNum (query): ', query.page);
-    console.log('Page change: ', pageChange);
-    console.log('Page results: ', maxResults);
-    console.log('Query results: ', query.results);
+    // console.log('Page number (page): ', page);
+    // console.log('Current pageNum (query): ', query.page);
+    // console.log('Page change: ', pageChange);
+    // console.log('Page results: ', maxResults);
+    // console.log('Query results: ', query.results);
 
     // Set the page number if it was found in the parameters.
     if (!pageChange) {
       if (query.page) {
-        console.log('Set to query page: ', query.page);
+        // console.log('Set to query page: ', query.page);
         setPage(query.page);
       } else {
         // Workaround for issue where page remains same on pagination on investigation/dataset.
@@ -420,7 +417,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         changePage(1);
       }
       setNumPages(p);
-      console.log('num pages: ', numPages);
+      // console.log('num pages: ', numPages);
       setLoadedData(false);
     }
   }, [changePage, maxResults, numPages, query.page, totalDataCount]);
@@ -446,11 +443,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       if (!loadedData) {
         // Calculate the start/end indexes for the data.
         const startIndex = page * maxResults - (maxResults - 1) - 1;
-        console.log('startIndex: ', startIndex);
+        // console.log('startIndex: ', startIndex);
 
         // End index not incremented for slice method.
         const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-        console.log('stopIndex: ', stopIndex);
+        // console.log('stopIndex: ', stopIndex);
 
         if (numPages > -1 && startIndex > -1 && stopIndex > -1) {
           // Clear data in the state before loading new data.

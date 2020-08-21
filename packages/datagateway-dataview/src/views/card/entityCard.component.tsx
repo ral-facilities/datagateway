@@ -5,16 +5,16 @@ import {
   Chip,
   Collapse,
   Divider,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
   Link,
   Typography,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React from 'react';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ArrowTooltip } from 'datagateway-common';
+import React from 'react';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
@@ -194,7 +194,6 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     // Decide if the collapsible should be present depending on
     // if the description height exceeds the default collapsed height.
     if (descriptionRef && descriptionRef.current) {
-      // console.log('Client height: ', descriptionRef.current.clientHeight);
       if (descriptionRef.current.clientHeight > defaultCollapsedHeight)
         setCollapsibleInteraction(true);
     }

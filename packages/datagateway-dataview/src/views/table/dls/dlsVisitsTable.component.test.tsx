@@ -1,25 +1,24 @@
-import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DLSVisitsTable from './dlsVisitsTable.component';
-import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../../state/app.types';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
+import axios from 'axios';
 import {
+  clearTable,
+  dGCommonInitialState,
+  fetchInvestigationCountRequest,
+  fetchInvestigationDetailsRequest,
+  fetchInvestigationSizeRequest,
   fetchInvestigationsRequest,
   filterTable,
   sortTable,
-  fetchInvestigationDetailsRequest,
-  fetchInvestigationCountRequest,
-  fetchInvestigationSizeRequest,
-  dGCommonInitialState,
-  clearTable,
+  Table,
 } from 'datagateway-common';
+import React from 'react';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
-import axios from 'axios';
-import { Button } from '@material-ui/core';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../../state/reducers/dgdataview.reducer';
+import DLSVisitsTable from './dlsVisitsTable.component';
 
 describe('DLS Visits table component', () => {
   let shallow;
@@ -218,9 +217,6 @@ describe('DLS Visits table component', () => {
         detailsPanelResize: jest.fn(),
       })
     );
-
-    console.log(wrapper.find(Button).debug());
-
     expect(testStore.getActions()[1]).toEqual(
       fetchInvestigationDetailsRequest()
     );
