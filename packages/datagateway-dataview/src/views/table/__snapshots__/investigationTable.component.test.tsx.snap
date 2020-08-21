@@ -87,7 +87,7 @@ exports[`Investigation table component renders details panel correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      investigations.rb_number
+      investigations.details.rb_number
       :
     </b>
      
@@ -95,7 +95,7 @@ exports[`Investigation table component renders details panel correctly 1`] = `
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      investigations.title
+      investigations.details.title
       :
     </b>
      
@@ -103,7 +103,7 @@ exports[`Investigation table component renders details panel correctly 1`] = `
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      investigations.start_date
+      investigations.details.start_date
       :
     </b>
      
@@ -111,7 +111,7 @@ exports[`Investigation table component renders details panel correctly 1`] = `
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      investigations.end_date
+      investigations.details.end_date
       :
     </b>
      

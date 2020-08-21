@@ -8,17 +8,17 @@ describe('SearchBoxContainer Component', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
 
-    cy.get('[aria-label="container-searchbox"]').should('exist');
+    cy.get('#container-searchbox').should('exist');
 
-    cy.get('[aria-label="search text input"]').should('exist');
+    cy.get('[aria-label="Search text input"]').should('exist');
 
-    cy.get('[aria-label="start date input"]').should('exist');
-    cy.get('[aria-label="end date input"]').should('exist');
+    cy.get('[aria-label="Start date input"]').should('exist');
+    cy.get('[aria-label="End date input"]').should('exist');
 
-    cy.get('[aria-label="investigation checkbox"]').should('exist');
-    cy.get('[aria-label="dataset checkbox"]').should('exist');
-    cy.get('[aria-label="datafile checkbox"]').should('exist');
+    cy.get('[aria-label="Investigation checkbox"]').should('exist');
+    cy.get('[aria-label="Dataset checkbox"]').should('exist');
+    cy.get('[aria-label="Datafile checkbox"]').should('exist');
 
-    cy.get('[aria-label="submit search button"]').should('exist');
+    cy.get('[aria-label="Submit search button"]').should('exist');
   });
 });

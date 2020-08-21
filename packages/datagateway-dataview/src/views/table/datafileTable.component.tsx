@@ -138,13 +138,14 @@ const DatafileTable = (
         return (
           <div>
             <Typography>
-              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
+              <b>{t('datafiles.details.name')}:</b> {datafileData.NAME}
             </Typography>
             <Typography>
-              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
+              <b>{t('datafiles.details.size')}:</b>{' '}
+              {formatBytes(datafileData.FILESIZE)}
             </Typography>
             <Typography>
-              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
+              <b>{t('datafiles.details.location')}:</b> {datafileData.LOCATION}
             </Typography>
           </div>
         );

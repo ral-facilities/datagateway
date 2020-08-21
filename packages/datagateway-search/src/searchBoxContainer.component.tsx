@@ -14,7 +14,7 @@ const SearchBoxContainer = (): React.ReactElement => {
       direction="column"
       justify="flex-start"
       alignItems="stretch"
-      aria-label="container-searchbox"
+      id="container-searchbox"
     >
       <Grid item>
         <Box px={2}>

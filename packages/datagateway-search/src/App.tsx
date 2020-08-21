@@ -21,6 +21,7 @@ import SearchPageContainer from './searchPageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
+import { Translation } from 'react-i18next';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -76,16 +77,20 @@ class App extends React.Component<unknown, { hasError: boolean }> {
     if (this.state.hasError) {
       return (
         <div className="error">
-          <div
-            style={{
-              padding: 20,
-              background: 'red',
-              color: 'white',
-              margin: 5,
-            }}
+          <React.Suspense
+            fallback={<Preloader loading={true}>Finished loading</Preloader>}
           >
-            Something went wrong...
-          </div>
+            <div
+              style={{
+                padding: 20,
+                background: 'red',
+                color: 'white',
+                margin: 5,
+              }}
+            >
+              <Translation>{(t) => t('app.error')}</Translation>
+            </div>
+          </React.Suspense>
         </div>
       );
     } else
@@ -102,7 +107,13 @@ class App extends React.Component<unknown, { hasError: boolean }> {
               <StylesProvider generateClassName={generateClassName}>
                 <DGThemeProvider>
                   <ConnectedPreloader>
-                    <SearchPageContainer />
+                    <React.Suspense
+                      fallback={
+                        <Preloader loading={true}>Finished loading</Preloader>
+                      }
+                    >
+                      <SearchPageContainer />
+                    </React.Suspense>
                   </ConnectedPreloader>
                 </DGThemeProvider>
               </StylesProvider>

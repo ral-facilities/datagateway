@@ -2,8 +2,6 @@ import { DGDataViewState } from '../app.types';
 import { createReducer } from 'datagateway-common';
 import {
   FeatureSwitchesPayload,
-  ConfigureStringsPayload,
-  ConfigureStringsType,
   ConfigureFeatureSwitchesType,
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
@@ -20,16 +18,6 @@ export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
   return {
     ...state,
     settingsLoaded: true,
-  };
-}
-
-export function handleConfigureStrings(
-  state: DGDataViewState,
-  payload: ConfigureStringsPayload
-): DGDataViewState {
-  return {
-    ...state,
-    res: payload.res,
   };
 }
 
@@ -57,7 +45,6 @@ export function handleConfigureBreadcrumbSettings(
 
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
-  [ConfigureStringsType]: handleConfigureStrings,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
 });

@@ -96,7 +96,9 @@ describe('Search Button component tests', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -139,7 +141,9 @@ describe('Search Button component tests', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -182,7 +186,9 @@ describe('Search Button component tests', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -210,7 +216,9 @@ describe('Search Button component tests', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -245,7 +253,9 @@ describe('Search Button component tests', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -280,7 +290,9 @@ describe('Search Button component tests', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
     expect(axios.get).toHaveBeenCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
@@ -315,7 +327,9 @@ describe('Search Button component tests', () => {
       </Provider>
     );
 
-    wrapper.find('button[aria-label="submit search button"]').simulate('click');
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
 
     await act(async () => {
       await flushPromises();

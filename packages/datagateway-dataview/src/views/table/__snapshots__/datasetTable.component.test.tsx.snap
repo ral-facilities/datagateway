@@ -212,7 +212,7 @@ exports[`Dataset table component renders details panel correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      datasets.name
+      datasets.details.name
       :
     </b>
      
@@ -220,7 +220,7 @@ exports[`Dataset table component renders details panel correctly 1`] = `
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
-      datasets.description
+      datasets.details.description
       :
     </b>
      

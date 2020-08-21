@@ -4,7 +4,6 @@ import { DGCommonState } from 'datagateway-common';
 import { FeatureSwitches, BreadcrumbSettings } from './actions/actions.types';
 
 export interface DGDataViewState {
-  res?: ApplicationStrings;
   features: FeatureSwitches;
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
@@ -15,14 +14,6 @@ export interface EntityCache {
     childEntityCount: number | null;
     childEntitySize: number | null;
   };
-}
-
-export interface AppStrings {
-  [id: string]: string;
-}
-
-export interface ApplicationStrings {
-  [section: string]: AppStrings;
 }
 
 export type StateType = {

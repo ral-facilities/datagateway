@@ -118,7 +118,7 @@ describe('Dataset table component', () => {
     );
 
     const filterInput = wrapper.find(
-      '[aria-label="Modified Time date filter to"]'
+      '[aria-label="datasets.modified_time date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
@@ -161,10 +161,7 @@ describe('Dataset table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(addToCartRequest());
   });
@@ -189,10 +186,7 @@ describe('Dataset table component', () => {
       </Provider>
     );
 
-    wrapper
-      .find('[aria-label="select row 0"]')
-      .first()
-      .simulate('click');
+    wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
     expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
   });
@@ -256,10 +250,7 @@ describe('Dataset table component', () => {
     );
 
     expect(
-      wrapper
-        .find('[aria-colindex=3]')
-        .find('p')
-        .children()
+      wrapper.find('[aria-colindex=3]').find('p').children()
     ).toMatchSnapshot();
   });
 });
