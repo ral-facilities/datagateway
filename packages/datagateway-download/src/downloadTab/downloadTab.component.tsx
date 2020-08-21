@@ -95,8 +95,8 @@ const DownloadTabs: React.FC = () => {
       <Tabs
         value={selectedTab}
         onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
+        indicatorColor="secondary"
+        textColor="secondary"
         centered
       >
         <Tab
