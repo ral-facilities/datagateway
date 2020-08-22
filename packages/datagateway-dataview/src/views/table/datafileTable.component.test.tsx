@@ -1,26 +1,25 @@
-import React from 'react';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
-import DatafileTable from './datafileTable.component';
-import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
-import configureStore from 'redux-mock-store';
-import { StateType } from '../../state/app.types';
-import {
-  fetchDatafilesRequest,
-  fetchAllIdsRequest,
-  clearTable,
-  Datafile,
-  filterTable,
-  sortTable,
-  downloadDatafileRequest,
-  addToCartRequest,
-  removeFromCartRequest,
-  fetchDatafileCountRequest,
-} from 'datagateway-common';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { MemoryRouter } from 'react-router';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import axios from 'axios';
-import { dGCommonInitialState } from 'datagateway-common';
+import {
+  addToCartRequest,
+  Datafile,
+  dGCommonInitialState,
+  downloadDatafileRequest,
+  fetchAllIdsRequest,
+  fetchDatafileCountRequest,
+  fetchDatafilesRequest,
+  filterTable,
+  removeFromCartRequest,
+  sortTable,
+} from 'datagateway-common';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { StateType } from '../../state/app.types';
+import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
+import DatafileTable from './datafileTable.component';
 
 describe('Datafile table component', () => {
   let shallow;
@@ -67,20 +66,6 @@ describe('Datafile table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends clearTable action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual(clearTable());
-  });
-
   it('sends fetchDatafileCount, fetchDatafiles and fetchAllIdsRequest actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
@@ -98,9 +83,9 @@ describe('Datafile table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatafileCountRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
-    expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[0]).toEqual(fetchDatafileCountRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchDatafilesRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchAllIdsRequest(1));
   });
 
   it('sends fetchDatafiles action when loadMoreRows is called', () => {
@@ -128,12 +113,12 @@ describe('Datafile table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[3]).toEqual(filterTable('NAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -152,14 +137,14 @@ describe('Datafile table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[3]).toEqual(
       filterTable('MOD_TIME', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('MOD_TIME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -177,7 +162,7 @@ describe('Datafile table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[3]).toEqual(sortTable('NAME', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -192,7 +177,7 @@ describe('Datafile table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+    expect(testStore.getActions()[3]).toEqual(addToCartRequest());
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
@@ -217,7 +202,7 @@ describe('Datafile table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+    expect(testStore.getActions()[3]).toEqual(removeFromCartRequest());
   });
 
   it('selected rows only considers relevant cart items', () => {
@@ -267,7 +252,7 @@ describe('Datafile table component', () => {
 
     wrapper.find('button[aria-label="datafiles.download"]').simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(downloadDatafileRequest(1));
+    expect(testStore.getActions()[3]).toEqual(downloadDatafileRequest(1));
   });
 
   it("doesn't display download button for datafiles with no location", () => {
