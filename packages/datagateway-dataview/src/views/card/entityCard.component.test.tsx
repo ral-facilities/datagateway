@@ -1,6 +1,6 @@
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import React from 'react';
 import EntityCard from './entityCard.component';
-import { createShallow, createMount } from '@material-ui/core/test-utils';
 
 describe('Card', () => {
   let shallow;

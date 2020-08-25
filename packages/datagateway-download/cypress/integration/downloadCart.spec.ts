@@ -137,7 +137,8 @@ describe('Download Cart', () => {
     );
   });
 
-  it.only('should be able open and close the download confirmation dialog', () => {
+  // TODO: only?
+  it('should be able open and close the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
     cy.contains('Download Cart').click();
 
