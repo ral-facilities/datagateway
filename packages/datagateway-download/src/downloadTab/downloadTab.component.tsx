@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-  makeStyles,
   Paper,
   Tabs,
   Typography,
@@ -9,6 +8,7 @@ import {
   Grid,
   IconButton,
   CircularProgress,
+  Theme,
 } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 
@@ -18,12 +18,17 @@ import DownloadStatusTable from '../downloadStatus/downloadStatusTable.component
 import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { useTranslation } from 'react-i18next';
+import { StyleRules, createStyles, withStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-});
+const paperStyles = (theme: Theme): StyleRules =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+      backgroundColor: theme.palette.background.default,
+    },
+  });
+
+const StyledPaper = withStyles(paperStyles)(Paper);
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,8 +62,6 @@ function a11yProps(
 }
 
 const DownloadTabs: React.FC = () => {
-  const classes = useStyles();
-
   // Setting the selected tab in session storage is required
   // as the selected tab information is lost with each re-render
   // (e.g. opening/closing the navigation drawer).
@@ -88,12 +91,12 @@ const DownloadTabs: React.FC = () => {
   };
 
   return (
-    <Paper square className={classes.root}>
+    <StyledPaper square>
       <Tabs
         value={selectedTab}
         onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
+        indicatorColor="secondary"
+        textColor="secondary"
         centered
       >
         <Tab
@@ -176,7 +179,7 @@ const DownloadTabs: React.FC = () => {
           </Grid>
         </Grid>
       </TabPanel>
-    </Paper>
+    </StyledPaper>
   );
 };
 

@@ -52,7 +52,7 @@ const styles = (theme: Theme): StyleRules =>
     tableRow: {},
     tableRowHover: {
       '&:hover': {
-        backgroundColor: theme.palette.grey[200],
+        backgroundColor: theme.palette.action.hover,
       },
     },
     tableCell: {

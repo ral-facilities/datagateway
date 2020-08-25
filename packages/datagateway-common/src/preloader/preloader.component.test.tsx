@@ -1,21 +1,21 @@
 import React from 'react';
 import Preloader from './preloader.component';
-import { createShallow } from '@material-ui/core/test-utils';
+import { createMount } from '@material-ui/core/test-utils';
 
 describe('Preloader component', () => {
-  let shallow;
+  let mount;
 
   beforeEach(() => {
-    shallow = createShallow({});
+    mount = createMount();
   });
 
   it('renders when the site is loading', () => {
-    const wrapper = shallow(<Preloader loading={true} />);
+    const wrapper = mount(<Preloader loading={true} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it('does not render when the site is not loading', () => {
-    const wrapper = shallow(<Preloader loading={false} />);
+    const wrapper = mount(<Preloader loading={false} />);
     expect(wrapper).toMatchSnapshot();
   });
 });
