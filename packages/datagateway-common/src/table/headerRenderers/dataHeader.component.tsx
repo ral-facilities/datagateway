@@ -1,7 +1,7 @@
 import React from 'react';
 import { Order } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, TableSortLabel } from '@material-ui/core';
+import { TableCell, TableSortLabel, Box } from '@material-ui/core';
 import { DragIndicator } from '@material-ui/icons';
 import Draggable from 'react-draggable';
 
@@ -66,8 +66,10 @@ const DataHeader = (
           flex: 1,
         }}
       >
-        {icon && icon}
-        {inner}
+        <Box display="flex" flexWrap="wrap">
+          <Box marginRight={1}>{icon}</Box>
+          <Box>{inner}</Box>
+        </Box>
         {filterComponent}
       </div>
       <Draggable
