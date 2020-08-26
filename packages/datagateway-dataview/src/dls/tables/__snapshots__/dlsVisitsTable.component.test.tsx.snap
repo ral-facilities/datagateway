@@ -8,27 +8,32 @@ exports[`DLS Visits table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
+        "icon": <Memo(FingerprintIcon) />,
         "label": "investigations.visit_id",
       },
       Object {
         "dataKey": "DATASET_COUNT",
         "disableSort": true,
+        "icon": <Memo(ConfirmationNumberIcon) />,
         "label": "investigations.dataset_count",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME",
         "filterComponent": [Function],
+        "icon": <Memo(AssessmentIcon) />,
         "label": "investigations.instrument",
       },
       Object {
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.end_date",
       },
     ]

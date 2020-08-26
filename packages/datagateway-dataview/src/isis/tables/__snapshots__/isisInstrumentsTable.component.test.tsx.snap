@@ -8,6 +8,7 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "FULLNAME",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "instruments.name",
       },
     ]

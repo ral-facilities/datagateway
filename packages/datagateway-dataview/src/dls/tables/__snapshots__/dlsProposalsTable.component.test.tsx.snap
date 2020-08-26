@@ -8,12 +8,14 @@ exports[`DLS Proposals table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "TITLE",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "investigations.title",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "investigations.name",
       },
     ]

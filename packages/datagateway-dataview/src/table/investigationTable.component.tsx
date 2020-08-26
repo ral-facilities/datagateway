@@ -34,6 +34,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import useAfterMountEffect from '../utils';
 import { useTranslation } from 'react-i18next';
 
+import TitleIcon from '@material-ui/icons/Title';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
+import PublicIcon from '@material-ui/icons/Public';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -193,6 +200,7 @@ const InvestigationTable = (
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
@@ -205,30 +213,36 @@ const InvestigationTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
+          icon: <FingerprintIcon />,
           label: t('investigations.rb_number'),
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
         },
         {
+          icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'DOI',
           filterComponent: textFilter,
         },
         {
+          icon: <ConfirmationNumberIcon />,
           label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
         },
         {
+          icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INSTRUMENT.NAME',
           filterComponent: textFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
@@ -237,6 +251,7 @@ const InvestigationTable = (
           },
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,

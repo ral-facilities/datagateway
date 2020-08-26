@@ -21,6 +21,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
 
+import TitleIcon from '@material-ui/icons/Title';
+
 interface DLSProposalsTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -89,6 +91,7 @@ const DLSProposalsTable = (
       onSort={sortTable}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
@@ -101,6 +104,7 @@ const DLSProposalsTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
