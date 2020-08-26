@@ -23,6 +23,8 @@ import InstrumentDetailsPanel from '../detailsPanels/instrumentDetailsPanel.comp
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
 
+import TitleIcon from '@material-ui/icons/Title';
+
 interface ISISInstrumentsTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -101,6 +103,7 @@ const ISISInstrumentsTable = (
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('instruments.name'),
           dataKey: 'FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {

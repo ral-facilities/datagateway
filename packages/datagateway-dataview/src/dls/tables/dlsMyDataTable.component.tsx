@@ -26,6 +26,12 @@ import VisitDetailsPanel from '../detailsPanels/visitDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
 import { useTranslation } from 'react-i18next';
 
+import TitleIcon from '@material-ui/icons/Title';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 interface DLSMyDataTableStoreProps {
   sort: {
     [column: string]: Order;
@@ -121,6 +127,7 @@ const DLSMyDataTable = (
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
@@ -133,6 +140,7 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           cellContentRenderer: (props: TableCellProps) => {
@@ -145,11 +153,13 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <ConfirmationNumberIcon />,
           label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
           disableSort: true,
         },
         {
+          icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
           cellContentRenderer: (props: TableCellProps) => {
@@ -167,11 +177,14 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
+
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,

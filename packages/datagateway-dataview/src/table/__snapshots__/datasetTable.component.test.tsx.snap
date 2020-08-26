@@ -166,20 +166,24 @@ exports[`Dataset table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "datasets.name",
       },
       Object {
         "dataKey": "DATAFILE_COUNT",
+        "icon": <Memo(ConfirmationNumberIcon) />,
         "label": "datasets.datafile_count",
       },
       Object {
         "dataKey": "CREATE_TIME",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.create_time",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.modified_time",
       },
     ]
