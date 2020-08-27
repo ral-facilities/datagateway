@@ -97,7 +97,7 @@ exports[`DLS Visits table component renders details panel correctly and it sends
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1003"
+      className="makeStyles-root-1099"
       container={true}
       direction="column"
     >
@@ -113,7 +113,7 @@ exports[`DLS Visits table component renders details panel correctly and it sends
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-1004"
+          className="makeStyles-divider-1100"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

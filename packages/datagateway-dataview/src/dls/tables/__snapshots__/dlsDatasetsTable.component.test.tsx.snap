@@ -236,7 +236,7 @@ exports[`DLS Dataset table component renders details panel correctly and it send
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1594"
+      className="makeStyles-root-1711"
       container={true}
       direction="column"
     >
@@ -252,7 +252,7 @@ exports[`DLS Dataset table component renders details panel correctly and it send
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-1595"
+          className="makeStyles-divider-1712"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

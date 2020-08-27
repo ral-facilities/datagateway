@@ -60,7 +60,7 @@ exports[`ISIS Instruments table component renders details panel correctly and it
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-681"
+      className="makeStyles-root-701"
       container={true}
       direction="column"
     >
@@ -76,7 +76,7 @@ exports[`ISIS Instruments table component renders details panel correctly and it
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-682"
+          className="makeStyles-divider-702"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
