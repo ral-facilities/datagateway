@@ -120,7 +120,7 @@
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.4",
     "express": "^4.17.1",
-    "jsrsasign": "^9.0.0",
+    "jsrsasign": "^9.1.5",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "serve": "^11.3.2",
