@@ -37,7 +37,7 @@
     "cypress-failed-log": "^2.7.0",
     "cypress-plugin-retries": "^1.5.2",
     "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
+    "enzyme-adapter-react-16": "^1.15.4",
     "enzyme-to-json": "^3.3.5",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.11.0",
