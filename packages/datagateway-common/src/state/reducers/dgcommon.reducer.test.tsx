@@ -1523,5 +1523,13 @@ describe('DGCommon reducer', () => {
     it.todo(
       'should set the loading state when given a FetchLuceneIdsRequest action'
     );
+
+    it.todo(
+      'should set the luceneIds state and reset loading state when given a FetchLuceneIdsSuccess Action'
+    );
+
+    it.todo(
+      'should set the error state and reset loading state when given a FetchLuceneIdsFailure action'
+    );
   });
 });
