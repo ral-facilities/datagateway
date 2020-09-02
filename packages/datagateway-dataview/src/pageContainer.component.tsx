@@ -2,7 +2,16 @@ import React, { useEffect } from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 
-import { Grid, Typography, Paper } from '@material-ui/core';
+import {
+  Grid,
+  Typography,
+  Paper,
+  Theme,
+  withStyles,
+  createStyles,
+} from '@material-ui/core';
+import { StyleRules } from '@material-ui/core/styles';
+
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { Route } from 'react-router';
@@ -10,6 +19,15 @@ import { useTranslation } from 'react-i18next';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { fetchDownloadCart } from 'datagateway-common';
+
+const gridStyles = (theme: Theme): StyleRules =>
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.background.default,
+    },
+  });
+
+const StyledGrid = withStyles(gridStyles)(Grid);
 
 interface PageContainerStoreProps {
   entityCount: number;
@@ -37,7 +55,7 @@ const PageContainer = (
   }, [dgDataviewElement, fetchDownloadCart]);
 
   return (
-    <Grid container>
+    <StyledGrid container>
       {/* Hold the breadcrumbs at top left of the page. */}
       <Grid item xs aria-label="container-breadcrumbs">
         {/* don't show breadcrumbs on /my-data - only on browse */}
@@ -52,7 +70,7 @@ const PageContainer = (
         xs={2}
         aria-label="container-table-count"
       >
-        <Paper square>
+        <Paper square style={{ backgroundColor: 'inherit' }}>
           <Typography variant="h6" component="h3">
             <b>{t('app.results')}:</b> {entityCount}
           </Typography>
@@ -63,11 +81,18 @@ const PageContainer = (
       <Grid item xs={12} aria-label="container-table">
         {/* Place table in Paper component which adjusts for the height
              of the AppBar (64px) on parent application and the breadcrumbs component (31px). */}
-        <Paper square style={{ height: 'calc(100vh - 95px)', width: '100%' }}>
+        <Paper
+          square
+          style={{
+            height: 'calc(100vh - 95px)',
+            width: '100%',
+            backgroundColor: 'inherit',
+          }}
+        >
           <PageTable />
         </Paper>
       </Grid>
-    </Grid>
+    </StyledGrid>
   );
 };
 

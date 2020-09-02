@@ -39,7 +39,7 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
             <Grid item id="container-search-table">
               <Paper
                 style={{
-                  height: 'calc(90vh)',
+                  height: 'calc(85vh)',
                   width: 'calc(70vw)',
                 }}
               >

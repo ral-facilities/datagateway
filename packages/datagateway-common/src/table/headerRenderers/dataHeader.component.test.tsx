@@ -15,6 +15,7 @@ describe('Data column header component', () => {
     sort: {},
     onSort,
     resizeColumn,
+    icon: <div>Test</div>,
   };
 
   beforeEach(() => {

@@ -1,28 +1,30 @@
 import React from 'react';
 import { Order } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, TableSortLabel } from '@material-ui/core';
+import { TableCell, TableSortLabel, Box } from '@material-ui/core';
 import { DragIndicator } from '@material-ui/icons';
 import Draggable from 'react-draggable';
 
 const DataHeader = (
   props: TableHeaderProps & {
     className: string;
-    filterComponent?: React.ReactElement;
     sort: { [column: string]: Order };
     onSort: (column: string, order: Order | null) => void;
     resizeColumn: (deltaX: number) => void;
+    icon?: JSX.Element;
+    filterComponent?: React.ReactElement;
   }
 ): React.ReactElement => {
   const {
     className,
     dataKey,
-    filterComponent,
     sort,
     onSort,
     label,
     disableSort,
     resizeColumn,
+    icon,
+    filterComponent,
   } = props;
 
   const currSortDirection = sort[dataKey];
@@ -64,7 +66,10 @@ const DataHeader = (
           flex: 1,
         }}
       >
-        {inner}
+        <Box display="flex" flexWrap="wrap">
+          <Box marginRight={1}>{icon}</Box>
+          <Box>{inner}</Box>
+        </Box>
         {filterComponent}
       </div>
       <Draggable

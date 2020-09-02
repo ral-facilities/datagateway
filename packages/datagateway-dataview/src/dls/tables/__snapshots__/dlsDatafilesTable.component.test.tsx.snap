@@ -12,22 +12,26 @@ exports[`DLS datafiles table component renders correctly 1`] = `
       Object {
         "dataKey": "NAME",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "datafiles.name",
       },
       Object {
         "dataKey": "LOCATION",
         "filterComponent": [Function],
+        "icon": <Memo(ExploreIcon) />,
         "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "FILESIZE",
         "filterComponent": [Function],
+        "icon": <Memo(SaveIcon) />,
         "label": "datafiles.size",
       },
       Object {
         "dataKey": "CREATE_TIME",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "datafiles.create_time",
       },
     ]

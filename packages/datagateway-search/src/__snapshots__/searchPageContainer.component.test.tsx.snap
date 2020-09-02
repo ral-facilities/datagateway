@@ -48,7 +48,7 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
       <WithStyles(ForwardRef(Paper))
         style={
           Object {
-            "height": "calc(90vh)",
+            "height": "calc(85vh)",
             "width": "calc(70vw)",
           }
         }

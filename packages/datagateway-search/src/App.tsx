@@ -97,8 +97,8 @@ class App extends React.Component<unknown, { hasError: boolean }> {
       return (
         <div
           style={{
-            padding: 10,
-            margin: 10,
+            padding: 20,
+            margin: 5,
           }}
           className="App"
         >
