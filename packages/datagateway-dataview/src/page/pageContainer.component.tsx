@@ -249,7 +249,7 @@ class PageContainer extends React.Component<
 
   public render(): React.ReactElement {
     return (
-      <div>
+      <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
         <NavBar entityCount={this.props.entityCount} />
 
         <StyledGrid container>
@@ -324,13 +324,13 @@ class PageContainer extends React.Component<
                 <PageTable />
               </Paper>
             ) : (
-              <Paper square>
+              <Paper square style={{ backgroundColor: 'inherit' }}>
                 <PageCard />
               </Paper>
             )}
           </Grid>
         </StyledGrid>
-      </div>
+      </Paper>
     );
   }
 }

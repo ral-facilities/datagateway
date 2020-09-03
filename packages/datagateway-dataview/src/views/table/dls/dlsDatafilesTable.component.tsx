@@ -18,6 +18,7 @@ import {
   pushPageSort,
   FiltersType,
   SortType,
+  DateFilter,
 } from 'datagateway-common';
 import {
   Typography,
