@@ -1,38 +1,42 @@
-import { IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
+import React from 'react';
 import {
-  addToCart,
-  Dataset,
-  DateColumnFilter,
-  DateFilter,
-  DownloadCartItem,
-  downloadDataset,
+  TextColumnFilter,
+  Table,
+  tableLink,
+  Order,
+  Filter,
   Entity,
-  fetchAllIds,
+  TableActionProps,
+  DateColumnFilter,
+  Dataset,
+  DownloadCartItem,
+  formatBytes,
+  fetchDatasets,
   fetchDatasetCount,
   fetchDatasetDetails,
-  fetchDatasets,
-  Filter,
-  FiltersType,
-  formatBytes,
-  Order,
+  downloadDataset,
+  addToCart,
+  removeFromCart,
+  fetchAllIds,
   pushPageFilter,
   pushPageSort,
-  removeFromCart,
+  FiltersType,
   SortType,
-  Table,
-  TableActionProps,
-  tableLink,
-  TextColumnFilter,
+  DateFilter,
 } from 'datagateway-common';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { IndexRange, TableCellProps } from 'react-virtualized';
+import { IconButton } from '@material-ui/core';
 import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
+import { ThunkDispatch } from 'redux-thunk';
+import { connect } from 'react-redux';
+import { TableCellProps, IndexRange } from 'react-virtualized';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
+import { useTranslation } from 'react-i18next';
+import GetApp from '@material-ui/icons/GetApp';
+
+import TitleIcon from '@material-ui/icons/Title';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
@@ -174,6 +178,7 @@ const ISISDatasetsTable = (
       ]}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
@@ -184,6 +189,7 @@ const ISISDatasetsTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <SaveIcon />,
           label: t('datasets.size'),
           dataKey: 'SIZE',
           cellContentRenderer: (props) => {
@@ -192,11 +198,13 @@ const ISISDatasetsTable = (
           disableSort: true,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,

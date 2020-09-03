@@ -13,43 +13,51 @@ exports[`Investigation table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "TITLE",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "investigations.title",
       },
       Object {
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
+        "icon": <Memo(FingerprintIcon) />,
         "label": "investigations.visit_id",
       },
       Object {
         "dataKey": "RB_NUMBER",
         "filterComponent": [Function],
+        "icon": <Memo(FingerprintIcon) />,
         "label": "investigations.rb_number",
       },
       Object {
         "dataKey": "DOI",
         "filterComponent": [Function],
+        "icon": <Memo(PublicIcon) />,
         "label": "investigations.doi",
       },
       Object {
         "dataKey": "DATASET_COUNT",
         "disableSort": true,
+        "icon": <Memo(ConfirmationNumberIcon) />,
         "label": "investigations.dataset_count",
       },
       Object {
         "dataKey": "INSTRUMENT.NAME",
         "filterComponent": [Function],
+        "icon": <Memo(AssessmentIcon) />,
         "label": "investigations.instrument",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.start_date",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.end_date",
       },
     ]
@@ -84,39 +92,70 @@ exports[`Investigation table component renders correctly 1`] = `
 `;
 
 exports[`Investigation table component renders details panel correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
+<div
+  className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
+  id="details-panel"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="h6"
+    >
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Divider))
+      className="makeStyles-divider-2"
+    />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
       investigations.details.rb_number
-      :
-    </b>
-     
-    1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      investigations.details.title
-      :
-    </b>
-     
-    Test 1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
       investigations.details.start_date
-      :
-    </b>
-     
-    2019-07-23
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        2019-07-23
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
       investigations.details.end_date
-      :
-    </b>
-     
-    2019-07-24
-  </WithStyles(ForwardRef(Typography))>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        2019-07-24
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
 </div>
 `;
 

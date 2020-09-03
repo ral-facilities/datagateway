@@ -5,7 +5,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
   <NavBar
     entityCount={101}
   />
-  <WithStyles(ForwardRef(Grid))
+  <WithStyles(WithStyles(ForwardRef(Grid)))
     container={true}
   >
     <WithStyles(ForwardRef(Grid))
@@ -48,6 +48,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
         square={true}
         style={
           Object {
+            "backgroundColor": "inherit",
             "height": "calc(100vh - 95px)",
             "width": "100%",
           }
@@ -56,6 +57,6 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
         <PageTable />
       </WithStyles(ForwardRef(Paper))>
     </WithStyles(ForwardRef(Grid))>
-  </WithStyles(ForwardRef(Grid))>
+  </WithStyles(WithStyles(ForwardRef(Grid)))>
 </div>
 `;

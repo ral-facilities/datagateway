@@ -148,7 +148,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-1819"
+      className="makeStyles-root-305"
       container={true}
       direction="column"
     >
@@ -164,7 +164,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-1820"
+          className="makeStyles-divider-306"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

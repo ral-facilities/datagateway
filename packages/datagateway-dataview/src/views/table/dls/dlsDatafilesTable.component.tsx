@@ -1,32 +1,54 @@
-import { Typography } from '@material-ui/core';
+import React from 'react';
 import {
-  addToCart,
+  TextColumnFilter,
+  Table,
+  formatBytes,
+  Filter,
+  Order,
+  Entity,
   Datafile,
   DateColumnFilter,
-  DateFilter,
   DownloadCartItem,
-  Entity,
-  fetchAllIds,
-  fetchDatafileCount,
   fetchDatafiles,
-  Filter,
-  FiltersType,
-  formatBytes,
-  Order,
+  fetchDatafileCount,
+  addToCart,
+  removeFromCart,
+  fetchAllIds,
   pushPageFilter,
   pushPageSort,
-  removeFromCart,
+  FiltersType,
   SortType,
-  Table,
-  TextColumnFilter,
 } from 'datagateway-common';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
 import { ThunkDispatch } from 'redux-thunk';
+import { connect } from 'react-redux';
 import { StateType } from '../../../state/app.types';
+import { AnyAction } from 'redux';
+import { IndexRange } from 'react-virtualized';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import ExploreIcon from '@material-ui/icons/Explore';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DLSDatafilesTableProps {
   datasetId: string;
@@ -80,6 +102,8 @@ const DLSDatafilesTable = (
 
   const [t] = useTranslation();
 
+  const classes = useStyles();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -130,34 +154,52 @@ const DLSDatafilesTable = (
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
-          <div>
-            <Typography variant="body2">
-              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
-            </Typography>
-            <Typography variant="body2">
-              <b>{t('datafiles.description')}:</b> {datafileData.DESCRIPTION}
-            </Typography>
-            <Typography variant="body2">
-              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
-            </Typography>
-            <Typography variant="body2">
-              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datafileData.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.size')}
+              </Typography>
+              <Typography>
+                <b>{formatBytes(datafileData.FILESIZE)}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.location')}
+              </Typography>
+              <Typography>
+                <b>{datafileData.LOCATION}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
+          icon: <ExploreIcon />,
           label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
+          icon: <SaveIcon />,
           label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
@@ -166,6 +208,7 @@ const DLSDatafilesTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datafiles.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,

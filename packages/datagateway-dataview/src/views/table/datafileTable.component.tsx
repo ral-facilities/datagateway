@@ -1,35 +1,59 @@
-import { IconButton, Typography } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
+import React from 'react';
 import {
-  addToCart,
-  Datafile,
-  DateColumnFilter,
-  DateFilter,
-  DownloadCartItem,
-  downloadDatafile,
-  Entity,
-  fetchAllIds,
-  fetchDatafileCount,
-  fetchDatafiles,
-  Filter,
-  FiltersType,
-  formatBytes,
-  Order,
-  pushPageFilter,
-  pushPageSort,
-  removeFromCart,
-  SortType,
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  IconButton,
+} from '@material-ui/core';
+import {
   Table,
   TableActionProps,
+  formatBytes,
   TextColumnFilter,
+  DateColumnFilter,
+  Order,
+  Filter,
+  Datafile,
+  Entity,
+  DownloadCartItem,
+  fetchDatafiles,
+  downloadDatafile,
+  fetchDatafileCount,
+  addToCart,
+  removeFromCart,
+  fetchAllIds,
+  pushPageFilter,
+  pushPageSort,
+  DateFilter,
+  SortType,
+  FiltersType,
 } from 'datagateway-common';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import { GetApp } from '@material-ui/icons';
 import { ThunkDispatch } from 'redux-thunk';
+import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
+import { AnyAction } from 'redux';
+import { IndexRange } from 'react-virtualized';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import ExploreIcon from '@material-ui/icons/Explore';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatafileTableProps {
   datasetId: string;
@@ -85,6 +109,8 @@ const DatafileTable = (
 
   const [t] = useTranslation();
 
+  const classes = useStyles();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -136,18 +162,35 @@ const DatafileTable = (
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
-          <div>
-            <Typography>
-              <b>{t('datafiles.details.name')}:</b> {datafileData.NAME}
-            </Typography>
-            <Typography>
-              <b>{t('datafiles.details.size')}:</b>{' '}
-              {formatBytes(datafileData.FILESIZE)}
-            </Typography>
-            <Typography>
-              <b>{t('datafiles.details.location')}:</b> {datafileData.LOCATION}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datafileData.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.size')}
+              </Typography>
+              <Typography>
+                <b>{formatBytes(datafileData.FILESIZE)}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.location')}
+              </Typography>
+              <Typography>
+                <b>{datafileData.LOCATION}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       actions={[
@@ -172,16 +215,19 @@ const DatafileTable = (
       ]}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
+          icon: <ExploreIcon />,
           label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
+          icon: <SaveIcon />,
           label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
@@ -189,6 +235,7 @@ const DatafileTable = (
           },
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,

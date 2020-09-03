@@ -1,32 +1,57 @@
-import { Typography } from '@material-ui/core';
+import React from 'react';
 import {
-  addToCart,
-  DateColumnFilter,
-  DateFilter,
-  DownloadCartItem,
-  Entity,
-  fetchAllIds,
-  fetchInvestigationCount,
-  fetchInvestigations,
-  Filter,
-  FiltersType,
-  Investigation,
-  investigationLink,
-  Order,
-  pushPageFilter,
-  pushPageSort,
-  removeFromCart,
-  SortType,
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
+import {
   Table,
   TextColumnFilter,
+  DateColumnFilter,
+  investigationLink,
+  Order,
+  Filter,
+  Investigation,
+  Entity,
+  DownloadCartItem,
+  fetchInvestigations,
+  addToCart,
+  removeFromCart,
+  fetchInvestigationCount,
+  fetchAllIds,
+  pushPageFilter,
+  pushPageSort,
+  DateFilter,
+  SortType,
+  FiltersType,
 } from 'datagateway-common';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../state/app.types';
+import { connect } from 'react-redux';
+import { AnyAction } from 'redux';
+import { TableCellProps, IndexRange } from 'react-virtualized';
+import { ThunkDispatch } from 'redux-thunk';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
+import PublicIcon from '@material-ui/icons/Public';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface InvestigationTableProps {
   sort: SortType;
@@ -73,6 +98,8 @@ const InvestigationTable = (
   } = props;
 
   const [t] = useTranslation();
+
+  const classes = useStyles();
 
   const selectedRows = React.useMemo(
     () =>
@@ -125,28 +152,48 @@ const InvestigationTable = (
       detailsPanel={({ rowData }) => {
         const investigationData = rowData as Investigation;
         return (
-          <div>
-            <Typography>
-              <b>{t('investigations.details.rb_number')}:</b>{' '}
-              {investigationData.RB_NUMBER}
-            </Typography>
-            <Typography>
-              <b>{t('investigations.details.title')}:</b>{' '}
-              {investigationData.TITLE}
-            </Typography>
-            <Typography>
-              <b>{t('investigations.details.start_date')}:</b>{' '}
-              {investigationData.STARTDATE}
-            </Typography>
-            <Typography>
-              <b>{t('investigations.details.end_date')}:</b>{' '}
-              {investigationData.ENDDATE}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{investigationData.TITLE}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('investigations.details.rb_number')}
+              </Typography>
+              <Typography>
+                <b>{investigationData.RB_NUMBER}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('investigations.details.start_date')}
+              </Typography>
+              <Typography>
+                <b>{investigationData.STARTDATE}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('investigations.details.end_date')}
+              </Typography>
+              <Typography>
+                <b>{investigationData.ENDDATE}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
@@ -159,31 +206,38 @@ const InvestigationTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
+          icon: <FingerprintIcon />,
           label: t('investigations.rb_number'),
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
         },
         {
+          icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'DOI',
           filterComponent: textFilter,
         },
         {
+          icon: <ConfirmationNumberIcon />,
           label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
           disableSort: true,
         },
         {
+          icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INSTRUMENT.NAME',
           filterComponent: textFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
+
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
@@ -192,6 +246,7 @@ const InvestigationTable = (
           },
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,

@@ -5,7 +5,11 @@ import {
   Paper,
   Switch,
   Typography,
+  Theme,
+  withStyles,
+  createStyles,
 } from '@material-ui/core';
+import { StyleRules } from '@material-ui/core/styles';
 import {
   fetchDownloadCart,
   loadURLQuery,
@@ -29,6 +33,15 @@ import PageBreadcrumbs from './breadcrumbs.component';
 import PageCard from './pageCard.component';
 import PageSearch from './pageSearch.component';
 import PageTable from './pageTable.component';
+
+const gridStyles = (theme: Theme): StyleRules =>
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.background.default,
+    },
+  });
+
+const StyledGrid = withStyles(gridStyles)(Grid);
 
 // Define all the supported paths for data-view.
 export const paths = {
@@ -67,7 +80,7 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
 
   return (
     <Sticky>
-      <Grid container>
+      <StyledGrid container>
         {/* Hold the breadcrumbs at top left of the page. */}
         <Grid item xs aria-label="container-breadcrumbs">
           {/* don't show breadcrumbs on /my-data - only on browse */}
@@ -86,7 +99,7 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
             path={[paths.root, paths.myData.root]}
             render={() => {
               return (
-                <Paper square>
+                <Paper square style={{ backgroundColor: 'inherit' }}>
                   <Typography variant="h6" component="h3">
                     <b>{t('app.results')}:</b> {props.entityCount}
                   </Typography>
@@ -95,7 +108,7 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
             }}
           />
         </Grid>
-      </Grid>
+      </StyledGrid>
     </Sticky>
   );
 };
@@ -239,7 +252,7 @@ class PageContainer extends React.Component<
       <div>
         <NavBar entityCount={this.props.entityCount} />
 
-        <Grid container>
+        <StyledGrid container>
           {/* Toggle between the table and card view */}
           <Grid item xs={12}>
             <Route
@@ -302,7 +315,11 @@ class PageContainer extends React.Component<
               // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
               <Paper
                 square
-                style={{ height: 'calc(100vh - 95px)', width: '100%' }}
+                style={{
+                  height: 'calc(100vh - 95px)',
+                  width: '100%',
+                  backgroundColor: 'inherit',
+                }}
               >
                 <PageTable />
               </Paper>
@@ -312,7 +329,7 @@ class PageContainer extends React.Component<
               </Paper>
             )}
           </Grid>
-        </Grid>
+        </StyledGrid>
       </div>
     );
   }
