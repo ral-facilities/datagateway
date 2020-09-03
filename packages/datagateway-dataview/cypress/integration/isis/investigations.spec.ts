@@ -193,7 +193,7 @@ describe('ISIS - Investigations Table', () => {
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: INVESTIGATION 107').should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -207,32 +207,36 @@ describe('ISIS - Investigations Table', () => {
         'be.visible'
       );
 
-      cy.contains(
-        'Summary: Most within thus represent stock entire. Shoulder table board. Tax step street early either third life. Edge building say wife use upon. If half true media matter Mr. Still support shake.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Most within thus represent stock entire. Shoulder table board. Tax step street early either third life. Edge building say wife use upon. If half true media matter Mr. Still support shake.'
+        )
+        .should('be.visible');
 
       cy.get('[aria-controls="investigation-users-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="investigation-users-panel"]').click();
 
-      cy.contains('Name: Michelle228').should('be.visible');
+      cy.get('#details-panel').contains('Michelle228').should('be.visible');
 
       cy.get('[aria-controls="investigation-samples-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-      cy.contains('Sample: SAMPLE 87').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 87').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="investigation-publications-panel"]').click();
 
-      cy.contains(
-        'Reference: Follow team before this. Beat likely soldier anyone. By management look activity economic plant others. Take move turn pay. Walk project charge against sell.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Follow team before this. Beat likely soldier anyone. By management look activity economic plant others. Take move turn pay. Walk project charge against sell.'
+        )
+        .should('be.visible');
     });
 
     it('and then not view details anymore', () => {
@@ -240,7 +244,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains('Proposal: INVESTIGATION 107').should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

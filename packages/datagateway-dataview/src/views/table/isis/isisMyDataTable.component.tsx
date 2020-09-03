@@ -31,6 +31,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 
+import TitleIcon from '@material-ui/icons/Title';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
+import PublicIcon from '@material-ui/icons/Public';
+import SaveIcon from '@material-ui/icons/Save';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 interface ISISMyDataTableStoreProps {
   sort: SortType;
   filters: FiltersType;
@@ -148,6 +155,7 @@ const ISISMyDataTable = (
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
@@ -179,6 +187,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION.STUDY.PID',
           cellContentRenderer: (props: TableCellProps) => {
@@ -195,11 +204,13 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
+          icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
@@ -231,6 +242,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {
@@ -248,6 +260,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <SaveIcon />,
           label: t('investigations.size'),
           dataKey: 'SIZE',
           cellContentRenderer: (props) => {
@@ -256,11 +269,13 @@ const ISISMyDataTable = (
           disableSort: true,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,

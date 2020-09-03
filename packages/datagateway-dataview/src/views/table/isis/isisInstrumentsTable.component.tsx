@@ -23,6 +23,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
+import TitleIcon from '@material-ui/icons/Title';
+
 interface ISISInstrumentsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
@@ -92,6 +94,7 @@ const ISISInstrumentsTable = (
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('instruments.name'),
           dataKey: 'FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {

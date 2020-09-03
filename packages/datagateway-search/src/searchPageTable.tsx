@@ -116,7 +116,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           <TabPanel value={value} index={'investigation'}>
             <Paper
               style={{
-                height: 'calc(80vh)',
+                height: 'calc(75vh)',
               }}
               elevation={0}
             >
@@ -128,7 +128,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           <TabPanel value={value} index={'dataset'}>
             <Paper
               style={{
-                height: 'calc(80vh)',
+                height: 'calc(75vh)',
               }}
               elevation={0}
             >
@@ -140,7 +140,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           <TabPanel value={value} index={'datafile'}>
             <Paper
               style={{
-                height: 'calc(80vh)',
+                height: 'calc(75vh)',
               }}
               elevation={0}
             >

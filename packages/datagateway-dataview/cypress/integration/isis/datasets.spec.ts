@@ -200,7 +200,7 @@ describe('ISIS - Datasets Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: DATASET 87').should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -209,8 +209,8 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: DATASET 87').should('be.visible');
-      cy.contains('Name: DATASET 327').should('not.be.visible');
+      cy.get('#details-panel').contains('DATASET 87').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 327').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -219,16 +219,20 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-controls="dataset-details-panel"]').should('be.visible');
 
-      cy.contains(
-        'Description: Onto wind media return. Cultural area while friend who rich detail. Word allow education. Across share be. Along month decide eye. Media foot war available organization could performance.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Onto wind media return. Cultural area while friend who rich detail. Word allow education. Across share be. Along month decide eye. Media foot war available organization could performance.'
+        )
+        .should('be.visible');
 
       cy.get('[aria-controls="dataset-type-panel"]').should('be.visible');
       cy.get('[aria-controls="dataset-type-panel"]').click();
 
-      cy.contains(
-        'Description: Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+        )
+        .should('be.visible');
     });
 
     it('and then not view details anymore', () => {
@@ -236,7 +240,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains('Name: DATASET 87').should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

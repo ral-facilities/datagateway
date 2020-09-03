@@ -95,6 +95,7 @@ class WrappedBreadcrumb extends React.Component<WrappedBreadcrumbProps> {
 const breadcrumbsStyles = (theme: Theme): StyleRules =>
   createStyles({
     root: {
+      backgroundColor: theme.palette.background.default,
       '& li': {
         '& a, p': {
           color: theme.palette.primary.contrastText,
@@ -132,23 +133,23 @@ const breadcrumbsStyles = (theme: Theme): StyleRules =>
             borderLeftColor: theme.palette.primary.light,
           },
           '&:hover': {
-            backgroundColor: theme.palette.secondary.light,
+            backgroundColor: theme.palette.primary.light,
             '&:before': {
-              borderColor: theme.palette.secondary.light,
+              borderColor: theme.palette.primary.light,
               borderLeftColor: 'transparent',
             },
             '&:after': {
-              borderLeftColor: theme.palette.secondary.light,
+              borderLeftColor: theme.palette.primary.light,
             },
           },
           '&:active': {
-            backgroundColor: theme.palette.secondary.main,
+            backgroundColor: theme.palette.grey[600],
             '&:before': {
-              borderColor: `${theme.palette.secondary.main} !important`,
+              borderColor: `${theme.palette.grey[600]} !important`,
               borderLeftColor: 'transparent !important',
             },
             '&:after': {
-              borderLeftColor: `${theme.palette.secondary.main} !important`,
+              borderLeftColor: `${theme.palette.grey[600]} !important`,
             },
           },
         },

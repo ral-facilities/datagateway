@@ -22,6 +22,10 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 
+import TitleIcon from '@material-ui/icons/Title';
+import DescriptionIcon from '@material-ui/icons/Description';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
 interface ISISFacilityCyclesTableProps {
   instrumentId: string;
 }
@@ -97,6 +101,7 @@ const ISISFacilityCyclesTable = (
       onSort={pushSort}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('facilitycycles.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
@@ -107,16 +112,19 @@ const ISISFacilityCyclesTable = (
           filterComponent: textFilter,
         },
         {
+          icon: <DescriptionIcon />,
           label: t('facilitycycles.description'),
           dataKey: 'DESCRIPTION',
           filterComponent: textFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('facilitycycles.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('facilitycycles.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
