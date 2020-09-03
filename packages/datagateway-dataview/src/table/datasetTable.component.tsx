@@ -1,5 +1,12 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
@@ -31,6 +38,17 @@ import { useTranslation } from 'react-i18next';
 import TitleIcon from '@material-ui/icons/Title';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatasetTableProps {
   investigationId: string;
@@ -91,6 +109,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
 
   const [t] = useTranslation();
 
+  const classes = useStyles();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -144,14 +164,27 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       detailsPanel={({ rowData }) => {
         const datasetData = rowData as Dataset;
         return (
-          <div>
-            <Typography>
-              <b>{t('datasets.details.name')}:</b> {datasetData.NAME}
-            </Typography>
-            <Typography>
-              <b>{t('datasets.details.description')}:</b> {datasetData.NAME}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datasetData.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datasets.details.description')}
+              </Typography>
+              <Typography>
+                <b>{datasetData.NAME}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       columns={[

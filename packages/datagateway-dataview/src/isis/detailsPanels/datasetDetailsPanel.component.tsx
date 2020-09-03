@@ -1,7 +1,27 @@
 import React from 'react';
 import { Entity, Dataset } from 'datagateway-common';
-import { Typography, Tabs, Tab } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  Tabs,
+  Tab,
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
@@ -15,6 +35,7 @@ const DatasetDetailsPanel = (
   const { rowData, detailsPanelResize, fetchDetails } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
+  const classes = useStyles();
 
   const datasetData = rowData as Dataset;
 
@@ -29,7 +50,7 @@ const DatasetDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div>
+    <div id="details-panel">
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
@@ -56,12 +77,22 @@ const DatasetDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Typography variant="body2">
-          <b>{t('datasets.details.name')}:</b> {datasetData.NAME}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('datasets.details.description')}:</b> {datasetData.DESCRIPTION}
-        </Typography>
+        <Grid container className={classes.root} direction="column">
+          <Grid item xs>
+            <Typography variant="h6">
+              <b>{datasetData.NAME}</b>
+            </Typography>
+            <Divider className={classes.divider} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datasets.details.description')}
+            </Typography>
+            <Typography>
+              <b>{datasetData.DESCRIPTION}</b>
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
       {datasetData.DATASETTYPE && (
         <div
@@ -70,14 +101,22 @@ const DatasetDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'type'}
         >
-          <Typography variant="body2">
-            <b>{t('datasets.details.type.name')}:</b>{' '}
-            {datasetData.DATASETTYPE.NAME}
-          </Typography>
-          <Typography variant="body2">
-            <b>{t('datasets.details.type.description')}:</b>{' '}
-            {datasetData.DATASETTYPE.DESCRIPTION}
-          </Typography>
+          <Grid container className={classes.root} direction="column">
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datasetData.DATASETTYPE.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datasets.details.type.description')}
+              </Typography>
+              <Typography>
+                <b>{datasetData.DATASETTYPE.DESCRIPTION}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         </div>
       )}
     </div>

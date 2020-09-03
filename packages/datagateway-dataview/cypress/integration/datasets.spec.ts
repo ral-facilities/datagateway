@@ -179,7 +179,7 @@ describe('Datasets Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: DATASET 1').should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -188,8 +188,8 @@ describe('Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: DATASET 1').should('be.visible');
-      cy.contains('Name: DATASET 241').should('not.be.visible');
+      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 241').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -198,7 +198,7 @@ describe('Datasets Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains('Name: DATASET 1').should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

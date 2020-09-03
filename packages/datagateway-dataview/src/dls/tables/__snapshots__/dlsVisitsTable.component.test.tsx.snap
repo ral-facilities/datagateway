@@ -75,7 +75,9 @@ exports[`DLS Visits table component renders correctly 1`] = `
 `;
 
 exports[`DLS Visits table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
@@ -94,76 +96,117 @@ exports[`DLS Visits table component renders details panel correctly and it sends
     id="visit-details-panel"
     role="tabpanel"
   >
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1099"
+      container={true}
+      direction="column"
     >
-      <b>
-        investigations.details.name
-        :
-      </b>
-       
-      Test 1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        investigations.details.visit_id
-        :
-      </b>
-       
-      1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        investigations.details.title
-        :
-      </b>
-       
-      Test 1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        investigations.details.summary
-        :
-      </b>
-       
-      foo bar
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        investigations.details.start_date
-        :
-      </b>
-       
-      2019-06-10
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        investigations.details.end_date
-        :
-      </b>
-       
-      2019-06-11
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        investigations.details.size
-        :
-      </b>
-       
-      1 B
-    </WithStyles(ForwardRef(Typography))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-1100"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.title
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.visit_id
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.summary
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            foo bar
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.start_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            2019-06-10
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.end_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            2019-06-11
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.size
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            1 B
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
   </div>
 </div>
 `;

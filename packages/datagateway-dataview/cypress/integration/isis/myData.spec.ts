@@ -144,7 +144,7 @@ describe('ISIS - MyData Table', () => {
     it('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: INVESTIGATION 1').should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -158,32 +158,32 @@ describe('ISIS - MyData Table', () => {
         'be.visible'
       );
 
-      cy.contains(
-        'Summary: Drug something increase common nature reflect purpose.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains('Drug something increase common nature reflect purpose.')
+        .should('be.visible');
 
       cy.get('[aria-controls="investigation-samples-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-      cy.contains('Sample: SAMPLE 1').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
 
       cy.get('[aria-controls="investigation-users-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="investigation-users-panel"]').click();
 
-      cy.contains('Name: Robert499').should('be.visible');
+      cy.get('#details-panel').contains('Robert499').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="investigation-publications-panel"]').click();
 
-      cy.contains('Reference: Democrat sea gas road police.').should(
-        'be.visible'
-      );
+      cy.get('#details-panel')
+        .contains('Democrat sea gas road police.')
+        .should('be.visible');
     });
 
     it('and then not view details anymore', () => {
@@ -191,7 +191,7 @@ describe('ISIS - MyData Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains('Proposal: INVESTIGATION 1').should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Typography, IconButton } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  IconButton,
+} from '@material-ui/core';
 import {
   Table,
   TableActionProps,
@@ -34,6 +42,17 @@ import TitleIcon from '@material-ui/icons/Title';
 import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatafileTableProps {
   datasetId: string;
@@ -95,6 +114,8 @@ const DatafileTable = (
 
   const [t] = useTranslation();
 
+  const classes = useStyles();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -148,18 +169,35 @@ const DatafileTable = (
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
-          <div>
-            <Typography>
-              <b>{t('datafiles.details.name')}:</b> {datafileData.NAME}
-            </Typography>
-            <Typography>
-              <b>{t('datafiles.details.size')}:</b>{' '}
-              {formatBytes(datafileData.FILESIZE)}
-            </Typography>
-            <Typography>
-              <b>{t('datafiles.details.location')}:</b> {datafileData.LOCATION}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datafileData.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.size')}
+              </Typography>
+              <Typography>
+                <b>{formatBytes(datafileData.FILESIZE)}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datafiles.details.location')}
+              </Typography>
+              <Typography>
+                <b>{datafileData.LOCATION}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       actions={[

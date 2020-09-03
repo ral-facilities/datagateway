@@ -191,7 +191,7 @@ describe('Datafiles Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: Datafile 24').should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -200,8 +200,10 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: Datafile 24').should('be.visible');
-      cy.contains('Name: Datafile 3377').should('not.be.visible');
+      cy.get('#details-panel').contains('Datafile 24').should('be.visible');
+      cy.get('#details-panel')
+        .contains('Datafile 3377')
+        .should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -210,7 +212,7 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains('Name: Datafile 24').should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

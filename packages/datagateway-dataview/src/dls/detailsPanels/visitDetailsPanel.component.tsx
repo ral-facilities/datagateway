@@ -1,7 +1,28 @@
 import React from 'react';
 import { Entity, Investigation, formatBytes } from 'datagateway-common';
-import { Typography, Tabs, Tab, Button } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  Tabs,
+  Tab,
+  Button,
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
@@ -18,6 +39,8 @@ const VisitDetailsPanel = (
     'details' | 'users' | 'samples' | 'publications'
   >('details');
   const [t] = useTranslation();
+
+  const classes = useStyles();
 
   const investigationData = rowData as Investigation;
 
@@ -42,7 +65,7 @@ const VisitDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div>
+    <div id="details-panel">
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
@@ -85,46 +108,78 @@ const VisitDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Typography variant="body2">
-          <b>{t('investigations.details.name')}:</b> {investigationData.NAME}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('investigations.details.visit_id')}:</b>{' '}
-          {investigationData.VISIT_ID}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('investigations.details.title')}:</b> {investigationData.TITLE}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('investigations.details.summary')}:</b>{' '}
-          {investigationData.SUMMARY}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('investigations.details.start_date')}:</b>{' '}
-          {investigationData.STARTDATE}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('investigations.details.end_date')}:</b>{' '}
-          {investigationData.ENDDATE}
-        </Typography>
-        <Typography variant="body2">
-          <b>{t('investigations.details.size')}:</b>{' '}
-          {investigationData.SIZE ? (
-            formatBytes(investigationData.SIZE)
-          ) : (
-            <Button
-              onClick={() => {
-                fetchSize(investigationData.ID);
-              }}
-              variant="outlined"
-              color="primary"
-              size="small"
-              id="calculate-size-btn"
-            >
-              {t('investigations.details.calculate')}
-            </Button>
-          )}
-        </Typography>
+        <Grid container className={classes.root} direction="column">
+          <Grid item xs>
+            <Typography variant="h6">
+              <b>{investigationData.NAME}</b>
+            </Typography>
+            <Divider className={classes.divider} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.title')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.TITLE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.visit_id')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.VISIT_ID}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.summary')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.SUMMARY}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.start_date')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.STARTDATE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.end_date')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.ENDDATE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.size')}
+            </Typography>
+            <Typography>
+              <b>
+                {investigationData.SIZE ? (
+                  formatBytes(investigationData.SIZE)
+                ) : (
+                  <Button
+                    onClick={() => {
+                      fetchSize(investigationData.ID);
+                    }}
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    id="calculate-size-btn"
+                  >
+                    {t('investigations.details.calculate')}
+                  </Button>
+                )}
+              </b>
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
       {investigationData.INVESTIGATIONUSER && (
         <div
@@ -133,19 +188,27 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
-            if (investigationUser.USER_) {
-              return (
-                <Typography key={investigationUser.USER_ID} variant="body2">
-                  <b>{t('investigations.details.users.name')}:</b>{' '}
-                  {investigationUser.USER_.FULL_NAME ||
-                    investigationUser.USER_.NAME}
-                </Typography>
-              );
-            } else {
-              return null;
-            }
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
+              if (investigationUser.USER_) {
+                return (
+                  <Grid key={investigationUser.USER_ID} item xs>
+                    <Typography variant="overline">
+                      {t('investigations.details.users.name')}
+                    </Typography>
+                    <Typography>
+                      <b>
+                        {investigationUser.USER_.FULL_NAME ||
+                          investigationUser.USER_.NAME}
+                      </b>
+                    </Typography>
+                  </Grid>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </Grid>
         </div>
       )}
       {investigationData.SAMPLE && (
@@ -155,13 +218,20 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'samples'}
         >
-          {investigationData.SAMPLE.map((sample) => {
-            return (
-              <Typography key={sample.ID} variant="body2">
-                <b>{t('investigations.details.samples.name')}:</b> {sample.NAME}
-              </Typography>
-            );
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.SAMPLE.map((sample) => {
+              return (
+                <Grid key={sample.ID} item xs>
+                  <Typography variant="overline">
+                    {t('investigations.details.samples.name')}
+                  </Typography>
+                  <Typography>
+                    <b>{sample.NAME}</b>
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
         </div>
       )}
       {investigationData.PUBLICATION && (
@@ -171,14 +241,20 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'publications'}
         >
-          {investigationData.PUBLICATION.map((publication) => {
-            return (
-              <Typography key={publication.ID} variant="body2">
-                <b>{t('investigations.details.publications.reference')}:</b>{' '}
-                {publication.FULLREFERENCE}
-              </Typography>
-            );
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.PUBLICATION.map((publication) => {
+              return (
+                <Grid key={publication.ID} item xs>
+                  <Typography variant="overline">
+                    {t('investigations.details.publications.reference')}
+                  </Typography>
+                  <Typography>
+                    <b>{publication.FULLREFERENCE}</b>
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
         </div>
       )}
     </div>

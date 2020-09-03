@@ -66,7 +66,9 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
 `;
 
 exports[`ISIS datafiles table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
@@ -85,35 +87,55 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
     id="datafile-details-panel"
     role="tabpanel"
   >
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-2025"
+      container={true}
+      direction="column"
     >
-      <b>
-        datafiles.details.name
-        :
-      </b>
-       
-      Test 1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        datafiles.details.description
-        :
-      </b>
-       
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        datafiles.details.location
-        :
-      </b>
-       
-      /test1
-    </WithStyles(ForwardRef(Typography))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2026"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datafiles.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datafiles.details.location
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            /test1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
   </div>
 </div>
 `;
