@@ -105,7 +105,7 @@ const DownloadTabs: React.FC = () => {
           {...a11yProps(0)}
         />
         <Tab
-          label={'downloadTab.downloads_tab'}
+          label={t('downloadTab.downloads_tab')}
           aria-label={t('downloadTab.downloads_tab_arialabel')}
           {...a11yProps(1)}
         />
