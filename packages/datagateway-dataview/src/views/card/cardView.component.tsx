@@ -74,6 +74,8 @@ export interface CardViewDetails {
   disableSort?: boolean;
 }
 
+type CVPaginationPosition = 'top' | 'bottom';
+
 interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
@@ -104,6 +106,8 @@ interface CardViewProps {
   customFilters?: { label: string; dataKey: string; filterItems: string[] }[];
   resultsOptions?: number[];
   image?: EntityImageDetails;
+
+  paginationPosition?: CVPaginationPosition;
 }
 
 interface CVFilterInfo {
@@ -127,6 +131,32 @@ interface CVSort {
   dataKey: string;
 }
 
+function CVPagination(
+  page: number,
+  numPages: number,
+  changePage: (page: number) => void
+): React.ReactElement {
+  return (
+    <Pagination
+      size="large"
+      color="secondary"
+      style={{ textAlign: 'center' }}
+      count={numPages}
+      page={page}
+      onChange={(e, p) => {
+        // If we are not clicking on the same page.
+        if (p !== page) {
+          changePage(p);
+        }
+      }}
+      showFirstButton
+      hidePrevButton={page === 1}
+      hideNextButton={page >= numPages}
+      showLastButton
+    />
+  );
+}
+
 // TODO: Hide/disable pagination and sort/filters if no results retrieved.
 const CardView = (props: CardViewProps): React.ReactElement => {
   const classes = useCardViewStyles();
@@ -140,6 +170,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     sort,
     customFilters,
     resultsOptions,
+    paginationPosition,
     loadData,
     loadCount,
     loading,
@@ -175,6 +206,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
   const [pageChange, setPageChange] = React.useState(false);
+  // By default, show pagination component at bottom of card view.
+  const paginationPos = paginationPosition ? paginationPosition : 'bottom';
 
   // Change in data.
   const [filterChange, setFilterChange] = React.useState(false);
@@ -499,6 +532,20 @@ const CardView = (props: CardViewProps): React.ReactElement => {
           </Grid>
         )}
 
+        {/*  Pagination container  */}
+        {paginationPos === 'top' && loadedData && (
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justify="center"
+            xs={12}
+            style={{ padding: '50px' }}
+          >
+            {CVPagination(page, numPages, changePage)}
+          </Grid>
+        )}
+
         {/* Maximum results selection */}
         <Grid item xs={12}>
           {/* Do not show if the number of data is smaller than the 
@@ -753,25 +800,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       </Grid>
 
       {/*  Pagination  */}
-      {loadedData && (
+      {paginationPos === 'bottom' && loadedData && (
         <Grid item xs style={{ padding: '50px' }}>
-          <Pagination
-            size="large"
-            color="secondary"
-            style={{ textAlign: 'center' }}
-            count={numPages}
-            page={page}
-            onChange={(e, p) => {
-              // If we are not clicking on the same page.
-              if (p !== page) {
-                changePage(p);
-              }
-            }}
-            showFirstButton
-            hidePrevButton={page === 1}
-            hideNextButton={page >= numPages}
-            showLastButton
-          />
+          {CVPagination(page, numPages, changePage)}
         </Grid>
       )}
     </Grid>

@@ -1,45 +1,45 @@
 import { Button } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
-  RemoveCircleOutlineOutlined,
-  Public,
-  Fingerprint,
   CalendarToday,
   ConfirmationNumber,
+  Fingerprint,
+  Public,
+  RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
 import {
   addToCart,
+  clearData,
+  DateColumnFilter,
+  DateFilter,
   DownloadCartItem,
   Entity,
   fetchFilter,
   fetchInvestigationCount,
   fetchInvestigations,
+  Filter,
+  FiltersType,
   Investigation,
   investigationLink,
-  removeFromCart,
-  FiltersType,
-  TextColumnFilter,
-  DateColumnFilter,
-  pushPageFilter,
-  Filter,
-  DateFilter,
   Order,
-  pushPageSort,
-  pushPageResults,
-  clearData,
+  pushPageFilter,
   pushPageNum,
+  pushPageResults,
+  pushPageSort,
+  removeFromCart,
   SortType,
+  TextColumnFilter,
 } from 'datagateway-common';
 import {
   FilterDataType,
+  QueryParams,
   StateType,
   ViewsType,
-  QueryParams,
 } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction, Action } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import CardView from './cardView.component';
 
