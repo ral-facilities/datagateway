@@ -1,32 +1,54 @@
-import { Typography } from '@material-ui/core';
+import React from 'react';
 import {
-  addToCart,
-  Dataset,
-  datasetLink,
-  DateColumnFilter,
-  DateFilter,
-  DownloadCartItem,
-  Entity,
-  fetchAllIds,
-  fetchDatasetCount,
-  fetchDatasets,
-  Filter,
-  FiltersType,
-  Order,
-  pushPageFilter,
-  pushPageSort,
-  removeFromCart,
-  SortType,
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
+import {
   Table,
   TextColumnFilter,
+  DateColumnFilter,
+  datasetLink,
+  Order,
+  Filter,
+  Dataset,
+  Entity,
+  DownloadCartItem,
+  fetchDatasets,
+  addToCart,
+  removeFromCart,
+  fetchDatasetCount,
+  fetchAllIds,
+  pushPageFilter,
+  pushPageSort,
+  DateFilter,
+  SortType,
+  FiltersType,
 } from 'datagateway-common';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { AnyAction } from 'redux';
+import { StateType } from '../../state/app.types';
+import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../state/app.types';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatasetTableProps {
   investigationId: string;
@@ -81,6 +103,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
 
   const [t] = useTranslation();
 
+  const classes = useStyles();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -132,18 +156,32 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       detailsPanel={({ rowData }) => {
         const datasetData = rowData as Dataset;
         return (
-          <div>
-            <Typography>
-              <b>{t('datasets.details.name')}:</b> {datasetData.NAME}
-            </Typography>
-            <Typography>
-              <b>{t('datasets.details.description')}:</b> {datasetData.NAME}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datasetData.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datasets.details.description')}
+              </Typography>
+              <Typography>
+                <b>{datasetData.NAME}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       columns={[
         {
+          icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props) => {
@@ -157,15 +195,18 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           filterComponent: textFilter,
         },
         {
+          icon: <ConfirmationNumberIcon />,
           label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
+          icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,

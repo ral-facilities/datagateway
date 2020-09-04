@@ -81,9 +81,7 @@ describe('ISIS - Instruments Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains(
-        'Name: Drug something increase common nature reflect purpose. Keep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
-      ).should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -92,12 +90,16 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains(
-        'Name: Drug something increase common nature reflect purpose. Keep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
-      ).should('be.visible');
-      cy.contains(
-        'Name: North understand leader everyone skin. Actually prove begin boy those. Could size only. Late race city suddenly. Treat her wife training family effect.'
-      ).should('not.be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Drug something increase common nature reflect purpose. Keep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
+        )
+        .should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'North understand leader everyone skin. Actually prove begin boy those. Could size only. Late race city suddenly. Treat her wife training family effect.'
+        )
+        .should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -106,14 +108,16 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-controls="instrument-details-panel').should('be.visible');
 
-      cy.contains(
-        'Description: Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+        )
+        .should('be.visible');
 
       cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
       cy.get('[aria-controls="instrument-users-panel"]').click();
 
-      cy.contains('Name: Matthew50').should('be.visible');
+      cy.get('#details-panel').contains('Matthew50').should('be.visible');
     });
 
     it('and then not view details anymore', () => {
@@ -121,9 +125,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains(
-        'Name: Drug something increase common nature reflect purpose. Keep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
-      ).should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

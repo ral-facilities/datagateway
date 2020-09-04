@@ -14,7 +14,21 @@ exports[`Data column header component renders correctly with filter but no sort 
       }
     }
   >
-    Test
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
+    >
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        Test
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
     <TextColumnFilter
       label="test"
       onChange={[MockFunction]}
@@ -73,12 +87,26 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       }
     }
   >
-    <WithStyles(ForwardRef(TableSortLabel))
-      active={false}
-      onClick={[Function]}
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
     >
-      Test
-    </WithStyles(ForwardRef(TableSortLabel))>
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        <WithStyles(ForwardRef(TableSortLabel))
+          active={false}
+          onClick={[Function]}
+        >
+          Test
+        </WithStyles(ForwardRef(TableSortLabel))>
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
     <TextColumnFilter
       label="test"
       onChange={[MockFunction]}
@@ -137,12 +165,26 @@ exports[`Data column header component renders correctly with sort but no filter 
       }
     }
   >
-    <WithStyles(ForwardRef(TableSortLabel))
-      active={false}
-      onClick={[Function]}
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
     >
-      Test
-    </WithStyles(ForwardRef(TableSortLabel))>
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        <WithStyles(ForwardRef(TableSortLabel))
+          active={false}
+          onClick={[Function]}
+        >
+          Test
+        </WithStyles(ForwardRef(TableSortLabel))>
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
   </div>
   <Draggable
     allowAnyClick={false}
@@ -197,7 +239,21 @@ exports[`Data column header component renders correctly without sort or filter 1
       }
     }
   >
-    Test
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
+    >
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        Test
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
   </div>
   <Draggable
     allowAnyClick={false}

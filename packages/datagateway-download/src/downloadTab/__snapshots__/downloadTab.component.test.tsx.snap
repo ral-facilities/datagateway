@@ -1,15 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DownloadTab renders correctly 1`] = `
-<WithStyles(ForwardRef(Paper))
-  className="makeStyles-root-1"
+<WithStyles(WithStyles(ForwardRef(Paper)))
   square={true}
 >
   <WithStyles(ForwardRef(Tabs))
     centered={true}
-    indicatorColor="primary"
+    indicatorColor="secondary"
     onChange={[Function]}
-    textColor="primary"
+    textColor="secondary"
     value={0}
   >
     <WithStyles(ForwardRef(Tab))
@@ -98,5 +97,5 @@ exports[`DownloadTab renders correctly 1`] = `
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
   </TabPanel>
-</WithStyles(ForwardRef(Paper))>
+</WithStyles(WithStyles(ForwardRef(Paper)))>
 `;

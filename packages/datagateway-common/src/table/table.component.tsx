@@ -52,7 +52,7 @@ const styles = (theme: Theme): StyleRules =>
     tableRow: {},
     tableRowHover: {
       '&:hover': {
-        backgroundColor: theme.palette.grey[200],
+        backgroundColor: theme.palette.action.hover,
       },
     },
     tableCell: {
@@ -70,6 +70,7 @@ const styles = (theme: Theme): StyleRules =>
 export interface ColumnType {
   label: string;
   dataKey: string;
+  icon?: JSX.Element;
   cellContentRenderer?: TableCellRenderer;
   className?: string;
   disableSort?: boolean;
@@ -336,6 +337,7 @@ const VirtualizedTable = (
                     className,
                     dataKey,
                     label,
+                    icon,
                     filterComponent,
                     disableSort,
                   }) => {
@@ -355,6 +357,7 @@ const VirtualizedTable = (
                             )}
                             sort={sort}
                             onSort={onSort}
+                            icon={icon}
                             filterComponent={
                               filterComponent && filterComponent(label, dataKey)
                             }

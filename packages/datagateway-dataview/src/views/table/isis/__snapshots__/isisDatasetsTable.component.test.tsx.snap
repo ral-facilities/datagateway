@@ -18,22 +18,26 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "datasets.name",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "SIZE",
         "disableSort": true,
+        "icon": <Memo(SaveIcon) />,
         "label": "datasets.size",
       },
       Object {
         "dataKey": "CREATE_TIME",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.create_time",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.modified_time",
       },
     ]
@@ -216,7 +220,9 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 `;
 
 exports[`ISIS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
@@ -235,25 +241,40 @@ exports[`ISIS Dataset table component renders details panel correctly and it sen
     id="dataset-details-panel"
     role="tabpanel"
   >
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-235"
+      container={true}
+      direction="column"
     >
-      <b>
-        datasets.details.name
-        :
-      </b>
-       
-      Test 1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        datasets.details.description
-        :
-      </b>
-       
-    </WithStyles(ForwardRef(Typography))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-236"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
   </div>
 </div>
 `;

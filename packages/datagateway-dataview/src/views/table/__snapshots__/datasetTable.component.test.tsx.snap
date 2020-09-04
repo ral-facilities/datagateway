@@ -166,20 +166,24 @@ exports[`Dataset table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
         "label": "datasets.name",
       },
       Object {
         "dataKey": "DATAFILE_COUNT",
+        "icon": <Memo(ConfirmationNumberIcon) />,
         "label": "datasets.datafile_count",
       },
       Object {
         "dataKey": "CREATE_TIME",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.create_time",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.modified_time",
       },
     ]
@@ -209,22 +213,39 @@ exports[`Dataset table component renders correctly 1`] = `
 `;
 
 exports[`Dataset table component renders details panel correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      datasets.details.name
-      :
-    </b>
-     
-    Test 1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
+<div
+  className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
+  id="details-panel"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="h6"
+    >
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Divider))
+      className="makeStyles-divider-2"
+    />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
       datasets.details.description
-      :
-    </b>
-     
-    Test 1
-  </WithStyles(ForwardRef(Typography))>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
 </div>
 `;
