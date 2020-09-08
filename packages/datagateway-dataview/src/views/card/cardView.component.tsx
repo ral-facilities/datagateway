@@ -74,7 +74,7 @@ export interface CardViewDetails {
   disableSort?: boolean;
 }
 
-type CVPaginationPosition = 'top' | 'bottom';
+type CVPaginationPosition = 'top' | 'bottom' | 'both';
 
 interface CardViewProps {
   data: Entity[];
@@ -192,9 +192,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   } = props;
 
   // Results options (by default it is 10, 20 and 30).
-  const resOptions = resultsOptions
-    ? resultsOptions.sort((a, b) => a - b)
-    : [10, 20, 30];
+  const resOptions = React.useMemo(
+    () =>
+      resultsOptions ? resultsOptions.sort((a, b) => a - b) : [10, 20, 30],
+    [resultsOptions]
+  );
 
   // Card data.
   const [viewData, setViewData] = React.useState<Entity[]>([]);
@@ -207,7 +209,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [maxResults, setMaxResults] = React.useState(-1);
   const [pageChange, setPageChange] = React.useState(false);
   // By default, show pagination component at bottom of card view.
-  const paginationPos = paginationPosition ? paginationPosition : 'bottom';
+  const paginationPos = paginationPosition ? paginationPosition : 'both';
 
   // Change in data.
   const [filterChange, setFilterChange] = React.useState(false);
@@ -533,14 +535,14 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
 
         {/*  Pagination container  */}
-        {paginationPos === 'top' && loadedData && (
+        {(paginationPos === 'top' || paginationPos === 'both') && loadedData && (
           <Grid
             container
             direction="column"
             alignItems="center"
             justify="center"
             xs={12}
-            style={{ padding: '50px' }}
+            style={{ paddingTop: '30px' }}
           >
             {CVPagination(page, numPages, changePage)}
           </Grid>
@@ -800,7 +802,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
       </Grid>
 
       {/*  Pagination  */}
-      {paginationPos === 'bottom' && loadedData && (
+      {(paginationPos === 'bottom' || paginationPos === 'both') && loadedData && (
         <Grid item xs style={{ padding: '50px' }}>
           {CVPagination(page, numPages, changePage)}
         </Grid>
