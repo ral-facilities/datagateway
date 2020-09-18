@@ -2,7 +2,7 @@
 
 exports[`PageContainer - Tests displays the correct entity count 1`] = `
 <div
-  className="MuiGrid-root MuiGrid-container"
+  className="MuiGrid-root WithStyles(ForwardRef(Grid))-root-1 MuiGrid-container"
 >
   <WithStyles(ForwardRef(Grid))
     aria-label="container-breadcrumbs"
@@ -15,7 +15,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
           "$$typeof": Symbol(react.memo),
           "WrappedComponent": [Function],
           "compare": null,
-          "displayName": "Connect(PageBreadcrumbs)",
+          "displayName": "Connect(TranslatedBreadcrumbs)",
           "type": [Function],
         }
       }
@@ -34,13 +34,19 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
   >
     <WithStyles(ForwardRef(Paper))
       square={true}
+      style={
+        Object {
+          "backgroundColor": "inherit",
+        }
+      }
     >
       <WithStyles(ForwardRef(Typography))
         component="h3"
         variant="h6"
       >
         <b>
-          Results:
+          app.results
+          :
         </b>
          
         101
@@ -56,6 +62,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       square={true}
       style={
         Object {
+          "backgroundColor": "inherit",
           "height": "calc(100vh - 95px)",
           "width": "100%",
         }

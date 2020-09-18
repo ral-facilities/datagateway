@@ -8,28 +8,33 @@ exports[`DLS Visits table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
-        "label": "Visit Id",
+        "icon": <Memo(FingerprintIcon) />,
+        "label": "investigations.visit_id",
       },
       Object {
         "dataKey": "DATASET_COUNT",
         "disableSort": true,
-        "label": "Dataset Count",
+        "icon": <Memo(ConfirmationNumberIcon) />,
+        "label": "investigations.dataset_count",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME",
         "filterComponent": [Function],
-        "label": "Beamline",
+        "icon": <Memo(AssessmentIcon) />,
+        "label": "investigations.instrument",
       },
       Object {
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
-        "label": "Start Date",
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
-        "label": "End Date",
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "investigations.end_date",
       },
     ]
   }
@@ -70,16 +75,18 @@ exports[`DLS Visits table component renders correctly 1`] = `
 `;
 
 exports[`DLS Visits table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="visit-details-tabs"
+    aria-label="investigations.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="visit-details-panel"
       id="visit-details-tab"
-      label="Visit Details"
+      label="investigations.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -89,69 +96,117 @@ exports[`DLS Visits table component renders details panel correctly and it sends
     id="visit-details-panel"
     role="tabpanel"
   >
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1099"
+      container={true}
+      direction="column"
     >
-      <b>
-        Proposal:
-      </b>
-       
-      Test 1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Visit Id:
-      </b>
-       
-      1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Title:
-      </b>
-       
-      Test 1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Summary:
-      </b>
-       
-      foo bar
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Start Date:
-      </b>
-       
-      2019-06-10
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Description:
-      </b>
-       
-      2019-06-11
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Total File Size:
-      </b>
-       
-      1 B
-    </WithStyles(ForwardRef(Typography))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-1100"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.title
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.visit_id
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.summary
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            foo bar
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.start_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            2019-06-10
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.end_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            2019-06-11
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          investigations.details.size
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            1 B
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
   </div>
 </div>
 `;

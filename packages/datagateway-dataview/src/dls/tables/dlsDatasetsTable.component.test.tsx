@@ -125,7 +125,9 @@ describe('DLS Dataset table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find('[aria-label="Filter by Name"] input');
+    const filterInput = wrapper.find(
+      '[aria-label="Filter by datasets.name"] input'
+    );
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
@@ -148,7 +150,7 @@ describe('DLS Dataset table component', () => {
     );
 
     const filterInput = wrapper.find(
-      '[aria-label="Modified Time date filter to"]'
+      '[aria-label="datasets.modified_time date filter to"]'
     );
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');

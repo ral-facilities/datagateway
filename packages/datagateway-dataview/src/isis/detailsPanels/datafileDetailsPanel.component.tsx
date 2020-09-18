@@ -1,6 +1,27 @@
 import React from 'react';
 import { Entity, Datafile } from 'datagateway-common';
-import { Typography, Tabs, Tab } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  Tabs,
+  Tab,
+} from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatafileDetailsPanelProps {
   rowData: Entity;
@@ -13,6 +34,8 @@ const DatafileDetailsPanel = (
 ): React.ReactElement => {
   const { rowData, detailsPanelResize, fetchDetails } = props;
   const [value, setValue] = React.useState<'details' | 'parameters'>('details');
+  const [t] = useTranslation();
+  const classes = useStyles();
 
   const datafileData = rowData as Datafile;
 
@@ -27,23 +50,23 @@ const DatafileDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div>
+    <div id="details-panel">
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
-        aria-label="datafile-details-tabs"
+        aria-label={t('datafiles.details.tabs_label')}
       >
         <Tab
           id="datafile-details-tab"
           aria-controls="datafile-details-panel"
-          label="Datafile Details"
+          label={t('datafiles.details.label')}
           value="details"
         />
         {datafileData.DATAFILEPARAMETER && (
           <Tab
             id="datafile-parameters-tab"
             aria-controls="datafile-parameters-panel"
-            label="Datafile Parameters"
+            label={t('datafiles.details.parameters.label')}
             value="parameters"
           />
         )}
@@ -54,15 +77,30 @@ const DatafileDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Typography variant="body2">
-          <b>Name:</b> {datafileData.NAME}
-        </Typography>
-        <Typography variant="body2">
-          <b>Description:</b> {datafileData.DESCRIPTION}
-        </Typography>
-        <Typography variant="body2">
-          <b>Location:</b> {datafileData.LOCATION}
-        </Typography>
+        <Grid container className={classes.root} direction="column">
+          <Grid item xs>
+            <Typography variant="h6">
+              <b>{datafileData.NAME}</b>
+            </Typography>
+            <Divider className={classes.divider} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datafiles.details.description')}
+            </Typography>
+            <Typography>
+              <b>{datafileData.DESCRIPTION}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('datafiles.details.location')}
+            </Typography>
+            <Typography>
+              <b>{datafileData.LOCATION}</b>
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
       {datafileData.DATAFILEPARAMETER && (
         <div
@@ -71,38 +109,59 @@ const DatafileDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'parameters'}
         >
-          {datafileData.DATAFILEPARAMETER.map((parameter) => {
-            if (parameter.PARAMETERTYPE) {
-              switch (parameter.PARAMETERTYPE.VALUETYPE) {
-                case 'STRING':
-                  return (
-                    <Typography key={parameter.ID} variant="body2">
-                      <b>{parameter.PARAMETERTYPE.NAME}:</b>{' '}
-                      {parameter.STRING_VALUE}
-                    </Typography>
-                  );
-                case 'NUMERIC':
-                  return (
-                    <Typography key={parameter.ID} variant="body2">
-                      <b>{parameter.PARAMETERTYPE.NAME}:</b>{' '}
-                      {parameter.NUMERIC_VALUE}
-                    </Typography>
-                  );
-                case 'DATE_AND_TIME':
-                  return (
-                    <Typography key={parameter.ID} variant="body2">
-                      <b>{parameter.PARAMETERTYPE.NAME}:</b>{' '}
-                      {parameter.DATETIME_VALUE &&
-                        parameter.DATETIME_VALUE.split(' ')[0]}
-                    </Typography>
-                  );
-                default:
-                  return null;
+          <Grid
+            id="parameter-grid"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            {datafileData.DATAFILEPARAMETER.map((parameter) => {
+              if (parameter.PARAMETERTYPE) {
+                switch (parameter.PARAMETERTYPE.VALUETYPE) {
+                  case 'STRING':
+                    return (
+                      <Grid key={parameter.ID} item xs>
+                        <Typography variant="overline">
+                          {parameter.PARAMETERTYPE.NAME}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.STRING_VALUE}</b>
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'NUMERIC':
+                    return (
+                      <Grid key={parameter.ID} item xs>
+                        <Typography variant="overline">
+                          {parameter.PARAMETERTYPE.NAME}
+                        </Typography>
+                        <Typography>
+                          <b>{parameter.NUMERIC_VALUE}</b>
+                        </Typography>
+                      </Grid>
+                    );
+                  case 'DATE_AND_TIME':
+                    return (
+                      <Grid key={parameter.ID} item xs>
+                        <Typography variant="overline">
+                          {parameter.PARAMETERTYPE.NAME}
+                        </Typography>
+                        <Typography>
+                          <b>
+                            {parameter.DATETIME_VALUE &&
+                              parameter.DATETIME_VALUE.split(' ')[0]}
+                          </b>
+                        </Typography>
+                      </Grid>
+                    );
+                  default:
+                    return null;
+                }
+              } else {
+                return null;
               }
-            } else {
-              return null;
-            }
-          })}
+            })}
+          </Grid>
         </div>
       )}
     </div>

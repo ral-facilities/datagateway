@@ -58,22 +58,30 @@ describe('DownloadTab', () => {
       wrapper.update();
     });
 
-    expect(wrapper.exists('[aria-label="Download cart panel"]')).toBe(true);
     expect(
-      wrapper.find('div[aria-label="Download cart panel"]').props().hidden
+      wrapper.exists('[aria-label="downloadTab.download_cart_panel_arialabel"]')
+    ).toBe(true);
+    expect(
+      wrapper
+        .find('div[aria-label="downloadTab.download_cart_panel_arialabel"]')
+        .props().hidden
     ).toBe(false);
 
     // The tab index should be 0 for the cart tab.
     expect(sessionStorage.getItem('downloadStatusTab')).toEqual('0');
 
     await act(async () => {
-      wrapper.find('button[aria-label="Downloads tab"]').simulate('click');
+      wrapper
+        .find('button[aria-label="downloadTab.downloads_tab_arialabel"]')
+        .simulate('click');
 
       await flushPromises();
       wrapper.update();
 
       expect(
-        wrapper.find('div[aria-label="Download status panel"]').props().hidden
+        wrapper
+          .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
+          .props().hidden
       ).toBe(false);
     });
 
@@ -93,9 +101,15 @@ describe('DownloadTab', () => {
     });
 
     expect(sessionStorage.getItem('downloadStatusTab')).toEqual('1');
-    expect(wrapper.exists('[aria-label="Download status panel"]')).toBe(true);
     expect(
-      wrapper.find('div[aria-label="Download status panel"]').props().hidden
+      wrapper.exists(
+        '[aria-label="downloadTab.download_status_panel_arialabel"]'
+      )
+    ).toBe(true);
+    expect(
+      wrapper
+        .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
+        .props().hidden
     ).toBe(false);
   });
 
@@ -111,33 +125,51 @@ describe('DownloadTab', () => {
       wrapper.update();
     });
 
-    expect(wrapper.exists('[aria-label="Download cart panel"]')).toBe(true);
     expect(
-      wrapper.find('div[aria-label="Download cart panel"]').props().hidden
+      wrapper.exists('[aria-label="downloadTab.download_cart_panel_arialabel"]')
+    ).toBe(true);
+    expect(
+      wrapper
+        .find('div[aria-label="downloadTab.download_cart_panel_arialabel"]')
+        .props().hidden
     ).toBe(false);
 
-    expect(wrapper.exists('[aria-label="Download status panel"]')).toBe(true);
     expect(
-      wrapper.find('div[aria-label="Download status panel"]').props().hidden
+      wrapper.exists(
+        '[aria-label="downloadTab.download_status_panel_arialabel"]'
+      )
+    ).toBe(true);
+    expect(
+      wrapper
+        .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
+        .props().hidden
     ).toBe(true);
 
     // Click on the downloads tab and the refresh downloads button.
     await act(async () => {
-      wrapper.find('button[aria-label="Downloads tab"]').simulate('click');
+      wrapper
+        .find('button[aria-label="downloadTab.downloads_tab_arialabel"]')
+        .simulate('click');
 
       await flushPromises();
       wrapper.update();
 
       expect(
-        wrapper.find('div[aria-label="Download status panel"]').props().hidden
+        wrapper
+          .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
+          .props().hidden
       ).toBe(false);
 
       expect(
-        wrapper.exists('[aria-label="Refresh download status table"]')
+        wrapper.exists(
+          '[aria-label="downloadTab.refresh_download_status_arialabel"]'
+        )
       ).toBe(true);
 
       wrapper
-        .find('button[aria-label="Refresh download status table"]')
+        .find(
+          'button[aria-label="downloadTab.refresh_download_status_arialabel"]'
+        )
         .simulate('click');
 
       await flushPromises();
@@ -146,12 +178,16 @@ describe('DownloadTab', () => {
 
     // Return back to the cart tab.
     await act(async () => {
-      wrapper.find('button[aria-label="Cart tab"]').simulate('click');
+      wrapper
+        .find('button[aria-label="downloadTab.cart_tab_arialabel"]')
+        .simulate('click');
       await flushPromises();
       wrapper.update();
 
       expect(
-        wrapper.find('div[aria-label="Download status panel"]').props().hidden
+        wrapper
+          .find('div[aria-label="downloadTab.download_status_panel_arialabel"]')
+          .props().hidden
       ).toBe(true);
     });
   });

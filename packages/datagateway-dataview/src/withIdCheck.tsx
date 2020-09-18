@@ -14,6 +14,7 @@ import { StyleRules } from '@material-ui/core/styles';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import { compose } from 'redux';
+import { useTranslation, Trans } from 'react-i18next';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -45,6 +46,7 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
     > = (props) => {
       const [loading, setLoading] = React.useState<boolean>(true);
       const [valid, setValid] = React.useState<boolean>(false);
+      const [t] = useTranslation();
 
       React.useEffect(() => {
         checkingPromise
@@ -79,7 +81,7 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
             className={classes.container}
           >
             <CircularProgress />
-            <Typography variant="body1">Verifying URL</Typography>
+            <Typography variant="body1">{t('loading.verifying')}</Typography>
           </Grid>
         );
       } else {
@@ -97,24 +99,26 @@ function withIdCheck(checkingPromise: Promise<boolean>) {
               <Grid container item justify="center" alignItems="center">
                 <BugReport className={classes.bugIcon} />
                 <Typography variant="h1" className={classes.titleText}>
-                  Oops!
+                  {t('loading.oops')}
                 </Typography>
               </Grid>
               <Grid container item justify="center">
                 <Typography variant="body1" className={classes.message}>
-                  We&apos;re sorry, it seems as though the URL you requested is
-                  attempting to fetch incorrect data. Please double check your
-                  URL, navigate back via the breadcrumbs or{' '}
-                  <Link
-                    component={RouterLink}
-                    to={props.location.pathname
-                      .split('/')
-                      .slice(0, 3)
-                      .join('/')}
-                  >
-                    go back to the top level
-                  </Link>
-                  .
+                  <Trans t={t} i18nKey="loading.message">
+                    We&apos;re sorry, it seems as though the URL you requested
+                    is attempting to fetch incorrect data. Please double check
+                    your URL, navigate back via the breadcrumbs or{' '}
+                    <Link
+                      component={RouterLink}
+                      to={props.location.pathname
+                        .split('/')
+                        .slice(0, 3)
+                        .join('/')}
+                    >
+                      go back to the top level
+                    </Link>
+                    .
+                  </Trans>
                 </Typography>
               </Grid>
             </Grid>

@@ -65,11 +65,30 @@ describe('DLS - Visits Table', () => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
+
+    // table width should grow if a column grows too large
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 800 })
+      .trigger('mouseup');
+
+    cy.get('@datasetCountColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.equal(70);
+    });
+
+    cy.get('[aria-label="grid"]').then(($grid) => {
+      const { width } = $grid[0].getBoundingClientRect();
+      cy.window().should(($window) => {
+        expect(width).to.be.greaterThan($window.innerWidth);
+      });
+    });
   });
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -77,8 +96,8 @@ describe('DLS - Visits Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('[role="button"]', 'Visit Id').click();
-      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -90,9 +109,9 @@ describe('DLS - Visits Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('[role="button"]', 'Visit Id').click();
-      cy.contains('[role="button"]', 'Visit Id').click();
-      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -107,7 +126,7 @@ describe('DLS - Visits Table', () => {
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'Visit Id').click();
+      cy.contains('[role="button"]', 'Visit ID').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
     });
@@ -115,7 +134,7 @@ describe('DLS - Visits Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Visit Id"]').find('input').type('64');
+      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('64');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
@@ -146,9 +165,9 @@ describe('DLS - Visits Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Visit Id"]').find('input').type('64');
+      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('64');
 
-      cy.get('[aria-label="Filter by Beamline')
+      cy.get('[aria-label="Filter by Instrument')
         .find('input')
         .type('INSTRUMENT 8');
 
@@ -160,9 +179,7 @@ describe('DLS - Visits Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -196,16 +213,16 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.contains('Investigator: Robert499').should('be.visible');
+      cy.get('#details-panel').contains('Robert499').should('be.visible');
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
       cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
-      cy.contains('Sample: SAMPLE 1').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
 
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
-      cy.contains(
-        'Reference: Democrat sea gas road police. Citizen relationship southern affect. Thousand national especially. In edge far education.'
+      cy.get('#details-panel').contains(
+        'Democrat sea gas road police. Citizen relationship southern affect. Thousand national especially. In edge far education.'
       );
     });
 
@@ -214,9 +231,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

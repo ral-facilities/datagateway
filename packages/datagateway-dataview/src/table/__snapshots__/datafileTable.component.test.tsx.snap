@@ -17,22 +17,26 @@ exports[`Datafile table component renders correctly 1`] = `
       Object {
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "icon": <Memo(TitleIcon) />,
+        "label": "datafiles.name",
       },
       Object {
         "dataKey": "LOCATION",
         "filterComponent": [Function],
-        "label": "Location",
+        "icon": <Memo(ExploreIcon) />,
+        "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "FILESIZE",
-        "label": "Size",
+        "icon": <Memo(SaveIcon) />,
+        "label": "datafiles.size",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
-        "label": "Modified Time",
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "datafiles.modified_time",
       },
     ]
   }
@@ -61,27 +65,54 @@ exports[`Datafile table component renders correctly 1`] = `
 `;
 
 exports[`Datafile table component renders details panel correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      Name:
-    </b>
-     
-    Test 1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      File Size:
-    </b>
-     
-    1 B
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      Location:
-    </b>
-     
-    /test1
-  </WithStyles(ForwardRef(Typography))>
+<div
+  className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
+  id="details-panel"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="h6"
+    >
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Divider))
+      className="makeStyles-divider-2"
+    />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      datafiles.details.size
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        1 B
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      datafiles.details.location
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        /test1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
 </div>
 `;

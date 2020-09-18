@@ -3,17 +3,24 @@
 exports[`Search text box component tests renders correctly 1`] = `
 <div>
   <WithStyles(ForwardRef(TextField))
-    id="filled-search"
-    inputProps={
+    InputProps={
       Object {
-        "aria-label": "search text input",
+        "aria-label": "searchBox.search_text_arialabel",
+        "endAdornment": <ForwardRef(WithStyles)
+          position="start"
+        >
+          <Memo(SearchIcon) />
+        </ForwardRef(WithStyles)>,
       }
     }
-    label="Search Text"
+    fullWidth={true}
+    id="filled-search"
+    label="searchBox.search_text"
     margin="normal"
     onChange={[Function]}
     type="search"
     value=""
+    variant="outlined"
   />
 </div>
 `;

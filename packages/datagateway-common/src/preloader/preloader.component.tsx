@@ -1,33 +1,44 @@
 import React from 'react';
+import {
+  createStyles,
+  StyleRules,
+  Theme,
+  withStyles,
+  WithStyles,
+} from '@material-ui/core/styles';
 
 const colors = ['#8C4799', '#1D4F91', '#C34613', '#008275', '#63666A'];
 const innerRadius = 140;
 const border = 8;
 const spacing = 1;
 
-const style = {
-  spinner: {
-    display: 'block',
-    margin: 'auto',
-    width: innerRadius + colors.length * 2 * (border + spacing),
-    height: innerRadius + colors.length * 2 * (border + spacing),
-    animation: 'rotate 10s infinite linear',
-  },
-  wrapper: {
-    boxSizing: 'border-box' as const,
-    padding: '10px 0',
-  },
-  container: {
-    zIndex: 1000,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(255,255,255,1)',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-};
+const styles = (theme: Theme): StyleRules =>
+  createStyles({
+    spinner: {
+      display: 'block',
+      margin: 'auto',
+      width: innerRadius + colors.length * 2 * (border + spacing),
+      height: innerRadius + colors.length * 2 * (border + spacing),
+      animation: 'rotate 10s infinite linear',
+    },
+    wrapper: {
+      boxSizing: 'border-box' as const,
+      padding: '10px 0',
+    },
+    container: {
+      zIndex: 1000,
+      width: '100%',
+      height: '100%',
+      backgroundColor: theme.palette.background.default,
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    text: {
+      color: theme.palette.text.primary,
+    },
+  });
 
 interface PreloaderProps {
   loading: boolean;
@@ -66,12 +77,14 @@ const spinnerStyle = (index: number): SpinnerStyle => {
   };
 };
 
-const Preloader: React.FC<PreloaderProps> = (props: PreloaderProps) => (
+const Preloader: React.FC<PreloaderProps & WithStyles<typeof styles>> = (
+  props: PreloaderProps & WithStyles<typeof styles>
+) => (
   <div>
     {props.loading ? (
-      <div style={style.container}>
-        <div style={style.wrapper}>
-          <div style={style.spinner}>
+      <div className={props.classes.container}>
+        <div className={props.classes.wrapper}>
+          <div className={props.classes.spinner}>
             <i style={spinnerStyle(0)} />
             <i style={spinnerStyle(1)} />
             <i style={spinnerStyle(2)} />
@@ -79,7 +92,7 @@ const Preloader: React.FC<PreloaderProps> = (props: PreloaderProps) => (
             <i style={spinnerStyle(4)} />
           </div>
         </div>
-        <div>Loading...</div>
+        <div className={props.classes.text}>Loading...</div>
       </div>
     ) : (
       props.children
@@ -87,4 +100,4 @@ const Preloader: React.FC<PreloaderProps> = (props: PreloaderProps) => (
   </div>
 );
 
-export default Preloader;
+export default withStyles(styles)(Preloader);

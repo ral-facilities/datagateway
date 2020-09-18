@@ -12,6 +12,7 @@ export const NotificationType = `${CustomFrontendMessageType}:notification`;
 export const InvalidateTokenType = `${CustomFrontendMessageType}:invalidate_token`;
 export const RegisterRouteType = `${CustomFrontendMessageType}:register_route`;
 export const RequestPluginRerenderType = `${CustomFrontendMessageType}:plugin_rerender`;
+export const SendThemeOptionsType = `${CustomFrontendMessageType}:send_themeoptions`;
 
 // internal actions
 export const SortTableType = 'datagateway_common:sort_table';

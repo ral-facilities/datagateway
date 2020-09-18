@@ -1,6 +1,28 @@
 import React from 'react';
 import { Entity, Investigation, formatBytes } from 'datagateway-common';
-import { Typography, Tabs, Tab, Button } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  Tabs,
+  Tab,
+  Button,
+} from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface VisitDetailsPanelProps {
   rowData: Entity;
@@ -16,6 +38,9 @@ const VisitDetailsPanel = (
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
+  const [t] = useTranslation();
+
+  const classes = useStyles();
 
   const investigationData = rowData as Investigation;
 
@@ -40,23 +65,23 @@ const VisitDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div>
+    <div id="details-panel">
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
-        aria-label="visit-details-tabs"
+        aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
           id="visit-details-tab"
           aria-controls="visit-details-panel"
-          label="Visit Details"
+          label={t('investigations.details.label')}
           value="details"
         />
         {investigationData.INVESTIGATIONUSER && (
           <Tab
             id="visit-users-tab"
             aria-controls="visit-users-panel"
-            label="Visit Users"
+            label={t('investigations.details.users.label')}
             value="users"
           />
         )}
@@ -64,7 +89,7 @@ const VisitDetailsPanel = (
           <Tab
             id="visit-samples-tab"
             aria-controls="visit-samples-panel"
-            label="Visit Samples"
+            label={t('investigations.details.samples.label')}
             value="samples"
           />
         )}
@@ -72,7 +97,7 @@ const VisitDetailsPanel = (
           <Tab
             id="visit-publications-tab"
             aria-controls="visit-publications-panel"
-            label="Publications"
+            label={t('investigations.details.publications.label')}
             value="publications"
           />
         )}
@@ -83,42 +108,78 @@ const VisitDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Typography variant="body2">
-          <b>Proposal:</b> {investigationData.NAME}
-        </Typography>
-        <Typography variant="body2">
-          <b>Visit Id:</b> {investigationData.VISIT_ID}
-        </Typography>
-        <Typography variant="body2">
-          <b>Title:</b> {investigationData.TITLE}
-        </Typography>
-        <Typography variant="body2">
-          <b>Summary:</b> {investigationData.SUMMARY}
-        </Typography>
-        <Typography variant="body2">
-          <b>Start Date:</b> {investigationData.STARTDATE}
-        </Typography>
-        <Typography variant="body2">
-          <b>Description:</b> {investigationData.ENDDATE}
-        </Typography>
-        <Typography variant="body2">
-          <b>Total File Size:</b>{' '}
-          {investigationData.SIZE ? (
-            formatBytes(investigationData.SIZE)
-          ) : (
-            <Button
-              onClick={() => {
-                fetchSize(investigationData.ID);
-              }}
-              variant="outlined"
-              color="primary"
-              size="small"
-              id="calculate-size-btn"
-            >
-              Calculate
-            </Button>
-          )}
-        </Typography>
+        <Grid container className={classes.root} direction="column">
+          <Grid item xs>
+            <Typography variant="h6">
+              <b>{investigationData.NAME}</b>
+            </Typography>
+            <Divider className={classes.divider} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.title')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.TITLE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.visit_id')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.VISIT_ID}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.summary')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.SUMMARY}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.start_date')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.STARTDATE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.end_date')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.ENDDATE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.size')}
+            </Typography>
+            <Typography>
+              <b>
+                {investigationData.SIZE ? (
+                  formatBytes(investigationData.SIZE)
+                ) : (
+                  <Button
+                    onClick={() => {
+                      fetchSize(investigationData.ID);
+                    }}
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    id="calculate-size-btn"
+                  >
+                    {t('investigations.details.calculate')}
+                  </Button>
+                )}
+              </b>
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
       {investigationData.INVESTIGATIONUSER && (
         <div
@@ -127,19 +188,27 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
-            if (investigationUser.USER_) {
-              return (
-                <Typography key={investigationUser.USER_ID} variant="body2">
-                  <b>Investigator:</b>{' '}
-                  {investigationUser.USER_.FULL_NAME ||
-                    investigationUser.USER_.NAME}
-                </Typography>
-              );
-            } else {
-              return null;
-            }
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
+              if (investigationUser.USER_) {
+                return (
+                  <Grid key={investigationUser.USER_ID} item xs>
+                    <Typography variant="overline">
+                      {t('investigations.details.users.name')}
+                    </Typography>
+                    <Typography>
+                      <b>
+                        {investigationUser.USER_.FULL_NAME ||
+                          investigationUser.USER_.NAME}
+                      </b>
+                    </Typography>
+                  </Grid>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </Grid>
         </div>
       )}
       {investigationData.SAMPLE && (
@@ -149,13 +218,20 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'samples'}
         >
-          {investigationData.SAMPLE.map((sample) => {
-            return (
-              <Typography key={sample.ID} variant="body2">
-                <b>Sample:</b> {sample.NAME}
-              </Typography>
-            );
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.SAMPLE.map((sample) => {
+              return (
+                <Grid key={sample.ID} item xs>
+                  <Typography variant="overline">
+                    {t('investigations.details.samples.name')}
+                  </Typography>
+                  <Typography>
+                    <b>{sample.NAME}</b>
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
         </div>
       )}
       {investigationData.PUBLICATION && (
@@ -165,13 +241,20 @@ const VisitDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'publications'}
         >
-          {investigationData.PUBLICATION.map((publication) => {
-            return (
-              <Typography key={publication.ID} variant="body2">
-                <b>Reference:</b> {publication.FULLREFERENCE}
-              </Typography>
-            );
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.PUBLICATION.map((publication) => {
+              return (
+                <Grid key={publication.ID} item xs>
+                  <Typography variant="overline">
+                    {t('investigations.details.publications.reference')}
+                  </Typography>
+                  <Typography>
+                    <b>{publication.FULLREFERENCE}</b>
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
         </div>
       )}
     </div>

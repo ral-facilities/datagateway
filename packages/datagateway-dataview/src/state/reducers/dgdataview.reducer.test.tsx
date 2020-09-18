@@ -2,7 +2,6 @@ import DGDataViewReducer, { initialState } from './dgdataview.reducer';
 import { StateType } from '../app.types';
 import {
   loadFeatureSwitches,
-  configureStrings,
   loadBreadcrumbSettings,
   settingsLoaded,
 } from '../actions';
@@ -33,18 +32,6 @@ describe('dgdataview reducer', () => {
     const updatedState = DGDataViewReducer(state, settingsLoaded());
 
     expect(updatedState.settingsLoaded).toBe(true);
-  });
-
-  it('should set res property when configure strings action is sent', () => {
-    expect(state).not.toHaveProperty('res');
-
-    const updatedState = DGDataViewReducer(
-      state,
-      configureStrings({ testSection: { testId: 'test' } })
-    );
-
-    expect(updatedState).toHaveProperty('res');
-    expect(updatedState.res).toEqual({ testSection: { testId: 'test' } });
   });
 
   it('should set feature switches property when configure feature switches action is sent', () => {

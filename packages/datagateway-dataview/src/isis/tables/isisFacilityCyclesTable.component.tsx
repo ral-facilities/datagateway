@@ -21,6 +21,11 @@ import {
   clearTable,
 } from 'datagateway-common';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import DescriptionIcon from '@material-ui/icons/Description';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISFacilityCyclesTableProps {
   instrumentId: string;
@@ -68,6 +73,8 @@ const ISISFacilityCyclesTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -103,7 +110,8 @@ const ISISFacilityCyclesTable = (
       onSort={sortTable}
       columns={[
         {
-          label: 'Name',
+          icon: <TitleIcon />,
+          label: t('facilitycycles.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
@@ -113,17 +121,20 @@ const ISISFacilityCyclesTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Description',
+          icon: <DescriptionIcon />,
+          label: t('facilitycycles.description'),
           dataKey: 'DESCRIPTION',
           filterComponent: textFilter,
         },
         {
-          label: 'Start Date',
+          icon: <CalendarTodayIcon />,
+          label: t('facilitycycles.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
-          label: 'End Date',
+          icon: <CalendarTodayIcon />,
+          label: t('facilitycycles.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },

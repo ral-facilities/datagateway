@@ -9,7 +9,6 @@
   "idsUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/ids",
   "apiUrl": "http://scigateway-preprod.esc.rl.ac.uk:5000",
   "downloadApiUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/topcat",
-  "ui-strings": "/res/default.json",
   "breadcrumbs": {
     "proposal": {
       "replaceEntity": "investigation",

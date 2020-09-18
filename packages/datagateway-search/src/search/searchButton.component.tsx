@@ -5,7 +5,19 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { format } from 'date-fns';
+import {
+  toggleLuceneRequestReceived,
+  storeDatasetLucene,
+  storeDatafileLucene,
+  storeInvestigationLucene,
+  setDatasetTab,
+  setDatafileTab,
+  setInvestigationTab,
+} from '../state/actions/actions';
+import { ThunkDispatch } from 'redux-thunk';
+import { Action, AnyAction } from 'redux';
 import { readSciGatewayToken } from 'datagateway-common';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -14,7 +26,29 @@ interface SearchButtonStoreProps {
   investigation: boolean;
   startDate: MaterialUiPickersDate;
   endDate: MaterialUiPickersDate;
+  requestReceived: boolean;
+  luceneDatafile: number[];
+  luceneDataset: number[];
+  luceneInvestigation: number[];
+  datafileTab: boolean;
+  datasetTab: boolean;
+  investigationTab: boolean;
+  downloadApiUrl: string;
 }
+
+interface SearchButtonDispatchProps {
+  toggleLuceneRequestReceived: (requestReceived: boolean) => Action;
+  storeDatasetLucene: (luceneData: number[]) => Action;
+  storeDatafileLucene: (luceneData: number[]) => Action;
+  storeInvestigationLucene: (luceneData: number[]) => Action;
+  setDatasetTab: (toggleOption: boolean) => Action;
+  setDatafileTab: (toggleOption: boolean) => Action;
+  setInvestigationTab: (toggleOption: boolean) => Action;
+}
+
+type SearchButtonCombinedProps = WithTranslation &
+  SearchButtonStoreProps &
+  SearchButtonDispatchProps;
 
 interface QueryParameters {
   text?: string;
@@ -30,8 +64,6 @@ interface RequestParameters {
 
 type LuceneParameters = QueryParameters | RequestParameters;
 
-type SearchButtonCombinedProps = SearchButtonStoreProps;
-
 class SearchButton extends React.Component<SearchButtonCombinedProps> {
   public constructor(props: SearchButtonCombinedProps) {
     super(props);
@@ -41,7 +73,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
   }
 
   public urlParamsBuilder = (datasearchtype: string): LuceneParameters => {
-    // let stringStartDate = '0000001010000';
     let stringStartDate = '';
     if (this.props.startDate !== null) {
       stringStartDate = format(this.props.startDate, 'yyyy-MM-dd');
@@ -53,7 +84,6 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
         '0000';
     }
 
-    // let stringEndDate = '9000012312359';
     let stringEndDate = '';
     if (this.props.endDate !== null) {
       stringEndDate = format(this.props.endDate, 'yyyy-MM-dd');
@@ -86,34 +116,53 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
       query,
       maxCount: 300,
     };
+
     return queryParams;
   };
 
-  public handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  public handleClick = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
     if (this.props.dataset === true) {
       const datasetParams = this.urlParamsBuilder('Dataset');
-      this.fetchLuceneResults(datasetParams);
+      const luceneResults = await this.fetchLuceneResults(datasetParams);
+      const luceneResultIds = luceneResults.map((result) => result.id);
+      this.props.storeDatasetLucene(luceneResultIds);
+
+      this.props.toggleLuceneRequestReceived(true);
     }
     if (this.props.datafile === true) {
       const datafileParams = this.urlParamsBuilder('Datafile');
-      this.fetchLuceneResults(datafileParams);
+      const luceneResults = await this.fetchLuceneResults(datafileParams);
+      const luceneResultIds = luceneResults.map((result) => result.id);
+      this.props.storeDatafileLucene(luceneResultIds);
+
+      this.props.toggleLuceneRequestReceived(true);
     }
     if (this.props.investigation === true) {
       const investigationParams = this.urlParamsBuilder('Investigation');
-      this.fetchLuceneResults(investigationParams);
+      const luceneResults = await this.fetchLuceneResults(investigationParams);
+      const luceneResultIds = luceneResults.map((result) => result.id);
+      this.props.storeInvestigationLucene(luceneResultIds);
+
+      this.props.toggleLuceneRequestReceived(true);
     }
+
+    this.props.setDatasetTab(this.props.dataset);
+    this.props.setDatafileTab(this.props.datafile);
+    this.props.setInvestigationTab(this.props.investigation);
   };
 
   public async fetchLuceneResults(
     queryParams: LuceneParameters
-  ): Promise<void> {
-    const response = await axios.get(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
-      { params: queryParams }
-    );
-
-    const ids = response.data.map((x: { id: number; score: number }) => x.id);
-    console.log(ids);
+    // eslint-disable-next-line
+  ): Promise<any[]> {
+    const splitUrl = this.props.downloadApiUrl.split('/');
+    const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
+    const response = await axios.get(`${icatUrl}/lucene/data`, {
+      params: queryParams,
+    });
+    return response.data;
   }
 
   public render(): React.ReactNode {
@@ -123,14 +172,35 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
           variant="contained"
           color="primary"
           onClick={this.handleClick}
-          aria-label="submit search button"
+          aria-label={this.props.t('searchBox.search_button_arialabel')}
+          size="large"
+          fullWidth={true}
         >
-          Search
+          {this.props.t('searchBox.search_button')}
         </Button>
       </div>
     );
   }
 }
+
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): SearchButtonDispatchProps => ({
+  toggleLuceneRequestReceived: (requestReceived: boolean) =>
+    dispatch(toggleLuceneRequestReceived(requestReceived)),
+  storeDatasetLucene: (luceneData: number[]) =>
+    dispatch(storeDatasetLucene(luceneData)),
+  storeDatafileLucene: (luceneData: number[]) =>
+    dispatch(storeDatafileLucene(luceneData)),
+  storeInvestigationLucene: (luceneData: number[]) =>
+    dispatch(storeInvestigationLucene(luceneData)),
+  setDatasetTab: (toggleOption: boolean) =>
+    dispatch(setDatasetTab(toggleOption)),
+  setDatafileTab: (toggleOption: boolean) =>
+    dispatch(setDatafileTab(toggleOption)),
+  setInvestigationTab: (toggleOption: boolean) =>
+    dispatch(setInvestigationTab(toggleOption)),
+});
 
 const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
   return {
@@ -140,7 +210,21 @@ const mapStateToProps = (state: StateType): SearchButtonStoreProps => {
     investigation: state.dgsearch.checkBox.investigation,
     startDate: state.dgsearch.selectDate.startDate,
     endDate: state.dgsearch.selectDate.endDate,
+    requestReceived: state.dgsearch.requestReceived,
+    luceneDataset: state.dgsearch.searchData.dataset,
+    luceneDatafile: state.dgsearch.searchData.datafile,
+    luceneInvestigation: state.dgsearch.searchData.investigation,
+    datafileTab: state.dgsearch.tabs.datafileTab,
+    datasetTab: state.dgsearch.tabs.datasetTab,
+    investigationTab: state.dgsearch.tabs.investigationTab,
+    downloadApiUrl: state.dgcommon.urls.downloadApiUrl,
   };
 };
 
-export default connect(mapStateToProps)(SearchButton);
+export const TranslatedSearchButton = withTranslation()(SearchButton);
+TranslatedSearchButton.displayName = 'TranslatedSearchButton';
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TranslatedSearchButton);

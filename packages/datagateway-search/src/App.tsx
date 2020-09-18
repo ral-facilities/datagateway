@@ -1,31 +1,43 @@
-import React from 'react';
-import './App.css';
-import Header from './search/Header.component';
-import * as log from 'loglevel';
-import Grid from '@material-ui/core/Grid';
-import SelectDates from './search/datePicker.component';
-import CheckboxesGroup from './search/checkBoxes.component';
-import SearchButton from './search/searchButton.component';
-import SearchTextBox from './search/searchTextBox.component';
-import thunk from 'redux-thunk';
-import { applyMiddleware, createStore, compose } from 'redux';
-import AppReducer from './state/reducers/app.reducer';
 import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-import { Provider } from 'react-redux';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import {
+  DGCommonMiddleware,
+  DGThemeProvider,
+  Preloader,
+} from 'datagateway-common';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { createBrowserHistory } from 'history';
+import * as log from 'loglevel';
+import React from 'react';
+import { connect, Provider } from 'react-redux';
+import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
+import { createLogger } from 'redux-logger';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import './App.css';
+import SearchPageContainer from './searchPageContainer.component';
+import { configureApp } from './state/actions';
+import { StateType } from './state/app.types';
+import AppReducer from './state/reducers/app.reducer';
+import { Translation } from 'react-i18next';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-const middleware = [thunk];
+const history = createBrowserHistory();
+const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
+
 const store = createStore(
-  AppReducer,
+  AppReducer(history),
   composeEnhancers(applyMiddleware(...middleware))
 );
+
+const dispatch = store.dispatch as ThunkDispatch<StateType, null, AnyAction>;
+dispatch(configureApp());
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgws',
@@ -35,6 +47,20 @@ const generateClassName = createGenerateClassName({
   disableGlobal:
     process.env.NODE_ENV === 'production' && !process.env.REACT_APP_E2E_TESTING,
 });
+
+if (process.env.NODE_ENV === `development`) {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const logger = (createLogger as any)();
+  middleware.push(logger);
+}
+
+function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
+  return {
+    loading: !state.dgsearch.settingsLoaded,
+  };
+}
+
+export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
 class App extends React.Component<unknown, { hasError: boolean }> {
   public constructor(props: unknown) {
@@ -51,56 +77,47 @@ class App extends React.Component<unknown, { hasError: boolean }> {
     if (this.state.hasError) {
       return (
         <div className="error">
-          <div
-            style={{
-              padding: 20,
-              background: 'red',
-              color: 'white',
-              margin: 5,
-            }}
+          <React.Suspense
+            fallback={<Preloader loading={true}>Finished loading</Preloader>}
           >
-            Something went wrong...
-          </div>
+            <div
+              style={{
+                padding: 20,
+                background: 'red',
+                color: 'white',
+                margin: 5,
+              }}
+            >
+              <Translation>{(t) => t('app.error')}</Translation>
+            </div>
+          </React.Suspense>
         </div>
       );
     } else
       return (
         <div
           style={{
-            padding: 15,
-            margin: 10,
+            padding: 20,
+            margin: 5,
           }}
           className="App"
         >
           <Provider store={store}>
-            <StylesProvider generateClassName={generateClassName}>
-              <Grid
-                container
-                direction="column"
-                justify="flex-start"
-                alignItems="flex-start"
-              >
-                <Grid item>
-                  <Header />
-                </Grid>
-
-                <Grid item>
-                  <SearchTextBox />
-                </Grid>
-
-                <Grid item>
-                  <SelectDates />
-                </Grid>
-
-                <Grid item>
-                  <CheckboxesGroup />
-                </Grid>
-
-                <Grid item>
-                  <SearchButton />
-                </Grid>
-              </Grid>
-            </StylesProvider>
+            <ConnectedRouter history={history}>
+              <StylesProvider generateClassName={generateClassName}>
+                <DGThemeProvider>
+                  <ConnectedPreloader>
+                    <React.Suspense
+                      fallback={
+                        <Preloader loading={true}>Finished loading</Preloader>
+                      }
+                    >
+                      <SearchPageContainer />
+                    </React.Suspense>
+                  </ConnectedPreloader>
+                </DGThemeProvider>
+              </StylesProvider>
+            </ConnectedRouter>
           </Provider>
         </div>
       );

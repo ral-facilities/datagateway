@@ -28,6 +28,11 @@ import { TableCellProps } from 'react-virtualized';
 import DatasetDetailsPanel from '../detailsPanels/datasetDetailsPanel.component';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface DLSDatasetsTableProps {
   proposalName: string;
@@ -92,6 +97,8 @@ const DLSDatasetsTable = (
     fetchAllIds,
   } = props;
 
+  const [t] = useTranslation();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -154,7 +161,8 @@ const DLSDatasetsTable = (
       }}
       columns={[
         {
-          label: 'Name',
+          icon: <TitleIcon />,
+          label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
@@ -164,17 +172,21 @@ const DLSDatasetsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Datafile Count',
+          icon: <ConfirmationNumberIcon />,
+          label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
           disableSort: true,
         },
         {
-          label: 'Create Time',
+          icon: <CalendarTodayIcon />,
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
-          label: 'Modified Time',
+          icon: <CalendarTodayIcon />,
+
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },
@@ -194,13 +206,29 @@ const mapDispatchToProps = (
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
     dispatch(
       fetchDatasets({
-        investigationId,
         offsetParams,
-        optionalParams: { getDatafileCount: true },
+        getDatafileCount: true,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              INVESTIGATION_ID: { eq: investigationId },
+            }),
+          },
+        ],
       })
     ),
   fetchCount: (investigationId: number) =>
-    dispatch(fetchDatasetCount(investigationId)),
+    dispatch(
+      fetchDatasetCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: investigationId },
+          }),
+        },
+      ])
+    ),
   clearTable: () => dispatch(clearTable()),
   fetchDetails: (datasetId: number) => dispatch(fetchDatasetDetails(datasetId)),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),

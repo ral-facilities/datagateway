@@ -22,7 +22,6 @@ import {
   clearTable,
 } from 'datagateway-common';
 import { IconButton } from '@material-ui/core';
-import { GetApp } from '@material-ui/icons';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { StateType } from '../../state/app.types';
@@ -30,6 +29,13 @@ import { Action, AnyAction } from 'redux';
 import DatafileDetailsPanel from '../detailsPanels/datafileDetailsPanel.component';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
+
+import GetApp from '@material-ui/icons/GetApp';
+import TitleIcon from '@material-ui/icons/Title';
+import ExploreIcon from '@material-ui/icons/Explore';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISDatafilesTableProps {
   datasetId: string;
@@ -90,6 +96,8 @@ const ISISDatafilesTable = (
     allIds,
     fetchAllIds,
   } = props;
+
+  const [t] = useTranslation();
 
   const selectedRows = React.useMemo(
     () =>
@@ -156,7 +164,7 @@ const ISISDatafilesTable = (
           if (LOCATION) {
             return (
               <IconButton
-                aria-label="Download"
+                aria-label={t('datafiles.download')}
                 key="download"
                 size="small"
                 onClick={() => {
@@ -173,17 +181,20 @@ const ISISDatafilesTable = (
       ]}
       columns={[
         {
-          label: 'Name',
+          icon: <TitleIcon />,
+          label: t('datafiles.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
-          label: 'Location',
+          icon: <ExploreIcon />,
+          label: t('datafiles.location'),
           dataKey: 'LOCATION',
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          icon: <SaveIcon />,
+          label: t('datafiles.size'),
           dataKey: 'FILESIZE',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
@@ -191,7 +202,8 @@ const ISISDatafilesTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Modified Time',
+          icon: <CalendarTodayIcon />,
+          label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },
@@ -209,8 +221,26 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (datasetId: number, offsetParams: IndexRange) =>
-    dispatch(fetchDatafiles(datasetId, offsetParams)),
-  fetchCount: (datasetId: number) => dispatch(fetchDatafileCount(datasetId)),
+    dispatch(
+      fetchDatafiles({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+          },
+        ],
+      })
+    ),
+  fetchCount: (datasetId: number) =>
+    dispatch(
+      fetchDatafileCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+        },
+      ])
+    ),
   clearTable: () => dispatch(clearTable()),
   fetchDetails: (datafileId: number) =>
     dispatch(fetchDatafileDetails(datafileId)),

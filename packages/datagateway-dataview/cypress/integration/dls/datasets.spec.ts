@@ -70,6 +70,25 @@ describe('DLS - Datasets Table', () => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
+
+    // table width should grow if a column grows too large
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 800 })
+      .trigger('mouseup');
+
+    cy.get('@datafileCountColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.equal(70);
+    });
+
+    cy.get('[aria-label="grid"]').then(($grid) => {
+      const { width } = $grid[0].getBoundingClientRect();
+      cy.window().should(($window) => {
+        expect(width).to.be.greaterThan($window.innerWidth);
+      });
+    });
   });
 
   describe('should be able to sort by', () => {
@@ -168,7 +187,7 @@ describe('DLS - Datasets Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: DATASET 1').should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -177,17 +196,19 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: DATASET 1').should('be.visible');
-      cy.contains('Name: DATASET 241').should('not.be.visible');
+      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 241').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
     it('and view dataset details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains(
-        'Description: Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+        )
+        .should('be.visible');
     });
 
     it('and then calculate file size', () => {
@@ -223,7 +244,7 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-controls="dataset-type-panel"]').click();
 
       cy.get('#dataset-type-panel').should('not.have.attr', 'hidden');
-      cy.contains('Name: DATASETTYPE 3').should('be.visible');
+      cy.get('#details-panel').contains('DATASETTYPE 3').should('be.visible');
     });
 
     it('and then not view details anymore', () => {
@@ -231,9 +252,7 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains(
-        'Description: Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
-      ).should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

@@ -13,43 +13,51 @@ exports[`Investigation table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "TITLE",
         "filterComponent": [Function],
-        "label": "Title",
+        "icon": <Memo(TitleIcon) />,
+        "label": "investigations.title",
       },
       Object {
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
-        "label": "Visit ID",
+        "icon": <Memo(FingerprintIcon) />,
+        "label": "investigations.visit_id",
       },
       Object {
         "dataKey": "RB_NUMBER",
         "filterComponent": [Function],
-        "label": "RB Number",
+        "icon": <Memo(FingerprintIcon) />,
+        "label": "investigations.rb_number",
       },
       Object {
         "dataKey": "DOI",
         "filterComponent": [Function],
-        "label": "DOI",
+        "icon": <Memo(PublicIcon) />,
+        "label": "investigations.doi",
       },
       Object {
         "dataKey": "DATASET_COUNT",
-        "label": "Dataset Count",
+        "icon": <Memo(ConfirmationNumberIcon) />,
+        "label": "investigations.dataset_count",
       },
       Object {
         "dataKey": "INSTRUMENT.NAME",
         "filterComponent": [Function],
-        "label": "Instrument",
+        "icon": <Memo(AssessmentIcon) />,
+        "label": "investigations.instrument",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "STARTDATE",
         "filterComponent": [Function],
-        "label": "Start Date",
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "investigations.start_date",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "ENDDATE",
         "filterComponent": [Function],
-        "label": "End Date",
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "investigations.end_date",
       },
     ]
   }
@@ -83,35 +91,70 @@ exports[`Investigation table component renders correctly 1`] = `
 `;
 
 exports[`Investigation table component renders details panel correctly 1`] = `
-<div>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      Proposal:
-    </b>
-     
-    1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      Title:
-    </b>
-     
-    Test 1
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      Start Date:
-    </b>
-     
-    2019-07-23
-  </WithStyles(ForwardRef(Typography))>
-  <WithStyles(ForwardRef(Typography))>
-    <b>
-      End Date:
-    </b>
-     
-    2019-07-24
-  </WithStyles(ForwardRef(Typography))>
+<div
+  className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
+  id="details-panel"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="h6"
+    >
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Divider))
+      className="makeStyles-divider-2"
+    />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      investigations.details.rb_number
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      investigations.details.start_date
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        2019-07-23
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      investigations.details.end_date
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        2019-07-24
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
 </div>
 `;
 

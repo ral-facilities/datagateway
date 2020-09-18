@@ -9,7 +9,7 @@ describe('Download Confirmation', () => {
     // Manually override the time, so we know what date/time to expect for downloads.
     cy.clock(Date.UTC(2020, 0, 1, 1, 1, 1), ['Date']);
 
-    Cypress.currentTest.retries(2);
+    // Cypress.currentTest.retries(2);
     cy.server();
     cy.route('GET', '**/ids/isTwoLevel').as('fetchIsTwoLevel');
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
@@ -26,7 +26,7 @@ describe('Download Confirmation', () => {
 
     // Open the confirmation dialog and confirm it is present.
     cy.contains('Download Cart').click();
-    cy.get('[aria-label="download-confirm-dialog"]').should('exist');
+    cy.get('[aria-label="Download confirmation dialog"]').should('exist');
   });
 
   afterEach(() => {
@@ -36,29 +36,22 @@ describe('Download Confirmation', () => {
 
   it('should load correctly and display the confirmation dialog for the cart items', () => {
     // Show the correct download size of the cart items.
-    cy.contains(
-      '[aria-label="confirm-download-size"]',
-      'Download size: 10.8 GB'
-    ).should('exist');
+    cy.contains('Download Size: 10.8 GB').should('exist');
 
     // Shows HTTPS as the default access method.
-    cy.contains('[aria-label="confirm-access-method"]', 'HTTPS').should(
-      'exist'
-    );
+    cy.contains('#confirm-access-method', 'HTTPS').should('exist');
 
     // Shows the estimated download times in the table.
-    cy.get('[aria-label="download-table"]').should('exist');
-    cy.contains(
-      '[aria-label="download-table-one"]',
-      '1 day, 33 min, 54 sec'
-    ).should('exist');
-    cy.contains('[aria-label="download-table-thirty"]', '49 min, 7 sec').should(
+    cy.get('#download-table').should('exist');
+    cy.contains('#download-table-one', '1 day, 33 minutes, 54 seconds').should(
       'exist'
     );
-    cy.contains(
-      '[aria-label="download-table-hundred"]',
-      '14 min, 44 sec'
-    ).should('exist');
+    cy.contains('#download-table-thirty', '49 minutes, 7 seconds').should(
+      'exist'
+    );
+    cy.contains('#download-table-hundred', '14 minutes, 44 seconds').should(
+      'exist'
+    );
   });
 
   it('should prevent download requests with an invalid email address', () => {
@@ -76,9 +69,7 @@ describe('Download Confirmation', () => {
 
   it('should be able to submit a download request and start immediate download with default values (HTTPS)', () => {
     // Ensure our access method is HTTPS before starting an immediate download.
-    cy.contains('[aria-label="confirm-access-method"]', 'HTTPS').should(
-      'exist'
-    );
+    cy.contains('#confirm-access-method', 'HTTPS').should('exist');
 
     // Click on the download button.
     cy.get('#download-confirmation-download').click();
@@ -96,9 +87,7 @@ describe('Download Confirmation', () => {
   });
 
   it('should not be able to submit a download request with a disabled access method (Globus)', () => {
-    cy.get('[aria-label="confirm-access-method"]')
-      .should('exist')
-      .click();
+    cy.get('#confirm-access-method').should('exist').click();
 
     cy.contains('#confirm-access-method-globus', 'Globus')
       .should('exist')
@@ -168,10 +157,10 @@ describe('Download Confirmation', () => {
   });
 
   it('should be able to close the download confirmation dialog', () => {
-    cy.get('[aria-label="download-confirmation-close"]').should('exist');
+    cy.get('[aria-label="Close download confirmation dialog"]').should('exist');
 
-    cy.get('[aria-label="download-confirmation-close"]').click();
+    cy.get('[aria-label="Close download confirmation dialog"]').click();
 
-    cy.get('[aria-label="download-confirm-dialog"]').should('not.exist');
+    cy.get('[aria-label="Download confirmation dialog"]').should('not.exist');
   });
 });

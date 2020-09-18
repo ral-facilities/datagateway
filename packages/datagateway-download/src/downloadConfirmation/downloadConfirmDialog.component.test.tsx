@@ -510,9 +510,9 @@ describe('DownloadConfirmDialog', () => {
     await updateDialogWrapper(wrapper);
 
     // Ensure the close button is present.
-    expect(wrapper.exists('[aria-label="download-confirmation-close"]')).toBe(
-      true
-    );
+    expect(
+      wrapper.exists('[aria-label="downloadConfirmDialog.close_arialabel"]')
+    ).toBe(true);
     expect(wrapper.prop('open')).toBe(true);
 
     // Close the download confirmation dialog.
@@ -533,7 +533,7 @@ describe('DownloadConfirmDialog', () => {
 
     // Click the close button and ensure the close function has been called.
     wrapper
-      .find('button[aria-label="download-confirmation-close"]')
+      .find('button[aria-label="downloadConfirmDialog.close_arialabel"]')
       .simulate('click');
 
     expect(closeFunction).toHaveBeenCalled();
@@ -576,9 +576,9 @@ describe('DownloadConfirmDialog', () => {
     expect(wrapper.exists('#download-confirmation-success')).toBe(true);
 
     // Ensure the close button is present.
-    expect(wrapper.exists('[aria-label="download-confirmation-close"]')).toBe(
-      true
-    );
+    expect(
+      wrapper.exists('[aria-label="downloadConfirmDialog.close_arialabel"]')
+    ).toBe(true);
     expect(wrapper.prop('open')).toBe(true);
 
     // Close the download confirmation dialog.
@@ -599,7 +599,7 @@ describe('DownloadConfirmDialog', () => {
 
     // Click the close button and ensure the close function has been called.
     wrapper
-      .find('button[aria-label="download-confirmation-close"]')
+      .find('button[aria-label="downloadConfirmDialog.close_arialabel"]')
       .simulate('click');
 
     expect(clearCartFunction).toHaveBeenCalled();
@@ -669,9 +669,9 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
     const wrapper = timeWrapper(timeToSize(2, 2, 2, 2));
     await updateDialogWrapper(wrapper);
 
-    expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-    expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
-      '2 days, 2 hours, 2 min, 2 sec'
+    expect(wrapper.exists('#download-table')).toBe(true);
+    expect(wrapper.find('#download-table-one').text()).toEqual(
+      '2 downloadConfirmDialog.day {count:2}, 2 downloadConfirmDialog.hour {count:2}, 2 downloadConfirmDialog.minute {count:2}, 2 downloadConfirmDialog.second {count:2}'
     );
   });
 
@@ -679,9 +679,9 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
     const wrapper = timeWrapper(timeToSize(1, 1, 1, 1));
     await updateDialogWrapper(wrapper);
 
-    expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-    expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
-      '1 day, 1 hour, 1 min, 1 sec'
+    expect(wrapper.exists('#download-table')).toBe(true);
+    expect(wrapper.find('#download-table-one').text()).toEqual(
+      '1 downloadConfirmDialog.day {count:1}, 1 downloadConfirmDialog.hour {count:1}, 1 downloadConfirmDialog.minute {count:1}, 1 downloadConfirmDialog.second {count:1}'
     );
   });
 
@@ -690,9 +690,9 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
       const wrapper = timeWrapper(timeToSize(0, 0, 0, 1));
       await updateDialogWrapper(wrapper);
 
-      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
-        '1 day'
+      expect(wrapper.exists('#download-table')).toBe(true);
+      expect(wrapper.find('#download-table-one').text()).toEqual(
+        '1 downloadConfirmDialog.day {count:1}'
       );
     });
 
@@ -700,9 +700,9 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
       const wrapper = timeWrapper(timeToSize(0, 0, 1, 0));
       await updateDialogWrapper(wrapper);
 
-      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
-        '1 hour'
+      expect(wrapper.exists('#download-table')).toBe(true);
+      expect(wrapper.find('#download-table-one').text()).toEqual(
+        '1 downloadConfirmDialog.hour {count:1}'
       );
     });
 
@@ -710,9 +710,9 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
       const wrapper = timeWrapper(timeToSize(0, 1, 0, 0));
       await updateDialogWrapper(wrapper);
 
-      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
-        '1 min'
+      expect(wrapper.exists('#download-table')).toBe(true);
+      expect(wrapper.find('#download-table-one').text()).toEqual(
+        '1 downloadConfirmDialog.minute {count:1}'
       );
     });
 
@@ -720,9 +720,9 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
       const wrapper = timeWrapper(timeToSize(1, 0, 0, 0));
       await updateDialogWrapper(wrapper);
 
-      expect(wrapper.exists('[aria-label="download-table"]')).toBe(true);
-      expect(wrapper.find('[aria-label="download-table-one"]').text()).toEqual(
-        '1 sec'
+      expect(wrapper.exists('#download-table')).toBe(true);
+      expect(wrapper.find('#download-table-one').text()).toEqual(
+        '1 downloadConfirmDialog.second {count:1}'
       );
     });
   });

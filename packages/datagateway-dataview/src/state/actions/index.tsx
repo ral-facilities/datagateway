@@ -1,7 +1,5 @@
-import { ActionType, ThunkResult, ApplicationStrings } from '../app.types';
+import { ActionType, ThunkResult } from '../app.types';
 import {
-  ConfigureStringsType,
-  ConfigureStringsPayload,
   FeatureSwitches,
   FeatureSwitchesPayload,
   ConfigureFeatureSwitchesType,
@@ -15,7 +13,6 @@ import {
   loadFacilityName,
   MicroFrontendToken,
 } from 'datagateway-common';
-import { fetchDownloadCart } from 'datagateway-common';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -24,28 +21,6 @@ import jsrsasign from 'jsrsasign';
 export const settingsLoaded = (): Action => ({
   type: SettingsLoadedType,
 });
-
-export const configureStrings = (
-  appStrings: ApplicationStrings
-): ActionType<ConfigureStringsPayload> => ({
-  type: ConfigureStringsType,
-  payload: {
-    res: appStrings,
-  },
-});
-
-export const loadStrings = (path: string): ThunkResult<Promise<void>> => {
-  return async (dispatch) => {
-    await axios
-      .get(path)
-      .then((res) => {
-        dispatch(configureStrings(res.data));
-      })
-      .catch((error) =>
-        log.error(`Failed to read strings from ${path}: ${error}`)
-      );
-  };
-};
 
 export const loadFeatureSwitches = (
   featureSwitches: FeatureSwitches
@@ -165,16 +140,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
               log.error(`Can't log in to ICAT: ${error.message}`)
             );
         }
-
-        if ('ui-strings' in settings) {
-          const uiStringResourcesPath = !settings['ui-strings'].startsWith('/')
-            ? '/' + settings['ui-strings']
-            : settings['ui-strings'];
-          dispatch(loadStrings(uiStringResourcesPath));
-        }
-
-        // fetch initial download cart
-        dispatch(fetchDownloadCart());
 
         dispatch(settingsLoaded());
       })

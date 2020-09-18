@@ -58,6 +58,25 @@ describe('DLS - MyData Table', () => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
+
+    // table width should grow if a column grows too large
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 800 })
+      .trigger('mouseup');
+
+    cy.get('@visitIdColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.equal(70);
+    });
+
+    cy.get('[aria-label="grid"]').then(($grid) => {
+      const { width } = $grid[0].getBoundingClientRect();
+      cy.window().should(($window) => {
+        expect(width).to.be.greaterThan($window.innerWidth);
+      });
+    });
   });
 
   describe.skip('should be able to sort by', () => {
@@ -100,7 +119,7 @@ describe('DLS - MyData Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Beamline').find('input').type('8');
+      cy.get('[aria-label="Filter by Instrument').find('input').type('8');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
@@ -114,9 +133,7 @@ describe('DLS - MyData Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -135,16 +152,16 @@ describe('DLS - MyData Table', () => {
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
       cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
-      cy.contains('Sample: SAMPLE 1').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 1').should('be.visible');
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.contains('Investigator: Robert499').should('be.visible');
+      cy.get('#details-panel').contains('Robert499').should('be.visible');
 
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
-      cy.contains(
-        'Reference: Democrat sea gas road police. Citizen relationship southern affect. Thousand national especially. In edge far education.'
+      cy.get('#details-panel').contains(
+        'Democrat sea gas road police. Citizen relationship southern affect. Thousand national especially. In edge far education.'
       );
     });
 
@@ -153,9 +170,7 @@ describe('DLS - MyData Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains(
-        'Title: Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      ).should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

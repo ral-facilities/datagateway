@@ -19,6 +19,9 @@ import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
 
 interface DLSProposalsTableStoreProps {
   sort: {
@@ -60,6 +63,8 @@ const DLSProposalsTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -86,7 +91,8 @@ const DLSProposalsTable = (
       onSort={sortTable}
       columns={[
         {
-          label: 'Title',
+          icon: <TitleIcon />,
+          label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -98,7 +104,8 @@ const DLSProposalsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Name',
+          icon: <TitleIcon />,
+          label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             return tableLink(

@@ -7,9 +7,19 @@ import {
   SelectStartDateType,
   SelectEndDateType,
   SearchTextType,
+  ToggleLuceneRequestReceivedType,
+  StoreLuceneDatasetType,
+  StoreLuceneDatafileType,
+  StoreLuceneInvestigationType,
   TogglePayload,
   SelectDatePayload,
   SearchTextPayload,
+  CheckRequestReceivedPayload,
+  LuceneResultTypePayload,
+  SetDatasetTabType,
+  SetDatafileTabType,
+  SetInvestigationTabType,
+  SettingsLoadedType,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -24,7 +34,26 @@ export const initialState: DGSearchState = {
     datafile: true,
     investigation: true,
   },
+  tabs: {
+    datasetTab: false,
+    datafileTab: false,
+    investigationTab: false,
+  },
+  requestReceived: false,
+  searchData: {
+    dataset: [],
+    datafile: [],
+    investigation: [],
+  },
+  settingsLoaded: false,
 };
+
+export function handleSettingsLoaded(state: DGSearchState): DGSearchState {
+  return {
+    ...state,
+    settingsLoaded: true,
+  };
+}
 
 export function handleSearchText(
   state: DGSearchState,
@@ -101,6 +130,94 @@ export function selectEndDate(
   };
 }
 
+export function toggleLuceneRequestReceived(
+  state: DGSearchState,
+  payload: CheckRequestReceivedPayload
+): DGSearchState {
+  return {
+    ...state,
+    requestReceived: payload.requestReceived,
+  };
+}
+
+export function storeDatasetLuceneResults(
+  state: DGSearchState,
+  payload: LuceneResultTypePayload
+): DGSearchState {
+  return {
+    ...state,
+    searchData: {
+      ...state.searchData,
+      dataset: payload.searchData,
+    },
+  };
+}
+
+export function storeDatafileLuceneResults(
+  state: DGSearchState,
+  payload: LuceneResultTypePayload
+): DGSearchState {
+  return {
+    ...state,
+    searchData: {
+      ...state.searchData,
+      datafile: payload.searchData,
+    },
+  };
+}
+
+export function storeInvestigationLuceneResults(
+  state: DGSearchState,
+  payload: LuceneResultTypePayload
+): DGSearchState {
+  return {
+    ...state,
+    searchData: {
+      ...state.searchData,
+      investigation: payload.searchData,
+    },
+  };
+}
+
+export function handleSetDatasetTab(
+  state: DGSearchState,
+  payload: TogglePayload
+): DGSearchState {
+  return {
+    ...state,
+    tabs: {
+      ...state.tabs,
+      datasetTab: payload.toggleOption,
+    },
+  };
+}
+
+export function handleSetDatafileTab(
+  state: DGSearchState,
+  payload: TogglePayload
+): DGSearchState {
+  return {
+    ...state,
+    tabs: {
+      ...state.tabs,
+      datafileTab: payload.toggleOption,
+    },
+  };
+}
+
+export function handleSetInvestigationTab(
+  state: DGSearchState,
+  payload: TogglePayload
+): DGSearchState {
+  return {
+    ...state,
+    tabs: {
+      ...state.tabs,
+      investigationTab: payload.toggleOption,
+    },
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [ToggleDatasetType]: handleToggleDataset,
   [ToggleDatafileType]: handleToggleDatafile,
@@ -108,6 +225,14 @@ const DGSearchReducer = createReducer(initialState, {
   [SelectStartDateType]: selectStartDate,
   [SelectEndDateType]: selectEndDate,
   [SearchTextType]: handleSearchText,
+  [ToggleLuceneRequestReceivedType]: toggleLuceneRequestReceived,
+  [StoreLuceneDatasetType]: storeDatasetLuceneResults,
+  [StoreLuceneDatafileType]: storeDatafileLuceneResults,
+  [StoreLuceneInvestigationType]: storeInvestigationLuceneResults,
+  [SetDatasetTabType]: handleSetDatasetTab,
+  [SetDatafileTabType]: handleSetDatafileTab,
+  [SetInvestigationTabType]: handleSetInvestigationTab,
+  [SettingsLoadedType]: handleSettingsLoaded,
 });
 
 export default DGSearchReducer;

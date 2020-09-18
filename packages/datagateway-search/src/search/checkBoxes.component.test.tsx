@@ -39,6 +39,18 @@ describe('Checkbox component tests', () => {
         datafile: true,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+      settingsLoaded: true,
     };
 
     mockStore = configureStore([thunk]);
@@ -59,7 +71,9 @@ describe('Checkbox component tests', () => {
       </Provider>
     );
 
-    wrapper.find('[aria-label="dataset checkbox"]').simulate('change');
+    wrapper
+      .find('[aria-label="searchBox.checkboxes.dataset_arialabel"]')
+      .simulate('change');
 
     expect(testStore.getActions()[0]).toEqual(toggleDataset(false));
   });
@@ -74,7 +88,9 @@ describe('Checkbox component tests', () => {
       </Provider>
     );
 
-    wrapper.find('[aria-label="datafile checkbox"]').simulate('change');
+    wrapper
+      .find('[aria-label="searchBox.checkboxes.datafile_arialabel"]')
+      .simulate('change');
 
     expect(testStore.getActions()[0]).toEqual(toggleDatafile(false));
   });
@@ -89,7 +105,9 @@ describe('Checkbox component tests', () => {
       </Provider>
     );
 
-    wrapper.find('[aria-label="investigation checkbox"]').simulate('change');
+    wrapper
+      .find('[aria-label="searchBox.checkboxes.investigation_arialabel"]')
+      .simulate('change');
 
     expect(testStore.getActions()[0]).toEqual(toggleInvestigation(true));
   });

@@ -49,7 +49,7 @@ const SelectCell = (props: SelectCellProps): React.ReactElement => {
         icon={<CheckBoxOutlineBlank fontSize="small" />}
         checkedIcon={<CheckBoxIcon fontSize="small" />}
         size="small"
-        onClick={(event) => {
+        onClick={event => {
           if (event.shiftKey) {
             const shiftClickedRows = Array(Math.abs(rowIndex - lastChecked) + 1)
               .fill(Math.min(rowIndex, lastChecked))

@@ -21,6 +21,9 @@ import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import InstrumentDetailsPanel from '../detailsPanels/instrumentDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
 
 interface ISISInstrumentsTableStoreProps {
   sort: {
@@ -63,6 +66,8 @@ const ISISInstrumentsTable = (
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -98,7 +103,8 @@ const ISISInstrumentsTable = (
       }}
       columns={[
         {
-          label: 'Name',
+          icon: <TitleIcon />,
+          label: t('instruments.name'),
           dataKey: 'FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {
             const instrumentData = props.rowData as Instrument;

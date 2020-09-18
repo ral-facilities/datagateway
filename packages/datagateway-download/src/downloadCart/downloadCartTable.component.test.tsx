@@ -75,6 +75,8 @@ describe('Download cart table component', () => {
     apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
     downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
     idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+    fileCountMax: 5000,
+    totalSizeMax: 1000000000000,
     accessMethods: {
       https: {
         idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
@@ -114,9 +116,11 @@ describe('Download cart table component', () => {
 
   it('fetches the download cart on load', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -127,11 +131,28 @@ describe('Download cart table component', () => {
     expect(fetchDownloadCartItems).toHaveBeenCalled();
   });
 
-  it('calculates sizes once cart items have been fetched', async () => {
+  it('does not fetch the download cart on load if no dg-download element exists', async () => {
     const wrapper = mount(
       <DownloadSettingsContext.Provider value={mockedSettings}>
         <DownloadCartTable statusTabRedirect={jest.fn()} />
       </DownloadSettingsContext.Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(fetchDownloadCartItems).not.toHaveBeenCalled();
+  });
+
+  it('calculates sizes once cart items have been fetched', async () => {
+    const wrapper = mount(
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -144,15 +165,17 @@ describe('Download cart table component', () => {
       '1 B'
     );
     expect(wrapper.find('p#totalSizeDisplay').text()).toEqual(
-      expect.stringContaining('Total size: 4 B')
+      expect.stringContaining('downloadCart.total_size: 4 B')
     );
   });
 
   it('calculates total file count once cart items have been fetched', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -162,15 +185,17 @@ describe('Download cart table component', () => {
 
     expect(getCartDatafileCount).toHaveBeenCalled();
     expect(wrapper.find('p#fileCountDisplay').text()).toEqual(
-      expect.stringContaining('Number of files: 7')
+      expect.stringContaining('downloadCart.number_of_files: 7')
     );
   });
 
   it('loads cart confirmation dialog when Download Cart button is clicked', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     expect(wrapper.find('button#downloadCartButton').prop('disabled')).toBe(
@@ -211,15 +236,17 @@ describe('Download cart table component', () => {
 
     // Close the confirmation dialog.
     wrapper
-      .find('button[aria-label="download-confirmation-close"]')
+      .find('button[aria-label="downloadConfirmDialog.close_arialabel"]')
       .simulate('click');
   });
 
   it('removes all items from cart when Remove All button is clicked', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -240,9 +267,11 @@ describe('Download cart table component', () => {
 
   it("removes an item when said item's remove button is clicked", async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -251,12 +280,14 @@ describe('Download cart table component', () => {
     });
 
     wrapper
-      .find('button[aria-label="Remove INVESTIGATION 2 from cart"]')
+      .find(`button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`)
       .simulate('click');
 
     expect(
       wrapper
-        .find('button[aria-label="Remove INVESTIGATION 2 from cart"] svg')
+        .find(
+          `button[aria-label="downloadCart.remove {name:INVESTIGATION 2}"] svg`
+        )
         .parent()
         .prop('color')
     ).toEqual('error');
@@ -273,16 +304,20 @@ describe('Download cart table component', () => {
       downloadApiUrl: mockedSettings.downloadApiUrl,
     });
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
+      wrapper.exists(
+        `[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]`
+      )
     ).toBe(false);
     expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
   });
 
   it('sorts data when headers are clicked', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -323,9 +358,11 @@ describe('Download cart table component', () => {
 
   it('filters data when text fields are typed into', async () => {
     const wrapper = mount(
-      <DownloadSettingsContext.Provider value={mockedSettings}>
-        <DownloadCartTable statusTabRedirect={jest.fn()} />
-      </DownloadSettingsContext.Provider>
+      <div id="datagateway-download">
+        <DownloadSettingsContext.Provider value={mockedSettings}>
+          <DownloadCartTable statusTabRedirect={jest.fn()} />
+        </DownloadSettingsContext.Provider>
+      </div>
     );
 
     await act(async () => {
@@ -333,22 +370,30 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    const nameFilterInput = wrapper.find('[aria-label="Filter by Name"] input');
+    const nameFilterInput = wrapper.find(
+      '[aria-label="Filter by downloadCart.name"] input'
+    );
     nameFilterInput.instance().value = '1';
     nameFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]'
+      )
     ).toBe(false);
 
-    const typeFilterInput = wrapper.find('[aria-label="Filter by Type"] input');
+    const typeFilterInput = wrapper.find(
+      '[aria-label="Filter by downloadCart.type"] input'
+    );
     typeFilterInput.instance().value = 'data';
     typeFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=2]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 1 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]'
+      )
     ).toBe(false);
 
     typeFilterInput.instance().value = '';
@@ -356,7 +401,9 @@ describe('Download cart table component', () => {
 
     expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 1 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 1}"]'
+      )
     ).toBe(true);
 
     nameFilterInput.instance().value = '';
@@ -364,7 +411,9 @@ describe('Download cart table component', () => {
 
     expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
     expect(
-      wrapper.exists('[aria-label="Remove INVESTIGATION 2 from cart"]')
+      wrapper.exists(
+        '[aria-label="downloadCart.remove {name:INVESTIGATION 2}"]'
+      )
     ).toBe(true);
   });
 });
