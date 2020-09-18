@@ -123,9 +123,10 @@ document.dispatchEvent(
         section: 'Test',
         link: '/download',
         plugin: 'datagateway-download',
-        displayName: 'DataGateway Download',
+        displayName: '\xa0Download',
         order: 0,
         helpText: 'TODO: Write help text for user tour',
+        logo: 'DataGateway',
       },
     },
   })

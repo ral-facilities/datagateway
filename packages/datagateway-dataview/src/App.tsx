@@ -76,9 +76,10 @@ const registerRouteAction = {
     section: 'Data',
     link: '/browse/investigation',
     plugin: 'datagateway-dataview',
-    displayName: 'DataGateway DataView',
+    displayName: '\xa0DataView',
     order: 0,
     helpText: 'TODO: write some help text for the user tour',
+    logo: 'DataGateway',
   },
 };
 

@@ -81,10 +81,11 @@ document.dispatchEvent(
         section: 'Test',
         link: '/search/data',
         plugin: 'datagateway-search',
-        displayName: 'DataGateway Search',
+        displayName: '\xa0Search',
         order: 0,
         helpText:
           'DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters.',
+        logo: 'DataGateway',
       },
     },
   })
