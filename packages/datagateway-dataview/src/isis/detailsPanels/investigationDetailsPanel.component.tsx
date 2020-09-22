@@ -1,6 +1,28 @@
 import React from 'react';
 import { Entity, Investigation } from 'datagateway-common';
-import { Typography, Tabs, Tab, Link } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+  Tabs,
+  Tab,
+  Link,
+} from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface InvestigationDetailsPanelProps {
   rowData: Entity;
@@ -15,6 +37,10 @@ const InvestigationDetailsPanel = (
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
+
+  const [t] = useTranslation();
+
+  const classes = useStyles();
 
   const investigationData = rowData as Investigation;
 
@@ -39,23 +65,23 @@ const InvestigationDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div>
+    <div id="details-panel">
       <Tabs
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
-        aria-label="investigation-details-tabs"
+        aria-label={t('investigations.details.tabs_label')}
       >
         <Tab
           id="investigation-details-tab"
           aria-controls="investigation-details-panel"
-          label="Visit Details"
+          label={t('investigations.details.label')}
           value="details"
         />
         {investigationData.INVESTIGATIONUSER && (
           <Tab
             id="investigation-users-tab"
             aria-controls="investigation-users-panel"
-            label="Visit Users"
+            label={t('investigations.details.users.label')}
             value="users"
           />
         )}
@@ -63,7 +89,7 @@ const InvestigationDetailsPanel = (
           <Tab
             id="investigation-samples-tab"
             aria-controls="investigation-samples-panel"
-            label="Visit Samples"
+            label={t('investigations.details.samples.label')}
             value="samples"
           />
         )}
@@ -71,7 +97,7 @@ const InvestigationDetailsPanel = (
           <Tab
             id="investigation-publications-tab"
             aria-controls="investigation-publications-panel"
-            label="Publications"
+            label={t('investigations.details.publications.label')}
             value="publications"
           />
         )}
@@ -82,47 +108,83 @@ const InvestigationDetailsPanel = (
         role="tabpanel"
         hidden={value !== 'details'}
       >
-        <Typography variant="body2">
-          <b>Proposal:</b> {investigationData.NAME}
-        </Typography>
-        <Typography variant="body2">
-          <b>Visit Id:</b> {investigationData.VISIT_ID}
-        </Typography>
-        <Typography variant="body2">
-          <b>Title:</b> {investigationData.TITLE}
-        </Typography>
-        <Typography variant="body2">
-          <b>Summary:</b> {investigationData.SUMMARY}
-        </Typography>
-        {investigationData.STUDYINVESTIGATION &&
-          investigationData.STUDYINVESTIGATION.map((studyInvestigation) => {
-            if (studyInvestigation.STUDY) {
-              return (
-                <Typography key={studyInvestigation.ID} variant="body2">
-                  <b>DOI:</b>{' '}
-                  <Link
-                    href={`https://doi.org/${studyInvestigation.STUDY.PID}`}
-                  >
-                    {studyInvestigation.STUDY.PID}
-                  </Link>
-                </Typography>
-              );
-            } else {
-              return null;
-            }
-          })}
-        <Typography variant="body2">
-          <b>Part DOI:</b>{' '}
-          <Link href={`https://doi.org/${investigationData.DOI}`}>
-            {investigationData.DOI}
-          </Link>
-        </Typography>
-        <Typography variant="body2">
-          <b>Start Date:</b> {investigationData.STARTDATE}
-        </Typography>
-        <Typography variant="body2">
-          <b>End Date:</b> {investigationData.ENDDATE}
-        </Typography>
+        <Grid container className={classes.root} direction="column">
+          <Grid item xs>
+            <Typography variant="h6">
+              <b>{investigationData.NAME}</b>
+            </Typography>
+            <Divider className={classes.divider} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.title')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.TITLE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.visit_id')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.VISIT_ID}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.summary')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.SUMMARY}</b>
+            </Typography>
+          </Grid>
+          {investigationData.STUDYINVESTIGATION &&
+            investigationData.STUDYINVESTIGATION.map((studyInvestigation) => {
+              if (studyInvestigation.STUDY) {
+                return (
+                  <Grid key={studyInvestigation.ID} item xs>
+                    <Typography variant="overline">
+                      {t('investigations.details.pid')}
+                    </Typography>
+                    <Typography>
+                      <Link
+                        href={`https://doi.org/${studyInvestigation.STUDY.PID}`}
+                      >
+                        {studyInvestigation.STUDY.PID}
+                      </Link>
+                    </Typography>
+                  </Grid>
+                );
+              } else {
+                return null;
+              }
+            })}
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.doi')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.DOI}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.start_date')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.STARTDATE}</b>
+            </Typography>
+          </Grid>
+          <Grid item xs>
+            <Typography variant="overline">
+              {t('investigations.details.end_date')}
+            </Typography>
+            <Typography>
+              <b>{investigationData.ENDDATE}</b>
+            </Typography>
+          </Grid>
+        </Grid>
       </div>
       {investigationData.INVESTIGATIONUSER && (
         <div
@@ -131,19 +193,27 @@ const InvestigationDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'users'}
         >
-          {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
-            if (investigationUser.USER_) {
-              return (
-                <Typography key={investigationUser.USER_ID} variant="body2">
-                  <b>Name:</b>{' '}
-                  {investigationUser.USER_.FULL_NAME ||
-                    investigationUser.USER_.NAME}
-                </Typography>
-              );
-            } else {
-              return null;
-            }
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.INVESTIGATIONUSER.map((investigationUser) => {
+              if (investigationUser.USER_) {
+                return (
+                  <Grid key={investigationUser.USER_ID} item xs>
+                    <Typography variant="overline">
+                      {t('investigations.details.users.name')}
+                    </Typography>
+                    <Typography>
+                      <b>
+                        {investigationUser.USER_.FULL_NAME ||
+                          investigationUser.USER_.NAME}
+                      </b>
+                    </Typography>
+                  </Grid>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </Grid>
         </div>
       )}
       {investigationData.SAMPLE && (
@@ -153,13 +223,20 @@ const InvestigationDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'samples'}
         >
-          {investigationData.SAMPLE.map((sample) => {
-            return (
-              <Typography key={sample.ID} variant="body2">
-                <b>Sample:</b> {sample.NAME}
-              </Typography>
-            );
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.SAMPLE.map((sample) => {
+              return (
+                <Grid key={sample.ID} item xs>
+                  <Typography variant="overline">
+                    {t('investigations.details.samples.name')}
+                  </Typography>
+                  <Typography>
+                    <b>{sample.NAME}</b>
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
         </div>
       )}
       {investigationData.PUBLICATION && (
@@ -169,13 +246,20 @@ const InvestigationDetailsPanel = (
           role="tabpanel"
           hidden={value !== 'publications'}
         >
-          {investigationData.PUBLICATION.map((publication) => {
-            return (
-              <Typography key={publication.ID} variant="body2">
-                <b>Reference:</b> {publication.FULLREFERENCE}
-              </Typography>
-            );
-          })}
+          <Grid container className={classes.root} direction="column">
+            {investigationData.PUBLICATION.map((publication) => {
+              return (
+                <Grid key={publication.ID} item xs>
+                  <Typography variant="overline">
+                    {t('investigations.details.publications.reference')}
+                  </Typography>
+                  <Typography>
+                    <b>{publication.FULLREFERENCE}</b>
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
         </div>
       )}
     </div>

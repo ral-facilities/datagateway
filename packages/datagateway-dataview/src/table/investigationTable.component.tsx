@@ -1,5 +1,12 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
@@ -25,6 +32,25 @@ import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import useAfterMountEffect from '../utils';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
+import PublicIcon from '@material-ui/icons/Public';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface InvestigationTableProps {
   sort: {
@@ -75,6 +101,10 @@ const InvestigationTable = (
     fetchAllIds,
     loading,
   } = props;
+
+  const [t] = useTranslation();
+
+  const classes = useStyles();
 
   const selectedRows = React.useMemo(
     () =>
@@ -129,25 +159,49 @@ const InvestigationTable = (
       detailsPanel={({ rowData }) => {
         const investigationData = rowData as Investigation;
         return (
-          <div>
-            <Typography>
-              <b>Proposal:</b> {investigationData.RB_NUMBER}
-            </Typography>
-            <Typography>
-              <b>Title:</b> {investigationData.TITLE}
-            </Typography>
-            <Typography>
-              <b>Start Date:</b> {investigationData.STARTDATE}
-            </Typography>
-            <Typography>
-              <b>End Date:</b> {investigationData.ENDDATE}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{investigationData.TITLE}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('investigations.details.rb_number')}
+              </Typography>
+              <Typography>
+                <b>{investigationData.RB_NUMBER}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('investigations.details.start_date')}
+              </Typography>
+              <Typography>
+                <b>{investigationData.STARTDATE}</b>
+              </Typography>
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('investigations.details.end_date')}
+              </Typography>
+              <Typography>
+                <b>{investigationData.ENDDATE}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       columns={[
         {
-          label: 'Title',
+          icon: <TitleIcon />,
+          label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -159,31 +213,37 @@ const InvestigationTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Visit ID',
+          icon: <FingerprintIcon />,
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
-          label: 'RB Number',
+          icon: <FingerprintIcon />,
+          label: t('investigations.rb_number'),
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
         },
         {
-          label: 'DOI',
+          icon: <PublicIcon />,
+          label: t('investigations.doi'),
           dataKey: 'DOI',
           filterComponent: textFilter,
         },
         {
-          label: 'Dataset Count',
+          icon: <ConfirmationNumberIcon />,
+          label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
         },
         {
-          label: 'Instrument',
+          icon: <AssessmentIcon />,
+          label: t('investigations.instrument'),
           dataKey: 'INSTRUMENT.NAME',
           filterComponent: textFilter,
         },
         {
-          label: 'Start Date',
+          icon: <CalendarTodayIcon />,
+          label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {
@@ -191,7 +251,8 @@ const InvestigationTable = (
           },
         },
         {
-          label: 'End Date',
+          icon: <CalendarTodayIcon />,
+          label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {

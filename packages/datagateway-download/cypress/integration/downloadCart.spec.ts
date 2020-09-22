@@ -32,9 +32,7 @@ describe('Download Cart', () => {
 
     // Ensure we can move away from the table and come back to it.
     cy.get('[aria-label="Download cart panel"]').should('exist');
-    cy.get('[aria-label="Downloads tab"]')
-      .should('exist')
-      .click();
+    cy.get('[aria-label="Downloads tab"]').should('exist').click();
 
     // Wait for the downloads to be fetched before moving back to the cart.
     cy.wait('@fetchDownloads');
@@ -66,7 +64,7 @@ describe('Download Cart', () => {
     cy.contains('[role="button"]', 'Name').click();
     cy.get('[aria-rowindex=1] [aria-colindex=1]')
       .invoke('text')
-      .then(currText => {
+      .then((currText) => {
         cy.get('@unsortedFirstItem').should('eq', currText);
       });
 
@@ -90,17 +88,13 @@ describe('Download Cart', () => {
   });
 
   it('should be able to filter cart items by name and type', () => {
-    cy.get('[aria-label="Filter by Name"]')
-      .find('input')
-      .as('nameFilter');
+    cy.get('[aria-label="Filter by Name"]').find('input').as('nameFilter');
 
     cy.get('@nameFilter').type('1');
     cy.get('[aria-rowcount=13]').should('exist');
     cy.contains('DATASET 31').should('be.visible');
 
-    cy.get('[aria-label="Filter by Type"]')
-      .find('input')
-      .as('typeFilter');
+    cy.get('[aria-label="Filter by Type"]').find('input').as('typeFilter');
 
     cy.get('@typeFilter').type('in');
     cy.get('[aria-rowcount=8]').should('exist');
@@ -122,8 +116,8 @@ describe('Download Cart', () => {
     cy.contains(/^DATASET 1$/).should('not.be.visible');
     cy.get('[aria-rowcount=58]').should('exist');
 
-    cy.wait('@removeFromCart').then(xhr =>
-      expect(xhr.response.body.cartItems.map(x => x.name)).to.not.include(
+    cy.wait('@removeFromCart').then((xhr) =>
+      expect(xhr.response.body.cartItems.map((x) => x.name)).to.not.include(
         'DATASET 1'
       )
     );
@@ -139,16 +133,16 @@ describe('Download Cart', () => {
     cy.get('[aria-rowcount=0]').should('exist');
 
     cy.wait('@removeFromCart').then(
-      xhr => expect(xhr.response.body.cartItems).to.be.empty
+      (xhr) => expect(xhr.response.body.cartItems).to.be.empty
     );
   });
 
-  it('should be able open and close the download confirmation dialog', () => {
+  it.only('should be able open and close the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
     cy.contains('Download Cart').click();
 
-    cy.get('[aria-label="download-confirm-dialog"]').should('exist');
-    cy.get('[aria-label="download-confirmation-close"]')
+    cy.get('[aria-label="Download confirmation dialog"]').should('exist');
+    cy.get('[aria-label="Close download confirmation dialog"]')
       .should('exist')
       .click();
   });

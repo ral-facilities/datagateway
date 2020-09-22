@@ -2,6 +2,7 @@ import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import 'custom-event-polyfill';
 import 'url-search-params-polyfill';
+import './i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
@@ -20,9 +21,11 @@ const render = (): void => {
   }
 };
 
-render();
-
-if (process.env.NODE_ENV === `development`) {
+if (
+  process.env.NODE_ENV === `development` ||
+  process.env.REACT_APP_E2E_TESTING
+) {
+  render();
   log.setDefaultLevel(log.levels.DEBUG);
 } else {
   log.setDefaultLevel(log.levels.ERROR);
@@ -40,6 +43,7 @@ window.addEventListener('single-spa:routing-event', () => {
   render();
 });
 
+// Handle plugin re-render messages from the parent app.
 document.addEventListener(MicroFrontendId, (e) => {
   const action = (e as CustomEvent).detail;
   if (action.type === RequestPluginRerenderType) {

@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dataset table component renders Dataset title as a link 1`] = `"Test 1"`;
+
+exports[`Dataset table component renders correctly 1`] = `
+<WithStyles(VirtualizedTable)
+  allIds={
+    Array [
+      1,
+    ]
+  }
+  columns={
+    Array [
+      Object {
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "label": "datasets.name",
+      },
+      Object {
+        "dataKey": "DATAFILE_COUNT",
+        "disableSort": true,
+        "label": "datasets.datafile_count",
+      },
+      Object {
+        "dataKey": "CREATE_TIME",
+        "filterComponent": [Function],
+        "label": "datasets.create_time",
+      },
+      Object {
+        "dataKey": "MOD_TIME",
+        "filterComponent": [Function],
+        "label": "datasets.modified_time",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "CREATE_TIME": "2019-07-23",
+        "ID": 1,
+        "INVESTIGATION_ID": 1,
+        "MOD_TIME": "2019-07-23",
+        "NAME": "Test 1",
+        "SIZE": 1,
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  loadMoreRows={[Function]}
+  loading={false}
+  onCheck={[Function]}
+  onSort={[Function]}
+  onUncheck={[Function]}
+  selectedRows={Array []}
+  sort={Object {}}
+  totalRowCount={0}
+/>
+`;
+
+exports[`Dataset table component renders details panel correctly 1`] = `
+<div>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      datasets.name
+      :
+    </b>
+     
+    Test 1
+  </WithStyles(ForwardRef(Typography))>
+  <WithStyles(ForwardRef(Typography))>
+    <b>
+      datasets.description
+      :
+    </b>
+     
+    Test 1
+  </WithStyles(ForwardRef(Typography))>
+</div>
+`;

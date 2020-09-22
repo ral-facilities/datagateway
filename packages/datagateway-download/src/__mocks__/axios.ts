@@ -13,6 +13,8 @@ export default {
           apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
           downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
           idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
               idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',

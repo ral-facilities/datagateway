@@ -64,6 +64,25 @@ describe('ISIS - Datafiles Table', () => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
+
+    // table width should grow if a column grows too large
+    cy.get('.react-draggable')
+      .first()
+      .trigger('mousedown')
+      .trigger('mousemove', { clientX: 800 })
+      .trigger('mouseup');
+
+    cy.get('@locationColumn').should(($column) => {
+      const { width } = $column[0].getBoundingClientRect();
+      expect(width).to.be.equal(70);
+    });
+
+    cy.get('[aria-label="grid"]').then(($grid) => {
+      const { width } = $grid[0].getBoundingClientRect();
+      cy.window().should(($window) => {
+        expect(width).to.be.greaterThan($window.innerWidth);
+      });
+    });
   });
 
   describe('should be able to sort by', () => {
@@ -155,7 +174,7 @@ describe('ISIS - Datafiles Table', () => {
     it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: Datafile 117').should('be.visible');
+      cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
@@ -164,8 +183,10 @@ describe('ISIS - Datafiles Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.contains('Name: Datafile 117').should('be.visible');
-      cy.contains('Name: Datafile 3470').should('not.be.visible');
+      cy.get('#details-panel').contains('Datafile 117').should('be.visible');
+      cy.get('#details-panel')
+        .contains('Datafile 3470')
+        .should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -174,16 +195,18 @@ describe('ISIS - Datafiles Table', () => {
 
       cy.get('[aria-controls="datafile-details-panel"]').should('be.visible');
 
-      cy.contains(
-        'Description: Remember word economic catch. After television scene alone. Partner send rise your. Exist room long success financial. Help itself culture money child realize take rise.'
-      ).should('be.visible');
+      cy.get('#details-panel')
+        .contains(
+          'Remember word economic catch. After television scene alone. Partner send rise your. Exist room long success financial. Help itself culture money child realize take rise.'
+        )
+        .should('be.visible');
 
       cy.get('[aria-controls="datafile-parameters-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="datafile-parameters-panel"]').click();
 
-      cy.contains('PARAMETERTYPE 42: accept410').should('be.visible');
+      cy.get('#parameter-grid').should('be.visible');
     });
 
     it('and then not view details anymore', () => {
@@ -191,7 +214,7 @@ describe('ISIS - Datafiles Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.contains('Name: Datafile 117').should('not.be.visible');
+      cy.get('#details-panel').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

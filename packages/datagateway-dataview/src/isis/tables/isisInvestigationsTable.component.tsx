@@ -27,6 +27,14 @@ import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../detailsPanels/investigationDetailsPanel.component';
 import useAfterMountEffect from '../../utils';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import FingerprintIcon from '@material-ui/icons/Fingerprint';
+import PublicIcon from '@material-ui/icons/Public';
+import SaveIcon from '@material-ui/icons/Save';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -90,6 +98,8 @@ const ISISInvestigationsTable = (
     allIds,
     fetchAllIds,
   } = props;
+
+  const [t] = useTranslation();
 
   const selectedRows = React.useMemo(
     () =>
@@ -159,7 +169,8 @@ const ISISInvestigationsTable = (
       }}
       columns={[
         {
-          label: 'Title',
+          icon: <TitleIcon />,
+          label: t('investigations.title'),
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -171,7 +182,8 @@ const ISISInvestigationsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Visit Id',
+          icon: <FingerprintIcon />,
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -183,7 +195,8 @@ const ISISInvestigationsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'RB Number',
+          icon: <TitleIcon />,
+          label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -195,7 +208,8 @@ const ISISInvestigationsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'DOI',
+          icon: <PublicIcon />,
+          label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION.STUDY.PID',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -214,7 +228,8 @@ const ISISInvestigationsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Size',
+          icon: <SaveIcon />,
+          label: t('investigations.size'),
           dataKey: 'SIZE',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
@@ -222,7 +237,8 @@ const ISISInvestigationsTable = (
           disableSort: true,
         },
         {
-          label: 'Instrument',
+          icon: <AssessmentIcon />,
+          label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -239,12 +255,15 @@ const ISISInvestigationsTable = (
           filterComponent: textFilter,
         },
         {
-          label: 'Start Date',
+          icon: <CalendarTodayIcon />,
+          label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
-          label: 'End Date',
+          icon: <CalendarTodayIcon />,
+
+          label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },

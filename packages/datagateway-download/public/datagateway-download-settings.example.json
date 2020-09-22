@@ -3,6 +3,8 @@
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
   "idsUrl": "example.ids.url",
+  "fileCountMax": 5000,
+  "totalSizeMax": 1000000000000,
   "accessMethods": {
     "https": {
       "idsUrl": "example.ids.url",

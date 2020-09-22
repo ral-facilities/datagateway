@@ -8,52 +8,67 @@ exports[`Data column header component renders correctly with filter but no sort 
   <div
     style={
       Object {
-        "display": "flex",
+        "flex": 1,
+        "overflow": "hidden",
       }
     }
   >
-    Test
-    <Draggable
-      allowAnyClick={false}
-      axis="none"
-      bounds={false}
-      cancel={null}
-      defaultClassName="react-draggable"
-      defaultClassNameDragged="react-draggable-dragged"
-      defaultClassNameDragging="react-draggable-dragging"
-      defaultPosition={
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
+    >
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        Test
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
+    <TextColumnFilter
+      label="test"
+      onChange={[MockFunction]}
+    />
+  </div>
+  <Draggable
+    allowAnyClick={false}
+    axis="none"
+    bounds={false}
+    cancel={null}
+    defaultClassName="react-draggable"
+    defaultClassNameDragged="react-draggable-dragged"
+    defaultClassNameDragging="react-draggable-dragging"
+    defaultPosition={
+      Object {
+        "x": 0,
+        "y": 0,
+      }
+    }
+    disabled={false}
+    enableUserSelectHack={true}
+    grid={null}
+    handle={null}
+    offsetParent={null}
+    onDrag={[Function]}
+    onMouseDown={[Function]}
+    onStart={[Function]}
+    onStop={[Function]}
+    position={null}
+    scale={1}
+    transform={null}
+  >
+    <DragIndicatorIcon
+      fontSize="small"
+      style={
         Object {
-          "x": 0,
-          "y": 0,
+          "cursor": "col-resize",
         }
       }
-      disabled={false}
-      enableUserSelectHack={true}
-      grid={null}
-      handle={null}
-      offsetParent={null}
-      onDrag={[Function]}
-      onMouseDown={[Function]}
-      onStart={[Function]}
-      onStop={[Function]}
-      position={null}
-      scale={1}
-      transform={null}
-    >
-      <DragIndicatorIcon
-        fontSize="small"
-        style={
-          Object {
-            "cursor": "col-resize",
-          }
-        }
-      />
-    </Draggable>
-  </div>
-  <TextColumnFilter
-    label="test"
-    onChange={[MockFunction]}
-  />
+    />
+  </Draggable>
 </div>
 `;
 
@@ -65,62 +80,72 @@ exports[`Data column header component renders correctly with sort and filter 1`]
   <div
     style={
       Object {
-        "display": "flex",
+        "flex": 1,
+        "overflow": "hidden",
       }
     }
   >
-    <WithStyles(ForwardRef(TableSortLabel))
-      active={false}
-      onClick={[Function]}
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
+    >
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        <WithStyles(ForwardRef(TableSortLabel))
+          active={false}
+          onClick={[Function]}
+        >
+          Test
+        </WithStyles(ForwardRef(TableSortLabel))>
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
+    <TextColumnFilter
+      label="test"
+      onChange={[MockFunction]}
+    />
+  </div>
+  <Draggable
+    allowAnyClick={false}
+    axis="none"
+    bounds={false}
+    cancel={null}
+    defaultClassName="react-draggable"
+    defaultClassNameDragged="react-draggable-dragged"
+    defaultClassNameDragging="react-draggable-dragging"
+    defaultPosition={
+      Object {
+        "x": 0,
+        "y": 0,
+      }
+    }
+    disabled={false}
+    enableUserSelectHack={true}
+    grid={null}
+    handle={null}
+    offsetParent={null}
+    onDrag={[Function]}
+    onMouseDown={[Function]}
+    onStart={[Function]}
+    onStop={[Function]}
+    position={null}
+    scale={1}
+    transform={null}
+  >
+    <DragIndicatorIcon
+      fontSize="small"
       style={
         Object {
-          "flex": "auto",
+          "cursor": "col-resize",
         }
       }
-    >
-      Test
-    </WithStyles(ForwardRef(TableSortLabel))>
-    <Draggable
-      allowAnyClick={false}
-      axis="none"
-      bounds={false}
-      cancel={null}
-      defaultClassName="react-draggable"
-      defaultClassNameDragged="react-draggable-dragged"
-      defaultClassNameDragging="react-draggable-dragging"
-      defaultPosition={
-        Object {
-          "x": 0,
-          "y": 0,
-        }
-      }
-      disabled={false}
-      enableUserSelectHack={true}
-      grid={null}
-      handle={null}
-      offsetParent={null}
-      onDrag={[Function]}
-      onMouseDown={[Function]}
-      onStart={[Function]}
-      onStop={[Function]}
-      position={null}
-      scale={1}
-      transform={null}
-    >
-      <DragIndicatorIcon
-        fontSize="small"
-        style={
-          Object {
-            "cursor": "col-resize",
-          }
-        }
-      />
-    </Draggable>
-  </div>
-  <TextColumnFilter
-    label="test"
-    onChange={[MockFunction]}
-  />
+    />
+  </Draggable>
 </div>
 `;
 
@@ -132,58 +157,68 @@ exports[`Data column header component renders correctly with sort but no filter 
   <div
     style={
       Object {
-        "display": "flex",
+        "flex": 1,
+        "overflow": "hidden",
       }
     }
   >
-    <WithStyles(ForwardRef(TableSortLabel))
-      active={false}
-      onClick={[Function]}
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
+    >
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        <WithStyles(ForwardRef(TableSortLabel))
+          active={false}
+          onClick={[Function]}
+        >
+          Test
+        </WithStyles(ForwardRef(TableSortLabel))>
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
+  </div>
+  <Draggable
+    allowAnyClick={false}
+    axis="none"
+    bounds={false}
+    cancel={null}
+    defaultClassName="react-draggable"
+    defaultClassNameDragged="react-draggable-dragged"
+    defaultClassNameDragging="react-draggable-dragging"
+    defaultPosition={
+      Object {
+        "x": 0,
+        "y": 0,
+      }
+    }
+    disabled={false}
+    enableUserSelectHack={true}
+    grid={null}
+    handle={null}
+    offsetParent={null}
+    onDrag={[Function]}
+    onMouseDown={[Function]}
+    onStart={[Function]}
+    onStop={[Function]}
+    position={null}
+    scale={1}
+    transform={null}
+  >
+    <DragIndicatorIcon
+      fontSize="small"
       style={
         Object {
-          "flex": "auto",
+          "cursor": "col-resize",
         }
       }
-    >
-      Test
-    </WithStyles(ForwardRef(TableSortLabel))>
-    <Draggable
-      allowAnyClick={false}
-      axis="none"
-      bounds={false}
-      cancel={null}
-      defaultClassName="react-draggable"
-      defaultClassNameDragged="react-draggable-dragged"
-      defaultClassNameDragging="react-draggable-dragging"
-      defaultPosition={
-        Object {
-          "x": 0,
-          "y": 0,
-        }
-      }
-      disabled={false}
-      enableUserSelectHack={true}
-      grid={null}
-      handle={null}
-      offsetParent={null}
-      onDrag={[Function]}
-      onMouseDown={[Function]}
-      onStart={[Function]}
-      onStop={[Function]}
-      position={null}
-      scale={1}
-      transform={null}
-    >
-      <DragIndicatorIcon
-        fontSize="small"
-        style={
-          Object {
-            "cursor": "col-resize",
-          }
-        }
-      />
-    </Draggable>
-  </div>
+    />
+  </Draggable>
 </div>
 `;
 
@@ -195,47 +230,62 @@ exports[`Data column header component renders correctly without sort or filter 1
   <div
     style={
       Object {
-        "display": "flex",
+        "flex": 1,
+        "overflow": "hidden",
       }
     }
   >
-    Test
-    <Draggable
-      allowAnyClick={false}
-      axis="none"
-      bounds={false}
-      cancel={null}
-      defaultClassName="react-draggable"
-      defaultClassNameDragged="react-draggable-dragged"
-      defaultClassNameDragging="react-draggable-dragging"
-      defaultPosition={
+    <Styled(MuiBox)
+      display="flex"
+      flexWrap="wrap"
+    >
+      <Styled(MuiBox)
+        marginRight={1}
+      >
+        <div>
+          Test
+        </div>
+      </Styled(MuiBox)>
+      <Styled(MuiBox)>
+        Test
+      </Styled(MuiBox)>
+    </Styled(MuiBox)>
+  </div>
+  <Draggable
+    allowAnyClick={false}
+    axis="none"
+    bounds={false}
+    cancel={null}
+    defaultClassName="react-draggable"
+    defaultClassNameDragged="react-draggable-dragged"
+    defaultClassNameDragging="react-draggable-dragging"
+    defaultPosition={
+      Object {
+        "x": 0,
+        "y": 0,
+      }
+    }
+    disabled={false}
+    enableUserSelectHack={true}
+    grid={null}
+    handle={null}
+    offsetParent={null}
+    onDrag={[Function]}
+    onMouseDown={[Function]}
+    onStart={[Function]}
+    onStop={[Function]}
+    position={null}
+    scale={1}
+    transform={null}
+  >
+    <DragIndicatorIcon
+      fontSize="small"
+      style={
         Object {
-          "x": 0,
-          "y": 0,
+          "cursor": "col-resize",
         }
       }
-      disabled={false}
-      enableUserSelectHack={true}
-      grid={null}
-      handle={null}
-      offsetParent={null}
-      onDrag={[Function]}
-      onMouseDown={[Function]}
-      onStart={[Function]}
-      onStop={[Function]}
-      position={null}
-      scale={1}
-      transform={null}
-    >
-      <DragIndicatorIcon
-        fontSize="small"
-        style={
-          Object {
-            "cursor": "col-resize",
-          }
-        }
-      />
-    </Draggable>
-  </div>
+    />
+  </Draggable>
 </div>
 `;

@@ -35,6 +35,18 @@ describe('DatePicker component tests', () => {
         datafile: true,
         investigation: false,
       },
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+      requestReceived: false,
+      searchData: {
+        dataset: [],
+        datafile: [],
+        investigation: [],
+      },
+      settingsLoaded: true,
     };
 
     mockStore = configureStore([thunk]);
@@ -44,8 +56,6 @@ describe('DatePicker component tests', () => {
     const wrapper = shallow(<SelectDates store={mockStore(state)} />);
     expect(wrapper).toMatchSnapshot();
   });
-
-  // test clicking and typing
 
   it('sends selectStartDate action when user types number into Start Date input', () => {
     const testStore = mockStore(state);
@@ -57,7 +67,9 @@ describe('DatePicker component tests', () => {
       </Provider>
     );
 
-    const startDateInput = wrapper.find('[aria-label="start date input"]');
+    const startDateInput = wrapper.find(
+      '[aria-label="searchBox.start_date_arialabel"]'
+    );
     startDateInput.instance().value = '2012 01 01';
     startDateInput.simulate('change');
 
@@ -76,7 +88,9 @@ describe('DatePicker component tests', () => {
       </Provider>
     );
 
-    const endDateInput = wrapper.find('[aria-label="end date input"]');
+    const endDateInput = wrapper.find(
+      '[aria-label="searchBox.end_date_arialabel"]'
+    );
     endDateInput.instance().value = '2000 01 01';
     endDateInput.simulate('change');
     expect(testStore.getActions()[0]).toEqual(

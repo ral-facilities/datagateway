@@ -5,6 +5,9 @@ import { connect } from 'react-redux';
 import { submitSearchText } from '../state/actions/actions';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
+import { useTranslation } from 'react-i18next';
 
 interface SearchTextStoreProps {
   searchText: string;
@@ -24,16 +27,27 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
     submitSearchText(searchText);
   };
 
+  const [t] = useTranslation();
+
   return (
     <div>
       <TextField
         id="filled-search"
-        label="Search Text"
+        label={t('searchBox.search_text')}
         type="search"
         margin="normal"
-        value={searchText} // redundant?
+        value={searchText}
         onChange={sendSearchText}
-        inputProps={{ 'aria-label': 'search text input' }}
+        fullWidth
+        variant="outlined"
+        InputProps={{
+          'aria-label': t('searchBox.search_text_arialabel'),
+          endAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
       />
     </div>
   );

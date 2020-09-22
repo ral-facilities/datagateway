@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './i18n';
 import App from './App';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';
@@ -122,9 +123,10 @@ document.dispatchEvent(
         section: 'Test',
         link: '/download',
         plugin: 'datagateway-download',
-        displayName: 'DataGateway Download',
+        displayName: '\xa0Download',
         order: 0,
         helpText: 'TODO: Write help text for user tour',
+        logo: 'DataGateway',
       },
     },
   })

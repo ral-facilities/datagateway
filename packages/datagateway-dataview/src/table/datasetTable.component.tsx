@@ -1,5 +1,12 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  Grid,
+  createStyles,
+  makeStyles,
+  Theme,
+  Divider,
+} from '@material-ui/core';
 import {
   Table,
   TextColumnFilter,
@@ -26,6 +33,22 @@ import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import useAfterMountEffect from '../utils';
+import { useTranslation } from 'react-i18next';
+
+import TitleIcon from '@material-ui/icons/Title';
+import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
 
 interface DatasetTableProps {
   investigationId: string;
@@ -84,6 +107,10 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     loading,
   } = props;
 
+  const [t] = useTranslation();
+
+  const classes = useStyles();
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
@@ -137,19 +164,33 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       detailsPanel={({ rowData }) => {
         const datasetData = rowData as Dataset;
         return (
-          <div>
-            <Typography>
-              <b>Name:</b> {datasetData.NAME}
-            </Typography>
-            <Typography>
-              <b>Description:</b> {datasetData.NAME}
-            </Typography>
-          </div>
+          <Grid
+            id="details-panel"
+            container
+            className={classes.root}
+            direction="column"
+          >
+            <Grid item xs>
+              <Typography variant="h6">
+                <b>{datasetData.NAME}</b>
+              </Typography>
+              <Divider className={classes.divider} />
+            </Grid>
+            <Grid item xs>
+              <Typography variant="overline">
+                {t('datasets.details.description')}
+              </Typography>
+              <Typography>
+                <b>{datasetData.NAME}</b>
+              </Typography>
+            </Grid>
+          </Grid>
         );
       }}
       columns={[
         {
-          label: 'Name',
+          icon: <TitleIcon />,
+          label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props) => {
             const datasetData = props.rowData as Dataset;
@@ -162,16 +203,19 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           filterComponent: textFilter,
         },
         {
-          label: 'Datafile Count',
+          icon: <ConfirmationNumberIcon />,
+          label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
         },
         {
-          label: 'Create Time',
+          icon: <CalendarTodayIcon />,
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
-          label: 'Modified Time',
+          icon: <CalendarTodayIcon />,
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },
@@ -189,9 +233,30 @@ const mapDispatchToProps = (
   filterTable: (column: string, filter: Filter | null) =>
     dispatch(filterTable(column, filter)),
   fetchData: (investigationId: number, offsetParams: IndexRange) =>
-    dispatch(fetchDatasets({ investigationId, offsetParams })),
+    dispatch(
+      fetchDatasets({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              INVESTIGATION_ID: { eq: investigationId },
+            }),
+          },
+        ],
+      })
+    ),
   fetchCount: (investigationId: number) =>
-    dispatch(fetchDatasetCount(investigationId)),
+    dispatch(
+      fetchDatasetCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { eq: investigationId },
+          }),
+        },
+      ])
+    ),
   clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>

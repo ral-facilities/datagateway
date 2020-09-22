@@ -17,23 +17,27 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
       Object {
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "label": "Name",
+        "icon": <Memo(TitleIcon) />,
+        "label": "datafiles.name",
       },
       Object {
         "dataKey": "LOCATION",
         "filterComponent": [Function],
-        "label": "Location",
+        "icon": <Memo(ExploreIcon) />,
+        "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "FILESIZE",
         "filterComponent": [Function],
-        "label": "Size",
+        "icon": <Memo(SaveIcon) />,
+        "label": "datafiles.size",
       },
       Object {
         "dataKey": "MOD_TIME",
         "filterComponent": [Function],
-        "label": "Modified Time",
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "datafiles.modified_time",
       },
     ]
   }
@@ -62,16 +66,18 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
 `;
 
 exports[`ISIS datafiles table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
-<div>
+<div
+  id="details-panel"
+>
   <WithStyles(ForwardRef(Tabs))
-    aria-label="datafile-details-tabs"
+    aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
     value="details"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="datafile-details-panel"
       id="datafile-details-tab"
-      label="Datafile Details"
+      label="datafiles.details.label"
       value="details"
     />
   </WithStyles(ForwardRef(Tabs))>
@@ -81,32 +87,55 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
     id="datafile-details-panel"
     role="tabpanel"
   >
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-2025"
+      container={true}
+      direction="column"
     >
-      <b>
-        Name:
-      </b>
-       
-      Test 1
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Description:
-      </b>
-       
-    </WithStyles(ForwardRef(Typography))>
-    <WithStyles(ForwardRef(Typography))
-      variant="body2"
-    >
-      <b>
-        Location:
-      </b>
-       
-      /test1
-    </WithStyles(ForwardRef(Typography))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2026"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datafiles.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datafiles.details.location
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            /test1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
   </div>
 </div>
 `;
