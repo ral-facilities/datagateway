@@ -9,16 +9,20 @@ import {
   Theme,
   withStyles,
   createStyles,
+  IconButton,
+  Badge,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
 import { Route } from 'react-router';
+import { push } from 'connected-react-router';
 import { useTranslation } from 'react-i18next';
 import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { fetchDownloadCart } from 'datagateway-common';
+import { Action, AnyAction } from 'redux';
+import { fetchDownloadCart, DownloadCartItem } from 'datagateway-common';
 
 const gridStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -31,10 +35,12 @@ const StyledGrid = withStyles(gridStyles)(Grid);
 
 interface PageContainerStoreProps {
   entityCount: number;
+  cartItems: DownloadCartItem[];
 }
 
 interface PageContainerDispatchProps {
   fetchDownloadCart: () => Promise<void>;
+  navigateToDownload: () => Action;
 }
 
 type PageContainerCombinedProps = PageContainerStoreProps &
@@ -43,7 +49,12 @@ type PageContainerCombinedProps = PageContainerStoreProps &
 const PageContainer = (
   props: PageContainerCombinedProps
 ): React.ReactElement => {
-  const { entityCount, fetchDownloadCart } = props;
+  const {
+    entityCount,
+    cartItems,
+    fetchDownloadCart,
+    navigateToDownload,
+  } = props;
 
   const [t] = useTranslation();
   const dgDataviewElement = document.getElementById('datagateway-dataview');
@@ -70,21 +81,44 @@ const PageContainer = (
         xs={2}
         aria-label="container-table-count"
       >
-        <Paper square style={{ backgroundColor: 'inherit' }}>
+        <Paper
+          square
+          style={{
+            backgroundColor: 'inherit',
+            height: 48,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
           <Typography variant="h6" component="h3">
             <b>{t('app.results')}:</b> {entityCount}
           </Typography>
         </Paper>
       </Grid>
+      <Paper square style={{ backgroundColor: 'inherit' }}>
+        <IconButton
+          onClick={navigateToDownload}
+          aria-label="container-table-cart"
+        >
+          <Badge
+            badgeContent={cartItems.length > 0 ? cartItems.length : null}
+            color="primary"
+            aria-label="container-table-cart-badge"
+          >
+            <ShoppingCartIcon />
+          </Badge>
+        </IconButton>
+      </Paper>
 
       {/* Hold the table for remainder of the page */}
       <Grid item xs={12} aria-label="container-table">
         {/* Place table in Paper component which adjusts for the height
-             of the AppBar (64px) on parent application and the breadcrumbs component (31px). */}
+             of the AppBar (64px) on parent application and the cart icon (48px). */}
         <Paper
           square
           style={{
-            height: 'calc(100vh - 95px)',
+            height: 'calc(100vh - 112px)',
             width: '100%',
             backgroundColor: 'inherit',
           }}
@@ -100,9 +134,11 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): PageContainerDispatchProps => ({
   fetchDownloadCart: () => dispatch(fetchDownloadCart()),
+  navigateToDownload: () => dispatch(push('/download')),
 });
 const mapStateToProps = (state: StateType): PageContainerStoreProps => ({
   entityCount: state.dgcommon.totalDataCount,
+  cartItems: state.dgcommon.cartItems,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);

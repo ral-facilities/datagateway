@@ -37,6 +37,10 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       style={
         Object {
           "backgroundColor": "inherit",
+          "display": "flex",
+          "flexDirection": "column",
+          "height": 48,
+          "justifyContent": "center",
         }
       }
     >
@@ -53,6 +57,27 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       </WithStyles(ForwardRef(Typography))>
     </WithStyles(ForwardRef(Paper))>
   </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Paper))
+    square={true}
+    style={
+      Object {
+        "backgroundColor": "inherit",
+      }
+    }
+  >
+    <WithStyles(ForwardRef(IconButton))
+      aria-label="container-table-cart"
+      onClick={[Function]}
+    >
+      <WithStyles(ForwardRef(Badge))
+        aria-label="container-table-cart-badge"
+        badgeContent={null}
+        color="primary"
+      >
+        <ShoppingCartIcon />
+      </WithStyles(ForwardRef(Badge))>
+    </WithStyles(ForwardRef(IconButton))>
+  </WithStyles(ForwardRef(Paper))>
   <WithStyles(ForwardRef(Grid))
     aria-label="container-table"
     item={true}
@@ -63,7 +88,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       style={
         Object {
           "backgroundColor": "inherit",
-          "height": "calc(100vh - 95px)",
+          "height": "calc(100vh - 112px)",
           "width": "100%",
         }
       }

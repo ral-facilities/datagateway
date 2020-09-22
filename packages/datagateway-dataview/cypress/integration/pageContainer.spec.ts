@@ -12,6 +12,8 @@ describe('PageContainer Component', () => {
 
     cy.get('[aria-label="container-table-count"]').should('exist');
 
+    cy.get('[aria-label="container-table-cart"]').should('exist');
+
     cy.get('[aria-label="container-table"]').should('exist');
   });
 
@@ -20,5 +22,20 @@ describe('PageContainer Component', () => {
     cy.get('[aria-label="container-table-count"]')
       .should('be.visible')
       .contains('Results: 239');
+  });
+
+  it('should display number of items in cart correctly', () => {
+    // Check that the download cart has displayed correctly.
+    cy.get('[aria-label="container-table-cart"]').should('be.visible');
+
+    cy.get('[aria-label="container-table-cart-badge"]')
+      .should('be.visible')
+      .contains('1');
+
+    cy.get('[aria-label="select row 1"]').check();
+
+    cy.get('[aria-label="container-table-cart-badge"]')
+      .should('be.visible')
+      .contains('2');
   });
 });
