@@ -93,6 +93,24 @@ describe('PageContainer - Tests', () => {
     expect(testStore.getActions()).toHaveLength(0);
   });
 
+  it('opens search plugin when icon clicked', () => {
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageContainer store={testStore} />
+      </MemoryRouter>
+    );
+
+    wrapper
+      .find('[aria-label="container-table-search"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions().length).toEqual(1);
+    expect(testStore.getActions()[0]).toEqual(push('/search/data'));
+  });
+
   it('opens download plugin when Download Cart clicked', () => {
     const mockStore = configureStore([thunk]);
     const testStore = mockStore(state);

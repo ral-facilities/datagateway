@@ -12,6 +12,8 @@ describe('PageContainer Component', () => {
 
     cy.get('[aria-label="container-table-count"]').should('exist');
 
+    cy.get('[aria-label="container-table-search"]').should('exist');
+
     cy.get('[aria-label="container-table-cart"]').should('exist');
 
     cy.get('[aria-label="container-table"]').should('exist');

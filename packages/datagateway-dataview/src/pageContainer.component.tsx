@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import SearchIcon from '@material-ui/icons/Search';
 
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageTable from './pageTable.component';
@@ -41,6 +42,7 @@ interface PageContainerStoreProps {
 interface PageContainerDispatchProps {
   fetchDownloadCart: () => Promise<void>;
   navigateToDownload: () => Action;
+  navigateToSearch: () => Action;
 }
 
 type PageContainerCombinedProps = PageContainerStoreProps &
@@ -54,6 +56,7 @@ const PageContainer = (
     cartItems,
     fetchDownloadCart,
     navigateToDownload,
+    navigateToSearch,
   } = props;
 
   const [t] = useTranslation();
@@ -98,6 +101,14 @@ const PageContainer = (
       </Grid>
       <Paper square style={{ backgroundColor: 'inherit' }}>
         <IconButton
+          onClick={navigateToSearch}
+          aria-label="container-table-search"
+        >
+          <SearchIcon />
+        </IconButton>
+      </Paper>
+      <Paper square style={{ backgroundColor: 'inherit' }}>
+        <IconButton
           onClick={navigateToDownload}
           aria-label="container-table-cart"
         >
@@ -135,6 +146,7 @@ const mapDispatchToProps = (
 ): PageContainerDispatchProps => ({
   fetchDownloadCart: () => dispatch(fetchDownloadCart()),
   navigateToDownload: () => dispatch(push('/download')),
+  navigateToSearch: () => dispatch(push('/search/data')),
 });
 const mapStateToProps = (state: StateType): PageContainerStoreProps => ({
   entityCount: state.dgcommon.totalDataCount,

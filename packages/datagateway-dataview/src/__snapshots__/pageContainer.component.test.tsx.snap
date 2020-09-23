@@ -66,6 +66,21 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
     }
   >
     <WithStyles(ForwardRef(IconButton))
+      aria-label="container-table-search"
+      onClick={[Function]}
+    >
+      <SearchIcon />
+    </WithStyles(ForwardRef(IconButton))>
+  </WithStyles(ForwardRef(Paper))>
+  <WithStyles(ForwardRef(Paper))
+    square={true}
+    style={
+      Object {
+        "backgroundColor": "inherit",
+      }
+    }
+  >
+    <WithStyles(ForwardRef(IconButton))
       aria-label="container-table-cart"
       onClick={[Function]}
     >
