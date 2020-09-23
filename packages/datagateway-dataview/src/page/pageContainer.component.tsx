@@ -31,7 +31,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageCard from './pageCard.component';
-import PageSearch from './pageSearch.component';
 import PageTable from './pageTable.component';
 
 const gridStyles = (theme: Theme): StyleRules =>
@@ -289,24 +288,6 @@ class PageContainer extends React.Component<
               }}
             />
           )}
-
-          {/* Show the page search component on all views */}
-          <Route
-            path={[paths.root, paths.myData.root]}
-            render={() => {
-              return (
-                <Grid
-                  item
-                  style={{
-                    textAlign: 'center',
-                  }}
-                  xs={12}
-                >
-                  <PageSearch />
-                </Grid>
-              );
-            }}
-          />
 
           {/* Hold the table for remainder of the page */}
           <Grid item xs={12} aria-label="container-table">
