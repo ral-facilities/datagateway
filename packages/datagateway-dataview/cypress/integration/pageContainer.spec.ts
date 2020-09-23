@@ -26,16 +26,26 @@ describe('PageContainer Component', () => {
 
   it('should display number of items in cart correctly', () => {
     // Check that the download cart has displayed correctly.
-    cy.get('[aria-label="container-table-cart"]').should('be.visible');
+    cy.clearDownloadCart();
 
     cy.get('[aria-label="container-table-cart-badge"]')
-      .should('be.visible')
+      .children()
+      .should('be.hidden');
+
+    cy.get('[aria-label="select row 0"]').should('not.be.checked');
+    cy.get('[aria-label="select row 0"]').check();
+
+    cy.get('[aria-label="container-table-cart-badge"]')
+      .children()
+      .should('not.be.hidden')
       .contains('1');
 
+    cy.get('[aria-label="select row 1"]').should('not.be.checked');
     cy.get('[aria-label="select row 1"]').check();
 
     cy.get('[aria-label="container-table-cart-badge"]')
-      .should('be.visible')
+      .children()
+      .should('not.be.hidden')
       .contains('2');
   });
 });
