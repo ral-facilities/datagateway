@@ -30,22 +30,26 @@ describe('PageContainer Component', () => {
     // Check that the download cart has displayed correctly.
     cy.clearDownloadCart();
 
-    cy.get('[aria-label="container-table-cart-badge"]')
+    cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
       .children()
       .should('be.hidden');
 
-    cy.get('[aria-label="select row 0"]').should('not.be.checked');
-    cy.get('[aria-label="select row 0"]').check();
+    cy.get('[aria-label="select row 0"]', { timeout: 10000 }).check();
+    cy.get('[aria-label="select row 0"]', { timeout: 10000 }).should(
+      'be.checked'
+    );
 
-    cy.get('[aria-label="container-table-cart-badge"]')
+    cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
       .children()
       .should('not.be.hidden')
       .contains('1');
 
-    cy.get('[aria-label="select row 1"]').should('not.be.checked');
-    cy.get('[aria-label="select row 1"]').check();
+    cy.get('[aria-label="select row 1"]', { timeout: 10000 }).check();
+    cy.get('[aria-label="select row 1"]', { timeout: 10000 }).should(
+      'be.checked'
+    );
 
-    cy.get('[aria-label="container-table-cart-badge"]')
+    cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
       .children()
       .should('not.be.hidden')
       .contains('2');
