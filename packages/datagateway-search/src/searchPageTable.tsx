@@ -3,7 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import { Paper } from '@material-ui/core';
+import { Badge, Paper } from '@material-ui/core';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import InvestigationSearchTable from './table/investigationSearchTable.component';
@@ -90,21 +90,54 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           >
             {props.investigationTab ? (
               <Tab
-                label={t('tabs.investigation')}
+                label={
+                  <Badge
+                    badgeContent={props.investigation.length}
+                    showZero
+                    color="secondary"
+                  >
+                    <span style={{ paddingRight: 13, paddingLeft: 13 }}>
+                      {' '}
+                      {t('tabs.investigation')}{' '}
+                    </span>
+                  </Badge>
+                }
                 value="investigation"
                 {...a11yProps('investigation')}
               />
             ) : null}
             {props.datasetTab ? (
               <Tab
-                label={t('tabs.dataset')}
+                label={
+                  <Badge
+                    badgeContent={props.dataset.length}
+                    showZero
+                    color="secondary"
+                  >
+                    <span style={{ paddingRight: 34, paddingLeft: 34 }}>
+                      {' '}
+                      {t('tabs.dataset')}{' '}
+                    </span>
+                  </Badge>
+                }
                 value="dataset"
                 {...a11yProps('dataset')}
               />
             ) : null}
             {props.datafileTab ? (
               <Tab
-                label={t('tabs.datafile')}
+                label={
+                  <Badge
+                    badgeContent={props.datafile.length}
+                    showZero
+                    color="secondary"
+                  >
+                    <span style={{ paddingRight: 33, paddingLeft: 33 }}>
+                      {' '}
+                      {t('tabs.datafile')}{' '}
+                    </span>
+                  </Badge>
+                }
                 value="datafile"
                 {...a11yProps('datafile')}
               />
