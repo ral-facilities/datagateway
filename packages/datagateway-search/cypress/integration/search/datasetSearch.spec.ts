@@ -28,6 +28,8 @@ describe('Dataset search tab', () => {
   });
 
   it('should be able to search by date range', () => {
+    cy.get('[aria-label="Toggle advanced search"]').click();
+
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 
@@ -41,6 +43,8 @@ describe('Dataset search tab', () => {
   });
 
   it('should be hidden if dataset checkbox is unchecked', () => {
+    cy.get('[aria-label="Toggle advanced search"]').click();
+
     cy.get('[aria-label="Dataset checkbox"]').click();
 
     cy.get('[aria-label="Submit search button"]').click();

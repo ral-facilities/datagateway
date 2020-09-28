@@ -2,38 +2,51 @@
 
 exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
 <div
-  className="MuiGrid-root MuiGrid-item MuiGrid-direction-xs-column"
+  className="MuiGrid-root MuiGrid-container"
   id="container-searchbox"
 >
   <WithStyles(ForwardRef(Grid))
     item={true}
+    style={
+      Object {
+        "display": "flex",
+      }
+    }
   >
     <Styled(MuiBox)
-      px={2}
+      m="auto"
+      pl={2}
+    >
+      <WithStyles(ForwardRef(IconButton))
+        aria-label="Toggle advanced search"
+        onClick={[Function]}
+      >
+        <KeyboardArrowRightIcon />
+      </WithStyles(ForwardRef(IconButton))>
+    </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <Styled(MuiBox)
+      pb={1}
+      pl={2}
     >
       <Connect(SearchTextBox) />
     </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
     item={true}
+    style={
+      Object {
+        "display": "flex",
+      }
+    }
   >
     <Styled(MuiBox)
+      m="auto"
       px={2}
-    >
-      <Connect(SelectDates) />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-  >
-    <Connect(CheckboxesGroup) />
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-  >
-    <Styled(MuiBox)
-      mx={5}
-      pb={2}
     >
       <Connect(TranslatedSearchButton) />
     </Styled(MuiBox)>

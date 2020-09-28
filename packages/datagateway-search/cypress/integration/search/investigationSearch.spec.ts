@@ -46,6 +46,8 @@ describe('Investigation search tab', () => {
   });
 
   it('should be able to search by date range', () => {
+    cy.get('[aria-label="Toggle advanced search"]').click();
+
     cy.get('[aria-label="Start date input"]').type('2001-01-01');
     cy.get('[aria-label="End date input"]').type('2001-12-31');
 
@@ -61,6 +63,8 @@ describe('Investigation search tab', () => {
   });
 
   it('should be hidden if investigation checkbox is unchecked', () => {
+    cy.get('[aria-label="Toggle advanced search"]').click();
+
     cy.get('[aria-label="Investigation checkbox"]').click();
 
     cy.get('[aria-label="Submit search button"]').click();
