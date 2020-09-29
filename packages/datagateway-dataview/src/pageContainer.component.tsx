@@ -9,6 +9,7 @@ import {
   Theme,
   withStyles,
   createStyles,
+  LinearProgress,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 
@@ -31,6 +32,7 @@ const StyledGrid = withStyles(gridStyles)(Grid);
 
 interface PageContainerStoreProps {
   entityCount: number;
+  loading: boolean;
 }
 
 interface PageContainerDispatchProps {
@@ -43,7 +45,7 @@ type PageContainerCombinedProps = PageContainerStoreProps &
 const PageContainer = (
   props: PageContainerCombinedProps
 ): React.ReactElement => {
-  const { entityCount, fetchDownloadCart } = props;
+  const { entityCount, loading, fetchDownloadCart } = props;
 
   const [t] = useTranslation();
   const dgDataviewElement = document.getElementById('datagateway-dataview');
@@ -77,6 +79,13 @@ const PageContainer = (
         </Paper>
       </Grid>
 
+      {/* Show loading progress if data is still being loaded */}
+      {loading && (
+        <Grid item xs={12}>
+          <LinearProgress color="secondary" />
+        </Grid>
+      )}
+
       {/* Hold the table for remainder of the page */}
       <Grid item xs={12} aria-label="container-table">
         {/* Place table in Paper component which adjusts for the height
@@ -103,6 +112,7 @@ const mapDispatchToProps = (
 });
 const mapStateToProps = (state: StateType): PageContainerStoreProps => ({
   entityCount: state.dgcommon.totalDataCount,
+  loading: state.dgcommon.loading,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
