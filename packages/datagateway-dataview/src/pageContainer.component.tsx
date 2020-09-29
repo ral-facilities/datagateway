@@ -88,7 +88,7 @@ const PageContainer = (
           square
           style={{
             backgroundColor: 'inherit',
-            height: 48,
+            height: '100%',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -99,18 +99,20 @@ const PageContainer = (
           </Typography>
         </Paper>
       </Grid>
-      <Paper square style={{ backgroundColor: 'inherit' }}>
+      <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
         <IconButton
           onClick={navigateToSearch}
           aria-label="container-table-search"
+          style={{ margin: 'auto' }}
         >
           <SearchIcon />
         </IconButton>
       </Paper>
-      <Paper square style={{ backgroundColor: 'inherit' }}>
+      <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
         <IconButton
           onClick={navigateToDownload}
           aria-label="container-table-cart"
+          style={{ margin: 'auto' }}
         >
           <Badge
             badgeContent={cartItems.length > 0 ? cartItems.length : null}
