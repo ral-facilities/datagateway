@@ -94,7 +94,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                   <Badge
                     badgeContent={props.investigation.length}
                     showZero
-                    color="secondary"
+                    color="primary"
                   >
                     <span style={{ paddingRight: 13, paddingLeft: 13 }}>
                       {' '}
@@ -112,7 +112,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                   <Badge
                     badgeContent={props.dataset.length}
                     showZero
-                    color="secondary"
+                    color="primary"
                   >
                     <span style={{ paddingRight: 34, paddingLeft: 34 }}>
                       {' '}
@@ -130,7 +130,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                   <Badge
                     badgeContent={props.datafile.length}
                     showZero
-                    color="secondary"
+                    color="primary"
                   >
                     <span style={{ paddingRight: 33, paddingLeft: 33 }}>
                       {' '}
