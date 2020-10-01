@@ -13,6 +13,7 @@ exports[`Date filter component renders correctly 1`] = `
       }
       allowKeyboardControl={true}
       clearable={true}
+      color="secondary"
       format="yyyy-MM-dd"
       inputProps={
         Object {
@@ -44,6 +45,7 @@ exports[`Date filter component renders correctly 1`] = `
       }
       allowKeyboardControl={true}
       clearable={true}
+      color="secondary"
       format="yyyy-MM-dd"
       inputProps={
         Object {
