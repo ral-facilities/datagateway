@@ -58,6 +58,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           animateYearScrolling
           placeholder={t('searchBox.start_date')}
           inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
+          color="secondary"
         />
         <br></br>
         <KeyboardDatePicker
@@ -76,6 +77,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           animateYearScrolling
           placeholder={t('searchBox.end_date')}
           inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
+          color="secondary"
         />
       </MuiPickersUtilsProvider>
     </div>
