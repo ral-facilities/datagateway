@@ -125,7 +125,21 @@ document.dispatchEvent(
         plugin: 'datagateway-download',
         displayName: 'DataGateway Download',
         order: 0,
-        helpText: 'TODO: Write help text for user tour',
+        helpSteps: [
+          {
+            target: '#plugin-link--download',
+            content:
+              'DataGateway Download allows you to view and manage items in the current download cart as well see previous downloads',
+          },
+          {
+            target: '.tour-download-cart-tab',
+            content: 'Show the items currently in the cart for download',
+          },
+          {
+            target: '.tour-download-downloads-tab',
+            content: 'Show the status of previous downloads',
+          },
+        ],
       },
     },
   })

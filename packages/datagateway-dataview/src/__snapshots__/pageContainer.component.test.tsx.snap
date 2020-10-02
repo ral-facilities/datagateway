@@ -6,6 +6,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
 >
   <WithStyles(ForwardRef(Grid))
     aria-label="container-breadcrumbs"
+    className="tour-dataview-breadcrumbs"
     item={true}
     xs={true}
   >
@@ -24,6 +25,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
     aria-label="container-table-count"
+    className="tour-dataview-results"
     item={true}
     style={
       Object {
