@@ -101,6 +101,7 @@ const PageContainer = (
       </Grid>
       <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
         <IconButton
+          className="tour-dataview-search-icon"
           onClick={navigateToSearch}
           aria-label="container-table-search"
           style={{ margin: 'auto' }}
@@ -110,6 +111,7 @@ const PageContainer = (
       </Paper>
       <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
         <IconButton
+          className="tour-dataview-cart-icon"
           onClick={navigateToDownload}
           aria-label="container-table-cart"
           style={{ margin: 'auto' }}

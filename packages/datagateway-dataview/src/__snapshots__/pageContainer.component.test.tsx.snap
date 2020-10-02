@@ -68,6 +68,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
   >
     <WithStyles(ForwardRef(IconButton))
       aria-label="container-table-search"
+      className="tour-dataview-search-icon"
       onClick={[Function]}
       style={
         Object {
@@ -89,6 +90,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
   >
     <WithStyles(ForwardRef(IconButton))
       aria-label="container-table-cart"
+      className="tour-dataview-cart-icon"
       onClick={[Function]}
       style={
         Object {
