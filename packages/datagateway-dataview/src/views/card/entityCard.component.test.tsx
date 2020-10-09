@@ -51,19 +51,15 @@ describe('Card', () => {
     );
   });
 
-  // TODO: The clientHeight is not calculate (0) since this is not actually rendered.
-  //       We need to mock this.
-  it.skip('shows a collapsed description if it is too long', () => {
+  it('shows a collapsed description if it is too long', () => {
     const descText =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate semper commodo. Vivamus sed sapien a dolor aliquam commodo vulputate at est. Maecenas sed lobortis justo, congue lobortis urna. Quisque in pharetra justo. Maecenas nunc quam, rutrum non nisl sit amet, mattis condimentum massa. Donec ut commodo urna, vel rutrum sapien. Integer fermentum quam quis commodo lobortis. Duis cursus, turpis a feugiat malesuada, dui tellus condimentum lorem, sed sagittis magna quam in arcu. Integer ex velit, cursus ut sagittis sit amet, pulvinar nec dolor. Curabitur sagittis tincidunt arcu id vestibulum. Aliquam auctor, ante eget consectetur accumsan, massa odio ornare sapien, ut porttitor lorem nulla et urna. Nam sapien erat, rutrum pretium dolor vel, maximus mattis velit. In non ex lobortis, sollicitudin nulla eget, aliquam neque.';
     const wrapper = shallow(
       <EntityCard title={{ label: 'Title' }} description={descText} />
     );
-    console.log(wrapper.debug());
-    // expect(wrapper.find('[aria-label="card-description"]').text()).toEqual(
-    //   descText
-    // );
-    console.log(wrapper.find('[aria-label="card-description"]').debug());
+    expect(wrapper.find('[aria-label="card-description"]').text()).toEqual(
+      descText
+    );
   });
 
   it('render with information', () => {

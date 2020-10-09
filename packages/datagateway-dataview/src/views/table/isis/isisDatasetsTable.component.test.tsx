@@ -14,7 +14,6 @@ import {
   addToCartRequest,
   removeFromCartRequest,
   dGCommonInitialState,
-  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -72,24 +71,6 @@ describe('ISIS Dataset table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends clearTable action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISDatasetsTable
-            instrumentId="1"
-            facilityCycleId="2"
-            investigationId="3"
-          />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual(clearTable());
-  });
-
   it('sends fetchDatasetCount and fetchDatasets actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
@@ -111,8 +92,8 @@ describe('ISIS Dataset table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatasetCountRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest(1));
+    expect(testStore.getActions()[0]).toEqual(fetchDatasetCountRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchDatasetsRequest(1));
   });
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {
@@ -151,12 +132,12 @@ describe('ISIS Dataset table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[3]).toEqual(filterTable('NAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -179,14 +160,14 @@ describe('ISIS Dataset table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[3]).toEqual(
       filterTable('MOD_TIME', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('MOD_TIME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -208,7 +189,7 @@ describe('ISIS Dataset table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[3]).toEqual(sortTable('NAME', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -227,7 +208,7 @@ describe('ISIS Dataset table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+    expect(testStore.getActions()[3]).toEqual(addToCartRequest());
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
@@ -256,7 +237,7 @@ describe('ISIS Dataset table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+    expect(testStore.getActions()[3]).toEqual(removeFromCartRequest());
   });
 
   it('selected rows only considers relevant cart items', () => {
@@ -327,7 +308,7 @@ describe('ISIS Dataset table component', () => {
       })
     );
 
-    expect(testStore.getActions()[1]).toEqual(fetchDatasetDetailsRequest());
+    expect(testStore.getActions()[3]).toEqual(fetchDatasetDetailsRequest());
   });
 
   it('renders dataset name as a link', () => {
@@ -364,6 +345,6 @@ describe('ISIS Dataset table component', () => {
 
     wrapper.find('button[aria-label="datasets.download"]').simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(downloadDatasetRequest(1));
+    expect(testStore.getActions()[3]).toEqual(downloadDatasetRequest(1));
   });
 });

@@ -10,7 +10,6 @@ import {
   sortTable,
   fetchFacilityCycleCountRequest,
   dGCommonInitialState,
-  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -61,20 +60,6 @@ describe('ISIS FacilityCycles table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends clearTable action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISFacilityCyclesTable instrumentId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual(clearTable());
-  });
-
   it('sends fetchFacilityCycleCount and fetchFacilityCycles actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
@@ -92,10 +77,10 @@ describe('ISIS FacilityCycles table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[0]).toEqual(
       fetchFacilityCycleCountRequest(1)
     );
-    expect(testStore.getActions()[2]).toEqual(fetchFacilityCyclesRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchFacilityCyclesRequest(1));
   });
 
   it('sends fetchFacilityCycles action when loadMoreRows is called', () => {
@@ -125,12 +110,12 @@ describe('ISIS FacilityCycles table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('NAME', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -149,14 +134,14 @@ describe('ISIS FacilityCycles table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[2]).toEqual(
       filterTable('ENDDATE', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('ENDDATE', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -174,7 +159,7 @@ describe('ISIS FacilityCycles table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('NAME', 'asc'));
   });
 
   it('renders facilitycycle name as a link', () => {

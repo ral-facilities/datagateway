@@ -16,12 +16,10 @@ import {
   pushPageView,
   saveView,
   Sticky,
-} from 'datagateway-common';
-import {
   QueryParams,
   SavedView,
   ViewsType,
-} from 'datagateway-common/lib/state/app.types';
+} from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';

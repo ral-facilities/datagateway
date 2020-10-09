@@ -88,7 +88,7 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-287"
+      className="makeStyles-root-261"
       container={true}
       direction="column"
     >
@@ -104,7 +104,7 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-288"
+          className="makeStyles-divider-262"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

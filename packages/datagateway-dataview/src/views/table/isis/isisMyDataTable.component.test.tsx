@@ -2,7 +2,6 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import axios from 'axios';
 import {
   addToCartRequest,
-  clearTable,
   dGCommonInitialState,
   fetchInvestigationCountRequest,
   fetchInvestigationDetailsRequest,
@@ -102,7 +101,7 @@ describe('ISIS Investigations table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it.skip('sends clearTable and default sortTable action on load', () => {
+  it('sends default sortTable action on load', () => {
     const testStore = mockStore(state);
     mount(
       <Provider store={testStore}>
@@ -112,9 +111,8 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions().length).toEqual(2);
-    expect(testStore.getActions()[0]).toEqual(clearTable());
-    expect(testStore.getActions()[1]).toEqual(sortTable('STARTDATE', 'desc'));
+    expect(testStore.getActions().length).toEqual(5);
+    expect(testStore.getActions()[0]).toEqual(sortTable('STARTDATE', 'desc'));
   });
 
   it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
@@ -165,12 +163,12 @@ describe('ISIS Investigations table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', 'test'));
+    expect(testStore.getActions()[5]).toEqual(filterTable('TITLE', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('TITLE', null));
+    expect(testStore.getActions()[7]).toEqual(filterTable('TITLE', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -189,14 +187,14 @@ describe('ISIS Investigations table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(
+    expect(testStore.getActions()[5]).toEqual(
       filterTable('ENDDATE', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[7]).toEqual(filterTable('ENDDATE', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -214,7 +212,7 @@ describe('ISIS Investigations table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[5]).toEqual(sortTable('TITLE', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -229,7 +227,7 @@ describe('ISIS Investigations table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(addToCartRequest());
+    expect(testStore.getActions()[5]).toEqual(addToCartRequest());
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
@@ -254,7 +252,7 @@ describe('ISIS Investigations table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(removeFromCartRequest());
+    expect(testStore.getActions()[5]).toEqual(removeFromCartRequest());
   });
 
   it('selected rows only considers relevant cart items', () => {
@@ -316,7 +314,7 @@ describe('ISIS Investigations table component', () => {
       })
     );
 
-    expect(testStore.getActions()[2]).toEqual(
+    expect(testStore.getActions()[5]).toEqual(
       fetchInvestigationDetailsRequest()
     );
   });

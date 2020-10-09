@@ -69,7 +69,10 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
               (info, index) =>
                 info.filterComponent && (
                   <div key={index} className={classes.filter}>
-                    <Typography variant="subtitle1">
+                    <Typography
+                      aria-label="information-label"
+                      variant="subtitle1"
+                    >
                       {info.label ? info.label : info.dataKey}
                     </Typography>
                     {info.filterComponent(

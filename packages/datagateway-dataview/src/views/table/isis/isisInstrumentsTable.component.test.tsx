@@ -11,7 +11,6 @@ import {
   fetchInstrumentDetailsRequest,
   fetchInstrumentCountRequest,
   dGCommonInitialState,
-  clearTable,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -65,20 +64,6 @@ describe('ISIS Instruments table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends clearTable action on load', () => {
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInstrumentsTable />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual(clearTable());
-  });
-
   it('sends fetchInstrumentCount and fetchInstruments actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
@@ -96,8 +81,8 @@ describe('ISIS Instruments table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(fetchInstrumentCountRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchInstrumentsRequest(1));
+    expect(testStore.getActions()[0]).toEqual(fetchInstrumentCountRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchInstrumentsRequest(1));
   });
 
   it('sends fetchInstruments action when loadMoreRows is called', () => {
@@ -123,12 +108,12 @@ describe('ISIS Instruments table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('FULLNAME', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('FULLNAME', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('FULLNAME', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('FULLNAME', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -146,7 +131,7 @@ describe('ISIS Instruments table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('FULLNAME', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('FULLNAME', 'asc'));
   });
 
   it('renders details panel correctly and it sends off an FetchInstrumentDetails action', () => {
@@ -173,7 +158,7 @@ describe('ISIS Instruments table component', () => {
       })
     );
 
-    expect(testStore.getActions()[1]).toEqual(fetchInstrumentDetailsRequest());
+    expect(testStore.getActions()[2]).toEqual(fetchInstrumentDetailsRequest());
   });
 
   it('renders names as links', () => {

@@ -242,7 +242,7 @@ exports[`ISIS Dataset table component renders details panel correctly and it sen
     role="tabpanel"
   >
     <WithStyles(ForwardRef(Grid))
-      className="makeStyles-root-235"
+      className="makeStyles-root-209"
       container={true}
       direction="column"
     >
@@ -258,7 +258,7 @@ exports[`ISIS Dataset table component renders details panel correctly and it sen
           </b>
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Divider))
-          className="makeStyles-divider-236"
+          className="makeStyles-divider-210"
         />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

@@ -8,7 +8,7 @@ exports[`Text filter component renders correctly 1`] = `
     id="test filter"
     onChange={[Function]}
     placeholder="Contains..."
-    value=""
+    value="test value"
   />
 </div>
 `;

@@ -20,14 +20,14 @@ exports[`Date filter component renders correctly 1`] = `
         }
       }
       invalidDateMessage="Invalid Date Format"
-      maxDate={2100-01-01T00:00:00.000Z}
+      maxDate={2000-01-01T00:00:00.000Z}
       maxDateMessage="Invalid date range"
       minDate={1900-01-01T00:00:00.000Z}
       minDateMessage="Date should not be before minimal date"
       onChange={[Function]}
       openTo="date"
       placeholder="From... (yyyy-MM-dd)"
-      value={null}
+      value={1999-01-01T00:00:00.000Z}
       views={
         Array [
           "year",
@@ -53,12 +53,12 @@ exports[`Date filter component renders correctly 1`] = `
       invalidDateMessage="Invalid Date Format"
       maxDate={2100-01-01T00:00:00.000Z}
       maxDateMessage="Date should not be after maximal date"
-      minDate={1900-01-01T00:00:00.000Z}
+      minDate={1999-01-01T00:00:00.000Z}
       minDateMessage="Invalid date range"
       onChange={[Function]}
       openTo="date"
       placeholder="To...     (yyyy-MM-dd)"
-      value={null}
+      value={2000-01-01T00:00:00.000Z}
       views={
         Array [
           "year",

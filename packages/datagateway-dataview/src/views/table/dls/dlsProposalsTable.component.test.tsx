@@ -74,21 +74,7 @@ describe('DLS Proposals table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  // it('sends clearTable action on load', () => {
-  //   const testStore = mockStore(state);
-  //   mount(
-  //     <Provider store={testStore}>
-  //       <MemoryRouter>
-  //         <DLSProposalsTable />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
-
-  //   expect(testStore.getActions().length).toEqual(1);
-  //   expect(testStore.getActions()[0]).toEqual(clearTable());
-  // });
-
-  it.skip('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
+  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -105,10 +91,10 @@ describe('DLS Proposals table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[0]).toEqual(
       fetchInvestigationCountRequest(1)
     );
-    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {
@@ -120,7 +106,7 @@ describe('DLS Proposals table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
-  it.skip('sends filterTable action on filter', () => {
+  it('sends filterTable action on filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -134,15 +120,15 @@ describe('DLS Proposals table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('TITLE', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('TITLE', null));
   });
 
-  it.skip('sends sortTable action on sort', () => {
+  it('sends sortTable action on sort', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -157,7 +143,7 @@ describe('DLS Proposals table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('TITLE', 'asc'));
   });
 
   it('renders title and name as links', () => {

@@ -37,15 +37,6 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
         render={[Function]}
       />
     </WithStyles(ForwardRef(Grid))>
-    <Route
-      path={
-        Array [
-          "/browse",
-          "/my-data",
-        ]
-      }
-      render={[Function]}
-    />
     <WithStyles(ForwardRef(Grid))
       aria-label="container-table"
       item={true}

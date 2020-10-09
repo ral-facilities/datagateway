@@ -77,21 +77,7 @@ describe('DLS Visits table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  // it('sends clearTable action on load', () => {
-  //   const testStore = mockStore(state);
-  //   mount(
-  //     <Provider store={testStore}>
-  //       <MemoryRouter>
-  //         <DLSVisitsTable proposalName="Test 1" />
-  //       </MemoryRouter>
-  //     </Provider>
-  //   );
-
-  //   expect(testStore.getActions().length).toEqual(1);
-  //   expect(testStore.getActions()[0]).toEqual(clearTable());
-  // });
-
-  it.skip('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
+  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -108,10 +94,10 @@ describe('DLS Visits table component', () => {
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[0]).toEqual(
       fetchInvestigationCountRequest(1)
     );
-    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {
@@ -125,7 +111,7 @@ describe('DLS Visits table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
   });
 
-  it.skip('sends filterTable action on text filter', () => {
+  it('sends filterTable action on text filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -141,15 +127,15 @@ describe('DLS Visits table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(filterTable('VISIT_ID', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('VISIT_ID', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('VISIT_ID', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('VISIT_ID', null));
   });
 
-  it.skip('sends filterTable action on date filter', () => {
+  it('sends filterTable action on date filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -165,17 +151,17 @@ describe('DLS Visits table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[2]).toEqual(
       filterTable('ENDDATE', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('ENDDATE', null));
   });
 
-  it.skip('sends sortTable action on sort', () => {
+  it('sends sortTable action on sort', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -190,11 +176,10 @@ describe('DLS Visits table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('VISIT_ID', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('VISIT_ID', 'asc'));
   });
 
-  // TODO: only?
-  it.skip('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
+  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -217,12 +202,12 @@ describe('DLS Visits table component', () => {
         detailsPanelResize: jest.fn(),
       })
     );
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[2]).toEqual(
       fetchInvestigationDetailsRequest()
     );
   });
 
-  it.skip('sends off an FetchInvestigationSize action when Calculate button is clicked', () => {
+  it('sends off an FetchInvestigationSize action when Calculate button is clicked', () => {
     const { SIZE, ...rowDataWithoutSize } = state.dgcommon.data[0];
     const newState = state;
     newState.dgcommon.data[0] = rowDataWithoutSize;
@@ -240,7 +225,7 @@ describe('DLS Visits table component', () => {
 
     wrapper.find('#calculate-size-btn').first().simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(fetchInvestigationSizeRequest());
+    expect(testStore.getActions()[3]).toEqual(fetchInvestigationSizeRequest());
   });
 
   it('renders visit ID as a links', () => {
