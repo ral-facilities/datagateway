@@ -22,7 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
     },
     formControl: {
+      marginLeft: theme.spacing(2),
+    },
+    formControlSide: {
       margin: theme.spacing(2),
+    },
+    formLabel: {
+      margin: 'auto',
+      marginRight: theme.spacing(2),
     },
   })
 );
@@ -31,6 +38,7 @@ interface CheckBoxStoreProps {
   dataset: boolean;
   datafile: boolean;
   investigation: boolean;
+  sideLayout: boolean;
 }
 
 interface CheckBoxDispatchProps {
@@ -47,6 +55,7 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
     dataset,
     datafile,
     investigation,
+    sideLayout,
     toggleDataset,
     toggleDatafile,
     toggleInvestigation,
@@ -75,12 +84,12 @@ const CheckboxesGroup = (props: CheckBoxCombinedProps): React.ReactElement => {
         required
         error={error}
         component="fieldset"
-        className={classes.formControl}
+        className={sideLayout ? classes.formControlSide : classes.formControl}
       >
-        <FormLabel component="legend">
-          {t('searchBox.checkboxes.text')}
-        </FormLabel>
-        <FormGroup>
+        <FormGroup row={!sideLayout}>
+          <FormLabel component="legend" className={classes.formLabel}>
+            {t('searchBox.checkboxes.text')}
+          </FormLabel>
           <FormControlLabel
             control={
               <Checkbox
@@ -144,6 +153,7 @@ const mapStateToProps = (state: StateType): CheckBoxStoreProps => {
     dataset: state.dgsearch.checkBox.dataset,
     datafile: state.dgsearch.checkBox.datafile,
     investigation: state.dgsearch.checkBox.investigation,
+    sideLayout: state.dgsearch.sideLayout,
   };
 };
 

@@ -46,6 +46,7 @@ export const initialState: DGSearchState = {
     investigation: [],
   },
   settingsLoaded: false,
+  sideLayout: false,
 };
 
 export function handleSettingsLoaded(state: DGSearchState): DGSearchState {
