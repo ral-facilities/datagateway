@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 interface DatePickerStoreProps {
   startDate: MaterialUiPickersDate;
   endDate: MaterialUiPickersDate;
+  sideLayout: boolean;
 }
 
 interface DatePickerDispatchProps {
@@ -34,7 +35,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
-  const { startDate, endDate, selectStartDate, selectEndDate } = props;
+  const {
+    startDate,
+    endDate,
+    sideLayout,
+    selectStartDate,
+    selectEndDate,
+  } = props;
   const classes = useStyles();
 
   const [t] = useTranslation();
@@ -58,8 +65,9 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
           animateYearScrolling
           placeholder={t('searchBox.start_date')}
           inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
+          style={sideLayout ? {} : { paddingRight: 8 }}
         />
-        <br></br>
+        {sideLayout ? <br></br> : null}
         <KeyboardDatePicker
           clearable
           className={classes.root}
@@ -95,6 +103,7 @@ const mapStateToProps = (state: StateType): DatePickerStoreProps => {
     // date: state.dgsearch.selectDate.date,
     startDate: state.dgsearch.selectDate.startDate,
     endDate: state.dgsearch.selectDate.endDate,
+    sideLayout: state.dgsearch.sideLayout,
   };
 };
 

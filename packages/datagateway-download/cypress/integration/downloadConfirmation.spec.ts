@@ -9,7 +9,7 @@ describe('Download Confirmation', () => {
     // Manually override the time, so we know what date/time to expect for downloads.
     cy.clock(Date.UTC(2020, 0, 1, 1, 1, 1), ['Date']);
 
-    Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(3);
     cy.server();
     cy.route('GET', '**/ids/isTwoLevel').as('fetchIsTwoLevel');
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');

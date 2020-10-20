@@ -10,12 +10,15 @@ exports[`Checkbox component tests renders correctly 1`] = `
     error={false}
     required={true}
   >
-    <WithStyles(ForwardRef(FormLabel))
-      component="legend"
+    <WithStyles(ForwardRef(FormGroup))
+      row={true}
     >
-      searchBox.checkboxes.text
-    </WithStyles(ForwardRef(FormLabel))>
-    <WithStyles(ForwardRef(FormGroup))>
+      <WithStyles(ForwardRef(FormLabel))
+        className="makeStyles-formLabel-4"
+        component="legend"
+      >
+        searchBox.checkboxes.text
+      </WithStyles(ForwardRef(FormLabel))>
       <WithStyles(ForwardRef(FormControlLabel))
         control={
           <ForwardRef(WithStyles)
