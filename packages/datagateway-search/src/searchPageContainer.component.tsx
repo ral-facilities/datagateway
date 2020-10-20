@@ -8,10 +8,12 @@ import { Grid, Paper, LinearProgress } from '@material-ui/core';
 
 import SearchPageTable from './searchPageTable';
 import SearchBoxContainer from './searchBoxContainer.component';
+import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
 interface SearchPageContainerStoreProps {
   entityCount: number;
   loading: boolean;
+  sideLayout: boolean;
 }
 class SearchPageContainer extends React.Component<
   SearchPageContainerStoreProps
@@ -31,7 +33,7 @@ class SearchPageContainer extends React.Component<
         <div>
           <Grid
             container
-            direction="row"
+            direction={this.props.sideLayout ? 'row' : 'column'}
             justify="flex-start"
             alignItems="flex-start"
             spacing={2}
@@ -44,9 +46,15 @@ class SearchPageContainer extends React.Component<
             )}
 
             <Grid item id="container-search-filters">
-              <Paper style={{ height: '100%', width: '100%' }}>
-                <SearchBoxContainer />
-              </Paper>
+              {this.props.sideLayout ? (
+                <Paper style={{ height: '100%', width: '100%' }}>
+                  <SearchBoxContainerSide />
+                </Paper>
+              ) : (
+                <Paper style={{ height: '100%', width: 'calc(70vw)' }}>
+                  <SearchBoxContainer />
+                </Paper>
+              )}
             </Grid>
 
             <Grid item id="container-search-table">
@@ -69,6 +77,7 @@ class SearchPageContainer extends React.Component<
 const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   entityCount: state.dgcommon.totalDataCount,
   loading: state.dgcommon.loading,
+  sideLayout: state.dgsearch.sideLayout,
 });
 
 export default connect(mapStateToProps)(SearchPageContainer);

@@ -27,6 +27,7 @@ export interface DGSearchState {
     investigationTab: boolean;
   };
   settingsLoaded: boolean;
+  sideLayout: boolean;
 }
 
 export type StateType = {
