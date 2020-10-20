@@ -3,7 +3,14 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import { Badge, Paper } from '@material-ui/core';
+import {
+  Badge,
+  Paper,
+  Theme,
+  createStyles,
+  withStyles,
+} from '@material-ui/core';
+import { StyleRules } from '@material-ui/core/styles';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
 import InvestigationSearchTable from './table/investigationSearchTable.component';
@@ -11,6 +18,14 @@ import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
 
+const badgeStyles = (theme: Theme): StyleRules =>
+  createStyles({
+    badge: {
+      backgroundColor: '#fff',
+      color: theme.palette.primary.main,
+      top: 12.25,
+    },
+  });
 interface SearchTableStoreProps {
   requestReceived: boolean;
   datafile: number[];
@@ -52,6 +67,8 @@ function a11yProps(index: string): React.ReactFragment {
   };
 }
 
+const StyledBadge = withStyles(badgeStyles)(Badge);
+
 const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
   const [value, setValue] = React.useState('investigation');
   const [t] = useTranslation();
@@ -79,6 +96,16 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
     setValue(newValue);
   };
 
+  const investigationBadgeWidth = document
+    .getElementById('investigation-badge')
+    ?.children.item(1)?.clientWidth;
+  const datasetBadgeWidth = document
+    .getElementById('dataset-badge')
+    ?.children.item(1)?.clientWidth;
+  const datafileBadgeWidth = document
+    .getElementById('datafile-badge')
+    ?.children.item(1)?.clientWidth;
+
   if (props.requestReceived) {
     return (
       <div>
@@ -91,16 +118,25 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             {props.investigationTab ? (
               <Tab
                 label={
-                  <Badge
+                  <StyledBadge
+                    id="investigation-badge"
                     badgeContent={props.investigation.length}
                     showZero
-                    color="primary"
                   >
-                    <span style={{ paddingRight: 13, paddingLeft: 13 }}>
-                      {' '}
+                    <span
+                      style={{
+                        paddingRight: 8,
+                        marginRight: investigationBadgeWidth
+                          ? investigationBadgeWidth / 2
+                          : undefined,
+                        marginLeft: investigationBadgeWidth
+                          ? -investigationBadgeWidth / 2
+                          : undefined,
+                      }}
+                    >
                       {t('tabs.investigation')}{' '}
                     </span>
-                  </Badge>
+                  </StyledBadge>
                 }
                 value="investigation"
                 {...a11yProps('investigation')}
@@ -109,16 +145,26 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             {props.datasetTab ? (
               <Tab
                 label={
-                  <Badge
+                  <StyledBadge
+                    id="dataset-badge"
                     badgeContent={props.dataset.length}
                     showZero
-                    color="primary"
                   >
-                    <span style={{ paddingRight: 34, paddingLeft: 34 }}>
+                    <span
+                      style={{
+                        paddingRight: 8,
+                        marginRight: datasetBadgeWidth
+                          ? datasetBadgeWidth / 2
+                          : undefined,
+                        marginLeft: datasetBadgeWidth
+                          ? -datasetBadgeWidth / 2
+                          : undefined,
+                      }}
+                    >
                       {' '}
                       {t('tabs.dataset')}{' '}
                     </span>
-                  </Badge>
+                  </StyledBadge>
                 }
                 value="dataset"
                 {...a11yProps('dataset')}
@@ -127,16 +173,26 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             {props.datafileTab ? (
               <Tab
                 label={
-                  <Badge
+                  <StyledBadge
+                    id="datafile-badge"
                     badgeContent={props.datafile.length}
                     showZero
-                    color="primary"
                   >
-                    <span style={{ paddingRight: 33, paddingLeft: 33 }}>
+                    <span
+                      style={{
+                        paddingRight: 8,
+                        marginRight: datafileBadgeWidth
+                          ? datafileBadgeWidth / 2
+                          : undefined,
+                        marginLeft: datafileBadgeWidth
+                          ? -datafileBadgeWidth / 2
+                          : undefined,
+                      }}
+                    >
                       {' '}
                       {t('tabs.datafile')}{' '}
                     </span>
-                  </Badge>
+                  </StyledBadge>
                 }
                 value="datafile"
                 {...a11yProps('datafile')}
