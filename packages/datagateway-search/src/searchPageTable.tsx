@@ -23,7 +23,9 @@ const badgeStyles = (theme: Theme): StyleRules =>
     badge: {
       backgroundColor: '#fff',
       color: theme.palette.primary.main,
-      top: 12.25,
+      fontSize: 'inherit',
+      lineHeight: 'inherit',
+      top: '0.875em',
     },
   });
 interface SearchTableStoreProps {
@@ -96,15 +98,9 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
     setValue(newValue);
   };
 
-  const investigationBadgeWidth = document
-    .getElementById('investigation-badge')
-    ?.children.item(1)?.clientWidth;
-  const datasetBadgeWidth = document
-    .getElementById('dataset-badge')
-    ?.children.item(1)?.clientWidth;
-  const datafileBadgeWidth = document
-    .getElementById('datafile-badge')
-    ?.children.item(1)?.clientWidth;
+  const badgeDigits = (length: number): 3 | 2 | 1 => {
+    return length >= 100 ? 3 : length >= 10 ? 2 : 1;
+  };
 
   if (props.requestReceived) {
     return (
@@ -125,16 +121,16 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                   >
                     <span
                       style={{
-                        paddingRight: 8,
-                        marginRight: investigationBadgeWidth
-                          ? investigationBadgeWidth / 2
-                          : undefined,
-                        marginLeft: investigationBadgeWidth
-                          ? -investigationBadgeWidth / 2
-                          : undefined,
+                        paddingRight: '1ch',
+                        marginRight: `calc(0.5 * ${badgeDigits(
+                          props.investigation.length
+                        )}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${badgeDigits(
+                          props.investigation.length
+                        )}ch - 6px)`,
                       }}
                     >
-                      {t('tabs.investigation')}{' '}
+                      {t('tabs.investigation')}
                     </span>
                   </StyledBadge>
                 }
@@ -152,17 +148,16 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                   >
                     <span
                       style={{
-                        paddingRight: 8,
-                        marginRight: datasetBadgeWidth
-                          ? datasetBadgeWidth / 2
-                          : undefined,
-                        marginLeft: datasetBadgeWidth
-                          ? -datasetBadgeWidth / 2
-                          : undefined,
+                        paddingRight: '1ch',
+                        marginRight: `calc(0.5 * ${badgeDigits(
+                          props.dataset.length
+                        )}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${badgeDigits(
+                          props.dataset.length
+                        )}ch - 6px)`,
                       }}
                     >
-                      {' '}
-                      {t('tabs.dataset')}{' '}
+                      {t('tabs.dataset')}
                     </span>
                   </StyledBadge>
                 }
@@ -180,17 +175,16 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                   >
                     <span
                       style={{
-                        paddingRight: 8,
-                        marginRight: datafileBadgeWidth
-                          ? datafileBadgeWidth / 2
-                          : undefined,
-                        marginLeft: datafileBadgeWidth
-                          ? -datafileBadgeWidth / 2
-                          : undefined,
+                        paddingRight: '1ch',
+                        marginRight: `calc(0.5 * ${badgeDigits(
+                          props.datafile.length
+                        )}ch + 6px)`,
+                        marginLeft: `calc(-0.5 * ${badgeDigits(
+                          props.datafile.length
+                        )}ch - 6px)`,
                       }}
                     >
-                      {' '}
-                      {t('tabs.datafile')}{' '}
+                      {t('tabs.datafile')}
                     </span>
                   </StyledBadge>
                 }
