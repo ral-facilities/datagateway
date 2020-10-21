@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper, IconButton } from '@material-ui/core';
+import { Grid, Paper, IconButton, LinearProgress } from '@material-ui/core';
 
 import {
   Table,
@@ -193,6 +193,12 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   return (
     <Grid container direction="column">
+      {/* Show loading progress if data is still being loaded */}
+      {!dataLoaded && (
+        <Grid item xs={12}>
+          <LinearProgress color="secondary" />
+        </Grid>
+      )}
       <Grid item>
         <Paper style={{ height: 'calc(100vh - 110px)' }}>
           <Table

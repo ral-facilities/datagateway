@@ -1,22 +1,101 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DownloadTab renders correctly 1`] = `
-<ContextProvider
-  value={null}
+<WithStyles(WithStyles(ForwardRef(Paper)))
+  square={true}
 >
-  <DownloadTabs
-    dispatch={[Function]}
-    loading={false}
-    store={
-      Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
-  />
-</ContextProvider>
+  <WithStyles(ForwardRef(Tabs))
+    centered={true}
+    indicatorColor="secondary"
+    onChange={[Function]}
+    textColor="secondary"
+    value={0}
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="tabpanel-0"
+      aria-label="downloadTab.cart_tab_arialabel"
+      id="tab-0"
+      label="downloadTab.cart_tab"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="tabpanel-1"
+      aria-label="downloadTab.downloads_tab_arialabel"
+      id="tab-1"
+      label="downloadTab.downloads_tab"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <TabPanel
+    aria-label="downloadTab.download_cart_panel_arialabel"
+    index={0}
+    value={0}
+  >
+    <DownloadCartTable
+      statusTabRedirect={[Function]}
+    />
+  </TabPanel>
+  <TabPanel
+    aria-label="downloadTab.download_status_panel_arialabel"
+    index={1}
+    value={0}
+  >
+    <WithStyles(ForwardRef(Grid))
+      container={true}
+      spacing={1}
+    >
+      <WithStyles(ForwardRef(Grid))
+        aria-label="downloadTab.last_updated_time_arialabel"
+        item={true}
+        xs={12}
+      >
+        <WithStyles(ForwardRef(Typography))
+          component="h3"
+          style={
+            Object {
+              "alignItems": "center",
+              "display": "inline-flex",
+              "float": "right",
+            }
+          }
+          variant="subtitle1"
+        >
+          <BlackTooltip
+            enterDelay={500}
+            title="Refresh Downloads"
+          >
+            <WithStyles(ForwardRef(IconButton))
+              aria-label="downloadTab.refresh_download_status_arialabel"
+              color="secondary"
+              onClick={[Function]}
+            >
+              <RefreshIcon />
+            </WithStyles(ForwardRef(IconButton))>
+          </BlackTooltip>
+          <p
+            style={
+              Object {
+                "paddingLeft": "10px ",
+              }
+            }
+          >
+            <b>
+              downloadTab.last_checked
+              : 
+            </b>
+             
+          </p>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <DownloadStatusTable
+          refreshTable={false}
+          setLastChecked={[Function]}
+          setRefreshTable={[Function]}
+        />
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </TabPanel>
+</WithStyles(WithStyles(ForwardRef(Paper)))>
 `;

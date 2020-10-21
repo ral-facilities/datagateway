@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import {
   Paper,
@@ -10,7 +9,6 @@ import {
   IconButton,
   CircularProgress,
   Theme,
-  LinearProgress,
 } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 
@@ -21,7 +19,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
 import { useTranslation } from 'react-i18next';
 import { StyleRules, createStyles, withStyles } from '@material-ui/core/styles';
-import { DGCommonState } from 'datagateway-common';
 
 const paperStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -64,9 +61,7 @@ function a11yProps(
   };
 }
 
-const DownloadTabs: React.FC<{ loading: boolean }> = (props: {
-  loading: boolean;
-}) => {
+const DownloadTabs: React.FC = () => {
   // Setting the selected tab in session storage is required
   // as the selected tab information is lost with each re-render
   // (e.g. opening/closing the navigation drawer).
@@ -96,112 +91,96 @@ const DownloadTabs: React.FC<{ loading: boolean }> = (props: {
   };
 
   return (
-    <Grid container>
-      {/* Show loading progress if data is still being loaded */}
-      {props.loading && (
-        <Grid item xs={12}>
-          <LinearProgress color="secondary" />
+    <StyledPaper square>
+      <Tabs
+        value={selectedTab}
+        onChange={handleChange}
+        indicatorColor="secondary"
+        textColor="secondary"
+        centered
+      >
+        <Tab
+          label={t('downloadTab.cart_tab')}
+          aria-label={t('downloadTab.cart_tab_arialabel')}
+          {...a11yProps(0)}
+        />
+        <Tab
+          label={t('downloadTab.downloads_tab')}
+          aria-label={t('downloadTab.downloads_tab_arialabel')}
+          {...a11yProps(1)}
+        />
+      </Tabs>
+
+      <TabPanel
+        value={selectedTab}
+        index={0}
+        aria-label={t('downloadTab.download_cart_panel_arialabel')}
+      >
+        {/* Provide a link to the status table for the download confirmation dialog to use */}
+        <DownloadCartTable statusTabRedirect={() => setSelectedTab(1)} />
+      </TabPanel>
+
+      <TabPanel
+        value={selectedTab}
+        index={1}
+        aria-label={t('downloadTab.download_status_panel_arialabel')}
+      >
+        <Grid container spacing={1}>
+          {/* Place the last updated time above the table. */}
+          <Grid
+            item
+            xs={12}
+            aria-label={t('downloadTab.last_updated_time_arialabel')}
+          >
+            <Typography
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                float: 'right',
+              }}
+              variant="subtitle1"
+              component="h3"
+            >
+              {/* Show refresh icon and re-populate the download status table. */}
+              {!refreshDownloads ? (
+                <BlackTooltip title="Refresh Downloads" enterDelay={500}>
+                  <IconButton
+                    color="secondary"
+                    aria-label={t(
+                      'downloadTab.refresh_download_status_arialabel'
+                    )}
+                    onClick={() => setRefreshDownloads(true)}
+                  >
+                    <RefreshIcon />
+                  </IconButton>
+                </BlackTooltip>
+              ) : (
+                <CircularProgress size={20} />
+              )}
+
+              {!refreshDownloads ? (
+                <p style={{ paddingLeft: '10px ' }}>
+                  <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+                </p>
+              ) : (
+                <p style={{ paddingLeft: '20px ' }}>
+                  <i>{t('downloadTab.refreshing_downloads')}</i>
+                </p>
+              )}
+            </Typography>
+          </Grid>
+
+          <Grid item xs>
+            <DownloadStatusTable
+              refreshTable={refreshDownloads}
+              setRefreshTable={setRefreshDownloads}
+              setLastChecked={() => setLastChecked(new Date().toLocaleString())}
+            />
+          </Grid>
         </Grid>
-      )}
-      <Grid item xs={12}>
-        <StyledPaper square>
-          <Tabs
-            value={selectedTab}
-            onChange={handleChange}
-            indicatorColor="secondary"
-            textColor="secondary"
-            centered
-          >
-            <Tab
-              label={t('downloadTab.cart_tab')}
-              aria-label={t('downloadTab.cart_tab_arialabel')}
-              {...a11yProps(0)}
-            />
-            <Tab
-              label={t('downloadTab.downloads_tab')}
-              aria-label={t('downloadTab.downloads_tab_arialabel')}
-              {...a11yProps(1)}
-            />
-          </Tabs>
-
-          <TabPanel
-            value={selectedTab}
-            index={0}
-            aria-label={t('downloadTab.download_cart_panel_arialabel')}
-          >
-            {/* Provide a link to the status table for the download confirmation dialog to use */}
-            <DownloadCartTable statusTabRedirect={() => setSelectedTab(1)} />
-          </TabPanel>
-
-          <TabPanel
-            value={selectedTab}
-            index={1}
-            aria-label={t('downloadTab.download_status_panel_arialabel')}
-          >
-            <Grid container spacing={1}>
-              {/* Place the last updated time above the table. */}
-              <Grid
-                item
-                xs={12}
-                aria-label={t('downloadTab.last_updated_time_arialabel')}
-              >
-                <Typography
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    float: 'right',
-                  }}
-                  variant="subtitle1"
-                  component="h3"
-                >
-                  {/* Show refresh icon and re-populate the download status table. */}
-                  {!refreshDownloads ? (
-                    <BlackTooltip title="Refresh Downloads" enterDelay={500}>
-                      <IconButton
-                        color="secondary"
-                        aria-label={t(
-                          'downloadTab.refresh_download_status_arialabel'
-                        )}
-                        onClick={() => setRefreshDownloads(true)}
-                      >
-                        <RefreshIcon />
-                      </IconButton>
-                    </BlackTooltip>
-                  ) : (
-                    <CircularProgress size={20} />
-                  )}
-
-                  {!refreshDownloads ? (
-                    <p style={{ paddingLeft: '10px ' }}>
-                      <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
-                    </p>
-                  ) : (
-                    <p style={{ paddingLeft: '20px ' }}>
-                      <i>{t('downloadTab.refreshing_downloads')}</i>
-                    </p>
-                  )}
-                </Typography>
-              </Grid>
-
-              <Grid item xs>
-                <DownloadStatusTable
-                  refreshTable={refreshDownloads}
-                  setRefreshTable={setRefreshDownloads}
-                  setLastChecked={() =>
-                    setLastChecked(new Date().toLocaleString())
-                  }
-                />
-              </Grid>
-            </Grid>
-          </TabPanel>
-        </StyledPaper>
-      </Grid>
-    </Grid>
+      </TabPanel>
+    </StyledPaper>
   );
 };
 
-const mapStateToProps = (state: DGCommonState): { loading: boolean } => ({
-  loading: state.dgcommon.loading,
-});
-
-export default connect(mapStateToProps)(DownloadTabs);
+export default DownloadTabs;

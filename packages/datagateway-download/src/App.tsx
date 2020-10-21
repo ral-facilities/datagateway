@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { Provider } from 'react-redux';
-import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
 import * as log from 'loglevel';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createBrowserHistory } from 'history';
 
 import DownloadTabs from './downloadTab/downloadTab.component';
 
@@ -14,28 +8,8 @@ import {
   StylesProvider,
 } from '@material-ui/core/styles';
 import ConfigProvider from './ConfigProvider';
-import {
-  Preloader,
-  DGCommonMiddleware,
-  dGCommonReducer,
-} from 'datagateway-common';
+import { Preloader } from 'datagateway-common';
 import { DGThemeProvider } from 'datagateway-common';
-
-/* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
-const composeEnhancers =
-  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-/* eslint-enable */
-
-const history = createBrowserHistory();
-const middleware = [thunk, routerMiddleware(history), DGCommonMiddleware];
-
-const store = createStore(
-  combineReducers({
-    router: connectRouter(history),
-    dgcommon: dGCommonReducer,
-  }),
-  composeEnhancers(applyMiddleware(...middleware))
-);
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
@@ -77,21 +51,19 @@ class App extends Component<unknown, { hasError: boolean }> {
 
     return (
       <div className="App">
-        <Provider store={store}>
-          <StylesProvider generateClassName={generateClassName}>
-            <DGThemeProvider>
-              <ConfigProvider>
-                <React.Suspense
-                  fallback={
-                    <Preloader loading={true}>Finished loading</Preloader>
-                  }
-                >
-                  <DownloadTabs />
-                </React.Suspense>
-              </ConfigProvider>
-            </DGThemeProvider>
-          </StylesProvider>
-        </Provider>
+        <StylesProvider generateClassName={generateClassName}>
+          <DGThemeProvider>
+            <ConfigProvider>
+              <React.Suspense
+                fallback={
+                  <Preloader loading={true}>Finished loading</Preloader>
+                }
+              >
+                <DownloadTabs />
+              </React.Suspense>
+            </ConfigProvider>
+          </DGThemeProvider>
+        </StylesProvider>
       </div>
     );
   }
