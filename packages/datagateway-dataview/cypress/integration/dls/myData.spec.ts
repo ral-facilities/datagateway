@@ -1,5 +1,6 @@
 describe('DLS - MyData Table', () => {
   beforeEach(() => {
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('**/datasets/count*').as('getDatasetCount');
     cy.login('user', 'password');

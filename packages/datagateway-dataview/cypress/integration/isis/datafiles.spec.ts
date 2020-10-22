@@ -8,9 +8,7 @@ describe('ISIS - Datafiles Table', () => {
     cy.login('user', 'password');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
-    ).wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
-      timeout: 10000,
-    });
+    );
   });
 
   it('should load correctly', () => {
@@ -39,7 +37,7 @@ describe('ISIS - Datafiles Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 40 - 40 - 70 - 17) / 4;
+        columnWidth = (windowWidth - 40 - 40 - 70) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -93,6 +91,12 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
+        timeout: 10000,
+      });
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
@@ -140,6 +144,12 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   describe('should be able to filter by', () => {
+    beforeEach(() => {
+      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
+        timeout: 10000,
+      });
+    });
+
     it('text', () => {
       cy.get('[aria-label="Filter by Location"]').find('input').type('sea');
 
