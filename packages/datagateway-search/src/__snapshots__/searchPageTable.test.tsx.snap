@@ -24,7 +24,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
           "entries": Array [
             Object {
               "hash": "",
-              "key": "r8mzrm",
+              "key": "jnv17g",
               "pathname": "/",
               "search": "",
               "state": undefined,
@@ -38,7 +38,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
           "listen": [Function],
           "location": Object {
             "hash": "",
-            "key": "r8mzrm",
+            "key": "jnv17g",
             "pathname": "/",
             "search": "",
             "state": undefined,
