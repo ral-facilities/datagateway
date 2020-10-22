@@ -54,9 +54,7 @@ describe('SearchPageTable', () => {
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <SearchPageTable />
-        </MemoryRouter>
+        <SearchPageTable store={mockStore(state)} />
       </Provider>
     );
     expect(wrapper).toMatchSnapshot();
