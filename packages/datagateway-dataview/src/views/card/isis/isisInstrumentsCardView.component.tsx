@@ -1,153 +1,188 @@
-// import { Link } from '@material-ui/core';
-// import { Title, Link as LinkIcon } from '@material-ui/icons';
-// import {
-//   Entity,
-//   fetchInstrumentCount,
-//   fetchInstrumentDetails,
-//   fetchInstruments,
-//   Filter,
-//   FiltersType,
-//   Instrument,
-//   pushPageFilter,
-//   tableLink,
-//   TextColumnFilter,
-// } from 'datagateway-common';
-// import { ViewsType } from 'datagateway-common/lib/state/app.types';
-// import React from 'react';
-// import { connect } from 'react-redux';
-// import { IndexRange } from 'react-virtualized';
-// import { AnyAction } from 'redux';
-// import { ThunkDispatch } from 'redux-thunk';
-// import { StateType } from '../../../state/app.types';
-// import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
-// import CardView from '../cardView.component';
+import { Link } from '@material-ui/core';
+import { Title, Link as LinkIcon } from '@material-ui/icons';
+import {
+  clearData,
+  Entity,
+  fetchInstrumentCount,
+  fetchInstrumentDetails,
+  fetchInstruments,
+  Filter,
+  FiltersType,
+  Instrument,
+  Order,
+  pushPageFilter,
+  pushPageNum,
+  pushPageResults,
+  pushPageSort,
+  SortType,
+  tableLink,
+  TextColumnFilter,
+} from 'datagateway-common';
+import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
+import React from 'react';
+import { connect } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { StateType } from '../../../state/app.types';
+import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
+import CardView from '../cardView.component';
 
-// // eslint-disable-next-line @typescript-eslint/interface-name-prefix
-// interface ISISInstrumentsCVDispatchProps {
-//   fetchData: (offsetParams: IndexRange) => Promise<void>;
-//   fetchCount: () => Promise<void>;
-//   fetchDetails: (instrumentId: number) => Promise<void>;
-//   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-// }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface ISISInstrumentsCVDispatchProps {
+  fetchData: (offsetParams: IndexRange) => Promise<void>;
+  fetchCount: () => Promise<void>;
+  fetchDetails: (instrumentId: number) => Promise<void>;
+  clearData: () => Action;
+  pushPage: (page: number) => Promise<void>;
+  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushResults: (results: number) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
+}
 
-// // eslint-disable-next-line @typescript-eslint/interface-name-prefix
-// interface ISISInstrumentsCVStateProps {
-//   data: Entity[];
-//   totalDataCount: number;
-//   view: ViewsType;
-//   filters: FiltersType;
-// }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface ISISInstrumentsCVStateProps {
+  data: Entity[];
+  totalDataCount: number;
+  view: ViewsType;
+  filters: FiltersType;
+  loading: boolean;
+  query: QueryParams;
+  sort: SortType;
+}
 
-// type ISISInstrumentsCVCombinedProps = ISISInstrumentsCVDispatchProps &
-//   ISISInstrumentsCVStateProps;
+type ISISInstrumentsCVCombinedProps = ISISInstrumentsCVDispatchProps &
+  ISISInstrumentsCVStateProps;
 
-// const ISISInstrumentsCardView = (
-//   props: ISISInstrumentsCVCombinedProps
-// ): React.ReactElement => {
-//   const {
-//     data,
-//     totalDataCount,
-//     fetchData,
-//     fetchCount,
-//     fetchDetails,
-//     view,
-//     filters,
-//     pushFilters,
-//   } = props;
+const ISISInstrumentsCardView = (
+  props: ISISInstrumentsCVCombinedProps
+): React.ReactElement => {
+  const {
+    data,
+    totalDataCount,
+    loading,
+    query,
+    sort,
+    fetchData,
+    fetchCount,
+    fetchDetails,
+    view,
+    filters,
+    pushFilters,
+    pushPage,
+    pushResults,
+    pushSort,
+    clearData,
+  } = props;
 
-//   const [fetchedCount, setFetchedCount] = React.useState(false);
+  const [fetchedCount, setFetchedCount] = React.useState(false);
 
-//   const textFilter = (label: string, dataKey: string): React.ReactElement => (
-//     <TextColumnFilter
-//       label={label}
-//       value={filters[dataKey] as string}
-//       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
-//     />
-//   );
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      value={filters[dataKey] as string}
+      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+    />
+  );
 
-//   React.useEffect(() => {
-//     // Load count to trigger data to be fetched.
-//     if (!fetchedCount) {
-//       fetchCount();
-//       setFetchedCount(true);
-//     }
-//   }, [data, fetchedCount, fetchCount, setFetchedCount]);
+  React.useEffect(() => {
+    // Load count to trigger data to be fetched.
+    if (!fetchedCount) {
+      fetchCount();
+      setFetchedCount(true);
+    }
+  }, [data, fetchedCount, fetchCount, setFetchedCount]);
 
-//   return (
-//     <CardView
-//       data={data}
-//       totalDataCount={totalDataCount}
-//       loadData={fetchData}
-//       loadCount={fetchCount}
-//       title={{
-//         label: 'Name',
-//         dataKey: 'FULLNAME',
-//         content: (instrument: Instrument) =>
-//           tableLink(
-//             `/browse/instrument/${instrument.ID}/facilityCycle`,
-//             instrument.FULLNAME || instrument.NAME,
-//             view
-//           ),
-//         filterComponent: textFilter,
-//       }}
-//       description={{
-//         label: 'Description',
-//         dataKey: 'DESCRIPTION',
-//         filterComponent: textFilter,
-//       }}
-//       information={[
-//         {
-//           icon: <Title />,
-//           label: 'Type',
-//           dataKey: 'TYPE',
-//           filterComponent: textFilter,
-//         },
-//         {
-//           icon: <LinkIcon />,
-//           label: 'URL',
-//           dataKey: 'URL',
-//           // eslint-disable-next-line react/display-name
-//           content: (instrument: Instrument) => (
-//             <Link href={instrument.URL}>{instrument.URL}</Link>
-//           ),
-//           filterComponent: textFilter,
-//         },
-//       ]}
-//       moreInformation={(instrument: Instrument) => (
-//         <InstrumentDetailsPanel
-//           rowData={instrument}
-//           fetchDetails={fetchDetails}
-//         />
-//       )}
-//     />
-//   );
-// };
+  return (
+    <CardView
+      data={data}
+      totalDataCount={totalDataCount}
+      loadData={fetchData}
+      loadCount={fetchCount}
+      loading={loading}
+      sort={sort}
+      filters={filters}
+      query={query}
+      onPageChange={pushPage}
+      onResultsChange={pushResults}
+      onSort={pushSort}
+      onFilter={pushFilters}
+      clearData={clearData}
+      title={{
+        label: 'Name',
+        dataKey: 'FULLNAME',
+        content: (instrument: Instrument) =>
+          tableLink(
+            `/browse/instrument/${instrument.ID}/facilityCycle`,
+            instrument.FULLNAME || instrument.NAME,
+            view
+          ),
+        filterComponent: textFilter,
+      }}
+      description={{
+        label: 'Description',
+        dataKey: 'DESCRIPTION',
+        filterComponent: textFilter,
+      }}
+      information={[
+        {
+          icon: <Title />,
+          label: 'Type',
+          dataKey: 'TYPE',
+          filterComponent: textFilter,
+        },
+        {
+          icon: <LinkIcon />,
+          label: 'URL',
+          dataKey: 'URL',
+          // eslint-disable-next-line react/display-name
+          content: (instrument: Instrument) => (
+            <Link href={instrument.URL}>{instrument.URL}</Link>
+          ),
+          filterComponent: textFilter,
+        },
+      ]}
+      moreInformation={(instrument: Instrument) => (
+        <InstrumentDetailsPanel
+          rowData={instrument}
+          fetchDetails={fetchDetails}
+        />
+      )}
+    />
+  );
+};
 
-// const mapStateToProps = (state: StateType): ISISInstrumentsCVStateProps => {
-//   return {
-//     data: state.dgcommon.data,
-//     totalDataCount: state.dgcommon.totalDataCount,
-//     view: state.dgcommon.query.view,
-//     filters: state.dgcommon.filters,
-//   };
-// };
+const mapStateToProps = (state: StateType): ISISInstrumentsCVStateProps => {
+  return {
+    data: state.dgcommon.data,
+    totalDataCount: state.dgcommon.totalDataCount,
+    view: state.dgcommon.query.view,
+    filters: state.dgcommon.filters,
+    loading: state.dgcommon.loading,
+    query: state.dgcommon.query,
+    sort: state.dgcommon.sort,
+  };
+};
 
-// const mapDispatchToProps = (
-//   dispatch: ThunkDispatch<StateType, null, AnyAction>
-// ): ISISInstrumentsCVDispatchProps => ({
-//   fetchData: (offsetParams: IndexRange) =>
-//     dispatch(fetchInstruments(offsetParams)),
-//   fetchCount: () => dispatch(fetchInstrumentCount()),
-//   fetchDetails: (instrumentId: number) =>
-//     dispatch(fetchInstrumentDetails(instrumentId)),
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): ISISInstrumentsCVDispatchProps => ({
+  fetchData: (offsetParams: IndexRange) =>
+    dispatch(fetchInstruments(offsetParams)),
+  fetchCount: () => dispatch(fetchInstrumentCount()),
+  fetchDetails: (instrumentId: number) =>
+    dispatch(fetchInstrumentDetails(instrumentId)),
+  clearData: () => dispatch(clearData()),
 
-//   pushFilters: (filter: string, data: Filter | null) =>
-//     dispatch(pushPageFilter(filter, data)),
-// });
+  pushFilters: (filter: string, data: Filter | null) =>
+    dispatch(pushPageFilter(filter, data)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
+  pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+});
 
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(ISISInstrumentsCardView);
-
-export {};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ISISInstrumentsCardView);
