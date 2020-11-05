@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@material-ui/core';
+import { ViewsType } from '../../state/app.types';
 
 export function formatBytes(bytes: number | undefined): string {
   if (bytes === -1) return 'Loading...';
@@ -14,16 +15,19 @@ export function formatBytes(bytes: number | undefined): string {
   return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
+// NOTE: Allow the link to specify the view to keep the same view when navigating.
+const appendView = (link: string, view?: ViewsType): string =>
+  view ? (link += `?view=${view}`) : link;
+
 export function datasetLink(
   investigationId: string,
   datasetId: number,
-  datasetName: string
+  datasetName: string,
+  view?: ViewsType
 ): React.ReactElement {
+  const link = `/browse/investigation/${investigationId}/dataset/${datasetId}/datafile`;
   return (
-    <Link
-      component={RouterLink}
-      to={`/browse/investigation/${investigationId}/dataset/${datasetId}/datafile`}
-    >
+    <Link component={RouterLink} to={appendView(link, view)}>
       {datasetName}
     </Link>
   );
@@ -31,13 +35,12 @@ export function datasetLink(
 
 export function investigationLink(
   investigationId: number,
-  investigationTitle: string
+  investigationTitle: string,
+  view?: ViewsType
 ): React.ReactElement {
+  const link = `/browse/investigation/${investigationId}/dataset`;
   return (
-    <Link
-      component={RouterLink}
-      to={`/browse/investigation/${investigationId}/dataset`}
-    >
+    <Link component={RouterLink} to={appendView(link, view)}>
       {investigationTitle}
     </Link>
   );
@@ -45,10 +48,11 @@ export function investigationLink(
 
 export function tableLink(
   linkUrl: string,
-  linkText: string
+  linkText: string,
+  view?: ViewsType
 ): React.ReactElement {
   return (
-    <Link component={RouterLink} to={linkUrl}>
+    <Link component={RouterLink} to={appendView(linkUrl, view)}>
       {linkText}
     </Link>
   );

@@ -1,30 +1,49 @@
-import { ThunkAction } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { Order, Filter, Entity, DownloadCartItem } from '../app.types';
-import { URLs } from './actions/actions.types';
 import { RouterState } from 'connected-react-router';
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { DownloadCartItem, Entity, FiltersType, SortType } from '../app.types';
+import { URLs } from './actions/actions.types';
 
 export interface DGCommonState {
   facilityName: string;
-  sort: {
-    [column: string]: Order;
-  };
-  filters: {
-    [column: string]: Filter;
-  };
+  urls: URLs;
+  loading: boolean;
+  downloading: boolean;
+  error: string | null;
   data: Entity[];
   totalDataCount: number;
   investigationCache: EntityCache;
   datasetCache: EntityCache;
   cartItems: DownloadCartItem[];
   allIds: number[];
-  loading: boolean;
-  downloading: boolean;
-  error: string | null;
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
-  urls: URLs;
+  sort: SortType;
+  filters: FiltersType;
+  filterData: FilterDataType;
+  query: QueryParams;
+  savedView: SavedView;
+}
+
+export type ViewsType = 'table' | 'card' | null;
+
+export interface QueryParams {
+  view: ViewsType;
+  search: string | null;
+  page: number | null;
+  results: number | null;
+}
+
+export interface SavedView {
+  view: ViewsType;
+  queries: QueryParams | null;
+  filters: FiltersType;
+  sort: SortType;
+}
+
+export interface FilterDataType {
+  [filterKey: string]: string[];
 }
 
 export interface EntityCache {

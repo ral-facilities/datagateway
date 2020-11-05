@@ -41,7 +41,7 @@ describe('Cell content renderers', () => {
   describe('datasetLink', () => {
     it('renders correctly', () => {
       const wrapper = shallow(
-        <MemoryRouter>{datasetLink('1', 2, 'test')}</MemoryRouter>
+        <MemoryRouter>{datasetLink('1', 2, 'test', 'card')}</MemoryRouter>
       );
       expect(wrapper.find(Link)).toMatchSnapshot();
     });
@@ -50,7 +50,7 @@ describe('Cell content renderers', () => {
   describe('investigationLink', () => {
     it('renders correctly', () => {
       const wrapper = shallow(
-        <MemoryRouter>{investigationLink(1, 'test')}</MemoryRouter>
+        <MemoryRouter>{investigationLink(1, 'test', 'card')}</MemoryRouter>
       );
       expect(wrapper.find(Link)).toMatchSnapshot();
     });

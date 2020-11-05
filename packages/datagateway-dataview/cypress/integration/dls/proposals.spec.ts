@@ -14,7 +14,7 @@ describe('DLS - Proposals Table', () => {
 
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/'
+      '/browse/proposal/INVESTIGATION%201/investigation'
     );
   });
 
@@ -116,8 +116,8 @@ describe('DLS - Proposals Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
         '0'

@@ -59,9 +59,16 @@ export function updateFilter({
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
+  value?: { startDate?: string; endDate?: string };
 }): React.ReactElement => {
-  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(null);
-  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(null);
+  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(
+    props.value && props.value.startDate
+      ? new Date(props.value.startDate)
+      : null
+  );
+  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(
+    props.value && props.value.endDate ? new Date(props.value.endDate) : null
+  );
 
   return (
     <form>

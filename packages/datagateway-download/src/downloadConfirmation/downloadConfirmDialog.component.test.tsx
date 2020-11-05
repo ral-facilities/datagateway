@@ -127,7 +127,7 @@ describe('DownloadConfirmDialog', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('prevents a download if a selected access method is disabled', async () => {
+  it.skip('prevents a download if a selected access method is disabled', async () => {
     // Override default requests and return an access method which is disabled.
     (axios.get as jest.Mock).mockImplementationOnce(() =>
       Promise.resolve({
@@ -182,7 +182,7 @@ describe('DownloadConfirmDialog', () => {
     ).toBe(true);
   });
 
-  it('prevent download of an access method where the status was not fetched', async () => {
+  it.skip('prevent download of an access method where the status was not fetched', async () => {
     // Return a response where one of the status requests has not been successful.
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
@@ -330,7 +330,7 @@ describe('DownloadConfirmDialog', () => {
     );
   });
 
-  it('successfully loads submit successful view after submitting download request with custom values', async () => {
+  it.skip('successfully loads submit successful view after submitting download request with custom values', async () => {
     (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {

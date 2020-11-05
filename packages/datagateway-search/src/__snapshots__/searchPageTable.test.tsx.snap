@@ -40,7 +40,7 @@ exports[`SearchPageTable renders SearchPageTable correctly 1`] = `
         py={1}
       >
         <div
-          className="MuiBox-root MuiBox-root-2"
+          className="MuiBox-root MuiBox-root-1"
         >
           <h2>
             searchPageTable.header
