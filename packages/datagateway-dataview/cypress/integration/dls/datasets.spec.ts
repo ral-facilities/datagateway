@@ -1,7 +1,12 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
+    cy.server();
+    cy.route('/datasets/count*').as('datasetsCount');
+    cy.route('/datasets?order=*').as('datasetsOrder');
     cy.login('user', 'password');
-    cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset');
+    cy.visit(
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
+    ).wait(['@datasetsCount'], { timeout: 10000 });
   });
 
   it('should load correctly', () => {
@@ -93,7 +98,9 @@ describe('DLS - Datasets Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -101,8 +108,12 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -114,14 +125,20 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
         '0'
@@ -130,9 +147,14 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('1');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('1')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
+      cy.get('[aria-label="Create Time date filter to"]')
+        .type('2002-01-01')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
@@ -174,9 +196,14 @@ describe('DLS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('1');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('1')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
+      cy.get('[aria-label="Create Time date filter to"]')
+        .type('2002-01-01')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');

@@ -1,7 +1,11 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
+    cy.server();
+    cy.route('/datasets/count*').as('datasetsCount');
     cy.login('user', 'password');
-    cy.visit('/browse/instrument/1/facilityCycle/14/investigation/87/dataset');
+    cy.visit(
+      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+    ).wait(['@datasetsCount'], { timeout: 10000 });
   });
 
   it('should load correctly', () => {
@@ -94,7 +98,9 @@ describe('ISIS - Datasets Table', () => {
 
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -102,8 +108,12 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('descending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount'], { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -115,14 +125,20 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('no order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionAsc').should('not.be.visible');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
         '0'

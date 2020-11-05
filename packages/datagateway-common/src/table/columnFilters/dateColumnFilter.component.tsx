@@ -59,9 +59,16 @@ export function updateFilter({
 const DateColumnFilter = (props: {
   label: string;
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
+  value?: { startDate?: string; endDate?: string };
 }): React.ReactElement => {
-  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(null);
-  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(null);
+  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(
+    props.value && props.value.startDate
+      ? new Date(props.value.startDate)
+      : null
+  );
+  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(
+    props.value && props.value.endDate ? new Date(props.value.endDate) : null
+  );
 
   return (
     <form>
@@ -76,6 +83,7 @@ const DateColumnFilter = (props: {
           views={['year', 'month', 'date']}
           maxDate={endDate || new Date('2100-01-01')}
           maxDateMessage="Invalid date range"
+          color="secondary"
           onChange={(date) => {
             updateFilter({
               date,
@@ -97,6 +105,7 @@ const DateColumnFilter = (props: {
           views={['year', 'month', 'date']}
           minDate={startDate || new Date('1900-01-01')}
           minDateMessage="Invalid date range"
+          color="secondary"
           onChange={(date) => {
             updateFilter({
               date,

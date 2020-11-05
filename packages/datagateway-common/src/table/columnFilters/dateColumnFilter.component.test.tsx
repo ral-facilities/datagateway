@@ -20,7 +20,14 @@ describe('Date filter component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <DateColumnFilter label="test" onChange={jest.fn()} />
+      <DateColumnFilter
+        value={{
+          startDate: '1999-01-01T00:00:00.000Z',
+          endDate: '2000-01-01T00:00:00.000Z',
+        }}
+        label="test"
+        onChange={jest.fn()}
+      />
     );
     expect(wrapper).toMatchSnapshot();
   });

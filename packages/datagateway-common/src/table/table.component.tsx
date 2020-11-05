@@ -182,7 +182,7 @@ const VirtualizedTable = (
 
   React.useEffect(detailsPanelResize, [tableRef, expandedIndex]);
 
-  // Select the width to use for the actions column if it was passed as a prop.
+  // Select the width to use for the actions column (if it was passed as a prop).
   const actionsColumnWidth = actionsWidth || actionsColumnDefaultWidth;
 
   return (

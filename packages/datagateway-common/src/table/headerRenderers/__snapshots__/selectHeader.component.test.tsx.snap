@@ -4,6 +4,7 @@ exports[`Select column header component renders correctly when checked 1`] = `
 <div
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
+  role="cell"
 >
   <WithStyles(ForwardRef(Checkbox))
     checked={true}
@@ -38,6 +39,7 @@ exports[`Select column header component renders correctly when indeterminate 1`]
 <div
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
+  role="cell"
 >
   <WithStyles(ForwardRef(Checkbox))
     checked={false}
@@ -72,6 +74,7 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
 <div
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-head test-class MuiTableCell-paddingCheckbox MuiTableCell-sizeSmall"
+  role="cell"
 >
   <WithStyles(ForwardRef(Checkbox))
     checked={false}
