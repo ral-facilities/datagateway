@@ -17,12 +17,14 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
     Array [
       Object {
         "DESCRIPTION": "foo bar",
+        "FACILITY_ID": 8,
         "FULLNAME": "Test instrument 1",
         "ID": 1,
         "NAME": "Test 1",
       },
       Object {
         "DESCRIPTION": "foo bar",
+        "FACILITY_ID": 8,
         "ID": 2,
         "NAME": "Test 2",
       },

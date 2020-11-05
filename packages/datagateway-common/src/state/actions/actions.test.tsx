@@ -5,6 +5,23 @@ import {
   loadUrls,
   loadFacilityName,
   clearTable,
+  saveView,
+  updateSaveView,
+  pushPageSort,
+  pushPageFilter,
+  pushPageResults,
+  updateResults,
+  pushPageNum,
+  updatePage,
+  pushPageSearch,
+  updateSearch,
+  pushPageView,
+  updateView,
+  loadURLQuery,
+  updateQueryParams,
+  updateFilters,
+  updateSort,
+  nestedValue,
 } from '.';
 import {
   SortTableType,
@@ -13,12 +30,13 @@ import {
   ConfigureURLsType,
   ConfigureFacilityNameType,
 } from './actions.types';
-import { StateType } from '../app.types';
-import { RouterState } from 'connected-react-router';
+import { QueryParams, StateType } from '../app.types';
+import { push, RouterState } from 'connected-react-router';
 import axios from 'axios';
 import * as log from 'loglevel';
-import { resetActions } from '../../setupTests';
+import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import { initialState as dGCommonInitialState } from '../reducers/dgcommon.reducer';
+import { Entity, FiltersType, SortType } from '../../app.types';
 
 jest.mock('loglevel');
 
@@ -178,6 +196,203 @@ describe('Actions', () => {
     expect(action.type).toEqual(ConfigureFacilityNameType);
     expect(action.payload).toEqual({
       facilityName: 'Generic',
+    });
+  });
+
+  it('nestedValue returns empty string when provided with a falsy entry', () => {
+    const datafileEntity: Entity = {
+      ID: 0,
+      NAME: 'test',
+      MOD_TIME: '2019-09-17 00:00:00',
+      CREATE_TIME: '2019-09-17 00:00:00',
+      DATASET_ID: 0,
+      test: null,
+    };
+    expect(nestedValue(datafileEntity, 'test')).toEqual('');
+  });
+
+  describe('async actions', () => {
+    const routerState: RouterState = {
+      action: 'POP',
+      location: {
+        hash: '',
+        key: '',
+        pathname: '/',
+        search: '',
+        state: {},
+      },
+    };
+
+    const queryState: QueryParams = {
+      view: 'table',
+      search: 'test',
+      page: 1,
+      results: 1,
+    };
+    const filterState: FiltersType = {
+      column1: ['test'],
+      column2: { endDate: '2019-09-18' },
+    };
+    const sortState: SortType = { column1: 'asc', column2: 'desc' };
+
+    const queryParams = new URLSearchParams();
+    const filterParams = new URLSearchParams();
+    const sortParams = new URLSearchParams();
+
+    for (const [q, v] of Object.entries(queryState)) {
+      queryParams.append(q, v);
+    }
+    filterParams.append('filters', JSON.stringify(filterState));
+    sortParams.append('sort', JSON.stringify(sortState));
+
+    it('loadURLQuery dispatches clearTable, updateQueryParams, updateFilters, updateSort', async () => {
+      const getState = (): StateType => ({
+        dgcommon: dGCommonInitialState,
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?${queryParams.toString()}&${filterParams.toString()}&${sortParams.toString()}`,
+            state: {},
+          },
+        },
+      });
+      const asyncAction = loadURLQuery();
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(4);
+      expect(actions).toContainEqual(clearTable());
+      expect(actions).toContainEqual(updateQueryParams(queryState));
+      expect(actions).toContainEqual(updateFilters(filterState));
+      expect(actions).toContainEqual(updateSort(sortState));
+    });
+
+    it('loadURLQuery logs errors when filters, sort are incorrectly formatted', async () => {
+      // Remove characters from the search string to break formatting
+      const errorParams = new URLSearchParams();
+      for (const [q, v] of Object.entries(queryState)) {
+        errorParams.append(q, v);
+      }
+      errorParams.append('filters', JSON.stringify(filterState).slice(1));
+      errorParams.append('sort', JSON.stringify(sortState).slice(1));
+      const getState = (): StateType => ({
+        dgcommon: dGCommonInitialState,
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?${errorParams.toString()}`,
+            state: {},
+          },
+        },
+      });
+      const spy = jest.spyOn(console, 'error');
+      const asyncAction = loadURLQuery();
+      await asyncAction(dispatch, getState);
+
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenNthCalledWith(
+        1,
+        'Filter query provided in an incorrect format.'
+      );
+      expect(spy).toHaveBeenNthCalledWith(
+        2,
+        'Sort query provided in an incorrect format.'
+      );
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(clearTable());
+      expect(actions).toContainEqual(updateQueryParams(queryState));
+    });
+
+    it('pushPageView dispatches a updateView and push', async () => {
+      const asyncAction = pushPageView('table', '');
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(updateView('table'));
+      expect(actions).toContainEqual(push('?'));
+    });
+
+    it('pushPageSearch dispatches a updateSearch and push', async () => {
+      const asyncAction = pushPageSearch('test');
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(updateSearch('test'));
+      expect(actions).toContainEqual(push('?'));
+    });
+
+    it('pushPageNum dispatches a updatePage and push', async () => {
+      const asyncAction = pushPageNum(1);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(updatePage(1));
+      expect(actions).toContainEqual(push('?'));
+    });
+
+    it('pushPageResults dispatches a updateResults and push', async () => {
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          query: queryState,
+        },
+        router: routerState,
+      });
+
+      const asyncAction = pushPageResults(1);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(updateResults(1));
+      expect(actions).toContainEqual(push(`?${queryParams.toString()}`));
+    });
+
+    it('pushPageFilter dispatches a filterTable and push', async () => {
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          filters: filterState,
+        },
+        router: routerState,
+      });
+
+      const asyncAction = pushPageFilter('testKey', 'testValue');
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(filterTable('testKey', 'testValue'));
+      expect(actions).toContainEqual(push(`?${filterParams.toString()}`));
+    });
+
+    it('pushPageSort dispatches a sortTable and push', async () => {
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          sort: sortState,
+        },
+        router: routerState,
+      });
+
+      const asyncAction = pushPageSort('test', 'asc');
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(sortTable('test', 'asc'));
+      expect(actions).toContainEqual(push(`?${sortParams.toString()}`));
+    });
+
+    it('saveView dispatches an updateSaveView action', async () => {
+      const asyncAction = saveView('table');
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(1);
+      expect(actions).toContainEqual(updateSaveView('table'));
     });
   });
 });

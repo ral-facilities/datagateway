@@ -37,14 +37,13 @@ describe('DLS Proposals table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
         TITLE: 'Test 1',
         NAME: 'Test 1',
         SUMMARY: 'foo bar',
-        PROPOSAL_ID: '1',
+        VISIT_ID: '1',
         RB_NUMBER: '1',
         DOI: 'doi 1',
         SIZE: 1,
@@ -56,6 +55,7 @@ describe('DLS Proposals table component', () => {
             INSTRUMENT: {
               ID: 3,
               NAME: 'LARMOR',
+              FACILITY_ID: 8,
             },
           },
         ],

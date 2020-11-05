@@ -37,7 +37,6 @@ describe('ISIS FacilityCycles table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
@@ -45,6 +44,7 @@ describe('ISIS FacilityCycles table component', () => {
         DESCRIPTION: 'Test 1',
         STARTDATE: '2019-07-03',
         ENDDATE: '2019-07-04',
+        FACILITY_ID: 1,
       },
     ];
   });

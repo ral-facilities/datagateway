@@ -75,6 +75,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           Object {
             "ID": 1,
             "INSTRUMENT": Object {
+              "FACILITY_ID": 8,
               "ID": 3,
               "NAME": "LARMOR",
             },
