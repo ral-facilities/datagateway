@@ -158,6 +158,29 @@ const NavBar = (props: {
   );
 };
 
+const CardSwitch = (props: {
+  toggleCard: boolean;
+  handleToggleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+
+  return (
+    <FormControlLabel
+      value="start"
+      control={
+        <Switch
+          checked={props.toggleCard}
+          onChange={props.handleToggleChange}
+          name="toggleCard"
+          inputProps={{ 'aria-label': 'secondary checkbox' }}
+        />
+      }
+      label={t('app.toggle_cards')}
+      labelPlacement="start"
+    />
+  );
+};
+
 interface PageContainerDispatchProps {
   loadQuery: () => Promise<void>;
   pushView: (view: ViewsType, path: string) => Promise<void>;
@@ -204,6 +227,21 @@ class PageContainer extends React.Component<
     };
   }
 
+  public componentDidMount(): void {
+    // Fetch the download cart on mount,
+    // ensuring that dataview element is present.
+    if (
+      !this.state.isCartFetched &&
+      document.getElementById('datagateway-dataview')
+    ) {
+      this.props.fetchDownloadCart();
+      this.setState({
+        ...this.state,
+        isCartFetched: true,
+      });
+    }
+  }
+
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // Ensure if the location changes, then we update the query parameters.
     if (prevProps.path !== this.props.path) {
@@ -220,19 +258,6 @@ class PageContainer extends React.Component<
       this.setState({
         ...this.state,
         toggleCard: this.getToggle(),
-      });
-    }
-
-    // Fetch the download cart on mount,
-    // ensuring that dataview element is present.
-    if (
-      !this.state.isCartFetched &&
-      document.getElementById('datagateway-dataview')
-    ) {
-      this.props.fetchDownloadCart();
-      this.setState({
-        ...this.state,
-        isCartFetched: true,
       });
     }
   }
@@ -288,7 +313,7 @@ class PageContainer extends React.Component<
     // Add the view and push the final query parameters.
     this.props.pushView(nextView, this.props.path);
 
-    // Set the state with the toggled card option and the saved queries.
+    // Set the state with the toggled card option and the saved query.
     this.setState({
       ...this.state,
       toggleCard: event.target.checked,
@@ -312,18 +337,9 @@ class PageContainer extends React.Component<
               exact
               path={this.state.paths}
               render={() => (
-                <FormControlLabel
-                  value="start"
-                  control={
-                    <Switch
-                      checked={this.state.toggleCard}
-                      onChange={this.handleToggleChange}
-                      name="toggleCard"
-                      inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    />
-                  }
-                  label="Toggle Cards"
-                  labelPlacement="start"
+                <CardSwitch
+                  toggleCard={this.state.toggleCard}
+                  handleToggleChange={this.handleToggleChange}
                 />
               )}
             />

@@ -37,7 +37,7 @@ export interface QueryParams {
 
 export interface SavedView {
   view: ViewsType;
-  queries: QueryParams | null;
+  query: QueryParams | null;
   filters: FiltersType;
   sort: SortType;
 }
