@@ -330,17 +330,10 @@ class PageContainer extends React.Component<
           </Grid>
 
           {/* Show loading progress if data is still being loaded */}
-          {this.state.toggleCard && this.props.loading && (
-            <Route
-              path={[paths.root, paths.myData.root]}
-              render={() => {
-                return (
-                  <Grid item xs={12}>
-                    <LinearProgress color="secondary" />
-                  </Grid>
-                );
-              }}
-            />
+          {this.props.loading && (
+            <Grid item xs={12}>
+              <LinearProgress color="secondary" />
+            </Grid>
           )}
 
           {/* Hold the table for remainder of the page */}

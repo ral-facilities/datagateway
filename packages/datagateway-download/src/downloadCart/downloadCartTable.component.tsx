@@ -8,7 +8,14 @@ import {
   DownloadCartItem,
   DownloadCartTableItem,
 } from 'datagateway-common';
-import { IconButton, Grid, Paper, Typography, Button } from '@material-ui/core';
+import {
+  IconButton,
+  Grid,
+  Paper,
+  Typography,
+  Button,
+  LinearProgress,
+} from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
 import {
   fetchDownloadCartItems,
@@ -193,6 +200,12 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   return (
     <div>
       <Grid container direction="column">
+        {/* Show loading progress if data is still being loaded */}
+        {!dataLoaded && (
+          <Grid item xs={12}>
+            <LinearProgress color="secondary" />
+          </Grid>
+        )}
         <Grid item>
           <Paper style={{ height: 'calc(100vh - 150px)' }}>
             <Table

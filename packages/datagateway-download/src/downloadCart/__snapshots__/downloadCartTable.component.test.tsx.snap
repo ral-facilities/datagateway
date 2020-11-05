@@ -8,6 +8,14 @@ exports[`Download cart table component renders correctly 1`] = `
   >
     <WithStyles(ForwardRef(Grid))
       item={true}
+      xs={12}
+    >
+      <WithStyles(ForwardRef(LinearProgress))
+        color="secondary"
+      />
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      item={true}
     >
       <WithStyles(ForwardRef(Paper))
         style={

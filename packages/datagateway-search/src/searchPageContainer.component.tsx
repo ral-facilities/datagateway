@@ -4,19 +4,21 @@ import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, LinearProgress } from '@material-ui/core';
 
 import SearchPageTable from './searchPageTable';
 import SearchBoxContainer from './searchBoxContainer.component';
 import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
-interface SearchPageContainerProps {
+interface SearchPageContainerStoreProps {
   entityCount: number;
+  loading: boolean;
   sideLayout: boolean;
 }
-
-class SearchPageContainer extends React.Component<SearchPageContainerProps> {
-  public constructor(props: SearchPageContainerProps) {
+class SearchPageContainer extends React.Component<
+  SearchPageContainerStoreProps
+> {
+  public constructor(props: SearchPageContainerStoreProps) {
     super(props);
   }
 
@@ -55,6 +57,12 @@ class SearchPageContainer extends React.Component<SearchPageContainerProps> {
                   width: 'calc(70vw)',
                 }}
               >
+                {/* Show loading progress if data is still being loaded */}
+                {this.props.loading && (
+                  <Grid item xs={12}>
+                    <LinearProgress color="secondary" />
+                  </Grid>
+                )}
                 <SearchPageTable />
               </Paper>
             </Grid>
@@ -65,8 +73,9 @@ class SearchPageContainer extends React.Component<SearchPageContainerProps> {
   }
 }
 
-const mapStateToProps = (state: StateType): SearchPageContainerProps => ({
+const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   entityCount: state.dgcommon.totalDataCount,
+  loading: state.dgcommon.loading,
   sideLayout: state.dgsearch.sideLayout,
 });
 
