@@ -20,7 +20,10 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]').contains('Dataset').click();
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Dataset')
+      .contains('12')
+      .click();
 
     cy.get('[aria-rowcount="12"]').should('exist');
 
@@ -33,7 +36,10 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]').contains('Dataset').click();
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Dataset')
+      .contains('1')
+      .click();
 
     cy.get('[aria-rowcount="1"]').should('exist');
 
