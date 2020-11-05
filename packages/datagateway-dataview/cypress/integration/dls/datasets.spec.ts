@@ -1,5 +1,6 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('/datasets/count*').as('datasetsCount');
     cy.route('/datasets?order=*').as('datasetsOrder');

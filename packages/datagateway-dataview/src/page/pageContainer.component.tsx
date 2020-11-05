@@ -8,9 +8,14 @@ import {
   Theme,
   withStyles,
   createStyles,
+  IconButton,
+  Badge,
 } from '@material-ui/core';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import SearchIcon from '@material-ui/icons/Search';
 import { StyleRules } from '@material-ui/core/styles';
 import {
+  DownloadCartItem,
   fetchDownloadCart,
   loadURLQuery,
   pushPageView,
@@ -24,7 +29,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Route } from 'react-router';
-import { AnyAction } from 'redux';
+import { push } from 'connected-react-router';
+import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
@@ -72,7 +78,12 @@ export const paths = {
   },
 };
 
-const NavBar = (props: { entityCount: number }): React.ReactElement => {
+const NavBar = (props: {
+  entityCount: number;
+  cartItems: DownloadCartItem[];
+  navigateToSearch: () => Action;
+  navigateToDownload: () => Action;
+}): React.ReactElement => {
   const [t] = useTranslation();
 
   return (
@@ -96,7 +107,16 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
             path={[paths.root, paths.myData.root]}
             render={() => {
               return (
-                <Paper square style={{ backgroundColor: 'inherit' }}>
+                <Paper
+                  square
+                  style={{
+                    backgroundColor: 'inherit',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
                   <Typography variant="h6" component="h3">
                     <b>{t('app.results')}:</b> {props.entityCount}
                   </Typography>
@@ -105,6 +125,34 @@ const NavBar = (props: { entityCount: number }): React.ReactElement => {
             }}
           />
         </Grid>
+        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+          <IconButton
+            className="tour-dataview-search-icon"
+            onClick={props.navigateToSearch}
+            aria-label="container-table-search"
+            style={{ margin: 'auto' }}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Paper>
+        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+          <IconButton
+            className="tour-dataview-cart-icon"
+            onClick={props.navigateToDownload}
+            aria-label="container-table-cart"
+            style={{ margin: 'auto' }}
+          >
+            <Badge
+              badgeContent={
+                props.cartItems.length > 0 ? props.cartItems.length : null
+              }
+              color="primary"
+              aria-label="container-table-cart-badge"
+            >
+              <ShoppingCartIcon />
+            </Badge>
+          </IconButton>
+        </Paper>
       </StyledGrid>
     </Sticky>
   );
@@ -115,6 +163,8 @@ interface PageContainerDispatchProps {
   pushView: (view: ViewsType, path: string) => Promise<void>;
   saveView: (view: ViewsType) => Promise<void>;
   fetchDownloadCart: () => Promise<void>;
+  navigateToDownload: () => Action;
+  navigateToSearch: () => Action;
 }
 
 interface PageContainerStateProps {
@@ -123,6 +173,7 @@ interface PageContainerStateProps {
   query: QueryParams;
   savedView: SavedView;
   loading: boolean;
+  cartItems: DownloadCartItem[];
 }
 
 type PageContainerCombinedProps = PageContainerStateProps &
@@ -247,7 +298,12 @@ class PageContainer extends React.Component<
   public render(): React.ReactElement {
     return (
       <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-        <NavBar entityCount={this.props.entityCount} />
+        <NavBar
+          entityCount={this.props.entityCount}
+          cartItems={this.props.cartItems}
+          navigateToSearch={this.props.navigateToSearch}
+          navigateToDownload={this.props.navigateToDownload}
+        />
 
         <StyledGrid container>
           {/* Toggle between the table and card view */}
@@ -291,11 +347,11 @@ class PageContainer extends React.Component<
           <Grid item xs={12} aria-label="container-table">
             {!this.state.toggleCard ? (
               // Place table in Paper component which adjusts for the height
-              // of the AppBar (64px) on parent application and the breadcrumbs component (31px).
+              // of the AppBar (64px) on parent application and the cart icon (48px).
               <Paper
                 square
                 style={{
-                  height: 'calc(100vh - 95px)',
+                  height: 'calc(100vh - 112px)',
                   width: '100%',
                   backgroundColor: 'inherit',
                 }}
@@ -320,6 +376,7 @@ const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   query: state.dgcommon.query,
   savedView: state.dgcommon.savedView,
   loading: state.dgcommon.loading,
+  cartItems: state.dgcommon.cartItems,
 });
 
 const mapDispatchToProps = (
@@ -330,6 +387,8 @@ const mapDispatchToProps = (
     dispatch(pushPageView(view, path)),
   saveView: (view: ViewsType) => dispatch(saveView(view)),
   fetchDownloadCart: () => dispatch(fetchDownloadCart()),
+  navigateToDownload: () => dispatch(push('/download')),
+  navigateToSearch: () => dispatch(push('/search/data')),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
