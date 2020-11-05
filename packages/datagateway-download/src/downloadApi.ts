@@ -110,7 +110,8 @@ export const submitCart: (
   settings: {
     facilityName: string;
     downloadApiUrl: string;
-  }
+  },
+  zipType?: 'ZIP' | 'ZIP_AND_COMPRESS'
 ) => Promise<number> = (
   transport: string,
   emailAddress: string,
@@ -118,7 +119,8 @@ export const submitCart: (
   settings: {
     facilityName: string;
     downloadApiUrl: string;
-  }
+  },
+  zipType?: 'ZIP' | 'ZIP_AND_COMPRESS'
 ) => {
   const params = new URLSearchParams();
 
@@ -129,7 +131,7 @@ export const submitCart: (
   params.append('fileName', fileName);
 
   // NOTE: zipType by default is 'ZIP', it can be 'ZIP_AND_COMPRESS'.
-  params.append('zipType', 'ZIP');
+  params.append('zipType', zipType ? zipType : 'ZIP');
 
   return axios
     .post<SubmitCart>(

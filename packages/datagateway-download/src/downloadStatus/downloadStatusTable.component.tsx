@@ -258,9 +258,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const [clicked, setClicked] = React.useState(false);
                 return (
                   <BlackTooltip
-                    title={t('downloadStatus.download_disabled_tooltip', {
-                      transport: downloadItem.transport,
-                    })}
+                    title={
+                      t('downloadStatus.download_disabled_tooltip', {
+                        transport: downloadItem.transport,
+                      }) as string
+                    }
                     enterDelay={500}
                     // Disable tooltip for access methods that are not http/https.
                     disableHoverListener={isDownloadable}
