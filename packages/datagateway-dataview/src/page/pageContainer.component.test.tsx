@@ -7,6 +7,7 @@ import { StateType } from '../state/app.types';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 
+import { LinearProgress } from '@material-ui/core';
 import { createShallow } from '@material-ui/core/test-utils';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -71,5 +72,45 @@ describe('PageContainer - Tests', () => {
     expect(testStore.getActions()).not.toContain({
       type: 'datagateway_common:fetch_download_cart_request',
     });
+  });
+
+  it('do not display loading bar loading false', () => {
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageContainer store={testStore} />
+      </MemoryRouter>
+    );
+
+    expect(wrapper.exists(LinearProgress)).toBeFalsy();
+  });
+
+  it('display loading bar when loading true', () => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 101,
+          loading: true,
+        },
+        dgdataview: dgDataViewInitialState,
+
+        router: {
+          action: 'POP',
+          location: createLocation('/'),
+        },
+      })
+    );
+
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageContainer store={testStore} />
+      </MemoryRouter>
+    );
+
+    expect(wrapper.exists(LinearProgress)).toBeTruthy();
   });
 });
