@@ -10,7 +10,10 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
   }
 >
   <NavBar
+    cartItems={Array []}
     entityCount={101}
+    navigateToDownload={[Function]}
+    navigateToSearch={[Function]}
   />
   <WithStyles(WithStyles(ForwardRef(Grid)))
     container={true}
@@ -47,7 +50,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
         style={
           Object {
             "backgroundColor": "inherit",
-            "height": "calc(100vh - 95px)",
+            "height": "calc(100vh - 112px)",
             "width": "100%",
           }
         }

@@ -13,6 +13,7 @@ import { createShallow } from '@material-ui/core/test-utils';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { createLocation } from 'history';
 import { MemoryRouter } from 'react-router';
+import { push } from 'connected-react-router';
 
 import PageContainer from './pageContainer.component';
 
@@ -72,6 +73,42 @@ describe('PageContainer - Tests', () => {
     expect(testStore.getActions()).not.toContain({
       type: 'datagateway_common:fetch_download_cart_request',
     });
+  });
+
+  it('opens search plugin when icon clicked', () => {
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageContainer store={testStore} />
+      </MemoryRouter>
+    );
+
+    wrapper
+      .find('[aria-label="container-table-search"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions().length).toEqual(3);
+    expect(testStore.getActions()[2]).toEqual(push('/search/data'));
+  });
+
+  it('opens download plugin when Download Cart clicked', () => {
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+        <PageContainer store={testStore} />
+      </MemoryRouter>
+    );
+
+    wrapper
+      .find('[aria-label="container-table-cart"]')
+      .first()
+      .simulate('click');
+
+    expect(testStore.getActions().length).toEqual(3);
+    expect(testStore.getActions()[2]).toEqual(push('/download'));
   });
 
   it('do not display loading bar loading false', () => {
