@@ -1,5 +1,6 @@
 describe('ISIS - MyData Table', () => {
   beforeEach(() => {
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('**/investigations/count*').as('getInvestigationCount');
     cy.login('user', 'password');
