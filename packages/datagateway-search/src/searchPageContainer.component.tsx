@@ -38,13 +38,6 @@ class SearchPageContainer extends React.Component<
             alignItems="flex-start"
             spacing={2}
           >
-            {/* Show loading progress if data is still being loaded */}
-            {this.props.loading && (
-              <Grid item xs={12}>
-                <LinearProgress color="secondary" />
-              </Grid>
-            )}
-
             <Grid item id="container-search-filters">
               {this.props.sideLayout ? (
                 <Paper style={{ height: '100%', width: '100%' }}>
@@ -64,6 +57,12 @@ class SearchPageContainer extends React.Component<
                   width: 'calc(70vw)',
                 }}
               >
+                {/* Show loading progress if data is still being loaded */}
+                {this.props.loading && (
+                  <Grid item xs={12}>
+                    <LinearProgress color="secondary" />
+                  </Grid>
+                )}
                 <SearchPageTable />
               </Paper>
             </Grid>
