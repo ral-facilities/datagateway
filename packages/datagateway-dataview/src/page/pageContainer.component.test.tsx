@@ -88,8 +88,8 @@ describe('PageContainer - Tests', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual(push('/search/data'));
+    expect(testStore.getActions().length).toEqual(3);
+    expect(testStore.getActions()[2]).toEqual(push('/search/data'));
   });
 
   it('opens download plugin when Download Cart clicked', () => {
@@ -106,7 +106,7 @@ describe('PageContainer - Tests', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual(push('/download'));
+    expect(testStore.getActions().length).toEqual(3);
+    expect(testStore.getActions()[2]).toEqual(push('/download'));
   });
 });

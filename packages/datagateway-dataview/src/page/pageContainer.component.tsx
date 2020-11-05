@@ -125,35 +125,35 @@ const NavBar = (props: {
             }}
           />
         </Grid>
-      </StyledGrid>
-      <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
-        <IconButton
-          className="tour-dataview-search-icon"
-          onClick={this.navigateToSearch}
-          aria-label="container-table-search"
-          style={{ margin: 'auto' }}
-        >
-          <SearchIcon />
-        </IconButton>
-      </Paper>
-      <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
-        <IconButton
-          className="tour-dataview-cart-icon"
-          onClick={this.navigateToDownload}
-          aria-label="container-table-cart"
-          style={{ margin: 'auto' }}
-        >
-          <Badge
-            badgeContent={
-              props.cartItems.length > 0 ? props.cartItems.length : null
-            }
-            color="primary"
-            aria-label="container-table-cart-badge"
+        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+          <IconButton
+            className="tour-dataview-search-icon"
+            onClick={props.navigateToSearch}
+            aria-label="container-table-search"
+            style={{ margin: 'auto' }}
           >
-            <ShoppingCartIcon />
-          </Badge>
-        </IconButton>
-      </Paper>
+            <SearchIcon />
+          </IconButton>
+        </Paper>
+        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+          <IconButton
+            className="tour-dataview-cart-icon"
+            onClick={props.navigateToDownload}
+            aria-label="container-table-cart"
+            style={{ margin: 'auto' }}
+          >
+            <Badge
+              badgeContent={
+                props.cartItems.length > 0 ? props.cartItems.length : null
+              }
+              color="primary"
+              aria-label="container-table-cart-badge"
+            >
+              <ShoppingCartIcon />
+            </Badge>
+          </IconButton>
+        </Paper>
+      </StyledGrid>
     </Sticky>
   );
 };
