@@ -40,6 +40,7 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
         onChange={sendSearchText}
         fullWidth
         variant="outlined"
+        color="secondary"
         InputProps={{
           'aria-label': t('searchBox.search_text_arialabel'),
           endAdornment: (

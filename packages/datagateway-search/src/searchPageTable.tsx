@@ -152,7 +152,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
     );
   } else
     return (
-      <Box color="primary.main" px={3} py={1}>
+      <Box color="secondary.main" px={3} py={1}>
         <h2>{t('searchPageTable.header')}</h2>
         {t('searchPageTable.text')}
       </Box>

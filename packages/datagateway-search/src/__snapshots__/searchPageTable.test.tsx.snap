@@ -35,7 +35,7 @@ exports[`SearchPageTable renders SearchPageTable correctly 1`] = `
       }
     >
       <Styled(MuiBox)
-        color="primary.main"
+        color="secondary.main"
         px={3}
         py={1}
       >

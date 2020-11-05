@@ -39,6 +39,7 @@ export default class TextColumnFilter extends React.Component<
           onChange={this.handleChange}
           aria-label={`Filter by ${this.props.label}`}
           fullWidth={true}
+          color="secondary"
         />
       </div>
     );
