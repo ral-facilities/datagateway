@@ -1,7 +1,8 @@
 {
   "app": {
     "results": "Results",
-    "toggle_cards": "Toggle Cards"
+    "toggle_cards": "Toggle Cards",
+    "max_results": "Max Results"
   },
   "breadcrumbs": {
     "home": "Home",

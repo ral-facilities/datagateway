@@ -31,6 +31,7 @@ import {
 } from 'datagateway-common';
 import { QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { IndexRange } from 'react-virtualized';
 import { Action } from 'redux';
 import AdvancedFilter from './advancedFilter.component';
@@ -160,6 +161,7 @@ function CVPagination(
 
 // TODO: Hide/disable pagination and sort/filters if no results retrieved.
 const CardView = (props: CardViewProps): React.ReactElement => {
+  const [t] = useTranslation();
   const classes = useCardViewStyles();
 
   // Props.
@@ -551,7 +553,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             >
               <FormControl className={classes.formControl} color="secondary">
                 <InputLabel id="select-max-results-label">
-                  Max Results
+                  {t('app.max_results')}
                 </InputLabel>
                 <Select
                   labelId="select-max-results-label"
