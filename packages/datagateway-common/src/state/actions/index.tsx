@@ -149,7 +149,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
           isFiltersParsed = true;
         }
       } catch (e) {
-        console.error('Filter queries provided in an incorrect format.');
+        console.error('Filter query provided in an incorrect format.');
       }
     }
 
@@ -168,7 +168,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
           isSortParsed = true;
         }
       } catch (e) {
-        console.error('Sort queries provided in an incorrect format.');
+        console.error('Sort query provided in an incorrect format.');
       }
     }
 

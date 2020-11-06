@@ -16,6 +16,7 @@ import { MemoryRouter } from 'react-router';
 import { push } from 'connected-react-router';
 
 import PageContainer from './pageContainer.component';
+import { Provider } from 'react-redux';
 
 jest.mock('loglevel');
 
@@ -60,23 +61,32 @@ describe('PageContainer - Tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('fetches cart on load', () => {
+  it('fetches cart once on update', () => {
     // Mock getElementById so that it returns truthy.
     const testElement = document.createElement('DIV');
     document.getElementById = jest.fn(() => testElement);
     const mockStore = configureStore([thunk]);
-    const testStore = mockStore(state);
-    mount(
-      <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
-        <PageContainer store={testStore} />
-      </MemoryRouter>
+    let testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
     );
+    // Update store to trigger componentDidUpdate
+    testStore = mockStore({
+      ...state,
+      dgcommon: { ...state.dgcommon, totalDataCount: 102 },
+    });
+    wrapper.setProps({ store: testStore });
 
     expect(document.getElementById.mock.calls[0][0]).toBe(
       'datagateway-dataview'
     );
 
-    expect(testStore.getActions()[2]).toEqual({
+    expect(testStore.getActions().length).toEqual(1);
+    expect(testStore.getActions()[0]).toEqual({
       type: 'datagateway_common:fetch_download_cart_request',
     });
   });

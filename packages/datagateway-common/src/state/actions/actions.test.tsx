@@ -290,7 +290,8 @@ describe('Actions', () => {
           },
         },
       });
-      const spy = jest.spyOn(console, 'error');
+      // Mock to prevent any actual error logging
+      const spy = jest.spyOn(console, 'error').mockImplementation();
       const asyncAction = loadURLQuery();
       await asyncAction(dispatch, getState);
 
@@ -307,6 +308,8 @@ describe('Actions', () => {
       expect(actions.length).toEqual(2);
       expect(actions).toContainEqual(clearTable());
       expect(actions).toContainEqual(updateQueryParams(queryState));
+
+      spy.mockRestore();
     });
 
     it('pushPageView dispatches a updateView and push', async () => {
