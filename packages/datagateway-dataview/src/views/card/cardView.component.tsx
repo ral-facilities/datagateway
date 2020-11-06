@@ -549,7 +549,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                 float: 'right',
               }}
             >
-              <FormControl className={classes.formControl}>
+              <FormControl className={classes.formControl} color="secondary">
                 <InputLabel id="select-max-results-label">
                   Max Results
                 </InputLabel>
