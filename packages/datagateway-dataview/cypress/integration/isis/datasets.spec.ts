@@ -3,6 +3,7 @@ describe('ISIS - Datasets Table', () => {
     Cypress.currentTest.retries(2);
     cy.server();
     cy.route('/datasets/count*').as('datasetsCount');
+    cy.route('/datasets?order=*').as('datasetsOrder');
     cy.login('user', 'password');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
