@@ -1,97 +1,125 @@
-import { DGCommonState } from '../app.types';
-import createReducer from './createReducer';
+import { Dataset, Entity, Investigation } from '../../app.types';
 import {
-  SortTablePayload,
-  SortTableType,
-  FetchInvestigationsRequestType,
-  FetchInvestigationsSuccessType,
-  FetchInvestigationsFailureType,
-  FilterTablePayload,
-  FilterTableType,
-  FetchDatasetsRequestType,
-  FetchDatasetsSuccessType,
-  FetchDatasetsFailureType,
-  FetchDatafilesRequestType,
-  FetchDatafilesSuccessType,
-  FetchDatafilesFailureType,
-  FetchInvestigationDatasetsCountRequestType,
-  FetchInvestigationDatasetsCountSuccessType,
-  FetchInvestigationDatasetsCountFailureType,
-  FetchDatasetDatafilesCountRequestType,
-  FetchDatasetDatafilesCountSuccessType,
-  FetchDatasetDatafilesCountFailureType,
-  FetchInstrumentsFailureType,
-  FetchInstrumentsSuccessType,
-  FetchInstrumentsRequestType,
-  FetchFacilityCyclesRequestType,
-  FetchFacilityCyclesSuccessType,
-  FetchFacilityCyclesFailureType,
-  DownloadDatafileFailureType,
-  DownloadDatafileRequestType,
-  DownloadDatafileSuccessType,
-  DownloadDatasetRequestType,
-  DownloadDatasetSuccessType,
-  DownloadDatasetFailureType,
-  FetchDataSuccessPayload,
-  FailurePayload,
-  FetchDataCountSuccessPayload,
-  FetchCountSuccessPayload,
-  FetchInvestigationCountRequestType,
-  FetchInvestigationCountSuccessType,
-  FetchInvestigationCountFailureType,
-  FetchInvestigationSizeRequestType,
-  FetchInvestigationSizeSuccessType,
-  FetchInvestigationSizeFailureType,
-  FetchDatasetCountRequestType,
-  FetchDatasetCountSuccessType,
-  FetchDatasetCountFailureType,
-  FetchDatafileCountRequestType,
-  FetchDatafileCountSuccessType,
-  FetchDatafileCountFailureType,
-  FetchInstrumentCountSuccessType,
-  FetchInstrumentCountRequestType,
-  FetchInstrumentCountFailureType,
-  FetchFacilityCycleCountRequestType,
-  FetchFacilityCycleCountSuccessType,
-  FetchFacilityCycleCountFailureType,
+  AddToCartFailureType,
+  AddToCartRequestType,
+  AddToCartSuccessType,
+  ClearDataType,
   ClearTableType,
-  RequestPayload,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
-  FetchInvestigationDetailsRequestType,
-  FetchInvestigationDetailsSuccessType,
-  FetchInvestigationDetailsFailureType,
-  FetchDatasetDetailsRequestType,
-  FetchDatasetDetailsSuccessType,
-  FetchDatasetDetailsFailureType,
-  FetchInstrumentDetailsRequestType,
-  FetchInstrumentDetailsSuccessType,
-  FetchInstrumentDetailsFailureType,
+  DownloadCartPayload,
+  DownloadDatafileFailureType,
+  DownloadDatafileRequestType,
+  DownloadDatafileSuccessType,
+  DownloadDatasetFailureType,
+  DownloadDatasetRequestType,
+  DownloadDatasetSuccessType,
+  FailurePayload,
+  FetchAllIdsFailureType,
+  FetchAllIdsRequestType,
+  FetchAllIdsSuccessPayload,
+  FetchAllIdsSuccessType,
+  FetchCountSuccessPayload,
+  FetchDataCountSuccessPayload,
+  FetchDatafileCountFailureType,
+  FetchDatafileCountRequestType,
+  FetchDatafileCountSuccessType,
   FetchDatafileDetailsFailureType,
   FetchDatafileDetailsRequestType,
   FetchDatafileDetailsSuccessType,
-  DownloadCartPayload,
-  FetchDownloadCartRequestType,
-  FetchDownloadCartSuccessType,
-  FetchDownloadCartFailureType,
-  AddToCartRequestType,
-  AddToCartFailureType,
-  AddToCartSuccessType,
-  RemoveFromCartRequestType,
-  RemoveFromCartSuccessType,
-  RemoveFromCartFailureType,
-  FetchAllIdsFailureType,
-  FetchAllIdsRequestType,
-  FetchAllIdsSuccessType,
-  FetchAllIdsSuccessPayload,
-  FetchSizeSuccessPayload,
+  FetchDatafilesFailureType,
+  FetchDatafilesRequestType,
+  FetchDatafilesSuccessType,
+  FetchDatasetCountFailureType,
+  FetchDatasetCountRequestType,
+  FetchDatasetCountSuccessType,
+  FetchDatasetDatafilesCountFailureType,
+  FetchDatasetDatafilesCountRequestType,
+  FetchDatasetDatafilesCountSuccessType,
+  FetchDatasetDetailsFailureType,
+  FetchDatasetDetailsRequestType,
+  FetchDatasetDetailsSuccessType,
+  FetchDatasetsFailureType,
+  FetchDatasetSizeFailureType,
   FetchDatasetSizeRequestType,
   FetchDatasetSizeSuccessType,
-  FetchDatasetSizeFailureType,
+  FetchDatasetsRequestType,
+  FetchDatasetsSuccessType,
+  FetchDataSuccessPayload,
+  FetchDownloadCartFailureType,
+  FetchDownloadCartRequestType,
+  FetchDownloadCartSuccessType,
+  FetchFacilityCycleCountFailureType,
+  FetchFacilityCycleCountRequestType,
+  FetchFacilityCycleCountSuccessType,
+  FetchFacilityCyclesFailureType,
+  FetchFacilityCyclesRequestType,
+  FetchFacilityCyclesSuccessType,
+  FetchFilterFailureType,
+  FetchFilterRequestType,
+  FetchFilterSuccessPayload,
+  FetchFilterSuccessType,
+  FetchInstrumentCountFailureType,
+  FetchInstrumentCountRequestType,
+  FetchInstrumentCountSuccessType,
+  FetchInstrumentDetailsFailureType,
+  FetchInstrumentDetailsRequestType,
+  FetchInstrumentDetailsSuccessType,
+  FetchInstrumentsFailureType,
+  FetchInstrumentsRequestType,
+  FetchInstrumentsSuccessType,
+  FetchInvestigationCountFailureType,
+  FetchInvestigationCountRequestType,
+  FetchInvestigationCountSuccessType,
+  FetchInvestigationDatasetsCountFailureType,
+  FetchInvestigationDatasetsCountRequestType,
+  FetchInvestigationDatasetsCountSuccessType,
+  FetchInvestigationDetailsFailureType,
+  FetchInvestigationDetailsRequestType,
+  FetchInvestigationDetailsSuccessType,
+  FetchInvestigationsFailureType,
+  FetchInvestigationSizeFailureType,
+  FetchInvestigationSizeRequestType,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationsRequestType,
+  FetchInvestigationsSuccessType,
+  FetchSizeSuccessPayload,
+  FilterTablePayload,
+  FilterTableType,
+  RemoveFromCartFailureType,
+  RemoveFromCartRequestType,
+  RemoveFromCartSuccessType,
+  RequestPayload,
+  SaveViewPayload,
+  SortTablePayload,
+  SortTableType,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
+  UpdatePagePayload,
+  UpdatePageType,
+  UpdateQueriesPayload,
+  UpdateQueriesType,
+  UpdateResultsPayload,
+  UpdateResultsType,
+  UpdateSaveViewType,
+  UpdateSortPayload,
+  UpdateSortType,
+  UpdateViewPayload,
+  UpdateViewType,
+  UpdateSearchPayload,
+  UpdateSearchType,
 } from '../actions/actions.types';
-import { Entity, Investigation, Dataset } from '../../app.types';
+import { DGCommonState, QueryParams } from '../app.types';
+import createReducer from './createReducer';
+
+const initialQuery: QueryParams = {
+  view: null,
+  search: null,
+  page: null,
+  results: null,
+};
 
 export const initialState: DGCommonState = {
   facilityName: '',
@@ -104,6 +132,7 @@ export const initialState: DGCommonState = {
   error: null,
   sort: {},
   filters: {},
+  filterData: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
   allIdsTimestamp: Date.now(),
@@ -114,6 +143,13 @@ export const initialState: DGCommonState = {
   },
   cartItems: [],
   allIds: [],
+  query: initialQuery,
+  savedView: {
+    view: null,
+    queries: null,
+    filters: {},
+    sort: {},
+  },
 };
 
 export function handleSortTable(
@@ -186,6 +222,115 @@ export function handleConfigureFacilityName(
   };
 }
 
+export function handleUpdateView(
+  state: DGCommonState,
+  payload: UpdateViewPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      view: payload.view,
+    },
+  };
+}
+
+export function handleUpdateSearch(
+  state: DGCommonState,
+  payload: UpdateSearchPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      search: payload.search,
+    },
+  };
+}
+
+export function handleUpdatePage(
+  state: DGCommonState,
+  payload: UpdatePagePayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      page: payload.page,
+    },
+  };
+}
+
+export function handleUpdateResults(
+  state: DGCommonState,
+  payload: UpdateResultsPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      results: payload.results,
+    },
+  };
+}
+
+export function handleUpdateFilters(
+  state: DGCommonState,
+  payload: UpdateFiltersPayload
+): DGCommonState {
+  return {
+    ...state,
+    filters: payload.filters,
+    data: [],
+    totalDataCount: 0,
+  };
+}
+
+export function handleUpdateSort(
+  state: DGCommonState,
+  payload: UpdateSortPayload
+): DGCommonState {
+  return {
+    ...state,
+    sort: payload.sort,
+    data: [],
+    totalDataCount: 0,
+  };
+}
+
+export function handleUpdateQueries(
+  state: DGCommonState,
+  payload: UpdateQueriesPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: payload.queries,
+  };
+}
+
+export function handleSaveView(
+  state: DGCommonState,
+  payload: SaveViewPayload
+): DGCommonState {
+  return {
+    ...state,
+    // Clear current information to reload on new view.
+    data: [],
+    totalDataCount: 0,
+
+    // Switch view and save view information.
+    sort: state.savedView.sort,
+    filters: state.savedView.filters,
+    query: state.savedView.queries ? state.savedView.queries : initialQuery,
+    savedView: {
+      view: payload.view,
+      queries: state.query,
+      filters: state.filters,
+      sort: state.sort,
+    },
+  };
+}
+
 export function handleClearTable(state: DGCommonState): DGCommonState {
   return {
     ...state,
@@ -196,6 +341,19 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     error: null,
     sort: {},
     filters: {},
+    savedView: {
+      view: null,
+      queries: null,
+      filters: {},
+      sort: {},
+    },
+  };
+}
+
+export function handleClearData(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    data: [],
   };
 }
 
@@ -548,13 +706,47 @@ export function handleFetchAllIdsSuccess(
     return state;
   }
 }
+
+export function handleFetchFilterRequest(
+  state: DGCommonState,
+  payload: RequestPayload
+): DGCommonState {
+  return {
+    ...state,
+    loading: false,
+  };
+}
+
+export function handleFetchFilterSuccess(
+  state: DGCommonState,
+  payload: FetchFilterSuccessPayload
+): DGCommonState {
+  return {
+    ...state,
+    loading: false,
+    filterData: {
+      ...state.filterData,
+      [payload.filterKey]: payload.data,
+    },
+  };
+}
+
 // remove things I want
 const dGCommonReducer = createReducer(initialState, {
-  [SortTableType]: handleSortTable,
-  [FilterTableType]: handleFilterTable,
-  [ClearTableType]: handleClearTable,
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureURLsType]: handleConfigureUrls,
+  [SortTableType]: handleSortTable,
+  [FilterTableType]: handleFilterTable,
+  [UpdateViewType]: handleUpdateView,
+  [UpdateSearchType]: handleUpdateSearch,
+  [UpdatePageType]: handleUpdatePage,
+  [UpdateResultsType]: handleUpdateResults,
+  [UpdateFiltersType]: handleUpdateFilters,
+  [UpdateSortType]: handleUpdateSort,
+  [UpdateQueriesType]: handleUpdateQueries,
+  [UpdateSaveViewType]: handleSaveView,
+  [ClearTableType]: handleClearTable,
+  [ClearDataType]: handleClearData,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
@@ -630,6 +822,9 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
   [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
   [FetchAllIdsFailureType]: handleFetchDataFailure,
+  [FetchFilterRequestType]: handleFetchFilterRequest,
+  [FetchFilterSuccessType]: handleFetchFilterSuccess,
+  [FetchFilterFailureType]: handleFetchDataFailure,
 });
 
 export default dGCommonReducer;

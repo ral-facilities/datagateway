@@ -157,6 +157,7 @@ const ArrowTooltip = (
           <span className={arrow} ref={setArrowRef} />
         </React.Fragment>
       }
+      // TODO: This shouldn't really be calculated inside and should still be possible to be overriden by a prop.
       disableHoverListener={!isTooltipVisible}
     />
   );

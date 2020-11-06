@@ -26,13 +26,36 @@ describe('SearchPageTable', () => {
     state.dgsearch.requestReceived = true;
   });
 
-  it('renders SearchPageTable correctly', () => {
+  it('renders SearchPageTable correctly before request', () => {
     state.dgsearch.requestReceived = false;
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <div>
         <SearchPageTable store={mockStore(state)} />
       </div>
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders SearchPageTable correctly after request', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      tabs: {
+        datasetTab: true,
+        datafileTab: true,
+        investigationTab: true,
+      },
+      searchData: {
+        investigation: Array(1),
+        dataset: Array(10),
+        datafile: Array(100),
+      },
+    };
+    const mockStore = configureStore([thunk]);
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <SearchPageTable store={mockStore(state)} />
+      </Provider>
     );
     expect(wrapper).toMatchSnapshot();
   });

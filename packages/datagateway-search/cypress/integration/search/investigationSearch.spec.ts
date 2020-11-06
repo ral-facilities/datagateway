@@ -22,6 +22,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
+      .contains('4')
       .click();
 
     cy.get('[aria-rowcount="4"]').should('exist');
@@ -38,6 +39,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
+      .contains('32')
       .click();
 
     cy.get('[aria-rowcount="32"]').should('exist');
@@ -53,6 +55,7 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
+      .contains('12')
       .click();
 
     cy.get('[aria-rowcount="12"]').should('exist');

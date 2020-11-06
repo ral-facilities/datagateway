@@ -21,6 +21,7 @@ export { default as ExpandCellComponent } from './table/cellRenderers/expandCell
 export * from './table/cellRenderers/cellContentRenderers';
 
 export * from './state/actions/index';
+export * from './state/app.types';
 
 export { default as DGCommonMiddleware } from './state/middleware/dgcommon.middleware';
 export { default as createReducer } from './state/reducers/createReducer';
@@ -35,6 +36,7 @@ export * from './parseTokens';
 export { default as handleICATError } from './handleICATError';
 
 export { default as ArrowTooltip } from './arrowtooltip.component';
+export { default as Sticky } from './sticky.component';
 export { default as DGThemeProvider } from './dgThemeProvider.component';
 
 // ReactDOM.render(<App />, document.getElementById('root'));
