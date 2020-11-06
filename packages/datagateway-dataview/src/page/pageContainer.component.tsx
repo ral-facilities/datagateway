@@ -227,21 +227,6 @@ class PageContainer extends React.Component<
     };
   }
 
-  public componentDidMount(): void {
-    // Fetch the download cart on mount,
-    // ensuring that dataview element is present.
-    if (
-      !this.state.isCartFetched &&
-      document.getElementById('datagateway-dataview')
-    ) {
-      this.props.fetchDownloadCart();
-      this.setState({
-        ...this.state,
-        isCartFetched: true,
-      });
-    }
-  }
-
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // Ensure if the location changes, then we update the query parameters.
     if (prevProps.path !== this.props.path) {
@@ -258,6 +243,19 @@ class PageContainer extends React.Component<
       this.setState({
         ...this.state,
         toggleCard: this.getToggle(),
+      });
+    }
+
+    // Fetch the download cart on mount,
+    // ensuring that dataview element is present.
+    if (
+      !this.state.isCartFetched &&
+      document.getElementById('datagateway-dataview')
+    ) {
+      this.props.fetchDownloadCart();
+      this.setState({
+        ...this.state,
+        isCartFetched: true,
       });
     }
   }
