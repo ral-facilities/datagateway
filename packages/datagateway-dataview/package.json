@@ -81,13 +81,11 @@
   "lint-staged": {
     "src/**/*.{tsx,ts,js,jsx,json}": [
       "eslint --max-warnings=0 --ext=tsx --ext=ts --ext=js --ext=jsx  --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "cypress/**/*.{tsx,ts,js,jsx}": [
       "eslint --max-warnings=0 --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "devDependencies": {
