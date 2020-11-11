@@ -97,7 +97,6 @@ describe('Card', () => {
         ]}
       />
     );
-    console.log(wrapper.debug());
     expect(wrapper.exists('[aria-label="card-buttons"]')).toBe(true);
     expect(wrapper.find('[aria-label="card-button-1"]').text()).toEqual(
       'Test Button One'

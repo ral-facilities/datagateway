@@ -21,12 +21,14 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
         "FULLNAME": "Test instrument 1",
         "ID": 1,
         "NAME": "Test 1",
+        "URL": "test url",
       },
       Object {
         "DESCRIPTION": "foo bar",
         "FACILITY_ID": 8,
         "ID": 2,
         "NAME": "Test 2",
+        "URL": "test url",
       },
     ]
   }
@@ -120,7 +122,11 @@ exports[`ISIS Instruments table component renders details panel correctly and it
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            <WithStyles(ForwardRef(Link)) />
+            <WithStyles(ForwardRef(Link))
+              href="test url"
+            >
+              test url
+            </WithStyles(ForwardRef(Link))>
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>

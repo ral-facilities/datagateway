@@ -1,29 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dataset - Card View renders correctly 1`] = `
+exports[`DLS Proposals - Card View renders correctly 1`] = `
 <ContextProvider
   value={null}
 >
-  <DatasetCardView
-    addToCart={[Function]}
-    cartItems={Array []}
+  <DLSProposalsCardView
     clearData={[Function]}
     data={
       Array [
         Object {
-          "CREATE_TIME": "2019-07-23",
           "ID": 1,
-          "INVESTIGATION_ID": 1,
-          "MOD_TIME": "2019-07-23",
           "NAME": "Test 1",
-          "SIZE": 1,
+          "TITLE": "Test 1",
+          "VISIT_ID": "1",
         },
       ]
     }
     fetchCount={[Function]}
     fetchData={[Function]}
     filters={Object {}}
-    investigationId="1"
     loading={false}
     pushFilters={[Function]}
     pushPage={[Function]}
@@ -37,7 +32,6 @@ exports[`Dataset - Card View renders correctly 1`] = `
         "view": null,
       }
     }
-    removeFromCart={[Function]}
     sort={Object {}}
     store={
       Object {
@@ -50,6 +44,7 @@ exports[`Dataset - Card View renders correctly 1`] = `
       }
     }
     totalDataCount={1}
+    view={null}
   />
 </ContextProvider>
 `;

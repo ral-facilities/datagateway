@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dataset - Card View renders correctly 1`] = `
+exports[`ISIS Datasets - Card View renders correctly 1`] = `
 <ContextProvider
   value={null}
 >
-  <DatasetCardView
+  <ISISDatasetsCardView
     addToCart={[Function]}
     cartItems={Array []}
     clearData={[Function]}
@@ -20,8 +20,10 @@ exports[`Dataset - Card View renders correctly 1`] = `
         },
       ]
     }
+    downloadData={[Function]}
     fetchCount={[Function]}
     fetchData={[Function]}
+    fetchDetails={[Function]}
     filters={Object {}}
     investigationId="1"
     loading={false}

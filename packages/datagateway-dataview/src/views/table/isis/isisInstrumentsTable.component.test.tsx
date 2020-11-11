@@ -46,12 +46,14 @@ describe('ISIS Instruments table component', () => {
         FULLNAME: 'Test instrument 1',
         DESCRIPTION: 'foo bar',
         FACILITY_ID: 8,
+        URL: 'test url',
       },
       {
         ID: 2,
         NAME: 'Test 2',
         DESCRIPTION: 'foo bar',
         FACILITY_ID: 8,
+        URL: 'test url',
       },
     ];
   });
