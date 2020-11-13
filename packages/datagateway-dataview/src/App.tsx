@@ -28,6 +28,8 @@ import {
   StylesProvider,
 } from '@material-ui/core/styles';
 import PageContainer from './pageContainer.component';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
@@ -79,7 +81,9 @@ const registerRouteAction = {
     displayName: '\xa0DataView',
     order: 0,
     helpText: 'TODO: write some help text for the user tour',
-    logo: 'DataGateway',
+    logoLightMode: LogoLight,
+    logoDarkMode: LogoDark,
+    logoAltText: 'DataGateway',
   },
 };
 
