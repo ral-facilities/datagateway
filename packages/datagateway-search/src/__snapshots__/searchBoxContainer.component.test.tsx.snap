@@ -2,41 +2,68 @@
 
 exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
 <div
-  className="MuiGrid-root MuiGrid-item MuiGrid-direction-xs-column"
+  className="MuiGrid-root MuiGrid-container MuiGrid-justify-xs-center"
   id="container-searchbox"
 >
   <WithStyles(ForwardRef(Grid))
     item={true}
+    xs={8}
   >
     <Styled(MuiBox)
-      px={2}
+      pb={1}
+      pl={2}
     >
       <Connect(SearchTextBox) />
     </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
     item={true}
+    style={
+      Object {
+        "display": "flex",
+      }
+    }
   >
     <Styled(MuiBox)
+      m="auto"
       px={2}
-    >
-      <Connect(SelectDates) />
-    </Styled(MuiBox)>
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-  >
-    <Connect(CheckboxesGroup) />
-  </WithStyles(ForwardRef(Grid))>
-  <WithStyles(ForwardRef(Grid))
-    item={true}
-  >
-    <Styled(MuiBox)
-      mx={5}
-      pb={2}
     >
       <Connect(TranslatedSearchButton) />
     </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    container={true}
+    item={true}
+    justify="center"
+    style={
+      Object {
+        "paddingBottom": 8,
+      }
+    }
+  >
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+      style={
+        Object {
+          "display": "flex",
+        }
+      }
+    >
+      <Styled(MuiBox)
+        m="auto"
+      >
+        <Connect(CheckboxesGroup) />
+      </Styled(MuiBox)>
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+    >
+      <Styled(MuiBox)
+        px={2}
+      >
+        <Connect(SelectDates) />
+      </Styled(MuiBox)>
+    </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
 </div>
 `;

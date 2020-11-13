@@ -20,7 +20,10 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]').contains('Datafile').click();
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Datafile')
+      .contains('1')
+      .click();
 
     cy.get('[aria-rowcount="1"]').should('exist');
 
@@ -33,7 +36,10 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search button"]').click();
 
-    cy.get('[aria-label="Search table tabs"]').contains('Datafile').click();
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Datafile')
+      .contains('4')
+      .click();
 
     cy.get('[aria-rowcount="4"]').should('exist');
 

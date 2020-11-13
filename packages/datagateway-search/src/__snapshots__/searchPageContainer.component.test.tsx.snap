@@ -22,7 +22,7 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
   <WithStyles(ForwardRef(Grid))
     alignItems="flex-start"
     container={true}
-    direction="row"
+    direction="column"
     justify="flex-start"
     spacing={2}
   >
@@ -34,7 +34,7 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
         style={
           Object {
             "height": "100%",
-            "width": "100%",
+            "width": "calc(70vw)",
           }
         }
       >

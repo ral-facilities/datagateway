@@ -61,15 +61,12 @@ const downloadsInfo = [
   },
 ];
 
-const parseJwt = token => {
+const parseJwt = (token) => {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const payload = decodeURIComponent(
-    atob(base64).replace(/(.)/g, function(m, p) {
-      var code = p
-        .charCodeAt(0)
-        .toString(16)
-        .toUpperCase();
+    atob(base64).replace(/(.)/g, function (m, p) {
+      var code = p.charCodeAt(0).toString(16).toUpperCase();
       return '%' + ('00' + code).slice(-2);
     })
   );
@@ -103,7 +100,7 @@ Cypress.Commands.add('login', (username, password) => {
       }),
     },
     form: true,
-  }).then(response => {
+  }).then((response) => {
     const jwtHeader = { alg: 'HS256', typ: 'JWT' };
     const payload = {
       sessionId: response.body.sessionId,
@@ -117,7 +114,7 @@ Cypress.Commands.add('login', (username, password) => {
 
 Cypress.Commands.add('clearDownloadCart', () => {
   // TODO: get url from settings
-  // TODO: find facility from somewhere...
+  // TODO: find facility from somewhere... (e2e settings?)
   cy.request({
     method: 'DELETE',
     url:
@@ -131,7 +128,7 @@ Cypress.Commands.add('clearDownloadCart', () => {
 
 Cypress.Commands.add('seedDownloadCart', () => {
   // TODO: get url from settings
-  // TODO: find facility from somewhere...
+  // TODO: find facility from somewhere... (e2e settings?)
 
   const entities = ['investigation', 'dataset', 'datafile'];
   const items = Array(60)
@@ -151,9 +148,9 @@ Cypress.Commands.add('seedDownloadCart', () => {
   });
 });
 
-Cypress.Commands.add('addCartItem', cartItem => {
+Cypress.Commands.add('addCartItem', (cartItem) => {
   // TODO: get url from settings
-  // TODO: find facility from somewhere...
+  // TODO: find facility from somewhere... (e2e settings?)
 
   cy.request({
     method: 'POST',
@@ -205,7 +202,7 @@ Cypress.Commands.add('seedDownloads', () => {
       facilityName: 'LILS',
       queryOffset: 'where download.isDeleted = false',
     },
-  }).then(response => {
+  }).then((response) => {
     const downloads = response.body;
     for (let i in downloads) {
       const download = downloads[i];
@@ -224,7 +221,7 @@ Cypress.Commands.add('seedDownloads', () => {
 });
 
 Cypress.Commands.add('clearDownloads', () => {
-  // TODO: get url and facility from settings
+  // TODO: get url and facility from settings (e2e settings?)
   cy.request({
     method: 'GET',
     url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
@@ -233,7 +230,7 @@ Cypress.Commands.add('clearDownloads', () => {
       sessionId: readSciGatewayToken().sessionId,
       queryOffset: 'where download.isDeleted = false',
     },
-  }).then(response => {
+  }).then((response) => {
     const downloads = response.body;
     for (let i in downloads) {
       const download = downloads[i];

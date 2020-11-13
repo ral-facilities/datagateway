@@ -36,6 +36,16 @@ module.exports = {
     ],
     'import/no-extraneous-dependencies': 'error',
   },
+  overrides: [
+    {
+      // disable TS rules for JS files
+      files: ['*.js', '*.jsx'],
+      rules: {
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+      },
+    },
+  ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,

@@ -1,9 +1,10 @@
 describe('DLS - MyData Table', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
-    cy.visit('/my-data/DLS');
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('**/datasets/count*').as('getDatasetCount');
+    cy.login('user', 'password');
+    cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
   });
 
   it('should load correctly', () => {

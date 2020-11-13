@@ -25,6 +25,12 @@ import { actions, dispatch, getState, resetActions } from '../../setupTests';
 import { Investigation } from '../../app.types';
 import { fetchInvestigationDatasetsCountRequest } from './datasets';
 import handleICATError from '../../handleICATError';
+import {
+  fetchFilter,
+  fetchFilterFailure,
+  fetchFilterRequest,
+  fetchFilterSuccess,
+} from './investigations';
 
 jest.mock('../../handleICATError');
 
@@ -611,6 +617,39 @@ describe('Investigation actions', () => {
     expect(actions[1]).toEqual(
       fetchInvestigationCountFailure('Test error message')
     );
+
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
+  });
+
+  it('dispatches fetchFilterRequest and fetchFilterSuccess actions upon successful fetchFilter action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [['testData']],
+      })
+    );
+
+    const asyncAction = fetchFilter('investigation', '0');
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchFilterRequest());
+    expect(actions[1]).toEqual(fetchFilterSuccess('0', ['testData']));
+  });
+
+  it('dispatches fetchFilterRequest and fetchFilterFailure actions upon unsuccessful fetchFilter action', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const asyncAction = fetchFilter('investigation', 'testFilterKey');
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchFilterRequest());
+    expect(actions[1]).toEqual(fetchFilterFailure('Test error message'));
 
     expect(handleICATError).toHaveBeenCalled();
     expect(handleICATError).toHaveBeenCalledWith({

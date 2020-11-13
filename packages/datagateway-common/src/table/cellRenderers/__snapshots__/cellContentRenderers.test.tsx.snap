@@ -16,7 +16,7 @@ exports[`Cell content renderers datasetLink renders correctly 1`] = `
       "render": [Function],
     }
   }
-  to="/browse/investigation/1/dataset/2/datafile"
+  to="/browse/investigation/1/dataset/2/datafile?view=card"
 >
   test
 </WithStyles(ForwardRef(Link))>
@@ -38,7 +38,7 @@ exports[`Cell content renderers investigationLink renders correctly 1`] = `
       "render": [Function],
     }
   }
-  to="/browse/investigation/1/dataset"
+  to="/browse/investigation/1/dataset?view=card"
 >
   test
 </WithStyles(ForwardRef(Link))>

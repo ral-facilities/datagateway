@@ -1,5 +1,5 @@
 import DGCommonReducer, { initialState } from './dgcommon.reducer';
-import { DGCommonState, EntityCache } from '../app.types';
+import { DGCommonState, EntityCache, QueryParams } from '../app.types';
 import {
   clearTable,
   sortTable,
@@ -76,6 +76,17 @@ import {
   fetchInvestigationCountRequest,
   fetchInvestigationCountSuccess,
   fetchInvestigationCountFailure,
+  fetchFilterRequest,
+  fetchFilterSuccess,
+  clearData,
+  updateSaveView,
+  updateQueryParams,
+  updateSort,
+  updateFilters,
+  updateResults,
+  updatePage,
+  updateSearch,
+  updateView,
 } from '../actions';
 
 import {
@@ -162,6 +173,113 @@ describe('DGCommon reducer', () => {
       error: null,
       sort: {},
       filters: {},
+    });
+  });
+
+  it('should clear data only when given a clearData action', () => {
+    state = {
+      ...initialState,
+      data: [{ ID: 1, NAME: 'test' }],
+      totalDataCount: 1,
+      loading: true,
+      downloading: true,
+      error: 'test error',
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
+    };
+
+    const updatedState = DGCommonReducer(state, clearData());
+    expect(updatedState).toEqual({
+      ...initialState,
+      data: [],
+      totalDataCount: 1,
+      loading: true,
+      downloading: true,
+      error: 'test error',
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
+    });
+  });
+
+  it('should save state on a saveView action without a saved view already present', () => {
+    const queryOne: QueryParams = {
+      view: 'table',
+      search: 'searchOne',
+      page: 1,
+      results: 1,
+    };
+    state = {
+      ...initialState,
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
+      query: queryOne,
+      data: [{ ID: 1, NAME: 'test' }],
+    };
+
+    const updatedState = DGCommonReducer(state, updateSaveView('table'));
+    expect(updatedState).toEqual({
+      ...initialState,
+      data: [],
+      totalDataCount: 0,
+      sort: {},
+      filters: {},
+      query: {
+        view: null,
+        search: null,
+        page: null,
+        results: null,
+      },
+      savedView: {
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+        queries: queryOne,
+        view: 'table',
+      },
+    });
+  });
+
+  it('should save state on a saveView action with saved view already present', () => {
+    const queryOne: QueryParams = {
+      view: 'table',
+      search: 'searchOne',
+      page: 1,
+      results: 1,
+    };
+    const queryTwo: QueryParams = {
+      view: 'card',
+      search: 'searchTwo',
+      page: 2,
+      results: 2,
+    };
+    state = {
+      ...initialState,
+      data: [{ ID: 1, NAME: 'test' }],
+      totalDataCount: 1,
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
+      query: queryOne,
+      savedView: {
+        view: 'card',
+        filters: { NAME: 'c' },
+        sort: { NAME: 'desc' },
+        queries: queryTwo,
+      },
+    };
+
+    const updatedState = DGCommonReducer(state, updateSaveView('table'));
+    expect(updatedState).toEqual({
+      ...initialState,
+      data: [],
+      totalDataCount: 0,
+      sort: { NAME: 'desc' },
+      filters: { NAME: 'c' },
+      query: queryTwo,
+      savedView: {
+        view: 'table',
+        filters: { NAME: 't' },
+        sort: { NAME: 'asc' },
+        queries: queryOne,
+      },
     });
   });
 
@@ -1517,6 +1635,193 @@ describe('DGCommon reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchFilter actions', () => {
+    it('should set the loading state when given a FetchFilterRequest action', () => {
+      state = { ...initialState, loading: true };
+      expect(state.loading).toBe(true);
+
+      const updatedState = DGCommonReducer(state, fetchFilterRequest());
+      expect(updatedState.loading).toBe(false);
+    });
+
+    it('should set the loading, filter data when given a FetchFilterSuccess action', () => {
+      state = { ...initialState, loading: true };
+      expect(state.loading).toBe(true);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchFilterSuccess('testKey', ['testData'])
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.filterData).toEqual({ testKey: ['testData'] });
+    });
+  });
+
+  describe('Update actions', () => {
+    it('should update view on UpdateView', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateView('card'));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'card',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+        },
+      });
+    });
+    it('should update search on UpdateSearch', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateSearch('searchTwo'));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchTwo',
+          page: 1,
+          results: 1,
+        },
+      });
+    });
+
+    it('should update page on UpdatePage', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updatePage(2));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 2,
+          results: 1,
+        },
+      });
+    });
+
+    it('should update results on UpdateResults', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateResults(2));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 2,
+        },
+      });
+    });
+
+    it('should update filter on UpdateFilters', () => {
+      state = {
+        ...initialState,
+        filters: { NAME: 't' },
+        data: [{ ID: 1, NAME: 'test' }],
+        totalDataCount: 1,
+      };
+
+      const updatedState = DGCommonReducer(state, updateFilters({ NAME: 'c' }));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        filters: { NAME: 'c' },
+        data: [],
+        totalDataCount: 0,
+      });
+    });
+
+    it('should update sort on UpdateSort', () => {
+      state = {
+        ...initialState,
+        sort: { NAME: 'asc' },
+        data: [{ ID: 1, NAME: 'test' }],
+        totalDataCount: 1,
+      };
+
+      const updatedState = DGCommonReducer(state, updateSort({ NAME: 'desc' }));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        sort: { NAME: 'desc' },
+        data: [],
+        totalDataCount: 0,
+      });
+    });
+
+    it('should update query on UpdateQueryParams', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+        },
+      };
+
+      const updatedState = DGCommonReducer(
+        state,
+        updateQueryParams({
+          view: 'card',
+          search: 'searchTwo',
+          page: 2,
+          results: 2,
+        })
+      );
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'card',
+          search: 'searchTwo',
+          page: 2,
+          results: 2,
+        },
+      });
     });
   });
 });
