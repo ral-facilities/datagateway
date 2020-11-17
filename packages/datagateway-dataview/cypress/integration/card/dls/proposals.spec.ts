@@ -1,6 +1,6 @@
 describe('DLS - Proposals Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(1);
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('**/investigations/count*').as('getInvestigationsCount');
     cy.route('**/investigations?order*').as('getInvestigationsOrder');
@@ -122,7 +122,6 @@ describe('DLS - Proposals Cards', () => {
       });
     cy.get('#card').contains('Dog want single resource major.');
 
-    cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
       .type('2')

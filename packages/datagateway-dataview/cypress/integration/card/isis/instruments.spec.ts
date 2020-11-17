@@ -1,6 +1,6 @@
 describe('ISIS - Instruments Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(1);
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('**/instruments/count*').as('getInstrumentsCount');
     cy.route('**/instruments?order*').as('getInstrumentsOrder');
@@ -114,7 +114,6 @@ describe('ISIS - Instruments Cards', () => {
       });
     cy.get('#card').contains('Radio land involve economic.');
 
-    cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Type"]')
       .find('input')
       .type('1')

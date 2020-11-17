@@ -1,6 +1,6 @@
 describe('ISIS - Datasets Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(1);
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('**/datasets/count*').as('getDatasetsCount');
     cy.route('**/datasets?order*').as('getDatasetsOrder');

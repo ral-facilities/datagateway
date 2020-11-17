@@ -1,6 +1,6 @@
 describe('Investigations Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(1);
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('**/investigations/count*').as('getInvestigationsCount');
     cy.route('**/investigations?order*').as('getInvestigationsOrder');
