@@ -319,6 +319,7 @@ class PageContainer extends React.Component<
               path={this.state.paths}
               render={() => (
                 <FormControlLabel
+                  className="tour-dataview-toggle-card"
                   value="start"
                   control={
                     <Switch

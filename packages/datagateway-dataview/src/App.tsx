@@ -103,7 +103,7 @@ const registerRouteAction = {
           'Displays the current number of items in the download cart, and navigates to Datagateway Download',
       },
       {
-        target: '.tour-dataview-card-view',
+        target: '.tour-dataview-toggle-card',
         content: 'Toggle between list and card view',
       },
     ],
