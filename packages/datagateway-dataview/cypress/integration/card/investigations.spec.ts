@@ -25,19 +25,19 @@ describe('Investigations Cards', () => {
       );
   });
 
-  it('should load correctly', () => {
+  it.skip('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click an investigation to see its datasets', () => {
+  it.skip('should be able to click an investigation to see its datasets', () => {
     cy.get('#card')
       .contains('Including spend increase ability music skill former.')
       .click({ force: true });
     cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
   });
 
-  it('should be able to sort by one field', () => {
+  it.skip('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait(
@@ -83,7 +83,7 @@ describe('Investigations Cards', () => {
     );
   });
 
-  it('should be able to sort by multiple fields', () => {
+  it.skip('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
       .wait(
@@ -113,7 +113,7 @@ describe('Investigations Cards', () => {
     cy.get('#card').contains('Color knowledge economy return determine tell.');
   });
 
-  it('should be able to filter by multiple fields', () => {
+  it.skip('should be able to filter by multiple fields', () => {
     cy.contains('[role="button"]', 'Type ID').click();
     cy.contains('[role="button"]', 'Type ID')
       .parent()
