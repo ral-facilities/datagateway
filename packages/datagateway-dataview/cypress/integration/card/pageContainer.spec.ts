@@ -1,6 +1,6 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(3);
     cy.login('user', 'password');
     cy.visit('/browse/investigation/');
     cy.get('[aria-label="secondary checkbox"]').click();

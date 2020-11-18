@@ -1,6 +1,6 @@
 describe('ISIS - Instruments Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(3);
     cy.server();
     cy.route('**/instruments/count*').as('getInstrumentsCount');
     cy.route('**/instruments?order*').as('getInstrumentsOrder');

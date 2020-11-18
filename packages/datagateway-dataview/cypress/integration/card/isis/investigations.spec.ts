@@ -1,6 +1,6 @@
 describe('ISIS - Investigations Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(3);
     cy.server();
     cy.route('**/investigations/count*').as('getInvestigationsCount');
     cy.route('**/investigations?order*').as('getInvestigationsOrder');

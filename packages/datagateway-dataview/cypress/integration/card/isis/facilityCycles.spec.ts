@@ -1,6 +1,6 @@
 describe('ISIS - FacilityCycles Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(3);
     cy.server();
     cy.route('**/facilitycycles/count*').as('getFacilityCyclesCount');
     cy.route('**/facilitycycles?order*').as('getFacilityCyclesOrder');
