@@ -1,9 +1,22 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
     Cypress.currentTest.retries(3);
+    cy.server();
+    cy.route('**/investigations/count*').as('getInvestigationsCount');
+    cy.route('**/investigations?order*').as('getInvestigationsOrder');
     cy.login('user', 'password');
     cy.visit('/browse/investigation/');
-    cy.get('[aria-label="secondary checkbox"]').click();
+    cy.get('[aria-label="secondary checkbox"]')
+      .click()
+      .wait(
+        [
+          '@getInvestigationsCount',
+          '@getInvestigationsCount',
+          '@getInvestigationsOrder',
+        ],
+        { timeout: 10000 }
+      );
+    cy.clearDownloadCart();
   });
 
   it('should load correctly', () => {
@@ -29,8 +42,6 @@ describe('PageContainer Component', () => {
 
   it('should display number of items in cart correctly', () => {
     // Check that the download cart has displayed correctly.
-    cy.clearDownloadCart();
-
     cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
       .children()
       .should('be.hidden');
