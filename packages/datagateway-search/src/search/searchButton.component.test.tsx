@@ -235,7 +235,7 @@ describe('Search Button component tests', () => {
           query: {
             target: 'Datafile',
             lower: '201311110000',
-            upper: '210001012359',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -278,7 +278,7 @@ describe('Search Button component tests', () => {
           query: {
             target: 'Dataset',
             lower: '201311110000',
-            upper: '210001012359',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -321,7 +321,7 @@ describe('Search Button component tests', () => {
           query: {
             target: 'Investigation',
             lower: '201311110000',
-            upper: '210001012359',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -357,7 +357,7 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Datafile',
-            lower: '198401010000',
+            lower: '0000001010000',
             upper: '201611112359',
           },
           sessionId: null,
@@ -400,7 +400,7 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
-            lower: '198401010000',
+            lower: '0000001010000',
             upper: '201611112359',
           },
           sessionId: null,
@@ -443,7 +443,7 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Investigation',
-            lower: '198401010000',
+            lower: '0000001010000',
             upper: '201611112359',
           },
           sessionId: null,
@@ -472,8 +472,8 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Datafile',
-            lower: '198401010000',
-            upper: '210001012359',
+            lower: '0000001010000',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -511,8 +511,8 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
-            lower: '198401010000',
-            upper: '210001012359',
+            lower: '0000001010000',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -550,8 +550,8 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Investigation',
-            lower: '198401010000',
-            upper: '210001012359',
+            lower: '0000001010000',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
