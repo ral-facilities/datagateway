@@ -76,7 +76,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     let stringStartDate =
       this.props.startDate !== null
         ? format(this.props.startDate, 'yyyy-MM-dd')
-        : '1984-01-01';
+        : '00000-01-01';
     const stringStartDateArray = stringStartDate.split('-');
     stringStartDate =
       stringStartDateArray[0] +
@@ -87,7 +87,7 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     let stringEndDate =
       this.props.endDate !== null
         ? format(this.props.endDate, 'yyyy-MM-dd')
-        : '2100-01-01';
+        : '90000-12-31';
     const stringEndDateArray = stringEndDate.split('-');
     stringEndDate =
       stringEndDateArray[0] +
