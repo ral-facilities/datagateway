@@ -5,6 +5,7 @@ import InvestigationCardView from '../views/card/investigationCardView.component
 import DatasetCardView from '../views/card/datasetCardView.component';
 
 import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
+import ISISStudiesCardView from '../views/card/isis/isisStudiesCardView.component';
 import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
 import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
 import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
@@ -36,7 +37,7 @@ class PageCard extends React.Component {
         <Route
           exact
           path={paths.toggle.isisInstrument}
-          render={() => <ISISInstrumentsCardView />}
+          render={() => <ISISInstrumentsCardView studyHierarchy={false} />}
         />
         <Route
           exact
@@ -59,8 +60,9 @@ class PageCard extends React.Component {
             facilityCycleId: string;
           }>) => (
             <ISISInvestigationsCardView
+              studyHierarchy={false}
               instrumentId={match.params.instrumentId}
-              facilityCycleId={match.params.facilityCycleId}
+              instrumentChildId={match.params.facilityCycleId}
             />
           )}
         />
@@ -75,8 +77,58 @@ class PageCard extends React.Component {
             investigationId: string;
           }>) => (
             <ISISDatasetsCardView
+              studyHierarchy={false}
               instrumentId={match.params.instrumentId}
-              facilityCycleId={match.params.facilityCycleId}
+              instrumentChildId={match.params.facilityCycleId}
+              investigationId={match.params.investigationId}
+            />
+          )}
+        />
+
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisInstrument}
+          render={() => <ISISInstrumentsCardView studyHierarchy={true} />}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisStudy}
+          render={({
+            match,
+          }: RouteComponentProps<{ instrumentId: string }>) => (
+            <ISISStudiesCardView instrumentId={match.params.instrumentId} />
+          )}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisInvestigation}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+          }>) => (
+            <ISISInvestigationsCardView
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.studyId}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisDataset}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+            investigationId: string;
+          }>) => (
+            <ISISDatasetsCardView
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.studyId}
               investigationId={match.params.investigationId}
             />
           )}

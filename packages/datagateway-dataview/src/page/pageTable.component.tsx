@@ -13,6 +13,7 @@ import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
 import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
 import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
+import ISISStudiesTable from '../views/table/isis/isisStudiesTable.component';
 import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
 import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
 import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
@@ -26,6 +27,7 @@ import {
   checkProposalName,
   checkInvestigationId,
   checkInstrumentAndFacilityCycleId,
+  checkInstrumentAndStudyId,
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
@@ -108,7 +110,7 @@ class PageTable extends React.PureComponent {
         <Route
           exact
           path={paths.toggle.isisInstrument}
-          component={ISISInstrumentsTable}
+          render={() => <ISISInstrumentsTable studyHierarchy={false} />}
         />
         <Route
           exact
@@ -129,8 +131,9 @@ class PageTable extends React.PureComponent {
             facilityCycleId: string;
           }>) => (
             <ISISInvestigationsTable
+              studyHierarchy={false}
               instrumentId={match.params.instrumentId}
-              facilityCycleId={match.params.facilityCycleId}
+              instrumentChildId={match.params.facilityCycleId}
             />
           )}
         />
@@ -153,8 +156,9 @@ class PageTable extends React.PureComponent {
             )(ISISDatasetsTable);
             return (
               <SafeISISDatasetsTable
+                studyHierarchy={false}
                 instrumentId={match.params.instrumentId}
-                facilityCycleId={match.params.facilityCycleId}
+                instrumentChildId={match.params.facilityCycleId}
                 investigationId={match.params.investigationId}
               />
             );
@@ -189,6 +193,94 @@ class PageTable extends React.PureComponent {
             );
           }}
         />
+
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisInstrument}
+          render={() => <ISISInstrumentsTable studyHierarchy={true} />}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisStudy}
+          render={({
+            match,
+          }: RouteComponentProps<{ instrumentId: string }>) => (
+            <ISISStudiesTable instrumentId={match.params.instrumentId} />
+          )}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisInvestigation}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+          }>) => (
+            <ISISInvestigationsTable
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.studyId}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.toggle.isisDataset}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+            investigationId: string;
+          }>) => {
+            const SafeISISDatasetsTable = withIdCheck(
+              checkInstrumentAndStudyId(
+                parseInt(match.params.instrumentId),
+                parseInt(match.params.studyId),
+                parseInt(match.params.investigationId)
+              )
+            )(ISISDatasetsTable);
+            return (
+              <SafeISISDatasetsTable
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.studyId}
+                investigationId={match.params.investigationId}
+              />
+            );
+          }}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.standard.isisDatafile}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+            investigationId: string;
+            datasetId: string;
+          }>) => {
+            const SafeISISDatafilesTable = withIdCheck(
+              Promise.all([
+                checkInstrumentAndStudyId(
+                  parseInt(match.params.instrumentId),
+                  parseInt(match.params.studyId),
+                  parseInt(match.params.investigationId)
+                ),
+                checkInvestigationId(
+                  parseInt(match.params.investigationId),
+                  parseInt(match.params.datasetId)
+                ),
+              ]).then((values) => !values.includes(false))
+            )(ISISDatafilesTable);
+            return (
+              <SafeISISDatafilesTable datasetId={match.params.datasetId} />
+            );
+          }}
+        />
+
         <Route
           exact
           path={paths.toggle.investigation}
