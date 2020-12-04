@@ -25,7 +25,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
@@ -36,6 +36,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { push } from 'connected-react-router';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -67,6 +68,7 @@ interface ISISInvestigationsTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
+  viewDatasets: (urlPrefix: string) => (id: number) => Action;
 }
 
 type ISISInvestigationsTableCombinedProps = ISISInvestigationsTableProps &
@@ -166,6 +168,7 @@ const ISISInvestigationsTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            viewDatasets={props.viewDatasets(urlPrefix)}
           />
         );
       }}
@@ -177,7 +180,7 @@ const ISISInvestigationsTable = (
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
+              `${urlPrefix}/${investigationData.ID}`,
               investigationData.TITLE
             );
           },
@@ -190,7 +193,7 @@ const ISISInvestigationsTable = (
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
+              `${urlPrefix}/${investigationData.ID}`,
               investigationData.VISIT_ID
             );
           },
@@ -203,7 +206,7 @@ const ISISInvestigationsTable = (
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
+              `${urlPrefix}/${investigationData.ID}`,
               investigationData.NAME
             );
           },
@@ -220,7 +223,7 @@ const ISISInvestigationsTable = (
               investigationData.STUDYINVESTIGATION[0].STUDY
             ) {
               return tableLink(
-                `${urlPrefix}/${investigationData.ID}/dataset`,
+                `${urlPrefix}/${investigationData.ID}`,
                 investigationData.STUDYINVESTIGATION[0].STUDY.PID
               );
             } else {
@@ -311,6 +314,11 @@ const mapDispatchToProps = (
         parseInt(ownProps.facilityCycleId)
       )
     ),
+  viewDatasets: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/dataset`));
+    };
+  },
 });
 
 const mapStateToProps = (

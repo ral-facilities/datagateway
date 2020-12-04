@@ -36,6 +36,7 @@ import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageCard from './pageCard.component';
 import PageTable from './pageTable.component';
+import PageLanding from './pageLanding.component';
 
 const gridStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -53,6 +54,10 @@ export const paths = {
     root: '/my-data',
     dls: '/my-data/DLS',
     isis: '/my-data/ISIS',
+  },
+  landing: {
+    isisInvestigationLanding:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
   },
   toggle: {
     investigation: '/browse/investigation',
@@ -104,7 +109,11 @@ const NavBar = (props: {
           aria-label="container-table-count"
         >
           <Route
-            path={[paths.root, paths.myData.root]}
+            exact
+            path={Object.values(paths.myData).concat(
+              Object.values(paths.toggle),
+              Object.values(paths.standard)
+            )}
             render={() => {
               return (
                 <Paper
@@ -339,23 +348,13 @@ class PageContainer extends React.Component<
           {/* Hold the table for remainder of the page */}
           <Grid item xs={12} aria-label="container-table">
             {!this.state.toggleCard ? (
-              // Place table in Paper component which adjusts for the height
-              // of the AppBar (64px) on parent application and the cart icon (48px).
-              <Paper
-                square
-                style={{
-                  height: 'calc(100vh - 112px)',
-                  width: '100%',
-                  backgroundColor: 'inherit',
-                }}
-              >
-                <PageTable />
-              </Paper>
+              <PageTable />
             ) : (
               <Paper square style={{ backgroundColor: 'inherit' }}>
                 <PageCard />
               </Paper>
             )}
+            <PageLanding />
           </Grid>
         </StyledGrid>
       </Paper>

@@ -26,7 +26,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
@@ -37,6 +37,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { push } from 'connected-react-router';
 
 interface ISISMyDataTableStoreProps {
   sort: SortType;
@@ -60,6 +61,7 @@ interface ISISMyDataTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: (username: string) => Promise<void>;
+  viewDatasets: (urlPrefix: string) => (id: number) => Action;
 }
 
 type ISISMyDataTableCombinedProps = ISISMyDataTableStoreProps &
@@ -83,6 +85,7 @@ const ISISMyDataTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    viewDatasets,
   } = props;
 
   const [t] = useTranslation();
@@ -132,6 +135,28 @@ const ISISMyDataTable = (
     fetchAllIds(username);
   }, [fetchCount, fetchData, username, sort, filters, fetchAllIds]);
 
+  const urlPrefix = (investigationData: Investigation): string => {
+    if (
+      investigationData.INVESTIGATIONINSTRUMENT &&
+      investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
+      investigationData.FACILITY &&
+      investigationData.FACILITY.FACILITYCYCLE
+    ) {
+      const facilityCycle = investigationData.FACILITY.FACILITYCYCLE.find(
+        (facilitycycle) =>
+          facilitycycle.STARTDATE &&
+          facilitycycle.ENDDATE &&
+          investigationData.STARTDATE &&
+          facilitycycle.STARTDATE <= investigationData.STARTDATE &&
+          facilitycycle.ENDDATE >= investigationData.STARTDATE
+      );
+      if (facilityCycle) {
+        return `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation`;
+      }
+    }
+    return '';
+  };
+
   return (
     <Table
       loading={loading}
@@ -150,6 +175,11 @@ const ISISMyDataTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            viewDatasets={
+              urlPrefix(rowData as Investigation)
+                ? viewDatasets(urlPrefix(rowData as Investigation))
+                : undefined
+            }
           />
         );
       }}
@@ -160,28 +190,14 @@ const ISISMyDataTable = (
           dataKey: 'TITLE',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
-            if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
-              investigationData.FACILITY &&
-              investigationData.FACILITY.FACILITYCYCLE
-            ) {
-              const facilityCycle = investigationData.FACILITY.FACILITYCYCLE.find(
-                (facilitycycle) =>
-                  facilitycycle.STARTDATE &&
-                  facilitycycle.ENDDATE &&
-                  investigationData.STARTDATE &&
-                  facilitycycle.STARTDATE <= investigationData.STARTDATE &&
-                  facilitycycle.ENDDATE >= investigationData.STARTDATE
+            const url = urlPrefix(investigationData);
+            if (url) {
+              return tableLink(
+                `${url}/${investigationData.ID}`,
+                investigationData.TITLE
               );
-              if (facilityCycle) {
-                return tableLink(
-                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
-                  investigationData.TITLE
-                );
-              } else {
-                return investigationData.TITLE;
-              }
+            } else {
+              return investigationData.TITLE;
             }
           },
           filterComponent: textFilter,
@@ -215,28 +231,14 @@ const ISISMyDataTable = (
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
-            if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
-              investigationData.FACILITY &&
-              investigationData.FACILITY.FACILITYCYCLE
-            ) {
-              const facilityCycle = investigationData.FACILITY.FACILITYCYCLE.find(
-                (facilitycycle) =>
-                  facilitycycle.STARTDATE &&
-                  facilitycycle.ENDDATE &&
-                  investigationData.STARTDATE &&
-                  facilitycycle.STARTDATE <= investigationData.STARTDATE &&
-                  facilitycycle.ENDDATE >= investigationData.STARTDATE
+            const url = urlPrefix(investigationData);
+            if (url) {
+              return tableLink(
+                `${url}/${investigationData.ID}`,
+                investigationData.NAME
               );
-              if (facilityCycle) {
-                return tableLink(
-                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
-                  investigationData.NAME
-                );
-              } else {
-                return investigationData.NAME;
-              }
+            } else {
+              return investigationData.NAME;
             }
           },
           filterComponent: textFilter,
@@ -354,6 +356,11 @@ const mapDispatchToProps = (
         },
       ])
     ),
+  viewDatasets: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/dataset`));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {

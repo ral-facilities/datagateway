@@ -237,6 +237,12 @@ export const fetchISISInvestigations = ({
       );
     }
 
+    if (optionalParams && optionalParams.additionalFilters) {
+      optionalParams.additionalFilters.forEach((filter) => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
     const { apiUrl } = getState().dgcommon.urls;
 
     await axios

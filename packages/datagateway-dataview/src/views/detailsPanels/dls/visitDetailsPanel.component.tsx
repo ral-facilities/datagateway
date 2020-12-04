@@ -198,7 +198,7 @@ const VisitDetailsPanel = (
                     </Typography>
                     <Typography>
                       <b>
-                        {investigationUser.USER_.FULL_NAME ||
+                        {investigationUser.USER_.FULLNAME ||
                           investigationUser.USER_.NAME}
                       </b>
                     </Typography>

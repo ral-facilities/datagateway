@@ -21,6 +21,11 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       label="investigations.details.users.label"
       value="users"
     />
+    <WithStyles(ForwardRef(Tab))
+      id="investigation-datasets-tab"
+      label="investigations.details.datasets"
+      onClick={[Function]}
+    />
   </WithStyles(ForwardRef(Tabs))>
   <div
     aria-labelledby="investigation-details-tab"
@@ -169,6 +174,11 @@ exports[`Investigation details panel component renders correctly 1`] = `
       id="investigation-details-tab"
       label="investigations.details.label"
       value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      id="investigation-datasets-tab"
+      label="investigations.details.datasets"
+      onClick={[Function]}
     />
   </WithStyles(ForwardRef(Tabs))>
   <div
@@ -342,6 +352,11 @@ exports[`Investigation details panel component renders user, sample and publicat
       id="investigation-publications-tab"
       label="investigations.details.publications.label"
       value="publications"
+    />
+    <WithStyles(ForwardRef(Tab))
+      id="investigation-datasets-tab"
+      label="investigations.details.datasets"
+      onClick={[Function]}
     />
   </WithStyles(ForwardRef(Tabs))>
   <div

@@ -131,7 +131,7 @@ const InstrumentDetailsPanel = (
                     </Typography>
                     <Typography>
                       <b>
-                        {instrumentScientist.USER_.FULL_NAME ||
+                        {instrumentScientist.USER_.FULLNAME ||
                           instrumentScientist.USER_.NAME}
                       </b>
                     </Typography>

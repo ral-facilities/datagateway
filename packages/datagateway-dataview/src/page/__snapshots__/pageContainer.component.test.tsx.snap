@@ -45,18 +45,8 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       item={true}
       xs={12}
     >
-      <WithStyles(ForwardRef(Paper))
-        square={true}
-        style={
-          Object {
-            "backgroundColor": "inherit",
-            "height": "calc(100vh - 112px)",
-            "width": "100%",
-          }
-        }
-      >
-        <PageTable />
-      </WithStyles(ForwardRef(Paper))>
+      <PageTable />
+      <PageLanding />
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(WithStyles(ForwardRef(Grid)))>
 </div>

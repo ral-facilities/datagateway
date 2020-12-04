@@ -82,7 +82,7 @@ export interface InvestigationUser {
 export interface User {
   ID: number;
   NAME: string;
-  FULL_NAME?: string;
+  FULLNAME?: string;
 }
 
 export interface Sample {

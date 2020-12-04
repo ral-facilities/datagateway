@@ -60,6 +60,8 @@
       "doi": "DOI",
       "size": "Size",
       "calculate": "Calculate",
+      "datasets": "View Datasets",
+      "facility": "Facility",
       "users": {
         "label": "Investigation Users",
         "name": "Name"

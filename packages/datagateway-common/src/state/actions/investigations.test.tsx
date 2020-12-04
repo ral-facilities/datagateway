@@ -345,10 +345,18 @@ describe('Investigation actions', () => {
     );
   });
 
-  it('fetchISISInvestigations action applies filters and sort state to request params', async () => {
+  it('fetchISISInvestigations action applies filters and sort state to request params, as well as applying optional additional filters', async () => {
     const asyncAction = fetchISISInvestigations({
       instrumentId: 1,
       facilityCycleId: 2,
+      optionalParams: {
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({ column3: { eq: 3 } }),
+          },
+        ],
+      },
     });
     const getState = (): Partial<StateType> => ({
       dgcommon: {
@@ -374,6 +382,7 @@ describe('Investigation actions', () => {
         { STUDYINVESTIGATION: 'STUDY' },
       ])
     );
+    params.append('where', JSON.stringify({ column3: { eq: 3 } }));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/1/facilitycycles/2/investigations',

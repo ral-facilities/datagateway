@@ -8,6 +8,7 @@ import {
   Assessment,
   CalendarToday,
 } from '@material-ui/icons';
+import { push } from 'connected-react-router';
 import {
   addToCart,
   clearData,
@@ -79,6 +80,7 @@ interface ISISInvestigationsCVDispatchProps {
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
+  viewDatasets: (urlPrefix: string) => (id: number) => Action;
 }
 
 type ISISInvestigationsCVCombinedProps = ISISInvestigationsCVDispatchProps &
@@ -109,6 +111,7 @@ const ISISInvestigationsCardView = (
     pushPage,
     pushResults,
     pushSort,
+    viewDatasets,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
@@ -188,7 +191,7 @@ const ISISInvestigationsCardView = (
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
           tableLink(
-            `${urlPrefix}/${investigation.ID}/dataset`,
+            `${urlPrefix}/${investigation.ID}`,
             investigation.TITLE,
             view
           ),
@@ -249,6 +252,7 @@ const ISISInvestigationsCardView = (
         <InvestigationDetailsPanel
           rowData={investigation}
           fetchDetails={fetchDetails}
+          viewDatasets={viewDatasets(urlPrefix)}
         />
       )}
       buttons={[
@@ -319,6 +323,11 @@ const mapDispatchToProps = (
     dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  viewDatasets: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/dataset`));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {
