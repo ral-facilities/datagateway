@@ -41,6 +41,7 @@ import {
   CalendarToday,
 } from '@material-ui/icons';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
+import { push } from 'connected-react-router';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISDatasetCVDispatchProps {
@@ -58,6 +59,7 @@ interface ISISDatasetCVDispatchProps {
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   pushResults: (results: number) => Promise<void>;
   pushSort: (sort: string, order: Order | null) => Promise<void>;
+  viewDatafiles: (urlPrefix: string) => (id: number) => Action;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -107,6 +109,7 @@ const ISISDatasetsCardView = (
     pushResults,
     pushSort,
     clearData,
+    viewDatafiles,
   } = props;
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
@@ -151,6 +154,8 @@ const ISISDatasetsCardView = (
     }
   }, [investigationId, data, fetchedCount, fetchCount]);
 
+  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset`;
+
   return (
     <CardView
       data={data}
@@ -170,10 +175,7 @@ const ISISDatasetsCardView = (
         label: 'Name',
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
-          tableLink(
-            `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME
-          ),
+          tableLink(`${urlPrefix}/${dataset.ID}`, dataset.NAME),
         filterComponent: textFilter,
       }}
       description={{
@@ -203,7 +205,11 @@ const ISISDatasetsCardView = (
         },
       ]}
       moreInformation={(dataset: Dataset) => (
-        <DatasetDetailsPanel rowData={dataset} fetchDetails={fetchDetails} />
+        <DatasetDetailsPanel
+          rowData={dataset}
+          fetchDetails={fetchDetails}
+          viewDatafiles={viewDatafiles(urlPrefix)}
+        />
       )}
       buttons={[
         function cartButton(dataset: Dataset) {
@@ -298,6 +304,11 @@ const mapDispatchToProps = (
     dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  viewDatafiles: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/datafile`));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {

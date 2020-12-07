@@ -20,6 +20,7 @@ import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { push } from 'connected-react-router';
 
 describe('ISIS Dataset table component', () => {
   let shallow;
@@ -279,7 +280,7 @@ describe('ISIS Dataset table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly and it sends off an FetchDatasetDetails action', () => {
+  it('renders details panel correctly and it sends actions', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -309,6 +310,14 @@ describe('ISIS Dataset table component', () => {
     );
 
     expect(testStore.getActions()[3]).toEqual(fetchDatasetDetailsRequest());
+
+    detailsPanelWrapper.find('#dataset-datafiles-tab').simulate('click');
+    expect(testStore.getActions()).toHaveLength(5);
+    expect(testStore.getActions()[4]).toEqual(
+      push(
+        '/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile'
+      )
+    );
   });
 
   it('renders dataset name as a link', () => {

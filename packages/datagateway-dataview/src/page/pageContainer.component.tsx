@@ -58,6 +58,8 @@ export const paths = {
   landing: {
     isisInvestigationLanding:
       '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
+    isisDatasetLanding:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId',
   },
   toggle: {
     investigation: '/browse/investigation',

@@ -11,6 +11,7 @@ import {
   Tab,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { Action } from 'redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,12 +28,13 @@ interface DatasetDetailsPanelProps {
   rowData: Entity;
   fetchDetails: (datasetId: number) => Promise<void>;
   detailsPanelResize?: () => void;
+  viewDatafiles?: (id: number) => Action;
 }
 
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, detailsPanelResize } = props;
+  const { rowData, fetchDetails, detailsPanelResize, viewDatafiles } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
   const classes = useStyles();
@@ -68,6 +70,13 @@ const DatasetDetailsPanel = (
             aria-controls="dataset-type-panel"
             label={t('datasets.details.type.label')}
             value="type"
+          />
+        )}
+        {viewDatafiles && (
+          <Tab
+            id="dataset-datafiles-tab"
+            label={t('datasets.details.datafiles')}
+            onClick={() => viewDatafiles(datasetData.ID)}
           />
         )}
       </Tabs>

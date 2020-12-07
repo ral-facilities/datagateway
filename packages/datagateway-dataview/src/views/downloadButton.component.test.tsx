@@ -1,11 +1,11 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
-import AddToCartButton from './addToCartButton.component';
+import DownloadButton from './downloadButton.component';
 import configureStore from 'redux-mock-store';
 import {
-  addToCartRequest,
   dGCommonInitialState,
-  removeFromCartRequest,
+  downloadDatafileRequest,
+  downloadDatasetRequest,
   StateType,
 } from 'datagateway-common';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
@@ -14,7 +14,7 @@ import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 
-describe('Generic add to cart button', () => {
+describe('Generic download button', () => {
   let shallow;
   let mount;
   let mockStore;
@@ -22,6 +22,7 @@ describe('Generic add to cart button', () => {
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
+  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow();
@@ -42,60 +43,47 @@ describe('Generic add to cart button', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <AddToCartButton
+      <DownloadButton
         store={mockStore(state)}
-        allIds={[1]}
+        entityType="dataset"
         entityId={1}
-        entityType="investigation"
+        entityName="test"
       />
     );
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends addToCart action on button press', () => {
+  it('sends download dataset action on button press', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <AddToCartButton
-            allIds={[1]}
-            entityId={1}
-            entityType="investigation"
-          />
+          <DownloadButton entityType="dataset" entityId={1} entityName="test" />
         </MemoryRouter>
       </Provider>
     );
 
-    wrapper.find('#add-to-cart-btn').first().simulate('click');
+    wrapper.find('#download-btn').first().simulate('click');
     expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(addToCartRequest());
+    expect(testStore.getActions()[0]).toEqual(downloadDatasetRequest(1));
   });
 
-  it('sends removeFromCart action on button press', () => {
-    state.dgcommon.cartItems = [
-      {
-        entityId: 1,
-        entityType: 'investigation',
-        id: 1,
-        name: 'test',
-        parentEntities: [],
-      },
-    ];
+  it('sends download datafile action on button press', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <AddToCartButton
-            allIds={[1]}
+          <DownloadButton
+            entityType="datafile"
             entityId={1}
-            entityType="investigation"
+            entityName="test"
           />
         </MemoryRouter>
       </Provider>
     );
 
-    wrapper.find('#remove-from-cart-btn').first().simulate('click');
+    wrapper.find('#download-btn').first().simulate('click');
     expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(removeFromCartRequest());
+    expect(testStore.getActions()[0]).toEqual(downloadDatafileRequest(1));
   });
 });

@@ -82,6 +82,11 @@
     "modified_time": "Modified Time",
     "size": "Size",
     "datafile_count": "Datafile Count",
+    "doi": "DOI",
+    "completion": "Completion",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
+    "location": "Location",
     "details": {
       "tabs_label": "Dataset Details Tabs",
       "label": "Dataset Details",
@@ -91,6 +96,7 @@
       "end_date": "End Date",
       "start_date": "Start Date",
       "calculate": "Calculate",
+      "datafiles": "View Datafiles",
       "type": {
         "label": "Dataset Types",
         "name": "Name",
@@ -123,5 +129,10 @@
     "verifying": "Verifying URL",
     "oops": "Oops!",
     "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>."
+  },
+  "buttons": {
+    "add_to_cart": "Add to cart",
+    "remove_from_cart": "Remove from cart",
+    "download": "Download"
   }
 }

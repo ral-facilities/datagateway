@@ -36,6 +36,8 @@ export interface Dataset {
   SIZE?: number;
   DATAFILE_COUNT?: number;
   DATASETTYPE?: DatasetType;
+  DOI?: string;
+  COMPLETE?: boolean;
 }
 
 export interface Datafile {

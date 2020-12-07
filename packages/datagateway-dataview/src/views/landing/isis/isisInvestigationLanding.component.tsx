@@ -66,9 +66,13 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'hidden',
       textOverflow: 'ellipsis',
     },
-    actionButton: {
+    actionButtons: {
       display: 'flex',
-      marginTop: theme.spacing(1),
+      flexDirection: 'column',
+      '& button': {
+        marginTop: theme.spacing(1),
+        margin: 'auto',
+      },
     },
   })
 );
@@ -302,7 +306,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             )}
             {/* Actions */}
             <Divider />
-            <div className={classes.actionButton}>
+            <div className={classes.actionButtons}>
               <AddToCartButton
                 entityType="investigation"
                 allIds={[parseInt(investigationId)]}

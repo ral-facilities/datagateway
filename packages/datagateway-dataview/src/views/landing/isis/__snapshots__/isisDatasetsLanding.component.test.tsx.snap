@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ISIS Dataset Landing page renders correctly 1`] = `
+<ContextProvider
+  value={null}
+>
+  <LandingPage
+    data={
+      Array [
+        Object {
+          "COMPLETE": true,
+          "CREATE_TIME": "2019-06-10",
+          "DESCRIPTION": "foo bar",
+          "DOI": "doi 1",
+          "ENDDATE": "2019-06-11",
+          "ID": 87,
+          "INVESTIGATION_ID": 1,
+          "MOD_TIME": "2019-06-10",
+          "NAME": "Test 1",
+          "SIZE": 1,
+          "STARTDATE": "2019-06-10",
+        },
+      ]
+    }
+    datasetId="87"
+    facilityCycleId="5"
+    fetchData={[Function]}
+    fetchDetails={[Function]}
+    instrumentId="4"
+    investigationId="1"
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    viewDatafiles={[Function]}
+  />
+</ContextProvider>
+`;

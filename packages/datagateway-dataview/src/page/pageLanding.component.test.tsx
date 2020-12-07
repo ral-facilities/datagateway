@@ -11,7 +11,14 @@ import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLanding.component';
+import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.component';
 import PageLanding from './pageLanding.component';
+import {
+  checkInstrumentAndFacilityCycleId,
+  checkInvestigationId,
+} from './idCheckFunctions';
+import { flushPromises } from '../setupTests';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -19,6 +26,7 @@ jest.mock('./idCheckFunctions');
 // The ISIS routes to test.
 const ISISRoutes = {
   investigation: '/browse/instrument/1/facilityCycle/1/investigation/1',
+  dataset: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1',
 };
 
 describe('PageLanding', () => {
@@ -38,19 +46,77 @@ describe('PageLanding', () => {
 
   beforeEach(() => {
     mount = createMount();
-
     state = JSON.parse(
       JSON.stringify({
         dgdataview: dgDataViewInitialState,
         dgcommon: dGCommonInitialState,
       })
     );
+    (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
   });
 
-  it('renders ISISInvestigationLanding for ISIS investigation route', () => {
+  it('renders ISISInvestigationLanding for ISIS investigation route', async () => {
     const wrapper = createWrapper(ISISRoutes['investigation']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     // Expect the ISISInvestigationsLanding component to be present.
     expect(wrapper.exists(ISISInvestigationLanding)).toBe(true);
+  });
+
+  it('does not render ISISInvestigationLanding for incorrect ISIS investigation route', async () => {
+    (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(ISISRoutes['investigation']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatasetsTable component not to be present.
+    expect(wrapper.exists(ISISInvestigationLanding)).toBe(false);
+  });
+
+  it('renders ISISDatasetLanding for ISIS dataset route', async () => {
+    const wrapper = createWrapper(ISISRoutes['dataset']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISInvestigationsLanding component to be present.
+    expect(wrapper.exists(ISISDatasetLanding)).toBe(true);
+  });
+
+  it('does not render ISISDatasetLanding for incorrect ISIS dataset route', async () => {
+    (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(ISISRoutes['dataset']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatasetsTable component not to be present.
+    expect(wrapper.exists(ISISDatasetLanding)).toBe(false);
   });
 });

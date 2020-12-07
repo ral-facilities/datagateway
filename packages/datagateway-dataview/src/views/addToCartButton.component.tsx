@@ -10,6 +10,7 @@ import {
   StateType,
 } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -48,6 +49,7 @@ const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
     entityId,
     allIds,
   } = props;
+  const [t] = useTranslation();
   const selectedIds = React.useMemo(
     () =>
       cartItems
@@ -68,9 +70,8 @@ const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
       startIcon={<AddCircleOutlineOutlined />}
       disableElevation
       onClick={() => addToCart(entityType, [entityId])}
-      style={{ margin: 'auto' }}
     >
-      Add to cart
+      {t('buttons.add_to_cart')}
     </Button>
   ) : (
     <Button
@@ -80,9 +81,8 @@ const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
       startIcon={<RemoveCircleOutlineOutlined />}
       disableElevation
       onClick={() => removeFromCart(entityType, [entityId])}
-      style={{ margin: 'auto' }}
     >
-      Remove from cart
+      {t('buttons.remove_from_cart')}
     </Button>
   );
 };

@@ -1,5 +1,6 @@
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import axios from 'axios';
+import { push } from 'connected-react-router';
 import {
   addToCartRequest,
   dGCommonInitialState,
@@ -290,7 +291,7 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
+  it('renders details panel correctly and it sends actions', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -317,6 +318,34 @@ describe('ISIS Investigations table component', () => {
     expect(testStore.getActions()[5]).toEqual(
       fetchInvestigationDetailsRequest()
     );
+
+    detailsPanelWrapper.find('#investigation-datasets-tab').simulate('click');
+    expect(testStore.getActions()).toHaveLength(7);
+    expect(testStore.getActions()[6]).toEqual(
+      push('/browse/instrument/3/facilityCycle/8/investigation/1/dataset')
+    );
+  });
+
+  it('renders details panel without datasets link if Facility not set', () => {
+    state.dgcommon.data[0].FACILITY = {};
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISMyDataTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const detailsPanelWrapper = shallow(
+      wrapper.find(Table).prop('detailsPanel')({
+        rowData: state.dgcommon.data[0],
+      })
+    );
+
+    expect(
+      detailsPanelWrapper.find('#investigation-datasets-tab').length
+    ).toEqual(0);
   });
 
   it('renders title and RB number as links', () => {

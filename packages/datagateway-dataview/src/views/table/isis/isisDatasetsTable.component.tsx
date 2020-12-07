@@ -25,7 +25,7 @@ import {
   DateFilter,
 } from 'datagateway-common';
 import { IconButton } from '@material-ui/core';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { StateType } from '../../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -37,6 +37,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import TitleIcon from '@material-ui/icons/Title';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { push } from 'connected-react-router';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
@@ -70,6 +71,7 @@ interface ISISDatasetsTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
+  viewDatafiles: (urlPrefix: string) => (id: number) => Action;
 }
 
 type ISISDatasetsTableCombinedProps = ISISDatasetsTableProps &
@@ -98,6 +100,7 @@ const ISISDatasetsTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    viewDatafiles,
   } = props;
 
   const [t] = useTranslation();
@@ -138,6 +141,8 @@ const ISISDatasetsTable = (
     />
   );
 
+  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset`;
+
   return (
     <Table
       loading={loading}
@@ -156,6 +161,7 @@ const ISISDatasetsTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            viewDatafiles={viewDatafiles(urlPrefix)}
           />
         );
       }}
@@ -182,10 +188,7 @@ const ISISDatasetsTable = (
           label: t('datasets.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
-            tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-              props.rowData.NAME
-            ),
+            tableLink(`${urlPrefix}/${props.rowData.ID}`, props.rowData.NAME),
           filterComponent: textFilter,
         },
         {
@@ -265,6 +268,11 @@ const mapDispatchToProps = (
         },
       ])
     ),
+  viewDatafiles: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/datafile`));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
