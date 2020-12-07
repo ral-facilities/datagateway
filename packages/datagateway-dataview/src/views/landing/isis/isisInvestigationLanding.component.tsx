@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
       padding: theme.spacing(1),
     },
+    subHeading: {
+      marginTop: theme.spacing(1),
+    },
     shortInfoRow: {
       display: 'flex',
       marginTop: theme.spacing(1),
@@ -225,6 +228,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
           {/* Long format information */}
           <Grid item xs>
             <Typography
+              className={classes.subHeading}
               component="h6"
               variant="h6"
               aria-label="landing-investigation-name"
@@ -237,6 +241,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             {filteredUsers && (
               <div>
                 <Typography
+                  className={classes.subHeading}
                   component="h6"
                   variant="h6"
                   aria-label="landing-investigation-users-label"
@@ -248,6 +253,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                     user.USER_?.FULLNAME && (
                       <Typography
                         aria-label={`landing-investigation-user-${i}`}
+                        key={user.USER_.ID}
                       >
                         <b>{user.ROLE}:</b> {user.USER_.FULLNAME}
                       </Typography>
@@ -258,6 +264,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             {filteredPublications && (
               <div>
                 <Typography
+                  className={classes.subHeading}
                   component="h6"
                   variant="h6"
                   aria-label="landing-investigation-publications-label"
@@ -279,10 +286,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
           {/* Short format information */}
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
             {shortInfo.map(
-              (field) =>
+              (field, i) =>
                 data[0] &&
                 field.content(data[0] as Investigation) && (
-                  <div className={classes.shortInfoRow}>
+                  <div className={classes.shortInfoRow} key={i}>
                     <Typography className={classes.shortInfoLabel}>
                       {field.icon}
                       {field.label}:

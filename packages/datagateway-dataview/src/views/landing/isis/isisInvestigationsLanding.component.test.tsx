@@ -25,6 +25,70 @@ describe('ISIS Investigation Landing page', () => {
   );
   global.Date.now = jest.fn(() => 1);
 
+  const initialData = [
+    {
+      ID: 1,
+      TITLE: 'Test 1',
+      NAME: 'Test 1',
+      SUMMARY: 'foo bar',
+      VISIT_ID: '1',
+      RB_NUMBER: '1',
+      DOI: 'doi 1',
+      SIZE: 1,
+      INVESTIGATIONINSTRUMENT: [
+        {
+          ID: 1,
+          INVESTIGATION_ID: 1,
+          INSTRUMENT_ID: 3,
+          INSTRUMENT: {
+            ID: 3,
+            NAME: 'LARMOR',
+            FACILITY_ID: 1,
+          },
+        },
+      ],
+      STUDYINVESTIGATION: [
+        {
+          ID: 6,
+          STUDY_ID: 7,
+          INVESTIGATION_ID: 1,
+          STUDY: {
+            ID: 7,
+            PID: 'study pid',
+          },
+        },
+      ],
+      STARTDATE: '2019-06-10',
+      ENDDATE: '2019-06-11',
+    },
+  ];
+  const investigationUser = [
+    {
+      ID: 1,
+      USER_ID: 1,
+      INVESTIGATION_ID: 1,
+      ROLE: 'Lead Investigator',
+      USER_: {
+        ID: 1,
+        NAME: 'JS',
+        FULLNAME: 'John Smith',
+      },
+    },
+  ];
+  const sample = [
+    {
+      ID: 1,
+      NAME: 'Sample',
+      INVESTIGATION_ID: 1,
+    },
+  ];
+  const publication = [
+    {
+      ID: 1,
+      FULLREFERENCE: 'Journal, Author, Date, DOI',
+    },
+  ];
+
   beforeEach(() => {
     shallow = createShallow();
     mount = createMount();
@@ -36,43 +100,7 @@ describe('ISIS Investigation Landing page', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    state.dgcommon.data = [
-      {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        SUMMARY: 'foo bar',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
-          {
-            ID: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 3,
-              NAME: 'LARMOR',
-              FACILITY_ID: 1,
-            },
-          },
-        ],
-        STUDYINVESTIGATION: [
-          {
-            ID: 6,
-            STUDY_ID: 7,
-            INVESTIGATION_ID: 1,
-            STUDY: {
-              ID: 7,
-              PID: 'study pid',
-            },
-          },
-        ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
-      },
-    ];
+    state.dgcommon.data = initialData;
     state.dgcommon.allIds = [1];
   });
 
@@ -140,30 +168,12 @@ describe('ISIS Investigation Landing page', () => {
   });
 
   it('fetchDetails not dispatched if details already present', () => {
-    state.dgcommon.data[0].INVESTIGATIONUSER = [
+    state.dgcommon.data = [
       {
-        ID: 1,
-        USER_ID: 1,
-        INVESTIGATION_ID: 1,
-        ROLE: 'Lead Investigator',
-        USER_: {
-          ID: 1,
-          NAME: 'JS',
-          FULLNAME: 'John Smith',
-        },
-      },
-    ];
-    state.dgcommon.data[0].SAMPLE = [
-      {
-        ID: 1,
-        NAME: 'Sample',
-        INVESTIGATION_ID: '1',
-      },
-    ];
-    state.dgcommon.data[0].PUBLICATION = [
-      {
-        ID: 1,
-        FULLREFERENCE: 'Journal, Author, Date, DOI',
+        ...initialData[0],
+        INVESTIGATIONUSER: investigationUser,
+        PUBLICATION: publication,
+        SAMPLE: sample,
       },
     ];
     const testStore = mockStore(state);
@@ -204,18 +214,8 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-user-0"]')
     ).toHaveLength(0);
 
-    state.dgcommon.data[0].INVESTIGATIONUSER = [
-      {
-        ID: 1,
-        USER_ID: 1,
-        INVESTIGATION_ID: 1,
-        ROLE: 'Lead Investigator',
-        USER_: {
-          ID: 1,
-          NAME: 'JS',
-          FULLNAME: 'John Smith',
-        },
-      },
+    state.dgcommon.data = [
+      { ...initialData[0], INVESTIGATIONUSER: investigationUser },
     ];
     wrapper.setProps({ store: mockStore(state) });
 
@@ -248,12 +248,7 @@ describe('ISIS Investigation Landing page', () => {
       wrapper.find('[aria-label="landing-investigation-publication-0"]')
     ).toHaveLength(0);
 
-    state.dgcommon.data[0].PUBLICATION = [
-      {
-        ID: 1,
-        FULLREFERENCE: 'Journal, Author, Date, DOI',
-      },
-    ];
+    state.dgcommon.data = [{ ...initialData[0], PUBLICATION: publication }];
     wrapper.setProps({ store: mockStore(state) });
 
     expect(

@@ -47,10 +47,10 @@ describe('PageLanding', () => {
     );
   });
 
-  it('renders ISISInvestigation for ISIS investigation route', () => {
+  it('renders ISISInvestigationLanding for ISIS investigation route', () => {
     const wrapper = createWrapper(ISISRoutes['investigation']);
 
-    // Expect the ISISInvestigationsTable component to be present.
+    // Expect the ISISInvestigationsLanding component to be present.
     expect(wrapper.exists(ISISInvestigationLanding)).toBe(true);
   });
 });
