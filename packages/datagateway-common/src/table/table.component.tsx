@@ -32,6 +32,7 @@ const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
 const dataColumnMinWidth = 70;
+const scrollBarHeight = 17;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -218,7 +219,7 @@ const VirtualizedTable = (
                   registerChild(ref);
                 }}
                 className={classes.table}
-                height={height || 500}
+                height={(height || 500) - scrollBarHeight}
                 width={Math.max(width, min_table_width)}
                 rowCount={data.length}
                 onRowsRendered={onRowsRendered}

@@ -1037,6 +1037,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                     style={
                       Object {
                         "height": "calc(75vh)",
+                        "overflowX": "auto",
                       }
                     }
                   >
@@ -1077,6 +1078,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                       style={
                         Object {
                           "height": "calc(75vh)",
+                          "overflowX": "auto",
                         }
                       }
                     >
@@ -1085,6 +1087,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                         style={
                           Object {
                             "height": "calc(75vh)",
+                            "overflowX": "auto",
                           }
                         }
                       >
@@ -1274,7 +1277,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                                         headerHeight={110}
                                         headerRowRenderer={[Function]}
                                         headerStyle={Object {}}
-                                        height={500}
+                                        height={483}
                                         noRowsRenderer={[Function]}
                                         onRowsRendered={[Function]}
                                         onScroll={[Function]}
@@ -8639,7 +8642,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                                             headerHeight={110}
                                             headerRowRenderer={[Function]}
                                             headerStyle={Object {}}
-                                            height={390}
+                                            height={373}
                                             isScrollingOptOut={false}
                                             noContentRenderer={[Function]}
                                             noRowsRenderer={[Function]}
@@ -8682,7 +8685,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                                                   "WebkitOverflowScrolling": "touch",
                                                   "boxSizing": "border-box",
                                                   "direction": "ltr",
-                                                  "height": 390,
+                                                  "height": 373,
                                                   "overflowX": "hidden",
                                                   "overflowY": "hidden",
                                                   "position": "relative",

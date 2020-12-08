@@ -200,7 +200,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         </Grid>
       )}
       <Grid item>
-        <Paper style={{ height: 'calc(100vh - 110px)' }}>
+        <Paper style={{ height: 'calc(100vh - 110px)', overflowX: 'auto' }}>
           <Table
             columns={[
               {
