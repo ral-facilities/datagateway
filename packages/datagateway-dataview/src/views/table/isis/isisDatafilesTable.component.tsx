@@ -51,6 +51,7 @@ interface ISISDatafilesTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface ISISDatafilesTableDispatchProps {
@@ -90,6 +91,7 @@ const ISISDatafilesTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -142,6 +144,7 @@ const ISISDatafilesTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      selectAllSetting={selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <DatafileDetailsPanel
@@ -266,6 +269,7 @@ const mapStateToProps = (state: StateType): ISISDatafilesTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

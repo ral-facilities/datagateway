@@ -32,6 +32,7 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
   loadMoreRows={[Function]}
   loading={false}
   onSort={[Function]}
+  selectAllSetting={true}
   sort={Object {}}
   totalRowCount={0}
 />

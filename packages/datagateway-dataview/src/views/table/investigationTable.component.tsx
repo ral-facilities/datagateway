@@ -62,6 +62,7 @@ interface InvestigationTableProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface InvestigationTableDispatchProps {
@@ -95,6 +96,7 @@ const InvestigationTable = (
     allIds,
     fetchAllIds,
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -149,6 +151,7 @@ const InvestigationTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      selectAllSetting={selectAllSetting}
       detailsPanel={({ rowData }) => {
         const investigationData = rowData as Investigation;
         return (
@@ -288,6 +291,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

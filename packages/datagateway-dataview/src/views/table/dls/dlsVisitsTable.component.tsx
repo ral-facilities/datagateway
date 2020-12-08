@@ -42,6 +42,7 @@ interface DLSVisitsTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  selectAllSetting: boolean;
 }
 
 interface DLSVisitsTableDispatchProps {
@@ -67,15 +68,13 @@ const DLSVisitsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-
     sort,
-
     pushSort,
     filters,
-
     pushFilters,
     proposalName,
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -111,6 +110,7 @@ const DLSVisitsTable = (
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
+      selectAllSetting={selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <VisitDetailsPanel
@@ -227,6 +227,7 @@ const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     error: state.dgcommon.error,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

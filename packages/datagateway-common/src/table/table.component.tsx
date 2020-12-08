@@ -101,6 +101,7 @@ interface VirtualizedTableProps {
   onCheck?: (selectedIds: number[]) => void;
   onUncheck?: (selectedIds: number[]) => void;
   allIds?: number[];
+  selectAllSetting: boolean;
 }
 
 const VirtualizedTable = (
@@ -129,6 +130,7 @@ const VirtualizedTable = (
     detailsPanel,
     sort,
     onSort,
+    selectAllSetting,
   } = props;
 
   if (
@@ -257,27 +259,29 @@ const VirtualizedTable = (
                     flexShrink={0}
                     key="Select"
                     dataKey="Select"
-                    headerRenderer={(props) => (
-                      <SelectHeader
-                        {...props}
-                        className={clsx(
-                          classes.headerTableCell,
-                          classes.headerFlexContainer
-                        )}
-                        selectedRows={selectedRows}
-                        totalRowCount={rowCount}
-                        allIds={
-                          allIds ||
-                          data.map((d) => {
-                            const icatEntity = d as ICATEntity;
-                            return icatEntity.ID;
-                          })
-                        }
-                        loading={loading}
-                        onCheck={onCheck}
-                        onUncheck={onUncheck}
-                      />
-                    )}
+                    headerRenderer={(props) =>
+                      selectAllSetting && (
+                        <SelectHeader
+                          {...props}
+                          className={clsx(
+                            classes.headerTableCell,
+                            classes.headerFlexContainer
+                          )}
+                          selectedRows={selectedRows}
+                          totalRowCount={rowCount}
+                          allIds={
+                            allIds ||
+                            data.map((d) => {
+                              const icatEntity = d as ICATEntity;
+                              return icatEntity.ID;
+                            })
+                          }
+                          loading={loading}
+                          onCheck={onCheck}
+                          onUncheck={onUncheck}
+                        />
+                      )
+                    }
                     className={classes.flexContainer}
                     headerClassName={classes.headerFlexContainer}
                     cellRenderer={(props) => (

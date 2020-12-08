@@ -85,6 +85,7 @@ exports[`Investigation table component renders correctly 1`] = `
   onCheck={[Function]}
   onSort={[Function]}
   onUncheck={[Function]}
+  selectAllSetting={true}
   selectedRows={Array []}
   sort={Object {}}
   totalRowCount={0}

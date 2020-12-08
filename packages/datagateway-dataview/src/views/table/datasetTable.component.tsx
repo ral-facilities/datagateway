@@ -63,6 +63,7 @@ interface DatasetTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface DatasetTableDispatchProps {
@@ -99,6 +100,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     allIds,
     fetchAllIds,
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -153,6 +155,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      selectAllSetting={selectAllSetting}
       detailsPanel={({ rowData }) => {
         const datasetData = rowData as Dataset;
         return (
@@ -277,6 +280,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

@@ -47,6 +47,7 @@ interface DLSDatasetsTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface DLSDatasetsTableDispatchProps {
@@ -88,6 +89,7 @@ const DLSDatasetsTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -140,6 +142,7 @@ const DLSDatasetsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      selectAllSetting={selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <DatasetDetailsPanel
@@ -248,6 +251,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

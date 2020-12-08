@@ -51,6 +51,7 @@ interface ISISInvestigationsTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface ISISInvestigationsTableDispatchProps {
@@ -93,6 +94,7 @@ const ISISInvestigationsTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -160,6 +162,7 @@ const ISISInvestigationsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      selectAllSetting={selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <InvestigationDetailsPanel
@@ -325,6 +328,7 @@ const mapStateToProps = (
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

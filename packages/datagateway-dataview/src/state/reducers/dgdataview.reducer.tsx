@@ -6,12 +6,15 @@ import {
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureSelectAllSettingPayload,
+  ConfigureSelectAllSettingType,
 } from '../actions/actions.types';
 
 export const initialState: DGDataViewState = {
   features: {},
   breadcrumbSettings: {},
   settingsLoaded: false,
+  selectAllSetting: true,
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -43,10 +46,21 @@ export function handleConfigureBreadcrumbSettings(
   };
 }
 
+export function handleConfigureSelectAllSetting(
+  state: DGDataViewState,
+  payload: ConfigureSelectAllSettingPayload
+): DGDataViewState {
+  return {
+    ...state,
+    selectAllSetting: payload.settings,
+  };
+}
+
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
+  [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
 });
 
 export default DGDataViewReducer;
