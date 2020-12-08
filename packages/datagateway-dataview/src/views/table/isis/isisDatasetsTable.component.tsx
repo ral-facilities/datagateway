@@ -152,7 +152,7 @@ const ISISDatasetsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      selectAllSetting={selectAllSetting}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <DatasetDetailsPanel

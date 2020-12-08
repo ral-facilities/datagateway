@@ -155,7 +155,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      selectAllSetting={selectAllSetting}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData }) => {
         const datasetData = rowData as Dataset;
         return (

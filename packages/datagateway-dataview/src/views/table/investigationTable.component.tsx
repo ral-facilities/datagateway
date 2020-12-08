@@ -151,7 +151,7 @@ const InvestigationTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      selectAllSetting={selectAllSetting}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData }) => {
         const investigationData = rowData as Investigation;
         return (

@@ -42,10 +42,10 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
       },
     ]
   }
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onSort={[Function]}
-  selectAllSetting={true}
   sort={Object {}}
   totalRowCount={0}
 />

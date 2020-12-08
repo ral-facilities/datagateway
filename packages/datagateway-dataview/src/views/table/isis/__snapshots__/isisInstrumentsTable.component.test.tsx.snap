@@ -29,10 +29,10 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onSort={[Function]}
-  selectAllSetting={true}
   sort={Object {}}
   totalRowCount={0}
 />

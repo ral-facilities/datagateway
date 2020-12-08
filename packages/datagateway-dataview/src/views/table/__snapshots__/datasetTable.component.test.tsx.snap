@@ -201,12 +201,12 @@ exports[`Dataset table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onCheck={[Function]}
   onSort={[Function]}
   onUncheck={[Function]}
-  selectAllSetting={true}
   selectedRows={Array []}
   sort={Object {}}
   totalRowCount={0}

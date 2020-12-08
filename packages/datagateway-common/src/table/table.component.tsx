@@ -101,7 +101,7 @@ interface VirtualizedTableProps {
   onCheck?: (selectedIds: number[]) => void;
   onUncheck?: (selectedIds: number[]) => void;
   allIds?: number[];
-  selectAllSetting: boolean;
+  disableSelectAll?: boolean;
 }
 
 const VirtualizedTable = (
@@ -130,7 +130,7 @@ const VirtualizedTable = (
     detailsPanel,
     sort,
     onSort,
-    selectAllSetting,
+    disableSelectAll,
   } = props;
 
   if (
@@ -260,7 +260,7 @@ const VirtualizedTable = (
                     key="Select"
                     dataKey="Select"
                     headerRenderer={(props) =>
-                      selectAllSetting && (
+                      !disableSelectAll && (
                         <SelectHeader
                           {...props}
                           className={clsx(

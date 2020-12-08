@@ -85,7 +85,7 @@ const ISISInstrumentsTable = (
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
-      selectAllSetting={selectAllSetting}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <InstrumentDetailsPanel

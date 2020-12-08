@@ -83,7 +83,7 @@ const DLSProposalsTable = (
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
-      selectAllSetting={selectAllSetting}
+      disableSelectAll={!selectAllSetting}
       columns={[
         {
           icon: <TitleIcon />,

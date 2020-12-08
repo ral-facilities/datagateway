@@ -146,7 +146,7 @@ const ISISMyDataTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      selectAllSetting={selectAllSetting}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <InvestigationDetailsPanel

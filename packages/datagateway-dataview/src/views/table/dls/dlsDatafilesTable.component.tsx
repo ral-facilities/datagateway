@@ -154,7 +154,7 @@ const DLSDatafilesTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      selectAllSetting={selectAllSetting}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
