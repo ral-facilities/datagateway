@@ -7,7 +7,7 @@ describe('ISIS - Datasets Table', () => {
     cy.login('user', 'password');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
-    ).wait(['@datasetsCount'], { timeout: 10000 });
+    ).wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
   });
 
   it('should load correctly', () => {
@@ -102,7 +102,7 @@ describe('ISIS - Datasets Table', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -112,10 +112,10 @@ describe('ISIS - Datasets Table', () => {
     it('descending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -129,13 +129,13 @@ describe('ISIS - Datasets Table', () => {
     it('no order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
