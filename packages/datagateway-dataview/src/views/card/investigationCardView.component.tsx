@@ -218,6 +218,7 @@ const InvestigationCardView = (
           label: 'RB Number',
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
+          disableSort: true,
         },
         {
           icon: <ConfirmationNumber />,
