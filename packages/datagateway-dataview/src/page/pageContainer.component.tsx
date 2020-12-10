@@ -125,7 +125,15 @@ const NavBar = (props: {
             }}
           />
         </Grid>
-        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+        <Paper
+          square
+          style={{
+            backgroundColor: 'inherit',
+            display: 'flex',
+            paddingLeft: 6,
+            paddingRight: 6,
+          }}
+        >
           <IconButton
             className="tour-dataview-search-icon"
             onClick={props.navigateToSearch}
@@ -135,7 +143,15 @@ const NavBar = (props: {
             <SearchIcon />
           </IconButton>
         </Paper>
-        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+        <Paper
+          square
+          style={{
+            backgroundColor: 'inherit',
+            display: 'flex',
+            paddingLeft: 6,
+            paddingRight: 6,
+          }}
+        >
           <IconButton
             className="tour-dataview-cart-icon"
             onClick={props.navigateToDownload}
