@@ -19,6 +19,7 @@ import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import DescriptionIcon from '@material-ui/icons/Description';
 import LinkIcon from '@material-ui/icons/Link';
+import { useTranslation } from 'react-i18next';
 
 const useAdvancedFilterStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -105,6 +106,7 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
     }
     return icon;
   };
+  const [t] = useTranslation();
 
   return (
     <div>
@@ -116,7 +118,7 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
               <Grid container>
                 {title.label && chooseIcon(title.label)}
                 <Typography aria-label="title-label" variant="subtitle1">
-                  {title.label}
+                  {title.label ? title.label : title.dataKey}
                 </Typography>
               </Grid>
               {title.filterComponent &&
@@ -173,8 +175,8 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
           onClick={() => setAdvSearchCollapsed((prev) => !prev)}
         >
           {!advSearchCollapsed
-            ? 'Show Advanced Search'
-            : 'Hide Advanced Search'}
+            ? t('advanced_filters.show')
+            : t('advanced_filters.hide')}
         </Link>
       </div>
     </div>

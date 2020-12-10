@@ -1,20 +1,14 @@
 describe('Download Cart', () => {
-  before(() => {
-    // Ensure the download cart is cleared before running tests.
-    cy.login('root', 'pw');
-    cy.clearDownloadCart();
-  });
-
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
+    Cypress.currentTest.retries(3);
     cy.server();
     cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login('root', 'pw');
+    cy.clearDownloadCart();
 
     cy.seedDownloadCart().then(() => {
-      cy.visit('/');
-      cy.wait('@fetchCart');
+      cy.visit('/').wait('@fetchCart');
     });
   });
 
@@ -32,13 +26,11 @@ describe('Download Cart', () => {
 
     // Ensure we can move away from the table and come back to it.
     cy.get('[aria-label="Download cart panel"]').should('exist');
-    cy.get('[aria-label="Downloads tab"]').should('exist').click();
-
     // Wait for the downloads to be fetched before moving back to the cart.
-    cy.wait('@fetchDownloads');
+    cy.get('[aria-label="Downloads tab"]').should('exist').click().wait('@fetchDownloads');
     cy.get('[aria-label="Download status panel"]').should('exist');
 
-    cy.get('[aria-label="Cart tab').click();
+    cy.get('[aria-label="Cart tab').click().wait('@fetchCart');
     cy.get('[aria-label="Download cart panel"]').should('exist');
 
     cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');

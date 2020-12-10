@@ -26,6 +26,8 @@ import { saveApiUrlMiddleware } from './page/idCheckFunctions';
 import PageContainer from './page/pageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import AppReducer from './state/reducers/app.reducer';
 
 const generateClassName = createGenerateClassName({
@@ -75,9 +77,12 @@ const registerRouteAction = {
     section: 'Data',
     link: '/browse/investigation',
     plugin: 'datagateway-dataview',
-    displayName: 'DataGateway DataView',
+    displayName: '\xa0DataView',
     order: 0,
     helpText: 'TODO: write some help text for the user tour',
+    logoLightMode: LogoLight,
+    logoDarkMode: LogoDark,
+    logoAltText: 'DataGateway',
   },
 };
 

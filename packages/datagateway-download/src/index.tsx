@@ -14,6 +14,8 @@ import {
   MicroFrontendId,
   MicroFrontendToken,
 } from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
@@ -123,9 +125,12 @@ document.dispatchEvent(
         section: 'Test',
         link: '/download',
         plugin: 'datagateway-download',
-        displayName: 'DataGateway Download',
+        displayName: '\xa0Download',
         order: 0,
         helpText: 'TODO: Write help text for user tour',
+        logoLightMode: LogoLight,
+        logoDarkMode: LogoDark,
+        logoAltText: 'DataGateway',
       },
     },
   })
