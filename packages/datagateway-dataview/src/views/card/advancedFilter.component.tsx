@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Collapse, Typography, Link } from '@material-ui/core';
 import { CardViewDetails } from './cardView.component';
+import { useTranslation } from 'react-i18next';
 
 const useAdvancedFilterStyles = makeStyles({
   filterGrid: {
@@ -34,6 +35,8 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
   // Set to collapsed or not.
   const [advSearchCollapsed, setAdvSearchCollapsed] = React.useState(false);
 
+  const [t] = useTranslation();
+
   return (
     <div>
       <Collapse in={advSearchCollapsed}>
@@ -42,7 +45,7 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
           {title && title.filterComponent && (
             <div className={classes.filter}>
               <Typography aria-label="title-label" variant="subtitle1">
-                {title.label}
+                {title.label ? title.label : title.dataKey}
               </Typography>
               {title.filterComponent &&
                 title.filterComponent(
@@ -92,8 +95,8 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
           onClick={() => setAdvSearchCollapsed((prev) => !prev)}
         >
           {!advSearchCollapsed
-            ? 'Show Advanced Search'
-            : 'Hide Advanced Search'}
+            ? t('advanced_filters.show')
+            : t('advanced_filters.hide')}
         </Link>
       </div>
     </div>

@@ -24,8 +24,8 @@ import {
   UpdateFiltersType,
   UpdatePagePayload,
   UpdatePageType,
-  UpdateQueriesPayload,
-  UpdateQueriesType,
+  UpdateQueryPayload,
+  UpdateQueryType,
   UpdateResultsPayload,
   UpdateResultsType,
   UpdateSaveViewType,
@@ -81,11 +81,11 @@ export const filterTable = (
 });
 
 export const updateQueryParams = (
-  queries: QueryParams
-): ActionType<UpdateQueriesPayload> => ({
-  type: UpdateQueriesType,
+  query: QueryParams
+): ActionType<UpdateQueryPayload> => ({
+  type: UpdateQueryType,
   payload: {
-    queries,
+    query,
   },
 });
 
