@@ -211,7 +211,7 @@ const ISISInvestigationsTable = (
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.rb_number'),
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
@@ -223,8 +223,8 @@ const ISISInvestigationsTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <TitleIcon />,
-          label: t('investigations.name'),
+          icon: <FingerprintIcon />,
+          label: t('investigations.isis.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;

@@ -8,20 +8,20 @@ exports[`ISIS Studies table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "STUDY.NAME",
         "filterComponent": [Function],
-        "icon": <Memo(TitleIcon) />,
-        "label": "studies.name",
-      },
-      Object {
-        "dataKey": "INVESTIGATION.VISIT_ID",
-        "filterComponent": [Function],
         "icon": <Memo(FingerprintIcon) />,
-        "label": "studies.rb_number",
+        "label": "studies.name",
       },
       Object {
         "dataKey": "STUDY.DESCRIPTION",
         "filterComponent": [Function],
         "icon": <Memo(DescriptionIcon) />,
         "label": "studies.description",
+      },
+      Object {
+        "dataKey": "STUDY.PID",
+        "filterComponent": [Function],
+        "icon": <Memo(PublicIcon) />,
+        "label": "studies.pid",
       },
       Object {
         "dataKey": "STUDY.STARTDATE",

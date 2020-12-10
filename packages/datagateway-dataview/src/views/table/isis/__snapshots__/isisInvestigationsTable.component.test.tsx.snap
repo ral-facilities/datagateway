@@ -21,14 +21,14 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
         "dataKey": "VISIT_ID",
         "filterComponent": [Function],
         "icon": <Memo(FingerprintIcon) />,
-        "label": "investigations.rb_number",
+        "label": "investigations.visit_id",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "icon": <Memo(TitleIcon) />,
-        "label": "investigations.name",
+        "icon": <Memo(FingerprintIcon) />,
+        "label": "investigations.isis.name",
       },
       Object {
         "cellContentRenderer": [Function],

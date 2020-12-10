@@ -37,9 +37,9 @@
     "start_date": "Start Date"
   },
   "studies": {
-    "name": "Name",
-    "rb_number":"RB Number",
+    "name": "RB Number",
     "description": "Description",
+    "pid": "DOI",
     "end_date": "End Date",
     "start_date": "Start Date"
   },
@@ -82,6 +82,9 @@
         "label": "Publications",
         "reference": "Reference"
       }
+    },
+    "isis": {
+      "name":"RB Number"
     }
   },
   "datasets": {

@@ -23,7 +23,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 
-import TitleIcon from '@material-ui/icons/Title';
+import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import DescriptionIcon from '@material-ui/icons/Description';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
@@ -114,26 +114,26 @@ const ISISStudiesTable = (
       onSort={pushSort}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: <FingerprintIcon />,
           label: t('studies.name'),
           dataKey: 'STUDY.NAME',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.ID}/investigation`,
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.STUDY.ID}/investigation`,
               props.rowData.STUDY?.NAME
             ),
-          filterComponent: textFilter,
-        },
-        {
-          icon: <FingerprintIcon />,
-          label: t('studies.rb_number'),
-          dataKey: 'INVESTIGATION.VISIT_ID',
           filterComponent: textFilter,
         },
         {
           icon: <DescriptionIcon />,
           label: t('studies.description'),
           dataKey: 'STUDY.DESCRIPTION',
+          filterComponent: textFilter,
+        },
+        {
+          icon: <PublicIcon />,
+          label: t('studies.pid'),
+          dataKey: 'STUDY.PID',
           filterComponent: textFilter,
         },
         {
@@ -180,7 +180,7 @@ const mapDispatchToProps = (
           },
           {
             filterType: 'include',
-            filterValue: JSON.stringify(['STUDY', 'INVESTIGATION']),
+            filterValue: JSON.stringify('STUDY'),
           },
         ],
       })

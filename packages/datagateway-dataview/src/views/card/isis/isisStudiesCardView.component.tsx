@@ -29,7 +29,7 @@ import {
 } from 'datagateway-common/lib/state/app.types';
 import { Action, AnyAction } from 'redux';
 import { connect } from 'react-redux';
-import { Fingerprint, CalendarToday } from '@material-ui/icons';
+import { CalendarToday, Public } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -151,26 +151,26 @@ const ISISStudiesCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: t('facilitycycles.description'),
+        label: t('studies.description'),
         dataKey: 'STUDY.DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
-          icon: <Fingerprint />,
-          label: t('studies.rb_number'),
-          dataKey: 'INVESTIGATION.VISIT_ID',
+          icon: <Public />,
+          label: t('studies.pid'),
+          dataKey: 'STUDY.PID',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarToday />,
-          label: t('facilitycycles.start_date'),
+          label: t('studies.start_date'),
           dataKey: 'STUDY.STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: t('facilitycycles.end_date'),
+          label: t('studies.end_date'),
           dataKey: 'STUDY.ENDDATE',
           filterComponent: dateFilter,
         },
@@ -206,7 +206,7 @@ const mapDispatchToProps = (
           },
           {
             filterType: 'include',
-            filterValue: JSON.stringify(['STUDY', 'INVESTIGATION']),
+            filterValue: JSON.stringify('STUDY'),
           },
         ],
       })

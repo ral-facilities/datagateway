@@ -79,13 +79,14 @@ describe('ISIS - Studies Cards', () => {
     cy.get('#card').contains('2004 cycle 1');
   });
 
-  it('should be able to filter by multiple fields', () => {
+  // Cannot filter on two joined fields at the same time
+  it.skip('should be able to filter by multiple fields', () => {
     cy.get('[aria-label="advanced-filters-link"]')
       .click()
       .wait('@getStudiesOrder', {
         timeout: 10000,
       });
-    cy.get('[aria-label="Filter by Name"]')
+    cy.get('[aria-label="Filter by RB Number"]')
       .find('input')
       .type('4')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
@@ -93,9 +94,9 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.get('#card').contains('STUDY 43');
 
-    cy.get('[aria-label="Filter by RB Number"]')
+    cy.get('[aria-label="Filter by Description"]')
       .find('input')
-      .type('4')
+      .type('energy')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });

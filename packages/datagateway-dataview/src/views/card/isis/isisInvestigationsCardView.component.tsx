@@ -7,7 +7,6 @@ import {
   Save,
   Assessment,
   CalendarToday,
-  Title,
 } from '@material-ui/icons';
 import {
   addToCart,
@@ -225,13 +224,13 @@ const ISISInvestigationsCardView = (
       information={[
         {
           icon: <Fingerprint />,
-          label: t('investigations.rb_number'),
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
-          icon: <Title />,
-          label: t('investigations.name'),
+          icon: <Fingerprint />,
+          label: t('investigations.isis.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
