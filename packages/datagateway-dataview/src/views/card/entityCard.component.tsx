@@ -21,6 +21,9 @@ const useCardStyles = makeStyles((theme: Theme) => {
   //       (this also matches the description shadow width).
   //       Change this width in accordance with the maxWidth in root class.
   const mainWidth = '45vw';
+  // Expected width of info labels to prevent misalignment due to newlines
+  const labelWidth = '15ch';
+  const infoDataMaxWidth = '10vw';
 
   const styles = createStyles({
     root: {
@@ -28,6 +31,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       // NOTE: This is the maximum width for the card (it will only use this even if you set the mainWidth to a greater value).
       // maxWidth: 1500,
       backgroundColor: theme.palette.background.paper,
+      width: '100%',
     },
 
     cardImage: {
@@ -44,11 +48,10 @@ const useCardStyles = makeStyles((theme: Theme) => {
       display: 'flex',
       // Have contents arranged in columns.
       flexDirection: 'column',
-
-      // NOTE: You will also have to change the
-      // This is the width of the entire container
-      // (so title won't exceed 30% of the viewport width).
-      width: mainWidth,
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: mainWidth,
+      minWidth: '30vw',
       paddingRight: '10px',
     },
 
@@ -72,7 +75,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
     shadowVisible: {
       position: 'absolute',
       height: 30,
-      width: mainWidth,
+      minWidth: '30vw',
       top: 130,
       background: 'linear-gradient(rgba(255, 255, 255, 0), #fff)',
 
@@ -90,7 +93,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
 
     information: {
       display: 'flex',
-      paddingLeft: '15px',
 
       // Apply a small space for each Typography component (p).
       '& p': {
@@ -103,6 +105,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       '& p': {
         // Support aligning icons and label.
         display: 'flex',
+        minWidth: labelWidth,
       },
     },
 
@@ -114,13 +117,16 @@ const useCardStyles = makeStyles((theme: Theme) => {
       '& p': {
         display: 'block',
         whiteSpace: 'nowrap',
-        maxWidth: '10vw',
+        maxWidth: infoDataMaxWidth,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
       },
     },
 
     buttons: {
+      // Prevent misalignment caused by buttons being wider than information
+      maxWidth: `calc(${labelWidth} + ${infoDataMaxWidth} - 20px)`,
+      margin: 'auto',
       padding: '10px',
       textAlign: 'center',
       '& div': {
@@ -215,7 +221,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
       {/* Card content is a flexbox (as a row):
             - has a card information area (split in horizontally - column) for title/description and tags
             - has card details area which takes up smaller space */}
-      <CardContent>
+      <CardContent style={{ width: '100%', minWidth: 0 }}>
         {/* row:
               - main information; title and description (optional)
               - information (optional and custom)
@@ -295,7 +301,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             <Divider flexItem={true} orientation={'vertical'} />
           )}
 
-          <div>
+          <div style={{ paddingLeft: 15 }}>
             {information && (
               <div className={classes.information}>
                 <div className={classes.informationLabel}>

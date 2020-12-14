@@ -222,11 +222,18 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
 exports[`ISIS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"

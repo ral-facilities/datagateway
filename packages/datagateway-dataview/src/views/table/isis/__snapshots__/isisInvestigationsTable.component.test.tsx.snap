@@ -118,11 +118,18 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
 exports[`ISIS Investigations table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
