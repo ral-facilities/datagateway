@@ -30,6 +30,113 @@ import {
 
 import { paths } from './pageContainer.component';
 
+const SafeDatafileTable = React.memo(
+  (props: {
+    investigationId: string;
+    datasetId: string;
+  }): React.ReactElement => {
+    const SafeDatafileTable = withIdCheck(
+      checkInvestigationId(
+        parseInt(props.investigationId),
+        parseInt(props.datasetId)
+      )
+    )(DatafileTable);
+
+    return <SafeDatafileTable datasetId={props.datasetId} />;
+  }
+);
+
+SafeDatafileTable.displayName = 'SafeDatafileTable';
+
+const SafeISISDatafilesTable = React.memo(
+  (props: {
+    instrumentId: string;
+    facilityCycleId: string;
+    investigationId: string;
+    datasetId: string;
+  }): React.ReactElement => {
+    const SafeISISDatafilesTable = withIdCheck(
+      Promise.all([
+        checkInstrumentAndFacilityCycleId(
+          parseInt(props.instrumentId),
+          parseInt(props.facilityCycleId),
+          parseInt(props.investigationId)
+        ),
+        checkInvestigationId(
+          parseInt(props.investigationId),
+          parseInt(props.datasetId)
+        ),
+      ]).then((values) => !values.includes(false))
+    )(ISISDatafilesTable);
+
+    return <SafeISISDatafilesTable datasetId={props.datasetId} />;
+  }
+);
+
+SafeISISDatafilesTable.displayName = 'SafeISISDatafilesTable';
+
+const SafeISISDatasetsTable = React.memo(
+  (props: {
+    instrumentId: string;
+    facilityCycleId: string;
+    investigationId: string;
+  }): React.ReactElement => {
+    const SafeISISDatasetsTable = withIdCheck(
+      checkInstrumentAndFacilityCycleId(
+        parseInt(props.instrumentId),
+        parseInt(props.facilityCycleId),
+        parseInt(props.investigationId)
+      )
+    )(ISISDatasetsTable);
+
+    return <SafeISISDatasetsTable {...props} />;
+  }
+);
+
+SafeISISDatasetsTable.displayName = 'SafeISISDatasetsTable';
+
+const SafeDLSDatafilesTable = React.memo(
+  (props: {
+    proposalName: string;
+    investigationId: string;
+    datasetId: string;
+  }): React.ReactElement => {
+    const SafeDLSDatafilesTable = withIdCheck(
+      Promise.all([
+        checkProposalName(props.proposalName, parseInt(props.investigationId)),
+        checkInvestigationId(
+          parseInt(props.investigationId),
+          parseInt(props.datasetId)
+        ),
+      ]).then((values) => !values.includes(false))
+    )(DLSDatafilesTable);
+
+    return <SafeDLSDatafilesTable datasetId={props.datasetId} />;
+  }
+);
+
+SafeDLSDatafilesTable.displayName = 'SafeDLSDatafilesTable';
+
+const SafeDLSDatasetsTable = React.memo(
+  (props: {
+    proposalName: string;
+    investigationId: string;
+  }): React.ReactElement => {
+    const SafeDLSDatasetsTable = withIdCheck(
+      checkProposalName(props.proposalName, parseInt(props.investigationId))
+    )(DLSDatasetsTable);
+
+    return (
+      <SafeDLSDatasetsTable
+        proposalName={props.proposalName}
+        investigationId={props.investigationId}
+      />
+    );
+  }
+);
+
+SafeDLSDatasetsTable.displayName = 'SafeDLSDatasetsTable';
+
 class PageTable extends React.PureComponent {
   public render(): React.ReactNode {
     return (
@@ -65,20 +172,12 @@ class PageTable extends React.PureComponent {
           }: RouteComponentProps<{
             proposalName: string;
             investigationId: string;
-          }>) => {
-            const SafeDLSDatasetsTable = withIdCheck(
-              checkProposalName(
-                match.params.proposalName,
-                parseInt(match.params.investigationId)
-              )
-            )(DLSDatasetsTable);
-            return (
-              <SafeDLSDatasetsTable
-                proposalName={match.params.proposalName}
-                investigationId={match.params.investigationId}
-              />
-            );
-          }}
+          }>) => (
+            <SafeDLSDatasetsTable
+              proposalName={match.params.proposalName}
+              investigationId={match.params.investigationId}
+            />
+          )}
         />
         <Route
           exact
@@ -89,21 +188,7 @@ class PageTable extends React.PureComponent {
             proposalName: string;
             investigationId: string;
             datasetId: string;
-          }>) => {
-            const SafeDLSDatafilesTable = withIdCheck(
-              Promise.all([
-                checkProposalName(
-                  match.params.proposalName,
-                  parseInt(match.params.investigationId)
-                ),
-                checkInvestigationId(
-                  parseInt(match.params.investigationId),
-                  parseInt(match.params.datasetId)
-                ),
-              ]).then((values) => !values.includes(false))
-            )(DLSDatafilesTable);
-            return <SafeDLSDatafilesTable datasetId={match.params.datasetId} />;
-          }}
+          }>) => <SafeDLSDatafilesTable {...match.params} />}
         />
         <Route
           exact
@@ -143,22 +228,13 @@ class PageTable extends React.PureComponent {
             instrumentId: string;
             facilityCycleId: string;
             investigationId: string;
-          }>) => {
-            const SafeISISDatasetsTable = withIdCheck(
-              checkInstrumentAndFacilityCycleId(
-                parseInt(match.params.instrumentId),
-                parseInt(match.params.facilityCycleId),
-                parseInt(match.params.investigationId)
-              )
-            )(ISISDatasetsTable);
-            return (
-              <SafeISISDatasetsTable
-                instrumentId={match.params.instrumentId}
-                facilityCycleId={match.params.facilityCycleId}
-                investigationId={match.params.investigationId}
-              />
-            );
-          }}
+          }>) => (
+            <SafeISISDatasetsTable
+              instrumentId={match.params.instrumentId}
+              facilityCycleId={match.params.facilityCycleId}
+              investigationId={match.params.investigationId}
+            />
+          )}
         />
         <Route
           exact
@@ -170,24 +246,7 @@ class PageTable extends React.PureComponent {
             facilityCycleId: string;
             investigationId: string;
             datasetId: string;
-          }>) => {
-            const SafeISISDatafilesTable = withIdCheck(
-              Promise.all([
-                checkInstrumentAndFacilityCycleId(
-                  parseInt(match.params.instrumentId),
-                  parseInt(match.params.facilityCycleId),
-                  parseInt(match.params.investigationId)
-                ),
-                checkInvestigationId(
-                  parseInt(match.params.investigationId),
-                  parseInt(match.params.datasetId)
-                ),
-              ]).then((values) => !values.includes(false))
-            )(ISISDatafilesTable);
-            return (
-              <SafeISISDatafilesTable datasetId={match.params.datasetId} />
-            );
-          }}
+          }>) => <SafeISISDatafilesTable {...match.params} />}
         />
         <Route
           exact
@@ -211,15 +270,12 @@ class PageTable extends React.PureComponent {
           }: RouteComponentProps<{
             investigationId: string;
             datasetId: string;
-          }>) => {
-            const SafeDatafileTable = withIdCheck(
-              checkInvestigationId(
-                parseInt(match.params.investigationId),
-                parseInt(match.params.datasetId)
-              )
-            )(DatafileTable);
-            return <SafeDatafileTable datasetId={match.params.datasetId} />;
-          }}
+          }>) => (
+            <SafeDatafileTable
+              datasetId={match.params.datasetId}
+              investigationId={match.params.investigationId}
+            />
+          )}
         />
       </Switch>
     );
