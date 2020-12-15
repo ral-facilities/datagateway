@@ -15,6 +15,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { ArrowTooltip } from 'datagateway-common';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
@@ -205,6 +206,8 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     }
   }, [setCollapsibleInteraction]);
 
+  const [t] = useTranslation();
+
   return (
     <Card id="card" className={classes.root}>
       {/* We allow for additional width when having an image in the card (see card styles). */}
@@ -214,7 +217,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
           component="img"
           className={classes.cardImage}
           image={image.url}
-          title={image.title && image.title}
+          title={image.title}
         />
       )}
 
@@ -270,7 +273,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                     variant="body1"
                     paragraph
                   >
-                    {description ? description : 'No description available'}
+                    {description
+                      ? description
+                      : t('entity_card.no_description')}
                   </Typography>
                 </Collapse>
 
@@ -287,7 +292,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                     <Link
                       onClick={() => setDescriptionCollapsed((prev) => !prev)}
                     >
-                      {isDescriptionCollapsed ? 'Show less' : 'Show more'}
+                      {isDescriptionCollapsed
+                        ? t('entity_card.show_less')
+                        : t('entity_card.show_more')}
                     </Link>
                   </div>
                 )}
@@ -305,32 +312,26 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             {information && (
               <div className={classes.information}>
                 <div className={classes.informationLabel}>
-                  {information &&
-                    information.map(
-                      (info: EntityCardDetails, index: number) => (
-                        <Typography
-                          aria-label={`card-info-${info.label}`}
-                          key={index}
-                        >
-                          {info.icon}
-                          {`${info.label}:`}
-                        </Typography>
-                      )
-                    )}
+                  {information.map((info: EntityCardDetails, index: number) => (
+                    <Typography
+                      aria-label={`card-info-${info.label}`}
+                      key={index}
+                    >
+                      {info.icon}
+                      {`${info.label}:`}
+                    </Typography>
+                  ))}
                 </div>
 
                 <div className={classes.informationData}>
-                  {information &&
-                    information.map(
-                      (info: EntityCardDetails, index: number) => (
-                        <div
-                          aria-label={`card-info-data-${info.label}`}
-                          key={index}
-                        >
-                          {info.content && info.content}
-                        </div>
-                      )
-                    )}
+                  {information.map((info: EntityCardDetails, index: number) => (
+                    <div
+                      aria-label={`card-info-data-${info.label}`}
+                      key={index}
+                    >
+                      {info.content && info.content}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

@@ -216,7 +216,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const [numPages, setNumPages] = React.useState(-1);
   const [maxResults, setMaxResults] = React.useState(-1);
   const [pageChange, setPageChange] = React.useState(false);
-  // By default, show pagination component at bottom of card view.
   const paginationPos = paginationPosition ? paginationPosition : 'both';
 
   // Change in data.
@@ -393,7 +392,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     },
     [onPageChange]
   );
-
   const nextSortDirection = (dataKey: string): Order | null => {
     switch (sort[dataKey]) {
       case 'asc':
@@ -406,16 +404,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   };
 
   React.useEffect(() => {
-    // console.log('Page number (page): ', page);
-    // console.log('Current pageNum (query): ', query.page);
-    // console.log('Page change: ', pageChange);
-    // console.log('Page results: ', maxResults);
-    // console.log('Query results: ', query.results);
-
     // Set the page number if it was found in the parameters.
     if (!pageChange) {
       if (query.page) {
-        // console.log('Set to query page: ', query.page);
         setPage(query.page);
       } else {
         // Workaround for issue where page remains same on pagination on investigation/dataset.
@@ -431,8 +422,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
     // Ensure the max results change according to the query parameter.
     if (query.results && resOptions.includes(query.results)) {
-      // dataCount > resOptions[0]
-      // maxResults !== query.results
       setMaxResults(query.results);
     } else {
       // Reset the max results back to the default value
@@ -458,7 +447,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         changePage(1);
       }
       setNumPages(p);
-      // console.log('num pages: ', numPages);
       setLoadedData(false);
     }
   }, [changePage, maxResults, numPages, query.page, totalDataCount]);
@@ -483,12 +471,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     if (!loading && dataCount > 0) {
       if (!loadedData) {
         // Calculate the start/end indexes for the data.
-        const startIndex = page * maxResults - (maxResults - 1) - 1;
-        // console.log('startIndex: ', startIndex);
+        const startIndex = (page - 1) * maxResults;
 
         // End index not incremented for slice method.
         const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-        // console.log('stopIndex: ', stopIndex);
 
         if (numPages > -1 && startIndex > -1 && stopIndex > -1) {
           // Clear data in the state before loading new data.

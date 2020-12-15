@@ -55,7 +55,7 @@ exports[`Card renders correctly 1`] = `
                 paragraph={true}
                 variant="body1"
               >
-                No description available
+                entity_card.no_description
               </WithStyles(ForwardRef(Typography))>
             </WithStyles(ForwardRef(Collapse))>
           </div>
