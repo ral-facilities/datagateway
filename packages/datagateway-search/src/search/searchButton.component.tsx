@@ -148,8 +148,8 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
       this.props.toggleLuceneRequestReceived(true);
     }
 
-    this.props.setDatasetTab(this.props.dataset);
     this.props.setDatafileTab(this.props.datafile);
+    this.props.setDatasetTab(this.props.dataset);
     this.props.setInvestigationTab(this.props.investigation);
   };
 
