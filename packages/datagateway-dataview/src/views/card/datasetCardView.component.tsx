@@ -108,7 +108,6 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     <TextColumnFilter
       label={label}
       value={filters[dataKey] as string}
-      // onChange={(value: string) => filterTable(dataKey, value ? value : null)}
       onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
     />
   );
@@ -118,7 +117,6 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       label={label}
       value={filters[dataKey] as DateFilter}
       onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        // filterTable(dataKey, value)
         pushFilters(dataKey, value ? value : null)
       }
     />

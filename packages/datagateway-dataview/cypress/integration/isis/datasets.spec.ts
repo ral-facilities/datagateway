@@ -1,11 +1,13 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('/datasets/count*').as('datasetsCount');
+    cy.route('/datasets?order=*').as('datasetsOrder');
     cy.login('user', 'password');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
-    ).wait(['@datasetsCount'], { timeout: 10000 });
+    ).wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
   });
 
   it('should load correctly', () => {
@@ -100,7 +102,7 @@ describe('ISIS - Datasets Table', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -110,10 +112,10 @@ describe('ISIS - Datasets Table', () => {
     it('descending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -127,13 +129,13 @@ describe('ISIS - Datasets Table', () => {
     it('no order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -147,10 +149,18 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Create Time').click();
-      cy.contains('[role="button"]', 'Create Time').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
     });
@@ -191,9 +201,14 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('87');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('87')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter to"]').type('2007-06-23');
+      cy.get('[aria-label="Create Time date filter to"]')
+        .type('2007-06-23')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
