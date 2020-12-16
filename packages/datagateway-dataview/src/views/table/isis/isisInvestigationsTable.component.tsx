@@ -224,7 +224,7 @@ const ISISInvestigationsTable = (
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.isis.name'),
+          label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;

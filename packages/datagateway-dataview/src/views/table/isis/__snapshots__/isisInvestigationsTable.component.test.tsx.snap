@@ -28,7 +28,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
         "dataKey": "NAME",
         "filterComponent": [Function],
         "icon": <Memo(FingerprintIcon) />,
-        "label": "investigations.isis.name",
+        "label": "investigations.name",
       },
       Object {
         "cellContentRenderer": [Function],

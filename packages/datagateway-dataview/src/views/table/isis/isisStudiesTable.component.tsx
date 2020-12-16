@@ -119,7 +119,7 @@ const ISISStudiesTable = (
           dataKey: 'STUDY.NAME',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.STUDY.ID}/investigation`,
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.STUDY?.ID}/investigation`,
               props.rowData.STUDY?.NAME
             ),
           filterComponent: textFilter,

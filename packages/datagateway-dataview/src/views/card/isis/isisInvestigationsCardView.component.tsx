@@ -230,7 +230,7 @@ const ISISInvestigationsCardView = (
         },
         {
           icon: <Fingerprint />,
-          label: t('investigations.isis.name'),
+          label: t('investigations.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
