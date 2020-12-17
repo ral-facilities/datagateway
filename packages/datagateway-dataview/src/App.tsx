@@ -79,7 +79,36 @@ const registerRouteAction = {
     plugin: 'datagateway-dataview',
     displayName: '\xa0DataView',
     order: 0,
-    helpText: 'TODO: write some help text for the user tour',
+    helpSteps: [
+      {
+        target: '#plugin-link--browse-investigation',
+        content:
+          'DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria',
+      },
+      {
+        target: '.tour-dataview-breadcrumbs',
+        content:
+          'The hierarchy of the currently displayed data is shown here, and allows navigation to the dataset or investigation containing it',
+      },
+      {
+        target: '.tour-dataview-results',
+        content:
+          'The number of results found taking into account any applied filters is displayed here',
+      },
+      {
+        target: '.tour-dataview-search-icon',
+        content: 'Navigate to Datagateway Search',
+      },
+      {
+        target: '.tour-dataview-cart-icon',
+        content:
+          'Displays the current number of items in the download cart, and navigates to Datagateway Download',
+      },
+      {
+        target: '.tour-dataview-toggle-card',
+        content: 'Toggle between list and card view',
+      },
+    ],
     logoLightMode: LogoLight,
     logoDarkMode: LogoDark,
     logoAltText: 'DataGateway',
