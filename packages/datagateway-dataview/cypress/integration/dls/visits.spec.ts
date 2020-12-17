@@ -2,8 +2,7 @@ describe('DLS - Visits Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/');
-    cy.server();
-    cy.route('**/datasets/count*').as('getDatasetCount');
+    cy.intercept('/datasets/count').as('getDatasetCount');
   });
 
   it('should load correctly', () => {
@@ -115,7 +114,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -231,7 +230,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

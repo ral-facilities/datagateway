@@ -1,8 +1,6 @@
 describe('DLS - MyData Table', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
-    cy.server();
-    cy.route('**/datasets/count*').as('getDatasetCount');
+    cy.intercept('/datasets/count').as('getDatasetCount');
     cy.login('user', 'password');
     cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
   });
@@ -171,7 +169,7 @@ describe('DLS - MyData Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

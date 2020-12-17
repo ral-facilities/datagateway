@@ -4,9 +4,8 @@ describe('Breadcrumbs Component', () => {
     cy.login('user', 'password');
 
     // Create route and aliases.
-    cy.server();
-    cy.route('/investigations/*').as('getInvestigation');
-    cy.route('/datasets/*').as('getDataset');
+    cy.intercept('/investigations/').as('getInvestigation');
+    cy.intercept('/datasets/').as('getDataset');
 
     cy.visit('/browse/investigation');
   });
@@ -20,9 +19,7 @@ describe('Breadcrumbs Component', () => {
 
   it('should click on investigation and add breadcrumbs correctly', () => {
     // Click on the first investigation in the table.
-    cy.get('[role="gridcell"] a')
-      .first()
-      .click({ force: true });
+    cy.get('[role="gridcell"] a').first().click({ force: true });
 
     // Wait for the investigation request to complete.
     cy.wait('@getInvestigation');

@@ -107,7 +107,6 @@
     "cross-env": "^7.0.2",
     "cypress": "6.1.0",
     "cypress-failed-log": "^2.7.0",
-    "cypress-plugin-retries": "^1.5.2",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "enzyme-to-json": "^3.3.5",

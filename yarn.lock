@@ -5431,13 +5431,6 @@ cypress-failed-log@^2.7.0:
     debug "4.1.1"
     logdown "3.3.1"
 
-cypress-plugin-retries@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/cypress-plugin-retries/-/cypress-plugin-retries-1.5.2.tgz#21d5247cd77013b95bbfdd914f2de66f91f76a2e"
-  integrity sha512-o1xVIGtv4WvNVxoVJ2X08eAuvditPHrePRzHqhwwHbMKu3C2rtxCdanRCZdO5fjh8ww+q4v4V0e9GmysbOvu3A==
-  dependencies:
-    chalk "^3.0.0"
-
 cypress@6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-6.1.0.tgz#af2596cb110aa98eaf75fef3d8ab379ca0ff2413"
