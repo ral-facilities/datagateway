@@ -55,6 +55,7 @@ describe('Search Button component tests', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
+        currentTab: 'none',
       },
       requestReceived: false,
       searchData: {
@@ -588,8 +589,8 @@ describe('Search Button component tests', () => {
       wrapper.update();
     });
 
-    expect(testStore.getActions()[0]).toEqual(setDatasetTab(false));
-    expect(testStore.getActions()[1]).toEqual(setDatafileTab(false));
+    expect(testStore.getActions()[0]).toEqual(setDatafileTab(false));
+    expect(testStore.getActions()[1]).toEqual(setDatasetTab(false));
     expect(testStore.getActions()[2]).toEqual(setInvestigationTab(false));
   });
 });
