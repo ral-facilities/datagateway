@@ -16,6 +16,53 @@ import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component
 
 import { paths } from './pageContainer.component';
 
+import withIdCheck from './withIdCheck';
+import {
+  checkProposalName,
+  checkInstrumentAndFacilityCycleId,
+} from './idCheckFunctions';
+
+const SafeISISDatasetsCardView = React.memo(
+  (props: {
+    instrumentId: string;
+    instrumentChildId: string;
+    investigationId: string;
+    studyHierarchy: boolean;
+  }): React.ReactElement => {
+    const SafeISISDatasetsCardView = withIdCheck(
+      checkInstrumentAndFacilityCycleId(
+        parseInt(props.instrumentId),
+        parseInt(props.instrumentChildId),
+        parseInt(props.investigationId)
+      )
+    )(ISISDatasetsCardView);
+
+    return <SafeISISDatasetsCardView {...props} />;
+  }
+);
+
+SafeISISDatasetsCardView.displayName = 'SafeISISDatasetsCardView';
+
+const SafeDLSDatasetsCardView = React.memo(
+  (props: {
+    proposalName: string;
+    investigationId: string;
+  }): React.ReactElement => {
+    const SafeDLSDatasetsCardView = withIdCheck(
+      checkProposalName(props.proposalName, parseInt(props.investigationId))
+    )(DLSDatasetsCardView);
+
+    return (
+      <SafeDLSDatasetsCardView
+        proposalName={props.proposalName}
+        investigationId={props.investigationId}
+      />
+    );
+  }
+);
+
+SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
+
 class PageCard extends React.Component {
   public render(): React.ReactNode {
     return (
@@ -76,7 +123,7 @@ class PageCard extends React.Component {
             facilityCycleId: string;
             investigationId: string;
           }>) => (
-            <ISISDatasetsCardView
+            <SafeISISDatasetsCardView
               studyHierarchy={false}
               instrumentId={match.params.instrumentId}
               instrumentChildId={match.params.facilityCycleId}
@@ -143,7 +190,7 @@ class PageCard extends React.Component {
             proposalName: string;
             investigationId: string;
           }>) => (
-            <DLSDatasetsCardView
+            <SafeDLSDatasetsCardView
               proposalName={match.params.proposalName}
               investigationId={match.params.investigationId}
             />

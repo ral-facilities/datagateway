@@ -24,8 +24,8 @@ import {
   UpdateFiltersType,
   UpdatePagePayload,
   UpdatePageType,
-  UpdateQueriesPayload,
-  UpdateQueriesType,
+  UpdateQueryPayload,
+  UpdateQueryType,
   UpdateResultsPayload,
   UpdateResultsType,
   UpdateSaveViewType,
@@ -82,11 +82,11 @@ export const filterTable = (
 });
 
 export const updateQueryParams = (
-  queries: QueryParams
-): ActionType<UpdateQueriesPayload> => ({
-  type: UpdateQueriesType,
+  query: QueryParams
+): ActionType<UpdateQueryPayload> => ({
+  type: UpdateQueryType,
   payload: {
-    queries,
+    query,
   },
 });
 
@@ -150,7 +150,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
           isFiltersParsed = true;
         }
       } catch (e) {
-        console.error('Filter queries provided in an incorrect format.');
+        console.error('Filter query provided in an incorrect format.');
       }
     }
 
@@ -169,7 +169,7 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
           isSortParsed = true;
         }
       } catch (e) {
-        console.error('Sort queries provided in an incorrect format.');
+        console.error('Sort query provided in an incorrect format.');
       }
     }
 
