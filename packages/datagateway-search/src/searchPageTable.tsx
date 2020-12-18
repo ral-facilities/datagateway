@@ -122,6 +122,7 @@ const SearchPageTable = (
       <div>
         <AppBar position="static">
           <Tabs
+            className="tour-search-tab-select"
             value={currentTab}
             onChange={handleChange}
             aria-label={t('searchPageTable.tabs_arialabel')}

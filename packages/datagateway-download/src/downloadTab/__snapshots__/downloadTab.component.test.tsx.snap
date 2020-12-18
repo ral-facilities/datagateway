@@ -14,12 +14,14 @@ exports[`DownloadTab renders correctly 1`] = `
     <WithStyles(ForwardRef(Tab))
       aria-controls="tabpanel-0"
       aria-label="downloadTab.cart_tab_arialabel"
+      className="tour-download-cart-tab"
       id="tab-0"
       label="downloadTab.cart_tab"
     />
     <WithStyles(ForwardRef(Tab))
       aria-controls="tabpanel-1"
       aria-label="downloadTab.downloads_tab_arialabel"
+      className="tour-download-downloads-tab"
       id="tab-1"
       label="downloadTab.downloads_tab"
     />

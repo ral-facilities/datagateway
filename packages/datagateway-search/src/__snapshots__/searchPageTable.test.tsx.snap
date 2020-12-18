@@ -237,11 +237,13 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                 >
                   <WithStyles(ForwardRef(Tabs))
                     aria-label="searchPageTable.tabs_arialabel"
+                    className="tour-search-tab-select"
                     onChange={[Function]}
                     value="none"
                   >
                     <ForwardRef(Tabs)
                       aria-label="searchPageTable.tabs_arialabel"
+                      className="tour-search-tab-select"
                       classes={
                         Object {
                           "centered": "MuiTabs-centered",
@@ -261,7 +263,7 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
                       value="none"
                     >
                       <div
-                        className="MuiTabs-root"
+                        className="MuiTabs-root tour-search-tab-select"
                       >
                         <div
                           className="MuiTabs-scroller MuiTabs-fixed"

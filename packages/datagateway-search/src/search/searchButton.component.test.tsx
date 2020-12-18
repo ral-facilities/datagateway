@@ -207,6 +207,252 @@ describe('Search Button component tests', () => {
     );
   });
 
+  it('builds correct parameters for datafile request if only start date is in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      selectDate: {
+        ...state.dgsearch.selectDate,
+        startDate: new Date('2013-11-11'),
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+            lower: '201311110000',
+            upper: '9000012312359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for dataset request if only start date is in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      selectDate: {
+        ...state.dgsearch.selectDate,
+        startDate: new Date('2013-11-11'),
+      },
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: true,
+        datafile: false,
+        investigation: false,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Dataset',
+            lower: '201311110000',
+            upper: '9000012312359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for investigation request if only start date is in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      selectDate: {
+        ...state.dgsearch.selectDate,
+        startDate: new Date('2013-11-11'),
+      },
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: false,
+        datafile: false,
+        investigation: true,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Investigation',
+            lower: '201311110000',
+            upper: '9000012312359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for datafile request if only end date is in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      selectDate: {
+        ...state.dgsearch.selectDate,
+        endDate: new Date('2016-11-11'),
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Datafile',
+            lower: '0000001010000',
+            upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for dataset request if only end date is in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      selectDate: {
+        ...state.dgsearch.selectDate,
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: true,
+        datafile: false,
+        investigation: false,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Dataset',
+            lower: '0000001010000',
+            upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
+  it('builds correct parameters for investigation request if only end date is in use', () => {
+    state.dgsearch = {
+      ...state.dgsearch,
+      selectDate: {
+        ...state.dgsearch.selectDate,
+        endDate: new Date('2016-11-11'),
+      },
+      checkBox: {
+        ...state.dgsearch.checkBox,
+        dataset: false,
+        datafile: false,
+        investigation: true,
+      },
+    };
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchButton />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper
+      .find('button[aria-label="searchBox.search_button_arialabel"]')
+      .simulate('click');
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      {
+        params: {
+          maxCount: 300,
+          query: {
+            target: 'Investigation',
+            lower: '0000001010000',
+            upper: '201611112359',
+          },
+          sessionId: null,
+        },
+      }
+    );
+  });
+
   it('builds correct parameters for datafile request if date and search text properties are not in use', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
@@ -227,6 +473,8 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Datafile',
+            lower: '0000001010000',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -264,6 +512,8 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Dataset',
+            lower: '0000001010000',
+            upper: '9000012312359',
           },
           sessionId: null,
         },
@@ -301,6 +551,8 @@ describe('Search Button component tests', () => {
           maxCount: 300,
           query: {
             target: 'Investigation',
+            lower: '0000001010000',
+            upper: '9000012312359',
           },
           sessionId: null,
         },

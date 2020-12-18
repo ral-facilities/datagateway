@@ -232,7 +232,7 @@ describe('DGCommon reducer', () => {
       savedView: {
         sort: { NAME: 'asc' },
         filters: { NAME: 't' },
-        queries: queryOne,
+        query: queryOne,
         view: 'table',
       },
     });
@@ -262,7 +262,7 @@ describe('DGCommon reducer', () => {
         view: 'card',
         filters: { NAME: 'c' },
         sort: { NAME: 'desc' },
-        queries: queryTwo,
+        query: queryTwo,
       },
     };
 
@@ -278,7 +278,7 @@ describe('DGCommon reducer', () => {
         view: 'table',
         filters: { NAME: 't' },
         sort: { NAME: 'asc' },
-        queries: queryOne,
+        query: queryOne,
       },
     });
   });
