@@ -114,6 +114,28 @@ describe('Dataset details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });
 
+  it('detailsPanelResize not called when not provided', () => {
+    rowData.DATASETTYPE = {
+      ID: 7,
+      NAME: 'Test type',
+      DESCRIPTION: 'Test type description',
+    };
+
+    const wrapper = mount(
+      <DatasetDetailsPanel
+        rowData={rowData}
+        fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
+      />
+    );
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+
+    wrapper.find('#dataset-type-tab').hostNodes().simulate('click');
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+  });
+
   it('calls fetchDetails on load', () => {
     mount(
       <DatasetDetailsPanel

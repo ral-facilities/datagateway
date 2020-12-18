@@ -71,6 +71,7 @@ exports[`Investigation table component renders correctly 1`] = `
         "INSTRUMENT": Object {
           "NAME": "LARMOR",
         },
+        "NAME": "Test 1",
         "RB_NUMBER": "1",
         "SIZE": 1,
         "STARTDATE": "2019-07-23",
