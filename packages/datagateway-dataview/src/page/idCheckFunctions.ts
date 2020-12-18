@@ -51,7 +51,7 @@ export const checkInvestigationId = memoize(
   (...args) => JSON.stringify(args)
 );
 
-export const unmemoizedCheckInstrumentAndFacilityCycleId = (
+const unmemoizedCheckInstrumentAndFacilityCycleId = (
   instrumentId: number,
   facilityCycleId: number,
   investigationId: number
@@ -81,7 +81,12 @@ export const unmemoizedCheckInstrumentAndFacilityCycleId = (
     });
 };
 
-export const checkInstrumentAndStudyId = (
+export const checkInstrumentAndFacilityCycleId = memoize(
+  unmemoizedCheckInstrumentAndFacilityCycleId,
+  (...args) => JSON.stringify(args)
+);
+
+const unmemoizedCheckInstrumentAndStudyId = (
   instrumentId: number,
   studyId: number,
   investigationId: number
@@ -108,8 +113,8 @@ export const checkInstrumentAndStudyId = (
     });
 };
 
-export const checkInstrumentAndFacilityCycleId = memoize(
-  unmemoizedCheckInstrumentAndFacilityCycleId,
+export const checkInstrumentAndStudyId = memoize(
+  unmemoizedCheckInstrumentAndStudyId,
   (...args) => JSON.stringify(args)
 );
 

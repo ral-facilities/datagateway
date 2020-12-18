@@ -20,6 +20,7 @@ import withIdCheck from './withIdCheck';
 import {
   checkProposalName,
   checkInstrumentAndFacilityCycleId,
+  checkInstrumentAndStudyId,
 } from './idCheckFunctions';
 
 const SafeISISDatasetsCardView = React.memo(
@@ -29,13 +30,21 @@ const SafeISISDatasetsCardView = React.memo(
     investigationId: string;
     studyHierarchy: boolean;
   }): React.ReactElement => {
-    const SafeISISDatasetsCardView = withIdCheck(
-      checkInstrumentAndFacilityCycleId(
-        parseInt(props.instrumentId),
-        parseInt(props.instrumentChildId),
-        parseInt(props.investigationId)
-      )
-    )(ISISDatasetsCardView);
+    const SafeISISDatasetsCardView = props.studyHierarchy
+      ? withIdCheck(
+          checkInstrumentAndStudyId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISDatasetsCardView)
+      : withIdCheck(
+          checkInstrumentAndFacilityCycleId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISDatasetsCardView);
 
     return <SafeISISDatasetsCardView {...props} />;
   }
@@ -67,6 +76,7 @@ class PageCard extends React.Component {
   public render(): React.ReactNode {
     return (
       <Switch>
+        {/* Generic routes */}
         <Route
           exact
           path={paths.toggle.investigation}
@@ -81,6 +91,7 @@ class PageCard extends React.Component {
             <DatasetCardView investigationId={match.params.investigationId} />
           )}
         />
+        {/* ISIS routes */}
         <Route
           exact
           path={paths.toggle.isisInstrument}
@@ -131,7 +142,7 @@ class PageCard extends React.Component {
             />
           )}
         />
-
+        {/* ISIS studyHierarchy routes */}
         <Route
           exact
           path={paths.studyHierarchy.toggle.isisInstrument}
@@ -172,7 +183,7 @@ class PageCard extends React.Component {
             studyId: string;
             investigationId: string;
           }>) => (
-            <ISISDatasetsCardView
+            <SafeISISDatasetsCardView
               studyHierarchy={true}
               instrumentId={match.params.instrumentId}
               instrumentChildId={match.params.studyId}
@@ -180,7 +191,7 @@ class PageCard extends React.Component {
             />
           )}
         />
-
+        {/* DLS routes */}
         <Route
           exact
           path={paths.toggle.dlsDataset}
