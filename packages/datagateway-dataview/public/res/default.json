@@ -1,6 +1,8 @@
 {
   "app": {
-    "results": "Results"
+    "results": "Results",
+    "toggle_cards": "Toggle Cards",
+    "max_results": "Max Results"
   },
   "breadcrumbs": {
     "home": "Home",
@@ -134,5 +136,14 @@
     "add_to_cart": "Add to cart",
     "remove_from_cart": "Remove from cart",
     "download": "Download"
+  },
+  "advanced_filters": {
+    "show": "Show Advanced Filters",
+    "hide": "Hide Advanced Filters"
+  },
+  "entity_card": {
+    "no_description": "No description available",
+    "show_more": "Show more",
+    "show_less": "Show less"
   }
 }

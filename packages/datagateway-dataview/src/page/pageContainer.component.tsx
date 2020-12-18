@@ -97,7 +97,12 @@ const NavBar = (props: {
     <Sticky>
       <StyledGrid container>
         {/* Hold the breadcrumbs at top left of the page. */}
-        <Grid item xs aria-label="container-breadcrumbs">
+        <Grid
+          className="tour-dataview-breadcrumbs"
+          item
+          xs
+          aria-label="container-breadcrumbs"
+        >
           {/* don't show breadcrumbs on /my-data - only on browse */}
           <Route path={paths.root} component={PageBreadcrumbs} />
         </Grid>
@@ -105,6 +110,7 @@ const NavBar = (props: {
         {/* The table entity count takes up an xs of 2, where the breadcrumbs
       will take the remainder of the space. */}
         <Grid
+          className="tour-dataview-results"
           style={{ textAlign: 'center' }}
           item
           xs={2}
@@ -136,7 +142,15 @@ const NavBar = (props: {
             }}
           />
         </Grid>
-        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+        <Paper
+          square
+          style={{
+            backgroundColor: 'inherit',
+            display: 'flex',
+            paddingLeft: 6,
+            paddingRight: 6,
+          }}
+        >
           <IconButton
             className="tour-dataview-search-icon"
             onClick={props.navigateToSearch}
@@ -146,7 +160,15 @@ const NavBar = (props: {
             <SearchIcon />
           </IconButton>
         </Paper>
-        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+        <Paper
+          square
+          style={{
+            backgroundColor: 'inherit',
+            display: 'flex',
+            paddingLeft: 6,
+            paddingRight: 6,
+          }}
+        >
           <IconButton
             className="tour-dataview-cart-icon"
             onClick={props.navigateToDownload}
@@ -166,6 +188,30 @@ const NavBar = (props: {
         </Paper>
       </StyledGrid>
     </Sticky>
+  );
+};
+
+const CardSwitch = (props: {
+  toggleCard: boolean;
+  handleToggleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+
+  return (
+    <FormControlLabel
+      className="tour-dataview-toggle-card"
+      value="start"
+      control={
+        <Switch
+          checked={props.toggleCard}
+          onChange={props.handleToggleChange}
+          name="toggleCard"
+          inputProps={{ 'aria-label': 'secondary checkbox' }}
+        />
+      }
+      label={t('app.toggle_cards')}
+      labelPlacement="start"
+    />
   );
 };
 
@@ -299,7 +345,7 @@ class PageContainer extends React.Component<
     // Add the view and push the final query parameters.
     this.props.pushView(nextView, this.props.path);
 
-    // Set the state with the toggled card option and the saved queries.
+    // Set the state with the toggled card option and the saved query.
     this.setState({
       ...this.state,
       toggleCard: event.target.checked,
@@ -323,18 +369,9 @@ class PageContainer extends React.Component<
               exact
               path={this.state.paths}
               render={() => (
-                <FormControlLabel
-                  value="start"
-                  control={
-                    <Switch
-                      checked={this.state.toggleCard}
-                      onChange={this.handleToggleChange}
-                      name="toggleCard"
-                      inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    />
-                  }
-                  label="Toggle Cards"
-                  labelPlacement="start"
+                <CardSwitch
+                  toggleCard={this.state.toggleCard}
+                  handleToggleChange={this.handleToggleChange}
                 />
               )}
             />

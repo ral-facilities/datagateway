@@ -107,6 +107,7 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
       <div>
         <AppBar position="static">
           <Tabs
+            className="tour-search-tab-select"
             value={value}
             onChange={handleChange}
             aria-label={t('searchPageTable.tabs_arialabel')}

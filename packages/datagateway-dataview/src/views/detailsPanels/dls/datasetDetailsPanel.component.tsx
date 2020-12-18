@@ -124,7 +124,7 @@ const DatasetDetailsPanel = (
                       fetchSize(datasetData.ID);
                     }}
                     variant="outlined"
-                    color="primary"
+                    color="secondary"
                     size="small"
                     id="calculate-size-btn"
                   >

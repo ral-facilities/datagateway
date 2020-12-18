@@ -93,7 +93,7 @@ exports[`Dataset details panel component renders calculate size button when size
         <WithStyles(ForwardRef(Typography))>
           <b>
             <WithStyles(ForwardRef(Button))
-              color="primary"
+              color="secondary"
               id="calculate-size-btn"
               onClick={[Function]}
               size="small"
@@ -202,7 +202,7 @@ exports[`Dataset details panel component renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))>
           <b>
             <WithStyles(ForwardRef(Button))
-              color="primary"
+              color="secondary"
               id="calculate-size-btn"
               onClick={[Function]}
               size="small"
@@ -317,7 +317,7 @@ exports[`Dataset details panel component renders type tab when present in the da
         <WithStyles(ForwardRef(Typography))>
           <b>
             <WithStyles(ForwardRef(Button))
-              color="primary"
+              color="secondary"
               id="calculate-size-btn"
               onClick={[Function]}
               size="small"
