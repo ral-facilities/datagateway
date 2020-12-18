@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ISIS Instruments - Card View renders correctly 1`] = `
+<ContextProvider
+  value={null}
+>
+  <ISISInstrumentsCardView
+    clearData={[Function]}
+    data={
+      Array [
+        Object {
+          "FACILITY_ID": 1,
+          "ID": 1,
+          "NAME": "Test 1",
+          "URL": "test url",
+        },
+      ]
+    }
+    fetchCount={[Function]}
+    fetchData={[Function]}
+    fetchDetails={[Function]}
+    filters={Object {}}
+    loading={false}
+    pushFilters={[Function]}
+    pushPage={[Function]}
+    pushResults={[Function]}
+    pushSort={[Function]}
+    query={
+      Object {
+        "page": null,
+        "results": null,
+        "search": null,
+        "view": null,
+      }
+    }
+    sort={Object {}}
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    totalDataCount={1}
+    view={null}
+  />
+</ContextProvider>
+`;

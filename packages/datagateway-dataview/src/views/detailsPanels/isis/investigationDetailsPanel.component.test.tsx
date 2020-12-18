@@ -30,6 +30,7 @@ describe('Investigation details panel component', () => {
           INSTRUMENT: {
             ID: 3,
             NAME: 'LARMOR',
+            FACILITY_ID: 8,
           },
         },
       ],
@@ -140,6 +141,31 @@ describe('Investigation details panel component', () => {
       .simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
+  });
+
+  it('detailsPanelResize not called when not provided', () => {
+    rowData.PUBLICATION = [
+      {
+        ID: 8,
+        FULLREFERENCE: 'Test publication',
+      },
+    ];
+
+    const wrapper = mount(
+      <InvestigationsDetailsPanel
+        rowData={rowData}
+        fetchDetails={fetchDetails}
+      />
+    );
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+
+    wrapper
+      .find('#investigation-publications-tab')
+      .hostNodes()
+      .simulate('click');
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
   });
 
   it('calls fetchDetails on load if INVESTIGATIONUSER, SAMPLE or PUBLICATIONS are missing', () => {
