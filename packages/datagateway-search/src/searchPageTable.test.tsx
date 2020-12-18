@@ -102,6 +102,8 @@ describe('SearchPageTable', () => {
       },
     };
 
+    // Mock to prevent error logging
+    const spy = jest.spyOn(console, 'error').mockImplementation();
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -110,6 +112,7 @@ describe('SearchPageTable', () => {
         </MemoryRouter>
       </Provider>
     );
+    spy.mockRestore();
 
     expect(
       wrapper
@@ -134,6 +137,8 @@ describe('SearchPageTable', () => {
       },
     };
 
+    // Mock to prevent error logging
+    const spy = jest.spyOn(console, 'error').mockImplementation();
     const mockStore = configureStore([thunk]);
     const wrapper = mount(
       <Provider store={mockStore(state)}>
@@ -142,6 +147,7 @@ describe('SearchPageTable', () => {
         </MemoryRouter>
       </Provider>
     );
+    spy.mockRestore();
 
     expect(
       wrapper

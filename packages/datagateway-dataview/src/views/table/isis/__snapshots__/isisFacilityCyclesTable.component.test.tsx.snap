@@ -36,6 +36,7 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
       Object {
         "DESCRIPTION": "Test 1",
         "ENDDATE": "2019-07-04",
+        "FACILITY_ID": 1,
         "ID": 1,
         "NAME": "Test 1",
         "STARTDATE": "2019-07-03",

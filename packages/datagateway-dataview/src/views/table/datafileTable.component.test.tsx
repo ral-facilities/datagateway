@@ -43,7 +43,6 @@ describe('Datafile table component', () => {
         dgdataview: dgDataViewInitialState,
       })
     );
-    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
@@ -51,6 +50,7 @@ describe('Datafile table component', () => {
         LOCATION: '/test1',
         FILESIZE: 1,
         MOD_TIME: '2019-07-23',
+        CREATE_TIME: '2019-07-23',
         DATASET_ID: 1,
       },
     ];
