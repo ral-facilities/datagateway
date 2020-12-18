@@ -7,7 +7,7 @@ describe('Breadcrumbs Component', () => {
     cy.intercept('/investigations/').as('getInvestigation');
     cy.intercept('/datasets/').as('getDataset');
 
-    cy.visit('/browse/investigation');
+    cy.visit('/browse/investigation').wait('@getInvestigation');
   });
 
   it('should load correctly and display current breadcrumb', () => {
@@ -19,10 +19,10 @@ describe('Breadcrumbs Component', () => {
 
   it('should click on investigation and add breadcrumbs correctly', () => {
     // Click on the first investigation in the table.
-    cy.get('[role="gridcell"] a').first().click({ force: true });
-
-    // Wait for the investigation request to complete.
-    cy.wait('@getInvestigation');
+    cy.get('[role="gridcell"] a')
+      .first()
+      .click({ force: true })
+      .wait('@getInvestigation');
 
     // Check to see if the breadcrumbs have been added correctly.
     // Get the first link on the page which is a link to
@@ -44,11 +44,9 @@ describe('Breadcrumbs Component', () => {
 
   it('loads the breadcrumb trail when visiting a page directly', () => {
     // Visit a direct link.
-    cy.visit('/browse/investigation/1/dataset/1/datafile');
-
-    // Wait for all API requests to return.
-    cy.wait('@getInvestigation');
-    cy.wait('@getDataset');
+    cy.visit('/browse/investigation/1/dataset/1/datafile')
+      .wait('@getInvestigation')
+      .wait('@getDataset');
 
     // Get Investigations table breadcrumb link.
     cy.get('[aria-label="Breadcrumb-base"]')
@@ -78,20 +76,16 @@ describe('Breadcrumbs Component', () => {
 
   it('loads breadcrumb trail correctly after pressing back browser key', () => {
     // Load pages into the history.
-    cy.visit('/browse/investigation/1/dataset');
-
-    cy.wait('@getInvestigation');
+    cy.visit('/browse/investigation/1/dataset').wait('@getInvestigation');
 
     // Click on the first link with Dataset 1.
-    cy.contains('DATASET 1').click({ force: true });
+    cy.contains('DATASET 1').click({ force: true }).wait('@getDataset');
 
     // Check to ensure the location is the datafile.
     cy.location('pathname').should(
       'eq',
       '/browse/investigation/1/dataset/25/datafile'
     );
-
-    cy.wait('@getDataset');
 
     // Check the first breadcrumb loaded on the current page.
     cy.get('[aria-label="Breadcrumb-base"]')
