@@ -153,7 +153,7 @@ describe('Dataset - Card View', () => {
   it('pushSort dispatched when sort button clicked', () => {
     const wrapper = createWrapper();
     const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('Name');
+    expect(button.text()).toEqual('datasets.name');
     button.simulate('click');
 
     // The push has outdated query?
