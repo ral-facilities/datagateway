@@ -40,7 +40,6 @@ describe('DLS Visits table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
@@ -59,6 +58,7 @@ describe('DLS Visits table component', () => {
             INSTRUMENT: {
               ID: 3,
               NAME: 'LARMOR',
+              FACILITY_ID: 8,
             },
           },
         ],

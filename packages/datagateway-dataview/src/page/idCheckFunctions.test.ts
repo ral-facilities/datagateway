@@ -18,6 +18,8 @@ jest.mock('datagateway-common', () => {
   };
 });
 
+jest.mock('lodash.memoize', () => (fn: (args: unknown) => unknown) => fn);
+
 describe('ID check functions', () => {
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();

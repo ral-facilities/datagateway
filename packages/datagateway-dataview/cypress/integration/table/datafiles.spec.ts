@@ -1,4 +1,4 @@
-describe('DLS - Datafiles Table', () => {
+describe('Datafiles Table', () => {
   beforeEach(() => {
     Cypress.currentTest.retries(3);
     cy.server();
@@ -6,9 +6,7 @@ describe('DLS - Datafiles Table', () => {
     cy.route('/datasets/25').as('datasets');
     cy.route('/datafiles?order=*').as('datafilesOrder');
     cy.login('user', 'password');
-    cy.visit(
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
-    );
+    cy.visit('/browse/investigation/1/dataset/25/datafile');
   });
 
   it('should load correctly', () => {
@@ -17,18 +15,10 @@ describe('DLS - Datafiles Table', () => {
   });
 
   it('should not load incorrect URL', () => {
-    cy.visit(
-      '/browse/proposal/INVESTIGATION%201/investigation/2/dataset/25/datafile'
-    );
+    cy.visit('/browse/investigation/2/dataset/25/datafile');
 
     cy.contains('Oops!').should('be.visible');
     cy.get('[role="grid"]').should('not.exist');
-  });
-
-  it('should be able to scroll down and load more rows', () => {
-    cy.get('[aria-rowcount="50"]').should('exist');
-    cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="56"]').should('exist');
   });
 
   it('should be able to resize a column', () => {
@@ -37,7 +27,7 @@ describe('DLS - Datafiles Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 40 - 40) / 4;
+        columnWidth = (windowWidth - 40 - 40 - 70) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -90,6 +80,12 @@ describe('DLS - Datafiles Table', () => {
     });
   });
 
+  it('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="56"]').should('exist');
+  });
+
   describe('should be able to sort by', () => {
     beforeEach(() => {
       cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
@@ -100,7 +96,7 @@ describe('DLS - Datafiles Table', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -112,30 +108,30 @@ describe('DLS - Datafiles Table', () => {
     it('descending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc')
         .eq(1)
         .should('not.have.css', 'opacity', '0');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'yes/glass/them.jpg'
+        '/yes/glass/them.jpg'
       );
     });
 
     it('no order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -151,18 +147,18 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Create Time')
+      cy.contains('[role="button"]', 'Modified Time')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 1940'
+        'Datafile 15831'
       );
     });
   });
@@ -184,9 +180,11 @@ describe('DLS - Datafiles Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2019-01-01');
+      cy.get('[aria-label="Modified Time date filter from"]').type(
+        '2019-01-01'
+      );
 
-      cy.get('[aria-label="Create Time date filter to"]')
+      cy.get('[aria-label="Modified Time date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -198,17 +196,17 @@ describe('DLS - Datafiles Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Create Time date filter to"]').should(
+      cy.get('[aria-label="Modified Time date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 14873'
+        'Datafile 1940'
       );
       cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
-        'Datafile 20621'
+        'Datafile 6730'
       );
     });
 
@@ -216,12 +214,11 @@ describe('DLS - Datafiles Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .type('5')
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
-
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
         .type('.png')
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(

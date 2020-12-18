@@ -509,6 +509,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     <Grid container direction="column" alignItems="center">
       <Grid
         container
+        item
         direction="row"
         justify="center"
         alignItems="center"
