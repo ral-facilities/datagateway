@@ -16,3 +16,5 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Run linting
         run: yarn lint
+      - name: Run unit tests
+        run: yarn test:unit
