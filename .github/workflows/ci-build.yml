@@ -2,8 +2,8 @@ name: CI Build
 on: [push, pull_request]
 
 jobs:
-  test:
-    name: Tests
+  lint-and-unit-test:
+    name: Lint & Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -61,8 +61,99 @@ jobs:
           directory: ./packages/datagateway-download/
           flags: download
           fail_ci_if_error: true
-      - name: Run e2e tests
+
+  download-e2e-test:
+    # Run only if the  Lint & Unit Tests job passed
+    needs: lint-and-unit-test
+    name: DataGateway Download End to End Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      # Cache yarn dependencies/ restore the cached dependencies during future workflows
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
         run: |
-          yarn workspace datagateway-download run e2e
-          yarn workspace datagateway-search run e2e
-          yarn workspace datagateway-dataview run e2e
+          sudo apt-get install libgconf-2-4
+          yarn --frozen-lockfile
+      - name: Run datagateway-download e2e tests
+        run: yarn workspace datagateway-download run e2e
+
+  search-e2e-test:
+    # Run only if  the  Lint & Unit Tests job passed
+    needs: lint-and-unit-test
+    name: DataGateway Search End to End Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      # Cache yarn dependencies/ restore the cached dependencies during future workflows
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
+        run: |
+          sudo apt-get install libgconf-2-4
+          yarn --frozen-lockfile
+      - name: Run datagateway-search e2e tests
+        run: yarn workspace datagateway-search run e2e
+
+  dataview-e2e-test:
+    # Run only if  the  Lint & Unit Tests job passed
+    needs: lint-and-unit-test
+    name: DataGateway DataView End to End Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      # Cache yarn dependencies/ restore the cached dependencies during future workflows
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
+        run: |
+          sudo apt-get install libgconf-2-4
+          yarn --frozen-lockfile
+      - name: Run datagateway-dataview e2e tests
+        run: yarn workspace datagateway-dataview run e2e
