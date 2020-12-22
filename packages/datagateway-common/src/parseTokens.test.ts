@@ -21,7 +21,7 @@ describe('readSciGatewayToken', () => {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXN0IjoidGVzdCJ9.YMHLrDnDXLh13W2VajRFRY8bUwHjr8dzHzVeA-Cek8Y'
     );
     const result = readSciGatewayToken();
-    expect(result).toEqual({ sessionId: null, username: 1 });
+    expect(result).toEqual({ sessionId: null, username: null });
   });
 
   it("should return nulls if token doesn't exist", () => {
