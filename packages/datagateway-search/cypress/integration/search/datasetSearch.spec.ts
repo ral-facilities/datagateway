@@ -14,6 +14,7 @@ describe('Dataset search tab', () => {
   });
 
   it('should be able to search by text', () => {
+    cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('police');

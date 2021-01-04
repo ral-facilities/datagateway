@@ -14,6 +14,7 @@ describe('Investigation search tab', () => {
   });
 
   it('should be able to search by title text', () => {
+    cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('dog');
