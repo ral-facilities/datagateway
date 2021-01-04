@@ -1,9 +1,7 @@
 describe('Datasets Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('**/datasets/count*').as('getDatasetsCount');
-    cy.route('**/datasets?order*').as('getDatasetsOrder');
+    cy.intercept('**/datasets/count*').as('getDatasetsCount');
+    cy.intercept('**/datasets?order*').as('getDatasetsOrder');
     cy.login('user', 'password');
     cy.visit('/browse/investigation/1/dataset').wait(
       ['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'],
