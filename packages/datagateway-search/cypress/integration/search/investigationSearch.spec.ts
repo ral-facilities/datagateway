@@ -28,6 +28,19 @@ describe('Investigation search tab', () => {
     cy.get('[aria-rowcount="4"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-942080-93-9');
+
+    // Check that "select all" and individual selection are equivalent
+    let i = 1;
+    while (i < 5) {
+      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
+      i++;
+    }
+    cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+      'be.checked'
+    );
+    cy.get('[aria-label="select all rows"]')
+      .should('have.attr', 'data-indeterminate')
+      .and('eq', 'false');
   });
 
   it('should be able to search by instrument text', () => {

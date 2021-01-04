@@ -28,6 +28,19 @@ describe('Dataset search tab', () => {
     cy.get('[aria-rowcount="12"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+
+    // Check that "select all" and individual selection are equivalent
+    let i = 1;
+    while (i < 13) {
+      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
+      i++;
+    }
+    cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+      'be.checked'
+    );
+    cy.get('[aria-label="select all rows"]')
+      .should('have.attr', 'data-indeterminate')
+      .and('eq', 'false');
   });
 
   it('should be able to search by date range', () => {

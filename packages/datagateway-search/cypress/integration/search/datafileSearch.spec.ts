@@ -28,6 +28,15 @@ describe('Datafile search tab', () => {
     cy.get('[aria-rowcount="1"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 4961');
+
+    // Check that "select all" and individual selection are equivalent
+    cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`).click();
+    cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+      'be.checked'
+    );
+    cy.get('[aria-label="select all rows"]')
+      .should('have.attr', 'data-indeterminate')
+      .and('eq', 'false');
   });
 
   it('should be able to search by date range', () => {
