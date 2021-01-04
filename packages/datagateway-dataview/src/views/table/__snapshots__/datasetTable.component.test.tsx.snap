@@ -171,6 +171,7 @@ exports[`Dataset table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "DATAFILE_COUNT",
+        "disableSort": true,
         "icon": <Memo(ConfirmationNumberIcon) />,
         "label": "datasets.datafile_count",
       },

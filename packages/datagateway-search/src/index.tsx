@@ -85,8 +85,17 @@ document.dispatchEvent(
         plugin: 'datagateway-search',
         displayName: '\xa0Search',
         order: 0,
-        helpText:
-          'DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters.',
+        helpSteps: [
+          {
+            target: '#plugin-link--search-data',
+            content:
+              'DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters',
+          },
+          {
+            target: '.tour-search-tab-select',
+            content: 'Select which type of data to view the search results for',
+          },
+        ],
         logoLightMode: LogoLight,
         logoDarkMode: LogoDark,
         logoAltText: 'DataGateway',

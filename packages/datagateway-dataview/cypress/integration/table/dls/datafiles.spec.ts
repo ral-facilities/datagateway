@@ -98,7 +98,7 @@ describe('DLS - Datafiles Table', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -110,10 +110,10 @@ describe('DLS - Datafiles Table', () => {
     it('descending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -129,13 +129,13 @@ describe('DLS - Datafiles Table', () => {
     it('no order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -153,13 +153,13 @@ describe('DLS - Datafiles Table', () => {
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Create Time')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 1940'
@@ -216,12 +216,12 @@ describe('DLS - Datafiles Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .type('5')
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
         .type('.png')
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(

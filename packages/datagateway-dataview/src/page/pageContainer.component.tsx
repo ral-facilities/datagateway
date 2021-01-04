@@ -90,7 +90,12 @@ const NavBar = (props: {
     <Sticky>
       <StyledGrid container>
         {/* Hold the breadcrumbs at top left of the page. */}
-        <Grid item xs aria-label="container-breadcrumbs">
+        <Grid
+          className="tour-dataview-breadcrumbs"
+          item
+          xs
+          aria-label="container-breadcrumbs"
+        >
           {/* don't show breadcrumbs on /my-data - only on browse */}
           <Route path={paths.root} component={PageBreadcrumbs} />
         </Grid>
@@ -98,6 +103,7 @@ const NavBar = (props: {
         {/* The table entity count takes up an xs of 2, where the breadcrumbs
       will take the remainder of the space. */}
         <Grid
+          className="tour-dataview-results"
           style={{ textAlign: 'center' }}
           item
           xs={2}
@@ -182,6 +188,7 @@ const CardSwitch = (props: {
 
   return (
     <FormControlLabel
+      className="tour-dataview-toggle-card"
       value="start"
       control={
         <Switch

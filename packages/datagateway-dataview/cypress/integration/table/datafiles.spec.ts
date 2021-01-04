@@ -1,12 +1,10 @@
-describe('ISIS - Datafiles Table', () => {
+describe('Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('/datafiles/count').as('datafilesCount');
-    cy.intercept('/datasets/118').as('datasets');
+    cy.intercept('/datasets/25').as('datasets');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login('user', 'password');
-    cy.visit(
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
-    );
+    cy.visit('/browse/investigation/1/dataset/25/datafile');
   });
 
   it('should load correctly', () => {
@@ -15,18 +13,10 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   it('should not load incorrect URL', () => {
-    cy.visit(
-      '/browse/instrument/2/facilityCycle/14/investigation/88/dataset/118/datafile'
-    );
+    cy.visit('/browse/investigation/2/dataset/25/datafile');
 
     cy.contains('Oops!').should('be.visible');
     cy.get('[role="grid"]').should('not.exist');
-  });
-
-  it('should be able to scroll down and load more rows', () => {
-    cy.get('[aria-rowcount="50"]').should('exist');
-    cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="55"]').should('exist');
   });
 
   it('should be able to resize a column', () => {
@@ -88,6 +78,12 @@ describe('ISIS - Datafiles Table', () => {
     });
   });
 
+  it('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="56"]').should('exist');
+  });
+
   describe('should be able to sort by', () => {
     beforeEach(() => {
       cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
@@ -98,22 +94,22 @@ describe('ISIS - Datafiles Table', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/ability/save/time.png'
+        '/act/friend/general.jpeg'
       );
     });
 
     it('descending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -122,23 +118,47 @@ describe('ISIS - Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/worry/anything/able.bmp'
+        '/yes/glass/them.jpg'
+      );
+    });
+
+    it('no order', () => {
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+
+      cy.get('[aria-sort="ascending"]').should('not.exist');
+      cy.get('[aria-sort="descending"]').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
+      cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
+        'have.css',
+        'opacity',
+        '0'
+      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
+        '/year/how/structure.tiff'
       );
     });
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Modified Time')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 13529'
+        'Datafile 15831'
       );
     });
   });
@@ -151,17 +171,17 @@ describe('ISIS - Datafiles Table', () => {
     });
 
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]').find('input').type('sea');
+      cy.get('[aria-label="Filter by Location"]').find('input').type('ok');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 17361'
+        'Datafile 13915'
       );
     });
 
     it('date between', () => {
       cy.get('[aria-label="Modified Time date filter from"]').type(
-        '2018-08-12'
+        '2019-01-01'
       );
 
       cy.get('[aria-label="Modified Time date filter to"]')
@@ -181,9 +201,12 @@ describe('ISIS - Datafiles Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 7302'
+        'Datafile 1940'
+      );
+      cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
+        'Datafile 6730'
       );
     });
 
@@ -191,16 +214,15 @@ describe('ISIS - Datafiles Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .type('5')
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
-
+        .wait('@datafilesCount', { timeout: 10000 });
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
         .type('.png')
-        .wait(['@datafilesCount', '@datasets'], { timeout: 10000 });
+        .wait('@datafilesCount', { timeout: 10000 });
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 5865'
+        'Datafile 15352'
       );
     });
   });
@@ -213,33 +235,14 @@ describe('ISIS - Datafiles Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    it('when another other row is showing details', () => {
+    it('when another row is showing details', () => {
       cy.get('[aria-label="Show details"]').eq(1).click();
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('Datafile 117').should('be.visible');
-      cy.get('#details-panel').contains('Datafile 3470').should('not.exist');
+      cy.get('#details-panel').contains('Datafile 24').should('be.visible');
+      cy.get('#details-panel').contains('Datafile 3377').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
-    });
-
-    it('and view datafile details and parameters', () => {
-      cy.get('[aria-label="Show details"]').first().click();
-
-      cy.get('[aria-controls="datafile-details-panel"]').should('be.visible');
-
-      cy.get('#details-panel')
-        .contains(
-          'Remember word economic catch. After television scene alone. Partner send rise your. Exist room long success financial. Help itself culture money child realize take rise.'
-        )
-        .should('be.visible');
-
-      cy.get('[aria-controls="datafile-parameters-panel"]').should(
-        'be.visible'
-      );
-      cy.get('[aria-controls="datafile-parameters-panel"]').click();
-
-      cy.get('#parameter-grid').should('be.visible');
     });
 
     it('and then not view details anymore', () => {

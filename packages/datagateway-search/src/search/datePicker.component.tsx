@@ -49,44 +49,46 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
   return (
     <div>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-          clearable
-          className={classes.root}
-          allowKeyboardControl
-          disableFuture
-          inputVariant="outlined"
-          maxDate={endDate || new Date('2100-01-01')}
-          maxDateMessage={t('searchBox.invalid_date_message')}
-          format="yyyy-MM-dd"
-          value={startDate}
-          onChange={(date) => {
-            selectStartDate(date);
-          }}
-          animateYearScrolling
-          placeholder={t('searchBox.start_date')}
-          inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
-          color="secondary"
-          style={sideLayout ? {} : { paddingRight: 8 }}
-        />
-        {sideLayout ? <br></br> : null}
-        <KeyboardDatePicker
-          clearable
-          className={classes.root}
-          allowKeyboardControl
-          inputVariant="outlined"
-          disableFuture
-          minDate={startDate || new Date('1984-01-01')}
-          minDateMessage={t('searchBox.invalid_date_message')}
-          format="yyyy-MM-dd"
-          value={endDate}
-          onChange={(date) => {
-            selectEndDate(date);
-          }}
-          animateYearScrolling
-          placeholder={t('searchBox.end_date')}
-          inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
-          color="secondary"
-        />
+        <>
+          <KeyboardDatePicker
+            clearable
+            className={classes.root}
+            allowKeyboardControl
+            disableFuture
+            inputVariant="outlined"
+            maxDate={endDate || new Date('2100-01-01')}
+            maxDateMessage={t('searchBox.invalid_date_message')}
+            format="yyyy-MM-dd"
+            value={startDate}
+            onChange={(date) => {
+              selectStartDate(date);
+            }}
+            animateYearScrolling
+            placeholder={t('searchBox.start_date')}
+            inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
+            color="secondary"
+            style={sideLayout ? {} : { paddingRight: 8 }}
+          />
+          {sideLayout ? <br></br> : null}
+          <KeyboardDatePicker
+            clearable
+            className={classes.root}
+            allowKeyboardControl
+            inputVariant="outlined"
+            disableFuture
+            minDate={startDate || new Date('1984-01-01')}
+            minDateMessage={t('searchBox.invalid_date_message')}
+            format="yyyy-MM-dd"
+            value={endDate}
+            onChange={(date) => {
+              selectEndDate(date);
+            }}
+            animateYearScrolling
+            placeholder={t('searchBox.end_date')}
+            inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
+            color="secondary"
+          />
+        </>
       </MuiPickersUtilsProvider>
     </div>
   );

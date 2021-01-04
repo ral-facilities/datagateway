@@ -505,6 +505,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     <Grid container direction="column" alignItems="center">
       <Grid
         container
+        item
         direction="row"
         justify="center"
         alignItems="center"
@@ -528,6 +529,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {(paginationPos === 'top' || paginationPos === 'both') && loadedData && (
           <Grid
             container
+            item
             direction="column"
             alignItems="center"
             justify="center"
@@ -586,6 +588,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         <Grid item xs={3} style={{ padding: '1%' }}>
           <Grid
             container
+            item
             direction="column"
             justify="flex-start"
             alignItems="stretch"

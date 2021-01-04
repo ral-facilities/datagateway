@@ -106,6 +106,8 @@ describe('Add/remove from cart functionality', () => {
 
       it('and unselect all items', () => {
         cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.wait('@getDatafiles');
+        cy.get('[aria-label="grid"]').scrollTo('bottom');
 
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
