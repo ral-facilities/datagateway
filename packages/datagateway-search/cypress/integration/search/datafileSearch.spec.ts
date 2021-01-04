@@ -1,7 +1,9 @@
 describe('Datafile search tab', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-
+    cy.server();
+    cy.route('/datafiles/count*').as('datafilesCount');
+    cy.route('/datafiles?order=*').as('datafilesOrder');
     cy.visit('/search/data/');
   });
 
@@ -24,7 +26,10 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="Search table tabs"]')
       .contains('Datafile')
       .contains('1')
-      .click();
+      .click()
+      .wait(['@datafilesCount', '@datafilesOrder', '@datafilesOrder'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="1"]').should('exist');
 
