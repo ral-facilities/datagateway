@@ -581,7 +581,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      {loadedData && !loading && (
+      {(loadedData || totalDataCount === 0) && !loading && (
         <Grid container direction="row">
           <Grid item xs={12} md={3}>
             <Grid
