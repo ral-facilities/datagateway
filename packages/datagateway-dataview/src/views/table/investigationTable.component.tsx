@@ -245,6 +245,7 @@ const InvestigationTable = (
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
@@ -254,6 +255,7 @@ const InvestigationTable = (
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
+          disableHeaderWrap: true,
         },
       ]}
     />

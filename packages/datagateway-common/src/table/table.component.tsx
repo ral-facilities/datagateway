@@ -75,6 +75,7 @@ export interface ColumnType {
   className?: string;
   disableSort?: boolean;
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
+  disableHeaderWrap?: boolean;
 }
 
 export interface DetailsPanelProps {
@@ -340,6 +341,7 @@ const VirtualizedTable = (
                     icon,
                     filterComponent,
                     disableSort,
+                    disableHeaderWrap,
                   }) => {
                     return (
                       <Column
@@ -374,6 +376,7 @@ const VirtualizedTable = (
                                 [dataKey]: thisColumn,
                               });
                             }}
+                            disableHeaderWrap={disableHeaderWrap}
                           />
                         )}
                         className={clsx(classes.flexContainer, className)}

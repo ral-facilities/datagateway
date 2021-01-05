@@ -26,7 +26,17 @@ exports[`Data column header component renders correctly with filter but no sort 
         </div>
       </Styled(MuiBox)>
       <Styled(MuiBox)>
-        Test
+        <WithStyles(ForwardRef(Typography))
+          noWrap={true}
+          style={
+            Object {
+              "fontSize": "inherit",
+              "lineHeight": "inherit",
+            }
+          }
+        >
+          Test
+        </WithStyles(ForwardRef(Typography))>
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
@@ -103,7 +113,17 @@ exports[`Data column header component renders correctly with sort and filter 1`]
           active={false}
           onClick={[Function]}
         >
-          Test
+          <WithStyles(ForwardRef(Typography))
+            noWrap={true}
+            style={
+              Object {
+                "fontSize": "inherit",
+                "lineHeight": "inherit",
+              }
+            }
+          >
+            Test
+          </WithStyles(ForwardRef(Typography))>
         </WithStyles(ForwardRef(TableSortLabel))>
       </Styled(MuiBox)>
     </Styled(MuiBox)>
@@ -181,7 +201,17 @@ exports[`Data column header component renders correctly with sort but no filter 
           active={false}
           onClick={[Function]}
         >
-          Test
+          <WithStyles(ForwardRef(Typography))
+            noWrap={true}
+            style={
+              Object {
+                "fontSize": "inherit",
+                "lineHeight": "inherit",
+              }
+            }
+          >
+            Test
+          </WithStyles(ForwardRef(Typography))>
         </WithStyles(ForwardRef(TableSortLabel))>
       </Styled(MuiBox)>
     </Styled(MuiBox)>
@@ -251,7 +281,17 @@ exports[`Data column header component renders correctly without sort or filter 1
         </div>
       </Styled(MuiBox)>
       <Styled(MuiBox)>
-        Test
+        <WithStyles(ForwardRef(Typography))
+          noWrap={true}
+          style={
+            Object {
+              "fontSize": "inherit",
+              "lineHeight": "inherit",
+            }
+          }
+        >
+          Test
+        </WithStyles(ForwardRef(Typography))>
       </Styled(MuiBox)>
     </Styled(MuiBox)>
   </div>
