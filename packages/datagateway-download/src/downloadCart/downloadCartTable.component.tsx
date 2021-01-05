@@ -207,7 +207,15 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           </Grid>
         )}
         <Grid item>
-          <Paper style={{ height: 'calc(100vh - 150px)' }}>
+          {/* Table should take up page, but leave room for: SG app bar, tabs,
+              table padding, text below table, and buttons (respectively). */}
+          <Paper
+            style={{
+              height:
+                'calc(100vh - 64px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
+              minHeight: 230,
+            }}
+          >
             <Table
               columns={[
                 {
@@ -292,7 +300,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             container
             item
             direction="column"
-            xs={3}
+            xs
             alignContent="flex-end"
             style={{ marginRight: '1.2em' }}
           >
@@ -312,7 +320,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             item
             justify="flex-end"
             spacing={1}
-            xs={3}
+            xs
             style={{ marginRight: '1em' }}
           >
             <Grid item>
