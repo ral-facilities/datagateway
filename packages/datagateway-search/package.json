@@ -18,7 +18,7 @@
     "i18next": "^19.6.3",
     "i18next-browser-languagedetector": "^6.0.0",
     "i18next-http-backend": "^1.0.15",
-    "date-fns": "^2.15.0",
+    "date-fns": "^2.16.1",
     "loglevel": "^1.6.8",
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",

@@ -13,7 +13,7 @@
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.5.2",
-    "date-fns": "^2.15.0",
+    "date-fns": "^2.16.1",
     "lodash.debounce": "^4.0.8",
     "loglevel": "^1.6.8",
     "react-draggable": "^4.4.3",
