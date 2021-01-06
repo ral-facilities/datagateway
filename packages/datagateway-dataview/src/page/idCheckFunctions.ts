@@ -51,7 +51,7 @@ export const checkInvestigationId = memoize(
   (...args) => JSON.stringify(args)
 );
 
-export const unmemoizedCheckInstrumentAndFacilityCycleId = (
+const unmemoizedCheckInstrumentAndFacilityCycleId = (
   instrumentId: number,
   facilityCycleId: number,
   investigationId: number
@@ -83,6 +83,38 @@ export const unmemoizedCheckInstrumentAndFacilityCycleId = (
 
 export const checkInstrumentAndFacilityCycleId = memoize(
   unmemoizedCheckInstrumentAndFacilityCycleId,
+  (...args) => JSON.stringify(args)
+);
+
+const unmemoizedCheckInstrumentAndStudyId = (
+  instrumentId: number,
+  studyId: number,
+  investigationId: number
+): Promise<boolean> => {
+  return axios
+    .get(`${apiUrl}/investigations/`, {
+      params: {
+        where: {
+          ID: { eq: investigationId },
+          'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+          'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+        },
+      },
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response: AxiosResponse<Investigation[]>) => {
+      return response.data.length > 0;
+    })
+    .catch((error) => {
+      handleICATError(error);
+      return false;
+    });
+};
+
+export const checkInstrumentAndStudyId = memoize(
+  unmemoizedCheckInstrumentAndStudyId,
   (...args) => JSON.stringify(args)
 );
 

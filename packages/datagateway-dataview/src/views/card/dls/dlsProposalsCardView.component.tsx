@@ -26,6 +26,7 @@ import {
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, Action } from 'redux';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 interface DLSProposalsCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
@@ -70,6 +71,8 @@ const DLSProposalsCardView = (
     clearData,
   } = props;
 
+  const [t] = useTranslation();
+
   const [fetchedCount, setFetchedCount] = React.useState(false);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -104,7 +107,7 @@ const DLSProposalsCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: 'Title',
+        label: t('investigations.title'),
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
           tableLink(
@@ -115,7 +118,7 @@ const DLSProposalsCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Name',
+        label: t('investigations.name'),
         dataKey: 'NAME',
         filterComponent: textFilter,
       }}

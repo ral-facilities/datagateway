@@ -126,7 +126,7 @@ describe('DLS Visits - Card View', () => {
   it('pushSort dispatched when sort button clicked', () => {
     const wrapper = createWrapper();
     const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('Visit ID');
+    expect(button.text()).toEqual('investigations.visit_id');
     button.simulate('click');
 
     // The push has outdated query?
