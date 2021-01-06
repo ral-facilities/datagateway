@@ -122,7 +122,8 @@
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
-    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>."
+    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
+    "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",
