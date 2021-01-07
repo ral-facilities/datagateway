@@ -83,6 +83,21 @@ export const paths = {
     dlsDatafile:
       '/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile',
   },
+  studyHierarchy: {
+    root: '/browseStudyHierarchy',
+    toggle: {
+      isisInstrument: '/browseStudyHierarchy/instrument',
+      isisStudy: '/browseStudyHierarchy/instrument/:instrumentId/study',
+      isisInvestigation:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation',
+      isisDataset:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset',
+    },
+    standard: {
+      isisDatafile:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId/datafile',
+    },
+  },
 };
 
 const NavBar = (props: {
@@ -97,14 +112,23 @@ const NavBar = (props: {
     <Sticky>
       <StyledGrid container>
         {/* Hold the breadcrumbs at top left of the page. */}
-        <Grid item xs aria-label="container-breadcrumbs">
+        <Grid
+          className="tour-dataview-breadcrumbs"
+          item
+          xs
+          aria-label="container-breadcrumbs"
+        >
           {/* don't show breadcrumbs on /my-data - only on browse */}
-          <Route path={paths.root} component={PageBreadcrumbs} />
+          <Route
+            path={[paths.root, paths.studyHierarchy.root]}
+            component={PageBreadcrumbs}
+          />
         </Grid>
 
         {/* The table entity count takes up an xs of 2, where the breadcrumbs
       will take the remainder of the space. */}
         <Grid
+          className="tour-dataview-results"
           style={{ textAlign: 'center' }}
           item
           xs={2}
@@ -114,7 +138,9 @@ const NavBar = (props: {
             exact
             path={Object.values(paths.myData).concat(
               Object.values(paths.toggle),
-              Object.values(paths.standard)
+              Object.values(paths.standard),
+              Object.values(paths.studyHierarchy.toggle),
+              Object.values(paths.studyHierarchy.standard)
             )}
             render={() => {
               return (
@@ -136,7 +162,15 @@ const NavBar = (props: {
             }}
           />
         </Grid>
-        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+        <Paper
+          square
+          style={{
+            backgroundColor: 'inherit',
+            display: 'flex',
+            paddingLeft: 6,
+            paddingRight: 6,
+          }}
+        >
           <IconButton
             className="tour-dataview-search-icon"
             onClick={props.navigateToSearch}
@@ -146,7 +180,15 @@ const NavBar = (props: {
             <SearchIcon />
           </IconButton>
         </Paper>
-        <Paper square style={{ backgroundColor: 'inherit', display: 'flex' }}>
+        <Paper
+          square
+          style={{
+            backgroundColor: 'inherit',
+            display: 'flex',
+            paddingLeft: 6,
+            paddingRight: 6,
+          }}
+        >
           <IconButton
             className="tour-dataview-cart-icon"
             onClick={props.navigateToDownload}
@@ -166,6 +208,30 @@ const NavBar = (props: {
         </Paper>
       </StyledGrid>
     </Sticky>
+  );
+};
+
+const CardSwitch = (props: {
+  toggleCard: boolean;
+  handleToggleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}): React.ReactElement => {
+  const [t] = useTranslation();
+
+  return (
+    <FormControlLabel
+      className="tour-dataview-toggle-card"
+      value="start"
+      control={
+        <Switch
+          checked={props.toggleCard}
+          onChange={props.handleToggleChange}
+          name="toggleCard"
+          inputProps={{ 'aria-label': 'secondary checkbox' }}
+        />
+      }
+      label={t('app.toggle_cards')}
+      labelPlacement="start"
+    />
   );
 };
 
@@ -209,7 +275,9 @@ class PageContainer extends React.Component<
     // Allow for query parameter to override the
     // toggle state in the localStorage.
     this.state = {
-      paths: Object.values(paths.toggle),
+      paths: Object.values(paths.toggle).concat(
+        Object.values(paths.studyHierarchy.toggle)
+      ),
       toggleCard: this.getToggle(),
       isCartFetched: false,
     };
@@ -249,12 +317,14 @@ class PageContainer extends React.Component<
   }
 
   public getPathMatch = (): boolean => {
-    const res = Object.values(paths.toggle).some((p) => {
-      // Look for the character set where the parameter for ID would be
-      // replaced with the regex to catch any character between the forward slashes.
-      const match = this.props.path.match(p.replace(/(:[^./]*)/g, '(.)+'));
-      return match && this.props.path === match[0];
-    });
+    const res = Object.values(paths.toggle)
+      .concat(Object.values(paths.studyHierarchy.toggle))
+      .some((p) => {
+        // Look for the character set where the parameter for ID would be
+        // replaced with the regex to catch any character between the forward slashes.
+        const match = this.props.path.match(p.replace(/(:[^./]*)/g, '(.)+'));
+        return match && this.props.path === match[0];
+      });
     return res;
   };
 
@@ -299,7 +369,7 @@ class PageContainer extends React.Component<
     // Add the view and push the final query parameters.
     this.props.pushView(nextView, this.props.path);
 
-    // Set the state with the toggled card option and the saved queries.
+    // Set the state with the toggled card option and the saved query.
     this.setState({
       ...this.state,
       toggleCard: event.target.checked,
@@ -323,18 +393,9 @@ class PageContainer extends React.Component<
               exact
               path={this.state.paths}
               render={() => (
-                <FormControlLabel
-                  value="start"
-                  control={
-                    <Switch
-                      checked={this.state.toggleCard}
-                      onChange={this.handleToggleChange}
-                      name="toggleCard"
-                      inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    />
-                  }
-                  label="Toggle Cards"
-                  labelPlacement="start"
+                <CardSwitch
+                  toggleCard={this.state.toggleCard}
+                  handleToggleChange={this.handleToggleChange}
                 />
               )}
             />

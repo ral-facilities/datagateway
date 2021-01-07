@@ -67,8 +67,10 @@ const InvestigationDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div id="details-panel">
+    <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
+        variant="scrollable"
+        scrollButtons="auto"
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
         aria-label={t('investigations.details.tabs_label')}

@@ -216,6 +216,7 @@ const InvestigationTable = (
           label: t('investigations.rb_number'),
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
+          disableSort: true,
         },
         {
           icon: <PublicIcon />,

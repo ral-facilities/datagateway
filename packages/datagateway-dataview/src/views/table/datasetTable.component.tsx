@@ -198,6 +198,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           icon: <ConfirmationNumberIcon />,
           label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
+          disableSort: true,
         },
         {
           icon: <CalendarTodayIcon />,

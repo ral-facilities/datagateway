@@ -42,7 +42,6 @@ describe('ISIS Investigations table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
@@ -61,6 +60,7 @@ describe('ISIS Investigations table component', () => {
             INSTRUMENT: {
               ID: 3,
               NAME: 'LARMOR',
+              FACILITY_ID: 8,
             },
           },
         ],
@@ -89,9 +89,10 @@ describe('ISIS Investigations table component', () => {
   it('renders correctly', () => {
     const wrapper = shallow(
       <ISISInvestigationsTable
+        studyHierarchy={false}
         store={mockStore(state)}
         instrumentId="4"
-        facilityCycleId="5"
+        instrumentChildId="5"
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -102,7 +103,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -124,8 +129,9 @@ describe('ISIS Investigations table component', () => {
     const testStore = mockStore(state);
     const wrapper = shallow(
       <ISISInvestigationsTable
+        studyHierarchy={false}
         instrumentId="4"
-        facilityCycleId="5"
+        instrumentChildId="5"
         store={testStore}
       />
     );
@@ -140,7 +146,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -164,7 +174,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -190,7 +204,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -208,7 +226,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -233,7 +255,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -265,7 +291,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -283,7 +313,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -317,7 +351,41 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-colindex=3]').find('p').children()
+    ).toMatchSnapshot();
+
+    expect(
+      wrapper.find('[aria-colindex=4]').find('p').children()
+    ).toMatchSnapshot();
+
+    expect(
+      wrapper.find('[aria-colindex=5]').find('p').children()
+    ).toMatchSnapshot();
+
+    expect(
+      wrapper.find('[aria-colindex=6]').find('p').children()
+    ).toMatchSnapshot();
+  });
+
+  it('renders title, visit ID, RB number and DOI as links in StudyHierarchy', () => {
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISInvestigationsTable
+            studyHierarchy={true}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -360,7 +428,11 @@ describe('ISIS Investigations table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <ISISInvestigationsTable instrumentId="4" facilityCycleId="5" />
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
         </MemoryRouter>
       </Provider>
     );

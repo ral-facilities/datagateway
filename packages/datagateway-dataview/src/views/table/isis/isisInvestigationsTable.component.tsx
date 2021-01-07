@@ -4,8 +4,11 @@ import {
   DateFilter,
   DownloadCartItem,
   Entity,
+  fetchAllIds,
   fetchAllISISInvestigationIds,
+  fetchInvestigationCount,
   fetchInvestigationDetails,
+  fetchInvestigations,
   fetchISISInvestigationCount,
   fetchISISInvestigations,
   Filter,
@@ -40,7 +43,8 @@ import { push } from 'connected-react-router';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
-  facilityCycleId: string;
+  instrumentChildId: string;
+  studyHierarchy: boolean;
 }
 
 interface ISISInvestigationsTableStoreProps {
@@ -58,17 +62,27 @@ interface ISISInvestigationsTableDispatchProps {
   pushSort: (sort: string, order: Order | null) => Promise<void>;
 
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (
+  fetchFacilityCycleData: (
     instrumentId: number,
-    facilityCycleId: number,
+    FacilityCycleId: number,
     offsetParams: IndexRange
   ) => Promise<void>;
-  fetchCount: (instrumentId: number, facilityCycleId: number) => Promise<void>;
+  fetchStudyData: (
+    instrumentId: number,
+    StudyId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchFacilityCycleCount: (
+    instrumentId: number,
+    facilityCycleId: number
+  ) => Promise<void>;
+  fetchStudyCount: (instrumentId: number, studyId: number) => Promise<void>;
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: () => Promise<void>;
   viewDatasets: (urlPrefix: string) => (id: number) => Action;
+  fetchFacilityCycleAllIds: () => Promise<void>;
+  fetchStudyAllIds: () => Promise<void>;
 }
 
 type ISISInvestigationsTableCombinedProps = ISISInvestigationsTableProps &
@@ -81,20 +95,24 @@ const ISISInvestigationsTable = (
   const {
     data,
     totalDataCount,
-    fetchData,
-    fetchCount,
+    fetchFacilityCycleData,
+    fetchFacilityCycleCount,
+    fetchStudyData,
+    fetchStudyCount,
     sort,
     pushSort,
     filters,
     pushFilters,
     instrumentId,
-    facilityCycleId,
+    instrumentChildId,
     loading,
     cartItems,
     addToCart,
     removeFromCart,
     allIds,
-    fetchAllIds,
+    fetchFacilityCycleAllIds,
+    fetchStudyAllIds,
+    studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
@@ -129,9 +147,15 @@ const ISISInvestigationsTable = (
     />
   );
 
+  const fetchCount = studyHierarchy ? fetchStudyCount : fetchFacilityCycleCount;
+  const fetchData = studyHierarchy ? fetchStudyData : fetchFacilityCycleData;
+  const fetchAllIds = studyHierarchy
+    ? fetchStudyAllIds
+    : fetchFacilityCycleAllIds;
+
   React.useEffect(() => {
-    fetchCount(parseInt(instrumentId), parseInt(facilityCycleId));
-    fetchData(parseInt(instrumentId), parseInt(facilityCycleId), {
+    fetchCount(parseInt(instrumentId), parseInt(instrumentChildId));
+    fetchData(parseInt(instrumentId), parseInt(instrumentChildId), {
       startIndex: 0,
       stopIndex: 49,
     });
@@ -140,20 +164,22 @@ const ISISInvestigationsTable = (
     fetchCount,
     fetchData,
     instrumentId,
-    facilityCycleId,
+    instrumentChildId,
     sort,
     filters,
     fetchAllIds,
   ]);
 
-  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation`;
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
 
   return (
     <Table
       loading={loading}
       data={data}
       loadMoreRows={(params) =>
-        fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
+        fetchData(parseInt(instrumentId), parseInt(instrumentChildId), params)
       }
       totalRowCount={totalDataCount}
       sort={sort}
@@ -200,7 +226,7 @@ const ISISInvestigationsTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <TitleIcon />,
+          icon: <FingerprintIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) => {
@@ -286,7 +312,7 @@ const mapDispatchToProps = (
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  fetchData: (
+  fetchFacilityCycleData: (
     instrumentId: number,
     facilityCycleId: number,
     offsetParams: IndexRange
@@ -299,19 +325,51 @@ const mapDispatchToProps = (
         optionalParams: { getSize: true },
       })
     ),
-  fetchCount: (instrumentId: number, facilityCycleId: number) =>
+  fetchStudyData: (
+    instrumentId: number,
+    studyId: number,
+    offsetParams: IndexRange
+  ) =>
+    dispatch(
+      fetchInvestigations({
+        offsetParams: offsetParams,
+        getSize: true,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+            }),
+          },
+        ],
+      })
+    ),
+  fetchFacilityCycleCount: (instrumentId: number, facilityCycleId: number) =>
     dispatch(fetchISISInvestigationCount(instrumentId, facilityCycleId)),
+  fetchStudyCount: (instrumentId: number, studyId: number) =>
+    dispatch(
+      fetchInvestigationCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+          }),
+        },
+      ])
+    ),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
   addToCart: (entityIds: number[]) =>
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  fetchAllIds: () =>
+  fetchFacilityCycleAllIds: () =>
     dispatch(
       fetchAllISISInvestigationIds(
         parseInt(ownProps.instrumentId),
-        parseInt(ownProps.facilityCycleId)
+        parseInt(ownProps.instrumentChildId)
       )
     ),
   viewDatasets: (urlPrefix: string) => {
@@ -319,6 +377,22 @@ const mapDispatchToProps = (
       return dispatch(push(`${urlPrefix}/${id}/dataset`));
     };
   },
+  fetchStudyAllIds: () =>
+    dispatch(
+      fetchAllIds('investigation', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': {
+              eq: parseInt(ownProps.instrumentId),
+            },
+            'INVESTIGATIONSTUDY.STUDY.ID': {
+              eq: parseInt(ownProps.instrumentChildId),
+            },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (

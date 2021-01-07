@@ -57,6 +57,12 @@ import {
   FetchFacilityCyclesFailureType,
   FetchFacilityCyclesRequestType,
   FetchFacilityCyclesSuccessType,
+  FetchStudyCountFailureType,
+  FetchStudyCountRequestType,
+  FetchStudyCountSuccessType,
+  FetchStudiesFailureType,
+  FetchStudiesRequestType,
+  FetchStudiesSuccessType,
   FetchFilterFailureType,
   FetchFilterRequestType,
   FetchFilterSuccessPayload,
@@ -99,8 +105,8 @@ import {
   UpdateFiltersType,
   UpdatePagePayload,
   UpdatePageType,
-  UpdateQueriesPayload,
-  UpdateQueriesType,
+  UpdateQueryPayload,
+  UpdateQueryType,
   UpdateResultsPayload,
   UpdateResultsType,
   UpdateSaveViewType,
@@ -146,7 +152,7 @@ export const initialState: DGCommonState = {
   query: initialQuery,
   savedView: {
     view: null,
-    queries: null,
+    query: null,
     filters: {},
     sort: {},
   },
@@ -298,13 +304,13 @@ export function handleUpdateSort(
   };
 }
 
-export function handleUpdateQueries(
+export function handleUpdateQuery(
   state: DGCommonState,
-  payload: UpdateQueriesPayload
+  payload: UpdateQueryPayload
 ): DGCommonState {
   return {
     ...state,
-    query: payload.queries,
+    query: payload.query,
   };
 }
 
@@ -321,10 +327,10 @@ export function handleSaveView(
     // Switch view and save view information.
     sort: state.savedView.sort,
     filters: state.savedView.filters,
-    query: state.savedView.queries ? state.savedView.queries : initialQuery,
+    query: state.savedView.query ? state.savedView.query : initialQuery,
     savedView: {
       view: payload.view,
-      queries: state.query,
+      query: state.query,
       filters: state.filters,
       sort: state.sort,
     },
@@ -343,7 +349,7 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     filters: {},
     savedView: {
       view: null,
-      queries: null,
+      query: null,
       filters: {},
       sort: {},
     },
@@ -743,7 +749,7 @@ const dGCommonReducer = createReducer(initialState, {
   [UpdateResultsType]: handleUpdateResults,
   [UpdateFiltersType]: handleUpdateFilters,
   [UpdateSortType]: handleUpdateSort,
-  [UpdateQueriesType]: handleUpdateQueries,
+  [UpdateQueryType]: handleUpdateQuery,
   [UpdateSaveViewType]: handleSaveView,
   [ClearTableType]: handleClearTable,
   [ClearDataType]: handleClearData,
@@ -810,6 +816,15 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
   [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
   [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
+  [FetchStudiesRequestType]: handleFetchDataRequest,
+  [FetchStudiesSuccessType]: handleFetchDataSuccess,
+  [FetchStudiesFailureType]: handleFetchDataFailure,
+  [FetchStudyCountRequestType]: handleFetchCountRequest,
+  [FetchStudyCountSuccessType]: handleFetchCountSuccess,
+  [FetchStudyCountFailureType]: handleFetchCountFailure,
+  [FetchStudiesRequestType]: handleFetchDataRequest,
+  [FetchStudiesSuccessType]: handleFetchDataSuccess,
+  [FetchStudiesFailureType]: handleFetchDataFailure,
   [FetchDownloadCartRequestType]: handleDownloadCartRequest,
   [FetchDownloadCartSuccessType]: handleDownloadCartSuccess,
   [FetchDownloadCartFailureType]: handleDownloadCartFailure,

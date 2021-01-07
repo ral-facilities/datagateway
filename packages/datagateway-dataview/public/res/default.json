@@ -1,11 +1,14 @@
 {
   "app": {
-    "results": "Results"
+    "results": "Results",
+    "toggle_cards": "Toggle Cards",
+    "max_results": "Max Results"
   },
   "breadcrumbs": {
     "home": "Home",
     "instrument_plural": "Instruments",
     "facilityCycle_plural": "Facility Cycles",
+    "study_plural": "Studies",
     "proposal_plural": "Proposals",
     "investigation_plural": "Investigations",
     "dataset_plural": "Datasets",
@@ -35,6 +38,13 @@
     "end_date": "End Date",
     "start_date": "Start Date"
   },
+  "studies": {
+    "name": "RB Number",
+    "description": "Description",
+    "pid": "DOI",
+    "end_date": "End Date",
+    "start_date": "Start Date"
+  },
   "investigations": {
     "title": "Title",
     "name": "Name",
@@ -46,6 +56,8 @@
     "rb_number": "RB Number",
     "doi": "DOI",
     "dataset_count": "Dataset Count",
+    "type_id": "Type ID",
+    "facility_id": "Facility ID",
     "details": {
       "tabs_label": "Investigation Details Tabs",
       "label": "Investigation Details",
@@ -100,7 +112,8 @@
       "type": {
         "label": "Dataset Types",
         "name": "Name",
-        "description": "Description"
+        "description": "Description",
+        "type_id": "Type ID"
       }
     },
     "download": "Download"
@@ -128,11 +141,21 @@
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",
-    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>."
+    "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
+    "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
   "buttons": {
     "add_to_cart": "Add to cart",
     "remove_from_cart": "Remove from cart",
     "download": "Download"
+  },
+  "advanced_filters": {
+    "show": "Show Advanced Filters",
+    "hide": "Hide Advanced Filters"
+  },
+  "entity_card": {
+    "no_description": "No description available",
+    "show_more": "Show more",
+    "show_less": "Show less"
   }
 }

@@ -16,7 +16,9 @@ import {
   DateFilter,
   DownloadCartItem,
   Entity,
+  fetchInvestigationCount,
   fetchInvestigationDetails,
+  fetchInvestigations,
   fetchISISInvestigationCount,
   fetchISISInvestigations,
   Filter,
@@ -39,6 +41,7 @@ import {
   ViewsType,
 } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
@@ -49,7 +52,8 @@ import CardView from '../cardView.component';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInvestigationsCardViewProps {
   instrumentId: string;
-  facilityCycleId: string;
+  instrumentChildId: string;
+  studyHierarchy: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -66,12 +70,21 @@ interface ISISInvestigationsCVStateProps {
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInvestigationsCVDispatchProps {
-  fetchData: (
+  fetchFacilityCycleData: (
     instrumentId: number,
-    facilityCycleId: number,
+    FacilityCycleId: number,
     offsetParams: IndexRange
   ) => Promise<void>;
-  fetchCount: (instrumentId: number, facilityCycleId: number) => Promise<void>;
+  fetchStudyData: (
+    instrumentId: number,
+    StudyId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchFacilityCycleCount: (
+    instrumentId: number,
+    facilityCycleId: number
+  ) => Promise<void>;
+  fetchStudyCount: (instrumentId: number, studyId: number) => Promise<void>;
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
@@ -92,15 +105,17 @@ const ISISInvestigationsCardView = (
 ): React.ReactElement => {
   const {
     instrumentId,
-    facilityCycleId,
+    instrumentChildId,
     data,
     sort,
     totalDataCount,
     loading,
     query,
     cartItems,
-    fetchData,
-    fetchCount,
+    fetchFacilityCycleData,
+    fetchStudyData,
+    fetchFacilityCycleCount,
+    fetchStudyCount,
     fetchDetails,
     addToCart,
     removeFromCart,
@@ -112,12 +127,19 @@ const ISISInvestigationsCardView = (
     pushResults,
     pushSort,
     viewDatasets,
+    studyHierarchy,
   } = props;
+
+  const [t] = useTranslation();
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
 
-  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation`;
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
+  const fetchData = studyHierarchy ? fetchStudyData : fetchFacilityCycleData;
+  const fetchCount = studyHierarchy ? fetchStudyCount : fetchFacilityCycleCount;
 
   const selectedCards = React.useMemo(
     () =>
@@ -154,12 +176,12 @@ const ISISInvestigationsCardView = (
     setInvestigationIds(data.map((investigation) => investigation.ID));
 
     if (!fetchedCount) {
-      fetchCount(parseInt(instrumentId), parseInt(facilityCycleId));
+      fetchCount(parseInt(instrumentId), parseInt(instrumentChildId));
       setFetchedCount(true);
     }
   }, [
     instrumentId,
-    facilityCycleId,
+    instrumentChildId,
     data,
     clearData,
     fetchedCount,
@@ -181,13 +203,13 @@ const ISISInvestigationsCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       loadData={(params) =>
-        fetchData(parseInt(instrumentId), parseInt(facilityCycleId), params)
+        fetchData(parseInt(instrumentId), parseInt(instrumentChildId), params)
       }
       loadCount={() =>
-        fetchCount(parseInt(instrumentId), parseInt(facilityCycleId))
+        fetchCount(parseInt(instrumentId), parseInt(instrumentChildId))
       }
       title={{
-        label: 'Title',
+        label: t('investigations.title'),
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
           tableLink(
@@ -198,32 +220,32 @@ const ISISInvestigationsCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('investigations.details.summary'),
         dataKey: 'SUMMARY',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Fingerprint />,
-          label: 'Visit ID',
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
           icon: <Fingerprint />,
-          label: 'RB Number',
+          label: t('investigations.name'),
           dataKey: 'NAME',
           filterComponent: textFilter,
         },
         {
           icon: <Public />,
-          label: 'DOI',
+          label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION[0].STUDY.PID',
           filterComponent: textFilter,
         },
         {
           icon: <Save />,
-          label: 'Size',
+          label: t('investigations.details.size'),
           dataKey: 'SIZE',
           content: (investigation: Investigation) =>
             formatBytes(investigation.SIZE),
@@ -231,19 +253,19 @@ const ISISInvestigationsCardView = (
         },
         {
           icon: <Assessment />,
-          label: 'Instrument',
+          label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'Start Date',
+          label: t('investigations.details.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'End Date',
+          label: t('investigations.details.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },
@@ -294,7 +316,7 @@ const ISISInvestigationsCardView = (
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): ISISInvestigationsCVDispatchProps => ({
-  fetchData: (
+  fetchFacilityCycleData: (
     instrumentId: number,
     facilityCycleId: number,
     offsetParams: IndexRange
@@ -307,8 +329,40 @@ const mapDispatchToProps = (
         optionalParams: { getSize: true },
       })
     ),
-  fetchCount: (instrumentId: number, facilityCycleId: number) =>
+  fetchStudyData: (
+    instrumentId: number,
+    studyId: number,
+    offsetParams: IndexRange
+  ) =>
+    dispatch(
+      fetchInvestigations({
+        offsetParams: offsetParams,
+        getSize: true,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+            }),
+          },
+        ],
+      })
+    ),
+  fetchFacilityCycleCount: (instrumentId: number, facilityCycleId: number) =>
     dispatch(fetchISISInvestigationCount(instrumentId, facilityCycleId)),
+  fetchStudyCount: (instrumentId: number, studyId: number) =>
+    dispatch(
+      fetchInvestigationCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+          }),
+        },
+      ])
+    ),
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
   addToCart: (entityIds: number[]) =>

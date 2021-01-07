@@ -41,8 +41,9 @@ import { push } from 'connected-react-router';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
-  facilityCycleId: string;
+  instrumentChildId: string;
   investigationId: string;
+  studyHierarchy: boolean;
 }
 
 interface ISISDatasetsTableStoreProps {
@@ -91,7 +92,7 @@ const ISISDatasetsTable = (
     filters,
     pushFilters,
     investigationId,
-    facilityCycleId,
+    instrumentChildId,
     instrumentId,
     downloadData,
     loading,
@@ -101,6 +102,7 @@ const ISISDatasetsTable = (
     allIds,
     fetchAllIds,
     viewDatafiles,
+    studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
@@ -141,7 +143,9 @@ const ISISDatasetsTable = (
     />
   );
 
-  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset`;
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   return (
     <Table

@@ -5,7 +5,7 @@ Enter a description of the changes here
 Add a set up instructions describing how the reviewer should test the code
 
 - [ ] Review code
-- [ ] Check Travis build
+- [ ] Check Actions build
 - [ ] Review changes to test coverage
 - [ ] {more steps here}
 

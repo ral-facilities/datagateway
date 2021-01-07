@@ -24,6 +24,7 @@ exports[`Investigation table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "RB_NUMBER",
+        "disableSort": true,
         "filterComponent": [Function],
         "icon": <Memo(FingerprintIcon) />,
         "label": "investigations.rb_number",
@@ -71,6 +72,7 @@ exports[`Investigation table component renders correctly 1`] = `
         "INSTRUMENT": Object {
           "NAME": "LARMOR",
         },
+        "NAME": "Test 1",
         "RB_NUMBER": "1",
         "SIZE": 1,
         "STARTDATE": "2019-07-23",

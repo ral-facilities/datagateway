@@ -29,6 +29,7 @@ import {
 import { Action, AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { CalendarToday } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISFacilityCyclesCVProps {
@@ -82,6 +83,8 @@ const ISISFacilityCyclesCardView = (
     clearData,
   } = props;
 
+  const [t] = useTranslation();
+
   const [fetchedCount, setFetchedCount] = React.useState(false);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -125,7 +128,7 @@ const ISISFacilityCyclesCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: 'Name',
+        label: t('facilitycycles.name'),
         dataKey: 'NAME',
         content: (facilityCycle: FacilityCycle) =>
           tableLink(
@@ -136,20 +139,20 @@ const ISISFacilityCyclesCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('facilitycycles.description'),
         dataKey: 'DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <CalendarToday />,
-          label: 'Start Date',
+          label: t('facilitycycles.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'End Date',
+          label: t('facilitycycles.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },

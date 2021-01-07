@@ -39,13 +39,13 @@ describe('DLS datafiles table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
         NAME: 'Test 1',
         LOCATION: '/test1',
         FILESIZE: 1,
+        MOD_TIME: '2019-07-23',
         CREATE_TIME: '2019-07-23',
         DATASET_ID: 1,
       },

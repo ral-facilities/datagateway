@@ -54,6 +54,7 @@ describe('Investigation actions', () => {
           INSTRUMENT: {
             ID: 4,
             NAME: 'LARMOR',
+            FACILITY_ID: 8,
           },
         },
       ],
@@ -76,6 +77,7 @@ describe('Investigation actions', () => {
           INSTRUMENT: {
             ID: 4,
             NAME: 'LARMOR',
+            FACILITY_ID: 8,
           },
         },
       ],
@@ -664,5 +666,40 @@ describe('Investigation actions', () => {
     expect(handleICATError).toHaveBeenCalledWith({
       message: 'Test error message',
     });
+  });
+
+  it('fetchFilter handles single distinct filter', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [['testData']],
+      })
+    );
+
+    const asyncAction = fetchFilter('investigation', '0', [
+      { filterType: 'distinct', filterValue: JSON.stringify('NAME') },
+    ]);
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchFilterRequest());
+    expect(actions[1]).toEqual(fetchFilterSuccess('0', ['testData']));
+  });
+
+  it('fetchFilter handles multiple distinct filters and dataKey', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [['testData']],
+      })
+    );
+
+    const asyncAction = fetchFilter(
+      'investigation',
+      '0',
+      [{ filterType: 'distinct', filterValue: JSON.stringify(['NAME', 'ID']) }],
+      '1'
+    );
+    await asyncAction(dispatch, getState, null);
+
+    expect(actions[0]).toEqual(fetchFilterRequest());
+    expect(actions[1]).toEqual(fetchFilterSuccess('0', ['testData']));
   });
 });

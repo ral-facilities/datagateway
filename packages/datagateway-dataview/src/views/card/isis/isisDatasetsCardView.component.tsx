@@ -42,6 +42,7 @@ import {
 } from '@material-ui/icons';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { push } from 'connected-react-router';
+import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISDatasetCVDispatchProps {
@@ -76,8 +77,9 @@ interface ISISDatasetCVStateProps {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISDatasetCardViewProps {
   instrumentId: string;
-  facilityCycleId: string;
+  instrumentChildId: string;
   investigationId: string;
+  studyHierarchy: boolean;
 }
 
 type ISISDatasetCVCombinedProps = ISISDatasetCVDispatchProps &
@@ -89,7 +91,7 @@ const ISISDatasetsCardView = (
 ): React.ReactElement => {
   const {
     instrumentId,
-    facilityCycleId,
+    instrumentChildId,
     investigationId,
     data,
     totalDataCount,
@@ -110,7 +112,10 @@ const ISISDatasetsCardView = (
     pushSort,
     clearData,
     viewDatafiles,
+    studyHierarchy,
   } = props;
+
+  const [t] = useTranslation();
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
@@ -154,7 +159,9 @@ const ISISDatasetsCardView = (
     }
   }, [investigationId, data, fetchedCount, fetchCount]);
 
-  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset`;
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   return (
     <CardView
@@ -172,34 +179,34 @@ const ISISDatasetsCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: 'Name',
+        label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
           tableLink(`${urlPrefix}/${dataset.ID}`, dataset.NAME),
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('datasets.details.description'),
         dataKey: 'DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Save />,
-          label: 'Size',
+          label: t('datasets.size'),
           dataKey: 'SIZE',
           content: (dataset: Dataset) => formatBytes(dataset.SIZE),
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
-          label: 'Create Time',
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'Modified Time',
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

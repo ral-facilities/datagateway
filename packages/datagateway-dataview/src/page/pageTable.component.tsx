@@ -13,6 +13,7 @@ import DLSDatasetsTable from '../views/table/dls/dlsDatasetsTable.component';
 import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
 import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
+import ISISStudiesTable from '../views/table/isis/isisStudiesTable.component';
 import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
 import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
 import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
@@ -26,20 +27,155 @@ import {
   checkProposalName,
   checkInvestigationId,
   checkInstrumentAndFacilityCycleId,
+  checkInstrumentAndStudyId,
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
 import { Paper } from '@material-ui/core';
+
+const SafeDatafileTable = React.memo(
+  (props: {
+    investigationId: string;
+    datasetId: string;
+  }): React.ReactElement => {
+    const SafeDatafileTable = withIdCheck(
+      checkInvestigationId(
+        parseInt(props.investigationId),
+        parseInt(props.datasetId)
+      )
+    )(DatafileTable);
+
+    return <SafeDatafileTable datasetId={props.datasetId} />;
+  }
+);
+
+SafeDatafileTable.displayName = 'SafeDatafileTable';
+
+const SafeISISDatafilesTable = React.memo(
+  (props: {
+    instrumentId: string;
+    instrumentChildId: string;
+    investigationId: string;
+    datasetId: string;
+    studyHierarchy: boolean;
+  }): React.ReactElement => {
+    const SafeISISDatafilesTable = props.studyHierarchy
+      ? withIdCheck(
+          Promise.all([
+            checkInstrumentAndStudyId(
+              parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId),
+              parseInt(props.investigationId)
+            ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
+            ),
+          ]).then((values) => !values.includes(false))
+        )(ISISDatafilesTable)
+      : withIdCheck(
+          Promise.all([
+            checkInstrumentAndFacilityCycleId(
+              parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId),
+              parseInt(props.investigationId)
+            ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
+            ),
+          ]).then((values) => !values.includes(false))
+        )(ISISDatafilesTable);
+
+    return <SafeISISDatafilesTable datasetId={props.datasetId} />;
+  }
+);
+
+SafeISISDatafilesTable.displayName = 'SafeISISDatafilesTable';
+
+const SafeISISDatasetsTable = React.memo(
+  (props: {
+    instrumentId: string;
+    instrumentChildId: string;
+    investigationId: string;
+    studyHierarchy: boolean;
+  }): React.ReactElement => {
+    const SafeISISDatasetsTable = props.studyHierarchy
+      ? withIdCheck(
+          checkInstrumentAndStudyId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISDatasetsTable)
+      : withIdCheck(
+          checkInstrumentAndFacilityCycleId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISDatasetsTable);
+
+    return <SafeISISDatasetsTable {...props} />;
+  }
+);
+
+SafeISISDatasetsTable.displayName = 'SafeISISDatasetsTable';
+
+const SafeDLSDatafilesTable = React.memo(
+  (props: {
+    proposalName: string;
+    investigationId: string;
+    datasetId: string;
+  }): React.ReactElement => {
+    const SafeDLSDatafilesTable = withIdCheck(
+      Promise.all([
+        checkProposalName(props.proposalName, parseInt(props.investigationId)),
+        checkInvestigationId(
+          parseInt(props.investigationId),
+          parseInt(props.datasetId)
+        ),
+      ]).then((values) => !values.includes(false))
+    )(DLSDatafilesTable);
+
+    return <SafeDLSDatafilesTable datasetId={props.datasetId} />;
+  }
+);
+
+SafeDLSDatafilesTable.displayName = 'SafeDLSDatafilesTable';
+
+const SafeDLSDatasetsTable = React.memo(
+  (props: {
+    proposalName: string;
+    investigationId: string;
+  }): React.ReactElement => {
+    const SafeDLSDatasetsTable = withIdCheck(
+      checkProposalName(props.proposalName, parseInt(props.investigationId))
+    )(DLSDatasetsTable);
+
+    return (
+      <SafeDLSDatasetsTable
+        proposalName={props.proposalName}
+        investigationId={props.investigationId}
+      />
+    );
+  }
+);
+
+SafeDLSDatasetsTable.displayName = 'SafeDLSDatasetsTable';
 
 class PageTable extends React.PureComponent {
   public render(): React.ReactNode {
     return (
       <Route
         exact
-        path={['/']
-          .concat(Object.values(paths.standard))
-          .concat(Object.values(paths.toggle))
-          .concat(Object.values(paths.myData))}
+        path={['/'].concat(
+          Object.values(paths.myData),
+          Object.values(paths.toggle),
+          Object.values(paths.standard),
+          Object.values(paths.studyHierarchy.toggle),
+          Object.values(paths.studyHierarchy.standard)
+        )}
       >
         {/* Place table in Paper component which adjusts for the height
       of the AppBar (64px) on parent application and the cart icon (48px). */}
@@ -61,6 +197,7 @@ class PageTable extends React.PureComponent {
                 </Link>
               )}
             />
+            {/* DLS routes */}
             <Route path={paths.myData.dls} component={DLSMyDataTable} />
             <Route path={paths.myData.isis} component={ISISMyDataTable} />
             <Route
@@ -85,20 +222,12 @@ class PageTable extends React.PureComponent {
               }: RouteComponentProps<{
                 proposalName: string;
                 investigationId: string;
-              }>) => {
-                const SafeDLSDatasetsTable = withIdCheck(
-                  checkProposalName(
-                    match.params.proposalName,
-                    parseInt(match.params.investigationId)
-                  )
-                )(DLSDatasetsTable);
-                return (
-                  <SafeDLSDatasetsTable
-                    proposalName={match.params.proposalName}
-                    investigationId={match.params.investigationId}
-                  />
-                );
-              }}
+              }>) => (
+                <SafeDLSDatasetsTable
+                  proposalName={match.params.proposalName}
+                  investigationId={match.params.investigationId}
+                />
+              )}
             />
             <Route
               exact
@@ -109,28 +238,13 @@ class PageTable extends React.PureComponent {
                 proposalName: string;
                 investigationId: string;
                 datasetId: string;
-              }>) => {
-                const SafeDLSDatafilesTable = withIdCheck(
-                  Promise.all([
-                    checkProposalName(
-                      match.params.proposalName,
-                      parseInt(match.params.investigationId)
-                    ),
-                    checkInvestigationId(
-                      parseInt(match.params.investigationId),
-                      parseInt(match.params.datasetId)
-                    ),
-                  ]).then((values) => !values.includes(false))
-                )(DLSDatafilesTable);
-                return (
-                  <SafeDLSDatafilesTable datasetId={match.params.datasetId} />
-                );
-              }}
+              }>) => <SafeDLSDatafilesTable {...match.params} />}
             />
+            {/* ISIS routes */}
             <Route
               exact
               path={paths.toggle.isisInstrument}
-              component={ISISInstrumentsTable}
+              render={() => <ISISInstrumentsTable studyHierarchy={false} />}
             />
             <Route
               exact
@@ -153,8 +267,9 @@ class PageTable extends React.PureComponent {
                 facilityCycleId: string;
               }>) => (
                 <ISISInvestigationsTable
+                  studyHierarchy={false}
                   instrumentId={match.params.instrumentId}
-                  facilityCycleId={match.params.facilityCycleId}
+                  instrumentChildId={match.params.facilityCycleId}
                 />
               )}
             />
@@ -167,22 +282,14 @@ class PageTable extends React.PureComponent {
                 instrumentId: string;
                 facilityCycleId: string;
                 investigationId: string;
-              }>) => {
-                const SafeISISDatasetsTable = withIdCheck(
-                  checkInstrumentAndFacilityCycleId(
-                    parseInt(match.params.instrumentId),
-                    parseInt(match.params.facilityCycleId),
-                    parseInt(match.params.investigationId)
-                  )
-                )(ISISDatasetsTable);
-                return (
-                  <SafeISISDatasetsTable
-                    instrumentId={match.params.instrumentId}
-                    facilityCycleId={match.params.facilityCycleId}
-                    investigationId={match.params.investigationId}
-                  />
-                );
-              }}
+              }>) => (
+                <SafeISISDatasetsTable
+                  studyHierarchy={false}
+                  instrumentId={match.params.instrumentId}
+                  instrumentChildId={match.params.facilityCycleId}
+                  investigationId={match.params.investigationId}
+                />
+              )}
             />
             <Route
               exact
@@ -194,25 +301,86 @@ class PageTable extends React.PureComponent {
                 facilityCycleId: string;
                 investigationId: string;
                 datasetId: string;
-              }>) => {
-                const SafeISISDatafilesTable = withIdCheck(
-                  Promise.all([
-                    checkInstrumentAndFacilityCycleId(
-                      parseInt(match.params.instrumentId),
-                      parseInt(match.params.facilityCycleId),
-                      parseInt(match.params.investigationId)
-                    ),
-                    checkInvestigationId(
-                      parseInt(match.params.investigationId),
-                      parseInt(match.params.datasetId)
-                    ),
-                  ]).then((values) => !values.includes(false))
-                )(ISISDatafilesTable);
-                return (
-                  <SafeISISDatafilesTable datasetId={match.params.datasetId} />
-                );
-              }}
+              }>) => (
+                <SafeISISDatafilesTable
+                  studyHierarchy={false}
+                  instrumentId={match.params.instrumentId}
+                  instrumentChildId={match.params.facilityCycleId}
+                  investigationId={match.params.investigationId}
+                  datasetId={match.params.datasetId}
+                />
+              )}
             />
+            {/* ISIS studyHierarchy routes */}
+            <Route
+              exact
+              path={paths.studyHierarchy.toggle.isisInstrument}
+              render={() => <ISISInstrumentsTable studyHierarchy={true} />}
+            />
+            <Route
+              exact
+              path={paths.studyHierarchy.toggle.isisStudy}
+              render={({
+                match,
+              }: RouteComponentProps<{ instrumentId: string }>) => (
+                <ISISStudiesTable instrumentId={match.params.instrumentId} />
+              )}
+            />
+            <Route
+              exact
+              path={paths.studyHierarchy.toggle.isisInvestigation}
+              render={({
+                match,
+              }: RouteComponentProps<{
+                instrumentId: string;
+                studyId: string;
+              }>) => (
+                <ISISInvestigationsTable
+                  studyHierarchy={true}
+                  instrumentId={match.params.instrumentId}
+                  instrumentChildId={match.params.studyId}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={paths.studyHierarchy.toggle.isisDataset}
+              render={({
+                match,
+              }: RouteComponentProps<{
+                instrumentId: string;
+                studyId: string;
+                investigationId: string;
+              }>) => (
+                <SafeISISDatasetsTable
+                  studyHierarchy={true}
+                  instrumentId={match.params.instrumentId}
+                  instrumentChildId={match.params.studyId}
+                  investigationId={match.params.investigationId}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={paths.studyHierarchy.standard.isisDatafile}
+              render={({
+                match,
+              }: RouteComponentProps<{
+                instrumentId: string;
+                studyId: string;
+                investigationId: string;
+                datasetId: string;
+              }>) => (
+                <SafeISISDatafilesTable
+                  studyHierarchy={true}
+                  instrumentId={match.params.instrumentId}
+                  instrumentChildId={match.params.studyId}
+                  investigationId={match.params.investigationId}
+                  datasetId={match.params.datasetId}
+                />
+              )}
+            />
+            {/* Generic routes */}
             <Route
               exact
               path={paths.toggle.investigation}
@@ -235,15 +403,12 @@ class PageTable extends React.PureComponent {
               }: RouteComponentProps<{
                 investigationId: string;
                 datasetId: string;
-              }>) => {
-                const SafeDatafileTable = withIdCheck(
-                  checkInvestigationId(
-                    parseInt(match.params.investigationId),
-                    parseInt(match.params.datasetId)
-                  )
-                )(DatafileTable);
-                return <SafeDatafileTable datasetId={match.params.datasetId} />;
-              }}
+              }>) => (
+                <SafeDatafileTable
+                  datasetId={match.params.datasetId}
+                  investigationId={match.params.investigationId}
+                />
+              )}
             />
           </Switch>
         </Paper>

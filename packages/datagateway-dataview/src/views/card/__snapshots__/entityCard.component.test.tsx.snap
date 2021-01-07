@@ -5,7 +5,14 @@ exports[`Card renders correctly 1`] = `
   className="makeStyles-root-1"
   id="card"
 >
-  <WithStyles(ForwardRef(CardContent))>
+  <WithStyles(ForwardRef(CardContent))
+    style={
+      Object {
+        "minWidth": 0,
+        "width": "100%",
+      }
+    }
+  >
     <div
       className="makeStyles-highlight-3"
     >
@@ -48,13 +55,19 @@ exports[`Card renders correctly 1`] = `
                 paragraph={true}
                 variant="body1"
               >
-                No description available
+                entity_card.no_description
               </WithStyles(ForwardRef(Typography))>
             </WithStyles(ForwardRef(Collapse))>
           </div>
         </div>
       </div>
-      <div />
+      <div
+        style={
+          Object {
+            "paddingLeft": 15,
+          }
+        }
+      />
     </div>
   </WithStyles(ForwardRef(CardContent))>
 </WithStyles(ForwardRef(Card))>
