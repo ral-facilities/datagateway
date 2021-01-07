@@ -31,7 +31,7 @@ const headerHeight = 110;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
-const dataColumnMinWidth = 70;
+const dataColumnMinWidth = 84;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({

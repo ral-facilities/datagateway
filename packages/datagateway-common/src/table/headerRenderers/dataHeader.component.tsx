@@ -1,7 +1,13 @@
 import React from 'react';
 import { Order } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, TableSortLabel, Box, Typography } from '@material-ui/core';
+import {
+  TableCell,
+  TableSortLabel,
+  Box,
+  Typography,
+  useMediaQuery,
+} from '@material-ui/core';
 import { DragIndicator } from '@material-ui/icons';
 import Draggable from 'react-draggable';
 
@@ -58,6 +64,7 @@ const DataHeader = (
     </Typography>
   );
 
+  const smWindow = !useMediaQuery('(min-width: 960px)');
   return (
     <TableCell
       size="small"
@@ -65,6 +72,7 @@ const DataHeader = (
       className={className}
       variant="head"
       sortDirection={currSortDirection}
+      style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
     >
       <div
         style={{
