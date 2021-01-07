@@ -29,6 +29,7 @@ import {
 } from 'datagateway-common';
 import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { AnyAction, Action } from 'redux';
@@ -88,6 +89,8 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     pushSort,
     clearData,
   } = props;
+
+  const [t] = useTranslation();
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
@@ -149,7 +152,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: 'Name',
+        label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) => {
           return datasetLink(investigationId, dataset.ID, dataset.NAME);
@@ -157,26 +160,26 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('datasets.details.description'),
         dataKey: 'DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <ConfirmationNumber />,
-          label: 'Datafile Count',
+          label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
-          label: 'Created Time',
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'Modified Time',
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },

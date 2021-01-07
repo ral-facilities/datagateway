@@ -2,10 +2,7 @@ import React from 'react';
 import CardView from '../cardView.component';
 import {
   Entity,
-  fetchFacilityCycleCount,
-  fetchFacilityCycles,
   tableLink,
-  FacilityCycle,
   TextColumnFilter,
   DateColumnFilter,
   Filter,
@@ -18,6 +15,10 @@ import {
   clearData,
   pushPageNum,
   pushPageResults,
+  fetchAllIds,
+  fetchStudies,
+  fetchStudyCount,
+  StudyInvestigation,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
@@ -28,16 +29,16 @@ import {
 } from 'datagateway-common/lib/state/app.types';
 import { Action, AnyAction } from 'redux';
 import { connect } from 'react-redux';
-import { CalendarToday } from '@material-ui/icons';
+import { CalendarToday, Public } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-interface ISISFacilityCyclesCVProps {
+interface ISISStudiesCVProps {
   instrumentId: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-interface ISISFacilityCyclesCVStateProps {
+interface ISISStudiesCVStateProps {
   data: Entity[];
   totalDataCount: number;
   view: ViewsType;
@@ -45,12 +46,14 @@ interface ISISFacilityCyclesCVStateProps {
   loading: boolean;
   query: QueryParams;
   sort: SortType;
+  allIds: number[];
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-interface ISISFacilityCyclesCVDispatchProps {
-  fetchData: (instrumentId: number, offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (instrumentId: number) => Promise<void>;
+interface ISISStudiesCVDispatchProps {
+  fetchIds: (instrumentId: number) => Promise<void>;
+  fetchData: (allIds: number[], offsetParams: IndexRange) => Promise<void>;
+  fetchCount: (allIds: number[]) => Promise<void>;
   clearData: () => Action;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
@@ -58,20 +61,22 @@ interface ISISFacilityCyclesCVDispatchProps {
   pushSort: (sort: string, order: Order | null) => Promise<void>;
 }
 
-type ISISFacilityCyclesCVCombinedProps = ISISFacilityCyclesCVDispatchProps &
-  ISISFacilityCyclesCVStateProps &
-  ISISFacilityCyclesCVProps;
+type ISISStudiesCVCombinedProps = ISISStudiesCVDispatchProps &
+  ISISStudiesCVStateProps &
+  ISISStudiesCVProps;
 
-const ISISFacilityCyclesCardView = (
-  props: ISISFacilityCyclesCVCombinedProps
+const ISISStudiesCardView = (
+  props: ISISStudiesCVCombinedProps
 ): React.ReactElement => {
   const {
     instrumentId,
+    allIds,
     data,
     totalDataCount,
     loading,
     query,
     sort,
+    fetchIds,
     fetchData,
     fetchCount,
     view,
@@ -106,18 +111,25 @@ const ISISFacilityCyclesCardView = (
   );
 
   React.useEffect(() => {
+    fetchIds(parseInt(instrumentId));
+  }, [fetchIds, instrumentId]);
+
+  React.useEffect(() => {
     if (!fetchedCount) {
-      fetchCount(parseInt(instrumentId));
+      fetchCount(allIds);
       setFetchedCount(true);
     }
-  }, [instrumentId, data, fetchedCount, fetchCount, setFetchedCount]);
+  }, [fetchedCount, allIds, fetchCount, setFetchedCount]);
+
+  const pathRoot = 'browseStudyHierarchy';
+  const instrumentChild = 'study';
 
   return (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loadData={(params) => fetchData(parseInt(instrumentId), params)}
-      loadCount={() => fetchCount(parseInt(instrumentId))}
+      loadData={(params) => fetchData(allIds, params)}
+      loadCount={() => fetchCount(allIds)}
       loading={loading}
       sort={sort}
       filters={filters}
@@ -128,32 +140,38 @@ const ISISFacilityCyclesCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: t('facilitycycles.name'),
-        dataKey: 'NAME',
-        content: (facilityCycle: FacilityCycle) =>
+        label: t('studies.name'),
+        dataKey: 'STUDY.NAME',
+        content: (studyInvestigation: StudyInvestigation) =>
           tableLink(
-            `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycle.ID}/investigation`,
-            facilityCycle.NAME,
+            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyInvestigation.STUDY.ID}/investigation`,
+            studyInvestigation.STUDY.NAME,
             view
           ),
         filterComponent: textFilter,
       }}
       description={{
-        label: t('facilitycycles.description'),
-        dataKey: 'DESCRIPTION',
+        label: t('studies.description'),
+        dataKey: 'STUDY.DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
+          icon: <Public />,
+          label: t('studies.pid'),
+          dataKey: 'STUDY.PID',
+          filterComponent: textFilter,
+        },
+        {
           icon: <CalendarToday />,
-          label: t('facilitycycles.start_date'),
-          dataKey: 'STARTDATE',
+          label: t('studies.start_date'),
+          dataKey: 'STUDY.STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: t('facilitycycles.end_date'),
-          dataKey: 'ENDDATE',
+          label: t('studies.end_date'),
+          dataKey: 'STUDY.ENDDATE',
           filterComponent: dateFilter,
         },
       ]}
@@ -163,11 +181,47 @@ const ISISFacilityCyclesCardView = (
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
-): ISISFacilityCyclesCVDispatchProps => ({
-  fetchData: (instrumentId: number, offsetParams: IndexRange) =>
-    dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
-  fetchCount: (instrumentId: number) =>
-    dispatch(fetchFacilityCycleCount(instrumentId)),
+): ISISStudiesCVDispatchProps => ({
+  fetchIds: (instrumentId: number) =>
+    dispatch(
+      fetchAllIds('investigation', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+          }),
+        },
+      ])
+    ),
+  fetchData: (allIds: number[], offsetParams: IndexRange) =>
+    dispatch(
+      fetchStudies({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              INVESTIGATION_ID: { in: allIds },
+            }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('STUDY'),
+          },
+        ],
+      })
+    ),
+  fetchCount: (allIds: number[]) =>
+    dispatch(
+      fetchStudyCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            INVESTIGATION_ID: { in: allIds },
+          }),
+        },
+      ])
+    ),
   clearData: () => dispatch(clearData()),
 
   pushFilters: (filter: string, data: Filter | null) =>
@@ -178,8 +232,9 @@ const mapDispatchToProps = (
   pushResults: (results: number | null) => dispatch(pushPageResults(results)),
 });
 
-const mapStateToProps = (state: StateType): ISISFacilityCyclesCVStateProps => {
+const mapStateToProps = (state: StateType): ISISStudiesCVStateProps => {
   return {
+    allIds: state.dgcommon.allIds,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     view: state.dgcommon.query.view,
@@ -193,4 +248,4 @@ const mapStateToProps = (state: StateType): ISISFacilityCyclesCVStateProps => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ISISFacilityCyclesCardView);
+)(ISISStudiesCardView);

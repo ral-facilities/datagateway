@@ -1,5 +1,10 @@
 name: CI Build
-on: [pull_request]
+on: 
+  pull_request:
+  # By default, the pull_request event type is not triggered when a PR is merged into master
+  push:
+    branches:
+      - master
 
 jobs:
   lint-and-unit-test:

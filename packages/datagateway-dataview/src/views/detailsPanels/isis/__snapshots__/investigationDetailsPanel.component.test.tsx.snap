@@ -3,11 +3,18 @@
 exports[`Investigation details panel component gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
@@ -158,11 +165,18 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
 exports[`Investigation details panel component renders correctly 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
@@ -313,11 +327,18 @@ exports[`Investigation details panel component renders correctly 1`] = `
 exports[`Investigation details panel component renders user, sample and publication tabs when present in the data 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"

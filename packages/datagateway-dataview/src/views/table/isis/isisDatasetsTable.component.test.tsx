@@ -63,8 +63,9 @@ describe('ISIS Dataset table component', () => {
     const wrapper = shallow(
       <ISISDatasetsTable
         store={mockStore(state)}
+        studyHierarchy={false}
         instrumentId="1"
-        facilityCycleId="2"
+        instrumentChildId="2"
         investigationId="3"
       />
     );
@@ -77,8 +78,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -100,8 +102,9 @@ describe('ISIS Dataset table component', () => {
     const testStore = mockStore(state);
     const wrapper = shallow(
       <ISISDatasetsTable
+        studyHierarchy={false}
         instrumentId="1"
-        facilityCycleId="2"
+        instrumentChildId="2"
         investigationId="3"
         store={testStore}
       />
@@ -118,8 +121,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -146,8 +150,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -176,8 +181,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -198,8 +204,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -227,8 +234,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -263,8 +271,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -286,8 +295,9 @@ describe('ISIS Dataset table component', () => {
         <MemoryRouter>
           <ISISDatasetsTable
             store={testStore}
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -316,8 +326,28 @@ describe('ISIS Dataset table component', () => {
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
+            investigationId="3"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-colindex=3]').find('p').children()
+    ).toMatchSnapshot();
+  });
+
+  it('renders dataset name as a link in StudyHierarchy', () => {
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISDatasetsTable
+            studyHierarchy={true}
+            instrumentId="1"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>
@@ -335,8 +365,9 @@ describe('ISIS Dataset table component', () => {
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISDatasetsTable
+            studyHierarchy={false}
             instrumentId="1"
-            facilityCycleId="2"
+            instrumentChildId="2"
             investigationId="3"
           />
         </MemoryRouter>

@@ -70,11 +70,18 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
 exports[`ISIS datafiles table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="datafile-details-panel"
