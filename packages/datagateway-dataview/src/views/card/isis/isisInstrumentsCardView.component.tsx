@@ -20,6 +20,7 @@ import {
 } from 'datagateway-common';
 import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
@@ -27,6 +28,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 import CardView from '../cardView.component';
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+interface ISISStudiesCVProps {
+  studyHierarchy: boolean;
+}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInstrumentsCVDispatchProps {
@@ -52,7 +58,8 @@ interface ISISInstrumentsCVStateProps {
 }
 
 type ISISInstrumentsCVCombinedProps = ISISInstrumentsCVDispatchProps &
-  ISISInstrumentsCVStateProps;
+  ISISInstrumentsCVStateProps &
+  ISISStudiesCVProps;
 
 const ISISInstrumentsCardView = (
   props: ISISInstrumentsCVCombinedProps
@@ -73,7 +80,10 @@ const ISISInstrumentsCardView = (
     pushResults,
     pushSort,
     clearData,
+    studyHierarchy,
   } = props;
+
+  const [t] = useTranslation();
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
 
@@ -93,6 +103,9 @@ const ISISInstrumentsCardView = (
     }
   }, [data, fetchedCount, fetchCount, setFetchedCount]);
 
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+
   return (
     <CardView
       data={data}
@@ -109,31 +122,31 @@ const ISISInstrumentsCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: 'Name',
+        label: t('instruments.name'),
         dataKey: 'FULLNAME',
         content: (instrument: Instrument) =>
           tableLink(
-            `/browse/instrument/${instrument.ID}/facilityCycle`,
+            `/${pathRoot}/instrument/${instrument.ID}/${instrumentChild}`,
             instrument.FULLNAME || instrument.NAME,
             view
           ),
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('instruments.description'),
         dataKey: 'DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Title />,
-          label: 'Type',
+          label: t('instruments.type'),
           dataKey: 'TYPE',
           filterComponent: textFilter,
         },
         {
           icon: <LinkIcon />,
-          label: 'URL',
+          label: t('instruments.url'),
           dataKey: 'URL',
           // eslint-disable-next-line react/display-name
           content: (instrument: Instrument) => (

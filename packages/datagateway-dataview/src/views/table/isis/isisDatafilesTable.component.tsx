@@ -199,6 +199,7 @@ const ISISDatafilesTable = (
           label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { TableCellProps, TableCellRenderer } from 'react-virtualized';
-import { TableCell, Typography } from '@material-ui/core';
+import { TableCell, Typography, useMediaQuery } from '@material-ui/core';
 import ArrowTooltip from '../../arrowtooltip.component';
 
 type CellRendererProps = TableCellProps & {
@@ -16,12 +16,14 @@ const DataCell = (props: CellRendererProps): React.ReactElement => {
     return prev ? prev[curr] : null;
   }, rowData);
 
+  const smWindow = !useMediaQuery('(min-width: 960px)');
   return (
     <TableCell
       size="small"
       component="div"
       className={className}
       variant="body"
+      style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
     >
       <ArrowTooltip title={cellValue} enterDelay={500}>
         <Typography variant="body2" noWrap>

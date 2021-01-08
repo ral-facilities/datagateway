@@ -19,6 +19,7 @@ export const SetDatasetTabType = 'datagateway_search:set_dataset_tab';
 export const SetDatafileTabType = 'datagateway_search:set_datafile_tab';
 export const SetInvestigationTabType =
   'datagateway_search:set_investigation_tab';
+export const SetCurrentTabType = 'datagateway_search:set_current_tab';
 export const SettingsLoadedType = 'datagateway_search:settings_loaded';
 
 export interface TogglePayload {
@@ -39,4 +40,8 @@ export interface CheckRequestReceivedPayload {
 
 export interface LuceneResultTypePayload {
   searchData: number[];
+}
+
+export interface CurrentTabPayload {
+  currentTab: string;
 }

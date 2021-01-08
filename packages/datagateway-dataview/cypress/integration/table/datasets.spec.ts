@@ -1,7 +1,7 @@
-describe('Investigations Table', () => {
+describe('Datasets Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/investigation');
+    cy.visit('/browse/investigation/1/dataset');
   });
 
   it('should load correctly', () => {
@@ -9,15 +9,12 @@ describe('Investigations Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click an investigation to see its datasets', () => {
+  it('should be able to click a dataset to see its datafiles', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
-    cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
-  });
-
-  it('should be able to scroll down and load more rows', () => {
-    cy.get('[aria-rowcount="50"]').should('exist');
-    cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="75"]').should('exist');
+    cy.location('pathname').should(
+      'eq',
+      '/browse/investigation/1/dataset/25/datafile'
+    );
   });
 
   it('should be able to resize a column', () => {
@@ -26,19 +23,19 @@ describe('Investigations Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 40 - 40) / 8;
+        columnWidth = (windowWidth - 40 - 40) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
-    cy.get('[role="columnheader"]').eq(2).as('titleColumn');
-    cy.get('[role="columnheader"]').eq(3).as('visitColumn');
+    cy.get('[role="columnheader"]').eq(2).as('nameColumn');
+    cy.get('[role="columnheader"]').eq(3).as('sizeColumn');
 
-    cy.get('@titleColumn').should(($column) => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@visitColumn').should(($column) => {
+    cy.get('@sizeColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -46,15 +43,15 @@ describe('Investigations Table', () => {
     cy.get('.react-draggable')
       .first()
       .trigger('mousedown')
-      .trigger('mousemove', { clientX: 200 })
+      .trigger('mousemove', { clientX: 400 })
       .trigger('mouseup');
 
-    cy.get('@titleColumn').should(($column) => {
+    cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@visitColumn').should(($column) => {
+    cy.get('@sizeColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -66,9 +63,9 @@ describe('Investigations Table', () => {
       .trigger('mousemove', { clientX: 800 })
       .trigger('mouseup');
 
-    cy.get('@visitColumn').should(($column) => {
+    cy.get('@sizeColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -79,20 +76,25 @@ describe('Investigations Table', () => {
     });
   });
 
+  // current example data only has 2 datasets per investigation, so can't test lazy loading
+  it.skip('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="75"]').should('exist');
+  });
+
   describe('should be able to sort by', () => {
     it('ascending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'A nothing almost arrive I. Product middle design never. Cup camera then product father sort vote.'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('descending order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -100,15 +102,13 @@ describe('Investigations Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
 
     it('no order', () => {
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -118,33 +118,33 @@ describe('Investigations Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'Title').click();
+      cy.contains('[role="button"]', 'Create Time').click();
+      cy.contains('[role="button"]', 'Create Time').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Color knowledge economy return determine tell. Professor able catch cut nice anyone. Can line benefit home.'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('DATASET 1');
 
-      cy.get('[aria-rowcount="4"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
+        '2002-11-27 06:20:36'
+      );
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2019-01-01');
+      cy.get('[aria-label="Create Time date filter from"]').type('2002-01-01');
 
-      cy.get('[aria-label="Start Date date filter to"]')
+      cy.get('[aria-label="Create Time date filter to"]')
         .parent()
         .find('button')
         .click();
@@ -156,23 +156,22 @@ describe('Investigations Table', () => {
       const date = new Date();
       date.setDate(1);
 
-      cy.get('[aria-label="Start Date date filter to"]').should(
+      cy.get('[aria-label="Create Time date filter to"]').should(
         'have.value',
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="12"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Happy near day assume draw again. Lead pattern nothing approach spring standard.'
-      );
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
+      cy.get('[aria-label="Filter by Name"]').find('input').type('1');
 
-      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('9');
+      cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
 
-      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
   });
 
@@ -185,20 +184,12 @@ describe('Investigations Table', () => {
     });
 
     it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]').eq(2).click();
+      cy.get('[aria-label="Show details"]').eq(1).click();
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel')
-        .contains(
-          'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
-        )
-        .should('be.visible');
-      cy.get('#details-panel')
-        .contains(
-          'Dog want single resource major. Necessary bit always available term small stock game.'
-        )
-        .should('not.be.visible');
+      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
+      cy.get('#details-panel').contains('DATASET 241').should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 

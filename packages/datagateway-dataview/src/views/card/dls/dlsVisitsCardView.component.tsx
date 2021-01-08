@@ -39,6 +39,7 @@ import {
   CalendarToday,
   ConfirmationNumber,
 } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
 
 interface DLSVisitsCVProps {
   proposalName: string;
@@ -96,6 +97,8 @@ const DLSVisitsCardView = (
     pushSort,
     clearData,
   } = props;
+
+  const [t] = useTranslation();
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedFilters, setFetchedFilters] = React.useState(false);
@@ -159,7 +162,7 @@ const DLSVisitsCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: 'Visit ID',
+        label: t('investigations.visit_id'),
         dataKey: 'VISIT_ID',
         content: (investigation: Investigation) =>
           tableLink(
@@ -170,32 +173,32 @@ const DLSVisitsCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('investigations.details.summary'),
         dataKey: 'SUMMARY',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Assessment />,
-          label: 'Beamline',
+          label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME',
           filterComponent: textFilter,
         },
         {
           icon: <ConfirmationNumber />,
-          label: 'Dataset Count',
+          label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
-          label: 'Start Date',
+          label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'End Date',
+          label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },
@@ -209,7 +212,7 @@ const DLSVisitsCardView = (
       )}
       customFilters={[
         {
-          label: 'Type ID',
+          label: t('investigations.type_id'),
           dataKey: 'TYPE_ID',
           filterItems: typeFilteredItems,
         },

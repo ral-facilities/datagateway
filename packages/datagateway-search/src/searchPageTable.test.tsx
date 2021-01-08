@@ -11,6 +11,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
+import { setCurrentTab } from './state/actions/actions';
 
 describe('SearchPageTable', () => {
   let mount: typeof enzymeMount;
@@ -44,6 +45,7 @@ describe('SearchPageTable', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
+        currentTab: 'none',
       },
       searchData: {
         investigation: Array(1),
@@ -67,24 +69,22 @@ describe('SearchPageTable', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
+        currentTab: 'none',
       },
     };
 
     const mockStore = configureStore([thunk]);
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
+    const testStore = mockStore(state);
+    mount(
+      <Provider store={testStore}>
         <MemoryRouter>
           <SearchPageTable />
         </MemoryRouter>
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-label="searchPageTable.tabs_arialabel"]')
-        .first()
-        .prop('value')
-    ).toEqual('investigation');
+    expect(testStore.getActions()).toHaveLength(1);
+    expect(testStore.getActions()[0]).toEqual(setCurrentTab('investigation'));
   });
 
   it('defaults to dataset tab when investigation tab is hidden', () => {
@@ -99,24 +99,25 @@ describe('SearchPageTable', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: false,
+        currentTab: 'none',
       },
     };
 
+    // Mock to prevent error logging
+    const spy = jest.spyOn(console, 'error').mockImplementation();
     const mockStore = configureStore([thunk]);
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
+    const testStore = mockStore(state);
+    mount(
+      <Provider store={testStore}>
         <MemoryRouter>
           <SearchPageTable />
         </MemoryRouter>
       </Provider>
     );
+    spy.mockRestore();
 
-    expect(
-      wrapper
-        .find('[aria-label="searchPageTable.tabs_arialabel"]')
-        .first()
-        .prop('value')
-    ).toEqual('dataset');
+    expect(testStore.getActions()).toHaveLength(1);
+    expect(testStore.getActions()[0]).toEqual(setCurrentTab('dataset'));
   });
 
   it('defaults to datafile tab when investigation and dataset tab is hidden', () => {
@@ -131,24 +132,25 @@ describe('SearchPageTable', () => {
         datasetTab: false,
         datafileTab: true,
         investigationTab: false,
+        currentTab: 'none',
       },
     };
 
+    // Mock to prevent error logging
+    const spy = jest.spyOn(console, 'error').mockImplementation();
     const mockStore = configureStore([thunk]);
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
+    const testStore = mockStore(state);
+    mount(
+      <Provider store={testStore}>
         <MemoryRouter>
           <SearchPageTable />
         </MemoryRouter>
       </Provider>
     );
+    spy.mockRestore();
 
-    expect(
-      wrapper
-        .find('[aria-label="searchPageTable.tabs_arialabel"]')
-        .first()
-        .prop('value')
-    ).toEqual('datafile');
+    expect(testStore.getActions()).toHaveLength(1);
+    expect(testStore.getActions()[0]).toEqual(setCurrentTab('datafile'));
   });
 
   it('changes selected tab value on click of a new tab', () => {
@@ -158,34 +160,28 @@ describe('SearchPageTable', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
+        currentTab: 'none',
       },
     };
     const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
     const wrapper = mount(
-      <Provider store={mockStore(state)}>
+      <Provider store={testStore}>
         <MemoryRouter>
           <SearchPageTable />
         </MemoryRouter>
       </Provider>
     );
 
-    expect(
-      wrapper
-        .find('[aria-label="searchPageTable.tabs_arialabel"]')
-        .first()
-        .prop('value')
-    ).toEqual('investigation');
+    expect(testStore.getActions()).toHaveLength(1);
+    expect(testStore.getActions()[0]).toEqual(setCurrentTab('investigation'));
 
     wrapper
       .find('[aria-controls="simple-tabpanel-dataset"]')
       .first()
       .simulate('click');
 
-    expect(
-      wrapper
-        .find('[aria-label="searchPageTable.tabs_arialabel"]')
-        .first()
-        .prop('value')
-    ).toEqual('dataset');
+    expect(testStore.getActions()).toHaveLength(2);
+    expect(testStore.getActions()[1]).toEqual(setCurrentTab('dataset'));
   });
 });
