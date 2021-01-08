@@ -52,6 +52,7 @@ interface AdvancedFilterProps {
 }
 
 const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
+  const [t] = useTranslation();
   const classes = useAdvancedFilterStyles();
 
   const { title, description, information } = props;
@@ -60,53 +61,70 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
   const [advSearchCollapsed, setAdvSearchCollapsed] = React.useState(false);
 
   const chooseIcon = (label: string): JSX.Element | null => {
-    let icon;
-    switch (label) {
-      case 'Title':
-      case 'Name':
-      case 'Type':
-        icon = <TitleIcon className={classes.icon} />;
-        break;
-      case 'Visit ID':
-      case 'RB Number':
-        icon = <FingerprintIcon className={classes.icon} />;
-        break;
-      case 'DOI':
-        icon = <PublicIcon className={classes.icon} />;
-        break;
-      case 'Dataset Count':
-      case 'Datafile Count':
-        icon = <ConfirmationNumberIcon className={classes.icon} />;
-        break;
-      case 'Instrument':
-      case 'Beamline':
-        icon = <AssessmentIcon className={classes.icon} />;
-        break;
-      case 'Start Date':
-      case 'End Date':
-      case 'Create Time':
-      case 'Created Time':
-      case 'Modified Time':
-        icon = <CalendarTodayIcon className={classes.icon} />;
-        break;
-      case 'Location':
-        icon = <ExploreIcon className={classes.icon} />;
-        break;
-      case 'Size':
-        icon = <SaveIcon className={classes.icon} />;
-        break;
-      case 'Description':
-        icon = <DescriptionIcon className={classes.icon} />;
-        break;
-      case 'URL':
-        icon = <LinkIcon className={classes.icon} />;
-        break;
-      default:
-        icon = null;
+    if (
+      (t('advanced_filters.icons.title', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <TitleIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.fingerprint', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <FingerprintIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.public', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <PublicIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.confirmation_number', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <ConfirmationNumberIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.assessment', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <AssessmentIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.calendar_today', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <CalendarTodayIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.explore', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <ExploreIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.save', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <SaveIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.description', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <DescriptionIcon className={classes.icon} />;
+    } else if (
+      (t('advanced_filters.icons.link', {
+        returnObjects: true,
+      }) as string[]).includes(label)
+    ) {
+      return <LinkIcon className={classes.icon} />;
+    } else {
+      return null;
     }
-    return icon;
   };
-  const [t] = useTranslation();
 
   return (
     <div>
