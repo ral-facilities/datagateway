@@ -167,7 +167,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('#visit-users-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('Robert499');
+      .contains('Antonio Cooper');
     cy.get('#visit-samples-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')

@@ -23,9 +23,9 @@ exports[`ISIS Dataset Landing page renders correctly 1`] = `
       ]
     }
     datasetId="87"
-    facilityCycleId="5"
     fetchData={[Function]}
     fetchDetails={[Function]}
+    instrumentChildId="5"
     instrumentId="4"
     investigationId="1"
     store={
@@ -38,6 +38,7 @@ exports[`ISIS Dataset Landing page renders correctly 1`] = `
         "subscribe": [Function],
       }
     }
+    studyHierarchy={false}
     viewDatafiles={[Function]}
   />
 </ContextProvider>

@@ -44,9 +44,10 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
         },
       ]
     }
-    facilityCycleId="5"
-    fetchData={[Function]}
     fetchDetails={[Function]}
+    fetchFacilityCycleData={[Function]}
+    fetchStudyData={[Function]}
+    instrumentChildId="5"
     instrumentId="4"
     investigationId="1"
     store={
@@ -59,6 +60,73 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
         "subscribe": [Function],
       }
     }
+    studyHierarchy={false}
+    viewDatasets={[Function]}
+  />
+</ContextProvider>
+`;
+
+exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`] = `
+<ContextProvider
+  value={null}
+>
+  <LandingPage
+    data={
+      Array [
+        Object {
+          "DOI": "doi 1",
+          "ENDDATE": "2019-06-11",
+          "ID": 1,
+          "INVESTIGATIONINSTRUMENT": Array [
+            Object {
+              "ID": 1,
+              "INSTRUMENT": Object {
+                "FACILITY_ID": 1,
+                "ID": 3,
+                "NAME": "LARMOR",
+              },
+              "INSTRUMENT_ID": 3,
+              "INVESTIGATION_ID": 1,
+            },
+          ],
+          "NAME": "Test 1",
+          "RB_NUMBER": "1",
+          "SIZE": 1,
+          "STARTDATE": "2019-06-10",
+          "STUDYINVESTIGATION": Array [
+            Object {
+              "ID": 6,
+              "INVESTIGATION_ID": 1,
+              "STUDY": Object {
+                "ID": 7,
+                "PID": "study pid",
+              },
+              "STUDY_ID": 7,
+            },
+          ],
+          "SUMMARY": "foo bar",
+          "TITLE": "Test 1",
+          "VISIT_ID": "1",
+        },
+      ]
+    }
+    fetchDetails={[Function]}
+    fetchFacilityCycleData={[Function]}
+    fetchStudyData={[Function]}
+    instrumentChildId="5"
+    instrumentId="4"
+    investigationId="1"
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    studyHierarchy={true}
     viewDatasets={[Function]}
   />
 </ContextProvider>

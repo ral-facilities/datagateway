@@ -80,9 +80,10 @@ interface LandingPageStateProps {
 
 interface LandingPageProps {
   instrumentId: string;
-  facilityCycleId: string;
+  instrumentChildId: string;
   investigationId: string;
   datasetId: string;
+  studyHierarchy: boolean;
 }
 
 type LandingPageCombinedProps = LandingPageDispatchProps &
@@ -98,11 +99,15 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     viewDatafiles,
     data,
     instrumentId,
-    facilityCycleId,
+    instrumentChildId,
     investigationId,
     datasetId,
+    studyHierarchy,
   } = props;
-  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${datasetId}`;
+
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${datasetId}`;
   const classes = useStyles();
 
   React.useEffect(() => {

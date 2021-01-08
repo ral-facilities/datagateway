@@ -22,6 +22,7 @@ import { push } from 'connected-react-router';
 import {
   Entity,
   fetchInvestigationDetails,
+  fetchInvestigations,
   fetchISISInvestigations,
   formatBytes,
   Investigation,
@@ -79,9 +80,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface LandingPageDispatchProps {
   fetchDetails: (investigationId: number) => Promise<void>;
-  fetchData: (
+  fetchFacilityCycleData: (
     instrumentId: number,
-    facilityCycleId: number,
+    FacilityCycleId: number,
+    investigationId: number
+  ) => Promise<void>;
+  fetchStudyData: (
+    instrumentId: number,
+    StudyId: number,
     investigationId: number
   ) => Promise<void>;
   viewDatasets: (urlPrefix: string) => Action;
@@ -93,8 +99,9 @@ interface LandingPageStateProps {
 
 interface LandingPageProps {
   instrumentId: string;
-  facilityCycleId: string;
+  instrumentChildId: string;
   investigationId: string;
+  studyHierarchy: boolean;
 }
 
 type LandingPageCombinedProps = LandingPageDispatchProps &
@@ -106,23 +113,29 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const [value, setValue] = React.useState<'details'>('details');
   const {
     fetchDetails,
-    fetchData,
+    fetchFacilityCycleData,
+    fetchStudyData,
     viewDatasets,
     data,
     instrumentId,
-    facilityCycleId,
+    instrumentChildId,
     investigationId,
+    studyHierarchy,
   } = props;
-  const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}`;
+
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}`;
   const classes = useStyles();
 
+  const fetchData = studyHierarchy ? fetchStudyData : fetchFacilityCycleData;
   React.useEffect(() => {
     fetchData(
       parseInt(instrumentId),
-      parseInt(facilityCycleId),
+      parseInt(instrumentChildId),
       parseInt(investigationId)
     );
-  }, [fetchData, instrumentId, facilityCycleId, investigationId]);
+  }, [fetchData, instrumentId, instrumentChildId, investigationId]);
 
   React.useEffect(() => {
     if (
@@ -325,7 +338,7 @@ const mapDispatchToProps = (
 ): LandingPageDispatchProps => ({
   fetchDetails: (investigationId: number) =>
     dispatch(fetchInvestigationDetails(investigationId)),
-  fetchData: (
+  fetchFacilityCycleData: (
     instrumentId: number,
     facilityCycleId: number,
     investigationId: number
@@ -345,6 +358,26 @@ const mapDispatchToProps = (
             },
           ],
         },
+      })
+    ),
+  fetchStudyData: (
+    instrumentId: number,
+    studyId: number,
+    investigationId: number
+  ) =>
+    dispatch(
+      fetchInvestigations({
+        getSize: true,
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              ID: { eq: investigationId },
+              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+            }),
+          },
+        ],
       })
     ),
   viewDatasets: (urlPrefix: string) => dispatch(push(`${urlPrefix}/dataset`)),

@@ -97,6 +97,12 @@ export const paths = {
       isisDatafile:
         '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId/datafile',
     },
+    landing: {
+      isisInvestigationLanding:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId',
+      isisDatasetLanding:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId',
+    },
   },
 };
 

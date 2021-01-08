@@ -73,9 +73,10 @@ describe('ISIS Dataset Landing page', () => {
       <ISISDatasetLanding
         store={mockStore(state)}
         instrumentId="4"
-        facilityCycleId="5"
+        instrumentChildId="5"
         investigationId="1"
         datasetId="87"
+        studyHierarchy={false}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -88,9 +89,10 @@ describe('ISIS Dataset Landing page', () => {
         <MemoryRouter>
           <ISISDatasetLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
             datasetId="87"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>
@@ -118,9 +120,10 @@ describe('ISIS Dataset Landing page', () => {
         <MemoryRouter>
           <ISISDatasetLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
             datasetId="87"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>
@@ -143,9 +146,10 @@ describe('ISIS Dataset Landing page', () => {
         <MemoryRouter>
           <ISISDatasetLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
             datasetId="87"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>
@@ -163,9 +167,10 @@ describe('ISIS Dataset Landing page', () => {
         <MemoryRouter>
           <ISISDatasetLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
             datasetId="87"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>

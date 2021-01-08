@@ -52,6 +52,7 @@ exports[`ISIS Datasets - Card View renders correctly 1`] = `
       }
     }
     totalDataCount={1}
+    viewDatafiles={[Function]}
   />
 </ContextProvider>
 `;

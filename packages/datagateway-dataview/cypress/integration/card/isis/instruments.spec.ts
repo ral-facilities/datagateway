@@ -131,6 +131,6 @@ describe('ISIS - Instruments Cards', () => {
     cy.get('#instrument-users-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('Matthew50');
+      .contains('Vanessa Smith');
   });
 });

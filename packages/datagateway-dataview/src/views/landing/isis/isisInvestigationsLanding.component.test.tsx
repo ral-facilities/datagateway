@@ -113,8 +113,22 @@ describe('ISIS Investigation Landing page', () => {
       <ISISInvestigationLanding
         store={mockStore(state)}
         instrumentId="4"
-        facilityCycleId="5"
+        instrumentChildId="5"
         investigationId="1"
+        studyHierarchy={false}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('renders correctly for studyHierarchy', () => {
+    const wrapper = shallow(
+      <ISISInvestigationLanding
+        store={mockStore(state)}
+        instrumentId="4"
+        instrumentChildId="5"
+        investigationId="1"
+        studyHierarchy={true}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -127,8 +141,9 @@ describe('ISIS Investigation Landing page', () => {
         <MemoryRouter>
           <ISISInvestigationLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>
@@ -156,8 +171,9 @@ describe('ISIS Investigation Landing page', () => {
         <MemoryRouter>
           <ISISInvestigationLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>
@@ -182,8 +198,9 @@ describe('ISIS Investigation Landing page', () => {
         <MemoryRouter>
           <ISISInvestigationLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>
@@ -200,8 +217,9 @@ describe('ISIS Investigation Landing page', () => {
         <MemoryRouter>
           <ISISInvestigationLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>
@@ -234,8 +252,9 @@ describe('ISIS Investigation Landing page', () => {
         <MemoryRouter>
           <ISISInvestigationLanding
             instrumentId="4"
-            facilityCycleId="5"
+            instrumentChildId="5"
             investigationId="1"
+            studyHierarchy={false}
           />
         </MemoryRouter>
       </Provider>

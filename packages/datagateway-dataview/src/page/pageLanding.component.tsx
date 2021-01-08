@@ -6,16 +6,87 @@ import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLan
 import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.component';
 import {
   checkInstrumentAndFacilityCycleId,
+  checkInstrumentAndStudyId,
   checkInvestigationId,
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
 import withIdCheck from './withIdCheck';
 
+const SafeISISInvestigationLanding = React.memo(
+  (props: {
+    instrumentId: string;
+    instrumentChildId: string;
+    investigationId: string;
+    studyHierarchy: boolean;
+  }): React.ReactElement => {
+    const SafeISISInvestigationLanding = props.studyHierarchy
+      ? withIdCheck(
+          checkInstrumentAndStudyId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISInvestigationLanding)
+      : withIdCheck(
+          checkInstrumentAndFacilityCycleId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISInvestigationLanding);
+
+    return <SafeISISInvestigationLanding {...props} />;
+  }
+);
+SafeISISInvestigationLanding.displayName = 'SafeISISInvestigationLanding';
+
+const SafeISISDatasetLanding = React.memo(
+  (props: {
+    instrumentId: string;
+    instrumentChildId: string;
+    investigationId: string;
+    datasetId: string;
+    studyHierarchy: boolean;
+  }): React.ReactElement => {
+    const SafeISISDatasetLanding = props.studyHierarchy
+      ? withIdCheck(
+          Promise.all([
+            checkInstrumentAndStudyId(
+              parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId),
+              parseInt(props.investigationId)
+            ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
+            ),
+          ]).then((values) => !values.includes(false))
+        )(ISISDatasetLanding)
+      : withIdCheck(
+          Promise.all([
+            checkInstrumentAndFacilityCycleId(
+              parseInt(props.instrumentId),
+              parseInt(props.instrumentChildId),
+              parseInt(props.investigationId)
+            ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
+            ),
+          ]).then((values) => !values.includes(false))
+        )(ISISDatasetLanding);
+
+    return <SafeISISDatasetLanding {...props} />;
+  }
+);
+SafeISISDatasetLanding.displayName = 'SafeISISDatasetLanding';
+
 class PageLanding extends React.PureComponent {
   public render(): React.ReactNode {
     return (
       <Switch>
+        {/* ISIS routes */}
         <Route
           exact
           path={paths.landing.isisInvestigationLanding}
@@ -25,22 +96,14 @@ class PageLanding extends React.PureComponent {
             instrumentId: string;
             facilityCycleId: string;
             investigationId: string;
-          }>) => {
-            const SafeISISInvestigationLanding = withIdCheck(
-              checkInstrumentAndFacilityCycleId(
-                parseInt(match.params.instrumentId),
-                parseInt(match.params.facilityCycleId),
-                parseInt(match.params.investigationId)
-              )
-            )(ISISInvestigationLanding);
-            return (
-              <SafeISISInvestigationLanding
-                instrumentId={match.params.instrumentId}
-                facilityCycleId={match.params.facilityCycleId}
-                investigationId={match.params.investigationId}
-              />
-            );
-          }}
+          }>) => (
+            <SafeISISInvestigationLanding
+              studyHierarchy={false}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.facilityCycleId}
+              investigationId={match.params.investigationId}
+            />
+          )}
         />
         <Route
           exact
@@ -52,29 +115,54 @@ class PageLanding extends React.PureComponent {
             facilityCycleId: string;
             investigationId: string;
             datasetId: string;
-          }>) => {
-            const SafeISISDatasetLanding = withIdCheck(
-              Promise.all([
-                checkInstrumentAndFacilityCycleId(
-                  parseInt(match.params.instrumentId),
-                  parseInt(match.params.facilityCycleId),
-                  parseInt(match.params.investigationId)
-                ),
-                checkInvestigationId(
-                  parseInt(match.params.investigationId),
-                  parseInt(match.params.datasetId)
-                ),
-              ]).then((values) => !values.includes(false))
-            )(ISISDatasetLanding);
-            return (
-              <SafeISISDatasetLanding
-                instrumentId={match.params.instrumentId}
-                facilityCycleId={match.params.facilityCycleId}
-                investigationId={match.params.investigationId}
-                datasetId={match.params.datasetId}
-              />
-            );
-          }}
+          }>) => (
+            <SafeISISDatasetLanding
+              studyHierarchy={false}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.facilityCycleId}
+              investigationId={match.params.investigationId}
+              datasetId={match.params.datasetId}
+            />
+          )}
+        />
+        {/* ISIS studyHierarchy routes */}
+        <Route
+          exact
+          path={paths.studyHierarchy.landing.isisInvestigationLanding}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+            investigationId: string;
+          }>) => (
+            <SafeISISInvestigationLanding
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.studyId}
+              investigationId={match.params.investigationId}
+            />
+          )}
+        />
+        <Route
+          exact
+          path={paths.studyHierarchy.landing.isisDatasetLanding}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+            investigationId: string;
+            datasetId: string;
+          }>) => (
+            <SafeISISDatasetLanding
+              studyHierarchy={true}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.studyId}
+              investigationId={match.params.investigationId}
+              datasetId={match.params.datasetId}
+            />
+          )}
         />
       </Switch>
     );
