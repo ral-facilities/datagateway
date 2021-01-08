@@ -24,6 +24,7 @@ import DLSDatafilesTable from '../views/table/dls/dlsDatafilesTable.component';
 
 import ISISInstrumentsTable from '../views/table/isis/isisInstrumentsTable.component';
 import ISISFacilityCyclesTable from '../views/table/isis/isisFacilityCyclesTable.component';
+import ISISStudiesTable from '../views/table/isis/isisStudiesTable.component';
 import ISISInvestigationsTable from '../views/table/isis/isisInvestigationsTable.component';
 import ISISDatasetsTable from '../views/table/isis/isisDatasetsTable.component';
 import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component';
@@ -31,6 +32,7 @@ import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
 import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
 import {
   checkInstrumentAndFacilityCycleId,
+  checkInstrumentAndStudyId,
   checkInvestigationId,
   checkProposalName,
 } from './idCheckFunctions';
@@ -56,6 +58,17 @@ const ISISRoutes = {
   datafiles:
     '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile',
   mydata: '/my-data/ISIS',
+};
+
+// The ISIS StudHierarchy routes to test.
+const ISISStudyHierarchyRoutes = {
+  instruments: '/browseStudyHierarchy/instrument',
+  facilityCycles: '/browseStudyHierarchy/instrument/1/study',
+  investigations: '/browseStudyHierarchy/instrument/1/study/1/investigation',
+  datasets:
+    '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset',
+  datafiles:
+    '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1/datafile',
 };
 
 // The DLS routes to test.
@@ -94,6 +107,10 @@ describe('PageTable', () => {
     );
 
     (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
+
+    (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
 
@@ -236,6 +253,90 @@ describe('PageTable', () => {
     );
 
     const wrapper = createWrapper(ISISRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatafilesTable component not to be present.
+    expect(wrapper.exists(ISISDatafilesTable)).toBe(false);
+  });
+
+  it('renders ISISInstrumentsTable for ISIS instruments route in Study Hierarchy', () => {
+    const wrapper = createWrapper(ISISStudyHierarchyRoutes['instruments']);
+
+    // Expect the ISISInstrumentsTable component to be present.
+    expect(wrapper.exists(ISISInstrumentsTable)).toBe(true);
+  });
+
+  it('renders ISISFacilityCyclesTable for ISIS facilityCycles route in Study Hierarchy', () => {
+    const wrapper = createWrapper(ISISStudyHierarchyRoutes['facilityCycles']);
+
+    // Expect the ISISStudiesTable component to be present.
+    expect(wrapper.exists(ISISStudiesTable)).toBe(true);
+  });
+
+  it('renders ISISInvestigations for ISIS investigations route in Study Hierarchy', () => {
+    const wrapper = createWrapper(ISISStudyHierarchyRoutes['investigations']);
+
+    // Expect the ISISInvestigationsTable component to be present.
+    expect(wrapper.exists(ISISInvestigationsTable)).toBe(true);
+  });
+
+  it('renders ISISDatasetsTable for ISIS datasets route in Study Hierarchy', async () => {
+    const wrapper = createWrapper(ISISStudyHierarchyRoutes['datasets']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatasetsTable component to be present.
+    expect(wrapper.exists(ISISDatasetsTable)).toBe(true);
+  });
+
+  it('does not render ISISDatasetsTable for incorrect ISIS datasets route in Study Hierarchy', async () => {
+    (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(ISISStudyHierarchyRoutes['datasets']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatasetsTable component not to be present.
+    expect(wrapper.exists(ISISDatasetsTable)).toBe(false);
+  });
+
+  it('renders ISISDatafilesTable for ISIS datafiles route in Study Hierarchy', async () => {
+    const wrapper = createWrapper(ISISStudyHierarchyRoutes['datafiles']);
+
+    // wait for id check promises to resolve
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    // Expect the ISISDatafilesTable component to be present.
+    expect(wrapper.exists(ISISDatafilesTable)).toBe(true);
+  });
+
+  it('does not render ISISDatafilesTable for incorrect ISIS datafiles route in Study Hierarchy', async () => {
+    (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(false)
+    );
+
+    const wrapper = createWrapper(ISISStudyHierarchyRoutes['datafiles']);
 
     // wait for id check promises to resolve
     await act(async () => {

@@ -31,8 +31,8 @@ const headerHeight = 110;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
-const dataColumnMinWidth = 70;
 const scrollBarHeight = 17;
+const dataColumnMinWidth = 84;
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -76,6 +76,7 @@ export interface ColumnType {
   className?: string;
   disableSort?: boolean;
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
+  disableHeaderWrap?: boolean;
 }
 
 export interface DetailsPanelProps {
@@ -341,6 +342,7 @@ const VirtualizedTable = (
                     icon,
                     filterComponent,
                     disableSort,
+                    disableHeaderWrap,
                   }) => {
                     return (
                       <Column
@@ -375,6 +377,7 @@ const VirtualizedTable = (
                                 [dataKey]: thisColumn,
                               });
                             }}
+                            disableHeaderWrap={disableHeaderWrap}
                           />
                         )}
                         className={clsx(classes.flexContainer, className)}

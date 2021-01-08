@@ -3,11 +3,18 @@
 exports[`Dataset details panel component renders calculate size button when size has not been calculated 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
@@ -93,7 +100,7 @@ exports[`Dataset details panel component renders calculate size button when size
         <WithStyles(ForwardRef(Typography))>
           <b>
             <WithStyles(ForwardRef(Button))
-              color="primary"
+              color="secondary"
               id="calculate-size-btn"
               onClick={[Function]}
               size="small"
@@ -112,11 +119,18 @@ exports[`Dataset details panel component renders calculate size button when size
 exports[`Dataset details panel component renders correctly 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
@@ -202,7 +216,7 @@ exports[`Dataset details panel component renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))>
           <b>
             <WithStyles(ForwardRef(Button))
-              color="primary"
+              color="secondary"
               id="calculate-size-btn"
               onClick={[Function]}
               size="small"
@@ -221,11 +235,18 @@ exports[`Dataset details panel component renders correctly 1`] = `
 exports[`Dataset details panel component renders type tab when present in the data 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"
@@ -317,7 +338,7 @@ exports[`Dataset details panel component renders type tab when present in the da
         <WithStyles(ForwardRef(Typography))>
           <b>
             <WithStyles(ForwardRef(Button))
-              color="primary"
+              color="secondary"
               id="calculate-size-btn"
               onClick={[Function]}
               size="small"

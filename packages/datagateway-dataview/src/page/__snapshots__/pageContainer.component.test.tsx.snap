@@ -35,6 +35,10 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
             "/browse/proposal",
             "/browse/proposal/:proposalName/investigation",
             "/browse/proposal/:proposalName/investigation/:investigationId/dataset",
+            "/browseStudyHierarchy/instrument",
+            "/browseStudyHierarchy/instrument/:instrumentId/study",
+            "/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation",
+            "/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset",
           ]
         }
         render={[Function]}

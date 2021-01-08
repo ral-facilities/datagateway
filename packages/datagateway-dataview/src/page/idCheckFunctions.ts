@@ -7,6 +7,7 @@ import {
   readSciGatewayToken,
 } from 'datagateway-common';
 import { Middleware, Dispatch, AnyAction } from 'redux';
+import memoize from 'lodash.memoize';
 
 let apiUrl = '';
 
@@ -21,7 +22,7 @@ export const saveApiUrlMiddleware: Middleware = (() => (
   return next(action);
 }) as Middleware;
 
-export const checkInvestigationId = (
+const unmemoizedCheckInvestigationId = (
   investigationId: number,
   datasetId: number
 ): Promise<boolean> => {
@@ -40,7 +41,17 @@ export const checkInvestigationId = (
     });
 };
 
-export const checkInstrumentAndFacilityCycleId = (
+// we memoize so that we "remember" past promises so we don't redo to
+// improves performance if a user revisits a specific view.
+// However, depending on how users use the software, this
+// may cause a memory leak since the cache size is infinite. In that case,
+// we'd have to create our own memoize function with a cache limit
+export const checkInvestigationId = memoize(
+  unmemoizedCheckInvestigationId,
+  (...args) => JSON.stringify(args)
+);
+
+const unmemoizedCheckInstrumentAndFacilityCycleId = (
   instrumentId: number,
   facilityCycleId: number,
   investigationId: number
@@ -70,7 +81,44 @@ export const checkInstrumentAndFacilityCycleId = (
     });
 };
 
-export const checkProposalName = (
+export const checkInstrumentAndFacilityCycleId = memoize(
+  unmemoizedCheckInstrumentAndFacilityCycleId,
+  (...args) => JSON.stringify(args)
+);
+
+const unmemoizedCheckInstrumentAndStudyId = (
+  instrumentId: number,
+  studyId: number,
+  investigationId: number
+): Promise<boolean> => {
+  return axios
+    .get(`${apiUrl}/investigations/`, {
+      params: {
+        where: {
+          ID: { eq: investigationId },
+          'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+          'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+        },
+      },
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response: AxiosResponse<Investigation[]>) => {
+      return response.data.length > 0;
+    })
+    .catch((error) => {
+      handleICATError(error);
+      return false;
+    });
+};
+
+export const checkInstrumentAndStudyId = memoize(
+  unmemoizedCheckInstrumentAndStudyId,
+  (...args) => JSON.stringify(args)
+);
+
+export const unmemoizedCheckProposalName = (
   proposalName: string,
   investigationId: number
 ): Promise<boolean> => {
@@ -88,3 +136,8 @@ export const checkProposalName = (
       return false;
     });
 };
+
+export const checkProposalName = memoize(
+  unmemoizedCheckProposalName,
+  (...args) => JSON.stringify(args)
+);

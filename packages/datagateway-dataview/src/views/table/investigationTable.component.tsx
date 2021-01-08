@@ -216,6 +216,7 @@ const InvestigationTable = (
           label: t('investigations.rb_number'),
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
+          disableSort: true,
         },
         {
           icon: <PublicIcon />,
@@ -244,6 +245,7 @@ const InvestigationTable = (
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
@@ -253,6 +255,7 @@ const InvestigationTable = (
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
+          disableHeaderWrap: true,
         },
       ]}
     />

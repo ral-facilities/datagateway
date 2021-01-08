@@ -1,7 +1,7 @@
-describe('ISIS - Investigations Table', () => {
+describe('Investigations Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
+    cy.visit('/browse/investigation');
   });
 
   it('should load correctly', () => {
@@ -11,14 +11,10 @@ describe('ISIS - Investigations Table', () => {
 
   it('should be able to click an investigation to see its datasets', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
-    cy.location('pathname').should(
-      'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
-    );
+    cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
   });
 
-  // Not enough investigations to test scrolling.
-  it.skip('should be able to scroll down and load more rows', () => {
+  it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="75"]').should('exist');
@@ -72,7 +68,7 @@ describe('ISIS - Investigations Table', () => {
 
     cy.get('@visitColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -90,7 +86,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'A nothing almost arrive I. Product middle design never. Cup camera then product father sort vote.'
       );
     });
 
@@ -105,7 +101,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
       );
     });
 
@@ -123,31 +119,30 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
       );
     });
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'Title').click();
-      cy.contains('[role="button"]', 'Visit ID').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'Color knowledge economy return determine tell. Professor able catch cut nice anyone. Can line benefit home.'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('series');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
 
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('15');
+      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Start Date date filter from"]').type('2006-08-05');
+      cy.get('[aria-label="Start Date date filter from"]').type('2019-01-01');
 
       cy.get('[aria-label="Start Date date filter to"]')
         .parent()
@@ -166,77 +161,45 @@ describe('ISIS - Investigations Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="1"]').should('not.exist');
-      cy.contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
-      ).should('not.be.visible');
+      cy.get('[aria-rowcount="12"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Happy near day assume draw again. Lead pattern nothing approach spring standard.'
+      );
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('series');
+      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
 
-      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('15');
+      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('9');
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
     });
   });
 
   describe('should be able to view details', () => {
-    beforeEach(() => {
-      // Check that we have received the size from the API as this will produce
-      // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="7"]', '11.06 GB').should(
-        'exist'
-      );
-    });
-
-    it('when not other row is showing details', () => {
+    it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').should('be.visible');
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    // Cannot test showing details when another row is showing details
-    // as well since we are currently limited to 1 investigation to test.
+    it('when another row is showing details', () => {
+      cy.get('[aria-label="Show details"]').eq(2).click();
 
-    it('and view investigation details, users, samples and publications', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('[aria-controls="investigation-details-panel"]').should(
-        'be.visible'
-      );
-
       cy.get('#details-panel')
         .contains(
-          'Most within thus represent stock entire. Shoulder table board. Tax step street early either third life. Edge building say wife use upon. If half true media matter Mr. Still support shake.'
+          'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
         )
         .should('be.visible');
-
-      cy.get('[aria-controls="investigation-users-panel"]').should(
-        'be.visible'
-      );
-      cy.get('[aria-controls="investigation-users-panel"]').click();
-
-      cy.get('#details-panel').contains('Michelle228').should('be.visible');
-
-      cy.get('[aria-controls="investigation-samples-panel"]').should(
-        'be.visible'
-      );
-      cy.get('[aria-controls="investigation-samples-panel"]').click();
-
-      cy.get('#details-panel').contains('SAMPLE 87').should('be.visible');
-
-      cy.get('[aria-controls="investigation-publications-panel"]').should(
-        'be.visible'
-      );
-      cy.get('[aria-controls="investigation-publications-panel"]').click();
-
       cy.get('#details-panel')
         .contains(
-          'Follow team before this. Beat likely soldier anyone. By management look activity economic plant others. Take move turn pay. Walk project charge against sell.'
+          'Dog want single resource major. Necessary bit always available term small stock game.'
         )
-        .should('be.visible');
+        .should('not.be.visible');
+      cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
     it('and then not view details anymore', () => {

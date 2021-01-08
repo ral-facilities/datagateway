@@ -100,11 +100,13 @@ const DownloadTabs: React.FC = () => {
         centered
       >
         <Tab
+          className="tour-download-cart-tab"
           label={t('downloadTab.cart_tab')}
           aria-label={t('downloadTab.cart_tab_arialabel')}
           {...a11yProps(0)}
         />
         <Tab
+          className="tour-download-downloads-tab"
           label={t('downloadTab.downloads_tab')}
           aria-label={t('downloadTab.downloads_tab_arialabel')}
           {...a11yProps(1)}

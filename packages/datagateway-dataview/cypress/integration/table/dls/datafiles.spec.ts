@@ -1,7 +1,14 @@
-describe('Datasets Table', () => {
+describe('DLS - Datafiles Table', () => {
   beforeEach(() => {
+    Cypress.currentTest.retries(3);
+    cy.server();
+    cy.route('/datafiles/count*').as('datafilesCount');
+    cy.route('/datasets/25').as('datasets');
+    cy.route('/datafiles?order=*').as('datafilesOrder');
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1/dataset');
+    cy.visit(
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
+    );
   });
 
   it('should load correctly', () => {
@@ -9,12 +16,19 @@ describe('Datasets Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click a dataset to see its datafiles', () => {
-    cy.get('[role="gridcell"] a').first().click({ force: true });
-    cy.location('pathname').should(
-      'eq',
-      '/browse/investigation/1/dataset/25/datafile'
+  it('should not load incorrect URL', () => {
+    cy.visit(
+      '/browse/proposal/INVESTIGATION%201/investigation/2/dataset/25/datafile'
     );
+
+    cy.contains('Oops!').should('be.visible');
+    cy.get('[role="grid"]').should('not.exist');
+  });
+
+  it('should be able to scroll down and load more rows', () => {
+    cy.get('[aria-rowcount="50"]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
+    cy.get('[aria-rowcount="56"]').should('exist');
   });
 
   it('should be able to resize a column', () => {
@@ -28,14 +42,14 @@ describe('Datasets Table', () => {
       .then(() => expect(columnWidth).to.not.equal(0));
 
     cy.get('[role="columnheader"]').eq(2).as('nameColumn');
-    cy.get('[role="columnheader"]').eq(3).as('sizeColumn');
+    cy.get('[role="columnheader"]').eq(3).as('locationColumn');
 
     cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@sizeColumn').should(($column) => {
+    cy.get('@locationColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.equal(columnWidth);
     });
@@ -51,7 +65,7 @@ describe('Datasets Table', () => {
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@sizeColumn').should(($column) => {
+    cy.get('@locationColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -63,9 +77,9 @@ describe('Datasets Table', () => {
       .trigger('mousemove', { clientX: 800 })
       .trigger('mouseup');
 
-    cy.get('@sizeColumn').should(($column) => {
+    cy.get('@locationColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -76,39 +90,52 @@ describe('Datasets Table', () => {
     });
   });
 
-  // current example data only has 2 datasets per investigation, so can't test lazy loading
-  it.skip('should be able to scroll down and load more rows', () => {
-    cy.get('[aria-rowcount="50"]').should('exist');
-    cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="75"]').should('exist');
-  });
-
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
+        timeout: 10000,
+      });
+    });
+
     it('ascending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
+        '/act/friend/general.jpeg'
+      );
     });
 
     it('descending order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
-        'not.have.css',
-        'opacity',
-        '0'
+      cy.get('.MuiTableSortLabel-iconDirectionDesc')
+        .eq(1)
+        .should('not.have.css', 'opacity', '0');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
+        'yes/glass/them.jpg'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
 
     it('no order', () => {
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Location')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -118,31 +145,46 @@ describe('Datasets Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
+        '/year/how/structure.tiff'
+      );
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Create Time').click();
-      cy.contains('[role="button"]', 'Create Time').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait('@datafilesCount', { timeout: 10000 });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Datafile 1940'
+      );
     });
   });
 
   describe('should be able to filter by', () => {
+    beforeEach(() => {
+      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
+        timeout: 10000,
+      });
+    });
+
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('DATASET 1');
+      cy.get('[aria-label="Filter by Location"]').find('input').type('ok');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
-        '2002-11-27 06:20:36'
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Datafile 13915'
       );
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2002-01-01');
+      cy.get('[aria-label="Create Time date filter from"]').type('2019-01-01');
 
       cy.get('[aria-label="Create Time date filter to"]')
         .parent()
@@ -161,17 +203,30 @@ describe('Datasets Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Datafile 14873'
+      );
+      cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
+        'Datafile 20621'
+      );
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('1');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('5')
+        .wait('@datafilesCount', { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
+      cy.get('[aria-label="Filter by Location"]')
+        .find('input')
+        .type('.png')
+        .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
+        'Datafile 15352'
+      );
     });
   });
 
@@ -188,8 +243,10 @@ describe('Datasets Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('DATASET 1').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 241').should('not.be.visible');
+      cy.get('#details-panel').contains('Datafile 24').should('be.visible');
+      cy.get('#details-panel')
+        .contains('Datafile 3377')
+        .should('not.be.visible');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 

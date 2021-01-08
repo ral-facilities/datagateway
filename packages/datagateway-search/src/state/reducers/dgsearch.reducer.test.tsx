@@ -14,6 +14,7 @@ import {
   storeDatasetLucene,
   storeDatafileLucene,
   storeInvestigationLucene,
+  setCurrentTab,
 } from '../actions/actions';
 import { settingsLoaded } from '../actions';
 
@@ -92,6 +93,14 @@ describe('dgsearch reducer', () => {
     const updatedState = DGSearchReducer(state, setInvestigationTab(true));
 
     expect(updatedState.tabs.investigationTab).toEqual(true);
+  });
+
+  it('should set currentTab property when setCurrentTab action is sent', () => {
+    expect(state.tabs.currentTab).toEqual('none');
+
+    const updatedState = DGSearchReducer(state, setCurrentTab('investigation'));
+
+    expect(updatedState.tabs.currentTab).toEqual('investigation');
   });
 
   it('should set start date property when select start date action is sent', () => {
