@@ -43,6 +43,7 @@ import {
 } from '@material-ui/icons';
 import { Button } from '@material-ui/core';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
+import { useTranslation } from 'react-i18next';
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -109,6 +110,8 @@ const DLSDatasetsCardView = (
     pushSort,
     clearData,
   } = props;
+
+  const [t] = useTranslation();
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedFilters, setFetchedFilters] = React.useState(false);
@@ -186,7 +189,7 @@ const DLSDatasetsCardView = (
       onFilter={pushFilters}
       clearData={clearData}
       title={{
-        label: 'Name',
+        label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
           tableLink(
@@ -196,38 +199,38 @@ const DLSDatasetsCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('datasets.details.description'),
         dataKey: 'DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <ConfirmationNumber />,
-          label: 'Datafile Count',
+          label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
-          label: 'Create Time',
+          label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'Modified Time',
+          label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'Start Date',
+          label: t('datasets.details.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'End Date',
+          label: t('datasets.details.end_date'),
           dataKey: 'END_DATE',
           filterComponent: dateFilter,
         },
@@ -271,7 +274,7 @@ const DLSDatasetsCardView = (
       ]}
       customFilters={[
         {
-          label: 'Type ID',
+          label: t('datasets.type.type_id'),
           dataKey: 'TYPE_ID',
           filterItems: typeFilteredItems,
         },

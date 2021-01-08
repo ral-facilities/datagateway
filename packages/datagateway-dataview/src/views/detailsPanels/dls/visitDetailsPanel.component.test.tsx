@@ -164,6 +164,29 @@ describe('Visit details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
   });
 
+  it('detailsPanelResize not called when not provided', () => {
+    rowData.PUBLICATION = [
+      {
+        ID: 8,
+        FULLREFERENCE: 'Test publication',
+      },
+    ];
+
+    const wrapper = mount(
+      <VisitDetailsPanel
+        rowData={rowData}
+        fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
+      />
+    );
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+
+    wrapper.find('#visit-publications-tab').hostNodes().simulate('click');
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+  });
+
   it('calls fetchDetails on load if INVESTIGATIONUSER, SAMPLE or PUBLICATIONS are missing', () => {
     mount(
       <VisitDetailsPanel

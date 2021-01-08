@@ -52,12 +52,14 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "STARTDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.end_date",
@@ -73,7 +75,9 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           "FACILITYCYCLE": Array [
             Object {
               "ENDDATE": "2019-07-01",
+              "FACILITY_ID": 8,
               "ID": 8,
+              "NAME": "Cycle name",
               "STARTDATE": "2019-06-01",
             },
           ],
@@ -85,6 +89,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           Object {
             "ID": 1,
             "INSTRUMENT": Object {
+              "FACILITY_ID": 8,
               "ID": 3,
               "NAME": "LARMOR",
             },
@@ -129,11 +134,18 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
 exports[`ISIS Investigations table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"

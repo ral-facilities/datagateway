@@ -86,7 +86,7 @@ describe('DLS - Datasets Table', () => {
 
     cy.get('@datafileCountColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {

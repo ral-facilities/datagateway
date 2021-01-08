@@ -30,6 +30,7 @@ exports[`DLS Proposals table component renders correctly 1`] = `
           Object {
             "ID": 1,
             "INSTRUMENT": Object {
+              "FACILITY_ID": 8,
               "ID": 3,
               "NAME": "LARMOR",
             },
@@ -38,12 +39,12 @@ exports[`DLS Proposals table component renders correctly 1`] = `
           },
         ],
         "NAME": "Test 1",
-        "PROPOSAL_ID": "1",
         "RB_NUMBER": "1",
         "SIZE": 1,
         "STARTDATE": "2019-06-10",
         "SUMMARY": "foo bar",
         "TITLE": "Test 1",
+        "VISIT_ID": "1",
       },
     ]
   }

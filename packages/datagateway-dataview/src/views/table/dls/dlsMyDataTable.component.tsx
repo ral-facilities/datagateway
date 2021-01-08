@@ -182,6 +182,7 @@ const DLSMyDataTable = (
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
@@ -189,6 +190,7 @@ const DLSMyDataTable = (
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />

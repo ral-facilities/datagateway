@@ -25,6 +25,10 @@ import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPa
 
 import TitleIcon from '@material-ui/icons/Title';
 
+interface ISISInstrumentsTableProps {
+  studyHierarchy: boolean;
+}
+
 interface ISISInstrumentsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
@@ -44,7 +48,8 @@ interface ISISInstrumentsTableDispatchProps {
 }
 
 type ISISInstrumentsTableCombinedProps = ISISInstrumentsTableStoreProps &
-  ISISInstrumentsTableDispatchProps;
+  ISISInstrumentsTableDispatchProps &
+  ISISInstrumentsTableProps;
 
 const ISISInstrumentsTable = (
   props: ISISInstrumentsTableCombinedProps
@@ -60,6 +65,7 @@ const ISISInstrumentsTable = (
     pushFilters,
     loading,
     selectAllSetting,
+    studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
@@ -76,6 +82,9 @@ const ISISInstrumentsTable = (
     fetchCount();
     fetchData({ startIndex: 0, stopIndex: 49 });
   }, [fetchData, fetchCount, sort, filters]);
+
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
 
   return (
     <Table
@@ -103,7 +112,7 @@ const ISISInstrumentsTable = (
           cellContentRenderer: (props: TableCellProps) => {
             const instrumentData = props.rowData as Instrument;
             return tableLink(
-              `/browse/instrument/${instrumentData.ID}/facilityCycle`,
+              `/${pathRoot}/instrument/${instrumentData.ID}/${instrumentChild}`,
               instrumentData.FULLNAME || instrumentData.NAME
             );
           },

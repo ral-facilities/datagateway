@@ -177,12 +177,14 @@ exports[`DLS Dataset table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "CREATE_TIME",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.create_time",
       },
       Object {
         "dataKey": "MOD_TIME",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.modified_time",
@@ -217,11 +219,18 @@ exports[`DLS Dataset table component renders correctly 1`] = `
 exports[`DLS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="datasets.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="dataset-details-panel"

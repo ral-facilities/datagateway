@@ -87,6 +87,12 @@ import {
   updatePage,
   updateSearch,
   updateView,
+  fetchStudiesRequest,
+  fetchStudiesSuccess,
+  fetchStudiesFailure,
+  fetchStudyCountRequest,
+  fetchStudyCountSuccess,
+  fetchStudyCountFailure,
 } from '../actions';
 
 import {
@@ -96,6 +102,7 @@ import {
   Instrument,
   FacilityCycle,
   DownloadCart,
+  StudyInvestigation,
 } from '../../app.types';
 
 describe('DGCommon reducer', () => {
@@ -232,7 +239,7 @@ describe('DGCommon reducer', () => {
       savedView: {
         sort: { NAME: 'asc' },
         filters: { NAME: 't' },
-        queries: queryOne,
+        query: queryOne,
         view: 'table',
       },
     });
@@ -262,7 +269,7 @@ describe('DGCommon reducer', () => {
         view: 'card',
         filters: { NAME: 'c' },
         sort: { NAME: 'desc' },
-        queries: queryTwo,
+        query: queryTwo,
       },
     };
 
@@ -278,7 +285,7 @@ describe('DGCommon reducer', () => {
         view: 'table',
         filters: { NAME: 't' },
         sort: { NAME: 'asc' },
-        queries: queryOne,
+        query: queryOne,
       },
     });
   });
@@ -1488,6 +1495,104 @@ describe('DGCommon reducer', () => {
       const updatedState = DGCommonReducer(
         state,
         fetchFacilityCycleCountFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.totalDataCount).toEqual(0);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchStudies actions', () => {
+    it('should set the loading state when given a FetchStudiesRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudiesRequest(validTimestamp)
+      );
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the data state and reset error and loading state when given a FetchStudiesSuccess action', () => {
+      state.loading = true;
+      const mockData: StudyInvestigation[] = [
+        {
+          ID: 1,
+          STUDY_ID: 1,
+          INVESTIGATION_ID: 1,
+          STUDY: {
+            ID: 1,
+            PID: 'doi 1',
+            NAME: 'Test 1',
+            MOD_TIME: '2000-01-01',
+            CREATE_TIME: '2000-01-01',
+          },
+        },
+        {
+          ID: 2,
+          STUDY_ID: 2,
+          INVESTIGATION_ID: 2,
+          STUDY: {
+            ID: 2,
+            PID: 'doi 2',
+            NAME: 'Test 2',
+            MOD_TIME: '2000-01-02',
+            CREATE_TIME: '2000-01-02',
+          },
+        },
+      ];
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudiesSuccess(mockData, validTimestamp)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockData);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state and reset loading and data state when given a FetchStudiesFailure action', () => {
+      state.loading = true;
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudiesFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchStudyCount actions', () => {
+    it('should set the loading state when given a FetchStudyCountRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudyCountRequest(validTimestamp)
+      );
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the totalDataCount state and reset error and loading state when given a FetchStudyCountSuccess action', () => {
+      state.loading = true;
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudyCountSuccess(15, validTimestamp)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.totalDataCount).toEqual(15);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state and reset loading and data state when given a FetchStudyCountFailure action', () => {
+      state.loading = true;
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudyCountFailure('Test error message')
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.totalDataCount).toEqual(0);

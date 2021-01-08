@@ -125,12 +125,14 @@ const ISISFacilityCyclesTable = (
           label: t('facilitycycles.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('facilitycycles.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />

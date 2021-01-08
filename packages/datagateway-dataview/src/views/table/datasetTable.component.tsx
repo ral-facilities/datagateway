@@ -201,18 +201,21 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           icon: <ConfirmationNumberIcon />,
           label: t('datasets.datafile_count'),
           dataKey: 'DATAFILE_COUNT',
+          disableSort: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />

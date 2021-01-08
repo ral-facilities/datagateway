@@ -1,6 +1,6 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(1);
+    Cypress.currentTest.retries(2);
     cy.server();
     cy.route('/datasets/count*').as('datasetsCount');
     cy.route('/datasets?order=*').as('datasetsOrder');
@@ -87,7 +87,7 @@ describe('ISIS - Datasets Table', () => {
 
     cy.get('@sizeColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -149,10 +149,18 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Create Time').click();
-      cy.contains('[role="button"]', 'Create Time').click();
-      cy.contains('[role="button"]', 'Name').click();
-      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Create Time')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+      cy.contains('[role="button"]', 'Name')
+        .click()
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');
     });
@@ -193,9 +201,14 @@ describe('ISIS - Datasets Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('87');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .type('87')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
-      cy.get('[aria-label="Create Time date filter to"]').type('2007-06-23');
+      cy.get('[aria-label="Create Time date filter to"]')
+        .type('2007-06-23')
+        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 87');

@@ -39,18 +39,21 @@ describe('ISIS Instruments table component', () => {
         dgcommon: dGCommonInitialState,
       })
     );
-    // TODO: Missing Download properties?
     state.dgcommon.data = [
       {
         ID: 1,
         NAME: 'Test 1',
         FULLNAME: 'Test instrument 1',
         DESCRIPTION: 'foo bar',
+        FACILITY_ID: 8,
+        URL: 'test url',
       },
       {
         ID: 2,
         NAME: 'Test 2',
         DESCRIPTION: 'foo bar',
+        FACILITY_ID: 8,
+        URL: 'test url',
       },
     ];
   });
@@ -166,6 +169,20 @@ describe('ISIS Instruments table component', () => {
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <ISISInstrumentsTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-colindex=2]').find('p').children()
+    ).toMatchSnapshot();
+  });
+
+  it('renders names as links in StudyHierarchy', () => {
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISInstrumentsTable studyHierarchy={true} />
         </MemoryRouter>
       </Provider>
     );
