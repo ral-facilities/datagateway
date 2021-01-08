@@ -30,6 +30,7 @@ exports[`DLS datafiles table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "CREATE_TIME",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datafiles.create_time",

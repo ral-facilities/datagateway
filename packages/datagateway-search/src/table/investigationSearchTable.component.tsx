@@ -209,6 +209,7 @@ const InvestigationSearchTable = (
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
+          disableHeaderWrap: true,
         },
         {
           label: t('investigations.end_date'),
@@ -217,6 +218,7 @@ const InvestigationSearchTable = (
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
           },
+          disableHeaderWrap: true,
         },
       ]}
     />
