@@ -35,6 +35,7 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "MOD_TIME",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datafiles.modified_time",

@@ -5,6 +5,12 @@ exports[`Data cell component renders correctly 1`] = `
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
   role="cell"
+  style={
+    Object {
+      "paddingLeft": 8,
+      "paddingRight": 8,
+    }
+  }
 >
   <ArrowTooltip
     enterDelay={500}
@@ -25,6 +31,12 @@ exports[`Data cell component renders nested cell data correctly 1`] = `
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
   role="cell"
+  style={
+    Object {
+      "paddingLeft": 8,
+      "paddingRight": 8,
+    }
+  }
 >
   <ArrowTooltip
     enterDelay={500}
@@ -45,6 +57,12 @@ exports[`Data cell component renders provided cell data correctly 1`] = `
   aria-sort={null}
   className="MuiTableCell-root MuiTableCell-body test-class MuiTableCell-sizeSmall"
   role="cell"
+  style={
+    Object {
+      "paddingLeft": 8,
+      "paddingRight": 8,
+    }
+  }
 >
   <ArrowTooltip
     enterDelay={500}

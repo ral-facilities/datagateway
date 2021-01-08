@@ -1,7 +1,13 @@
 import React from 'react';
 import { Order } from '../../app.types';
 import { TableHeaderProps } from 'react-virtualized';
-import { TableCell, TableSortLabel, Box } from '@material-ui/core';
+import {
+  TableCell,
+  TableSortLabel,
+  Box,
+  Typography,
+  useMediaQuery,
+} from '@material-ui/core';
 import { DragIndicator } from '@material-ui/icons';
 import Draggable from 'react-draggable';
 
@@ -13,6 +19,7 @@ const DataHeader = (
     resizeColumn: (deltaX: number) => void;
     icon?: JSX.Element;
     filterComponent?: React.ReactElement;
+    disableHeaderWrap?: boolean;
   }
 ): React.ReactElement => {
   const {
@@ -25,6 +32,7 @@ const DataHeader = (
     resizeColumn,
     icon,
     filterComponent,
+    disableHeaderWrap,
   } = props;
 
   const currSortDirection = sort[dataKey];
@@ -46,12 +54,17 @@ const DataHeader = (
       direction={currSortDirection}
       onClick={() => onSort(dataKey, nextSortDirection)}
     >
-      {label}
+      <Typography noWrap style={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
+        {label}
+      </Typography>
     </TableSortLabel>
   ) : (
-    label
+    <Typography noWrap style={{ fontSize: 'inherit', lineHeight: 'inherit' }}>
+      {label}
+    </Typography>
   );
 
+  const smWindow = !useMediaQuery('(min-width: 960px)');
   return (
     <TableCell
       size="small"
@@ -59,6 +72,7 @@ const DataHeader = (
       className={className}
       variant="head"
       sortDirection={currSortDirection}
+      style={smWindow ? { paddingLeft: 8, paddingRight: 8 } : {}}
     >
       <div
         style={{
@@ -66,7 +80,7 @@ const DataHeader = (
           flex: 1,
         }}
       >
-        <Box display="flex" flexWrap="wrap">
+        <Box display="flex" flexWrap={disableHeaderWrap ? 'nowrap' : 'wrap'}>
           <Box marginRight={1}>{icon}</Box>
           <Box>{inner}</Box>
         </Box>

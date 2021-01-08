@@ -54,6 +54,7 @@ const SelectHeader = (props: SelectHeaderProps): React.ReactElement => {
             onCheck(allIds);
           }
         }}
+        style={{ height: 20, margin: 'auto' }}
       />
     </TableCell>
   );
