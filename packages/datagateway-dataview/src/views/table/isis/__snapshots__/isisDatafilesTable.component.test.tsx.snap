@@ -56,6 +56,7 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onCheck={[Function]}
