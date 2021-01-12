@@ -213,7 +213,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
           <Paper
             style={{
               height:
-                'calc(100vh - 64px - 24px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
+                'calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
               minHeight: 230,
             }}
           >

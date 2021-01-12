@@ -204,7 +204,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             tabs,table padding, and text above table (respectively). */}
         <Paper
           style={{
-            height: 'calc(100vh - 64px -24px - 48px - 48px - (1.75rem + 40px))',
+            height:
+              'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
             minHeight: 230,
           }}
         >
