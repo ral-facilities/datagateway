@@ -399,13 +399,15 @@ class PageContainer extends React.Component<
           <Grid item xs={12} aria-label="container-table">
             {!this.state.toggleCard ? (
               // Place table in Paper component which adjusts for the height
-              // of the AppBar (64px) on parent application and the cart icon (48px).
+              // of the AppBar (64px) on parent application, the cart icon
+              // (48px) and the CV toggle (38px).
               <Paper
                 square
                 style={{
-                  height: 'calc(100vh - 112px)',
+                  height: 'calc(100vh - 150px)',
                   width: '100%',
                   backgroundColor: 'inherit',
+                  overflowX: 'auto',
                 }}
               >
                 <PageTable />

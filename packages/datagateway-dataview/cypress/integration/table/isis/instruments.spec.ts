@@ -116,7 +116,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
       cy.get('[aria-controls="instrument-users-panel"]').click();
-
+      cy.get('[aria-label="grid"]').scrollTo('top');
       cy.get('#details-panel').contains('Matthew50').should('be.visible');
     });
 

@@ -19,6 +19,7 @@ exports[`Download Status Table renders correctly 1`] = `
       style={
         Object {
           "height": "calc(100vh - 110px)",
+          "overflowX": "auto",
         }
       }
     >
