@@ -31,6 +31,7 @@ const ExpandableRow = (
         style={{
           marginRight: 'auto',
           marginLeft: 10,
+          maxWidth: width - 10,
         }}
       >
         <props.detailsPanel

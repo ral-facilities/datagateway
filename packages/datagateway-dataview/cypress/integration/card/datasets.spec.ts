@@ -1,9 +1,7 @@
 describe('Datasets Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('**/datasets/count*').as('getDatasetsCount');
-    cy.route('**/datasets?order*').as('getDatasetsOrder');
+    cy.intercept('**/datasets/count*').as('getDatasetsCount');
+    cy.intercept('**/datasets?order*').as('getDatasetsOrder');
     cy.login('user', 'password');
     cy.visit('/browse/investigation/1/dataset').wait(
       ['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'],
@@ -59,7 +57,7 @@ describe('Datasets Cards', () => {
   });
 
   it('should be able to sort by multiple fields', () => {
-    cy.contains('[role="button"]', 'Created Time')
+    cy.contains('[role="button"]', 'Create Time')
       .click()
       .wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
         timeout: 10000,
@@ -86,10 +84,10 @@ describe('Datasets Cards', () => {
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
     cy.get('#card').contains('DATASET 241');
 
-    cy.get('[aria-label="Created Time date filter from"]')
+    cy.get('[aria-label="Create Time date filter from"]')
       .type('2019-01-01')
       .wait(['@getDatasetsCount'], { timeout: 10000 });
-    cy.get('[aria-label="Created Time date filter to"]')
+    cy.get('[aria-label="Create Time date filter to"]')
       .parent()
       .find('button')
       .click();
@@ -97,7 +95,7 @@ describe('Datasets Cards', () => {
     cy.contains('OK').click().wait(['@getDatasetsCount'], { timeout: 10000 });
     const date = new Date();
     date.setDate(1);
-    cy.get('[aria-label="Created Time date filter to"]').should(
+    cy.get('[aria-label="Create Time date filter to"]').should(
       'have.value',
       date.toISOString().slice(0, 10)
     );

@@ -42,6 +42,7 @@ export * from './cart';
 export * from './datafiles';
 export * from './datasets';
 export * from './facilityCycles';
+export * from './studies';
 export * from './instruments';
 export * from './investigations';
 

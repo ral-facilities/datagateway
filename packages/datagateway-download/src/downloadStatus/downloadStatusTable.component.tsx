@@ -207,6 +207,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             height:
               'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
             minHeight: 230,
+            overflowX: 'auto',
           }}
         >
           <Table
@@ -245,6 +246,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   }
                 },
                 filterComponent: dateFilter,
+                disableHeaderWrap: true,
               },
             ]}
             sort={sort}

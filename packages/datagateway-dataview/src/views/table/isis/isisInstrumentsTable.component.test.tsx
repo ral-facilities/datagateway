@@ -177,4 +177,18 @@ describe('ISIS Instruments table component', () => {
       wrapper.find('[aria-colindex=2]').find('p').children()
     ).toMatchSnapshot();
   });
+
+  it('renders names as links in StudyHierarchy', () => {
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISInstrumentsTable studyHierarchy={true} />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-colindex=2]').find('p').children()
+    ).toMatchSnapshot();
+  });
 });

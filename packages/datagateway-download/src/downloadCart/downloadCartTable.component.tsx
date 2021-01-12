@@ -215,6 +215,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
               height:
                 'calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
               minHeight: 230,
+              overflowX: 'auto',
             }}
           >
             <Table

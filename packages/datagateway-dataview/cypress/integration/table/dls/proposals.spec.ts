@@ -72,7 +72,7 @@ describe('DLS - Proposals Table', () => {
 
     cy.get('@nameColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -116,7 +116,7 @@ describe('DLS - Proposals Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',

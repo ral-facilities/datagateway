@@ -4,6 +4,7 @@ import {
   loadFeatureSwitches,
   loadBreadcrumbSettings,
   settingsLoaded,
+  loadSelectAllSetting,
 } from '../actions';
 
 describe('dgdataview reducer', () => {
@@ -59,5 +60,13 @@ describe('dgdataview reducer', () => {
         replaceEntityField: 'TITLE',
       },
     });
+  });
+
+  it('should set selectAllSetting when configuring action is sent', () => {
+    expect(state.dgdataview.selectAllSetting).toEqual(true);
+
+    const updatedState = DGDataViewReducer(state, loadSelectAllSetting(false));
+
+    expect(updatedState.selectAllSetting).toEqual(false);
   });
 });

@@ -218,6 +218,7 @@ const SearchPageTable = (
             <Paper
               style={{
                 height: `calc(${containerHeight} - 96px)`,
+                overflowX: 'auto',
               }}
               elevation={0}
             >
@@ -230,6 +231,7 @@ const SearchPageTable = (
             <Paper
               style={{
                 height: `calc(${containerHeight} - 96px)`,
+                overflowX: 'auto',
               }}
               elevation={0}
             >
@@ -242,6 +244,7 @@ const SearchPageTable = (
             <Paper
               style={{
                 height: `calc(${containerHeight} - 96px)`,
+                overflowX: 'auto',
               }}
               elevation={0}
             >

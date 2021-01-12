@@ -76,6 +76,21 @@ export const paths = {
     dlsDatafile:
       '/browse/proposal/:proposalName/investigation/:investigationId/dataset/:datasetId/datafile',
   },
+  studyHierarchy: {
+    root: '/browseStudyHierarchy',
+    toggle: {
+      isisInstrument: '/browseStudyHierarchy/instrument',
+      isisStudy: '/browseStudyHierarchy/instrument/:instrumentId/study',
+      isisInvestigation:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation',
+      isisDataset:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset',
+    },
+    standard: {
+      isisDatafile:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId/datafile',
+    },
+  },
 };
 
 const NavBar = (props: {
@@ -97,7 +112,10 @@ const NavBar = (props: {
           aria-label="container-breadcrumbs"
         >
           {/* don't show breadcrumbs on /my-data - only on browse */}
-          <Route path={paths.root} component={PageBreadcrumbs} />
+          <Route
+            path={[paths.root, paths.studyHierarchy.root]}
+            component={PageBreadcrumbs}
+          />
         </Grid>
 
         {/* The table entity count takes up an xs of 2, where the breadcrumbs
@@ -110,7 +128,7 @@ const NavBar = (props: {
           aria-label="container-table-count"
         >
           <Route
-            path={[paths.root, paths.myData.root]}
+            path={[paths.root, paths.studyHierarchy.root, paths.myData.root]}
             render={() => {
               return (
                 <Paper
@@ -244,7 +262,9 @@ class PageContainer extends React.Component<
     // Allow for query parameter to override the
     // toggle state in the localStorage.
     this.state = {
-      paths: Object.values(paths.toggle),
+      paths: Object.values(paths.toggle).concat(
+        Object.values(paths.studyHierarchy.toggle)
+      ),
       toggleCard: this.getToggle(),
       isCartFetched: false,
     };
@@ -284,12 +304,14 @@ class PageContainer extends React.Component<
   }
 
   public getPathMatch = (): boolean => {
-    const res = Object.values(paths.toggle).some((p) => {
-      // Look for the character set where the parameter for ID would be
-      // replaced with the regex to catch any character between the forward slashes.
-      const match = this.props.path.match(p.replace(/(:[^./]*)/g, '(.)+'));
-      return match && this.props.path === match[0];
-    });
+    const res = Object.values(paths.toggle)
+      .concat(Object.values(paths.studyHierarchy.toggle))
+      .some((p) => {
+        // Look for the character set where the parameter for ID would be
+        // replaced with the regex to catch any character between the forward slashes.
+        const match = this.props.path.match(p.replace(/(:[^./]*)/g, '(.)+'));
+        return match && this.props.path === match[0];
+      });
     return res;
   };
 
@@ -377,13 +399,15 @@ class PageContainer extends React.Component<
           <Grid item xs={12} aria-label="container-table">
             {!this.state.toggleCard ? (
               // Place table in Paper component which adjusts for the height
-              // of the AppBar (64px) on parent application and the cart icon (48px).
+              // of the AppBar (64px) on parent application, the cart icon
+              // (48px) and the CV toggle (38px).
               <Paper
                 square
                 style={{
-                  height: 'calc(100vh - 112px)',
+                  height: 'calc(100vh - 150px)',
                   width: '100%',
                   backgroundColor: 'inherit',
+                  overflowX: 'auto',
                 }}
               >
                 <PageTable />

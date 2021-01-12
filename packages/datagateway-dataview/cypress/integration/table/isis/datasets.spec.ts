@@ -1,9 +1,7 @@
 describe('ISIS - Datasets Table', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
-    cy.server();
-    cy.route('/datasets/count*').as('datasetsCount');
-    cy.route('/datasets?order=*').as('datasetsOrder');
+    cy.intercept('/datasets/count').as('datasetsCount');
+    cy.intercept('/datasets?order=').as('datasetsOrder');
     cy.login('user', 'password');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
@@ -87,7 +85,7 @@ describe('ISIS - Datasets Table', () => {
 
     cy.get('@sizeColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -139,7 +137,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -241,7 +239,7 @@ describe('ISIS - Datasets Table', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').contains('DATASET 87').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 327').should('not.be.visible');
+      cy.get('#details-panel').contains('DATASET 327').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -271,7 +269,7 @@ describe('ISIS - Datasets Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
