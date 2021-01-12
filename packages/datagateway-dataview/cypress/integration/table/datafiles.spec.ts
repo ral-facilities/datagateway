@@ -1,10 +1,8 @@
 describe('Datafiles Table', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('/datafiles/count*').as('datafilesCount');
-    cy.route('/datasets/25').as('datasets');
-    cy.route('/datafiles?order=*').as('datafilesOrder');
+    cy.intercept('/datafiles/count').as('datafilesCount');
+    cy.intercept('/datasets/25').as('datasets');
+    cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login('user', 'password');
     cy.visit('/browse/investigation/1/dataset/25/datafile');
   });
@@ -114,9 +112,11 @@ describe('Datafiles Table', () => {
         .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc')
-        .eq(1)
-        .should('not.have.css', 'opacity', '0');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
+        'not.have.css',
+        'opacity',
+        '0'
+      );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
         '/yes/glass/them.jpg'
       );
@@ -135,7 +135,7 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -241,9 +241,7 @@ describe('Datafiles Table', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').contains('Datafile 24').should('be.visible');
-      cy.get('#details-panel')
-        .contains('Datafile 3377')
-        .should('not.be.visible');
+      cy.get('#details-panel').contains('Datafile 3377').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -252,7 +250,7 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

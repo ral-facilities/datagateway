@@ -116,7 +116,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -169,7 +169,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-rowcount="1"]').should('not.exist');
       cy.contains(
         'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
-      ).should('not.be.visible');
+      ).should('not.exist');
     });
 
     it('multiple columns', () => {
@@ -244,7 +244,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

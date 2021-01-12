@@ -1,9 +1,7 @@
 describe('ISIS - FacilityCycles Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('**/facilitycycles/count*').as('getFacilityCyclesCount');
-    cy.route('**/facilitycycles?order*').as('getFacilityCyclesOrder');
+    cy.intercept('**/facilitycycles/count*').as('getFacilityCyclesCount');
+    cy.intercept('**/facilitycycles?order*').as('getFacilityCyclesOrder');
     cy.login('user', 'password');
     cy.visit('/browse/instrument/1/facilityCycle').wait(
       ['@getFacilityCyclesCount', '@getFacilityCyclesOrder'],

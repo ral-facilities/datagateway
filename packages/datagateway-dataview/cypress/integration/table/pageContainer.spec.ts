@@ -1,6 +1,5 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
     cy.login('user', 'password');
 
     cy.visit('/browse/investigation/');

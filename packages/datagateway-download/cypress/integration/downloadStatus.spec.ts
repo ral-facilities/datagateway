@@ -8,9 +8,7 @@ describe('Download Status', () => {
   });
 
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
-    cy.server();
-    cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
+    cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login('download-e2e-tests', 'pw');
 
     // Ensure the downloads are cleared before running tests.
@@ -90,7 +88,7 @@ describe('Download Status', () => {
       cy.contains('[role="button"]', 'Download Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -220,7 +218,7 @@ describe('Download Status', () => {
   });
 
   it('should be able to remove a download', () => {
-    cy.route('PUT', '**/topcat/user/download/*/isDeleted').as(
+    cy.intercept('PUT', '**/topcat/user/download/*/isDeleted').as(
       'removeFromDownloads'
     );
 
@@ -229,6 +227,6 @@ describe('Download Status', () => {
       force: true,
     });
     cy.wait('@removeFromDownloads');
-    cy.contains('test-file-4').should('not.be.visible');
+    cy.contains('test-file-4').should('not.exist');
   });
 });

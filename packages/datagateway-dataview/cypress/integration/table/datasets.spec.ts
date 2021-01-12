@@ -112,7 +112,7 @@ describe('Datasets Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -189,7 +189,7 @@ describe('Datasets Table', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').contains('DATASET 1').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 241').should('not.be.visible');
+      cy.get('#details-panel').contains('DATASET 241').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -198,7 +198,7 @@ describe('Datasets Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });
