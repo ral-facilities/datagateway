@@ -47,6 +47,7 @@ describe('DatePicker component tests', () => {
         investigation: [],
       },
       settingsLoaded: true,
+      sideLayout: false,
     };
 
     mockStore = configureStore([thunk]);

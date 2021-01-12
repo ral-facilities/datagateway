@@ -17,6 +17,9 @@ import InvestigationSearchTable from './table/investigationSearchTable.component
 import DatasetSearchTable from './table/datasetSearchTable.component';
 import DatafileSearchTable from './table/datafileSearchTable.component';
 import { useTranslation } from 'react-i18next';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { setCurrentTab } from './state/actions/actions';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -36,8 +39,12 @@ interface SearchTableStoreProps {
   datasetTab: boolean;
   datafileTab: boolean;
   investigationTab: boolean;
+  currentTab: string;
 }
 
+interface SearchTableDispatchProps {
+  setCurrentTab: (newValue: string) => Action;
+}
 interface TabPanelProps {
   children?: React.ReactNode;
   index: string;
@@ -71,62 +78,71 @@ function a11yProps(index: string): React.ReactFragment {
 
 const StyledBadge = withStyles(badgeStyles)(Badge);
 
-const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
-  const [value, setValue] = React.useState('investigation');
+const SearchPageTable = (
+  props: SearchTableStoreProps & SearchTableDispatchProps
+): React.ReactElement => {
+  const {
+    requestReceived,
+    investigation,
+    dataset,
+    datafile,
+    investigationTab,
+    datasetTab,
+    datafileTab,
+    currentTab,
+    setCurrentTab,
+  } = props;
   const [t] = useTranslation();
 
   useEffect(() => {
-    let newState = 'investigation';
-    if (!props.investigationTab) {
-      if (props.datasetTab) {
-        newState = 'dataset';
-      } else {
-        if (props.datafileTab) {
-          newState = 'datafile';
-        } else {
-          newState = 'none';
-        }
-      }
+    let newState = 'none';
+    if (investigationTab) {
+      newState = 'investigation';
+    } else if (datasetTab) {
+      newState = 'dataset';
+    } else if (datafileTab) {
+      newState = 'datafile';
     }
-    setValue(newState);
-  }, [props.investigationTab, props.datasetTab, props.datafileTab]);
+    setCurrentTab(newState);
+  }, [setCurrentTab, investigationTab, datasetTab, datafileTab]);
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newValue: string
   ): void => {
-    setValue(newValue);
+    setCurrentTab(newValue);
   };
 
   const badgeDigits = (length: number): 3 | 2 | 1 => {
     return length >= 100 ? 3 : length >= 10 ? 2 : 1;
   };
 
-  if (props.requestReceived) {
+  if (requestReceived) {
     return (
       <div>
         <AppBar position="static">
           <Tabs
-            value={value}
+            className="tour-search-tab-select"
+            value={currentTab}
             onChange={handleChange}
             aria-label={t('searchPageTable.tabs_arialabel')}
           >
-            {props.investigationTab ? (
+            {investigationTab ? (
               <Tab
                 label={
                   <StyledBadge
                     id="investigation-badge"
-                    badgeContent={props.investigation.length}
+                    badgeContent={investigation.length}
                     showZero
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
                         marginRight: `calc(0.5 * ${badgeDigits(
-                          props.investigation.length
+                          investigation.length
                         )}ch + 6px)`,
                         marginLeft: `calc(-0.5 * ${badgeDigits(
-                          props.investigation.length
+                          investigation.length
                         )}ch - 6px)`,
                       }}
                     >
@@ -138,22 +154,22 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                 {...a11yProps('investigation')}
               />
             ) : null}
-            {props.datasetTab ? (
+            {datasetTab ? (
               <Tab
                 label={
                   <StyledBadge
                     id="dataset-badge"
-                    badgeContent={props.dataset.length}
+                    badgeContent={dataset.length}
                     showZero
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
                         marginRight: `calc(0.5 * ${badgeDigits(
-                          props.dataset.length
+                          dataset.length
                         )}ch + 6px)`,
                         marginLeft: `calc(-0.5 * ${badgeDigits(
-                          props.dataset.length
+                          dataset.length
                         )}ch - 6px)`,
                       }}
                     >
@@ -165,22 +181,22 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
                 {...a11yProps('dataset')}
               />
             ) : null}
-            {props.datafileTab ? (
+            {datafileTab ? (
               <Tab
                 label={
                   <StyledBadge
                     id="datafile-badge"
-                    badgeContent={props.datafile.length}
+                    badgeContent={datafile.length}
                     showZero
                   >
                     <span
                       style={{
                         paddingRight: '1ch',
                         marginRight: `calc(0.5 * ${badgeDigits(
-                          props.datafile.length
+                          datafile.length
                         )}ch + 6px)`,
                         marginLeft: `calc(-0.5 * ${badgeDigits(
-                          props.datafile.length
+                          datafile.length
                         )}ch - 6px)`,
                       }}
                     >
@@ -195,11 +211,12 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
           </Tabs>
         </AppBar>
 
-        {props.investigationTab ? (
-          <TabPanel value={value} index={'investigation'}>
+        {investigationTab ? (
+          <TabPanel value={currentTab} index={'investigation'}>
             <Paper
               style={{
                 height: 'calc(75vh)',
+                overflowX: 'auto',
               }}
               elevation={0}
             >
@@ -207,11 +224,12 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             </Paper>
           </TabPanel>
         ) : null}
-        {props.datasetTab ? (
-          <TabPanel value={value} index={'dataset'}>
+        {datasetTab ? (
+          <TabPanel value={currentTab} index={'dataset'}>
             <Paper
               style={{
                 height: 'calc(75vh)',
+                overflowX: 'auto',
               }}
               elevation={0}
             >
@@ -219,11 +237,12 @@ const SearchPageTable = (props: SearchTableStoreProps): React.ReactElement => {
             </Paper>
           </TabPanel>
         ) : null}
-        {props.datafileTab ? (
-          <TabPanel value={value} index={'datafile'}>
+        {datafileTab ? (
+          <TabPanel value={currentTab} index={'datafile'}>
             <Paper
               style={{
                 height: 'calc(75vh)',
+                overflowX: 'auto',
               }}
               elevation={0}
             >
@@ -251,7 +270,14 @@ const mapStateToProps = (state: StateType): SearchTableStoreProps => {
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,
+    currentTab: state.dgsearch.tabs.currentTab,
   };
 };
 
-export default connect(mapStateToProps)(SearchPageTable);
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
+): SearchTableDispatchProps => ({
+  setCurrentTab: (newValue: string) => dispatch(setCurrentTab(newValue)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchPageTable);

@@ -31,11 +31,7 @@ describe('Instrument details panel component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <InstrumentsDetailsPanel
-        rowData={rowData}
-        detailsPanelResize={detailsPanelResize}
-        fetchDetails={fetchDetails}
-      />
+      <InstrumentsDetailsPanel rowData={rowData} fetchDetails={fetchDetails} />
     );
     expect(wrapper).toMatchSnapshot();
   });
@@ -100,6 +96,31 @@ describe('Instrument details panel component', () => {
     wrapper.find('#instrument-users-tab').hostNodes().simulate('click');
 
     expect(detailsPanelResize).toHaveBeenCalledTimes(2);
+  });
+
+  it('detailsPanelResize not called when not provided', () => {
+    rowData.INSTRUMENTSCIENTIST = [
+      {
+        ID: 4,
+        INSTRUMENT_ID: 1,
+        USER_ID: 5,
+        USER_: {
+          ID: 5,
+          NAME: 'Louise',
+          FULL_NAME: 'Louise Davies',
+        },
+      },
+    ];
+
+    const wrapper = mount(
+      <InstrumentsDetailsPanel rowData={rowData} fetchDetails={fetchDetails} />
+    );
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
+
+    wrapper.find('#instrument-users-tab').hostNodes().simulate('click');
+
+    expect(detailsPanelResize).toHaveBeenCalledTimes(0);
   });
 
   it('calls fetchDetails on load', () => {

@@ -52,8 +52,10 @@ const DatasetDetailsPanel = (
   }, [value, detailsPanelResize]);
 
   return (
-    <div id="details-panel">
+    <div id="details-panel" style={{ minWidth: 0 }}>
       <Tabs
+        variant="scrollable"
+        scrollButtons="auto"
         value={value}
         onChange={(event, newValue) => setValue(newValue)}
         aria-label={t('datasets.details.tabs_label')}
@@ -124,7 +126,7 @@ const DatasetDetailsPanel = (
                       fetchSize(datasetData.ID);
                     }}
                     variant="outlined"
-                    color="primary"
+                    color="secondary"
                     size="small"
                     id="calculate-size-btn"
                   >

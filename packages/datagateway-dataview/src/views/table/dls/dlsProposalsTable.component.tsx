@@ -30,6 +30,7 @@ interface DLSProposalsTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  selectAllSetting: boolean;
 }
 
 interface DLSProposalsTableDispatchProps {
@@ -54,10 +55,9 @@ const DLSProposalsTable = (
     sort,
     pushSort,
     filters,
-
     pushFilters,
-
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -83,6 +83,7 @@ const DLSProposalsTable = (
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
+      disableSelectAll={!selectAllSetting}
       columns={[
         {
           icon: <TitleIcon />,
@@ -153,6 +154,7 @@ const mapStateToProps = (state: StateType): DLSProposalsTableStoreProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     error: state.dgcommon.error,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

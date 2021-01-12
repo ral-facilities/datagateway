@@ -27,7 +27,7 @@ export const FilterTableType = 'datagateway_common:filter_table';
 
 export const UpdateFiltersType = 'datagateway_common:update_filters';
 export const UpdateSortType = 'datagateway_common:update_sort';
-export const UpdateQueriesType = 'datagateway_common:update_queries';
+export const UpdateQueryType = 'datagateway_common:update_query';
 
 export const UpdateViewType = 'datagateway_common:update_view';
 export const UpdateSearchType = 'datagateway_common:update_search';
@@ -179,6 +179,20 @@ export const FetchFacilityCycleCountFailureType =
 export const FetchFacilityCycleCountSuccessType =
   'datagateway_common:fetch_facility_cycle_count_success';
 
+export const FetchStudiesRequestType =
+  'datagateway_common:fetch_studies_request';
+export const FetchStudiesFailureType =
+  'datagateway_common:fetch_studies_failure';
+export const FetchStudiesSuccessType =
+  'datagateway_common:fetch_studies_success';
+
+export const FetchStudyCountRequestType =
+  'datagateway_common:fetch_study_count_request';
+export const FetchStudyCountFailureType =
+  'datagateway_common:fetch_study_count_failure';
+export const FetchStudyCountSuccessType =
+  'datagateway_common:fetch_study_count_success';
+
 export const FetchDownloadCartRequestType =
   'datagateway_common:fetch_download_cart_request';
 export const FetchDownloadCartFailureType =
@@ -259,8 +273,8 @@ export interface UpdateSortPayload {
   sort: SortType;
 }
 
-export interface UpdateQueriesPayload {
-  queries: QueryParams;
+export interface UpdateQueryPayload {
+  query: QueryParams;
 }
 
 export interface SaveViewPayload {

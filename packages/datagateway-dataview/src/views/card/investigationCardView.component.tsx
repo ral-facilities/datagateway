@@ -37,6 +37,7 @@ import {
   ViewsType,
 } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
@@ -97,6 +98,8 @@ const InvestigationCardView = (
     removeFromCart,
     view,
   } = props;
+
+  const [t] = useTranslation();
 
   const [fetchedCount, setFetchedCount] = React.useState(false);
   const [fetchedFilters, setFetchedFilters] = React.useState(false);
@@ -187,7 +190,7 @@ const InvestigationCardView = (
       clearData={clearData}
       title={{
         // Provide label for filter component.
-        label: 'Title',
+        label: t('investigations.title'),
         // Provide both the dataKey (for tooltip) and content to render.
         dataKey: 'TITLE',
         content: (investigation: Investigation) => {
@@ -196,45 +199,46 @@ const InvestigationCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('investigations.details.summary'),
         dataKey: 'SUMMARY',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Public />,
-          label: 'DOI',
+          label: t('investigations.doi'),
           dataKey: 'DOI',
           filterComponent: textFilter,
         },
         {
           icon: <Fingerprint />,
-          label: 'Visit ID',
+          label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
           filterComponent: textFilter,
         },
         {
           icon: <Fingerprint />,
-          label: 'RB Number',
+          label: t('investigations.details.rb_number'),
           dataKey: 'RB_NUMBER',
           filterComponent: textFilter,
+          disableSort: true,
         },
         {
           icon: <ConfirmationNumber />,
-          label: 'Dataset Count',
+          label: t('investigations.dataset_count'),
           dataKey: 'DATASET_COUNT',
           filterComponent: textFilter,
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
-          label: 'Start Date',
+          label: t('investigations.details.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'End Date',
+          label: t('investigations.details.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },
@@ -275,12 +279,12 @@ const InvestigationCardView = (
       // use that over the filterKey here.
       customFilters={[
         {
-          label: 'Type ID',
+          label: t('investigations.type_id'),
           dataKey: 'TYPE_ID',
           filterItems: typeFilteredItems,
         },
         {
-          label: 'Facility ID',
+          label: t('investigations.facility_id'),
           dataKey: 'FACILITY_ID',
           filterItems: facilityFilteredItems,
         },

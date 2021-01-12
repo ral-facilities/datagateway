@@ -17,6 +17,8 @@ import {
   SetDatasetTabType,
   SetDatafileTabType,
   SetInvestigationTabType,
+  CurrentTabPayload,
+  SetCurrentTabType,
 } from './actions.types';
 import { ActionType } from '../app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -135,5 +137,14 @@ export const setInvestigationTab = (
   type: SetInvestigationTabType,
   payload: {
     toggleOption,
+  },
+});
+
+export const setCurrentTab = (
+  currentTab: string
+): ActionType<CurrentTabPayload> => ({
+  type: SetCurrentTabType,
+  payload: {
+    currentTab,
   },
 });

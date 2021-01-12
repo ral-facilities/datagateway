@@ -112,17 +112,23 @@ export interface DatasetType {
   DESCRIPTION?: string;
 }
 
-interface StudyInvestigation {
+export interface StudyInvestigation {
   ID: number;
   STUDY_ID: number;
   INVESTIGATION_ID: number;
-  STUDY?: Study;
+  STUDY: Study;
   INVESTIGATION?: Investigation;
 }
 
 interface Study {
   ID: number;
   PID: string;
+  NAME: string;
+  MOD_TIME: string;
+  CREATE_TIME: string;
+  DESCRIPTION?: string;
+  STARTDATE?: string;
+  ENDDATE?: string;
 }
 
 interface InstrumentScientist {
@@ -224,7 +230,8 @@ export type ICATEntity =
   | Dataset
   | Datafile
   | Instrument
-  | FacilityCycle;
+  | FacilityCycle
+  | StudyInvestigation;
 
 export type Entity = (ICATEntity | DownloadCartTableItem | Download) & {
   // We will have to ignore the any typing here to access
@@ -240,6 +247,7 @@ export const EntityTypes: string[] = [
   'facilityCycle',
   'instrument',
   'facility',
+  'study',
 ];
 
 // TODO: type these properly

@@ -27,7 +27,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
         "cellContentRenderer": [Function],
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "icon": <Memo(TitleIcon) />,
+        "icon": <Memo(FingerprintIcon) />,
         "label": "investigations.name",
       },
       Object {
@@ -53,12 +53,14 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "STARTDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.end_date",
@@ -75,6 +77,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           Object {
             "ID": 1,
             "INSTRUMENT": Object {
+              "FACILITY_ID": 8,
               "ID": 3,
               "NAME": "LARMOR",
             },
@@ -104,6 +107,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onCheck={[Function]}
@@ -118,11 +122,18 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
 exports[`ISIS Investigations table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="investigation-details-panel"
@@ -868,6 +879,618 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
               href="/browse/instrument/4/facilityCycle/5/investigation/1/dataset"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              study pid
+            </a>
+          </LinkAnchor>
+        </Link>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;
+
+exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 1`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
+    to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
+      onBlur={[Function]}
+      onFocus={[Function]}
+      to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        onBlur={[Function]}
+        onFocus={[Function]}
+        to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        variant="inherit"
+      >
+        <Link
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        >
+          <LinkAnchor
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+            navigate={[Function]}
+            onBlur={[Function]}
+            onFocus={[Function]}
+          >
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              Test 1
+            </a>
+          </LinkAnchor>
+        </Link>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;
+
+exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 2`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
+    to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
+      onBlur={[Function]}
+      onFocus={[Function]}
+      to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        onBlur={[Function]}
+        onFocus={[Function]}
+        to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        variant="inherit"
+      >
+        <Link
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        >
+          <LinkAnchor
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+            navigate={[Function]}
+            onBlur={[Function]}
+            onFocus={[Function]}
+          >
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              1
+            </a>
+          </LinkAnchor>
+        </Link>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;
+
+exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 3`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
+    to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
+      onBlur={[Function]}
+      onFocus={[Function]}
+      to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        onBlur={[Function]}
+        onFocus={[Function]}
+        to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        variant="inherit"
+      >
+        <Link
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        >
+          <LinkAnchor
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+            navigate={[Function]}
+            onBlur={[Function]}
+            onFocus={[Function]}
+          >
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              Test 1
+            </a>
+          </LinkAnchor>
+        </Link>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;
+
+exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 4`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
+    to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
+      onBlur={[Function]}
+      onFocus={[Function]}
+      to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        onBlur={[Function]}
+        onFocus={[Function]}
+        to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        variant="inherit"
+      >
+        <Link
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          to="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+        >
+          <LinkAnchor
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
+            navigate={[Function]}
+            onBlur={[Function]}
+            onFocus={[Function]}
+          >
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browseStudyHierarchy/instrument/4/study/5/investigation/1/dataset"
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}
