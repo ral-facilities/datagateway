@@ -138,7 +138,19 @@
   },
   "advanced_filters": {
     "show": "Show Advanced Filters",
-    "hide": "Hide Advanced Filters"
+    "hide": "Hide Advanced Filters",
+    "icons": {
+      "title": ["Title", "Name", "Type"],
+      "fingerprint": ["Visit ID", "RB Number"],
+      "public": ["DOI"],
+      "confirmation_number": ["Dataset Count"," Datafile Count"],
+      "assessment": ["Instrument", "Beamline"],
+      "calendar_today": ["Start Date", "End Date", "Create Time", "Modified Time"],
+      "explore": ["Location"],
+      "save": ["Size"],
+      "description": ["Description", "Summary"],
+      "link": ["URL"]
+    }
   },
   "entity_card": {
     "no_description": "No description available",

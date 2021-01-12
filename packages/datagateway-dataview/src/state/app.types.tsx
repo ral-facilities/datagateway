@@ -7,6 +7,7 @@ export interface DGDataViewState {
   features: FeatureSwitches;
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
+  selectAllSetting: boolean;
 }
 
 export interface EntityCache {

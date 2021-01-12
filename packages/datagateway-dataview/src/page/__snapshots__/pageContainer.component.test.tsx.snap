@@ -55,6 +55,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
           Object {
             "backgroundColor": "inherit",
             "height": "calc(100vh - 180px)",
+            "overflowX": "auto",
             "width": "100%",
           }
         }

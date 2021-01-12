@@ -54,6 +54,7 @@ interface ISISDatasetsTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface ISISDatasetsTableDispatchProps {
@@ -99,6 +100,7 @@ const ISISDatasetsTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    selectAllSetting,
     studyHierarchy,
   } = props;
 
@@ -155,6 +157,7 @@ const ISISDatasetsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <DatasetDetailsPanel
@@ -207,12 +210,14 @@ const ISISDatasetsTable = (
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />
@@ -282,6 +287,7 @@ const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

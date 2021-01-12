@@ -21,6 +21,7 @@ exports[`Download cart table component renders correctly 1`] = `
         style={
           Object {
             "height": "calc(100vh - 150px)",
+            "overflowX": "auto",
           }
         }
       >

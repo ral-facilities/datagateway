@@ -200,7 +200,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         </Grid>
       )}
       <Grid item>
-        <Paper style={{ height: 'calc(100vh - 110px)' }}>
+        <Paper style={{ height: 'calc(100vh - 110px)', overflowX: 'auto' }}>
           <Table
             columns={[
               {
@@ -237,6 +237,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   }
                 },
                 filterComponent: dateFilter,
+                disableHeaderWrap: true,
               },
             ]}
             sort={sort}

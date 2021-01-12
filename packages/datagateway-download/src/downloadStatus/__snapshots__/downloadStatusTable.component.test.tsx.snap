@@ -19,6 +19,7 @@ exports[`Download Status Table renders correctly 1`] = `
       style={
         Object {
           "height": "calc(100vh - 110px)",
+          "overflowX": "auto",
         }
       }
     >
@@ -51,6 +52,7 @@ exports[`Download Status Table renders correctly 1`] = `
             Object {
               "cellContentRenderer": [Function],
               "dataKey": "createdAt",
+              "disableHeaderWrap": true,
               "filterComponent": [Function],
               "label": "downloadStatus.createdAt",
             },

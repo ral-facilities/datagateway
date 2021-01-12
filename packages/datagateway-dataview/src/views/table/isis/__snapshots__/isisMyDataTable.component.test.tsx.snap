@@ -52,12 +52,14 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "STARTDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.end_date",
@@ -117,6 +119,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onCheck={[Function]}

@@ -68,7 +68,7 @@ describe('Investigations Table', () => {
 
     cy.get('@visitColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -112,7 +112,7 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -198,7 +198,7 @@ describe('Investigations Table', () => {
         .contains(
           'Dog want single resource major. Necessary bit always available term small stock game.'
         )
-        .should('not.be.visible');
+        .should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -207,7 +207,7 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

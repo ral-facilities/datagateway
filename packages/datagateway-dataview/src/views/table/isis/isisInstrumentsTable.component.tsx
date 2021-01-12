@@ -36,6 +36,7 @@ interface ISISInstrumentsTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  selectAllSetting: boolean;
 }
 
 interface ISISInstrumentsTableDispatchProps {
@@ -63,6 +64,7 @@ const ISISInstrumentsTable = (
     filters,
     pushFilters,
     loading,
+    selectAllSetting,
     studyHierarchy,
   } = props;
 
@@ -92,6 +94,7 @@ const ISISInstrumentsTable = (
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <InstrumentDetailsPanel
@@ -143,6 +146,7 @@ const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     error: state.dgcommon.error,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

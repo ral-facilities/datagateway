@@ -55,6 +55,7 @@ interface ISISInvestigationsTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface ISISInvestigationsTableDispatchProps {
@@ -108,6 +109,7 @@ const ISISInvestigationsTable = (
     addToCart,
     removeFromCart,
     allIds,
+    selectAllSetting,
     fetchFacilityCycleAllIds,
     fetchStudyAllIds,
     studyHierarchy,
@@ -186,6 +188,7 @@ const ISISInvestigationsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <InvestigationDetailsPanel
@@ -287,6 +290,7 @@ const ISISInvestigationsTable = (
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
@@ -294,6 +298,7 @@ const ISISInvestigationsTable = (
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />
@@ -399,6 +404,7 @@ const mapStateToProps = (
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 
