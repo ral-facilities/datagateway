@@ -1,7 +1,9 @@
 describe('Dataset search tab', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-
+    cy.server();
+    cy.route('/datasets/count*').as('datasetsCount');
+    cy.route('/datasets?order=*').as('datasetsOrder');
     cy.visit('/search/data/');
   });
 
@@ -14,20 +16,41 @@ describe('Dataset search tab', () => {
   });
 
   it('should be able to search by text', () => {
+    cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('police');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
       .contains('12')
-      .click();
+      .click()
+      .wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="12"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+
+    // Check that "select all" and individual selection are equivalent
+    let i = 1;
+    while (i < 13) {
+      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
+      i++;
+    }
+    cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+      'be.checked'
+    );
+    cy.get('[aria-label="select all rows"]')
+      .should('have.attr', 'data-indeterminate')
+      .and('eq', 'false');
   });
 
   it('should be able to search by date range', () => {
