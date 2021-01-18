@@ -93,7 +93,10 @@ describe('ISIS - MyData Table', () => {
   describe('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
@@ -125,11 +128,15 @@ describe('ISIS - MyData Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument"]')
         .find('input')
+        .first()
         .type('INSTRUMENT 8');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });

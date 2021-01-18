@@ -148,6 +148,7 @@ describe('DLS - Datasets Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
+        .first()
         .type('1')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
@@ -162,7 +163,10 @@ describe('DLS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('DATASET 1');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .first()
+        .type('DATASET 1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -197,6 +201,7 @@ describe('DLS - Datasets Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
+        .first()
         .type('1')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 

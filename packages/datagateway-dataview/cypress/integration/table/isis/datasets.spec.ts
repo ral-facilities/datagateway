@@ -166,7 +166,10 @@ describe('ISIS - Datasets Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('DATASET 327');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .first()
+        .type('DATASET 327');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').contains(
@@ -201,6 +204,7 @@ describe('ISIS - Datasets Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
+        .first()
         .type('87')
         .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
 
