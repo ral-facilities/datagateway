@@ -31,7 +31,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   // Sorting columns
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
-    [column: string]: string | { startDate?: string; endDate?: string };
+    [column: string]:
+      | { value?: string | number; type: string }
+      | { startDate?: string; endDate?: string };
   }>({});
   const [data, setData] = React.useState<Download[]>([]);
   const [dataLoaded, setDataLoaded] = React.useState(false);
@@ -79,7 +81,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => {
+      onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
           setFilters({ ...filters, [dataKey]: value });
         } else {
@@ -96,10 +98,13 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   ): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => {
-        if (value) {
+      onChange={(value: { value?: string | number; type: string } | null) => {
+        if (value && typeof value.value === 'string') {
           // We convert the input value to uppercase to match the table value.
-          setFilters({ ...filters, [dataKey]: value.toUpperCase() });
+          setFilters({
+            ...filters,
+            [dataKey]: { value: value.value.toUpperCase(), type: value.type },
+          });
         } else {
           const { [dataKey]: value, ...restOfFilters } = filters;
           setFilters(restOfFilters);
@@ -128,7 +133,14 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       for (const [key, value] of Object.entries(filters)) {
         const tableValue = item[key];
         if (tableValue !== undefined && typeof tableValue === 'string') {
-          if (typeof value === 'string' && !tableValue.includes(value)) {
+          if (
+            typeof value === 'object' &&
+            'value' in value &&
+            typeof value.value === 'string' &&
+            (value.type === 'include'
+              ? !tableValue.includes(value.value)
+              : tableValue.includes(value.value))
+          ) {
             return false;
           } else if (
             typeof value === 'object' &&
