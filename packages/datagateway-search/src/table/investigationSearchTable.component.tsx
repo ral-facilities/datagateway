@@ -96,7 +96,9 @@ const InvestigationSearchTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => filterTable(dataKey, value ? value : null)}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        filterTable(dataKey, value ? value : null)
+      }
     />
   );
 
