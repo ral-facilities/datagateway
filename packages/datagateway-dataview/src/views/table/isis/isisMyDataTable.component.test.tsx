@@ -159,13 +159,15 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by investigations.title"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by investigations.title"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('TITLE', 'test'));
+    expect(testStore.getActions()[5]).toEqual(
+      filterTable('TITLE', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

@@ -110,13 +110,15 @@ describe('DLS Dataset table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by datasets.name"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by datasets.name"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[3]).toEqual(
+      filterTable('NAME', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

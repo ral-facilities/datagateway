@@ -111,7 +111,9 @@ describe('Dataset table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[3]).toEqual(
+      filterTable('NAME', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
