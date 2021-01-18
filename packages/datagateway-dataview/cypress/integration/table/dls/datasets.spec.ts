@@ -1,9 +1,7 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
-    cy.server();
-    cy.route('/datasets/count*').as('datasetsCount');
-    cy.route('/datasets?order=*').as('datasetsOrder');
+    cy.intercept('/datasets/count').as('datasetsCount');
+    cy.intercept('/datasets?order=').as('datasetsOrder');
     cy.login('user', 'password');
     cy.visit(
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
@@ -86,7 +84,7 @@ describe('DLS - Datasets Table', () => {
 
     cy.get('@datafileCountColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -138,7 +136,7 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -225,7 +223,7 @@ describe('DLS - Datasets Table', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').contains('DATASET 1').should('be.visible');
-      cy.get('#details-panel').contains('DATASET 241').should('not.be.visible');
+      cy.get('#details-panel').contains('DATASET 241').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -280,7 +278,7 @@ describe('DLS - Datasets Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

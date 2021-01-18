@@ -35,6 +35,7 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "MOD_TIME",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datafiles.modified_time",
@@ -55,6 +56,7 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onCheck={[Function]}
@@ -69,11 +71,18 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
 exports[`ISIS datafiles table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="datafiles.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="datafile-details-panel"

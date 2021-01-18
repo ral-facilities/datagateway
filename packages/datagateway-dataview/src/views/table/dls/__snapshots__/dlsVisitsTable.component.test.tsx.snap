@@ -26,12 +26,14 @@ exports[`DLS Visits table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "STARTDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.end_date",
@@ -67,6 +69,7 @@ exports[`DLS Visits table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onSort={[Function]}
@@ -78,11 +81,18 @@ exports[`DLS Visits table component renders correctly 1`] = `
 exports[`DLS Visits table component renders details panel correctly and it sends off an FetchInvestigationDetails action 1`] = `
 <div
   id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
 >
   <WithStyles(ForwardRef(Tabs))
     aria-label="investigations.details.tabs_label"
     onChange={[Function]}
+    scrollButtons="auto"
     value="details"
+    variant="scrollable"
   >
     <WithStyles(ForwardRef(Tab))
       aria-controls="visit-details-panel"

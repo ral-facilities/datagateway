@@ -19,9 +19,11 @@ exports[`ISIS Investigations - Card View renders correctly 1`] = `
       ]
     }
     facilityCycleId="1"
-    fetchCount={[Function]}
-    fetchData={[Function]}
     fetchDetails={[Function]}
+    fetchFacilityCycleCount={[Function]}
+    fetchFacilityCycleData={[Function]}
+    fetchStudyCount={[Function]}
+    fetchStudyData={[Function]}
     filters={Object {}}
     instrumentId="1"
     loading={false}

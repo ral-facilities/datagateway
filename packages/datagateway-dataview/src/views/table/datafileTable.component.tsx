@@ -68,6 +68,7 @@ interface DatafileTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface DatafileTableDispatchProps {
@@ -105,6 +106,7 @@ const DatafileTable = (
     allIds,
     fetchAllIds,
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -162,6 +164,7 @@ const DatafileTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
@@ -242,6 +245,7 @@ const DatafileTable = (
           label: t('datafiles.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />
@@ -307,6 +311,7 @@ const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

@@ -63,6 +63,7 @@ interface DatasetTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface DatasetTableDispatchProps {
@@ -99,6 +100,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     allIds,
     fetchAllIds,
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -156,6 +158,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData }) => {
         const datasetData = rowData as Dataset;
         return (
@@ -208,12 +211,14 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />
@@ -281,6 +286,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

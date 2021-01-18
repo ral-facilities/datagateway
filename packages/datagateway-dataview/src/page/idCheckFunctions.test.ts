@@ -3,6 +3,7 @@ import {
   checkProposalName,
   checkInstrumentAndFacilityCycleId,
   saveApiUrlMiddleware,
+  checkInstrumentAndStudyId,
 } from './idCheckFunctions';
 import axios from 'axios';
 import { handleICATError, ConfigureURLsType } from 'datagateway-common';
@@ -175,6 +176,55 @@ describe('ID check functions', () => {
       );
 
       const result = await checkInstrumentAndFacilityCycleId(1, 2, 3);
+      expect(result).toBe(false);
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
+    });
+  });
+
+  describe('checkInstrumentAndStudyId', () => {
+    it('returns true on valid instrument, study + investigation triple', async () => {
+      expect.assertions(2);
+      (axios.get as jest.Mock).mockImplementation(() =>
+        Promise.resolve({
+          data: [{ ID: 3, NAME: 'Test investigation' }],
+        })
+      );
+
+      const result = await checkInstrumentAndStudyId(1, 2, 3);
+      expect(result).toBe(true);
+      expect(axios.get).toHaveBeenCalledWith('/investigations/', {
+        params: {
+          where: {
+            ID: { eq: 3 },
+            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: 1 },
+            'INVESTIGATIONSTUDY.STUDY.ID': { eq: 2 },
+          },
+        },
+        headers: { Authorization: 'Bearer null' },
+      });
+    });
+    it('returns false on invalid instrument, study + investigation triple', async () => {
+      expect.assertions(1);
+      (axios.get as jest.Mock).mockImplementation(() =>
+        Promise.resolve({
+          data: [],
+        })
+      );
+
+      const result = await checkInstrumentAndStudyId(1, 2, 3);
+      expect(result).toBe(false);
+    });
+    it('returns false on HTTP error', async () => {
+      expect.assertions(2);
+      (axios.get as jest.Mock).mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      const result = await checkInstrumentAndStudyId(1, 2, 3);
       expect(result).toBe(false);
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',

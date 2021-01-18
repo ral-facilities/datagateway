@@ -7,6 +7,8 @@ import {
   ConfigureBreadcrumbSettingsPayload,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureSelectAllSettingPayload,
+  ConfigureSelectAllSettingType,
 } from './actions.types';
 import {
   loadUrls,
@@ -37,6 +39,15 @@ export const loadBreadcrumbSettings = (
   type: ConfigureBreadcrumbSettingsType,
   payload: {
     settings: breadcrumbSettings,
+  },
+});
+
+export const loadSelectAllSetting = (
+  selectAllSetting: boolean
+): ActionType<ConfigureSelectAllSettingPayload> => ({
+  type: ConfigureSelectAllSettingType,
+  payload: {
+    settings: selectAllSetting,
   },
 });
 
@@ -85,6 +96,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         // Dispatch the action to load the breadcrumb settings (optional settings).
         if ('breadcrumbs' in settings) {
           dispatch(loadBreadcrumbSettings(settings['breadcrumbs']));
+        }
+
+        if ('selectAllSetting' in settings) {
+          dispatch(loadSelectAllSetting(settings['selectAllSetting']));
         }
 
         /* istanbul ignore if */

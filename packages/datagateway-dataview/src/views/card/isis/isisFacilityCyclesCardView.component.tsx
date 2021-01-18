@@ -20,6 +20,7 @@ import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { CalendarToday } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISFacilityCyclesCVProps {
@@ -62,6 +63,7 @@ const ISISFacilityCyclesCardView = (
   } = props;
 
   const filters = query.filters;
+  const [t] = useTranslation();
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -101,7 +103,7 @@ const ISISFacilityCyclesCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       title={{
-        label: 'Name',
+        label: t('facilitycycles.name'),
         dataKey: 'NAME',
         content: (facilityCycle: FacilityCycle) =>
           tableLink(
@@ -112,20 +114,20 @@ const ISISFacilityCyclesCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Description',
+        label: t('facilitycycles.description'),
         dataKey: 'DESCRIPTION',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <CalendarToday />,
-          label: 'Start Date',
+          label: t('facilitycycles.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
-          label: 'End Date',
+          label: t('facilitycycles.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
         },

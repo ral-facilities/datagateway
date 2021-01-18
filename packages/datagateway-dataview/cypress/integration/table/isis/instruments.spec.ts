@@ -54,7 +54,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
@@ -99,7 +99,7 @@ describe('ISIS - Instruments Table', () => {
         .contains(
           'North understand leader everyone skin. Actually prove begin boy those. Could size only. Late race city suddenly. Treat her wife training family effect.'
         )
-        .should('not.be.visible');
+        .should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
 
@@ -116,7 +116,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
       cy.get('[aria-controls="instrument-users-panel"]').click();
-
+      cy.get('[aria-label="grid"]').scrollTo('top');
       cy.get('#details-panel').contains('Matthew50').should('be.visible');
     });
 
@@ -125,7 +125,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

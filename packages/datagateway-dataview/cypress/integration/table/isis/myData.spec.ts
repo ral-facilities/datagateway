@@ -1,8 +1,6 @@
 describe('ISIS - MyData Table', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(2);
-    cy.server();
-    cy.route('**/investigations/count*').as('getInvestigationCount');
+    cy.intercept('/investigations/count').as('getInvestigationCount');
     cy.login('user', 'password');
     cy.visit('/my-data/ISIS').wait(['@getInvestigationCount'], {
       timeout: 10000,
@@ -77,7 +75,7 @@ describe('ISIS - MyData Table', () => {
 
     cy.get('@doiColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
-      expect(width).to.be.equal(70);
+      expect(width).to.be.equal(84);
     });
 
     cy.get('[aria-label="grid"]').then(($grid) => {
@@ -196,7 +194,7 @@ describe('ISIS - MyData Table', () => {
 
       cy.get('[aria-label="Hide details"]').first().click();
 
-      cy.get('#details-panel').should('not.be.visible');
+      cy.get('#details-panel').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('not.exist');
     });
   });

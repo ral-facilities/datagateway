@@ -40,8 +40,9 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
-  facilityCycleId: string;
+  instrumentChildId: string;
   investigationId: string;
+  studyHierarchy: boolean;
 }
 
 interface ISISDatasetsTableStoreProps {
@@ -53,6 +54,7 @@ interface ISISDatasetsTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface ISISDatasetsTableDispatchProps {
@@ -89,7 +91,7 @@ const ISISDatasetsTable = (
     filters,
     pushFilters,
     investigationId,
-    facilityCycleId,
+    instrumentChildId,
     instrumentId,
     downloadData,
     loading,
@@ -98,6 +100,8 @@ const ISISDatasetsTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    selectAllSetting,
+    studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
@@ -141,6 +145,9 @@ const ISISDatasetsTable = (
     />
   );
 
+  const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
+  const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+
   return (
     <Table
       loading={loading}
@@ -153,6 +160,7 @@ const ISISDatasetsTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <DatasetDetailsPanel
@@ -186,7 +194,7 @@ const ISISDatasetsTable = (
           dataKey: 'NAME',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
               props.rowData.NAME
             ),
           filterComponent: textFilter,
@@ -205,12 +213,14 @@ const ISISDatasetsTable = (
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />
@@ -280,6 +290,7 @@ const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

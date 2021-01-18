@@ -1,11 +1,16 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('**/investigations/count*').as('getInvestigationsCount');
-    cy.route('**/investigations?order*').as('getInvestigationsOrder');
+    cy.intercept('**/investigations/count*').as('getInvestigationsCount');
+    cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/');
+    cy.visit('/browse/investigation/').wait(
+      [
+        '@getInvestigationsCount',
+        '@getInvestigationsOrder',
+        '@getInvestigationsOrder',
+      ],
+      { timeout: 10000 }
+    );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
       .wait(

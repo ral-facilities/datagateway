@@ -17,6 +17,7 @@ import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 interface DLSProposalsCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
@@ -51,6 +52,7 @@ const DLSProposalsCardView = (
   } = props;
 
   const filters = query.filters;
+  const [t] = useTranslation();
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -71,7 +73,7 @@ const DLSProposalsCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       title={{
-        label: 'Title',
+        label: t('investigations.title'),
         dataKey: 'TITLE',
         content: (investigation: Investigation) =>
           tableLink(
@@ -82,7 +84,7 @@ const DLSProposalsCardView = (
         filterComponent: textFilter,
       }}
       description={{
-        label: 'Name',
+        label: t('investigations.name'),
         dataKey: 'NAME',
         filterComponent: textFilter,
       }}

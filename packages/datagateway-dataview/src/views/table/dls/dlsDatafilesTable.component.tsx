@@ -64,6 +64,7 @@ interface DLSDatafilesTableStoreProps {
   error: string | null;
   cartItems: DownloadCartItem[];
   allIds: number[];
+  selectAllSetting: boolean;
 }
 
 interface DLSDatafilesTableDispatchProps {
@@ -99,6 +100,7 @@ const DLSDatafilesTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -155,6 +157,7 @@ const DLSDatafilesTable = (
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData }) => {
         const datafileData = rowData as Datafile;
         return (
@@ -216,6 +219,7 @@ const DLSDatafilesTable = (
           label: t('datafiles.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />
@@ -278,6 +282,7 @@ const mapStateToProps = (state: StateType): DLSDatafilesTableStoreProps => {
     error: state.dgcommon.error,
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

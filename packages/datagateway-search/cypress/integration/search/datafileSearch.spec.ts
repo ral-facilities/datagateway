@@ -1,7 +1,9 @@
 describe('Datafile search tab', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-
+    cy.server();
+    cy.route('/datafiles/count*').as('datafilesCount');
+    cy.route('/datafiles?order=*').as('datafilesOrder');
     cy.visit('/search/data/');
   });
 
@@ -14,6 +16,7 @@ describe('Datafile search tab', () => {
   });
 
   it('should be able to search by text', () => {
+    cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('4961');
@@ -23,11 +26,23 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="Search table tabs"]')
       .contains('Datafile')
       .contains('1')
-      .click();
+      .click()
+      .wait(['@datafilesCount', '@datafilesOrder', '@datafilesOrder'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="1"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 4961');
+
+    // Check that "select all" and individual selection are equivalent
+    cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`).click();
+    cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
+      'be.checked'
+    );
+    cy.get('[aria-label="select all rows"]')
+      .should('have.attr', 'data-indeterminate')
+      .and('eq', 'false');
   });
 
   it('should be able to search by date range', () => {

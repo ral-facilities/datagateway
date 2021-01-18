@@ -177,12 +177,14 @@ exports[`Dataset table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "CREATE_TIME",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.create_time",
       },
       Object {
         "dataKey": "MOD_TIME",
+        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.modified_time",
@@ -202,6 +204,7 @@ exports[`Dataset table component renders correctly 1`] = `
     ]
   }
   detailsPanel={[Function]}
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onCheck={[Function]}
