@@ -88,8 +88,11 @@ const ISISFacilityCyclesTable = (
 
   React.useEffect(() => {
     fetchCount(parseInt(instrumentId));
+  }, [fetchCount, instrumentId, filters]);
+
+  React.useEffect(() => {
     fetchData(parseInt(instrumentId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, instrumentId, sort, filters]);
+  }, [fetchData, instrumentId, sort, filters]);
 
   return (
     <Table
@@ -152,8 +155,8 @@ const mapStateToProps = (
   state: StateType
 ): ISISFacilityCyclesTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

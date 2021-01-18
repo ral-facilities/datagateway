@@ -1,4 +1,4 @@
-import { Dataset, Entity, Investigation } from '../../app.types';
+import { Dataset, Entity, FiltersType, Investigation } from '../../app.types';
 import {
   AddToCartFailureType,
   AddToCartRequestType,
@@ -119,6 +119,8 @@ const initialQuery: QueryParams = {
   search: null,
   page: null,
   results: null,
+  sort: {},
+  filters: {},
 };
 
 export const initialState: DGCommonState = {
@@ -130,8 +132,6 @@ export const initialState: DGCommonState = {
   loading: false,
   downloading: false,
   error: null,
-  sort: {},
-  filters: {},
   filterData: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
@@ -144,12 +144,7 @@ export const initialState: DGCommonState = {
   cartItems: [],
   allIds: [],
   query: initialQuery,
-  savedView: {
-    view: null,
-    query: null,
-    filters: {},
-    sort: {},
-  },
+  savedQuery: initialQuery,
 };
 
 export function handleSortTable(
@@ -157,27 +152,33 @@ export function handleSortTable(
   payload: SortTablePayload
 ): DGCommonState {
   const { column, order } = payload;
+  console.log(column);
+  console.log(order);
   if (order !== null) {
     // if given an defined order (asc or desc), update the relevant column in the sort state
     return {
       ...state,
-      sort: {
-        ...state.sort,
-        [column]: order,
-      },
       data: [],
-      totalDataCount: 0,
+      query: {
+        ...state.query,
+        sort: {
+          ...state.query.sort,
+          [column]: order,
+        },
+      },
     };
   } else {
     // if order is null, user no longer wants to sort by that column so remove column from sort state
-    const { [column]: order, ...rest } = state.sort;
+    const { [column]: order, ...rest } = state.query.sort;
     return {
       ...state,
-      sort: {
-        ...rest,
-      },
       data: [],
-      totalDataCount: 0,
+      query: {
+        ...state.query,
+        sort: {
+          ...rest,
+        },
+      },
     };
   }
 }
@@ -191,23 +192,29 @@ export function handleFilterTable(
     // if given an defined filter, update the relevant column in the sort state
     return {
       ...state,
-      filters: {
-        ...state.filters,
-        [column]: filter,
-      },
       data: [],
       totalDataCount: 0,
+      query: {
+        ...state.query,
+        filters: {
+          ...state.query.filters,
+          [column]: filter,
+        },
+      },
     };
   } else {
     // if filter is null, user no longer wants to filter by that column so remove column from filter state
-    const { [column]: filter, ...rest } = state.filters;
+    const { [column]: filter, ...rest } = state.query.filters;
     return {
       ...state,
-      filters: {
-        ...rest,
-      },
       data: [],
       totalDataCount: 0,
+      query: {
+        ...state.query,
+        filters: {
+          ...rest,
+        },
+      },
     };
   }
 }
@@ -280,9 +287,12 @@ export function handleUpdateFilters(
 ): DGCommonState {
   return {
     ...state,
-    filters: payload.filters,
     data: [],
     totalDataCount: 0,
+    query: {
+      ...state.query,
+      filters: payload.filters,
+    },
   };
 }
 
@@ -292,9 +302,12 @@ export function handleUpdateSort(
 ): DGCommonState {
   return {
     ...state,
-    sort: payload.sort,
     data: [],
     totalDataCount: 0,
+    query: {
+      ...state.query,
+      sort: payload.sort,
+    },
   };
 }
 
@@ -312,6 +325,23 @@ export function handleSaveView(
   state: DGCommonState,
   payload: SaveViewPayload
 ): DGCommonState {
+  const currentFilters = state.query.filters;
+  const savedFilters = state.savedQuery.filters;
+  const commonFilters: FiltersType = {};
+  const customFilters: FiltersType = {};
+  Object.keys(currentFilters).forEach((key) => {
+    const value = currentFilters[key];
+    if (Array.isArray(value)) {
+      customFilters[key] = value;
+    } else {
+      commonFilters[key] = value;
+    }
+  });
+
+  Object.keys(savedFilters).forEach((key) => {
+    commonFilters[key] = savedFilters[key];
+  });
+
   return {
     ...state,
     // Clear current information to reload on new view.
@@ -319,14 +349,21 @@ export function handleSaveView(
     totalDataCount: 0,
 
     // Switch view and save view information.
-    sort: state.savedView.sort,
-    filters: state.savedView.filters,
-    query: state.savedView.query ? state.savedView.query : initialQuery,
-    savedView: {
+    // query: state.savedView.query ? state.savedView.query : initialQuery,
+    // savedView: {
+    //   view: payload.view,
+    //   query: state.query,
+    // },
+    query: {
+      ...state.savedQuery,
+      sort: state.query.sort,
+      filters: commonFilters,
+    },
+    savedQuery: {
+      ...state.query,
       view: payload.view,
-      query: state.query,
-      filters: state.filters,
-      sort: state.sort,
+      sort: state.savedQuery.sort,
+      filters: customFilters,
     },
   };
 }
@@ -339,14 +376,7 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     loading: false,
     downloading: false,
     error: null,
-    sort: {},
-    filters: {},
-    savedView: {
-      view: null,
-      query: null,
-      filters: {},
-      sort: {},
-    },
+    savedQuery: initialQuery,
   };
 }
 

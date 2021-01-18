@@ -100,8 +100,11 @@ const DLSVisitsTable = (
 
   React.useEffect(() => {
     fetchCount(proposalName);
+  }, [fetchCount, filters, proposalName]);
+
+  React.useEffect(() => {
     fetchData(proposalName, { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, proposalName]);
+  }, [fetchData, sort, filters, proposalName]);
 
   return (
     <Table
@@ -221,8 +224,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

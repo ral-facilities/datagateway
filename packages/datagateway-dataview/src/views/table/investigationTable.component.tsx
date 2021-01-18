@@ -133,9 +133,12 @@ const InvestigationTable = (
 
   React.useEffect(() => {
     fetchCount();
+  }, [fetchCount, filters]);
+
+  React.useEffect(() => {
     fetchData({ startIndex: 0, stopIndex: 49 });
     fetchAllIds();
-  }, [fetchCount, fetchData, fetchAllIds, sort, filters]);
+  }, [fetchData, fetchAllIds, sort, filters]);
 
   return (
     <Table
@@ -281,8 +284,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

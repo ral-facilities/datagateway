@@ -1,6 +1,13 @@
 import { push } from 'connected-react-router';
 import { Action } from 'redux';
-import { Entity, Filter, FiltersType, Order, SortType } from '../../app.types';
+import {
+  DateFilter,
+  Entity,
+  Filter,
+  FiltersType,
+  Order,
+  SortType,
+} from '../../app.types';
 import {
   ActionType,
   QueryParams,
@@ -113,10 +120,63 @@ export const clearData = (): Action => ({
   type: ClearDataType,
 });
 
-export const loadURLQuery = (): ThunkResult<Promise<void>> => {
+const objectChanged = (
+  parsedObject: SortType | FiltersType,
+  stateObject: SortType | FiltersType
+): boolean => {
+  const parsedKeys = Object.keys(parsedObject);
+  const stateKeys = Object.keys(stateObject);
+  if (parsedKeys.length === 0 && stateKeys.length === 0) {
+    return false;
+  } else if (parsedKeys.length !== stateKeys.length) {
+    return true;
+  } else {
+    let changed = false;
+    parsedKeys.forEach((newKey) => {
+      const parsedEntry = parsedObject[newKey];
+      if (!stateObject[newKey]) {
+        changed = true;
+      } else {
+        const stateEntry = stateObject[newKey];
+        if (
+          typeof parsedEntry === 'number' ||
+          typeof parsedEntry === 'string'
+        ) {
+          if (
+            typeof stateEntry !== typeof parsedEntry ||
+            stateEntry !== parsedEntry
+          ) {
+            changed = true;
+          }
+        } else if (Array.isArray(parsedEntry)) {
+          if (!Array.isArray(stateEntry)) {
+            changed = true;
+          } else {
+            parsedEntry.forEach((value, index) => {
+              if (stateEntry[index] !== value) {
+                changed = true;
+              }
+            });
+          }
+        } else if (
+          parsedEntry.startDate !== (stateEntry as DateFilter).startDate ||
+          parsedEntry.endDate !== (stateEntry as DateFilter).endDate
+        ) {
+          changed = true;
+        }
+      }
+    });
+    return changed;
+  }
+};
+
+export const loadURLQuery = (
+  pathChanged: boolean
+): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     // Get the URLSearchParams object from the search query.
-    const query = new URLSearchParams(getState().router.location.search);
+    const state = getState();
+    const query = new URLSearchParams(state.router.location.search);
 
     // Get filters in URL.
     const search = query.get('search');
@@ -124,10 +184,10 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
     const results = query.get('results');
     const filters = query.get('filters');
     const sort = query.get('sort');
+    const view = query.get('view') as ViewsType;
 
     // Parse filters in the query.
-    const parsedFilters: FiltersType = {};
-    let isFiltersParsed = false;
+    let parsedFilters: FiltersType = {};
     if (filters) {
       try {
         const fq: FiltersType = JSON.parse(filters);
@@ -143,19 +203,17 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
             parsedFilters[f] = v;
           }
         }
-
-        // Ensure at least one filter has been added.
-        if (Object.keys(parsedFilters).length > 0) {
-          isFiltersParsed = true;
-        }
       } catch (e) {
         console.error('Filter query provided in an incorrect format.');
       }
     }
+    if (!objectChanged(parsedFilters, state.dgcommon.query.filters)) {
+      parsedFilters = state.dgcommon.query.filters;
+    }
 
-    const parsedSort: SortType = {};
-    let isSortParsed = false;
+    let parsedSort: SortType = {};
     if (sort) {
+      console.log(sort);
       try {
         const sq: SortType = JSON.parse(sort);
 
@@ -163,52 +221,81 @@ export const loadURLQuery = (): ThunkResult<Promise<void>> => {
         for (const [s, v] of Object.entries(sq)) {
           parsedSort[s] = v;
         }
-
-        if (Object.keys(parsedSort).length > 0) {
-          isSortParsed = true;
-        }
       } catch (e) {
         console.error('Sort query provided in an incorrect format.');
       }
     }
+    if (!objectChanged(parsedSort, state.dgcommon.query.sort)) {
+      parsedSort = state.dgcommon.query.sort;
+    }
 
     // Create the query parameters object.
     const params: QueryParams = {
-      view: query.get('view') as ViewsType,
+      view: view,
       search: search ? search : null,
       page: page ? Number(page) : null,
       results: results ? Number(results) : null,
+      filters: parsedFilters,
+      sort: parsedSort,
     };
 
     // Clear data in state already.
-    dispatch(clearTable());
+    if (pathChanged) {
+      dispatch(clearTable());
+    } else {
+      dispatch(clearData());
+    }
 
     // Update with the new query parameters.
+    console.log('updateQueryParams:');
+    console.log('state: ', state.dgcommon.query);
+    console.log('parsed url: ', params);
     dispatch(updateQueryParams(params));
+    // console.log(objectChanged(parsedFilters, state.dgcommon.query.filters))
+    // console.log(objectChanged(parsedSort, state.dgcommon.query.sort))
+    // console.log(view !== state.dgcommon.query.view)
+    // console.log(params.page !== state.dgcommon.query.page)
+    // console.log(params.results !== state.dgcommon.query.results)
+    // console.log(search !== state.dgcommon.query.search)
+    // if (objectChanged(parsedFilters, state.dgcommon.query.filters) ||
+    //   objectChanged(parsedSort, state.dgcommon.query.sort) ||
+    //   view !== state.dgcommon.query.view ||
+    //   params.page !== state.dgcommon.query.page ||
+    //   params.results !== state.dgcommon.query.results ||
+    //   search !== state.dgcommon.query.search) {
+    //     console.log('CHANGE')
+    //     dispatch(updateQueryParams(params));
+    // }
 
-    // Dispatch and update the filter object in state.
-    if (isFiltersParsed) {
-      dispatch(updateFilters(parsedFilters));
-    }
+    // // Dispatch and update the filter object in state.
+    // console.log(Object.keys(parsedFilters))
+    // console.log(Object.keys(getState().dgcommon.query.filters))
+    // console.log(objectChanged(parsedFilters, getState().dgcommon.query.filters))
+    // if (objectChanged(parsedFilters, getState().dgcommon.query.filters)) {
+    //   dispatch(updateFilters(parsedFilters));
+    // }
 
-    // Dispatch and update sort object in state.
-    if (isSortParsed) {
-      dispatch(updateSort(parsedSort));
-    }
+    // // Dispatch and update sort object in state.
+    // console.log(Object.keys(parsedSort))
+    // console.log(Object.keys(getState().dgcommon.query.sort))
+    // console.log(objectChanged(parsedSort, getState().dgcommon.query.sort))
+    // if (objectChanged(parsedSort, getState().dgcommon.query.sort)) {
+    //   dispatch(updateSort(parsedSort));
+    // }
   };
 };
 
 // Get the current URL query parameters.
 export const getURLQuery = (getState: () => StateType): URLSearchParams => {
   const query = getState().dgcommon.query;
-  const filters = getState().dgcommon.filters;
-  const sort = getState().dgcommon.sort;
+  const filters = query.filters;
+  const sort = query.sort;
 
   const queryParams = new URLSearchParams();
 
   // Loop and add all the query parameters which is in use.
   for (const [q, v] of Object.entries(query)) {
-    if (v !== null && q !== 'filters') {
+    if (v !== null && q !== 'filters' && q !== 'sort') {
       queryParams.append(q, v);
     }
   }
@@ -241,8 +328,8 @@ export const getURLQuery = (getState: () => StateType): URLSearchParams => {
 };
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-  const sort = getState().dgcommon.sort;
-  const filters = getState().dgcommon.filters;
+  const sort = getState().dgcommon.query.sort;
+  const filters = getState().dgcommon.query.filters;
 
   const searchParams = new URLSearchParams();
 
@@ -403,9 +490,18 @@ export const pushPageSort = (
   sortKey: string,
   order: Order | null
 ): ThunkResult<Promise<void>> => {
+  console.log(sortKey);
+  console.log(order);
   return async (dispatch, getState) => {
     // Use sortTable present already.
     dispatch(sortTable(sortKey, order));
+    dispatch(push(`?${getURLQuery(getState).toString()}`));
+  };
+};
+
+export const pushQuery = (query: QueryParams): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(updateQueryParams(query));
     dispatch(push(`?${getURLQuery(getState).toString()}`));
   };
 };

@@ -13,18 +13,13 @@ import {
   tableLink,
   fetchFilter,
   fetchDatasetSize,
-  FiltersType,
   pushPageFilter,
   Filter,
   TextColumnFilter,
   DateColumnFilter,
   DateFilter,
-  SortType,
-  Order,
-  pushPageSort,
   pushPageNum,
-  pushPageResults,
-  clearData,
+  pushQuery,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import {
@@ -33,7 +28,7 @@ import {
   QueryParams,
 } from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import {
   AddCircleOutlineOutlined,
@@ -54,10 +49,7 @@ interface DLSDatasetsCVStateProps {
   totalDataCount: number;
   cartItems: DownloadCartItem[];
   filterData: FilterDataType;
-  filters: FiltersType;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
 }
 
 interface DLSDatasetsCVDispatchProps {
@@ -71,11 +63,9 @@ interface DLSDatasetsCVDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchTypeFilter: (datasetId: number) => Promise<void>;
-  clearData: () => Action;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 type DLSDatasetsCVCombinedProps = DLSDatasetsCVProps &
@@ -90,9 +80,7 @@ const DLSDatasetsCardView = (
     investigationId,
     data,
     totalDataCount,
-    loading,
     query,
-    sort,
     fetchData,
     fetchCount,
     fetchTypeFilter,
@@ -102,17 +90,16 @@ const DLSDatasetsCardView = (
     filterData,
     addToCart,
     removeFromCart,
-    filters,
     pushFilters,
     pushPage,
-    pushResults,
-    pushSort,
-    clearData,
+    pushQuery,
   } = props;
 
-  const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [fetchedFilters, setFetchedFilters] = React.useState(false);
-  const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
+  const filters = query.filters;
+
+  React.useEffect(() => {
+    fetchTypeFilter(parseInt(investigationId));
+  }, [investigationId, fetchTypeFilter]);
 
   const selectedCards = React.useMemo(
     () =>
@@ -120,10 +107,10 @@ const DLSDatasetsCardView = (
         .filter(
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
-            datasetIds.includes(cartItem.entityId)
+            data.map((dataset) => dataset.ID).includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, datasetIds]
+    [cartItems, data]
   );
 
   const typeFilteredItems = React.useMemo(
@@ -149,49 +136,33 @@ const DLSDatasetsCardView = (
     />
   );
 
-  React.useEffect(() => {
-    setDatasetIds(data.map((dataset) => dataset.ID));
-
-    if (!fetchedCount) {
-      fetchCount(parseInt(investigationId));
-      setFetchedCount(true);
-    }
-
-    if (!fetchedFilters) {
-      fetchTypeFilter(parseInt(investigationId));
-      setFetchedFilters(true);
-    }
-  }, [
-    investigationId,
-    data,
-    fetchedCount,
-    fetchCount,
-    fetchedFilters,
-    fetchTypeFilter,
-  ]);
+  const loadCount = React.useCallback(
+    () => fetchCount(parseInt(investigationId)),
+    [fetchCount, investigationId]
+  );
+  const loadData = React.useCallback(
+    (params) => fetchData(parseInt(investigationId), params),
+    [fetchData, investigationId]
+  );
 
   return (
     <CardView
       data={data}
-      loadData={(params) => fetchData(parseInt(investigationId), params)}
-      loadCount={() => fetchCount(parseInt(investigationId))}
+      loadData={loadData}
+      loadCount={loadCount}
       totalDataCount={totalDataCount}
-      loading={loading}
-      sort={sort}
-      filters={filters}
       query={query}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
       title={{
         label: 'Name',
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
           tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME
+            dataset.NAME,
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -325,14 +296,11 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  clearData: () => dispatch(clearData()),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
@@ -341,10 +309,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
     filterData: state.dgcommon.filterData,
-    filters: state.dgcommon.filters,
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
   };
 };
 

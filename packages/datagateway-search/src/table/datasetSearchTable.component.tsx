@@ -222,8 +222,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

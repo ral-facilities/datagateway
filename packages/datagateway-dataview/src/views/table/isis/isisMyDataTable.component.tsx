@@ -125,12 +125,15 @@ const ISISMyDataTable = (
 
   React.useEffect(() => {
     fetchCount(username);
+  }, [fetchCount, username, filters]);
+
+  React.useEffect(() => {
     fetchData(username, {
       startIndex: 0,
       stopIndex: 49,
     });
     fetchAllIds(username);
-  }, [fetchCount, fetchData, username, sort, filters, fetchAllIds]);
+  }, [fetchData, username, sort, filters, fetchAllIds]);
 
   return (
     <Table
@@ -358,8 +361,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

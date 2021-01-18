@@ -16,22 +16,17 @@ import {
   fetchDatasetCount,
   fetchDatasets,
   Filter,
-  FiltersType,
   pushPageFilter,
   removeFromCart,
   TextColumnFilter,
-  Order,
-  pushPageSort,
-  clearData,
   pushPageNum,
-  pushPageResults,
-  SortType,
+  pushQuery,
 } from 'datagateway-common';
 import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction, Action } from 'redux';
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import CardView from './cardView.component';
 
@@ -45,18 +40,13 @@ interface DatasetCVDispatchProps {
   removeFromCart: (entityIds: number[]) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  clearData: () => Action;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 interface DatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
-  filters: FiltersType;
   cartItems: DownloadCartItem[];
 }
 
@@ -78,19 +68,13 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     fetchCount,
     addToCart,
     removeFromCart,
-    loading,
     query,
-    sort,
-    filters,
     pushPage,
-    pushResults,
     pushFilters,
-    pushSort,
-    clearData,
+    pushQuery,
   } = props;
 
-  const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
+  const filters = query.filters;
 
   const selectedCards = React.useMemo(
     () =>
@@ -98,10 +82,10 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
         .filter(
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
-            datasetIds.includes(cartItem.entityId)
+            data.map((dataset) => dataset.ID).includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, datasetIds]
+    [cartItems, data]
   );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -122,37 +106,35 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     />
   );
 
-  React.useEffect(() => {
-    // TODO: React.useMemo?
-    setDatasetIds(data.map((dataset) => dataset.ID));
-
-    // Fetch the dataset count based on the investigation ID.
-    if (!fetchedCount) {
-      fetchCount(parseInt(investigationId));
-      setFetchedCount(true);
-    }
-  }, [investigationId, data, fetchedCount, fetchCount]);
+  const loadCount = React.useCallback(
+    () => fetchCount(parseInt(investigationId)),
+    [fetchCount, investigationId]
+  );
+  const loadData = React.useCallback(
+    (params) => fetchData(parseInt(investigationId), params),
+    [fetchData, investigationId]
+  );
 
   return (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loading={loading}
-      sort={sort}
-      filters={filters}
       query={query}
-      loadData={(params) => fetchData(parseInt(investigationId), params)}
-      loadCount={() => fetchCount(parseInt(investigationId))}
+      loadData={loadData}
+      loadCount={loadCount}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
       title={{
         label: 'Name',
         dataKey: 'NAME',
         content: (dataset: Dataset) => {
-          return datasetLink(investigationId, dataset.ID, dataset.NAME);
+          return datasetLink(
+            investigationId,
+            dataset.ID,
+            dataset.NAME,
+            query.view
+          );
         },
         filterComponent: textFilter,
       }}
@@ -221,10 +203,7 @@ const mapStateToProps = (state: StateType): DatasetCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
     cartItems: state.dgcommon.cartItems,
   };
 };
@@ -264,11 +243,8 @@ const mapDispatchToProps = (
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-  clearData: () => dispatch(clearData()),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DatasetCardView);

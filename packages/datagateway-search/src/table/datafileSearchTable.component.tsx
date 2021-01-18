@@ -233,8 +233,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DatafileSearchTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     luceneData: state.dgsearch.searchData.datafile,
     totalDataCount: state.dgcommon.totalDataCount,

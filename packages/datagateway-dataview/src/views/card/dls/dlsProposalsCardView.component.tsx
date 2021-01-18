@@ -9,32 +9,21 @@ import {
   tableLink,
   pushPageFilter,
   Filter,
-  FiltersType,
   TextColumnFilter,
-  Order,
-  SortType,
-  pushPageSort,
   pushPageNum,
-  pushPageResults,
-  clearData,
+  pushQuery,
 } from 'datagateway-common';
-import {
-  ViewsType,
-  StateType,
-  QueryParams,
-} from 'datagateway-common/lib/state/app.types';
+import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, Action } from 'redux';
+import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 
 interface DLSProposalsCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   pushPage: (page: number) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  clearData: () => Action;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 interface DLSProposalsCVStateProps {
@@ -42,9 +31,6 @@ interface DLSProposalsCVStateProps {
   totalDataCount: number;
   loading: boolean;
   query: QueryParams;
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
 }
 
 type DLSProposalsCVCombinedProps = DLSProposalsCVDispatchProps &
@@ -58,19 +44,13 @@ const DLSProposalsCardView = (
     totalDataCount,
     fetchData,
     fetchCount,
-    view,
-    loading,
     query,
-    sort,
-    filters,
     pushPage,
-    pushResults,
     pushFilters,
-    pushSort,
-    clearData,
+    pushQuery,
   } = props;
 
-  const [fetchedCount, setFetchedCount] = React.useState(false);
+  const filters = query.filters;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -80,29 +60,16 @@ const DLSProposalsCardView = (
     />
   );
 
-  React.useEffect(() => {
-    // Fetch count.
-    if (!fetchedCount) {
-      fetchCount();
-      setFetchedCount(true);
-    }
-  }, [fetchedCount, fetchCount, setFetchedCount]);
-
   return (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loading={loading}
-      sort={sort}
-      filters={filters}
       query={query}
       loadData={fetchData}
       loadCount={fetchCount}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
       title={{
         label: 'Title',
         dataKey: 'TITLE',
@@ -110,7 +77,7 @@ const DLSProposalsCardView = (
           tableLink(
             `/browse/proposal/${investigation.NAME}/investigation`,
             investigation.TITLE,
-            view
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -150,11 +117,8 @@ const mapDispatchToProps = (
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-  clearData: () => dispatch(clearData()),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 const mapStateToProps = (state: StateType): DLSProposalsCVStateProps => {
@@ -163,9 +127,6 @@ const mapStateToProps = (state: StateType): DLSProposalsCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
-    view: state.dgcommon.query.view,
   };
 };
 

@@ -19,27 +19,20 @@ export interface DGCommonState {
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
-  sort: SortType;
-  filters: FiltersType;
   filterData: FilterDataType;
   query: QueryParams;
-  savedView: SavedView;
+  savedQuery: QueryParams;
 }
 
 export type ViewsType = 'table' | 'card' | null;
 
 export interface QueryParams {
+  sort: SortType;
+  filters: FiltersType;
   view: ViewsType;
   search: string | null;
   page: number | null;
   results: number | null;
-}
-
-export interface SavedView {
-  view: ViewsType;
-  query: QueryParams | null;
-  filters: FiltersType;
-  sort: SortType;
 }
 
 export interface FilterDataType {

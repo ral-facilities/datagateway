@@ -129,20 +129,15 @@ const ISISInvestigationsTable = (
 
   React.useEffect(() => {
     fetchCount(parseInt(instrumentId), parseInt(facilityCycleId));
+  }, [fetchCount, instrumentId, facilityCycleId, filters]);
+
+  React.useEffect(() => {
     fetchData(parseInt(instrumentId), parseInt(facilityCycleId), {
       startIndex: 0,
       stopIndex: 49,
     });
     fetchAllIds();
-  }, [
-    fetchCount,
-    fetchData,
-    instrumentId,
-    facilityCycleId,
-    sort,
-    filters,
-    fetchAllIds,
-  ]);
+  }, [fetchData, instrumentId, facilityCycleId, sort, filters, fetchAllIds]);
 
   const urlPrefix = `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation`;
 
@@ -317,8 +312,8 @@ const mapStateToProps = (
   state: StateType
 ): ISISInvestigationsTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

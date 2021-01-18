@@ -108,9 +108,12 @@ const ISISDatafilesTable = (
 
   React.useEffect(() => {
     fetchCount(parseInt(datasetId));
+  }, [fetchCount, filters, datasetId]);
+
+  React.useEffect(() => {
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
     fetchAllIds();
-  }, [fetchCount, fetchData, sort, filters, datasetId, fetchAllIds]);
+  }, [fetchData, sort, filters, datasetId, fetchAllIds]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -258,8 +261,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISDatafilesTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

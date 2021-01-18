@@ -234,7 +234,7 @@ describe('Investigation - Card View', () => {
       TYPE_ID: ['1', '2'],
       FACILITY_ID: ['1', '2'],
     };
-    state.dgcommon.filters = { TYPE_ID: ['1'] };
+    state.dgcommon.query.filters = { TYPE_ID: ['1'] };
     const wrapper = createWrapper();
     wrapper.find(Chip).at(4).find(SvgIcon).simulate('click');
 

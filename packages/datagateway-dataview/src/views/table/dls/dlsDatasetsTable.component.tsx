@@ -106,9 +106,12 @@ const DLSDatasetsTable = (
 
   React.useEffect(() => {
     fetchCount(parseInt(investigationId));
+  }, [fetchCount, filters, investigationId]);
+
+  React.useEffect(() => {
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
     fetchAllIds();
-  }, [fetchCount, fetchData, sort, filters, investigationId, fetchAllIds]);
+  }, [fetchData, sort, filters, investigationId, fetchAllIds]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -240,8 +243,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
