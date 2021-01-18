@@ -255,13 +255,33 @@ const mapDispatchToProps = (
         ],
       })
     ),
-  fetchCount: () => dispatch(fetchInvestigationCount()),
+  fetchCount: (luceneData: number[]) =>
+    dispatch(
+      fetchInvestigationCount([
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            ID: { in: luceneData },
+          }),
+        },
+      ])
+    ),
   clearTable: () => dispatch(clearTable()),
   addToCart: (entityIds: number[]) =>
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  fetchAllIds: () => dispatch(fetchAllIds('investigation')),
+  fetchAllIds: (luceneData: number[]) =>
+    dispatch(
+      fetchAllIds('investigation', [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            ID: { in: luceneData },
+          }),
+        },
+      ])
+    ),
 });
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {

@@ -1,9 +1,7 @@
 describe('ISIS - Studies Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('**/studyinvestigations/count*').as('getStudiesCount');
-    cy.route('**/studyinvestigations?order*').as('getStudiesOrder');
+    cy.intercept('**/studyinvestigations/count*').as('getStudiesCount');
+    cy.intercept('**/studyinvestigations?order*').as('getStudiesOrder');
     cy.login('user', 'password');
     cy.visit('/browseStudyHierarchy/instrument/1/study').wait(
       ['@getStudiesCount', '@getStudiesOrder'],
