@@ -33,6 +33,7 @@ import {
   SortType,
   tableLink,
   TextColumnFilter,
+  TextFilter,
 } from 'datagateway-common';
 import {
   QueryParams,
@@ -153,8 +154,10 @@ const ISISInvestigationsCardView = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
