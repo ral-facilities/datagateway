@@ -255,7 +255,13 @@ export interface DateFilter {
   startDate?: string;
   endDate?: string;
 }
-export type Filter = string | string[] | number | DateFilter;
+
+export interface TextFilter {
+  value?: string | number;
+  type: string;
+}
+
+export type Filter = string[] | TextFilter | DateFilter;
 
 export type Order = 'asc' | 'desc';
 

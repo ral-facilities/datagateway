@@ -1,32 +1,63 @@
 import React from 'react';
-import { Input } from '@material-ui/core';
+import { Input, InputAdornment, MenuItem, Select } from '@material-ui/core';
+import SettingsIcon from '@material-ui/icons/Settings';
 import debounce from 'lodash.debounce';
 
 export default class TextColumnFilter extends React.Component<
-  { label: string; onChange: (value: string) => void; value?: string },
-  { value: string }
+  {
+    label: string;
+    onChange: (value: { value?: string | number; type: string } | null) => void;
+    value?: { value?: string | number; type: string };
+  },
+  {
+    value?: string | number;
+    type: string;
+  }
 > {
   public constructor(props: {
     label: string;
-    onChange: (value: string) => void;
-    value?: string;
+    onChange: (value: { value?: string | number; type: string } | null) => void;
+    value?: { value?: string | number; type: string };
   }) {
     super(props);
     this.state = {
-      value: this.props.value ? this.props.value : '',
+      value:
+        this.props.value && this.props.value.value
+          ? this.props.value.value
+          : '',
+      type:
+        this.props.value && this.props.value.type
+          ? this.props.value.type
+          : 'include',
     };
   }
 
   // Debounce the updating of the column filter by 250 milliseconds.
   private updateValue = debounce((value: string) => {
-    this.props.onChange(value);
+    this.props.onChange(
+      value === '' ? null : { value: value, type: this.state.type }
+    );
   }, 250);
 
-  private handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  private updateType = debounce((type: string) => {
+    this.props.onChange({ value: this.state.value, type: type });
+  }, 250);
+
+  private handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
     this.updateValue(event.target.value);
     this.setState({
       value: event.target.value,
     });
+  };
+
+  private handleSelectChange = (type: string): void => {
+    // Only trigger onChange if input is not empty
+    if (this.state.value !== '') {
+      this.updateType(type);
+    }
+    this.setState({ type: type });
   };
 
   public render(): React.ReactElement {
@@ -34,12 +65,43 @@ export default class TextColumnFilter extends React.Component<
       <div>
         <Input
           id={`${this.props.label} filter`}
-          placeholder="Contains..."
+          placeholder={`${
+            this.state.type.charAt(0).toUpperCase() + this.state.type.slice(1)
+          }...`}
           value={this.state.value}
-          onChange={this.handleChange}
+          onChange={this.handleInputChange}
           aria-label={`Filter by ${this.props.label}`}
           fullWidth={true}
           color="secondary"
+          endAdornment={
+            <InputAdornment position="end">
+              <Select
+                id="select-filter-type"
+                value={this.state.type}
+                IconComponent={SettingsIcon}
+                // Do not render a value
+                renderValue={() => ''}
+                onChange={(e) =>
+                  this.handleSelectChange(e.target.value as string)
+                }
+              >
+                <MenuItem
+                  key="include"
+                  id="select-filter-type-include"
+                  value="include"
+                >
+                  Include
+                </MenuItem>
+                <MenuItem
+                  key="exclude"
+                  id="select-filter-type-exclude"
+                  value="exclude"
+                >
+                  Exclude
+                </MenuItem>
+              </Select>
+            </InputAdornment>
+          }
         />
       </div>
     );
