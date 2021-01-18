@@ -151,7 +151,9 @@ describe('DLS Datasets - Card View', () => {
 
     // The push has outdated query?
     expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[5]).toEqual(
+      filterTable('NAME', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[6]).toEqual(push('?'));
   });
 

@@ -126,7 +126,9 @@ describe('ISIS Studies - Card View', () => {
 
     // The push has outdated query?
     expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(filterTable('STUDY.NAME', 'test'));
+    expect(store.getActions()[5]).toEqual(
+      filterTable('STUDY.NAME', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[6]).toEqual(push('?'));
   });
 

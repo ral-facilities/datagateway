@@ -146,7 +146,9 @@ describe('Dataset - Card View', () => {
 
     // The push has outdated query?
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[4]).toEqual(
+      filterTable('NAME', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 

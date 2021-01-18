@@ -119,7 +119,9 @@ describe('DLS Visits - Card View', () => {
 
     // The push has outdated query?
     expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(filterTable('VISIT_ID', 'test'));
+    expect(store.getActions()[5]).toEqual(
+      filterTable('VISIT_ID', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[6]).toEqual(push('?'));
   });
 

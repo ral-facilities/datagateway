@@ -152,7 +152,9 @@ describe('Investigation - Card View', () => {
 
     // The push has outdated query?
     expect(store.getActions().length).toEqual(8);
-    expect(store.getActions()[6]).toEqual(filterTable('TITLE', 'test'));
+    expect(store.getActions()[6]).toEqual(
+      filterTable('TITLE', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 
