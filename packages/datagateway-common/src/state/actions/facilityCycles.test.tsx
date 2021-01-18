@@ -69,7 +69,10 @@ describe('FacilityCycle actions', () => {
       dgcommon: {
         ...initialState,
         sort: { column1: 'desc' },
-        filters: { column1: '1', column2: '2' },
+        filters: {
+          column1: { value: '1', type: 'include' },
+          column2: { value: '2', type: 'include' },
+        },
       },
     });
     await asyncAction(dispatch, getState, null);
@@ -136,7 +139,10 @@ describe('FacilityCycle actions', () => {
     const getState = (): Partial<StateType> => ({
       dgcommon: {
         ...initialState,
-        filters: { column1: '1', column2: '2' },
+        filters: {
+          column1: { value: '1', type: 'include' },
+          column2: { value: '2', type: 'include' },
+        },
       },
     });
     await asyncAction(dispatch, getState, null);
