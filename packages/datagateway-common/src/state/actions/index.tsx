@@ -271,6 +271,19 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
             JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
           );
         }
+        if ('type' in filter && filter.type) {
+          if (filter.type === 'include') {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { like: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { nlike: filter.value } })
+            );
+          }
+        }
       } else {
         // If it is an array (strings or numbers) we use IN
         // and filter by what is in the array at the moment.
@@ -279,11 +292,6 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
           JSON.stringify({ [column]: { in: filter } })
         );
       }
-    } else {
-      searchParams.append(
-        'where',
-        JSON.stringify({ [column]: { like: filter } })
-      );
     }
   }
 
