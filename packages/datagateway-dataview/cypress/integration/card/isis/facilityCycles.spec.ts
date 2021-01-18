@@ -111,6 +111,7 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
+      .first()
       .type('4')
       .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
         timeout: 10000,

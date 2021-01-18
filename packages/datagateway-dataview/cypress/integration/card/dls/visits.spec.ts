@@ -127,6 +127,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Visit ID"]')
       .find('input')
+      .first()
       .type('4')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,

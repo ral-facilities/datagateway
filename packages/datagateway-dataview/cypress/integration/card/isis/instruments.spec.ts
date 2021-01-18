@@ -106,6 +106,7 @@ describe('ISIS - Instruments Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
+      .first()
       .type('Radio')
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
         timeout: 10000,
@@ -114,6 +115,7 @@ describe('ISIS - Instruments Cards', () => {
 
     cy.get('[aria-label="Filter by Type"]')
       .find('input')
+      .first()
       .type('1')
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
         timeout: 10000,
