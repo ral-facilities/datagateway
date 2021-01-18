@@ -53,7 +53,7 @@ describe('Table component', () => {
     mount.cleanUp();
   });
 
-  it('renders data columns correctly', () => {
+  it.skip('renders data columns correctly', () => {
     const wrapper = mount(<Table {...tableProps} />);
 
     expect(wrapper.exists('[aria-colcount=2]')).toBe(true);
