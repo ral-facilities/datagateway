@@ -136,6 +136,7 @@ export const initialState: DGCommonState = {
   investigationCache: {},
   datasetCache: {},
   loading: false,
+  loadedData: false,
   downloading: false,
   error: null,
   filterData: {},
@@ -158,12 +159,11 @@ export function handleSortTable(
   payload: SortTablePayload
 ): DGCommonState {
   const { column, order } = payload;
-  console.log(column);
-  console.log(order);
   if (order !== null) {
     // if given an defined order (asc or desc), update the relevant column in the sort state
     return {
       ...state,
+      loadedData: false,
       data: [],
       query: {
         ...state.query,
@@ -178,6 +178,7 @@ export function handleSortTable(
     const { [column]: order, ...rest } = state.query.sort;
     return {
       ...state,
+      loadedData: false,
       data: [],
       query: {
         ...state.query,
@@ -200,6 +201,7 @@ export function handleFilterTable(
       ...state,
       data: [],
       totalDataCount: 0,
+      loadedData: false,
       query: {
         ...state.query,
         filters: {
@@ -215,6 +217,7 @@ export function handleFilterTable(
       ...state,
       data: [],
       totalDataCount: 0,
+      loadedData: false,
       query: {
         ...state.query,
         filters: {
@@ -295,6 +298,7 @@ export function handleUpdateFilters(
     ...state,
     data: [],
     totalDataCount: 0,
+    loadedData: false,
     query: {
       ...state.query,
       filters: payload.filters,
@@ -310,6 +314,7 @@ export function handleUpdateSort(
     ...state,
     data: [],
     totalDataCount: 0,
+    loadedData: false,
     query: {
       ...state.query,
       sort: payload.sort,
@@ -353,13 +358,11 @@ export function handleSaveView(
     // Clear current information to reload on new view.
     data: [],
     totalDataCount: 0,
+    allIds: [],
+    loadedData: false,
 
-    // Switch view and save view information.
-    // query: state.savedView.query ? state.savedView.query : initialQuery,
-    // savedView: {
-    //   view: payload.view,
-    //   query: state.query,
-    // },
+    // Switch view and save information unique to that view.
+    // Information common between views stays in the state.
     query: {
       ...state.savedQuery,
       sort: state.query.sort,
@@ -379,7 +382,9 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     ...state,
     data: [],
     totalDataCount: 0,
+    allIds: [],
     loading: false,
+    loadedData: false,
     downloading: false,
     error: null,
     savedQuery: initialQuery,
@@ -390,6 +395,7 @@ export function handleClearData(state: DGCommonState): DGCommonState {
   return {
     ...state,
     data: [],
+    loadedData: false,
   };
 }
 
@@ -416,6 +422,7 @@ export function handleFetchDataSuccess(
     return {
       ...state,
       loading: false,
+      loadedData: true,
       data: state.data.concat(payload.data),
       dataTimestamp: payload.timestamp,
       error: null,
@@ -432,6 +439,7 @@ export function handleFetchDataFailure(
   return {
     ...state,
     loading: false,
+    loadedData: true,
     error: payload.error,
   };
 }
@@ -459,6 +467,8 @@ export function handleFetchCountSuccess(
     return {
       ...state,
       loading: false,
+      // If the count is zero, then mark the data as loaded prematurely
+      loadedData: payload.count > 0 ? state.loadedData : true,
       totalDataCount: payload.count,
       countTimestamp: payload.timestamp,
       error: null,
@@ -475,6 +485,7 @@ export function handleFetchCountFailure(
   return {
     ...state,
     loading: false,
+    loadedData: true,
     error: payload.error,
   };
 }
@@ -581,6 +592,7 @@ export function handleFetchDataCountRequest(
 ): DGCommonState {
   return {
     ...state,
+    loading: true,
   };
 }
 
@@ -590,6 +602,7 @@ export function handleFetchDataCountFailure(
 ): DGCommonState {
   return {
     ...state,
+    loading: false,
     error: payload.error,
   };
 }
@@ -749,7 +762,7 @@ export function handleFetchFilterRequest(
 ): DGCommonState {
   return {
     ...state,
-    loading: false,
+    loading: true,
   };
 }
 

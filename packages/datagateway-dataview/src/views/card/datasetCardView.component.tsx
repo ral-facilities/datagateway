@@ -49,6 +49,7 @@ interface DatasetCVStateProps {
   totalDataCount: number;
   query: QueryParams;
   cartItems: DownloadCartItem[];
+  loadedData: boolean;
 }
 
 interface DatasetCardViewProps {
@@ -65,6 +66,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     data,
     totalDataCount,
     cartItems,
+    loadedData,
     fetchData,
     fetchCount,
     addToCart,
@@ -127,6 +129,7 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      loadedData={loadedData}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
@@ -207,6 +210,7 @@ const mapStateToProps = (state: StateType): DatasetCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
     cartItems: state.dgcommon.cartItems,
+    loadedData: state.dgcommon.loadedData,
   };
 };
 

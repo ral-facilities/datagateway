@@ -8,6 +8,7 @@ export interface DGCommonState {
   facilityName: string;
   urls: URLs;
   loading: boolean;
+  loadedData: boolean;
   downloading: boolean;
   error: string | null;
   data: Entity[];

@@ -60,6 +60,7 @@ interface ISISDatasetCVStateProps {
   totalDataCount: number;
   cartItems: DownloadCartItem[];
   query: QueryParams;
+  loadedData: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -85,6 +86,7 @@ const ISISDatasetsCardView = (
     totalDataCount,
     cartItems,
     query,
+    loadedData,
     fetchData,
     fetchCount,
     fetchDetails,
@@ -132,24 +134,34 @@ const ISISDatasetsCardView = (
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const loadCount = React.useCallback(
+    () => fetchCount(parseInt(investigationId)),
+    [fetchCount, investigationId]
+  );
+  const loadData = React.useCallback(
+    (params) => fetchData(parseInt(investigationId), params),
+    [fetchData, investigationId]
+  );
 
   return (
     <CardView
       data={data}
-      loadData={(params) => fetchData(parseInt(investigationId), params)}
-      loadCount={() => fetchCount(parseInt(investigationId))}
+      loadData={loadData}
+      loadCount={loadCount}
       totalDataCount={totalDataCount}
       query={query}
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      loadedData={loadedData}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
           tableLink(
             `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME
+            dataset.NAME,
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -280,6 +292,7 @@ const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
     query: state.dgcommon.query,
+    loadedData: state.dgcommon.loadedData,
   };
 };
 

@@ -52,6 +52,7 @@ interface ISISInvestigationsCVStateProps {
   totalDataCount: number;
   query: QueryParams;
   cartItems: DownloadCartItem[];
+  loadedData: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -93,6 +94,7 @@ const ISISInvestigationsCardView = (
     totalDataCount,
     query,
     cartItems,
+    loadedData,
     fetchFacilityCycleData,
     fetchStudyData,
     fetchFacilityCycleCount,
@@ -165,6 +167,7 @@ const ISISInvestigationsCardView = (
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      loadedData={loadedData}
       loadData={loadData}
       loadCount={loadCount}
       title={{
@@ -301,7 +304,12 @@ const mapDispatchToProps = (
             filterType: 'where',
             filterValue: JSON.stringify({
               'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-              'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
             }),
           },
         ],
@@ -316,7 +324,12 @@ const mapDispatchToProps = (
           filterType: 'where',
           filterValue: JSON.stringify({
             'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-            'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
           }),
         },
       ])
@@ -340,6 +353,7 @@ const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
     cartItems: state.dgcommon.cartItems,
+    loadedData: state.dgcommon.loadedData,
   };
 };
 

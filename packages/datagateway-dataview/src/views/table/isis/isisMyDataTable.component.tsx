@@ -127,15 +127,15 @@ const ISISMyDataTable = (
 
   React.useEffect(() => {
     fetchCount(username);
-  }, [fetchCount, username, filters]);
+    fetchAllIds(username);
+  }, [fetchCount, fetchAllIds, username, filters]);
 
   React.useEffect(() => {
     fetchData(username, {
       startIndex: 0,
       stopIndex: 49,
     });
-    fetchAllIds(username);
-  }, [fetchData, username, sort, filters, fetchAllIds]);
+  }, [fetchData, username, sort, filters]);
 
   return (
     <Table

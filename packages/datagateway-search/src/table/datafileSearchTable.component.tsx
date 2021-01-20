@@ -25,7 +25,6 @@ import { connect } from 'react-redux';
 import { StateType } from '../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
-import useAfterMountEffect from '../state/utils';
 import { useTranslation } from 'react-i18next';
 
 interface DatafileSearchTableStoreProps {
@@ -101,10 +100,13 @@ const DatafileSearchTable = (
     clearTable();
   }, [clearTable, luceneData]);
 
-  useAfterMountEffect(() => {
+  React.useEffect(() => {
     fetchCount(luceneData);
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
     fetchAllIds(luceneData);
+  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
+
+  React.useEffect(() => {
+    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (

@@ -86,9 +86,10 @@ interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
   query: QueryParams;
+  loadedData: boolean;
 
-  loadData: (offsetParams: IndexRange) => Promise<void>;
-  loadCount: () => Promise<void>;
+  loadData: (offsetParams: IndexRange) => Promise<void> | undefined;
+  loadCount: () => Promise<void> | undefined;
   onPageChange: (page: number) => Promise<void>;
   onFilter: (filter: string, data: Filter | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
@@ -176,6 +177,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     customFilters,
     resultsOptions,
     paginationPosition,
+    loadedData,
     loadData,
     loadCount,
     onPageChange,
@@ -421,29 +423,22 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   // Data count only changes when filters change
   React.useEffect(() => {
-    console.log('loadCount: ', filters);
     loadCount();
   }, [loadCount, filters]);
 
   // Handle (max) page and loading data
   React.useEffect(() => {
-    console.log('useEffect: ', page, results, sort, totalDataCount);
     const newMaxPage = ~~(1 + (totalDataCount - 1) / results);
     if (newMaxPage !== maxPage) {
       // Update maxPage (if needed) due to changed fitlers or results
-      console.log('setMaxPage(newMaxPage);');
       setMaxPage(newMaxPage);
     } else if (maxPage > 0 && page > newMaxPage) {
       // Change page (if needed) before loading data
-      console.log('onPageChange(1);');
       onPageChange(1);
     } else if (results > 0 && totalDataCount > 0 && page > 0) {
       const startIndex = (page - 1) * results;
       const stopIndex = startIndex + results - 1;
-      if (startIndex > -1 && stopIndex > -1) {
-        console.log('loadData({ startIndex, stopIndex });');
-        loadData({ startIndex, stopIndex });
-      }
+      loadData({ startIndex, stopIndex });
     }
   }, [loadData, onPageChange, maxPage, page, results, sort, totalDataCount]);
 
@@ -471,7 +466,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             />
           </Grid>
         )}
-        {totalDataCount > 0 && (
+        {totalDataCount > 0 && loadedData && (
           <Grid
             container
             direction="row"
@@ -538,230 +533,237 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      <Grid container direction="row">
-        <Grid item xs={12} md={3}>
-          <Grid
-            item
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="stretch"
-            spacing={5}
-            xs={12}
-            style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
-          >
-            {hasSort && totalDataCount > 0 && (
-              <Grid item xs>
-                <Paper>
-                  <Box p={2}>
-                    <Typography variant="h5">Sort By</Typography>
-                  </Box>
+      {loadedData && (
+        <Grid container direction="row">
+          <Grid item xs={12} md={3}>
+            <Grid
+              item
+              container
+              direction="column"
+              justify="flex-start"
+              alignItems="stretch"
+              spacing={5}
+              xs={12}
+              style={{ marginLeft: 0, marginRight: 0, marginBottom: 0 }}
+            >
+              {hasSort && totalDataCount > 0 && (
+                <Grid item xs>
+                  <Paper>
+                    <Box p={2}>
+                      <Typography variant="h5">Sort By</Typography>
+                    </Box>
 
-                  {/* Show all the available sort options: 
-                      TITLE, DESCRIPTION and the further information (if provided) 
-                  */}
-                  <Box>
-                    <List component="nav">
-                      {cardSort &&
-                        cardSort.map((s, i) => (
-                          <ListItem
-                            key={i}
-                            button
-                            onClick={() => {
-                              updateQuery(
-                                {
-                                  newPage: 1,
-                                  newSort: {
-                                    column: s.dataKey,
-                                    order: nextSortDirection(s.dataKey),
+                    {/* Show all the available sort options: 
+                        TITLE, DESCRIPTION and the further information (if provided) */}
+                    <Box>
+                      <List component="nav">
+                        {cardSort &&
+                          cardSort.map((s, i) => (
+                            <ListItem
+                              key={i}
+                              button
+                              onClick={() => {
+                                updateQuery(
+                                  {
+                                    newPage: 1,
+                                    newSort: {
+                                      column: s.dataKey,
+                                      order: nextSortDirection(s.dataKey),
+                                    },
                                   },
-                                },
-                                query
-                              );
-                            }}
-                          >
-                            <ListItemText primary={s.label} />
-                            <ListItemIcon>
-                              <TableSortLabel
-                                active={s.dataKey in sort}
-                                direction={sort[s.dataKey]}
+                                  query
+                                );
+                              }}
+                            >
+                              <ListItemText primary={s.label} />
+                              <ListItemIcon>
+                                <TableSortLabel
+                                  active={s.dataKey in sort}
+                                  direction={sort[s.dataKey]}
+                                >
+                                  {s.dataKey in sort && sort[s.dataKey]}
+                                </TableSortLabel>
+                              </ListItemIcon>
+                            </ListItem>
+                          ))}
+                      </List>
+                    </Box>
+                  </Paper>
+                </Grid>
+              )}
+
+              {/* Filtering options */}
+              {customFilters && (
+                <Grid item xs>
+                  <Paper>
+                    <Box p={2}>
+                      <Typography variant="h5">Filter By</Typography>
+                    </Box>
+
+                    {/* Show the specific options available to filter by */}
+                    <Box>
+                      {filtersInfo &&
+                        Object.entries(filtersInfo).map(
+                          ([filterKey, filter], filterIndex) => {
+                            return (
+                              <ExpansionPanel
+                                key={filterIndex}
+                                defaultExpanded={filter.hasSelectedItems}
                               >
-                                {s.dataKey in sort && sort[s.dataKey]}
-                              </TableSortLabel>
-                            </ListItemIcon>
-                          </ListItem>
-                        ))}
-                    </List>
-                  </Box>
-                </Paper>
-              </Grid>
+                                <ExpansionPanelSummary
+                                  expandIcon={<ExpandMoreIcon />}
+                                >
+                                  <Typography>{filter.label}</Typography>
+                                </ExpansionPanelSummary>
+                                <ExpansionPanelDetails>
+                                  <div className={classes.expandDetails}>
+                                    <List component="nav">
+                                      {Object.entries(filter.items).map(
+                                        ([item, selected], valueIndex) => (
+                                          <ListItem
+                                            key={valueIndex}
+                                            button
+                                            disabled={selected}
+                                            onClick={() => {
+                                              changeFilter(filterKey, item);
+                                            }}
+                                          >
+                                            <Chip
+                                              label={
+                                                <ArrowTooltip title={item}>
+                                                  <Typography>
+                                                    {item}
+                                                  </Typography>
+                                                </ArrowTooltip>
+                                              }
+                                            />
+                                          </ListItem>
+                                        )
+                                      )}
+                                    </List>
+                                  </div>
+                                </ExpansionPanelDetails>
+                              </ExpansionPanel>
+                            );
+                          }
+                        )}
+                    </Box>
+                  </Paper>
+                </Grid>
+              )}
+            </Grid>
+          </Grid>
+
+          {/* Card data */}
+          <Grid item xs={12} md={9}>
+            {/* Selected filters array */}
+            {selectedFilters.length > 0 && (
+              <div className={classes.selectedChips}>
+                {selectedFilters.map((filter, filterIndex) => (
+                  <li key={filterIndex}>
+                    {filter.items.map((item, itemIndex) => (
+                      <Chip
+                        key={itemIndex}
+                        className={classes.chip}
+                        label={`${filter.label} - ${item}`}
+                        onDelete={() => {
+                          changeFilter(filter.filterKey, item, true);
+                        }}
+                      />
+                    ))}
+                  </li>
+                ))}
+              </div>
             )}
 
-            {/* Filtering options */}
-            {customFilters && (
-              <Grid item xs>
-                <Paper>
-                  <Box p={2}>
-                    <Typography variant="h5">Filter By</Typography>
-                  </Box>
-
-                  {/* Show the specific options available to filter by */}
-                  <Box>
-                    {filtersInfo &&
-                      Object.entries(filtersInfo).map(
-                        ([filterKey, filter], filterIndex) => {
-                          return (
-                            <ExpansionPanel
-                              key={filterIndex}
-                              defaultExpanded={filter.hasSelectedItems}
-                            >
-                              <ExpansionPanelSummary
-                                expandIcon={<ExpandMoreIcon />}
-                              >
-                                <Typography>{filter.label}</Typography>
-                              </ExpansionPanelSummary>
-                              <ExpansionPanelDetails>
-                                <div className={classes.expandDetails}>
-                                  <List component="nav">
-                                    {Object.entries(filter.items).map(
-                                      ([item, selected], valueIndex) => (
-                                        <ListItem
-                                          key={valueIndex}
-                                          button
-                                          disabled={selected}
-                                          onClick={() => {
-                                            changeFilter(filterKey, item);
-                                          }}
-                                        >
-                                          <Chip
-                                            label={
-                                              <ArrowTooltip title={item}>
-                                                <Typography>{item}</Typography>
-                                              </ArrowTooltip>
-                                            }
-                                          />
-                                        </ListItem>
-                                      )
-                                    )}
-                                  </List>
-                                </div>
-                              </ExpansionPanelDetails>
-                            </ExpansionPanel>
-                          );
+            {/* List of cards */}
+            {totalDataCount > 0 ? (
+              <List style={{ padding: 0, marginRight: 20 }}>
+                {/* TODO: The width of the card should take up more room when
+                      there is no information or buttons. */}
+                {data.map((entity, index) => {
+                  return (
+                    <ListItem
+                      key={index}
+                      alignItems="flex-start"
+                      className={classes.root}
+                    >
+                      {/* Create an individual card */}
+                      <EntityCard
+                        title={{
+                          label: nestedValue(entity, title.dataKey),
+                          content: title.content && title.content(entity),
+                        }}
+                        description={
+                          description &&
+                          nestedValue(entity, description.dataKey)
                         }
-                      )}
-                  </Box>
+                        information={
+                          information &&
+                          information
+                            .map((details) => ({
+                              // We can say the data key is the label if not defined.
+                              label: details.label
+                                ? details.label
+                                : details.dataKey,
+                              content: details.content
+                                ? details.content(entity)
+                                : nestedValue(entity, details.dataKey),
+                              // Keep the dataKey in so we can use it for adding the tooltip
+                              // once content has been created.
+                              dataKey: details.dataKey,
+                              icon: details.icon,
+                            }))
+                            // Filter afterwards to only show content with information.
+                            .filter((v) => v.content)
+                            // Add in tooltips to the content we have filtered.
+                            .map((details) => ({
+                              ...details,
+                              content: (
+                                <ArrowTooltip
+                                  title={nestedValue(entity, details.dataKey)}
+                                >
+                                  <Typography>{details.content}</Typography>
+                                </ArrowTooltip>
+                              ),
+                            }))
+                        }
+                        moreInformation={
+                          moreInformation && moreInformation(entity)
+                        }
+                        // Pass in the react nodes with the data to the card.
+                        buttons={
+                          buttons && buttons.map((button) => button(entity))
+                        }
+                        // Pass tag names to the card given the specified data key for the filter.
+                        tags={
+                          customFilters &&
+                          customFilters.map((f) =>
+                            nestedValue(entity, f.dataKey)
+                          )
+                        }
+                        image={image}
+                      />
+                    </ListItem>
+                  );
+                })}
+              </List>
+            ) : (
+              <Grid xs={12} md={8}>
+                <Paper className={classes.noResultsPaper}>
+                  <Typography align="center" variant="h6" component="h6">
+                    {t('loading.filter_message')}
+                  </Typography>
                 </Paper>
               </Grid>
             )}
           </Grid>
         </Grid>
-
-        {/* Card data */}
-        <Grid item xs={12} md={9}>
-          {/* Selected filters array */}
-          {selectedFilters.length > 0 && (
-            <div className={classes.selectedChips}>
-              {selectedFilters.map((filter, filterIndex) => (
-                <li key={filterIndex}>
-                  {filter.items.map((item, itemIndex) => (
-                    <Chip
-                      key={itemIndex}
-                      className={classes.chip}
-                      label={`${filter.label} - ${item}`}
-                      onDelete={() => {
-                        changeFilter(filter.filterKey, item, true);
-                      }}
-                    />
-                  ))}
-                </li>
-              ))}
-            </div>
-          )}
-
-          {/* List of cards */}
-          {totalDataCount > 0 ? (
-            <List style={{ padding: 0, marginRight: 20 }}>
-              {/* TODO: The width of the card should take up more room when
-                    there is no information or buttons. */}
-              {data.map((entity, index) => {
-                return (
-                  <ListItem
-                    key={index}
-                    alignItems="flex-start"
-                    className={classes.root}
-                  >
-                    {/* Create an individual card */}
-                    <EntityCard
-                      title={{
-                        label: nestedValue(entity, title.dataKey),
-                        content: title.content && title.content(entity),
-                      }}
-                      description={
-                        description && nestedValue(entity, description.dataKey)
-                      }
-                      information={
-                        information &&
-                        information
-                          .map((details) => ({
-                            // We can say the data key is the label if not defined.
-                            label: details.label
-                              ? details.label
-                              : details.dataKey,
-                            content: details.content
-                              ? details.content(entity)
-                              : nestedValue(entity, details.dataKey),
-                            // Keep the dataKey in so we can use it for adding the tooltip
-                            // once content has been created.
-                            dataKey: details.dataKey,
-                            icon: details.icon,
-                          }))
-                          // Filter afterwards to only show content with information.
-                          .filter((v) => v.content)
-                          // Add in tooltips to the content we have filtered.
-                          .map((details) => ({
-                            ...details,
-                            content: (
-                              <ArrowTooltip
-                                title={nestedValue(entity, details.dataKey)}
-                              >
-                                <Typography>{details.content}</Typography>
-                              </ArrowTooltip>
-                            ),
-                          }))
-                      }
-                      moreInformation={
-                        moreInformation && moreInformation(entity)
-                      }
-                      // Pass in the react nodes with the data to the card.
-                      buttons={
-                        buttons && buttons.map((button) => button(entity))
-                      }
-                      // Pass tag names to the card given the specified data key for the filter.
-                      tags={
-                        customFilters &&
-                        customFilters.map((f) => nestedValue(entity, f.dataKey))
-                      }
-                      image={image}
-                    />
-                  </ListItem>
-                );
-              })}
-            </List>
-          ) : (
-            <Grid xs={12} md={8}>
-              <Paper className={classes.noResultsPaper}>
-                <Typography align="center" variant="h6" component="h6">
-                  {t('loading.filter_message')}
-                </Typography>
-              </Paper>
-            </Grid>
-          )}
-        </Grid>
-      </Grid>
+      )}
 
       {/*  Pagination  */}
       {totalDataCount > 0 &&
+        loadedData &&
         (paginationPos === 'bottom' || paginationPos === 'both') && (
           <Grid item xs style={{ padding: '50px' }}>
             {CVPagination(page, maxPage, onPageChange)}

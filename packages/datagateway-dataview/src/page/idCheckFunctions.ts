@@ -97,7 +97,7 @@ const unmemoizedCheckInstrumentAndStudyId = (
         where: {
           ID: { eq: investigationId },
           'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-          'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+          'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
         },
       },
       headers: {

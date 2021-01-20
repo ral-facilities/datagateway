@@ -121,12 +121,12 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
 
   React.useEffect(() => {
     fetchCount(parseInt(investigationId));
-  }, [fetchCount, filters, investigationId]);
+    fetchAllIds();
+  }, [fetchCount, fetchAllIds, filters, investigationId]);
 
   React.useEffect(() => {
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-    fetchAllIds();
-  }, [fetchData, fetchAllIds, sort, filters, investigationId]);
+  }, [fetchData, sort, filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter

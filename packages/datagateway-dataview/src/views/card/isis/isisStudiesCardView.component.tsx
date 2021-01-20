@@ -6,28 +6,19 @@ import {
   TextColumnFilter,
   DateColumnFilter,
   Filter,
-  FiltersType,
   DateFilter,
   pushPageFilter,
-  SortType,
-  Order,
-  pushPageSort,
-  clearData,
   pushPageNum,
-  pushPageResults,
   fetchAllIds,
   fetchStudies,
   fetchStudyCount,
   StudyInvestigation,
+  pushQuery,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  QueryParams,
-  StateType,
-  ViewsType,
-} from 'datagateway-common/lib/state/app.types';
-import { Action, AnyAction } from 'redux';
+import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
+import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { CalendarToday, Public } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
@@ -41,12 +32,9 @@ interface ISISStudiesCVProps {
 interface ISISStudiesCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  view: ViewsType;
-  filters: FiltersType;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
   allIds: number[];
+  loadedData: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -54,11 +42,9 @@ interface ISISStudiesCVDispatchProps {
   fetchIds: (instrumentId: number) => Promise<void>;
   fetchData: (allIds: number[], offsetParams: IndexRange) => Promise<void>;
   fetchCount: (allIds: number[]) => Promise<void>;
-  clearData: () => Action;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 type ISISStudiesCVCombinedProps = ISISStudiesCVDispatchProps &
@@ -73,24 +59,18 @@ const ISISStudiesCardView = (
     allIds,
     data,
     totalDataCount,
-    loading,
     query,
-    sort,
+    loadedData,
     fetchIds,
     fetchData,
     fetchCount,
-    view,
-    filters,
     pushFilters,
     pushPage,
-    pushResults,
-    pushSort,
-    clearData,
+    pushQuery,
   } = props;
 
+  const filters = query.filters;
   const [t] = useTranslation();
-
-  const [fetchedCount, setFetchedCount] = React.useState(false);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -110,43 +90,48 @@ const ISISStudiesCardView = (
     />
   );
 
-  React.useEffect(() => {
-    fetchIds(parseInt(instrumentId));
-  }, [fetchIds, instrumentId]);
-
-  React.useEffect(() => {
-    if (!fetchedCount) {
-      fetchCount(allIds);
-      setFetchedCount(true);
-    }
-  }, [fetchedCount, allIds, fetchCount, setFetchedCount]);
-
   const pathRoot = 'browseStudyHierarchy';
   const instrumentChild = 'study';
+  const [allIdsCleared, setAllIdsCleared] = React.useState(false);
+
+  React.useEffect(() => {
+    if (allIds.length === 0) setAllIdsCleared(true);
+  }, [setAllIdsCleared, allIds]);
+
+  React.useEffect(() => {
+    if (allIdsCleared) fetchIds(parseInt(instrumentId));
+  }, [fetchIds, instrumentId, allIdsCleared]);
+
+  const loadCount = React.useCallback(() => {
+    if (allIdsCleared && allIds.length > 0) return fetchCount(allIds);
+  }, [fetchCount, allIds, allIdsCleared]);
+
+  const loadData = React.useCallback(
+    (params) => {
+      if (allIdsCleared && allIds.length > 0) return fetchData(allIds, params);
+    },
+    [fetchData, allIds, allIdsCleared]
+  );
 
   return (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loadData={(params) => fetchData(allIds, params)}
-      loadCount={() => fetchCount(allIds)}
-      loading={loading}
-      sort={sort}
-      filters={filters}
+      loadData={loadData}
+      loadCount={loadCount}
       query={query}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
+      loadedData={loadedData}
       title={{
         label: t('studies.name'),
         dataKey: 'STUDY.NAME',
         content: (studyInvestigation: StudyInvestigation) =>
           tableLink(
-            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyInvestigation.STUDY.ID}/investigation`,
-            studyInvestigation.STUDY.NAME,
-            view
+            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyInvestigation.STUDY?.ID}/investigation`,
+            studyInvestigation.STUDY?.NAME,
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -222,14 +207,11 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  clearData: () => dispatch(clearData()),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 const mapStateToProps = (state: StateType): ISISStudiesCVStateProps => {
@@ -237,11 +219,8 @@ const mapStateToProps = (state: StateType): ISISStudiesCVStateProps => {
     allIds: state.dgcommon.allIds,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    view: state.dgcommon.query.view,
-    filters: state.dgcommon.filters,
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
+    loadedData: state.dgcommon.loadedData,
   };
 };
 

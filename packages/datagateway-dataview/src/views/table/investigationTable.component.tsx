@@ -135,12 +135,12 @@ const InvestigationTable = (
 
   React.useEffect(() => {
     fetchCount();
-  }, [fetchCount, filters]);
+    fetchAllIds();
+  }, [fetchCount, fetchAllIds, filters]);
 
   React.useEffect(() => {
     fetchData({ startIndex: 0, stopIndex: 49 });
-    fetchAllIds();
-  }, [fetchData, fetchAllIds, sort, filters]);
+  }, [fetchData, sort, filters]);
 
   return (
     <Table

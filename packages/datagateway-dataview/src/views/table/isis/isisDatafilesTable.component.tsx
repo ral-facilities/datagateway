@@ -110,12 +110,12 @@ const ISISDatafilesTable = (
 
   React.useEffect(() => {
     fetchCount(parseInt(datasetId));
-  }, [fetchCount, filters, datasetId]);
+    fetchAllIds();
+  }, [fetchCount, fetchAllIds, filters, datasetId]);
 
   React.useEffect(() => {
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-    fetchAllIds();
-  }, [fetchData, sort, filters, datasetId, fetchAllIds]);
+  }, [fetchData, sort, filters, datasetId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter

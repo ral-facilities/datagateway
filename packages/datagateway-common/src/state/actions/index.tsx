@@ -214,7 +214,6 @@ export const loadURLQuery = (
 
     let parsedSort: SortType = {};
     if (sort) {
-      console.log(sort);
       try {
         const sq: SortType = JSON.parse(sort);
 
@@ -248,41 +247,7 @@ export const loadURLQuery = (
     }
 
     // Update with the new query parameters.
-    console.log('updateQueryParams:');
-    console.log('state: ', state.dgcommon.query);
-    console.log('parsed url: ', params);
     dispatch(updateQueryParams(params));
-    // console.log(objectChanged(parsedFilters, state.dgcommon.query.filters))
-    // console.log(objectChanged(parsedSort, state.dgcommon.query.sort))
-    // console.log(view !== state.dgcommon.query.view)
-    // console.log(params.page !== state.dgcommon.query.page)
-    // console.log(params.results !== state.dgcommon.query.results)
-    // console.log(search !== state.dgcommon.query.search)
-    // if (objectChanged(parsedFilters, state.dgcommon.query.filters) ||
-    //   objectChanged(parsedSort, state.dgcommon.query.sort) ||
-    //   view !== state.dgcommon.query.view ||
-    //   params.page !== state.dgcommon.query.page ||
-    //   params.results !== state.dgcommon.query.results ||
-    //   search !== state.dgcommon.query.search) {
-    //     console.log('CHANGE')
-    //     dispatch(updateQueryParams(params));
-    // }
-
-    // // Dispatch and update the filter object in state.
-    // console.log(Object.keys(parsedFilters))
-    // console.log(Object.keys(getState().dgcommon.query.filters))
-    // console.log(objectChanged(parsedFilters, getState().dgcommon.query.filters))
-    // if (objectChanged(parsedFilters, getState().dgcommon.query.filters)) {
-    //   dispatch(updateFilters(parsedFilters));
-    // }
-
-    // // Dispatch and update sort object in state.
-    // console.log(Object.keys(parsedSort))
-    // console.log(Object.keys(getState().dgcommon.query.sort))
-    // console.log(objectChanged(parsedSort, getState().dgcommon.query.sort))
-    // if (objectChanged(parsedSort, getState().dgcommon.query.sort)) {
-    //   dispatch(updateSort(parsedSort));
-    // }
   };
 };
 
@@ -491,8 +456,6 @@ export const pushPageSort = (
   sortKey: string,
   order: Order | null
 ): ThunkResult<Promise<void>> => {
-  console.log(sortKey);
-  console.log(order);
   return async (dispatch, getState) => {
     // Use sortTable present already.
     dispatch(sortTable(sortKey, order));

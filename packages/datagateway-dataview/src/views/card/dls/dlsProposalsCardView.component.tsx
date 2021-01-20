@@ -30,7 +30,7 @@ interface DLSProposalsCVDispatchProps {
 interface DLSProposalsCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  loading: boolean;
+  loadedData: boolean;
   query: QueryParams;
 }
 
@@ -43,9 +43,10 @@ const DLSProposalsCardView = (
   const {
     data,
     totalDataCount,
+    query,
+    loadedData,
     fetchData,
     fetchCount,
-    query,
     pushPage,
     pushFilters,
     pushQuery,
@@ -72,6 +73,7 @@ const DLSProposalsCardView = (
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      loadedData={loadedData}
       title={{
         label: t('investigations.title'),
         dataKey: 'TITLE',
@@ -127,7 +129,7 @@ const mapStateToProps = (state: StateType): DLSProposalsCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
+    loadedData: state.dgcommon.loadedData,
     query: state.dgcommon.query,
   };
 };

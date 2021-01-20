@@ -26,6 +26,7 @@ import {
   checkInvestigationId,
   checkInstrumentAndStudyId,
 } from './idCheckFunctions';
+import { Paper } from '@material-ui/core';
 
 const SafeDatafileTable = React.memo(
   (props: {
@@ -39,7 +40,19 @@ const SafeDatafileTable = React.memo(
       )
     )(DatafileTable);
 
-    return <SafeDatafileTable datasetId={props.datasetId} />;
+    return (
+      <Paper
+        square
+        style={{
+          height: 'calc(100vh - 150px)',
+          width: '100%',
+          backgroundColor: 'inherit',
+          overflowX: 'auto',
+        }}
+      >
+        <SafeDatafileTable datasetId={props.datasetId} />
+      </Paper>
+    );
   }
 );
 SafeDatafileTable.displayName = 'SafeDatafileTable';
@@ -80,7 +93,19 @@ const SafeISISDatafilesTable = React.memo(
           ]).then((values) => !values.includes(false))
         )(ISISDatafilesTable);
 
-    return <SafeISISDatafilesTable datasetId={props.datasetId} />;
+    return (
+      <Paper
+        square
+        style={{
+          height: 'calc(100vh - 150px)',
+          width: '100%',
+          backgroundColor: 'inherit',
+          overflowX: 'auto',
+        }}
+      >
+        <SafeISISDatafilesTable datasetId={props.datasetId} />
+      </Paper>
+    );
   }
 );
 SafeISISDatafilesTable.displayName = 'SafeISISDatafilesTable';
@@ -129,7 +154,19 @@ const SafeDLSDatafilesTable = React.memo(
       ]).then((values) => !values.includes(false))
     )(DLSDatafilesTable);
 
-    return <SafeDLSDatafilesTable datasetId={props.datasetId} />;
+    return (
+      <Paper
+        square
+        style={{
+          height: 'calc(100vh - 150px)',
+          width: '100%',
+          backgroundColor: 'inherit',
+          overflowX: 'auto',
+        }}
+      >
+        <SafeDLSDatafilesTable datasetId={props.datasetId} />
+      </Paper>
+    );
   }
 );
 SafeDLSDatafilesTable.displayName = 'SafeDLSDatafilesTable';
@@ -314,14 +351,14 @@ class PageCard extends React.Component {
             match,
           }: RouteComponentProps<{
             instrumentId: string;
-            facilityCycleId: string;
+            studyId: string;
             investigationId: string;
             datasetId: string;
           }>) => (
             <SafeISISDatafilesTable
               studyHierarchy={false}
               instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.facilityCycleId}
+              instrumentChildId={match.params.studyId}
               investigationId={match.params.investigationId}
               datasetId={match.params.datasetId}
             />

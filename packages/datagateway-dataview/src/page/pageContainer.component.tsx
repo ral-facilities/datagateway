@@ -10,6 +10,7 @@ import {
   createStyles,
   IconButton,
   Badge,
+  makeStyles,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -27,14 +28,26 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Route } from 'react-router';
+import { Switch as SwitchRouting, Route } from 'react-router';
 import { push } from 'connected-react-router';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
-import PageCard from './pageCard.component';
-import PageTable from './pageTable.component';
+import PageRouting from './pageRouting.component';
+
+const usePaperStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      cardPaper: { backgroundColor: 'inhereit' },
+      tablePaper: {
+        height: 'calc(100vh - 150px)',
+        width: '100%',
+        backgroundColor: 'inherit',
+        overflowX: 'auto',
+      },
+    })
+);
 
 const gridStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -222,6 +235,41 @@ const CardSwitch = (props: {
   );
 };
 
+const ViewRouting = (props: { view: ViewsType }): React.ReactElement => {
+  const paperClasses = usePaperStyles();
+  return (
+    <SwitchRouting>
+      {/* For "toggle" paths, check state for the current view */}
+      <Route
+        exact
+        path={Object.values(paths.toggle).concat(
+          Object.values(paths.studyHierarchy.toggle)
+        )}
+        render={() => (
+          <Paper
+            square
+            className={
+              props.view === 'card'
+                ? paperClasses.cardPaper
+                : paperClasses.tablePaper
+            }
+          >
+            <PageRouting view={props.view} />
+          </Paper>
+        )}
+      />
+      {/* Otherwise, use the paper styling for tables*/}
+      <Route
+        render={() => (
+          <Paper square className={paperClasses.tablePaper}>
+            <PageRouting view={props.view} />
+          </Paper>
+        )}
+      />
+    </SwitchRouting>
+  );
+};
+
 interface PageContainerDispatchProps {
   loadQuery: (pathChanged: boolean) => Promise<void>;
   pushView: (view: ViewsType, path: string) => Promise<void>;
@@ -401,26 +449,7 @@ class PageContainer extends React.Component<
 
           {/* Hold the table for remainder of the page */}
           <Grid item xs={12} aria-label="container-table">
-            {!this.state.toggleCard ? (
-              // Place table in Paper component which adjusts for the height
-              // of the AppBar (64px) on parent application, the cart icon
-              // (48px) and the CV toggle (38px).
-              <Paper
-                square
-                style={{
-                  height: 'calc(100vh - 150px)',
-                  width: '100%',
-                  backgroundColor: 'inherit',
-                  overflowX: 'auto',
-                }}
-              >
-                <PageTable />
-              </Paper>
-            ) : (
-              <Paper square style={{ backgroundColor: 'inherit' }}>
-                <PageCard />
-              </Paper>
-            )}
+            <ViewRouting view={this.props.query.view} />
           </Grid>
         </StyledGrid>
       </Paper>
