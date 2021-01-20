@@ -95,13 +95,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
       );
     } else
       return (
-        <div
-          style={{
-            padding: 20,
-            margin: 5,
-          }}
-          className="App"
-        >
+        <div className="App">
           <Provider store={store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>

@@ -36,7 +36,7 @@ const SearchBoxContainer = (): React.ReactElement => {
         </Grid>
 
         <Grid item>
-          <Box px={2}>
+          <Box px={0.75}>
             <SelectDates />
           </Box>
         </Grid>
