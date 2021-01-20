@@ -67,7 +67,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             placeholder={t('searchBox.start_date')}
             inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
             color="secondary"
-            style={sideLayout ? {} : { paddingRight: 8 }}
+            style={sideLayout ? {} : { paddingRight: 6 }}
           />
           {sideLayout ? <br></br> : null}
           <KeyboardDatePicker

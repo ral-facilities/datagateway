@@ -50,7 +50,9 @@ class SearchPageContainer extends React.Component<
                   <SearchBoxContainerSide />
                 </Paper>
               ) : (
-                <Paper style={{ height: '100%', width: 'calc(70vw)' }}>
+                <Paper
+                  style={{ height: '100%', width: 'calc(70vw)', minWidth: 584 }}
+                >
                   <SearchBoxContainer />
                 </Paper>
               )}
@@ -60,7 +62,9 @@ class SearchPageContainer extends React.Component<
               <Paper
                 style={{
                   height: containerHeight,
+                  minHeight: 326,
                   width: 'calc(70vw)',
+                  minWidth: 584,
                 }}
               >
                 {/* Show loading progress if data is still being loaded */}

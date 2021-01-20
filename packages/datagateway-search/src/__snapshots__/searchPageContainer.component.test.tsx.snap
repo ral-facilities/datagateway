@@ -40,6 +40,7 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
         style={
           Object {
             "height": "100%",
+            "minWidth": 584,
             "width": "calc(70vw)",
           }
         }
@@ -55,6 +56,8 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
         style={
           Object {
             "height": "calc(100vh - 64px - 30px - 2*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)",
+            "minHeight": 326,
+            "minWidth": 584,
             "width": "calc(70vw)",
           }
         }
