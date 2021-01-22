@@ -1,11 +1,18 @@
 describe('Datafiles Table', () => {
   beforeEach(() => {
-    cy.intercept('/datafiles/count').as('datafilesCount');
+    cy.intercept('/investigations/1').as('investigations');
     cy.intercept('/datasets/25').as('datasets');
+    cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login('user', 'password');
     cy.visit('/browse/investigation/1/dataset/25/datafile').wait(
-      ['@datafilesCount', '@datasets', '@datafilesOrder', '@datafilesOrder'],
+      [
+        '@investigations',
+        '@datafilesCount',
+        '@datasets',
+        '@datafilesOrder',
+        '@datafilesOrder',
+      ],
       {
         timeout: 10000,
       }
