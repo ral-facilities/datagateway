@@ -3,10 +3,7 @@ describe('DLS - Proposals Table', () => {
     cy.login('user', 'password');
     cy.intercept('/investigations?').as('investigations');
     cy.intercept('/investigations/count?').as('investigationsCount');
-    cy.visit('/browse/proposal').wait(
-      ['@investigations', '@investigationsCount'],
-      { timeout: 10000 }
-    );
+    cy.visit('/browse/proposal');
   });
 
   it('should load correctly', () => {
@@ -35,7 +32,7 @@ describe('DLS - Proposals Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 17) / 2;
+        columnWidth = windowWidth / 2;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -89,6 +86,10 @@ describe('DLS - Proposals Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Title').click();
 
@@ -144,6 +145,9 @@ describe('DLS - Proposals Table', () => {
   });
 
   describe('should be able to filter by', () => {
+    beforeEach(() => {
+      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
+    });
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
 

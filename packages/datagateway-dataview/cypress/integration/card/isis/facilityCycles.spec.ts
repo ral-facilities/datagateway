@@ -2,16 +2,12 @@ describe('ISIS - FacilityCycles Cards', () => {
   beforeEach(() => {
     cy.intercept('**/facilitycycles/count*').as('getFacilityCyclesCount');
     cy.intercept('**/facilitycycles?order*').as('getFacilityCyclesOrder');
+    cy.intercept('instruments/1').as('instrument');
     cy.login('user', 'password');
-    cy.visit('/browse/instrument/1/facilityCycle').wait(
-      ['@getFacilityCyclesCount', '@getFacilityCyclesOrder'],
+    cy.visit('/browse/instrument/1/facilityCycle?view=card').wait(
+      ['@instrument', '@getFacilityCyclesCount', '@getFacilityCyclesOrder'],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="secondary checkbox"]')
-      .click()
-      .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
-        timeout: 10000,
-      });
   });
 
   it('should load correctly', () => {

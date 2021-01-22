@@ -5,18 +5,7 @@ describe('Datafiles Table', () => {
     cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1/dataset/25/datafile').wait(
-      [
-        '@investigations',
-        '@datafilesCount',
-        '@datasets',
-        '@datafilesOrder',
-        '@datafilesOrder',
-      ],
-      {
-        timeout: 10000,
-      }
-    );
+    cy.visit('/browse/investigation/1/dataset/25/datafile');
   });
 
   it('should load correctly', () => {
@@ -37,7 +26,7 @@ describe('Datafiles Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 40 - 40 - 70 - 17) / 4;
+        columnWidth = (windowWidth - 40 - 40 - 70) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -97,6 +86,21 @@ describe('Datafiles Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      cy.wait(
+        [
+          '@investigations',
+          '@datafilesCount',
+          '@datasets',
+          '@datafilesOrder',
+          '@datafilesOrder',
+        ],
+        {
+          timeout: 10000,
+        }
+      );
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
@@ -170,6 +174,21 @@ describe('Datafiles Table', () => {
   });
 
   describe('should be able to filter by', () => {
+    beforeEach(() => {
+      cy.wait(
+        [
+          '@investigations',
+          '@datafilesCount',
+          '@datasets',
+          '@datafilesOrder',
+          '@datafilesOrder',
+        ],
+        {
+          timeout: 10000,
+        }
+      );
+    });
+
     it('text', () => {
       cy.get('[aria-label="Filter by Location"]').find('input').type('ok');
 
