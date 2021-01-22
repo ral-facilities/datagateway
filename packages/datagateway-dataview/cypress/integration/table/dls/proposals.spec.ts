@@ -35,7 +35,7 @@ describe('DLS - Proposals Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = windowWidth / 2;
+        columnWidth = (windowWidth - 17) / 2;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 

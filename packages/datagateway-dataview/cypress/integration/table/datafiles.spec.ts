@@ -37,7 +37,7 @@ describe('Datafiles Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 40 - 40 - 70) / 4;
+        columnWidth = (windowWidth - 40 - 40 - 70 - 17) / 4;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
