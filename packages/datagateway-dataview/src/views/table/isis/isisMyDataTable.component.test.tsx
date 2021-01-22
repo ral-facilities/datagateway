@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   addToCartRequest,
   dGCommonInitialState,
+  fetchAllIdsRequest,
   fetchInvestigationCountRequest,
   fetchInvestigationDetailsRequest,
   fetchInvestigationsRequest,
@@ -137,7 +138,8 @@ describe('ISIS Investigations table component', () => {
     expect(testStore.getActions()[2]).toEqual(
       fetchInvestigationCountRequest(1)
     );
-    expect(testStore.getActions()[3]).toEqual(fetchInvestigationsRequest(1));
+    expect(testStore.getActions()[3]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[4]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {

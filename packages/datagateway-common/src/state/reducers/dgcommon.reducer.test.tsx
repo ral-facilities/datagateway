@@ -122,40 +122,52 @@ describe('DGCommon reducer', () => {
   });
 
   it('should set the sort state when given a SortTable action with asc or desc order', () => {
-    expect(state.sort).toEqual({});
+    expect(state.query.sort).toEqual({});
 
     const updatedState = DGCommonReducer(state, sortTable('test', 'asc'));
-    expect(updatedState.sort).toEqual({ test: 'asc' });
+    expect(updatedState.query.sort).toEqual({ test: 'asc' });
   });
 
   it('should remove column from sort state when given a SortTable action with null order', () => {
-    state.sort = {
-      test: 'asc',
+    state = {
+      ...initialState,
+      query: {
+        ...initialState.query,
+        sort: {
+          test: 'asc',
+        },
+      },
     };
 
     const updatedState = DGCommonReducer(state, sortTable('test', null));
-    expect(updatedState.sort).toEqual({});
+    expect(updatedState.query.sort).toEqual({});
   });
 
   it('should set the filters state when given a FilterTable action', () => {
-    expect(state.filters).toEqual({});
+    expect(state.query.filters).toEqual({});
 
     const updatedState = DGCommonReducer(
       state,
       filterTable('test column', 'test filter')
     );
-    expect(updatedState.filters).toEqual({
+    expect(updatedState.query.filters).toEqual({
       'test column': 'test filter',
     });
   });
 
   it('should remove column from filter state when given a FilterTable action with null filter', () => {
-    state.filters = {
-      'test column': 'test filter',
+    state = {
+      ...initialState,
+      query: {
+        ...initialState.query,
+        filters: {
+          test: 'test filter',
+        },
+      },
     };
 
     const updatedState = DGCommonReducer(state, filterTable('test', null));
-    expect(updatedState.sort).toEqual({});
+    expect(updatedState.query.filters).toEqual({});
   });
 
   it('should clear the table state when given a ClearTable action', () => {
@@ -166,8 +178,14 @@ describe('DGCommon reducer', () => {
       loading: true,
       downloading: true,
       error: 'test error',
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
     };
 
     const updatedState = DGCommonReducer(state, clearTable());
@@ -178,8 +196,14 @@ describe('DGCommon reducer', () => {
       loading: false,
       downloading: false,
       error: null,
-      sort: {},
-      filters: {},
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
     });
   });
 
@@ -191,8 +215,14 @@ describe('DGCommon reducer', () => {
       loading: true,
       downloading: true,
       error: 'test error',
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
     };
 
     const updatedState = DGCommonReducer(state, clearData());
@@ -203,8 +233,14 @@ describe('DGCommon reducer', () => {
       loading: true,
       downloading: true,
       error: 'test error',
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
     });
   });
 
@@ -214,11 +250,11 @@ describe('DGCommon reducer', () => {
       search: 'searchOne',
       page: 1,
       results: 1,
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
     };
     state = {
       ...initialState,
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
       query: queryOne,
       data: [{ ID: 1, NAME: 'test' }],
     };
@@ -228,18 +264,20 @@ describe('DGCommon reducer', () => {
       ...initialState,
       data: [],
       totalDataCount: 0,
-      sort: {},
-      filters: {},
       query: {
         view: null,
         search: null,
         page: null,
         results: null,
-      },
-      savedView: {
         sort: { NAME: 'asc' },
         filters: { NAME: 't' },
-        query: queryOne,
+      },
+      savedQuery: {
+        sort: {},
+        filters: {},
+        search: 'searchOne',
+        page: 1,
+        results: 1,
         view: 'table',
       },
     });
@@ -251,26 +289,23 @@ describe('DGCommon reducer', () => {
       search: 'searchOne',
       page: 1,
       results: 1,
+      sort: { NAME: 'asc' },
+      filters: { TABLE: 't', CUSTOM: ['1', '2', '3'] },
     };
     const queryTwo: QueryParams = {
       view: 'card',
       search: 'searchTwo',
       page: 2,
       results: 2,
+      filters: { CARD: 'c' },
+      sort: { NAME: 'desc' },
     };
     state = {
       ...initialState,
       data: [{ ID: 1, NAME: 'test' }],
       totalDataCount: 1,
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
       query: queryOne,
-      savedView: {
-        view: 'card',
-        filters: { NAME: 'c' },
-        sort: { NAME: 'desc' },
-        query: queryTwo,
-      },
+      savedQuery: queryTwo,
     };
 
     const updatedState = DGCommonReducer(state, updateSaveView('table'));
@@ -278,14 +313,15 @@ describe('DGCommon reducer', () => {
       ...initialState,
       data: [],
       totalDataCount: 0,
-      sort: { NAME: 'desc' },
-      filters: { NAME: 'c' },
-      query: queryTwo,
-      savedView: {
-        view: 'table',
-        filters: { NAME: 't' },
-        sort: { NAME: 'asc' },
-        query: queryOne,
+      query: {
+        ...queryTwo,
+        sort: queryOne.sort,
+        filters: { CARD: 'c', TABLE: 't' },
+      },
+      savedQuery: {
+        ...queryOne,
+        sort: queryTwo.sort,
+        filters: { CUSTOM: ['1', '2', '3'] },
       },
     });
   });
@@ -369,6 +405,16 @@ describe('DGCommon reducer', () => {
         fetchInvestigationCountSuccess(1, validTimestamp)
       );
       expect(updatedState.countTimestamp).toBe(validTimestamp);
+      expect(updatedState.loadedData).toBeFalsy();
+    });
+
+    it('should set loadedData when fetchCountSuccess has count of 0', () => {
+      const updatedState = DGCommonReducer(
+        state,
+        fetchInvestigationCountSuccess(0, validTimestamp)
+      );
+      expect(updatedState.countTimestamp).toBe(validTimestamp);
+      expect(updatedState.loadedData).toBeTruthy();
     });
 
     it('should update allIdsTimestamp when given a valid fetchAllIdsRequest', () => {
@@ -840,12 +886,12 @@ describe('DGCommon reducer', () => {
   });
 
   describe('FetchInvestigationDatasetsCount actions', () => {
-    it('should not affect state when given a FetchInvestigationDatasetsCountRequest action', () => {
+    it('should set loading when given a FetchInvestigationDatasetsCountRequest action', () => {
       const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDatasetsCountRequest(validTimestamp)
       );
-      expect(updatedState).toEqual(state);
+      expect(updatedState).toEqual({ ...state, loading: true });
     });
 
     it('should set the data state and reset error and loading state when given a FetchInvestigationDatasetsCountSuccess action', () => {
@@ -1155,12 +1201,12 @@ describe('DGCommon reducer', () => {
   });
 
   describe('FetchDatasetDatafilesCount actions', () => {
-    it('should not affect state when given a FetchDatasetDatafilesCountRequest action', () => {
+    it('should set loading when given a FetchDatasetDatafilesCountRequest action', () => {
       const updatedState = DGCommonReducer(
         state,
         fetchDatasetDatafilesCountRequest(validTimestamp)
       );
-      expect(updatedState).toEqual(state);
+      expect(updatedState).toEqual({ ...state, loading: true });
     });
 
     it('should set the data state and reset error and loading state when given a FetchDatasetDatafilesCountSuccess action', () => {
@@ -1745,11 +1791,11 @@ describe('DGCommon reducer', () => {
 
   describe('FetchFilter actions', () => {
     it('should set the loading state when given a FetchFilterRequest action', () => {
-      state = { ...initialState, loading: true };
-      expect(state.loading).toBe(true);
+      state = { ...initialState, loading: false };
+      expect(state.loading).toBe(false);
 
       const updatedState = DGCommonReducer(state, fetchFilterRequest());
-      expect(updatedState.loading).toBe(false);
+      expect(updatedState.loading).toBe(true);
     });
 
     it('should set the loading, filter data when given a FetchFilterSuccess action', () => {
@@ -1774,6 +1820,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       };
 
@@ -1786,6 +1834,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       });
     });
@@ -1797,6 +1847,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       };
 
@@ -1809,6 +1861,8 @@ describe('DGCommon reducer', () => {
           search: 'searchTwo',
           page: 1,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       });
     });
@@ -1821,6 +1875,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       };
 
@@ -1833,6 +1889,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 2,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       });
     });
@@ -1845,6 +1903,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       };
 
@@ -1857,6 +1917,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 2,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       });
     });
@@ -1864,36 +1926,64 @@ describe('DGCommon reducer', () => {
     it('should update filter on UpdateFilters', () => {
       state = {
         ...initialState,
-        filters: { NAME: 't' },
         data: [{ ID: 1, NAME: 'test' }],
         totalDataCount: 1,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
       };
 
       const updatedState = DGCommonReducer(state, updateFilters({ NAME: 'c' }));
 
       expect(updatedState).toEqual({
         ...initialState,
-        filters: { NAME: 'c' },
         data: [],
         totalDataCount: 0,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 'c' },
+          sort: { NAME: 'asc' },
+        },
       });
     });
 
     it('should update sort on UpdateSort', () => {
       state = {
         ...initialState,
-        sort: { NAME: 'asc' },
         data: [{ ID: 1, NAME: 'test' }],
         totalDataCount: 1,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
       };
 
       const updatedState = DGCommonReducer(state, updateSort({ NAME: 'desc' }));
 
       expect(updatedState).toEqual({
         ...initialState,
-        sort: { NAME: 'desc' },
         data: [],
         totalDataCount: 0,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'desc' },
+        },
       });
     });
 
@@ -1905,6 +1995,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
         },
       };
 
@@ -1915,6 +2007,8 @@ describe('DGCommon reducer', () => {
           search: 'searchTwo',
           page: 2,
           results: 2,
+          filters: { NAME: 'c' },
+          sort: { NAME: 'desc' },
         })
       );
 
@@ -1925,6 +2019,8 @@ describe('DGCommon reducer', () => {
           search: 'searchTwo',
           page: 2,
           results: 2,
+          filters: { NAME: 'c' },
+          sort: { NAME: 'desc' },
         },
       });
     });

@@ -4,7 +4,12 @@ describe('Datafiles Table', () => {
     cy.intercept('/datasets/25').as('datasets');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login('user', 'password');
-    cy.visit('/browse/investigation/1/dataset/25/datafile');
+    cy.visit('/browse/investigation/1/dataset/25/datafile').wait(
+      ['@datafilesCount', '@datasets', '@datafilesOrder', '@datafilesOrder'],
+      {
+        timeout: 10000,
+      }
+    );
   });
 
   it('should load correctly', () => {
@@ -85,16 +90,10 @@ describe('Datafiles Table', () => {
   });
 
   describe('should be able to sort by', () => {
-    beforeEach(() => {
-      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
-        timeout: 10000,
-      });
-    });
-
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -106,10 +105,10 @@ describe('Datafiles Table', () => {
     it('descending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -125,13 +124,13 @@ describe('Datafiles Table', () => {
     it('no order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -149,13 +148,13 @@ describe('Datafiles Table', () => {
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Modified Time')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 15831'
@@ -164,12 +163,6 @@ describe('Datafiles Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    beforeEach(() => {
-      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
-        timeout: 10000,
-      });
-    });
-
     it('text', () => {
       cy.get('[aria-label="Filter by Location"]').find('input').type('ok');
 

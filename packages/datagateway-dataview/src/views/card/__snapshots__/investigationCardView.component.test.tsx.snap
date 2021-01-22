@@ -7,7 +7,6 @@ exports[`Investigation - Card View renders correctly 1`] = `
   <InvestigationCardView
     addToCart={[Function]}
     cartItems={Array []}
-    clearData={[Function]}
     data={
       Array [
         Object {
@@ -25,22 +24,21 @@ exports[`Investigation - Card View renders correctly 1`] = `
     fetchFacilityFilter={[Function]}
     fetchTypeFilter={[Function]}
     filterData={Object {}}
-    filters={Object {}}
-    loading={false}
+    loadedData={true}
     pushFilters={[Function]}
     pushPage={[Function]}
-    pushResults={[Function]}
-    pushSort={[Function]}
+    pushQuery={[Function]}
     query={
       Object {
+        "filters": Object {},
         "page": null,
         "results": null,
         "search": null,
+        "sort": Object {},
         "view": null,
       }
     }
     removeFromCart={[Function]}
-    sort={Object {}}
     store={
       Object {
         "clearActions": [Function],
@@ -52,7 +50,6 @@ exports[`Investigation - Card View renders correctly 1`] = `
       }
     }
     totalDataCount={1}
-    view={null}
   />
 </ContextProvider>
 `;

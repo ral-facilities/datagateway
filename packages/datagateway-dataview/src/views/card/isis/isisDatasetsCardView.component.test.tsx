@@ -3,15 +3,13 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
   addToCartRequest,
-  clearData,
   dGCommonInitialState,
   downloadDatasetRequest,
   fetchDatasetDetailsRequest,
-  fetchDatasetsRequest,
   filterTable,
   removeFromCartRequest,
-  sortTable,
   updatePage,
+  updateQueryParams,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -57,6 +55,7 @@ describe('ISIS Datasets - Card View', () => {
     state = {
       dgcommon: {
         ...dGCommonInitialState,
+        loadedData: true,
         totalDataCount: 1,
         data: [
           {
@@ -95,12 +94,54 @@ describe('ISIS Datasets - Card View', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('correct link used when NOT in studyHierarchy', () => {
+    store = mockStore(state);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter>
+          <ISISDatasetsCardView
+            studyHierarchy={false}
+            instrumentId="1"
+            instrumentChildId="1"
+            investigationId="1"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+    ).toEqual(
+      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile'
+    );
+  });
+
+  it('correct link used for studyHierarchy', () => {
+    store = mockStore(state);
+    const wrapper = mount(
+      <Provider store={store}>
+        <MemoryRouter>
+          <ISISDatasetsCardView
+            studyHierarchy={true}
+            instrumentId="1"
+            instrumentChildId="1"
+            investigationId="1"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
+    ).toEqual(
+      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1/datafile'
+    );
+  });
+
   it('addToCart dispatched on button click', () => {
     const wrapper = createWrapper();
     wrapper.find(Card).find('button').first().simulate('click');
 
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[4]).toEqual(addToCartRequest());
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[2]).toEqual(addToCartRequest());
   });
 
   it('removeFromCart dispatched on button click', () => {
@@ -116,8 +157,8 @@ describe('ISIS Datasets - Card View', () => {
     const wrapper = createWrapper();
     wrapper.find(Card).find('button').first().simulate('click');
 
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[4]).toEqual(removeFromCartRequest());
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[2]).toEqual(removeFromCartRequest());
   });
 
   it('pushFilters dispatched by date filter', () => {
@@ -128,12 +169,18 @@ describe('ISIS Datasets - Card View', () => {
       .find('input')
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(
       filterTable('MOD_TIME', { endDate: '2019-08-06' })
     );
+    expect(store.getActions()[3]).toEqual(push('?'));
+
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '' } });
+    expect(store.getActions().length).toEqual(6);
+    expect(store.getActions()[4]).toEqual(filterTable('MOD_TIME', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -145,10 +192,16 @@ describe('ISIS Datasets - Card View', () => {
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[3]).toEqual(push('?'));
 
-    // The push has outdated query?
+    advancedFilter
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[4]).toEqual(filterTable('NAME', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -159,9 +212,15 @@ describe('ISIS Datasets - Card View', () => {
     button.simulate('click');
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(11);
-    expect(store.getActions()[4]).toEqual(sortTable('NAME', 'asc'));
-    expect(store.getActions()[5]).toEqual(push('?'));
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(
+      updateQueryParams({
+        ...dGCommonInitialState.query,
+        sort: { NAME: 'asc' },
+        page: 1,
+      })
+    );
+    expect(store.getActions()[3]).toEqual(push('?'));
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
@@ -176,33 +235,22 @@ describe('ISIS Datasets - Card View', () => {
           search: null,
           page: 2,
           results: null,
+          filters: {},
+          sort: {},
         },
       },
     });
     wrapper.setProps({ store: store });
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[0]).toEqual(updatePage(1));
-    expect(store.getActions()[1]).toEqual(push('?page=2'));
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[1]).toEqual(updatePage(1));
+    expect(store.getActions()[2]).toEqual(push('?page=2'));
   });
 
   // TODO: Can't trigger onChange for the Select element.
   // Had a similar issue in DG download with the new version of M-UI.
   it.todo('pushResults dispatched onChange');
-
-  it('clearData dispatched on store update', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, totalDataCount: 2 },
-    });
-    wrapper.setProps({ store: store });
-
-    expect(store.getActions().length).toEqual(2);
-    expect(store.getActions()[0]).toEqual(clearData());
-    expect(store.getActions()[1]).toEqual(fetchDatasetsRequest(1));
-  });
 
   it('fetchDetails dispatched when details panel expanded', () => {
     const wrapper = createWrapper();
@@ -211,15 +259,15 @@ describe('ISIS Datasets - Card View', () => {
       .first()
       .simulate('click');
 
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[4]).toEqual(fetchDatasetDetailsRequest());
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[2]).toEqual(fetchDatasetDetailsRequest());
   });
 
   it('downloadDataset dispatched on button click', () => {
     const wrapper = createWrapper();
     wrapper.find(Card).find('button').last().simulate('click');
 
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[4]).toEqual(downloadDatasetRequest(1));
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[2]).toEqual(downloadDatasetRequest(1));
   });
 });

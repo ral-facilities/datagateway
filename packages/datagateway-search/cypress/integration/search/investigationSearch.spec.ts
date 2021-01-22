@@ -1,9 +1,6 @@
 describe('Investigation search tab', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.server();
-    cy.route('/investigations/count*').as('investigationsCount');
-    cy.route('/investigations?order=*').as('investigationsOrder');
     cy.visit('/search/data/');
   });
 
@@ -21,16 +18,7 @@ describe('Investigation search tab', () => {
       .find('#filled-search')
       .type('dog');
 
-    cy.get('[aria-label="Submit search button"]')
-      .click()
-      .wait(
-        [
-          '@investigationsCount',
-          '@investigationsOrder',
-          '@investigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')

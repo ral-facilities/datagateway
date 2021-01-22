@@ -1,9 +1,6 @@
 describe('Dataset search tab', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.server();
-    cy.route('/datasets/count*').as('datasetsCount');
-    cy.route('/datasets?order=*').as('datasetsOrder');
     cy.visit('/search/data/');
   });
 
@@ -21,19 +18,12 @@ describe('Dataset search tab', () => {
       .find('#filled-search')
       .type('police');
 
-    cy.get('[aria-label="Submit search button"]')
-      .click()
-      .wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
-        timeout: 10000,
-      });
+    cy.get('[aria-label="Submit search button"]').click();
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
       .contains('12')
-      .click()
-      .wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
-        timeout: 10000,
-      });
+      .click();
 
     cy.get('[aria-rowcount="12"]').should('exist');
 

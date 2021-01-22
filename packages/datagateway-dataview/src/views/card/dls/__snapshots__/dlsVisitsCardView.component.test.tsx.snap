@@ -5,7 +5,6 @@ exports[`DLS Visits - Card View renders correctly 1`] = `
   value={null}
 >
   <DLSVisitsCardView
-    clearData={[Function]}
     data={
       Array [
         Object {
@@ -22,22 +21,21 @@ exports[`DLS Visits - Card View renders correctly 1`] = `
     fetchSize={[Function]}
     fetchTypeFilter={[Function]}
     filterData={Object {}}
-    filters={Object {}}
-    loading={false}
+    loadedData={true}
     proposalName="test"
     pushFilters={[Function]}
     pushPage={[Function]}
-    pushResults={[Function]}
-    pushSort={[Function]}
+    pushQuery={[Function]}
     query={
       Object {
+        "filters": Object {},
         "page": null,
         "results": null,
         "search": null,
+        "sort": Object {},
         "view": null,
       }
     }
-    sort={Object {}}
     store={
       Object {
         "clearActions": [Function],
@@ -49,7 +47,6 @@ exports[`DLS Visits - Card View renders correctly 1`] = `
       }
     }
     totalDatCount={1}
-    view={null}
   />
 </ContextProvider>
 `;

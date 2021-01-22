@@ -10,14 +10,12 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
   addToCartRequest,
-  clearData,
   dGCommonInitialState,
   fetchFilterRequest,
-  fetchInvestigationsRequest,
   filterTable,
   removeFromCartRequest,
-  sortTable,
   updatePage,
+  updateQueryParams,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -63,6 +61,7 @@ describe('Investigation - Card View', () => {
     state = {
       dgcommon: {
         ...dGCommonInitialState,
+        loadedData: true,
         totalDataCount: 1,
         data: [
           {
@@ -103,8 +102,8 @@ describe('Investigation - Card View', () => {
     const wrapper = createWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
-    expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[6]).toEqual(addToCartRequest());
+    expect(store.getActions().length).toEqual(5);
+    expect(store.getActions()[4]).toEqual(addToCartRequest());
   });
 
   it('removeFromCart dispatched on button click', () => {
@@ -120,8 +119,8 @@ describe('Investigation - Card View', () => {
     const wrapper = createWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
-    expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[6]).toEqual(removeFromCartRequest());
+    expect(store.getActions().length).toEqual(5);
+    expect(store.getActions()[4]).toEqual(removeFromCartRequest());
   });
 
   it('pushFilters dispatched by date filter', () => {
@@ -132,12 +131,18 @@ describe('Investigation - Card View', () => {
       .find('input')
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(8);
-    expect(store.getActions()[6]).toEqual(
+    expect(store.getActions().length).toEqual(6);
+    expect(store.getActions()[4]).toEqual(
       filterTable('ENDDATE', { endDate: '2019-08-06', startDate: undefined })
     );
+    expect(store.getActions()[5]).toEqual(push('?'));
+
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '' } });
+    expect(store.getActions().length).toEqual(8);
+    expect(store.getActions()[6]).toEqual(filterTable('ENDDATE', null));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 
@@ -149,10 +154,16 @@ describe('Investigation - Card View', () => {
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
+    expect(store.getActions().length).toEqual(6);
+    expect(store.getActions()[4]).toEqual(filterTable('TITLE', 'test'));
+    expect(store.getActions()[5]).toEqual(push('?'));
 
-    // The push has outdated query?
+    advancedFilter
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(8);
-    expect(store.getActions()[6]).toEqual(filterTable('TITLE', 'test'));
+    expect(store.getActions()[6]).toEqual(filterTable('TITLE', null));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 
@@ -163,9 +174,15 @@ describe('Investigation - Card View', () => {
     button.simulate('click');
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(13);
-    expect(store.getActions()[6]).toEqual(sortTable('TITLE', 'asc'));
-    expect(store.getActions()[7]).toEqual(push('?'));
+    expect(store.getActions().length).toEqual(6);
+    expect(store.getActions()[4]).toEqual(
+      updateQueryParams({
+        ...dGCommonInitialState.query,
+        sort: { TITLE: 'asc' },
+        page: 1,
+      })
+    );
+    expect(store.getActions()[5]).toEqual(push('?'));
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
@@ -180,33 +197,22 @@ describe('Investigation - Card View', () => {
           search: null,
           page: 2,
           results: null,
+          filters: {},
+          sort: {},
         },
       },
     });
     wrapper.setProps({ store: store });
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[0]).toEqual(updatePage(1));
-    expect(store.getActions()[1]).toEqual(push('?page=2'));
+    expect(store.getActions().length).toEqual(5);
+    expect(store.getActions()[1]).toEqual(updatePage(1));
+    expect(store.getActions()[2]).toEqual(push('?page=2'));
   });
 
   // TODO: Can't trigger onChange for the Select element.
   // Had a similar issue in DG download with the new version of M-UI.
   it.todo('pushResults dispatched onChange');
-
-  it('clearData dispatched on store update', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, totalDataCount: 2 },
-    });
-    wrapper.setProps({ store: store });
-
-    expect(store.getActions().length).toEqual(2);
-    expect(store.getActions()[0]).toEqual(clearData());
-    expect(store.getActions()[1]).toEqual(fetchInvestigationsRequest(1));
-  });
 
   it('pushFilters dispatched by filter panel', () => {
     state.dgcommon.filterData = {
@@ -222,7 +228,7 @@ describe('Investigation - Card View', () => {
     typePanel.find(Chip).first().simulate('click');
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(13);
+    expect(store.getActions().length).toEqual(8);
     expect(store.getActions()[1]).toEqual(fetchFilterRequest());
     expect(store.getActions()[2]).toEqual(fetchFilterRequest());
     expect(store.getActions()[6]).toEqual(filterTable('TYPE_ID', ['1']));
@@ -239,7 +245,7 @@ describe('Investigation - Card View', () => {
     wrapper.find(Chip).at(4).find(SvgIcon).simulate('click');
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(13);
+    expect(store.getActions().length).toEqual(8);
     expect(store.getActions()[1]).toEqual(fetchFilterRequest());
     expect(store.getActions()[2]).toEqual(fetchFilterRequest());
     expect(store.getActions()[6]).toEqual(filterTable('TYPE_ID', null));

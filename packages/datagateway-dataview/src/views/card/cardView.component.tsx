@@ -469,6 +469,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         {totalDataCount > 0 && loadedData && (
           <Grid
             container
+            item
             direction="row"
             alignItems="center"
             justify="space-around"

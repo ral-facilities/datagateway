@@ -1,11 +1,25 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
-    cy.intercept('/datafiles/count').as('datafilesCount');
+    cy.intercept('/instruments/1').as('instruments');
+    cy.intercept('/facilitycycles/14').as('facilityCycles');
     cy.intercept('/datasets/118').as('datasets');
+    cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login('user', 'password');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+    ).wait(
+      [
+        '@instruments',
+        '@instruments',
+        '@facilityCycles',
+        '@datasets',
+        '@datafilesCount',
+        '@datafilesOrder',
+      ],
+      {
+        timeout: 10000,
+      }
     );
   });
 
@@ -89,16 +103,10 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   describe('should be able to sort by', () => {
-    beforeEach(() => {
-      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
-        timeout: 10000,
-      });
-    });
-
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -110,10 +118,10 @@ describe('ISIS - Datafiles Table', () => {
     it('descending order', () => {
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Location')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -129,13 +137,13 @@ describe('ISIS - Datafiles Table', () => {
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Modified Time')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
         'Datafile 13529'
@@ -144,12 +152,6 @@ describe('ISIS - Datafiles Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    beforeEach(() => {
-      cy.wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
-        timeout: 10000,
-      });
-    });
-
     it('text', () => {
       cy.get('[aria-label="Filter by Location"]').find('input').type('sea');
 
@@ -191,12 +193,12 @@ describe('ISIS - Datafiles Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .type('5')
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
         .type('.png')
-        .wait('@datafilesCount', { timeout: 10000 });
+        .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-rowcount="4"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(

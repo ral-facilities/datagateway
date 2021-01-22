@@ -143,10 +143,7 @@ const objectChanged = (
           typeof parsedEntry === 'number' ||
           typeof parsedEntry === 'string'
         ) {
-          if (
-            typeof stateEntry !== typeof parsedEntry ||
-            stateEntry !== parsedEntry
-          ) {
+          if (stateEntry !== parsedEntry) {
             changed = true;
           }
         } else if (Array.isArray(parsedEntry)) {
@@ -189,6 +186,7 @@ export const loadURLQuery = (
 
     // Parse filters in the query.
     let parsedFilters: FiltersType = {};
+    let filterError = false;
     if (filters) {
       try {
         const fq: FiltersType = JSON.parse(filters);
@@ -206,13 +204,18 @@ export const loadURLQuery = (
         }
       } catch (e) {
         console.error('Filter query provided in an incorrect format.');
+        filterError = true;
       }
     }
-    if (!objectChanged(parsedFilters, state.dgcommon.query.filters)) {
+    if (
+      filterError ||
+      !objectChanged(parsedFilters, state.dgcommon.query.filters)
+    ) {
       parsedFilters = state.dgcommon.query.filters;
     }
 
     let parsedSort: SortType = {};
+    let sortError = false;
     if (sort) {
       try {
         const sq: SortType = JSON.parse(sort);
@@ -223,9 +226,10 @@ export const loadURLQuery = (
         }
       } catch (e) {
         console.error('Sort query provided in an incorrect format.');
+        sortError = true;
       }
     }
-    if (!objectChanged(parsedSort, state.dgcommon.query.sort)) {
+    if (sortError || !objectChanged(parsedSort, state.dgcommon.query.sort)) {
       parsedSort = state.dgcommon.query.sort;
     }
 

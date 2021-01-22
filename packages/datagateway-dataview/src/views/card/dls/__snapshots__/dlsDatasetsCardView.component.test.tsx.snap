@@ -7,7 +7,6 @@ exports[`DLS Datasets - Card View renders correctly 1`] = `
   <DLSDatasetsCardView
     addToCart={[Function]}
     cartItems={Array []}
-    clearData={[Function]}
     data={
       Array [
         Object {
@@ -25,24 +24,23 @@ exports[`DLS Datasets - Card View renders correctly 1`] = `
     fetchSize={[Function]}
     fetchTypeFilter={[Function]}
     filterData={Object {}}
-    filters={Object {}}
     investigationId="1"
-    loading={false}
+    loadedData={true}
     proposalName="test"
     pushFilters={[Function]}
     pushPage={[Function]}
-    pushResults={[Function]}
-    pushSort={[Function]}
+    pushQuery={[Function]}
     query={
       Object {
+        "filters": Object {},
         "page": null,
         "results": null,
         "search": null,
+        "sort": Object {},
         "view": null,
       }
     }
     removeFromCart={[Function]}
-    sort={Object {}}
     store={
       Object {
         "clearActions": [Function],

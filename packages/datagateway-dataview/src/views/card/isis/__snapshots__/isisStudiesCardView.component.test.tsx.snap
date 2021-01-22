@@ -5,12 +5,7 @@ exports[`ISIS Studies - Card View renders correctly 1`] = `
   value={null}
 >
   <ISISStudiesCardView
-    allIds={
-      Array [
-        1,
-      ]
-    }
-    clearData={[Function]}
+    allIds={Array []}
     data={
       Array [
         Object {
@@ -30,22 +25,21 @@ exports[`ISIS Studies - Card View renders correctly 1`] = `
     fetchCount={[Function]}
     fetchData={[Function]}
     fetchIds={[Function]}
-    filters={Object {}}
     instrumentId="1"
-    loading={false}
+    loadedData={true}
     pushFilters={[Function]}
     pushPage={[Function]}
-    pushResults={[Function]}
-    pushSort={[Function]}
+    pushQuery={[Function]}
     query={
       Object {
+        "filters": Object {},
         "page": null,
         "results": null,
         "search": null,
+        "sort": Object {},
         "view": null,
       }
     }
-    sort={Object {}}
     store={
       Object {
         "clearActions": [Function],
@@ -57,7 +51,6 @@ exports[`ISIS Studies - Card View renders correctly 1`] = `
       }
     }
     totalDataCount={1}
-    view={null}
   />
 </ContextProvider>
 `;
