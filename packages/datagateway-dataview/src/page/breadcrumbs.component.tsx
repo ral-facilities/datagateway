@@ -291,30 +291,17 @@ const useEntityInformation = (
 const StyledBreadcrumbs = withStyles(breadcrumbsStyles)(Breadcrumbs);
 
 const PageBreadcrumbs: React.FC = () => {
-  const { pathname: location, search } = useLocation();
+  const { pathname, search } = useLocation();
   const view = parseSearchToQuery(search).view;
 
   const [t] = useTranslation();
 
-  const prevLocationRef = React.useRef(location);
-  React.useEffect(() => {
-    prevLocationRef.current = location;
-  });
-  const prevLocation = prevLocationRef.current;
-
-  const [currentPathnames, setCurrentPathnames] = React.useState<string[]>([]);
+  const currentPathnames = React.useMemo(
+    () => pathname.split('/').filter((x) => x),
+    [pathname]
+  );
 
   const queries = useEntityInformation(currentPathnames);
-
-  const firstRenderRef = React.useRef(true);
-
-  React.useEffect(() => {
-    if (firstRenderRef.current || location !== prevLocation) {
-      firstRenderRef.current = false;
-      const currPathnames = location.split('/').filter((x) => x);
-      setCurrentPathnames(currPathnames);
-    }
-  }, [location, prevLocation]);
 
   const viewString = view ? `?view=${view}` : '';
   return (
