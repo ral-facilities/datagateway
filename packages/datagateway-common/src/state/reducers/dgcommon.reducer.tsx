@@ -137,6 +137,7 @@ export const initialState: DGCommonState = {
   datasetCache: {},
   loading: false,
   loadedData: false,
+  loadedCount: false,
   downloading: false,
   error: null,
   filterData: {},
@@ -202,6 +203,7 @@ export function handleFilterTable(
       data: [],
       totalDataCount: 0,
       loadedData: false,
+      loadedCount: false,
       query: {
         ...state.query,
         filters: {
@@ -218,6 +220,7 @@ export function handleFilterTable(
       data: [],
       totalDataCount: 0,
       loadedData: false,
+      loadedCount: false,
       query: {
         ...state.query,
         filters: {
@@ -299,6 +302,7 @@ export function handleUpdateFilters(
     data: [],
     totalDataCount: 0,
     loadedData: false,
+    loadedCount: false,
     query: {
       ...state.query,
       filters: payload.filters,
@@ -313,7 +317,6 @@ export function handleUpdateSort(
   return {
     ...state,
     data: [],
-    totalDataCount: 0,
     loadedData: false,
     query: {
       ...state.query,
@@ -338,19 +341,19 @@ export function handleSaveView(
 ): DGCommonState {
   const currentFilters = state.query.filters;
   const savedFilters = state.savedQuery.filters;
-  const commonFilters: FiltersType = {};
-  const customFilters: FiltersType = {};
+  const sharedFilters: FiltersType = {};
+  const uniqueFilters: FiltersType = {};
   Object.keys(currentFilters).forEach((key) => {
     const value = currentFilters[key];
     if (Array.isArray(value)) {
-      customFilters[key] = value;
+      uniqueFilters[key] = value;
     } else {
-      commonFilters[key] = value;
+      sharedFilters[key] = value;
     }
   });
 
   Object.keys(savedFilters).forEach((key) => {
-    commonFilters[key] = savedFilters[key];
+    sharedFilters[key] = savedFilters[key];
   });
 
   return {
@@ -360,19 +363,20 @@ export function handleSaveView(
     totalDataCount: 0,
     allIds: [],
     loadedData: false,
+    loadedCount: false,
 
     // Switch view and save information unique to that view.
     // Information common between views stays in the state.
     query: {
       ...state.savedQuery,
       sort: state.query.sort,
-      filters: commonFilters,
+      filters: sharedFilters,
     },
     savedQuery: {
       ...state.query,
       view: payload.view,
       sort: state.savedQuery.sort,
-      filters: customFilters,
+      filters: uniqueFilters,
     },
   };
 }
@@ -385,6 +389,7 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     allIds: [],
     loading: false,
     loadedData: false,
+    loadedCount: false,
     downloading: false,
     error: null,
     savedQuery: initialQuery,
@@ -469,6 +474,7 @@ export function handleFetchCountSuccess(
       loading: false,
       // If the count is zero, then mark the data as loaded prematurely
       loadedData: payload.count > 0 ? state.loadedData : true,
+      loadedCount: true,
       totalDataCount: payload.count,
       countTimestamp: payload.timestamp,
       error: null,
@@ -485,7 +491,7 @@ export function handleFetchCountFailure(
   return {
     ...state,
     loading: false,
-    loadedData: true,
+    loadedCount: true,
     error: payload.error,
   };
 }

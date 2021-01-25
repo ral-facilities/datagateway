@@ -53,6 +53,7 @@ interface ISISInvestigationsCVStateProps {
   query: QueryParams;
   cartItems: DownloadCartItem[];
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -95,6 +96,7 @@ const ISISInvestigationsCardView = (
     query,
     cartItems,
     loadedData,
+    loadedCount,
     fetchFacilityCycleData,
     fetchStudyData,
     fetchFacilityCycleCount,
@@ -168,6 +170,7 @@ const ISISInvestigationsCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       loadData={loadData}
       loadCount={loadCount}
       title={{
@@ -354,6 +357,7 @@ const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {
     query: state.dgcommon.query,
     cartItems: state.dgcommon.cartItems,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

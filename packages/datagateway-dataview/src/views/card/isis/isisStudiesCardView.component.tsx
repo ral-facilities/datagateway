@@ -35,6 +35,7 @@ interface ISISStudiesCVStateProps {
   query: QueryParams;
   allIds: number[];
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -61,6 +62,7 @@ const ISISStudiesCardView = (
     totalDataCount,
     query,
     loadedData,
+    loadedCount,
     fetchIds,
     fetchData,
     fetchCount,
@@ -124,6 +126,7 @@ const ISISStudiesCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('studies.name'),
         dataKey: 'STUDY.NAME',
@@ -221,6 +224,7 @@ const mapStateToProps = (state: StateType): ISISStudiesCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

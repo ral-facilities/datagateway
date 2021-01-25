@@ -1959,7 +1959,6 @@ describe('DGCommon reducer', () => {
       state = {
         ...initialState,
         data: [{ ID: 1, NAME: 'test' }],
-        totalDataCount: 1,
         query: {
           view: 'table',
           search: 'searchOne',
@@ -1975,7 +1974,6 @@ describe('DGCommon reducer', () => {
       expect(updatedState).toEqual({
         ...initialState,
         data: [],
-        totalDataCount: 0,
         query: {
           view: 'table',
           search: 'searchOne',

@@ -9,6 +9,7 @@ export interface DGCommonState {
   urls: URLs;
   loading: boolean;
   loadedData: boolean;
+  loadedCount: boolean;
   downloading: boolean;
   error: string | null;
   data: Entity[];

@@ -25,6 +25,7 @@ exports[`DLS Datasets - Card View renders correctly 1`] = `
     fetchTypeFilter={[Function]}
     filterData={Object {}}
     investigationId="1"
+    loadedCount={true}
     loadedData={true}
     proposalName="test"
     pushFilters={[Function]}

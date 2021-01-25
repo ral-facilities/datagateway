@@ -57,6 +57,7 @@ interface InvestigationCVStateProps {
   filterData: FilterDataType;
   cartItems: DownloadCartItem[];
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 type InvestigationCVCombinedProps = InvestigationCVDispatchProps &
@@ -72,6 +73,7 @@ const InvestigationCardView = (
     filterData,
     cartItems,
     loadedData,
+    loadedCount,
     pushPage,
     pushFilters,
     pushQuery,
@@ -147,6 +149,7 @@ const InvestigationCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         // Provide label for filter component.
         label: t('investigations.title'),
@@ -264,6 +267,7 @@ const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
     filterData: state.dgcommon.filterData,
     cartItems: state.dgcommon.cartItems,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

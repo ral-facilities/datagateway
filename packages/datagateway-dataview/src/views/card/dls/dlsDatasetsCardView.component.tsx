@@ -52,6 +52,7 @@ interface DLSDatasetsCVStateProps {
   filterData: FilterDataType;
   query: QueryParams;
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 interface DLSDatasetsCVDispatchProps {
@@ -84,6 +85,7 @@ const DLSDatasetsCardView = (
     totalDataCount,
     query,
     loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     fetchTypeFilter,
@@ -160,6 +162,7 @@ const DLSDatasetsCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
@@ -316,6 +319,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
     filterData: state.dgcommon.filterData,
     query: state.dgcommon.query,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

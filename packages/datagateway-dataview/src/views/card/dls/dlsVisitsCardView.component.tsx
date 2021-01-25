@@ -56,6 +56,7 @@ interface DLSVisitsCVStateProps {
   query: QueryParams;
   filterData: FilterDataType;
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 type DLSVisitsCVCombinedProps = DLSVisitsCVProps &
@@ -72,6 +73,7 @@ const DLSVisitsCardView = (
     filterData,
     proposalName,
     loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     fetchTypeFilter,
@@ -132,6 +134,7 @@ const DLSVisitsCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('investigations.visit_id'),
         dataKey: 'VISIT_ID',
@@ -250,6 +253,7 @@ const mapStateToProps = (state: StateType): DLSVisitsCVStateProps => {
     filterData: state.dgcommon.filterData,
     query: state.dgcommon.query,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

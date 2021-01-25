@@ -51,6 +51,7 @@ describe('ISIS Facility Cycles - Card View', () => {
     state = {
       dgcommon: {
         ...dGCommonInitialState,
+        loadedCount: true,
         loadedData: true,
         totalDataCount: 1,
         data: [

@@ -17,6 +17,7 @@ exports[`DLS Proposals - Card View renders correctly 1`] = `
     }
     fetchCount={[Function]}
     fetchData={[Function]}
+    loadedCount={true}
     loadedData={true}
     pushFilters={[Function]}
     pushPage={[Function]}

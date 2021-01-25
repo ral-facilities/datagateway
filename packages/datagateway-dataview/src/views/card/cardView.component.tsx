@@ -87,6 +87,7 @@ interface CardViewProps {
   totalDataCount: number;
   query: QueryParams;
   loadedData: boolean;
+  loadedCount: boolean;
 
   loadData: (offsetParams: IndexRange) => Promise<void> | undefined;
   loadCount: () => Promise<void> | undefined;
@@ -178,6 +179,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     resultsOptions,
     paginationPosition,
     loadedData,
+    loadedCount,
     loadData,
     loadCount,
     onPageChange,
@@ -428,19 +430,31 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
   // Handle (max) page and loading data
   React.useEffect(() => {
-    const newMaxPage = ~~(1 + (totalDataCount - 1) / results);
-    if (newMaxPage !== maxPage) {
-      // Update maxPage (if needed) due to changed fitlers or results
-      setMaxPage(newMaxPage);
-    } else if (maxPage > 0 && page > newMaxPage) {
-      // Change page (if needed) before loading data
-      onPageChange(1);
-    } else if (results > 0 && totalDataCount > 0 && page > 0) {
-      const startIndex = (page - 1) * results;
-      const stopIndex = startIndex + results - 1;
-      loadData({ startIndex, stopIndex });
+    if (loadedCount) {
+      const newMaxPage = ~~(1 + (totalDataCount - 1) / results);
+      if (newMaxPage !== maxPage) {
+        // Update maxPage (if needed) due to changed fitlers or results
+        setMaxPage(newMaxPage);
+      } else if (maxPage > 0 && page > newMaxPage) {
+        // Change page (if needed) before loading data
+        onPageChange(1);
+      } else if (results > 0 && totalDataCount > 0 && page > 0) {
+        const startIndex = (page - 1) * results;
+        const stopIndex = startIndex + results - 1;
+        loadData({ startIndex, stopIndex });
+      }
     }
-  }, [loadData, onPageChange, maxPage, page, results, sort, totalDataCount]);
+  }, [
+    loadData,
+    onPageChange,
+    maxPage,
+    page,
+    results,
+    sort,
+    filters,
+    totalDataCount,
+    loadedCount,
+  ]);
 
   const [t] = useTranslation();
 

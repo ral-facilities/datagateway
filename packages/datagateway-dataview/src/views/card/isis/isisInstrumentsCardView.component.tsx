@@ -45,6 +45,7 @@ interface ISISInstrumentsCVStateProps {
   totalDataCount: number;
   query: QueryParams;
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 type ISISInstrumentsCVCombinedProps = ISISInstrumentsCVDispatchProps &
@@ -59,6 +60,7 @@ const ISISInstrumentsCardView = (
     totalDataCount,
     query,
     loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     fetchDetails,
@@ -94,6 +96,7 @@ const ISISInstrumentsCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('instruments.name'),
         dataKey: 'FULLNAME',
@@ -144,6 +147,7 @@ const mapStateToProps = (state: StateType): ISISInstrumentsCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

@@ -61,6 +61,7 @@ interface ISISDatasetCVStateProps {
   cartItems: DownloadCartItem[];
   query: QueryParams;
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -87,6 +88,7 @@ const ISISDatasetsCardView = (
     cartItems,
     query,
     loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     fetchDetails,
@@ -154,6 +156,7 @@ const ISISDatasetsCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
@@ -293,6 +296,7 @@ const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {
     cartItems: state.dgcommon.cartItems,
     query: state.dgcommon.query,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

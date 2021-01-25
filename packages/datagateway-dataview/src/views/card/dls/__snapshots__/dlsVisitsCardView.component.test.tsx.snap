@@ -21,6 +21,7 @@ exports[`DLS Visits - Card View renders correctly 1`] = `
     fetchSize={[Function]}
     fetchTypeFilter={[Function]}
     filterData={Object {}}
+    loadedCount={true}
     loadedData={true}
     proposalName="test"
     pushFilters={[Function]}

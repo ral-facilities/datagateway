@@ -61,6 +61,7 @@ describe('Investigation - Card View', () => {
     state = {
       dgcommon: {
         ...dGCommonInitialState,
+        loadedCount: true,
         loadedData: true,
         totalDataCount: 1,
         data: [

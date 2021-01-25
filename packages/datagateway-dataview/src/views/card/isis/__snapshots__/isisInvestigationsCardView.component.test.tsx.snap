@@ -24,6 +24,7 @@ exports[`ISIS Investigations - Card View renders correctly 1`] = `
     fetchStudyCount={[Function]}
     fetchStudyData={[Function]}
     instrumentId="1"
+    loadedCount={true}
     loadedData={true}
     pushFilters={[Function]}
     pushPage={[Function]}

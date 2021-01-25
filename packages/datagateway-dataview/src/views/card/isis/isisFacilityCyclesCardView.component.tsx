@@ -33,6 +33,7 @@ interface ISISFacilityCyclesCVStateProps {
   totalDataCount: number;
   query: QueryParams;
   loadedData: boolean;
+  loadedCount: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -57,6 +58,7 @@ const ISISFacilityCyclesCardView = (
     totalDataCount,
     query,
     loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     pushFilters,
@@ -105,6 +107,7 @@ const ISISFacilityCyclesCardView = (
       onFilter={pushFilters}
       pushQuery={pushQuery}
       loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('facilitycycles.name'),
         dataKey: 'NAME',
@@ -159,6 +162,7 @@ const mapStateToProps = (state: StateType): ISISFacilityCyclesCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     query: state.dgcommon.query,
     loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

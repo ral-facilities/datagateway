@@ -17,6 +17,7 @@ exports[`ISIS Facility Cycles - Card View renders correctly 1`] = `
     fetchCount={[Function]}
     fetchData={[Function]}
     instrumentId="1"
+    loadedCount={true}
     loadedData={true}
     pushFilters={[Function]}
     pushPage={[Function]}

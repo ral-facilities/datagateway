@@ -127,45 +127,45 @@ const objectChanged = (
 ): boolean => {
   const parsedKeys = Object.keys(parsedObject);
   const stateKeys = Object.keys(stateObject);
+
   if (parsedKeys.length === 0 && stateKeys.length === 0) {
     return false;
-  } else if (parsedKeys.length !== stateKeys.length) {
+  }
+
+  if (parsedKeys.length !== stateKeys.length) {
     return true;
-  } else {
-    let changed = false;
-    parsedKeys.forEach((newKey) => {
-      const parsedEntry = parsedObject[newKey];
-      if (!stateObject[newKey]) {
-        changed = true;
-      } else {
-        const stateEntry = stateObject[newKey];
-        if (
-          typeof parsedEntry === 'number' ||
-          typeof parsedEntry === 'string'
-        ) {
-          if (stateEntry !== parsedEntry) {
-            changed = true;
-          }
-        } else if (Array.isArray(parsedEntry)) {
-          if (!Array.isArray(stateEntry)) {
-            changed = true;
-          } else {
-            parsedEntry.forEach((value, index) => {
-              if (stateEntry[index] !== value) {
-                changed = true;
-              }
-            });
-          }
-        } else if (
-          parsedEntry.startDate !== (stateEntry as DateFilter).startDate ||
-          parsedEntry.endDate !== (stateEntry as DateFilter).endDate
-        ) {
+  }
+
+  let changed = false;
+  parsedKeys.forEach((newKey) => {
+    const parsedEntry = parsedObject[newKey];
+    if (!stateObject[newKey]) {
+      changed = true;
+    } else {
+      const stateEntry = stateObject[newKey];
+      if (typeof parsedEntry === 'number' || typeof parsedEntry === 'string') {
+        if (stateEntry !== parsedEntry) {
           changed = true;
         }
+      } else if (Array.isArray(parsedEntry)) {
+        if (!Array.isArray(stateEntry)) {
+          changed = true;
+        } else {
+          parsedEntry.forEach((value, index) => {
+            if (stateEntry[index] !== value) {
+              changed = true;
+            }
+          });
+        }
+      } else if (
+        parsedEntry.startDate !== (stateEntry as DateFilter).startDate ||
+        parsedEntry.endDate !== (stateEntry as DateFilter).endDate
+      ) {
+        changed = true;
       }
-    });
-    return changed;
-  }
+    }
+  });
+  return changed;
 };
 
 export const loadURLQuery = (
