@@ -9,6 +9,8 @@ import {
   Filter,
   FiltersType,
   Investigation,
+  MicroFrontendId,
+  NotificationType,
   Order,
   pushPageFilter,
   pushPageSort,
@@ -76,6 +78,21 @@ const DLSMyDataTable = (
   const [t] = useTranslation();
   const username = readSciGatewayToken().username || '';
 
+  // Broadcast a SciGateway notification for any warning encountered.
+  const broadcastWarning = (message: string): void => {
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: NotificationType,
+          payload: {
+            severity: 'warning',
+            message,
+          },
+        },
+      })
+    );
+  };
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -93,6 +110,12 @@ const DLSMyDataTable = (
       }
     />
   );
+
+  React.useEffect(() => {
+    if (localStorage.getItem('autoLogin') === 'true') {
+      broadcastWarning(t('my_data_table.login_warning_msg'));
+    }
+  }, [t]);
 
   React.useEffect(() => {
     // Sort and filter by STARTDATE upon load.
