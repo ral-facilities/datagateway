@@ -12,6 +12,8 @@ import {
   FiltersType,
   formatBytes,
   Investigation,
+  MicroFrontendId,
+  NotificationType,
   Order,
   pushPageFilter,
   pushPageSort,
@@ -102,6 +104,21 @@ const ISISMyDataTable = (
     [cartItems, allIds]
   );
 
+  // Broadcast a SciGateway notification for any warning encountered.
+  const broadcastWarning = (message: string): void => {
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: NotificationType,
+          payload: {
+            severity: 'warning',
+            message,
+          },
+        },
+      })
+    );
+  };
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -119,6 +136,12 @@ const ISISMyDataTable = (
       }
     />
   );
+
+  React.useEffect(() => {
+    if (localStorage.getItem('autoLogin') === 'true') {
+      broadcastWarning(t('my_data_table.login_warning_msg'));
+    }
+  }, [t]);
 
   React.useEffect(() => {
     // Sort by STARTDATE on load.
