@@ -3,11 +3,13 @@ import {
   loadBreadcrumbSettings,
   configureApp,
   settingsLoaded,
+  loadSelectAllSetting,
 } from '.';
 import {
   ConfigureFeatureSwitchesType,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
+  ConfigureSelectAllSettingType,
 } from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -54,6 +56,14 @@ describe('Actions', () => {
     });
   });
 
+  it('given JSON loadSelectAllSetting returns a ConfigureSelectAllSettingType with ConfigureSelectAllSettingPayload', () => {
+    const action = loadSelectAllSetting(false);
+    expect(action.type).toEqual(ConfigureSelectAllSettingType);
+    expect(action.payload).toEqual({
+      settings: false,
+    });
+  });
+
   it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
@@ -69,6 +79,7 @@ describe('Actions', () => {
               },
             },
             downloadApiUrl: 'download-api',
+            selectAllSetting: false,
           },
         })
       )
@@ -83,7 +94,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(5);
+    expect(actions.length).toEqual(6);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
@@ -101,6 +112,7 @@ describe('Actions', () => {
       })
     );
     expect(actions).toContainEqual(settingsLoaded());
+    expect(actions).toContainEqual(loadSelectAllSetting(false));
   });
 
   it('settings are loaded despite no features', async () => {

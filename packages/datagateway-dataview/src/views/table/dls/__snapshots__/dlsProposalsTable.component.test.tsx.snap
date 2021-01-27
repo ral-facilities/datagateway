@@ -48,6 +48,7 @@ exports[`DLS Proposals table component renders correctly 1`] = `
       },
     ]
   }
+  disableSelectAll={false}
   loadMoreRows={[Function]}
   loading={false}
   onSort={[Function]}

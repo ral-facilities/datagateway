@@ -31,6 +31,7 @@ const headerHeight = 110;
 const selectColumnWidth = 40;
 const detailsColumnWidth = 40;
 const actionsColumnDefaultWidth = 70;
+const scrollBarHeight = 17;
 const dataColumnMinWidth = 84;
 
 const styles = (theme: Theme): StyleRules =>
@@ -102,6 +103,7 @@ interface VirtualizedTableProps {
   onCheck?: (selectedIds: number[]) => void;
   onUncheck?: (selectedIds: number[]) => void;
   allIds?: number[];
+  disableSelectAll?: boolean;
 }
 
 const VirtualizedTable = (
@@ -130,6 +132,7 @@ const VirtualizedTable = (
     detailsPanel,
     sort,
     onSort,
+    disableSelectAll,
   } = props;
 
   if (
@@ -219,7 +222,7 @@ const VirtualizedTable = (
                   registerChild(ref);
                 }}
                 className={classes.table}
-                height={height || 500}
+                height={(height || 500) - scrollBarHeight}
                 width={Math.max(width, min_table_width)}
                 rowCount={data.length}
                 onRowsRendered={onRowsRendered}
@@ -258,27 +261,29 @@ const VirtualizedTable = (
                     flexShrink={0}
                     key="Select"
                     dataKey="Select"
-                    headerRenderer={(props) => (
-                      <SelectHeader
-                        {...props}
-                        className={clsx(
-                          classes.headerTableCell,
-                          classes.headerFlexContainer
-                        )}
-                        selectedRows={selectedRows}
-                        totalRowCount={rowCount}
-                        allIds={
-                          allIds ||
-                          data.map((d) => {
-                            const icatEntity = d as ICATEntity;
-                            return icatEntity.ID;
-                          })
-                        }
-                        loading={loading}
-                        onCheck={onCheck}
-                        onUncheck={onUncheck}
-                      />
-                    )}
+                    headerRenderer={(props) =>
+                      !disableSelectAll && (
+                        <SelectHeader
+                          {...props}
+                          className={clsx(
+                            classes.headerTableCell,
+                            classes.headerFlexContainer
+                          )}
+                          selectedRows={selectedRows}
+                          totalRowCount={rowCount}
+                          allIds={
+                            allIds ||
+                            data.map((d) => {
+                              const icatEntity = d as ICATEntity;
+                              return icatEntity.ID;
+                            })
+                          }
+                          loading={loading}
+                          onCheck={onCheck}
+                          onUncheck={onUncheck}
+                        />
+                      )
+                    }
                     className={classes.flexContainer}
                     headerClassName={classes.headerFlexContainer}
                     cellRenderer={(props) => (

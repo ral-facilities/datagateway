@@ -1,9 +1,7 @@
 describe('ISIS - Investigations Cards', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('**/investigations/count*').as('getInvestigationsCount');
-    cy.route('**/investigations?order*').as('getInvestigationsOrder');
+    cy.intercept('**/investigations/count*').as('getInvestigationsCount');
+    cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.login('user', 'password');
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
@@ -39,14 +37,7 @@ describe('ISIS - Investigations Cards', () => {
   it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('Series toward yes cost analysis.');
@@ -83,14 +74,7 @@ describe('ISIS - Investigations Cards', () => {
   it('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('Series toward yes cost analysis.');

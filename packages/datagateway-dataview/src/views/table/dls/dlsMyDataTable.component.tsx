@@ -40,6 +40,7 @@ interface DLSMyDataTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  selectAllSetting: boolean;
 }
 
 interface DLSMyDataTableDispatchProps {
@@ -69,6 +70,7 @@ const DLSMyDataTable = (
     filters,
     pushFilters,
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -113,6 +115,7 @@ const DLSMyDataTable = (
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
+      disableSelectAll={!selectAllSetting}
       detailsPanel={({ rowData, detailsPanelResize }) => {
         return (
           <VisitDetailsPanel
@@ -256,6 +259,7 @@ const mapStateToProps = (state: StateType): DLSMyDataTableStoreProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     error: state.dgcommon.error,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 

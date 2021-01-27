@@ -1,9 +1,7 @@
 describe('Download Cart', () => {
   beforeEach(() => {
-    Cypress.currentTest.retries(3);
-    cy.server();
-    cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
-    cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
+    cy.intercept('GET', '**/topcat/user/cart/**').as('fetchCart');
+    cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login('root', 'pw');
     cy.clearDownloadCart();
 
@@ -99,13 +97,13 @@ describe('Download Cart', () => {
   });
 
   it('should be able to remove individual items from the cart', () => {
-    cy.route('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
+    cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.get('[aria-label="Remove DATASET 1 from cart"]').click();
-    cy.contains(/^DATASET 1$/).should('not.be.visible');
+    cy.contains(/^DATASET 1$/).should('not.exist');
     cy.get('[aria-rowcount=58]').should('exist');
 
     cy.wait('@removeFromCart').then((xhr) =>
@@ -116,12 +114,12 @@ describe('Download Cart', () => {
   });
 
   it('should be able to remove all items from the cart', () => {
-    cy.route('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
+    cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.contains('Remove All').click();
-    cy.contains(/^DATASET 1$/).should('not.be.visible');
+    cy.contains(/^DATASET 1$/).should('not.exist');
     cy.get('[aria-rowcount=0]').should('exist');
 
     cy.wait('@removeFromCart').then(

@@ -116,7 +116,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',

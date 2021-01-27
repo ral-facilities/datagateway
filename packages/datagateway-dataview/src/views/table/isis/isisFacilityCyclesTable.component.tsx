@@ -37,6 +37,7 @@ interface ISISFacilityCyclesTableStoreProps {
   totalDataCount: number;
   loading: boolean;
   error: string | null;
+  selectAllSetting: boolean;
 }
 
 interface ISISFacilityCyclesTableDispatchProps {
@@ -64,6 +65,7 @@ const ISISFacilityCyclesTable = (
     pushFilters,
     instrumentId,
     loading,
+    selectAllSetting,
   } = props;
 
   const [t] = useTranslation();
@@ -99,6 +101,7 @@ const ISISFacilityCyclesTable = (
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
+      disableSelectAll={!selectAllSetting}
       columns={[
         {
           icon: <TitleIcon />,
@@ -160,6 +163,7 @@ const mapStateToProps = (
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
     error: state.dgcommon.error,
+    selectAllSetting: state.dgdataview.selectAllSetting,
   };
 };
 
