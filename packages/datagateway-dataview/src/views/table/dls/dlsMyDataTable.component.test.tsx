@@ -7,12 +7,14 @@ import {
   fetchInvestigationSizeRequest,
   fetchInvestigationsRequest,
   filterTable,
+  NotificationType,
   sortTable,
   Table,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
+import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -24,6 +26,7 @@ describe('DLS Visits table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
+  let events: CustomEvent<AnyAction>[] = [];
   (axios.get as jest.Mock).mockImplementation(() =>
     Promise.resolve({ data: [] })
   );
@@ -32,6 +35,12 @@ describe('DLS Visits table component', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DLSMyDataTable' });
     mount = createMount();
+    events = [];
+
+    document.dispatchEvent = (e: Event) => {
+      events.push(e as CustomEvent<AnyAction>);
+      return true;
+    };
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -283,5 +292,27 @@ describe('DLS Visits table component', () => {
     );
 
     expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
+  });
+
+  it('sends a notification to SciGateway if user is not logged in', () => {
+    state.dgcommon.data = [];
+    localStorage.setItem('autoLogin', 'true');
+
+    mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <DLSMyDataTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(events.length).toBe(1);
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'warning',
+        message: 'my_data_table.login_warning_msg',
+      },
+    });
   });
 });
