@@ -26,15 +26,12 @@
 
 import jsrsasign from 'jsrsasign';
 
-const parseJwt = token => {
+const parseJwt = (token) => {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const payload = decodeURIComponent(
-    atob(base64).replace(/(.)/g, function(m, p) {
-      var code = p
-        .charCodeAt(0)
-        .toString(16)
-        .toUpperCase();
+    atob(base64).replace(/(.)/g, function (m, p) {
+      var code = p.charCodeAt(0).toString(16).toUpperCase();
       return '%' + ('00' + code).slice(-2);
     })
   );
@@ -58,11 +55,11 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', (username, password) => {
-  return cy.readFile('server/e2e-settings.json').then(settings => {
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
     cy.request('POST', `${settings.apiUrl}/sessions`, {
       username: username,
       password: password,
-    }).then(response => {
+    }).then((response) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
@@ -76,6 +73,20 @@ Cypress.Commands.add('login', (username, password) => {
       );
 
       window.localStorage.setItem('scigateway:token', jwt);
+    });
+  });
+});
+
+Cypress.Commands.add('clearDownloadCart', () => {
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    // TODO: find facility from somewhere (should be provided through e2e-settings?)
+    cy.request({
+      method: 'DELETE',
+      url: `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
+      qs: {
+        sessionId: readSciGatewayToken().sessionId,
+        items: '*',
+      },
     });
   });
 });

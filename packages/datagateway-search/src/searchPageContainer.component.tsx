@@ -23,6 +23,11 @@ class SearchPageContainer extends React.Component<
   }
 
   public render(): React.ReactElement {
+    // Table should take up page but leave room for: SG appbar, SG footer,
+    // grid padding, search box, checkboxes, date selectors, padding.
+    const spacing = 2;
+    const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
+
     return (
       <Switch>
         <Route
@@ -36,7 +41,8 @@ class SearchPageContainer extends React.Component<
             direction={this.props.sideLayout ? 'row' : 'column'}
             justify="flex-start"
             alignItems="flex-start"
-            spacing={2}
+            spacing={spacing}
+            style={{ margin: 0, width: '100%' }}
           >
             <Grid item id="container-search-filters">
               {this.props.sideLayout ? (
@@ -44,7 +50,9 @@ class SearchPageContainer extends React.Component<
                   <SearchBoxContainerSide />
                 </Paper>
               ) : (
-                <Paper style={{ height: '100%', width: 'calc(70vw)' }}>
+                <Paper
+                  style={{ height: '100%', width: 'calc(70vw)', minWidth: 584 }}
+                >
                   <SearchBoxContainer />
                 </Paper>
               )}
@@ -53,8 +61,10 @@ class SearchPageContainer extends React.Component<
             <Grid item id="container-search-table">
               <Paper
                 style={{
-                  height: 'calc(85vh)',
+                  height: containerHeight,
+                  minHeight: 326,
                   width: 'calc(70vw)',
+                  minWidth: 584,
                 }}
               >
                 {/* Show loading progress if data is still being loaded */}
@@ -63,7 +73,7 @@ class SearchPageContainer extends React.Component<
                     <LinearProgress color="secondary" />
                   </Grid>
                 )}
-                <SearchPageTable />
+                <SearchPageTable containerHeight={containerHeight} />
               </Paper>
             </Grid>
           </Grid>

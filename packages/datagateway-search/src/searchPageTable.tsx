@@ -79,7 +79,8 @@ function a11yProps(index: string): React.ReactFragment {
 const StyledBadge = withStyles(badgeStyles)(Badge);
 
 const SearchPageTable = (
-  props: SearchTableStoreProps & SearchTableDispatchProps
+  props: SearchTableStoreProps &
+    SearchTableDispatchProps & { containerHeight: string }
 ): React.ReactElement => {
   const {
     requestReceived,
@@ -91,6 +92,7 @@ const SearchPageTable = (
     datafileTab,
     currentTab,
     setCurrentTab,
+    containerHeight,
   } = props;
   const [t] = useTranslation();
 
@@ -215,7 +217,8 @@ const SearchPageTable = (
           <TabPanel value={currentTab} index={'investigation'}>
             <Paper
               style={{
-                height: 'calc(75vh)',
+                height: `calc(${containerHeight} - 96px)`,
+                minHeight: 230,
                 overflowX: 'auto',
               }}
               elevation={0}
@@ -228,7 +231,8 @@ const SearchPageTable = (
           <TabPanel value={currentTab} index={'dataset'}>
             <Paper
               style={{
-                height: 'calc(75vh)',
+                height: `calc(${containerHeight} - 96px)`,
+                minHeight: 230,
                 overflowX: 'auto',
               }}
               elevation={0}
@@ -241,7 +245,8 @@ const SearchPageTable = (
           <TabPanel value={currentTab} index={'datafile'}>
             <Paper
               style={{
-                height: 'calc(75vh)',
+                height: `calc(${containerHeight} - 96px)`,
+                minHeight: 230,
                 overflowX: 'auto',
               }}
               elevation={0}

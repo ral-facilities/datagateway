@@ -200,7 +200,16 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         </Grid>
       )}
       <Grid item>
-        <Paper style={{ height: 'calc(100vh - 110px)', overflowX: 'auto' }}>
+        {/* Table should take up page but leave room for: SG appbar, SG footer,
+            tabs,table padding, and text above table (respectively). */}
+        <Paper
+          style={{
+            height:
+              'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
+            minHeight: 230,
+            overflowX: 'auto',
+          }}
+        >
           <Table
             columns={[
               {

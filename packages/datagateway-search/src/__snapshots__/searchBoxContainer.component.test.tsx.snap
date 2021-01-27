@@ -59,7 +59,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       item={true}
     >
       <Styled(MuiBox)
-        px={2}
+        px={0.75}
       >
         <Connect(SelectDates) />
       </Styled(MuiBox)>
