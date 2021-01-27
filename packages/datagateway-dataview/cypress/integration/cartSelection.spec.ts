@@ -96,6 +96,8 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="select row 0"]').should('be.checked');
         cy.get('[aria-label="select row 1"]').should('be.checked');
+
+        cy.get('[aria-label="grid"]').scrollTo(0, 350);
         cy.get('[aria-label="select row 17"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
@@ -258,6 +260,8 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="select row 0"]').should('be.checked');
         cy.get('[aria-label="select row 1"]').should('be.checked');
+
+        cy.get('[aria-label="grid"]').scrollTo(0, 350);
         cy.get('[aria-label="select row 17"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom');
