@@ -13,6 +13,7 @@ import {
   removeFromCartRequest,
   addToCartRequest,
   dGCommonInitialState,
+  fetchAllIdsRequest,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -122,7 +123,8 @@ describe('ISIS Investigations table component', () => {
     expect(testStore.getActions()[0]).toEqual(
       fetchInvestigationCountRequest(1)
     );
-    expect(testStore.getActions()[1]).toEqual(fetchInvestigationsRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {

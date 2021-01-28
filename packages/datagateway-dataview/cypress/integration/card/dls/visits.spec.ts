@@ -9,14 +9,9 @@ describe('DLS - Visits Cards', () => {
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 10000,
+      });
   });
 
   it('should load correctly', () => {
@@ -35,42 +30,21 @@ describe('DLS - Visits Cards', () => {
   it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Visit ID')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('64');
 
     cy.contains('[role="button"]', 'Visit ID')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('#card').contains('64');
 
     cy.contains('[role="button"]', 'Visit ID')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('64');
@@ -79,28 +53,14 @@ describe('DLS - Visits Cards', () => {
   it('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('64');
 
     cy.contains('[role="button"]', 'Visit ID')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('64');
@@ -112,15 +72,9 @@ describe('DLS - Visits Cards', () => {
       .parent()
       .contains('[role="button"]', '2')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 10000,
+      });
     cy.contains('[role="button"]', 'Type ID - 2').should('exist');
     cy.get('#card').contains('64');
 

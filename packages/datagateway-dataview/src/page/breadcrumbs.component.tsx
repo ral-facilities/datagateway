@@ -13,6 +13,7 @@ import {
   ArrowTooltip,
   EntityTypes,
   readSciGatewayToken,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
@@ -34,6 +35,7 @@ interface PageBreadcrumbsStateProps {
   apiUrl: string;
   location: string;
   breadcrumbSettings: BreadcrumbSettings;
+  view: ViewsType;
 }
 
 interface PageBreadcrumbsState {
@@ -451,6 +453,7 @@ class PageBreadcrumbs extends React.Component<
       ),
     };
 
+    const viewString = this.props.view ? `?view=${this.props.view}` : '';
     const hierarchyKeys = Object.keys(breadcrumbState.currentHierarchy);
     return (
       <div>
@@ -473,7 +476,7 @@ class PageBreadcrumbs extends React.Component<
                 <WrappedBreadcrumb
                   displayName={breadcrumbState.base.displayName}
                   ariaLabel="Breadcrumb-base"
-                  url={breadcrumbState.base.url}
+                  url={breadcrumbState.base.url + viewString}
                 />
               )}
 
@@ -493,7 +496,7 @@ class PageBreadcrumbs extends React.Component<
                   <WrappedBreadcrumb
                     displayName={breadcrumbInfo.displayName}
                     ariaLabel={`Breadcrumb-hierarchy-${index + 1}`}
-                    url={breadcrumbInfo.url}
+                    url={breadcrumbInfo.url + viewString}
                     key={`breadcrumb-${index + 1}`}
                   />
                 );
@@ -519,6 +522,7 @@ const mapStateToProps = (state: StateType): PageBreadcrumbsStateProps => ({
   apiUrl: state.dgcommon.urls.apiUrl,
   location: state.router.location.pathname,
   breadcrumbSettings: state.dgdataview.breadcrumbSettings,
+  view: state.dgcommon.query.view,
 });
 
 export const TranslatedBreadcrumbs = withTranslation()(PageBreadcrumbs);

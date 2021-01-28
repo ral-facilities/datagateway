@@ -1,4 +1,4 @@
-import { Dataset, Entity, Investigation } from '../../app.types';
+import { Dataset, Entity, FiltersType, Investigation } from '../../app.types';
 import {
   AddToCartFailureType,
   AddToCartRequestType,
@@ -125,6 +125,8 @@ const initialQuery: QueryParams = {
   search: null,
   page: null,
   results: null,
+  sort: {},
+  filters: {},
 };
 
 export const initialState: DGCommonState = {
@@ -134,10 +136,10 @@ export const initialState: DGCommonState = {
   investigationCache: {},
   datasetCache: {},
   loading: false,
+  loadedData: false,
+  loadedCount: false,
   downloading: false,
   error: null,
-  sort: {},
-  filters: {},
   filterData: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
@@ -150,12 +152,7 @@ export const initialState: DGCommonState = {
   cartItems: [],
   allIds: [],
   query: initialQuery,
-  savedView: {
-    view: null,
-    query: null,
-    filters: {},
-    sort: {},
-  },
+  savedQuery: initialQuery,
 };
 
 export function handleSortTable(
@@ -167,23 +164,29 @@ export function handleSortTable(
     // if given an defined order (asc or desc), update the relevant column in the sort state
     return {
       ...state,
-      sort: {
-        ...state.sort,
-        [column]: order,
-      },
+      loadedData: false,
       data: [],
-      totalDataCount: 0,
+      query: {
+        ...state.query,
+        sort: {
+          ...state.query.sort,
+          [column]: order,
+        },
+      },
     };
   } else {
     // if order is null, user no longer wants to sort by that column so remove column from sort state
-    const { [column]: order, ...rest } = state.sort;
+    const { [column]: order, ...rest } = state.query.sort;
     return {
       ...state,
-      sort: {
-        ...rest,
-      },
+      loadedData: false,
       data: [],
-      totalDataCount: 0,
+      query: {
+        ...state.query,
+        sort: {
+          ...rest,
+        },
+      },
     };
   }
 }
@@ -197,23 +200,33 @@ export function handleFilterTable(
     // if given an defined filter, update the relevant column in the sort state
     return {
       ...state,
-      filters: {
-        ...state.filters,
-        [column]: filter,
-      },
       data: [],
       totalDataCount: 0,
+      loadedData: false,
+      loadedCount: false,
+      query: {
+        ...state.query,
+        filters: {
+          ...state.query.filters,
+          [column]: filter,
+        },
+      },
     };
   } else {
     // if filter is null, user no longer wants to filter by that column so remove column from filter state
-    const { [column]: filter, ...rest } = state.filters;
+    const { [column]: filter, ...rest } = state.query.filters;
     return {
       ...state,
-      filters: {
-        ...rest,
-      },
       data: [],
       totalDataCount: 0,
+      loadedData: false,
+      loadedCount: false,
+      query: {
+        ...state.query,
+        filters: {
+          ...rest,
+        },
+      },
     };
   }
 }
@@ -286,9 +299,14 @@ export function handleUpdateFilters(
 ): DGCommonState {
   return {
     ...state,
-    filters: payload.filters,
     data: [],
     totalDataCount: 0,
+    loadedData: false,
+    loadedCount: false,
+    query: {
+      ...state.query,
+      filters: payload.filters,
+    },
   };
 }
 
@@ -298,9 +316,12 @@ export function handleUpdateSort(
 ): DGCommonState {
   return {
     ...state,
-    sort: payload.sort,
     data: [],
-    totalDataCount: 0,
+    loadedData: false,
+    query: {
+      ...state.query,
+      sort: payload.sort,
+    },
   };
 }
 
@@ -318,21 +339,44 @@ export function handleSaveView(
   state: DGCommonState,
   payload: SaveViewPayload
 ): DGCommonState {
+  const currentFilters = state.query.filters;
+  const savedFilters = state.savedQuery.filters;
+  const sharedFilters: FiltersType = {};
+  const uniqueFilters: FiltersType = {};
+  Object.keys(currentFilters).forEach((key) => {
+    const value = currentFilters[key];
+    if (Array.isArray(value)) {
+      uniqueFilters[key] = value;
+    } else {
+      sharedFilters[key] = value;
+    }
+  });
+
+  Object.keys(savedFilters).forEach((key) => {
+    sharedFilters[key] = savedFilters[key];
+  });
+
   return {
     ...state,
     // Clear current information to reload on new view.
     data: [],
     totalDataCount: 0,
+    allIds: [],
+    loadedData: false,
+    loadedCount: false,
 
-    // Switch view and save view information.
-    sort: state.savedView.sort,
-    filters: state.savedView.filters,
-    query: state.savedView.query ? state.savedView.query : initialQuery,
-    savedView: {
+    // Switch view and save information unique to that view.
+    // Information common between views stays in the state.
+    query: {
+      ...state.savedQuery,
+      sort: state.query.sort,
+      filters: sharedFilters,
+    },
+    savedQuery: {
+      ...state.query,
       view: payload.view,
-      query: state.query,
-      filters: state.filters,
-      sort: state.sort,
+      sort: state.savedQuery.sort,
+      filters: uniqueFilters,
     },
   };
 }
@@ -342,17 +386,13 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     ...state,
     data: [],
     totalDataCount: 0,
+    allIds: [],
     loading: false,
+    loadedData: false,
+    loadedCount: false,
     downloading: false,
     error: null,
-    sort: {},
-    filters: {},
-    savedView: {
-      view: null,
-      query: null,
-      filters: {},
-      sort: {},
-    },
+    savedQuery: initialQuery,
   };
 }
 
@@ -360,6 +400,7 @@ export function handleClearData(state: DGCommonState): DGCommonState {
   return {
     ...state,
     data: [],
+    loadedData: false,
   };
 }
 
@@ -386,6 +427,7 @@ export function handleFetchDataSuccess(
     return {
       ...state,
       loading: false,
+      loadedData: true,
       data: state.data.concat(payload.data),
       dataTimestamp: payload.timestamp,
       error: null,
@@ -402,6 +444,7 @@ export function handleFetchDataFailure(
   return {
     ...state,
     loading: false,
+    loadedData: true,
     error: payload.error,
   };
 }
@@ -429,6 +472,9 @@ export function handleFetchCountSuccess(
     return {
       ...state,
       loading: false,
+      // If the count is zero, then mark the data as loaded prematurely
+      loadedData: payload.count > 0 ? state.loadedData : true,
+      loadedCount: true,
       totalDataCount: payload.count,
       countTimestamp: payload.timestamp,
       error: null,
@@ -445,6 +491,7 @@ export function handleFetchCountFailure(
   return {
     ...state,
     loading: false,
+    loadedCount: true,
     error: payload.error,
   };
 }
@@ -551,6 +598,7 @@ export function handleFetchDataCountRequest(
 ): DGCommonState {
   return {
     ...state,
+    loading: true,
   };
 }
 
@@ -560,6 +608,7 @@ export function handleFetchDataCountFailure(
 ): DGCommonState {
   return {
     ...state,
+    loading: false,
     error: payload.error,
   };
 }
@@ -719,7 +768,7 @@ export function handleFetchFilterRequest(
 ): DGCommonState {
   return {
     ...state,
-    loading: false,
+    loading: true,
   };
 }
 

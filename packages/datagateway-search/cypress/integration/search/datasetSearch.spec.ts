@@ -1,10 +1,16 @@
 describe('Dataset search tab', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.server();
-    cy.route('/datasets/count*').as('datasetsCount');
-    cy.route('/datasets?order=*').as('datasetsOrder');
     cy.visit('/search/data/');
+    cy.intercept('/investigations/count?where=%7B%22ID').as(
+      'investigationsCount'
+    );
+    cy.intercept('/investigations?').as('investigations');
+    cy.intercept('/datasets/count?where=%7B%22ID').as('datasetsCount');
+    cy.intercept('/datasets?').as('datasets');
+    cy.intercept('/datafiles/count?where=%7B%22ID').as('datafilesCount');
+    cy.intercept('/datafiles?').as('datafiles');
+    cy.intercept('/topcat/user/cart/LILS/cartItems').as('topcat');
   });
 
   it('should load correctly', () => {
@@ -23,15 +29,28 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Submit search button"]')
       .click()
-      .wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
-        timeout: 10000,
-      });
+      .wait(
+        [
+          '@investigations',
+          '@investigations',
+          '@investigationsCount',
+          '@datasets',
+          '@datasets',
+          '@datasetsCount',
+          '@datafiles',
+          '@datafiles',
+          '@datafilesCount',
+        ],
+        {
+          timeout: 10000,
+        }
+      );
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
       .contains('12')
       .click()
-      .wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
+      .wait(['@datasets', '@datasets', '@datasetsCount'], {
         timeout: 10000,
       });
 
@@ -42,7 +61,9 @@ describe('Dataset search tab', () => {
     // Check that "select all" and individual selection are equivalent
     let i = 1;
     while (i < 13) {
-      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
+      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
+        .click()
+        .wait('@topcat', { timeout: 10000 });
       i++;
     }
     cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(

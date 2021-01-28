@@ -66,8 +66,11 @@ describe('Instrument actions', () => {
     const getState = (): Partial<StateType> => ({
       dgcommon: {
         ...initialState,
-        sort: { column1: 'desc' },
-        filters: { column1: '1', column2: '2' },
+        query: {
+          ...initialState.query,
+          sort: { column1: 'desc' },
+          filters: { column1: '1', column2: '2' },
+        },
       },
     });
     await asyncAction(dispatch, getState, null);
@@ -153,7 +156,10 @@ describe('Instrument actions', () => {
     const getState = (): Partial<StateType> => ({
       dgcommon: {
         ...initialState,
-        filters: { column1: '1', column2: '2' },
+        query: {
+          ...initialState.query,
+          filters: { column1: '1', column2: '2' },
+        },
       },
     });
     await asyncAction(dispatch, getState, null);

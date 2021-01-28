@@ -21,6 +21,7 @@ describe('Add/remove from cart functionality', () => {
           '@getDatafiles',
           '@getDatafileCount',
           '@getDataset',
+          '@getDataset',
           '@getInvestigation',
         ]);
       });
@@ -113,7 +114,14 @@ describe('Add/remove from cart functionality', () => {
           'be.checked'
         );
 
-        cy.reload().wait(['@getDatafiles', '@getDatafiles']);
+        cy.reload().wait([
+          '@getDatafiles',
+          '@getDatafiles',
+          '@getDatafileCount',
+          '@getDataset',
+          '@getDataset',
+          '@getInvestigation',
+        ]);
 
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
           'be.checked'
@@ -218,7 +226,7 @@ describe('Add/remove from cart functionality', () => {
           `[aria-label="select row ${Math.floor(Math.random() * 10)}"]`
         ).should('be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
         cy.get(`[aria-label="select row 55"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
@@ -260,7 +268,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 17"]').should('not.be.checked');
 
-        cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
         cy.get('[aria-label="select row 54"]').should('be.checked');
         cy.get('[aria-label="select row 55"]').should('be.checked');

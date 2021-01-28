@@ -130,12 +130,15 @@ const ISISMyDataTable = (
 
   React.useEffect(() => {
     fetchCount(username);
+    fetchAllIds(username);
+  }, [fetchCount, fetchAllIds, username, filters]);
+
+  React.useEffect(() => {
     fetchData(username, {
       startIndex: 0,
       stopIndex: 49,
     });
-    fetchAllIds(username);
-  }, [fetchCount, fetchData, username, sort, filters, fetchAllIds]);
+  }, [fetchData, username, sort, filters]);
 
   const urlPrefix = (investigationData: Investigation): string => {
     if (
@@ -370,8 +373,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
