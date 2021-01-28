@@ -43,7 +43,17 @@
     "description": "Description",
     "pid": "DOI",
     "end_date": "End Date",
-    "start_date": "Start Date"
+    "start_date": "Start Date",
+    "details": {
+      "label": "Study Details",
+      "investigations": "View Investigations",
+      "users": "Study Users",
+      "publisher": "Publisher",
+      "format": "Data Format",
+      "citation_label": "Data Citation",
+      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:",
+      "part": "Part"
+    }
   },
   "investigations": {
     "title": "Title",
@@ -58,6 +68,7 @@
     "dataset_count": "Dataset Count",
     "type_id": "Type ID",
     "facility_id": "Facility ID",
+    "release_date": "Public Release",
     "details": {
       "tabs_label": "Investigation Details Tabs",
       "label": "Investigation Details",
@@ -169,5 +180,24 @@
     "no_description": "No description available",
     "show_more": "Show more",
     "show_less": "Show less"
+  },
+  "doi_constants": {
+    "keywords": [
+      "STFC > ISIS",
+      "STFC > ISIS > SYNCHROTRON",
+      "SCIENCE AND TECHNOLOGY FACILITIES COUNCIL",
+      "SUBATOMIC PARTICLE > NEUTRON",
+      "SUBATOMIC PARTICLE > MUON"
+    ],
+    "publisher": {
+      "name": "STFC ISIS Neutron and Muon Source",
+      "url": "https://www.isis.stfc.ac.uk/Pages/home.aspx",
+      "email": "isisdata@stfc.ac.uk",
+      "logo": "https://data.isis.stfc.ac.uk/doi/ISIS/images/dsLogo.png"
+    },
+    "distribution": {
+      "format": "RAW/Nexus",
+      "content_url": "https://data.isis.stfc.ac.uk"
+    }
   }
 }

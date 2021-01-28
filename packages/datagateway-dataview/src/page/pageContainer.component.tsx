@@ -98,6 +98,8 @@ export const paths = {
         '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId/datafile',
     },
     landing: {
+      isisStudyLanding:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId',
       isisInvestigationLanding:
         '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId',
       isisDatasetLanding:

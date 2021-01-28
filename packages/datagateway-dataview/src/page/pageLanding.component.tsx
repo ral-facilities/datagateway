@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Switch, Route, RouteComponentProps } from 'react-router';
 
+import ISISStudyLanding from '../views/landing/isis/isisStudyLanding.component';
 import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLanding.component';
 import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.component';
 import {
@@ -126,6 +127,21 @@ class PageLanding extends React.PureComponent {
           )}
         />
         {/* ISIS studyHierarchy routes */}
+        <Route
+          exact
+          path={paths.studyHierarchy.landing.isisStudyLanding}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            studyId: string;
+          }>) => (
+            <ISISStudyLanding
+              instrumentId={match.params.instrumentId}
+              studyId={match.params.studyId}
+            />
+          )}
+        />
         <Route
           exact
           path={paths.studyHierarchy.landing.isisInvestigationLanding}

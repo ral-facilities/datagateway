@@ -22,6 +22,7 @@ export interface Investigation {
   PUBLICATION?: Publication[];
   STUDYINVESTIGATION?: StudyInvestigation[];
   FACILITY?: Facility;
+  RELEASEDATE?: string;
 }
 
 export interface Dataset {

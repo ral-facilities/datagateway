@@ -373,8 +373,14 @@ const mapDispatchToProps = (
             filterType: 'where',
             filterValue: JSON.stringify({
               ID: { eq: investigationId },
+              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              ID: { eq: investigationId },
               'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-              'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
             }),
           },
         ],
