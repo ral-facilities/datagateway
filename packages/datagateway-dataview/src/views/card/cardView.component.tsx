@@ -24,16 +24,14 @@ import {
   ArrowTooltip,
   Entity,
   Filter,
-  FiltersType,
   nestedValue,
   Order,
-  SortType,
+  QueryParams,
+  SortTablePayload,
 } from 'datagateway-common';
-import { QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange } from 'react-virtualized';
-import { Action } from 'redux';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
 
@@ -87,18 +85,15 @@ type CVPaginationPosition = 'top' | 'bottom' | 'both';
 interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
-  filters: FiltersType;
+  loadedData: boolean;
+  loadedCount: boolean;
 
-  loadData: (offsetParams: IndexRange) => Promise<void>;
-  loadCount: () => Promise<void>;
+  loadData: (offsetParams: IndexRange) => Promise<void> | undefined;
+  loadCount: () => Promise<void> | undefined;
   onPageChange: (page: number) => Promise<void>;
-  onResultsChange: (results: number) => Promise<void>;
-  onSort: (sort: string, order: Order | null) => Promise<void>;
   onFilter: (filter: string, data: Filter | null) => Promise<void>;
-  clearData: () => Action;
+  pushQuery: (query: QueryParams) => Promise<void>;
 
   // Props to get title, description of the card
   // represented by data.
@@ -139,6 +134,12 @@ interface CVSort {
   dataKey: string;
 }
 
+interface OptionalQueryParams {
+  newSort?: SortTablePayload;
+  newPage?: number;
+  newResults?: number;
+}
+
 function CVPagination(
   page: number,
   numPages: number,
@@ -174,19 +175,16 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     data,
     totalDataCount,
     query,
-    filters,
-    sort,
     customFilters,
     resultsOptions,
     paginationPosition,
+    loadedData,
+    loadedCount,
     loadData,
     loadCount,
-    loading,
     onPageChange,
-    onResultsChange,
     onFilter,
-    onSort,
-    clearData,
+    pushQuery,
   } = props;
 
   // Get card information.
@@ -206,27 +204,29 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     [resultsOptions]
   );
 
-  // Card data.
-  const [viewData, setViewData] = React.useState<Entity[]>([]);
-  const [loadedData, setLoadedData] = React.useState(false);
+  // Extract relevant entries from query
+  const filters = query.filters;
+  const sort = query.sort;
+  const page = React.useMemo(
+    () => (query.page && query.page > 0 ? query.page : 1),
+    [query]
+  );
+  const results = React.useMemo(
+    () =>
+      query.results && resOptions.includes(query.results)
+        ? query.results
+        : resOptions[0],
+    [query, resOptions]
+  );
 
   // Pagination.
-  const [page, setPage] = React.useState(-1);
-  const [dataCount, setDataCount] = React.useState(-1);
-  const [numPages, setNumPages] = React.useState(-1);
-  const [maxResults, setMaxResults] = React.useState(-1);
-  const [pageChange, setPageChange] = React.useState(false);
+  const [maxPage, setMaxPage] = React.useState(0);
   const paginationPos = paginationPosition ? paginationPosition : 'both';
-
-  // Change in data.
-  const [filterChange, setFilterChange] = React.useState(false);
-  const [sortChange, setSortChange] = React.useState(false);
 
   // Filters.
   const hasInfoFilters = information
     ? information.some((i) => i.filterComponent)
     : false;
-
   const [filtersInfo, setFiltersInfo] = React.useState<CVFilterInfo>({});
   const [selectedFilters, setSelectedFilters] = React.useState<
     CVSelectedFilter[]
@@ -239,8 +239,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     (description ? !description.disableSort : false) ||
     (information ? information.some((i) => !i.disableSort) : false);
 
+  // Get sort information from title, description and information lists.
   React.useEffect(() => {
-    // Get sort information from title, description and information lists.
     let sortList: CVSort[] = [];
 
     if (!title.disableSort) {
@@ -359,9 +359,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     if (!remove && !updateItems.includes(filterValue)) {
       // Add a filter item.
       updateItems.push(filterValue);
+      updateQuery({ newPage: 1 }, query);
       onFilter(filterKey, updateItems);
-      setFilterChange(true);
-      changePage(1);
     } else {
       if (updateItems.length > 0 && updateItems.includes(filterValue)) {
         // Set to null if this is the last item in the array.
@@ -370,27 +369,48 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         if (i > -1) {
           // Remove the filter value from the update items.
           updateItems.splice(i, 1);
+          updateQuery({ newPage: 1 }, query);
           if (updateItems.length > 0) {
             onFilter(filterKey, updateItems);
           } else {
             onFilter(filterKey, null);
           }
-          setFilterChange(true);
-          changePage(1);
         }
       }
     }
   };
 
-  // Actions to take when changing a page.
-  const changePage = React.useCallback(
-    (pageNumber: number): void => {
-      setPage(pageNumber);
-      onPageChange(pageNumber);
-      setPageChange(true);
-      setLoadedData(false);
+  // Allows updating different query entries simultaneously
+  const updateQuery = React.useCallback(
+    (
+      { newPage, newResults, newSort }: OptionalQueryParams,
+      oldQuery: QueryParams
+    ): void => {
+      let combinedSort;
+      if (newSort) {
+        const { column, order } = newSort;
+        if (order !== null) {
+          combinedSort = {
+            ...oldQuery.sort,
+            [column]: order,
+          };
+        } else {
+          const { [column]: order, ...rest } = oldQuery.sort;
+          combinedSort = {
+            ...rest,
+          };
+        }
+      }
+
+      const newQuery = {
+        ...oldQuery,
+        page: newPage ? newPage : oldQuery.page,
+        results: newResults ? newResults : oldQuery.results,
+        sort: combinedSort ? combinedSort : oldQuery.sort,
+      };
+      pushQuery(newQuery);
     },
-    [onPageChange]
+    [pushQuery]
   );
   const nextSortDirection = (dataKey: string): Order | null => {
     switch (sort[dataKey]) {
@@ -403,104 +423,37 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     }
   };
 
+  // Data count only changes when filters change
   React.useEffect(() => {
-    // Set the page number if it was found in the parameters.
-    if (!pageChange) {
-      if (query.page) {
-        setPage(query.page);
-      } else {
-        // Workaround for issue where page remains same on pagination on investigation/dataset.
-        // If this is not a page change and there is no page query parameter,
-        // then default to the 1st page (we treat this as the initial page load).
-        setPage(1);
-      }
-    } else {
-      // Manually scroll to top of the page as the pagination click isn't doing so.
-      window.scrollTo(0, 0);
-      setPageChange(false);
-    }
+    loadCount();
+  }, [loadCount, filters]);
 
-    // Ensure the max results change according to the query parameter.
-    if (query.results && resOptions.includes(query.results)) {
-      setMaxResults(query.results);
-    } else {
-      // Reset the max results back to the default value
-      // when switching between pages (this is the same issue as
-      // the pagination, page, holding the same value between
-      // investigation/dataset card views).
-      setMaxResults(resOptions[0]);
-    }
-  }, [page, pageChange, query, maxResults, dataCount, resOptions]);
-
-  // TODO: Work-around for the pagination, start/stop index
-  //       working incorrectly due to the totalDataCount being updated later on
-  //       (to the new value for the new view).
+  // Handle (max) page and loading data
   React.useEffect(() => {
-    // Handle count and reloading of data based on pagination options.
-    setDataCount(totalDataCount);
-    if (totalDataCount > 0) {
-      // Calculate the maximum pages needed for pagination.
-      const p = ~~((totalDataCount + maxResults - 1) / maxResults);
-
-      // Check if the page query is correct, if not then set the page back to 1.
-      if (query.page && query.page > p) {
-        changePage(1);
-      }
-      setNumPages(p);
-      setLoadedData(false);
-    }
-  }, [changePage, maxResults, numPages, query.page, totalDataCount]);
-
-  // TODO: Creates duplicate count request.
-  // TODO: This should be not how filter/sort changes work; make it simpler (may require a big change).
-  React.useEffect(() => setFilterChange(true), [filters]);
-  React.useEffect(() => setSortChange(true), [sort]);
-
-  // TODO: Duplicate count and data requests for filter and page changes.
-  React.useEffect(() => {
-    // TODO: Move this separately so that sort and filters are handled separately
-    //       (tied to only one load count/data).
-    if (!loading && (filterChange || sortChange)) {
-      // Load count again on filter/sort change.
-      loadCount();
-
-      if (filterChange) setFilterChange(false);
-      if (sortChange) setSortChange(false);
-    }
-
-    if (!loading && dataCount > 0) {
-      if (!loadedData) {
-        // Calculate the start/end indexes for the data.
-        const startIndex = (page - 1) * maxResults;
-
-        // End index not incremented for slice method.
-        const stopIndex = Math.min(startIndex + maxResults, dataCount) - 1;
-
-        if (numPages > -1 && startIndex > -1 && stopIndex > -1) {
-          // Clear data in the state before loading new data.
-          clearData();
-          loadData({ startIndex, stopIndex });
-          setLoadedData(true);
-        }
-      } else {
-        // Set the data once it has been loaded.
-        setViewData(data);
+    if (loadedCount) {
+      const newMaxPage = ~~(1 + (totalDataCount - 1) / results);
+      if (newMaxPage !== maxPage) {
+        // Update maxPage (if needed) due to changed fitlers or results
+        setMaxPage(newMaxPage);
+      } else if (maxPage > 0 && page > newMaxPage) {
+        // Change page (if needed) before loading data
+        onPageChange(1);
+      } else if (results > 0 && totalDataCount > 0 && page > 0) {
+        const startIndex = (page - 1) * results;
+        const stopIndex = startIndex + results - 1;
+        loadData({ startIndex, stopIndex });
       }
     }
   }, [
-    data,
-    dataCount,
-    maxResults,
-    page,
-    numPages,
-    loadCount,
     loadData,
-    loadedData,
-    loading,
-    filterChange,
-    sortChange,
-    changePage,
-    clearData,
+    onPageChange,
+    maxPage,
+    page,
+    results,
+    sort,
+    filters,
+    totalDataCount,
+    loadedCount,
   ]);
 
   const [t] = useTranslation();
@@ -527,9 +480,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             />
           </Grid>
         )}
-        {totalDataCount > 0 && loadedData && !loading && (
+        {totalDataCount > 0 && loadedData && (
           <Grid
             container
+            item
             direction="row"
             alignItems="center"
             justify="space-around"
@@ -544,7 +498,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
             )}
             {/*  Pagination container  */}
             {(paginationPos === 'top' || paginationPos === 'both') && (
-              <Grid item>{CVPagination(page, numPages, changePage)}</Grid>
+              <Grid item>{CVPagination(page, maxPage, onPageChange)}</Grid>
             )}
             {/* Maximum results selection 
                 Do not show if the number of data is smaller than the 
@@ -558,16 +512,29 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                   <Select
                     labelId="select-max-results-label"
                     id="select-max-results"
-                    value={maxResults}
+                    value={results}
                     onChange={(e) => {
-                      // TODO: Do we need a separate max results?
-                      setMaxResults(e.target.value as number);
-                      onResultsChange(e.target.value as number);
-                      setLoadedData(false);
+                      const newResults = e.target.value as number;
+                      const newMaxPage = ~~(
+                        1 +
+                        (totalDataCount - 1) / newResults
+                      );
+                      if (page > newMaxPage) {
+                        updateQuery(
+                          { newResults: newResults, newPage: 1 },
+                          query
+                        );
+                      } else {
+                        updateQuery({ newResults: newResults }, query);
+                      }
                     }}
                   >
                     {resOptions
-                      .filter((n) => dataCount > n)
+                      .filter(
+                        (n, i) =>
+                          (i === 0 && totalDataCount > n) ||
+                          (i > 0 && totalDataCount > resOptions[i - 1])
+                      )
                       .map((n, i) => (
                         <MenuItem key={i} value={n}>
                           {n}
@@ -581,7 +548,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         )}
       </Grid>
 
-      {(loadedData || totalDataCount === 0) && !loading && (
+      {loadedData && (
         <Grid container direction="row">
           <Grid item xs={12} md={3}>
             <Grid
@@ -602,8 +569,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     </Box>
 
                     {/* Show all the available sort options: 
-                        TITLE, DESCRIPTION and the further information (if provided) 
-                    */}
+                        TITLE, DESCRIPTION and the further information (if provided) */}
                     <Box>
                       <List component="nav">
                         {cardSort &&
@@ -612,9 +578,16 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                               key={i}
                               button
                               onClick={() => {
-                                onSort(s.dataKey, nextSortDirection(s.dataKey));
-                                setSortChange(true);
-                                changePage(1);
+                                updateQuery(
+                                  {
+                                    newPage: 1,
+                                    newSort: {
+                                      column: s.dataKey,
+                                      order: nextSortDirection(s.dataKey),
+                                    },
+                                  },
+                                  query
+                                );
                               }}
                             >
                               <ListItemText primary={s.label} />
@@ -723,7 +696,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
               <List style={{ padding: 0, marginRight: 20 }}>
                 {/* TODO: The width of the card should take up more room when
                       there is no information or buttons. */}
-                {viewData.map((data, index) => {
+                {data.map((entity, index) => {
                   return (
                     <ListItem
                       key={index}
@@ -733,11 +706,12 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       {/* Create an individual card */}
                       <EntityCard
                         title={{
-                          label: nestedValue(data, title.dataKey),
-                          content: title.content && title.content(data),
+                          label: nestedValue(entity, title.dataKey),
+                          content: title.content && title.content(entity),
                         }}
                         description={
-                          description && nestedValue(data, description.dataKey)
+                          description &&
+                          nestedValue(entity, description.dataKey)
                         }
                         information={
                           information &&
@@ -748,8 +722,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                 ? details.label
                                 : details.dataKey,
                               content: details.content
-                                ? details.content(data)
-                                : nestedValue(data, details.dataKey),
+                                ? details.content(entity)
+                                : nestedValue(entity, details.dataKey),
                               // Keep the dataKey in so we can use it for adding the tooltip
                               // once content has been created.
                               dataKey: details.dataKey,
@@ -762,7 +736,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                               ...details,
                               content: (
                                 <ArrowTooltip
-                                  title={nestedValue(data, details.dataKey)}
+                                  title={nestedValue(entity, details.dataKey)}
                                 >
                                   <Typography>{details.content}</Typography>
                                 </ArrowTooltip>
@@ -770,16 +744,18 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                             }))
                         }
                         moreInformation={
-                          moreInformation && moreInformation(data)
+                          moreInformation && moreInformation(entity)
                         }
                         // Pass in the react nodes with the data to the card.
                         buttons={
-                          buttons && buttons.map((button) => button(data))
+                          buttons && buttons.map((button) => button(entity))
                         }
                         // Pass tag names to the card given the specified data key for the filter.
                         tags={
                           customFilters &&
-                          customFilters.map((f) => nestedValue(data, f.dataKey))
+                          customFilters.map((f) =>
+                            nestedValue(entity, f.dataKey)
+                          )
                         }
                         image={image}
                       />
@@ -802,11 +778,10 @@ const CardView = (props: CardViewProps): React.ReactElement => {
 
       {/*  Pagination  */}
       {totalDataCount > 0 &&
-        (paginationPos === 'bottom' || paginationPos === 'both') &&
         loadedData &&
-        !loading && (
+        (paginationPos === 'bottom' || paginationPos === 'both') && (
           <Grid item xs style={{ padding: '50px' }}>
-            {CVPagination(page, numPages, changePage)}
+            {CVPagination(page, maxPage, onPageChange)}
           </Grid>
         )}
     </Grid>

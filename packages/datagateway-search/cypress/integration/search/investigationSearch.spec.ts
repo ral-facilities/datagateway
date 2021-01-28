@@ -1,10 +1,16 @@
 describe('Investigation search tab', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.server();
-    cy.route('/investigations/count*').as('investigationsCount');
-    cy.route('/investigations?order=*').as('investigationsOrder');
     cy.visit('/search/data/');
+    cy.intercept('/investigations/count?where=%7B%22ID').as(
+      'investigationsCount'
+    );
+    cy.intercept('/investigations?').as('investigations');
+    cy.intercept('/datasets/count?where=%7B%22ID').as('datasetsCount');
+    cy.intercept('/datasets?').as('datasets');
+    cy.intercept('/datafiles/count?where=%7B%22ID').as('datafilesCount');
+    cy.intercept('/datafiles?').as('datafiles');
+    cy.intercept('/topcat/user/cart/LILS/cartItems').as('topcat');
   });
 
   it('should load correctly', () => {
@@ -25,17 +31,20 @@ describe('Investigation search tab', () => {
       .click()
       .wait(
         [
+          '@investigations',
+          '@investigations',
           '@investigationsCount',
-          '@investigationsOrder',
-          '@investigationsOrder',
+          '@datasets',
+          '@datasets',
+          '@datasetsCount',
+          '@datafiles',
+          '@datafiles',
+          '@datafilesCount',
         ],
-        { timeout: 10000 }
+        {
+          timeout: 10000,
+        }
       );
-
-    cy.get('[aria-label="Search table tabs"]')
-      .contains('Investigation')
-      .contains('4')
-      .click();
 
     cy.get('[aria-rowcount="4"]').should('exist');
 
@@ -44,7 +53,9 @@ describe('Investigation search tab', () => {
     // Check that "select all" and individual selection are equivalent
     let i = 1;
     while (i < 5) {
-      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
+      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
+        .click()
+        .wait('@topcat', { timeout: 10000 });
       i++;
     }
     cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(

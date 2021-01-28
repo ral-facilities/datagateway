@@ -199,7 +199,7 @@ describe('ID check functions', () => {
           where: {
             ID: { eq: 3 },
             'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: 1 },
-            'INVESTIGATIONSTUDY.STUDY.ID': { eq: 2 },
+            'STUDYINVESTIGATION.STUDY.ID': { eq: 2 },
           },
         },
         headers: { Authorization: 'Bearer null' },

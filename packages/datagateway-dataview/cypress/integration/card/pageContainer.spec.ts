@@ -13,14 +13,9 @@ describe('PageContainer Component', () => {
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 10000,
+      });
     cy.clearDownloadCart();
   });
 

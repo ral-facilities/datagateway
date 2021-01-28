@@ -13,6 +13,7 @@ import {
   addToCartRequest,
   dGCommonInitialState,
   clearTable,
+  fetchAllIdsRequest,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -94,7 +95,7 @@ describe('Investigation Search Table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends clearTable action on load', () => {
+  it('sends clearTable and fetches action on load', () => {
     const testStore = mockStore(state);
     mount(
       <Provider store={testStore}>
@@ -104,31 +105,13 @@ describe('Investigation Search Table component', () => {
       </Provider>
     );
 
-    expect(testStore.getActions().length).toEqual(1);
+    expect(testStore.getActions().length).toEqual(4);
     expect(testStore.getActions()[0]).toEqual(clearTable());
-  });
-
-  it('sends fetchInvestigationCount and fetchInvestigations actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    // simulate clearTable action
-    testStore = mockStore({
-      ...state,
-      dgtable: { ...state.dgtable, sort: {}, filters: {} },
-    });
-    wrapper.setProps({ store: testStore });
-
     expect(testStore.getActions()[1]).toEqual(
       fetchInvestigationCountRequest(1)
     );
-    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[3]).toEqual(fetchInvestigationsRequest(1));
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {
@@ -162,14 +145,14 @@ describe('Investigation Search Table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[1]).toEqual(
+    expect(testStore.getActions()[4]).toEqual(
       filterTable('ENDDATE', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('ENDDATE', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -187,7 +170,7 @@ describe('Investigation Search Table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[4]).toEqual(sortTable('TITLE', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -202,7 +185,7 @@ describe('Investigation Search Table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(addToCartRequest());
+    expect(testStore.getActions()[4]).toEqual(addToCartRequest());
   });
 
   it('sends removeFromCart action on checked checkbox click', () => {
@@ -227,7 +210,7 @@ describe('Investigation Search Table component', () => {
 
     wrapper.find('[aria-label="select row 0"]').first().simulate('click');
 
-    expect(testStore.getActions()[1]).toEqual(removeFromCartRequest());
+    expect(testStore.getActions()[4]).toEqual(removeFromCartRequest());
   });
 
   it('selected rows only considers relevant cart items', () => {

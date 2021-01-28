@@ -19,9 +19,9 @@ import {
   updateView,
   loadURLQuery,
   updateQueryParams,
-  updateFilters,
-  updateSort,
   nestedValue,
+  pushQuery,
+  clearData,
 } from '.';
 import {
   SortTableType,
@@ -35,7 +35,10 @@ import { push, RouterState } from 'connected-react-router';
 import axios from 'axios';
 import * as log from 'loglevel';
 import { actions, dispatch, getState, resetActions } from '../../setupTests';
-import { initialState as dGCommonInitialState } from '../reducers/dgcommon.reducer';
+import {
+  initialState as dGCommonInitialState,
+  initialState,
+} from '../reducers/dgcommon.reducer';
 import { Entity, FiltersType, SortType } from '../../app.types';
 
 jest.mock('loglevel');
@@ -63,7 +66,10 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgcommon: {
           ...dGCommonInitialState,
-          sort: { column1: 'asc', column2: 'desc' },
+          query: {
+            ...dGCommonInitialState.query,
+            sort: { column1: 'asc', column2: 'desc' },
+          },
         },
         router: routerState,
       });
@@ -81,9 +87,12 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgcommon: {
           ...dGCommonInitialState,
-          filters: {
-            column1: 'test',
-            column2: { endDate: '2019-09-18' },
+          query: {
+            ...dGCommonInitialState.query,
+            filters: {
+              column1: 'test',
+              column2: { endDate: '2019-09-18' },
+            },
           },
         },
         router: routerState,
@@ -105,7 +114,10 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgcommon: {
           ...dGCommonInitialState,
-          sort: { column1: 'asc' },
+          query: {
+            ...dGCommonInitialState.query,
+            sort: { column1: 'asc' },
+          },
         },
         router: routerState,
       });
@@ -137,8 +149,11 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgcommon: {
           ...dGCommonInitialState,
-          sort: { column1: 'asc', column2: 'desc' },
-          filters: { column1: 'test', column2: { startDate: '2019-09-17' } },
+          query: {
+            ...dGCommonInitialState.query,
+            sort: { column1: 'asc', column2: 'desc' },
+            filters: { column1: 'test', column2: { startDate: '2019-09-17' } },
+          },
         },
         router: routerState,
       });
@@ -223,29 +238,35 @@ describe('Actions', () => {
       },
     };
 
-    const queryState: QueryParams = {
-      view: 'table',
-      search: 'test',
-      page: 1,
-      results: 1,
-    };
     const filterState: FiltersType = {
       column1: ['test'],
       column2: { endDate: '2019-09-18' },
     };
     const sortState: SortType = { column1: 'asc', column2: 'desc' };
+    const queryState: QueryParams = {
+      view: 'table',
+      search: 'test',
+      page: 1,
+      results: 1,
+      filters: filterState,
+      sort: sortState,
+    };
 
     const queryParams = new URLSearchParams();
     const filterParams = new URLSearchParams();
     const sortParams = new URLSearchParams();
 
     for (const [q, v] of Object.entries(queryState)) {
-      queryParams.append(q, v);
+      if (q === 'filters' || q === 'sort') {
+        queryParams.append(q, JSON.stringify(v));
+      } else {
+        queryParams.append(q, v);
+      }
     }
     filterParams.append('filters', JSON.stringify(filterState));
     sortParams.append('sort', JSON.stringify(sortState));
 
-    it('loadURLQuery dispatches clearTable, updateQueryParams, updateFilters, updateSort', async () => {
+    it('loadURLQuery dispatches clearTable, updateQueryParams', async () => {
       const getState = (): StateType => ({
         dgcommon: dGCommonInitialState,
         router: {
@@ -259,24 +280,201 @@ describe('Actions', () => {
           },
         },
       });
-      const asyncAction = loadURLQuery();
+      const asyncAction = loadURLQuery(true);
       await asyncAction(dispatch, getState);
 
-      expect(actions.length).toEqual(4);
+      expect(actions.length).toEqual(2);
       expect(actions).toContainEqual(clearTable());
       expect(actions).toContainEqual(updateQueryParams(queryState));
-      expect(actions).toContainEqual(updateFilters(filterState));
-      expect(actions).toContainEqual(updateSort(sortState));
+    });
+
+    it('loadURLQuery dispatches clearData, updateQueryParams when passed false', async () => {
+      const getState = (): StateType => ({
+        dgcommon: dGCommonInitialState,
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?${queryParams.toString()}&${filterParams.toString()}&${sortParams.toString()}`,
+            state: {},
+          },
+        },
+      });
+      const asyncAction = loadURLQuery(false);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(clearData());
+      expect(actions).toContainEqual(updateQueryParams(queryState));
+    });
+
+    it('loadURLQuery updates query for different dates', async () => {
+      const newFilter = { DATE: { endDate: '2020-01-01' } };
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          query: {
+            ...dGCommonInitialState.query,
+            filters: { DATE: { startDate: '2000-01-01' } },
+          },
+        },
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?filters=${JSON.stringify(newFilter)}`,
+            state: {},
+          },
+        },
+      });
+      const asyncAction = loadURLQuery(false);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(clearData());
+      expect(actions).toContainEqual(
+        updateQueryParams({ ...initialState.query, filters: newFilter })
+      );
+    });
+
+    it('loadURLQuery updates query for array with different values', async () => {
+      const newFilter = { CUSTOM: ['a', 'b', 'c'] };
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          query: {
+            ...dGCommonInitialState.query,
+            filters: { CUSTOM: ['1', '2', '3'] },
+          },
+        },
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?filters=${JSON.stringify(newFilter)}`,
+            state: {},
+          },
+        },
+      });
+      const asyncAction = loadURLQuery(false);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(clearData());
+      expect(actions).toContainEqual(
+        updateQueryParams({ ...initialState.query, filters: newFilter })
+      );
+    });
+
+    it('loadURLQuery updates query for new array', async () => {
+      const newFilter = { CUSTOM: ['a', 'b', 'c'] };
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          query: {
+            ...dGCommonInitialState.query,
+            filters: { CUSTOM: 'a' },
+          },
+        },
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?filters=${JSON.stringify(newFilter)}`,
+            state: {},
+          },
+        },
+      });
+      const asyncAction = loadURLQuery(false);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(clearData());
+      expect(actions).toContainEqual(
+        updateQueryParams({ ...initialState.query, filters: newFilter })
+      );
+    });
+
+    it('loadURLQuery updates query for different type', async () => {
+      const newFilter = { ONE: 1 };
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          query: {
+            ...dGCommonInitialState.query,
+            filters: { ONE: '1' },
+          },
+        },
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?filters=${JSON.stringify(newFilter)}`,
+            state: {},
+          },
+        },
+      });
+      const asyncAction = loadURLQuery(false);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(clearData());
+      expect(actions).toContainEqual(
+        updateQueryParams({ ...initialState.query, filters: newFilter })
+      );
+    });
+
+    it('loadURLQuery updates query for new key', async () => {
+      const newFilter = { URL: 1 };
+      const getState = (): StateType => ({
+        dgcommon: {
+          ...dGCommonInitialState,
+          query: {
+            ...dGCommonInitialState.query,
+            filters: { STATE: 1 },
+          },
+        },
+        router: {
+          action: 'POP',
+          location: {
+            hash: '',
+            key: '',
+            pathname: '/',
+            search: `?filters=${JSON.stringify(newFilter)}`,
+            state: {},
+          },
+        },
+      });
+      const asyncAction = loadURLQuery(false);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(clearData());
+      expect(actions).toContainEqual(
+        updateQueryParams({ ...initialState.query, filters: newFilter })
+      );
     });
 
     it('loadURLQuery logs errors when filters, sort are incorrectly formatted', async () => {
       // Remove characters from the search string to break formatting
       const errorParams = new URLSearchParams();
       for (const [q, v] of Object.entries(queryState)) {
-        errorParams.append(q, v);
+        if (q === 'filters' || q === 'sort') {
+          errorParams.append(q, JSON.stringify(v).slice(1));
+        } else {
+          errorParams.append(q, v);
+        }
       }
-      errorParams.append('filters', JSON.stringify(filterState).slice(1));
-      errorParams.append('sort', JSON.stringify(sortState).slice(1));
       const getState = (): StateType => ({
         dgcommon: dGCommonInitialState,
         router: {
@@ -292,7 +490,7 @@ describe('Actions', () => {
       });
       // Mock to prevent any actual error logging
       const spy = jest.spyOn(console, 'error').mockImplementation();
-      const asyncAction = loadURLQuery();
+      const asyncAction = loadURLQuery(true);
       await asyncAction(dispatch, getState);
 
       expect(spy).toHaveBeenCalledTimes(2);
@@ -307,7 +505,9 @@ describe('Actions', () => {
 
       expect(actions.length).toEqual(2);
       expect(actions).toContainEqual(clearTable());
-      expect(actions).toContainEqual(updateQueryParams(queryState));
+      expect(actions).toContainEqual(
+        updateQueryParams({ ...queryState, filters: {}, sort: {} })
+      );
 
       spy.mockRestore();
     });
@@ -360,7 +560,10 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgcommon: {
           ...dGCommonInitialState,
-          filters: filterState,
+          query: {
+            ...dGCommonInitialState.query,
+            filters: filterState,
+          },
         },
         router: routerState,
       });
@@ -377,7 +580,10 @@ describe('Actions', () => {
       const getState = (): StateType => ({
         dgcommon: {
           ...dGCommonInitialState,
-          sort: sortState,
+          query: {
+            ...dGCommonInitialState.query,
+            sort: sortState,
+          },
         },
         router: routerState,
       });
@@ -388,6 +594,15 @@ describe('Actions', () => {
       expect(actions.length).toEqual(2);
       expect(actions).toContainEqual(sortTable('test', 'asc'));
       expect(actions).toContainEqual(push(`?${sortParams.toString()}`));
+    });
+
+    it('pushQuery dispatches an updateQueryParams and push', async () => {
+      const asyncAction = pushQuery(queryState);
+      await asyncAction(dispatch, getState);
+
+      expect(actions.length).toEqual(2);
+      expect(actions).toContainEqual(updateQueryParams(queryState));
+      expect(actions).toContainEqual(push('?'));
     });
 
     it('saveView dispatches an updateSaveView action', async () => {

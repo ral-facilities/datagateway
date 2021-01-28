@@ -22,6 +22,19 @@ import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component
 import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
 import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
 
+import InvestigationCardView from '../views/card/investigationCardView.component';
+import DatasetCardView from '../views/card/datasetCardView.component';
+
+import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
+import ISISStudiesCardView from '../views/card/isis/isisStudiesCardView.component';
+import ISISFacilityCyclesCardView from '../views/card/isis/isisFacilityCyclesCardView.component';
+import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
+import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
+
+import DLSProposalsCardView from '../views/card/dls/dlsProposalsCardView.component';
+import DLSVisitsCardView from '../views/card/dls/dlsVisitsCardView.component';
+import DLSDatasetsCardView from '../views/card/dls/dlsDatasetsCardView.component';
+
 import withIdCheck from './withIdCheck';
 import {
   checkProposalName,
@@ -31,6 +44,7 @@ import {
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
+import { ViewsType } from 'datagateway-common';
 
 const SafeDatafileTable = React.memo(
   (props: {
@@ -47,7 +61,6 @@ const SafeDatafileTable = React.memo(
     return <SafeDatafileTable datasetId={props.datasetId} />;
   }
 );
-
 SafeDatafileTable.displayName = 'SafeDatafileTable';
 
 const SafeISISDatafilesTable = React.memo(
@@ -89,7 +102,6 @@ const SafeISISDatafilesTable = React.memo(
     return <SafeISISDatafilesTable datasetId={props.datasetId} />;
   }
 );
-
 SafeISISDatafilesTable.displayName = 'SafeISISDatafilesTable';
 
 const SafeISISDatasetsTable = React.memo(
@@ -118,8 +130,35 @@ const SafeISISDatasetsTable = React.memo(
     return <SafeISISDatasetsTable {...props} />;
   }
 );
-
 SafeISISDatasetsTable.displayName = 'SafeISISDatasetsTable';
+
+const SafeISISDatasetsCardView = React.memo(
+  (props: {
+    instrumentId: string;
+    instrumentChildId: string;
+    investigationId: string;
+    studyHierarchy: boolean;
+  }): React.ReactElement => {
+    const SafeISISDatasetsCardView = props.studyHierarchy
+      ? withIdCheck(
+          checkInstrumentAndStudyId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISDatasetsCardView)
+      : withIdCheck(
+          checkInstrumentAndFacilityCycleId(
+            parseInt(props.instrumentId),
+            parseInt(props.instrumentChildId),
+            parseInt(props.investigationId)
+          )
+        )(ISISDatasetsCardView);
+
+    return <SafeISISDatasetsCardView {...props} />;
+  }
+);
+SafeISISDatasetsCardView.displayName = 'SafeISISDatasetsCardView';
 
 const SafeDLSDatafilesTable = React.memo(
   (props: {
@@ -140,7 +179,6 @@ const SafeDLSDatafilesTable = React.memo(
     return <SafeDLSDatafilesTable datasetId={props.datasetId} />;
   }
 );
-
 SafeDLSDatafilesTable.displayName = 'SafeDLSDatafilesTable';
 
 const SafeDLSDatasetsTable = React.memo(
@@ -160,36 +198,71 @@ const SafeDLSDatasetsTable = React.memo(
     );
   }
 );
-
 SafeDLSDatasetsTable.displayName = 'SafeDLSDatasetsTable';
 
-class PageTable extends React.PureComponent {
+const SafeDLSDatasetsCardView = React.memo(
+  (props: {
+    proposalName: string;
+    investigationId: string;
+  }): React.ReactElement => {
+    const SafeDLSDatasetsCardView = withIdCheck(
+      checkProposalName(props.proposalName, parseInt(props.investigationId))
+    )(DLSDatasetsCardView);
+
+    return (
+      <SafeDLSDatasetsCardView
+        proposalName={props.proposalName}
+        investigationId={props.investigationId}
+      />
+    );
+  }
+);
+SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
+
+interface PageRoutingProps {
+  view: ViewsType;
+}
+
+class PageRouting extends React.PureComponent<PageRoutingProps> {
   public render(): React.ReactNode {
     return (
       <Switch>
         <Route
           exact
           path="/"
-          render={() => (
-            <Link to={paths.toggle.investigation}>Browse investigations</Link>
-          )}
+          render={() =>
+            this.props.view === 'card' ? (
+              <Link to={paths.toggle.investigation + '?view=card'}>
+                Browse investigations
+              </Link>
+            ) : (
+              <Link to={paths.toggle.investigation}>Browse investigations</Link>
+            )
+          }
         />
-        {/* DLS routes */}
+        {/* My Data routes */}
         <Route path={paths.myData.dls} component={DLSMyDataTable} />
         <Route path={paths.myData.isis} component={ISISMyDataTable} />
+        {/* DLS routes */}
         <Route
           exact
           path={paths.toggle.dlsProposal}
-          component={DLSProposalsTable}
+          component={
+            this.props.view === 'card'
+              ? DLSProposalsCardView
+              : DLSProposalsTable
+          }
         />
         <Route
           exact
           path={paths.toggle.dlsVisit}
-          render={({
-            match,
-          }: RouteComponentProps<{ proposalName: string }>) => (
-            <DLSVisitsTable proposalName={match.params.proposalName} />
-          )}
+          render={({ match }: RouteComponentProps<{ proposalName: string }>) =>
+            this.props.view === 'card' ? (
+              <DLSVisitsCardView proposalName={match.params.proposalName} />
+            ) : (
+              <DLSVisitsTable proposalName={match.params.proposalName} />
+            )
+          }
         />
         <Route
           exact
@@ -199,12 +272,19 @@ class PageTable extends React.PureComponent {
           }: RouteComponentProps<{
             proposalName: string;
             investigationId: string;
-          }>) => (
-            <SafeDLSDatasetsTable
-              proposalName={match.params.proposalName}
-              investigationId={match.params.investigationId}
-            />
-          )}
+          }>) =>
+            this.props.view === 'card' ? (
+              <SafeDLSDatasetsCardView
+                proposalName={match.params.proposalName}
+                investigationId={match.params.investigationId}
+              />
+            ) : (
+              <SafeDLSDatasetsTable
+                proposalName={match.params.proposalName}
+                investigationId={match.params.investigationId}
+              />
+            )
+          }
         />
         <Route
           exact
@@ -217,89 +297,28 @@ class PageTable extends React.PureComponent {
             datasetId: string;
           }>) => <SafeDLSDatafilesTable {...match.params} />}
         />
-        {/* ISIS routes */}
-        <Route
-          exact
-          path={paths.toggle.isisInstrument}
-          render={() => <ISISInstrumentsTable studyHierarchy={false} />}
-        />
-        <Route
-          exact
-          path={paths.toggle.isisFacilityCycle}
-          render={({
-            match,
-          }: RouteComponentProps<{ instrumentId: string }>) => (
-            <ISISFacilityCyclesTable instrumentId={match.params.instrumentId} />
-          )}
-        />
-        <Route
-          exact
-          path={paths.toggle.isisInvestigation}
-          render={({
-            match,
-          }: RouteComponentProps<{
-            instrumentId: string;
-            facilityCycleId: string;
-          }>) => (
-            <ISISInvestigationsTable
-              studyHierarchy={false}
-              instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.facilityCycleId}
-            />
-          )}
-        />
-        <Route
-          exact
-          path={paths.toggle.isisDataset}
-          render={({
-            match,
-          }: RouteComponentProps<{
-            instrumentId: string;
-            facilityCycleId: string;
-            investigationId: string;
-          }>) => (
-            <SafeISISDatasetsTable
-              studyHierarchy={false}
-              instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.facilityCycleId}
-              investigationId={match.params.investigationId}
-            />
-          )}
-        />
-        <Route
-          exact
-          path={paths.standard.isisDatafile}
-          render={({
-            match,
-          }: RouteComponentProps<{
-            instrumentId: string;
-            facilityCycleId: string;
-            investigationId: string;
-            datasetId: string;
-          }>) => (
-            <SafeISISDatafilesTable
-              studyHierarchy={false}
-              instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.facilityCycleId}
-              investigationId={match.params.investigationId}
-              datasetId={match.params.datasetId}
-            />
-          )}
-        />
         {/* ISIS studyHierarchy routes */}
         <Route
           exact
           path={paths.studyHierarchy.toggle.isisInstrument}
-          render={() => <ISISInstrumentsTable studyHierarchy={true} />}
+          render={() =>
+            this.props.view === 'card' ? (
+              <ISISInstrumentsCardView studyHierarchy={true} />
+            ) : (
+              <ISISInstrumentsTable studyHierarchy={true} />
+            )
+          }
         />
         <Route
           exact
           path={paths.studyHierarchy.toggle.isisStudy}
-          render={({
-            match,
-          }: RouteComponentProps<{ instrumentId: string }>) => (
-            <ISISStudiesTable instrumentId={match.params.instrumentId} />
-          )}
+          render={({ match }: RouteComponentProps<{ instrumentId: string }>) =>
+            this.props.view === 'card' ? (
+              <ISISStudiesCardView instrumentId={match.params.instrumentId} />
+            ) : (
+              <ISISStudiesTable instrumentId={match.params.instrumentId} />
+            )
+          }
         />
         <Route
           exact
@@ -309,13 +328,21 @@ class PageTable extends React.PureComponent {
           }: RouteComponentProps<{
             instrumentId: string;
             studyId: string;
-          }>) => (
-            <ISISInvestigationsTable
-              studyHierarchy={true}
-              instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.studyId}
-            />
-          )}
+          }>) =>
+            this.props.view === 'card' ? (
+              <ISISInvestigationsCardView
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.studyId}
+              />
+            ) : (
+              <ISISInvestigationsTable
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.studyId}
+              />
+            )
+          }
         />
         <Route
           exact
@@ -326,14 +353,23 @@ class PageTable extends React.PureComponent {
             instrumentId: string;
             studyId: string;
             investigationId: string;
-          }>) => (
-            <SafeISISDatasetsTable
-              studyHierarchy={true}
-              instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.studyId}
-              investigationId={match.params.investigationId}
-            />
-          )}
+          }>) =>
+            this.props.view === 'card' ? (
+              <SafeISISDatasetsCardView
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.studyId}
+                investigationId={match.params.investigationId}
+              />
+            ) : (
+              <SafeISISDatasetsTable
+                studyHierarchy={true}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.studyId}
+                investigationId={match.params.investigationId}
+              />
+            )
+          }
         />
         <Route
           exact
@@ -355,20 +391,127 @@ class PageTable extends React.PureComponent {
             />
           )}
         />
+        {/* ISIS routes */}
+        <Route
+          exact
+          path={paths.toggle.isisInstrument}
+          render={() =>
+            this.props.view === 'card' ? (
+              <ISISInstrumentsCardView studyHierarchy={false} />
+            ) : (
+              <ISISInstrumentsTable studyHierarchy={false} />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.toggle.isisFacilityCycle}
+          render={({ match }: RouteComponentProps<{ instrumentId: string }>) =>
+            this.props.view === 'card' ? (
+              <ISISFacilityCyclesCardView
+                instrumentId={match.params.instrumentId}
+              />
+            ) : (
+              <ISISFacilityCyclesTable
+                instrumentId={match.params.instrumentId}
+              />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.toggle.isisInvestigation}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            facilityCycleId: string;
+          }>) =>
+            this.props.view === 'card' ? (
+              <ISISInvestigationsCardView
+                studyHierarchy={false}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.facilityCycleId}
+              />
+            ) : (
+              <ISISInvestigationsTable
+                studyHierarchy={false}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.facilityCycleId}
+              />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.toggle.isisDataset}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            facilityCycleId: string;
+            investigationId: string;
+          }>) =>
+            this.props.view === 'card' ? (
+              <SafeISISDatasetsCardView
+                studyHierarchy={false}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.facilityCycleId}
+                investigationId={match.params.investigationId}
+              />
+            ) : (
+              <SafeISISDatasetsTable
+                studyHierarchy={false}
+                instrumentId={match.params.instrumentId}
+                instrumentChildId={match.params.facilityCycleId}
+                investigationId={match.params.investigationId}
+              />
+            )
+          }
+        />
+        <Route
+          exact
+          path={paths.standard.isisDatafile}
+          render={({
+            match,
+          }: RouteComponentProps<{
+            instrumentId: string;
+            facilityCycleId: string;
+            investigationId: string;
+            datasetId: string;
+          }>) => (
+            <SafeISISDatafilesTable
+              studyHierarchy={false}
+              instrumentId={match.params.instrumentId}
+              instrumentChildId={match.params.facilityCycleId}
+              investigationId={match.params.investigationId}
+              datasetId={match.params.datasetId}
+            />
+          )}
+        />
+
         {/* Generic routes */}
         <Route
           exact
           path={paths.toggle.investigation}
-          component={InvestigationTable}
+          component={
+            this.props.view === 'card'
+              ? InvestigationCardView
+              : InvestigationTable
+          }
         />
         <Route
           exact
           path={paths.toggle.dataset}
           render={({
             match,
-          }: RouteComponentProps<{ investigationId: string }>) => (
-            <DatasetTable investigationId={match.params.investigationId} />
-          )}
+          }: RouteComponentProps<{ investigationId: string }>) =>
+            this.props.view === 'card' ? (
+              <DatasetCardView investigationId={match.params.investigationId} />
+            ) : (
+              <DatasetTable investigationId={match.params.investigationId} />
+            )
+          }
         />
         <Route
           exact
@@ -390,4 +533,4 @@ class PageTable extends React.PureComponent {
   }
 }
 
-export default PageTable;
+export default PageRouting;

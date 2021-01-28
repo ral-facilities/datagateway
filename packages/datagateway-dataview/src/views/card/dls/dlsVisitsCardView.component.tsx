@@ -3,7 +3,6 @@ import React from 'react';
 import CardView from '../cardView.component';
 import { IndexRange } from 'react-virtualized';
 import {
-  ViewsType,
   StateType,
   FilterDataType,
   QueryParams,
@@ -17,21 +16,16 @@ import {
   tableLink,
   fetchFilter,
   fetchInvestigationSize,
-  FiltersType,
   Filter,
   pushPageFilter,
   DateFilter,
   DateColumnFilter,
   TextColumnFilter,
-  SortType,
-  Order,
-  pushPageSort,
   pushPageNum,
-  pushPageResults,
-  clearData,
+  pushQuery,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
-import { AnyAction, Action } from 'redux';
+import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
@@ -53,20 +47,16 @@ interface DLSVisitsCVDispatchProps {
   fetchTypeFilter: (proposalName: string) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  clearData: () => Action;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 interface DLSVisitsCVStateProps {
   data: Entity[];
   totalDatCount: number;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
-  filters: FiltersType;
   filterData: FilterDataType;
-  view: ViewsType;
+  loadedData: boolean;
+  loadedCount: boolean;
 }
 
 type DLSVisitsCVCombinedProps = DLSVisitsCVProps &
@@ -79,29 +69,27 @@ const DLSVisitsCardView = (
   const {
     data,
     totalDatCount,
-    loading,
     query,
-    sort,
-    filters,
     filterData,
     proposalName,
-    view,
+    loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     fetchTypeFilter,
     fetchDetails,
     fetchSize,
     pushPage,
-    pushResults,
     pushFilters,
-    pushSort,
-    clearData,
+    pushQuery,
   } = props;
 
+  const filters = query.filters;
   const [t] = useTranslation();
 
-  const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [fetchedFilters, setFetchedFilters] = React.useState(false);
+  React.useEffect(() => {
+    fetchTypeFilter(proposalName);
+  }, [proposalName, fetchTypeFilter]);
 
   const typeFilteredItems = React.useMemo(
     () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
@@ -126,41 +114,27 @@ const DLSVisitsCardView = (
     />
   );
 
-  React.useEffect(() => {
-    // Fetch count.
-    if (!fetchedCount) {
-      fetchCount(proposalName);
-      setFetchedCount(true);
-    }
-
-    if (!fetchedFilters) {
-      fetchTypeFilter(proposalName);
-      setFetchedFilters(true);
-    }
-  }, [
-    proposalName,
-    fetchedCount,
+  const loadCount = React.useCallback(() => fetchCount(proposalName), [
     fetchCount,
-    setFetchedCount,
-    fetchTypeFilter,
-    fetchedFilters,
+    proposalName,
   ]);
+  const loadData = React.useCallback(
+    (params) => fetchData(proposalName, params),
+    [fetchData, proposalName]
+  );
 
   return (
     <CardView
       data={data}
       totalDataCount={totalDatCount}
-      loading={loading}
-      sort={sort}
-      filters={filters}
       query={query}
-      loadData={(params) => fetchData(proposalName, params)}
-      loadCount={() => fetchCount(proposalName)}
+      loadData={loadData}
+      loadCount={loadCount}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
+      loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('investigations.visit_id'),
         dataKey: 'VISIT_ID',
@@ -168,7 +142,7 @@ const DLSVisitsCardView = (
           tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigation.ID}/dataset`,
             investigation.VISIT_ID,
-            view
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -268,11 +242,8 @@ const mapDispatchToProps = (
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
-  clearData: () => dispatch(clearData()),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 const mapStateToProps = (state: StateType): DLSVisitsCVStateProps => {
@@ -280,12 +251,9 @@ const mapStateToProps = (state: StateType): DLSVisitsCVStateProps => {
     data: state.dgcommon.data,
     totalDatCount: state.dgcommon.totalDataCount,
     filterData: state.dgcommon.filterData,
-
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
-    view: state.dgcommon.query.view,
+    loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

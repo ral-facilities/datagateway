@@ -7,7 +7,6 @@ exports[`ISIS Datasets - Card View renders correctly 1`] = `
   <ISISDatasetsCardView
     addToCart={[Function]}
     cartItems={Array []}
-    clearData={[Function]}
     data={
       Array [
         Object {
@@ -24,23 +23,23 @@ exports[`ISIS Datasets - Card View renders correctly 1`] = `
     fetchCount={[Function]}
     fetchData={[Function]}
     fetchDetails={[Function]}
-    filters={Object {}}
     investigationId="1"
-    loading={false}
+    loadedCount={true}
+    loadedData={true}
     pushFilters={[Function]}
     pushPage={[Function]}
-    pushResults={[Function]}
-    pushSort={[Function]}
+    pushQuery={[Function]}
     query={
       Object {
+        "filters": Object {},
         "page": null,
         "results": null,
         "search": null,
+        "sort": Object {},
         "view": null,
       }
     }
     removeFromCart={[Function]}
-    sort={Object {}}
     store={
       Object {
         "clearActions": [Function],
