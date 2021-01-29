@@ -127,8 +127,11 @@ const DLSMyDataTable = (
 
   React.useEffect(() => {
     fetchCount(username);
+  }, [fetchCount, filters, username]);
+
+  React.useEffect(() => {
     fetchData(username, { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, username]);
+  }, [fetchData, sort, filters, username]);
 
   return (
     <Table
@@ -276,8 +279,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSMyDataTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

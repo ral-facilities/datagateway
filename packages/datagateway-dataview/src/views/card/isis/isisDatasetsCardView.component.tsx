@@ -14,23 +14,18 @@ import {
   Dataset,
   tableLink,
   formatBytes,
-  FiltersType,
   TextColumnFilter,
   DateColumnFilter,
   DateFilter,
   Filter,
   pushPageFilter,
-  Order,
   QueryParams,
-  SortType,
-  pushPageSort,
-  pushPageResults,
   pushPageNum,
-  clearData,
+  pushQuery,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import {
@@ -54,11 +49,9 @@ interface ISISDatasetCVDispatchProps {
   downloadData: (datasetId: number, name: string) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  clearData: () => Action;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -66,10 +59,9 @@ interface ISISDatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
-  filters: FiltersType;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
+  loadedData: boolean;
+  loadedCount: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -94,28 +86,23 @@ const ISISDatasetsCardView = (
     data,
     totalDataCount,
     cartItems,
-    loading,
     query,
-    sort,
+    loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     fetchDetails,
     addToCart,
     removeFromCart,
     downloadData,
-    filters,
     pushFilters,
     pushPage,
-    pushResults,
-    pushSort,
-    clearData,
+    pushQuery,
     studyHierarchy,
   } = props;
 
+  const filters = query.filters;
   const [t] = useTranslation();
-
-  const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [datasetIds, setDatasetIds] = React.useState<number[]>([]);
 
   const selectedCards = React.useMemo(
     () =>
@@ -123,10 +110,10 @@ const ISISDatasetsCardView = (
         .filter(
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
-            datasetIds.includes(cartItem.entityId)
+            data.map((dataset) => dataset.ID).includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, datasetIds]
+    [cartItems, data]
   );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -147,40 +134,37 @@ const ISISDatasetsCardView = (
     />
   );
 
-  React.useEffect(() => {
-    setDatasetIds(data.map((dataset) => dataset.ID));
-
-    if (!fetchedCount) {
-      fetchCount(parseInt(investigationId));
-      setFetchedCount(true);
-    }
-  }, [investigationId, data, fetchedCount, fetchCount]);
-
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const loadCount = React.useCallback(
+    () => fetchCount(parseInt(investigationId)),
+    [fetchCount, investigationId]
+  );
+  const loadData = React.useCallback(
+    (params) => fetchData(parseInt(investigationId), params),
+    [fetchData, investigationId]
+  );
 
   return (
     <CardView
       data={data}
-      loadData={(params) => fetchData(parseInt(investigationId), params)}
-      loadCount={() => fetchCount(parseInt(investigationId))}
+      loadData={loadData}
+      loadCount={loadCount}
       totalDataCount={totalDataCount}
-      loading={loading}
-      sort={sort}
-      filters={filters}
       query={query}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
+      loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
           tableLink(
             `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME
+            dataset.NAME,
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -298,14 +282,11 @@ const mapDispatchToProps = (
   addToCart: (entityIds: number[]) => dispatch(addToCart('dataset', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('dataset', entityIds)),
-  clearData: () => dispatch(clearData()),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {
@@ -313,10 +294,9 @@ const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
-    filters: state.dgcommon.filters,
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
+    loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 
