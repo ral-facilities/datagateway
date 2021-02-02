@@ -4,5 +4,6 @@
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
-  "selectAllSetting": true
+  "selectAllSetting": true,
+  "pluginHost": "http://localhost:3000"
 }

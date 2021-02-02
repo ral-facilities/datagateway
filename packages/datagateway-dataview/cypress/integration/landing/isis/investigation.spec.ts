@@ -16,4 +16,15 @@ describe('ISIS - Investigation Landing', () => {
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
     );
   });
+
+  it('should be able to click a specific dataset', () => {
+    cy.get('[aria-label="landing-investigation-part-label"')
+      .children()
+      .first()
+      .click({ force: true });
+    cy.location('pathname').should(
+      'eq',
+      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/348'
+    );
+  });
 });

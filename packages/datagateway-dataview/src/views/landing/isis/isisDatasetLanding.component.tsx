@@ -17,6 +17,7 @@ import {
   fetchDatasetDetails,
   fetchDatasets,
   formatBytes,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,12 +27,19 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
 import DownloadButton from '../../downloadButton.component';
+import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       margin: theme.spacing(1),
       padding: theme.spacing(1),
+    },
+    tabPaper: {
+      marginLeft: -theme.spacing(1.5),
+      marginRight: -theme.spacing(1.5),
+      paddingLeft: theme.spacing(1.5),
+      paddingRight: theme.spacing(1.5),
     },
     subHeading: {
       marginTop: theme.spacing(1),
@@ -71,11 +79,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface LandingPageDispatchProps {
   fetchDetails: (datasetId: number) => Promise<void>;
   fetchData: (datasetId: number) => Promise<void>;
-  viewDatafiles: (urlPrefix: string) => Action;
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => Action;
 }
 
 interface LandingPageStateProps {
   data: Entity[];
+  view: ViewsType;
 }
 
 interface LandingPageProps {
@@ -98,6 +107,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     fetchData,
     viewDatafiles,
     data,
+    view,
     instrumentId,
     instrumentChildId,
     investigationId,
@@ -152,28 +162,29 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   return (
     <Paper className={classes.paper}>
       <Grid container style={{ padding: 4 }}>
-        {/* <Grid item xs={12}> 
-          BRANDING PLACEHOLDER
-          <Divider />
-        </Grid> */}
         <Grid item xs={12}>
-          <Tabs
-            value={value}
-            onChange={(event, newValue) => setValue(newValue)}
-          >
-            <Tab
-              id="dataset-details-tab"
-              aria-controls="dataset-details-panel"
-              label={t('datasets.details.label')}
-              value="details"
-            />
-            <Tab
-              id="dataset-datafiles-tab"
-              label={t('datasets.details.datafiles')}
-              onClick={() => viewDatafiles(urlPrefix)}
-            />
-          </Tabs>
-          <Divider />
+          <Branding />
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={classes.tabPaper} square elevation={0}>
+            <Tabs
+              value={value}
+              onChange={(event, newValue) => setValue(newValue)}
+            >
+              <Tab
+                id="dataset-details-tab"
+                aria-controls="dataset-details-panel"
+                label={t('datasets.details.label')}
+                value="details"
+              />
+              <Tab
+                id="dataset-datafiles-tab"
+                label={t('datasets.details.datafiles')}
+                onClick={() => viewDatafiles(urlPrefix, view)}
+              />
+            </Tabs>
+            <Divider />
+          </Paper>
         </Grid>
         <Grid item container xs={12}>
           {/* Long format information */}
@@ -231,7 +242,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 )
             )}
             {/* Actions */}
-            <Divider />
             <div className={classes.actionButtons}>
               <AddToCartButton
                 entityType="dataset"
@@ -269,12 +279,18 @@ const mapDispatchToProps = (
         ],
       })
     ),
-  viewDatafiles: (urlPrefix: string) => dispatch(push(`${urlPrefix}/datafile`)),
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => {
+    const url = view
+      ? `${urlPrefix}/datafile?view=${view}`
+      : `${urlPrefix}/datafile`;
+    return dispatch(push(url));
+  },
 });
 
 const mapStateToProps = (state: StateType): LandingPageStateProps => {
   return {
     data: state.dgcommon.data,
+    view: state.dgcommon.query.view,
   };
 };
 

@@ -5,7 +5,9 @@ describe('ISIS - Datasets Table', () => {
     cy.login('user', 'password');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
-    ).wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+    ).wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
+      timeout: 10000,
+    });
   });
 
   it('should load correctly', () => {

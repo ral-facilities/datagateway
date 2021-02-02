@@ -8,6 +8,13 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
     data={
       Array [
         Object {
+          "DATASET": Array [
+            Object {
+              "DOI": "dataset doi",
+              "ID": 1,
+              "NAME": "dataset 1",
+            },
+          ],
           "DOI": "doi 1",
           "ENDDATE": "2019-06-11",
           "ID": 1,
@@ -32,8 +39,10 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
               "ID": 6,
               "INVESTIGATION_ID": 1,
               "STUDY": Object {
+                "ENDDATE": "2019-06-11",
                 "ID": 7,
                 "PID": "study pid",
+                "STARTDATE": "2019-06-10",
               },
               "STUDY_ID": 7,
             },
@@ -44,7 +53,6 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
         },
       ]
     }
-    fetchDetails={[Function]}
     fetchFacilityCycleData={[Function]}
     fetchStudyData={[Function]}
     instrumentChildId="5"
@@ -61,6 +69,7 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
       }
     }
     studyHierarchy={false}
+    view={null}
     viewDatasets={[Function]}
   />
 </ContextProvider>
@@ -74,6 +83,13 @@ exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`
     data={
       Array [
         Object {
+          "DATASET": Array [
+            Object {
+              "DOI": "dataset doi",
+              "ID": 1,
+              "NAME": "dataset 1",
+            },
+          ],
           "DOI": "doi 1",
           "ENDDATE": "2019-06-11",
           "ID": 1,
@@ -98,8 +114,10 @@ exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`
               "ID": 6,
               "INVESTIGATION_ID": 1,
               "STUDY": Object {
+                "ENDDATE": "2019-06-11",
                 "ID": 7,
                 "PID": "study pid",
+                "STARTDATE": "2019-06-10",
               },
               "STUDY_ID": 7,
             },
@@ -110,7 +128,6 @@ exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`
         },
       ]
     }
-    fetchDetails={[Function]}
     fetchFacilityCycleData={[Function]}
     fetchStudyData={[Function]}
     instrumentChildId="5"
@@ -127,6 +144,7 @@ exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`
       }
     }
     studyHierarchy={true}
+    view={null}
     viewDatasets={[Function]}
   />
 </ContextProvider>

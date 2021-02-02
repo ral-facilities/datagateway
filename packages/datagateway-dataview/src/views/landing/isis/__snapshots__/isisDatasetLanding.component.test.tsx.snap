@@ -39,6 +39,7 @@ exports[`ISIS Dataset Landing page renders correctly 1`] = `
       }
     }
     studyHierarchy={false}
+    view={null}
     viewDatafiles={[Function]}
   />
 </ContextProvider>

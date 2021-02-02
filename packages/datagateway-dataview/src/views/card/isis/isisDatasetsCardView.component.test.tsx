@@ -35,7 +35,12 @@ describe('ISIS Datasets - Card View', () => {
     return mount(
       <Provider store={store}>
         <MemoryRouter>
-          <ISISDatasetsCardView investigationId="1" />
+          <ISISDatasetsCardView
+            instrumentId="1"
+            instrumentChildId="1"
+            investigationId="1"
+            studyHierarchy={false}
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -111,9 +116,7 @@ describe('ISIS Datasets - Card View', () => {
     );
     expect(
       wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
-    ).toEqual(
-      '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile'
-    );
+    ).toEqual('/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1');
   });
 
   it('correct link used for studyHierarchy', () => {
@@ -133,7 +136,7 @@ describe('ISIS Datasets - Card View', () => {
     expect(
       wrapper.find('[aria-label="card-title"]').childAt(0).prop('to')
     ).toEqual(
-      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1/datafile'
+      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1'
     );
   });
 
@@ -253,7 +256,7 @@ describe('ISIS Datasets - Card View', () => {
   // Had a similar issue in DG download with the new version of M-UI.
   it.todo('pushResults dispatched onChange');
 
-  it('fetchDetails dispatched when details panel expanded', () => {
+  it('actions dispatched when details panel expanded', () => {
     const wrapper = createWrapper();
     wrapper
       .find('[aria-label="card-more-info-expand"]')
@@ -262,6 +265,14 @@ describe('ISIS Datasets - Card View', () => {
 
     expect(store.getActions().length).toEqual(3);
     expect(store.getActions()[2]).toEqual(fetchDatasetDetailsRequest());
+
+    wrapper.find('#dataset-datafiles-tab').first().simulate('click');
+    expect(store.getActions()).toHaveLength(4);
+    expect(store.getActions()[3]).toEqual(
+      push(
+        '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile'
+      )
+    );
   });
 
   it('downloadDataset dispatched on button click', () => {

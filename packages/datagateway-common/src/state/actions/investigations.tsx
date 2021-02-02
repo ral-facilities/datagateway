@@ -221,13 +221,10 @@ export const fetchISISInvestigations = ({
 
     const params = getApiFilter(getState);
 
-    params.append(
-      'include',
-      JSON.stringify([
-        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
-        { STUDYINVESTIGATION: 'STUDY' },
-      ])
-    );
+    let includeParams = [
+      { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
+      { STUDYINVESTIGATION: 'STUDY' },
+    ];
 
     if (offsetParams) {
       params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -239,9 +236,19 @@ export const fetchISISInvestigations = ({
 
     if (optionalParams && optionalParams.additionalFilters) {
       optionalParams.additionalFilters.forEach((filter) => {
-        params.append(filter.filterType, filter.filterValue);
+        if (filter.filterType === 'include') {
+          const additionalIncludeParams = JSON.parse(filter.filterValue);
+          if (Array.isArray(additionalIncludeParams)) {
+            includeParams = includeParams.concat(additionalIncludeParams);
+          } else {
+            includeParams.push(additionalIncludeParams);
+          }
+        } else {
+          params.append(filter.filterType, filter.filterValue);
+        }
       });
     }
+    params.append('include', JSON.stringify(includeParams));
 
     const { apiUrl } = getState().dgcommon.urls;
 

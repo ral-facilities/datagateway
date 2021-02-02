@@ -208,6 +208,8 @@ describe('Investigation actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('ID asc'));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
     params.append(
       'include',
       JSON.stringify([
@@ -215,8 +217,6 @@ describe('Investigation actions', () => {
         { STUDYINVESTIGATION: 'STUDY' },
       ])
     );
-    params.append('skip', JSON.stringify(0));
-    params.append('limit', JSON.stringify(50));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/1/facilitycycles/2/investigations',
@@ -360,6 +360,14 @@ describe('Investigation actions', () => {
             filterType: 'where',
             filterValue: JSON.stringify({ column3: { eq: 3 } }),
           },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('single'),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify(['array1', 'array2']),
+          },
         ],
       },
     });
@@ -383,14 +391,17 @@ describe('Investigation actions', () => {
     params.append('order', JSON.stringify('ID asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ column3: { eq: 3 } }));
     params.append(
       'include',
       JSON.stringify([
         { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
         { STUDYINVESTIGATION: 'STUDY' },
+        'single',
+        'array1',
+        'array2',
       ])
     );
-    params.append('where', JSON.stringify({ column3: { eq: 3 } }));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/1/facilitycycles/2/investigations',

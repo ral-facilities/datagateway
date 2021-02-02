@@ -22,10 +22,11 @@ import {
   QueryParams,
   pushPageNum,
   pushQuery,
+  ViewsType,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import {
@@ -53,7 +54,7 @@ interface ISISDatasetCVDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
-  viewDatafiles: (urlPrefix: string) => (id: number) => Action;
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => (id: number) => Action;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -198,7 +199,7 @@ const ISISDatasetsCardView = (
         <DatasetDetailsPanel
           rowData={dataset}
           fetchDetails={fetchDetails}
-          viewDatafiles={viewDatafiles(urlPrefix)}
+          viewDatafiles={viewDatafiles(urlPrefix, query.view)}
         />
       )}
       buttons={[
@@ -291,9 +292,12 @@ const mapDispatchToProps = (
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
-  viewDatafiles: (urlPrefix: string) => {
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => {
     return (id: number) => {
-      return dispatch(push(`${urlPrefix}/${id}/datafile`));
+      const url = view
+        ? `${urlPrefix}/${id}/datafile?view=${view}`
+        : `${urlPrefix}/${id}/datafile`;
+      return dispatch(push(url));
     };
   },
 });

@@ -2,6 +2,7 @@ import {
   createStyles,
   Divider,
   Grid,
+  Link as MuiLink,
   makeStyles,
   Paper,
   Tab,
@@ -14,20 +15,23 @@ import {
   Business,
   CalendarToday,
   Fingerprint,
-  PieChart,
   Public,
   Save,
+  Storage,
 } from '@material-ui/icons';
 import { push } from 'connected-react-router';
 import {
+  Dataset,
   Entity,
-  fetchInvestigationDetails,
   fetchInvestigations,
   fetchISISInvestigations,
   formatBytes,
   Investigation,
   InvestigationUser,
   Publication,
+  Sample,
+  tableLink,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -36,12 +40,20 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
+import DownloadButton from '../../downloadButton.component';
+import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       margin: theme.spacing(1),
       padding: theme.spacing(1),
+    },
+    tabPaper: {
+      marginLeft: -theme.spacing(1.5),
+      marginRight: -theme.spacing(1.5),
+      paddingLeft: theme.spacing(1.5),
+      paddingRight: theme.spacing(1.5),
     },
     subHeading: {
       marginTop: theme.spacing(1),
@@ -67,6 +79,10 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'hidden',
       textOverflow: 'ellipsis',
     },
+    shortInfoPart: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
     actionButtons: {
       display: 'flex',
       flexDirection: 'column',
@@ -78,8 +94,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+interface FormattedUser {
+  ROLE: string;
+  FULLNAME: string;
+}
+
 interface LandingPageDispatchProps {
-  fetchDetails: (investigationId: number) => Promise<void>;
   fetchFacilityCycleData: (
     instrumentId: number,
     FacilityCycleId: number,
@@ -90,11 +110,12 @@ interface LandingPageDispatchProps {
     StudyId: number,
     investigationId: number
   ) => Promise<void>;
-  viewDatasets: (urlPrefix: string) => Action;
+  viewDatasets: (urlPrefix: string, view: ViewsType) => Action;
 }
 
 interface LandingPageStateProps {
   data: Entity[];
+  view: ViewsType;
 }
 
 interface LandingPageProps {
@@ -112,11 +133,11 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const [t] = useTranslation();
   const [value, setValue] = React.useState<'details'>('details');
   const {
-    fetchDetails,
     fetchFacilityCycleData,
     fetchStudyData,
     viewDatasets,
     data,
+    view,
     instrumentId,
     instrumentChildId,
     investigationId,
@@ -137,41 +158,85 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     );
   }, [fetchData, instrumentId, instrumentChildId, investigationId]);
 
-  React.useEffect(() => {
-    if (
-      data[0] &&
-      (!data[0]?.INVESTIGATIONUSER || !data[0]?.SAMPLE || !data[0]?.PUBLICATION)
-    ) {
-      fetchDetails(data[0].ID);
-    }
-  }, [fetchDetails, data]);
+  const title = React.useMemo(() => data[0]?.TITLE, [data]);
+  const doi = React.useMemo(() => data[0]?.DOI, [data]);
+  const studyInvestigation = React.useMemo(() => data[0]?.STUDYINVESTIGATION, [
+    data,
+  ]);
 
-  const filteredUsers = React.useMemo(() => {
-    if (data[0] && data[0]?.INVESTIGATIONUSER) {
-      return (data[0].INVESTIGATIONUSER as InvestigationUser[]).filter(
-        (user) => user.USER_?.FULLNAME
-      );
+  const formattedUsers = React.useMemo(() => {
+    const principals: FormattedUser[] = [];
+    const contacts: FormattedUser[] = [];
+    const experimenters: FormattedUser[] = [];
+    if (data[0]?.INVESTIGATIONUSER) {
+      const investigationUsers = data[0]
+        .INVESTIGATIONUSER as InvestigationUser[];
+      investigationUsers.forEach((user) => {
+        // Only keep users where we have their FULLNAME
+        const fullname = user.USER_?.FULLNAME;
+        if (fullname) {
+          switch (user.ROLE) {
+            case 'principal_experimenter':
+              principals.push({
+                FULLNAME: fullname,
+                ROLE: 'Principal Investigator',
+              });
+              break;
+            case 'local_contact':
+              contacts.push({ FULLNAME: fullname, ROLE: 'Local Contact' });
+              break;
+            default:
+              experimenters.push({ FULLNAME: fullname, ROLE: 'Experimenter' });
+          }
+        }
+      });
     }
+    // Ensure PIs are listed first, and sort within roles for consistency
+    principals.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
+    contacts.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
+    experimenters.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
+    return principals.concat(contacts, experimenters);
   }, [data]);
 
-  const filteredPublications = React.useMemo(() => {
-    if (data[0] && data[0]?.PUBLICATION) {
+  const formattedPublications = React.useMemo(() => {
+    if (data[0]?.PUBLICATION) {
       return (data[0].PUBLICATION as Publication[]).map(
         (publication) => publication.FULLREFERENCE
       );
     }
   }, [data]);
 
+  const formattedSamples = React.useMemo(() => {
+    if (data[0]?.SAMPLE) {
+      return (data[0].SAMPLE as Sample[]).map((sample) => sample.NAME);
+    }
+  }, [data]);
+
   const shortInfo = [
     {
       content: (entity: Investigation) => entity.VISIT_ID,
-      label: t('investigations.rb_number'),
+      label: t('investigations.visit_id'),
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
       content: (entity: Investigation) => entity.DOI,
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) => {
+        const studyInvestigation = entity.STUDYINVESTIGATION;
+        return studyInvestigation
+          ? studyInvestigation[0]?.STUDY?.PID
+          : undefined;
+      },
+      label: t('investigations.parent_doi'),
+      icon: <Public className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) => entity.NAME,
+      label: t('investigations.name'),
+      icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
       content: (entity: Investigation) => formatBytes(entity.SIZE),
@@ -190,9 +255,20 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       icon: <Assessment className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.SAMPLE?.[0]?.NAME,
-      label: t('investigations.details.samples.name'),
-      icon: <PieChart className={classes.shortInfoIcon} />,
+      content: function distributionFormat(entity: Investigation) {
+        return (
+          <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
+            {t('doi_constants.distribution.format')}
+          </MuiLink>
+        );
+      },
+      label: t('studies.details.format'),
+      icon: <Storage className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) => entity.RELEASEDATE?.slice(0, 10),
+      label: t('investigations.release_date'),
+      icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
       content: (entity: Investigation) => entity.STARTDATE?.slice(0, 10),
@@ -206,56 +282,58 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     },
   ];
 
+  const shortDatasetInfo = [
+    {
+      content: (entity: Dataset) => entity.DOI,
+      label: t('datasets.doi'),
+      icon: <Public className={classes.shortInfoIcon} />,
+    },
+  ];
+
   return (
     <Paper className={classes.paper}>
       <Grid container style={{ padding: 4 }}>
-        {/* <Grid item xs={12}> 
-          BRANDING PLACEHOLDER
-          <Divider />
-        </Grid> */}
         <Grid item xs={12}>
-          <Typography
-            component="h5"
-            variant="h5"
-            aria-label="landing-investigation-title"
-          >
-            {data[0]?.TITLE}
-          </Typography>
+          <Branding />
         </Grid>
         <Grid item xs={12}>
-          <Tabs
-            value={value}
-            onChange={(event, newValue) => setValue(newValue)}
-          >
-            <Tab
-              id="investigation-details-tab"
-              aria-controls="investigation-details-panel"
-              label={t('investigations.details.label')}
-              value="details"
-            />
-            <Tab
-              id="investigation-datasets-tab"
-              label={t('investigations.details.datasets')}
-              onClick={() => viewDatasets(urlPrefix)}
-            />
-          </Tabs>
-          <Divider />
+          <Paper className={classes.tabPaper} square elevation={0}>
+            <Tabs
+              value={value}
+              onChange={(event, newValue) => setValue(newValue)}
+            >
+              <Tab
+                id="investigation-details-tab"
+                aria-controls="investigation-details-panel"
+                label={t('investigations.details.label')}
+                value="details"
+              />
+              <Tab
+                id="investigation-datasets-tab"
+                label={t('investigations.details.datasets')}
+                onClick={() => viewDatasets(urlPrefix, view)}
+              />
+            </Tabs>
+            <Divider />
+          </Paper>
         </Grid>
         <Grid item container xs={12}>
           {/* Long format information */}
           <Grid item xs>
             <Typography
               className={classes.subHeading}
-              component="h6"
-              variant="h6"
-              aria-label="landing-investigation-name"
+              component="h5"
+              variant="h5"
+              aria-label="landing-investigation-title"
             >
-              {data[0]?.NAME}
+              {data[0]?.TITLE}
             </Typography>
+
             <Typography aria-label="landing-investigation-summary">
               {data[0]?.SUMMARY}
             </Typography>
-            {filteredUsers && (
+
+            {formattedUsers.length > 0 && (
               <div>
                 <Typography
                   className={classes.subHeading}
@@ -265,20 +343,77 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 >
                   {t('investigations.details.users.label')}
                 </Typography>
-                {filteredUsers.map(
-                  (user, i) =>
-                    user.USER_?.FULLNAME && (
-                      <Typography
-                        aria-label={`landing-investigation-user-${i}`}
-                        key={user.USER_.ID}
-                      >
-                        <b>{user.ROLE}:</b> {user.USER_.FULLNAME}
-                      </Typography>
-                    )
-                )}
+                {formattedUsers.map((user, i) => (
+                  <Typography
+                    aria-label={`landing-investigation-user-${i}`}
+                    key={i}
+                  >
+                    <b>{user.ROLE}:</b> {user.FULLNAME}
+                  </Typography>
+                ))}
               </div>
             )}
-            {filteredPublications && (
+
+            <Typography
+              className={classes.subHeading}
+              component="h6"
+              variant="h6"
+              aria-label="landing-investigation-publisher-label"
+            >
+              {t('studies.details.publisher')}
+            </Typography>
+            <Typography aria-label="landing-investigation-publisher">
+              {t('doi_constants.publisher.name')}
+            </Typography>
+
+            <Typography
+              className={classes.subHeading}
+              component="h6"
+              variant="h6"
+              aria-label="landing-investigation-citation-label"
+            >
+              {t('studies.details.citation_label')}
+            </Typography>
+            <Typography aria-label="landing-investigation-citation_format">
+              {t('studies.details.citation_format')}
+            </Typography>
+            <Typography aria-label="landing-investigation-citation">
+              <i>
+                {formattedUsers.length > 1 &&
+                  `${formattedUsers[0].FULLNAME} et al; `}
+                {formattedUsers.length === 1 &&
+                  `${formattedUsers[0].FULLNAME}; `}
+                {studyInvestigation &&
+                  studyInvestigation[0]?.STUDY?.STARTDATE &&
+                  `${studyInvestigation[0].STUDY.STARTDATE.slice(0, 4)}: `}
+                {title && `${title}, `}
+                {t('doi_constants.publisher.name')}
+                {doi && `, https://doi.org/${doi}`}
+              </i>
+            </Typography>
+
+            {formattedSamples && (
+              <div>
+                <Typography
+                  className={classes.subHeading}
+                  component="h6"
+                  variant="h6"
+                  aria-label="landing-investigation-samples-label"
+                >
+                  {t('investigations.details.samples.label')}
+                </Typography>
+                {formattedSamples.map((name, i) => (
+                  <Typography
+                    aria-label={`landing-investigation-sample-${i}`}
+                    key={i}
+                  >
+                    {name}
+                  </Typography>
+                ))}
+              </div>
+            )}
+
+            {formattedPublications && (
               <div>
                 <Typography
                   className={classes.subHeading}
@@ -288,7 +423,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 >
                   {t('investigations.details.publications.label')}
                 </Typography>
-                {filteredPublications.map((reference, i) => (
+                {formattedPublications.map((reference, i) => (
                   <Typography
                     aria-label={`landing-investigation-reference-${i}`}
                     key={i}
@@ -318,7 +453,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 )
             )}
             {/* Actions */}
-            <Divider />
             <div className={classes.actionButtons}>
               <AddToCartButton
                 entityType="investigation"
@@ -326,6 +460,51 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 entityId={parseInt(investigationId)}
               />
             </div>
+            {/* Parts */}
+            {(data[0] as Investigation)?.DATASET?.map((dataset, i) => (
+              <div key={i} className={classes.shortInfoPart}>
+                <Divider />
+                <Typography
+                  className={classes.subHeading}
+                  component="h6"
+                  variant="h6"
+                  align="center"
+                  aria-label="landing-investigation-part-label"
+                >
+                  {tableLink(
+                    `${urlPrefix}/dataset/${dataset.ID}`,
+                    `${t('datasets.name')}: ${dataset.NAME}`,
+                    view
+                  )}
+                </Typography>
+                {shortDatasetInfo.map(
+                  (field, i) =>
+                    field.content(dataset as Dataset) && (
+                      <div className={classes.shortInfoRow} key={i}>
+                        <Typography className={classes.shortInfoLabel}>
+                          {field.icon}
+                          {field.label}:
+                        </Typography>
+                        <Typography className={classes.shortInfoValue}>
+                          {field.content(dataset as Dataset)}
+                        </Typography>
+                      </div>
+                    )
+                )}
+                <div className={classes.actionButtons}>
+                  <AddToCartButton
+                    entityType="investigation"
+                    allIds={[dataset.ID]}
+                    entityId={dataset.ID}
+                  />
+                  <DownloadButton
+                    entityType="dataset"
+                    entityId={dataset.ID}
+                    entityName={dataset.NAME}
+                  />
+                </div>
+              </div>
+            ))}
           </Grid>
         </Grid>
       </Grid>
@@ -336,8 +515,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): LandingPageDispatchProps => ({
-  fetchDetails: (investigationId: number) =>
-    dispatch(fetchInvestigationDetails(investigationId)),
   fetchFacilityCycleData: (
     instrumentId: number,
     facilityCycleId: number,
@@ -355,6 +532,16 @@ const mapDispatchToProps = (
               filterValue: JSON.stringify({
                 ID: { eq: investigationId },
               }),
+            },
+            {
+              filterType: 'include',
+              filterValue: JSON.stringify([
+                'INVESTIGATIONUSER',
+                'SAMPLE',
+                'PUBLICATION',
+                'DATASET',
+                // STUDY and INSTRUMENT already fetched by default
+              ]),
             },
           ],
         },
@@ -383,15 +570,36 @@ const mapDispatchToProps = (
               'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
             }),
           },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify([
+              'INVESTIGATIONUSER',
+              'SAMPLE',
+              'PUBLICATION',
+              'DATASET',
+              {
+                STUDYINVESTIGATION: 'STUDY',
+              },
+              {
+                INVESTIGATIONINSTRUMENT: 'INSTRUMENT',
+              },
+            ]),
+          },
         ],
       })
     ),
-  viewDatasets: (urlPrefix: string) => dispatch(push(`${urlPrefix}/dataset`)),
+  viewDatasets: (urlPrefix: string, view: ViewsType) => {
+    const url = view
+      ? `${urlPrefix}/dataset?view=${view}`
+      : `${urlPrefix}/dataset`;
+    return dispatch(push(url));
+  },
 });
 
 const mapStateToProps = (state: StateType): LandingPageStateProps => {
   return {
     data: state.dgcommon.data,
+    view: state.dgcommon.query.view,
   };
 };
 

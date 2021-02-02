@@ -52,7 +52,6 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       <ViewRouting
         view={null}
       />
-      <PageLanding />
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(WithStyles(ForwardRef(Grid)))>
 </div>

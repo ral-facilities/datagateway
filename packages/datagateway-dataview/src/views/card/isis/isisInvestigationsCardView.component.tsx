@@ -30,12 +30,16 @@ import {
   tableLink,
   TextColumnFilter,
 } from 'datagateway-common';
-import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
+import {
+  QueryParams,
+  StateType,
+  ViewsType,
+} from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import CardView from '../cardView.component';
@@ -80,7 +84,7 @@ interface ISISInvestigationsCVDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
-  viewDatasets: (urlPrefix: string) => (id: number) => Action;
+  viewDatasets: (urlPrefix: string, view: ViewsType) => (id: number) => Action;
 }
 
 type ISISInvestigationsCVCombinedProps = ISISInvestigationsCVDispatchProps &
@@ -242,7 +246,7 @@ const ISISInvestigationsCardView = (
         <InvestigationDetailsPanel
           rowData={investigation}
           fetchDetails={fetchDetails}
-          viewDatasets={viewDatasets(urlPrefix)}
+          viewDatasets={viewDatasets(urlPrefix, query.view)}
         />
       )}
       buttons={[
@@ -352,9 +356,12 @@ const mapDispatchToProps = (
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
-  viewDatasets: (urlPrefix: string) => {
+  viewDatasets: (urlPrefix: string, view: ViewsType) => {
     return (id: number) => {
-      return dispatch(push(`${urlPrefix}/${id}/dataset`));
+      const url = view
+        ? `${urlPrefix}/${id}/dataset?view=${view}`
+        : `${urlPrefix}/${id}/dataset`;
+      return dispatch(push(url));
     };
   },
 });

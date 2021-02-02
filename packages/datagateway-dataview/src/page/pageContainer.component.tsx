@@ -34,7 +34,6 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
-import PageLanding from './pageLanding.component';
 import PageRouting from './pageRouting.component';
 
 const usePaperStyles = makeStyles(
@@ -260,6 +259,14 @@ const ViewRouting = (props: { view: ViewsType }): React.ReactElement => {
   const paperClasses = usePaperStyles();
   return (
     <SwitchRouting>
+      {/* For "landing" paths, don't use a containing Paper */}
+      <Route
+        exact
+        path={Object.values(paths.landing).concat(
+          Object.values(paths.studyHierarchy.landing)
+        )}
+        render={() => <PageRouting view={props.view} />}
+      />
       {/* For "toggle" paths, check state for the current view */}
       <Route
         exact
@@ -471,7 +478,6 @@ class PageContainer extends React.Component<
           {/* Hold the table for remainder of the page */}
           <Grid item xs={12} aria-label="container-table">
             <ViewRouting view={this.props.query.view} />
-            <PageLanding />
           </Grid>
         </StyledGrid>
       </Paper>

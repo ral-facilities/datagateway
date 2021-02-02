@@ -51,8 +51,7 @@
       "publisher": "Publisher",
       "format": "Data Format",
       "citation_label": "Data Citation",
-      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:",
-      "part": "Part"
+      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:"
     }
   },
   "investigations": {
@@ -65,6 +64,7 @@
     "visit_id": "Visit ID",
     "rb_number": "RB Number",
     "doi": "DOI",
+    "parent_doi": "Parent DOI",
     "dataset_count": "Dataset Count",
     "type_id": "Type ID",
     "facility_id": "Facility ID",
@@ -198,6 +198,10 @@
     "distribution": {
       "format": "RAW/Nexus",
       "content_url": "https://data.isis.stfc.ac.uk"
+    },
+    "branding": {
+      "title": "ISIS Neutron and Muon Source",
+      "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
     }
   }
 }

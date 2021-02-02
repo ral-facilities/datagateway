@@ -6,7 +6,6 @@ import configureStore from 'redux-mock-store';
 import { StateType } from '../../../state/app.types';
 import {
   dGCommonInitialState,
-  fetchInvestigationDetailsRequest,
   fetchInvestigationsRequest,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
@@ -55,11 +54,20 @@ describe('ISIS Investigation Landing page', () => {
           STUDY: {
             ID: 7,
             PID: 'study pid',
+            STARTDATE: '2019-06-10',
+            ENDDATE: '2019-06-11',
           },
         },
       ],
       STARTDATE: '2019-06-10',
       ENDDATE: '2019-06-11',
+      DATASET: [
+        {
+          ID: 1,
+          NAME: 'dataset 1',
+          DOI: 'dataset doi',
+        },
+      ],
     },
   ];
   const investigationUser = [
@@ -67,11 +75,44 @@ describe('ISIS Investigation Landing page', () => {
       ID: 1,
       USER_ID: 1,
       INVESTIGATION_ID: 1,
-      ROLE: 'Lead Investigator',
+      ROLE: 'principal_experimenter',
       USER_: {
         ID: 1,
         NAME: 'JS',
         FULLNAME: 'John Smith',
+      },
+    },
+    {
+      ID: 2,
+      USER_ID: 2,
+      INVESTIGATION_ID: 1,
+      ROLE: 'local_contact',
+      USER_: {
+        ID: 2,
+        NAME: 'JS',
+        FULLNAME: 'Jane Smith',
+      },
+    },
+    {
+      ID: 3,
+      USER_ID: 3,
+      INVESTIGATION_ID: 1,
+      ROLE: 'experimenter',
+      USER_: {
+        ID: 3,
+        NAME: 'JS',
+        FULLNAME: 'Jesse Smith',
+      },
+    },
+    {
+      ID: 4,
+      USER_ID: 4,
+      INVESTIGATION_ID: 4,
+      ROLE: 'experimenter',
+      USER_: {
+        ID: 4,
+        NAME: 'JS',
+        FULLNAME: '',
       },
     },
   ];
@@ -149,51 +190,26 @@ describe('ISIS Investigation Landing page', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()).toHaveLength(2);
+    expect(testStore.getActions()).toHaveLength(1);
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
-    expect(testStore.getActions()[1]).toEqual(
-      fetchInvestigationDetailsRequest()
-    );
 
     wrapper.find('#investigation-datasets-tab').first().simulate('click');
 
-    expect(testStore.getActions()).toHaveLength(3);
-    expect(testStore.getActions()[2]).toEqual(
+    expect(testStore.getActions()).toHaveLength(2);
+    expect(testStore.getActions()[1]).toEqual(
       push('/browse/instrument/4/facilityCycle/5/investigation/1/dataset')
     );
   });
 
-  it('fetchDetails not dispatched if no data in state', () => {
-    state.dgcommon.data = [];
-    const testStore = mockStore(state);
-    mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISInvestigationLanding
-            instrumentId="4"
-            instrumentChildId="5"
-            investigationId="1"
-            studyHierarchy={false}
-          />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
-  });
-
-  it('fetchDetails not dispatched if details already present', () => {
-    state.dgcommon.data = [
-      {
-        ...initialData[0],
-        INVESTIGATIONUSER: investigationUser,
-        PUBLICATION: publication,
-        SAMPLE: sample,
+  it('actions dispatched correctly in cardView', () => {
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        query: { ...state.dgcommon.query, view: 'card' },
       },
-    ];
-    const testStore = mockStore(state);
-    mount(
+    });
+    const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
           <ISISInvestigationLanding
@@ -208,6 +224,15 @@ describe('ISIS Investigation Landing page', () => {
 
     expect(testStore.getActions()).toHaveLength(1);
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
+
+    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+
+    expect(testStore.getActions()).toHaveLength(2);
+    expect(testStore.getActions()[1]).toEqual(
+      push(
+        '/browse/instrument/4/facilityCycle/5/investigation/1/dataset?view=card'
+      )
+    );
   });
 
   it('users displayed correctly', () => {
@@ -242,7 +267,16 @@ describe('ISIS Investigation Landing page', () => {
     ).toHaveLength(3);
     expect(
       wrapper.find('[aria-label="landing-investigation-user-0"]').first().text()
-    ).toEqual('Lead Investigator: John Smith');
+    ).toEqual('Principal Investigator: John Smith');
+    expect(
+      wrapper.find('[aria-label="landing-investigation-user-1"]').first().text()
+    ).toEqual('Local Contact: Jane Smith');
+    expect(
+      wrapper.find('[aria-label="landing-investigation-user-2"]').first().text()
+    ).toEqual('Experimenter: Jesse Smith');
+    expect(
+      wrapper.find('[aria-label="landing-investigation-user-3"]')
+    ).toHaveLength(0);
   });
 
   it('publications displayed correctly', () => {
@@ -279,5 +313,136 @@ describe('ISIS Investigation Landing page', () => {
         .first()
         .text()
     ).toEqual('Journal, Author, Date, DOI');
+  });
+
+  it('samples displayed correctly', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationLanding
+            instrumentId="4"
+            instrumentChildId="5"
+            investigationId="1"
+            studyHierarchy={false}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-label="landing-investigation-samples-label"]')
+    ).toHaveLength(0);
+    expect(
+      wrapper.find('[aria-label="landing-investigation-sample-0"]')
+    ).toHaveLength(0);
+
+    state.dgcommon.data = [{ ...initialData[0], SAMPLE: sample }];
+    wrapper.setProps({ store: mockStore(state) });
+
+    expect(
+      wrapper.find('[aria-label="landing-investigation-samples-label"]')
+    ).toHaveLength(3);
+    expect(
+      wrapper
+        .find('[aria-label="landing-investigation-sample-0"]')
+        .first()
+        .text()
+    ).toEqual('Sample');
+  });
+
+  it('displays citation correctly when study missing', () => {
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [{ ...state.dgcommon.data[0], STUDYINVESTIGATION: undefined }],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationLanding
+            instrumentId="4"
+            instrumentChildId="5"
+            investigationId="1"
+            studyHierarchy={false}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper
+        .find('[aria-label="landing-investigation-citation"]')
+        .first()
+        .text()
+    ).toEqual('Test 1, doi_constants.publisher.name, https://doi.org/doi 1');
+  });
+
+  it('displays citation correctly with one user', () => {
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [
+          {
+            ...state.dgcommon.data[0],
+            INVESTIGATIONUSER: [investigationUser[0]],
+          },
+        ],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationLanding
+            instrumentId="4"
+            instrumentChildId="5"
+            investigationId="1"
+            studyHierarchy={false}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper
+        .find('[aria-label="landing-investigation-citation"]')
+        .first()
+        .text()
+    ).toEqual(
+      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
+  });
+
+  it('displays citation correctly with multiple users', () => {
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [
+          { ...state.dgcommon.data[0], INVESTIGATIONUSER: investigationUser },
+        ],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationLanding
+            instrumentId="4"
+            instrumentChildId="5"
+            investigationId="1"
+            studyHierarchy={false}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper
+        .find('[aria-label="landing-investigation-citation"]')
+        .first()
+        .text()
+    ).toEqual(
+      'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
   });
 });

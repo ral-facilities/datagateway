@@ -23,6 +23,7 @@ export interface Investigation {
   STUDYINVESTIGATION?: StudyInvestigation[];
   FACILITY?: Facility;
   RELEASEDATE?: string;
+  DATASET?: Dataset[];
 }
 
 export interface Dataset {

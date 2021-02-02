@@ -9,6 +9,8 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingPayload,
   ConfigureSelectAllSettingType,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
 } from './actions.types';
 import {
   loadUrls,
@@ -48,6 +50,15 @@ export const loadSelectAllSetting = (
   type: ConfigureSelectAllSettingType,
   payload: {
     settings: selectAllSetting,
+  },
+});
+
+export const loadPluginHostSetting = (
+  pluginHostSetting: string
+): ActionType<ConfigurePluginHostSettingPayload> => ({
+  type: ConfigurePluginHostSettingType,
+  payload: {
+    settings: pluginHostSetting,
   },
 });
 
@@ -100,6 +111,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('selectAllSetting' in settings) {
           dispatch(loadSelectAllSetting(settings['selectAllSetting']));
+        }
+
+        if ('pluginHost' in settings) {
+          dispatch(loadPluginHostSetting(settings['pluginHost']));
         }
 
         /* istanbul ignore if */
