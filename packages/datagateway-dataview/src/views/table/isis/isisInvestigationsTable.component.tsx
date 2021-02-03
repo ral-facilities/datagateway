@@ -23,6 +23,7 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,6 +50,7 @@ interface ISISInvestigationsTableProps {
 interface ISISInvestigationsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -102,6 +104,7 @@ const ISISInvestigationsTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     instrumentId,
     instrumentChildId,
     loading,
@@ -202,7 +205,8 @@ const ISISInvestigationsTable = (
             const investigationData = props.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.TITLE
+              investigationData.TITLE,
+              view
             );
           },
           filterComponent: textFilter,
@@ -215,7 +219,8 @@ const ISISInvestigationsTable = (
             const investigationData = props.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.VISIT_ID
+              investigationData.VISIT_ID,
+              view
             );
           },
           filterComponent: textFilter,
@@ -228,7 +233,8 @@ const ISISInvestigationsTable = (
             const investigationData = props.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.NAME
+              investigationData.NAME,
+              view
             );
           },
           filterComponent: textFilter,
@@ -245,7 +251,8 @@ const ISISInvestigationsTable = (
             ) {
               return tableLink(
                 `${urlPrefix}/${investigationData.ID}/dataset`,
-                investigationData.STUDYINVESTIGATION[0].STUDY.PID
+                investigationData.STUDYINVESTIGATION[0].STUDY.PID,
+                view
               );
             } else {
               return '';
@@ -406,6 +413,7 @@ const mapStateToProps = (
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

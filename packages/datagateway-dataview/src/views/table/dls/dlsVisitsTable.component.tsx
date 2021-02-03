@@ -16,6 +16,7 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +39,7 @@ interface DLSVisitsTableProps {
 interface DLSVisitsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -72,6 +74,7 @@ const DLSVisitsTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     proposalName,
     loading,
     selectAllSetting,
@@ -133,7 +136,8 @@ const DLSVisitsTable = (
             const investigationData = props.rowData as Investigation;
             return tableLink(
               `/browse/proposal/${proposalName}/investigation/${investigationData.ID}/dataset`,
-              investigationData.VISIT_ID
+              investigationData.VISIT_ID,
+              view
             );
           },
           filterComponent: textFilter,
@@ -228,6 +232,7 @@ const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

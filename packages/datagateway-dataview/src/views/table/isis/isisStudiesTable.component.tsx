@@ -14,6 +14,7 @@ import {
   tableLink,
   TextColumnFilter,
   fetchAllIds,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +36,7 @@ interface ISISStudiesTableProps {
 interface ISISStudiesTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -68,6 +70,7 @@ const ISISStudiesTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     instrumentId,
     loading,
   } = props;
@@ -130,7 +133,8 @@ const ISISStudiesTable = (
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
               `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.STUDY?.ID}/investigation`,
-              props.rowData.STUDY?.NAME
+              props.rowData.STUDY?.NAME,
+              view
             ),
           filterComponent: textFilter,
         },
@@ -216,6 +220,7 @@ const mapStateToProps = (state: StateType): ISISStudiesTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     allIds: state.dgcommon.allIds,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,

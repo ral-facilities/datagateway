@@ -27,6 +27,7 @@ import {
   DateFilter,
   SortType,
   FiltersType,
+  ViewsType,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface InvestigationTableProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -90,6 +92,7 @@ const InvestigationTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     cartItems,
     addToCart,
     removeFromCart,
@@ -206,7 +209,8 @@ const InvestigationTable = (
             const investigationData = props.rowData as Investigation;
             return investigationLink(
               investigationData.ID,
-              investigationData.TITLE
+              investigationData.TITLE,
+              view
             );
           },
           filterComponent: textFilter,
@@ -291,6 +295,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

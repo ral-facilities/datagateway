@@ -13,6 +13,7 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +33,7 @@ interface ISISInstrumentsTableProps {
 interface ISISInstrumentsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -63,6 +65,7 @@ const ISISInstrumentsTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     loading,
     selectAllSetting,
     studyHierarchy,
@@ -116,7 +119,8 @@ const ISISInstrumentsTable = (
             const instrumentData = props.rowData as Instrument;
             return tableLink(
               `/${pathRoot}/instrument/${instrumentData.ID}/${instrumentChild}`,
-              instrumentData.FULLNAME || instrumentData.NAME
+              instrumentData.FULLNAME || instrumentData.NAME,
+              view
             );
           },
           filterComponent: textFilter,
@@ -145,6 +149,7 @@ const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
