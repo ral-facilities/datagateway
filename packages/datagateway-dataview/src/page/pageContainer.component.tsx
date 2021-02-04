@@ -274,7 +274,12 @@ const ViewRouting = (props: {
           <div>
             {view !== 'card' && displayFilterMessage && (
               <Paper className={paperClasses.noResultsPaper}>
-                <Typography align="center" variant="h6" component="h6">
+                <Typography
+                  align="center"
+                  variant="h6"
+                  component="h6"
+                  aria-label="filter-message"
+                >
                   {t('loading.filter_message')}
                 </Typography>
               </Paper>
@@ -296,7 +301,12 @@ const ViewRouting = (props: {
           <div>
             {displayFilterMessage && (
               <Paper className={paperClasses.noResultsPaper}>
-                <Typography align="center" variant="h6" component="h6">
+                <Typography
+                  align="center"
+                  variant="h6"
+                  component="h6"
+                  aria-label="filter-message"
+                >
                   {t('loading.filter_message')}
                 </Typography>
               </Paper>

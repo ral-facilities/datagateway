@@ -172,4 +172,114 @@ describe('PageContainer - Tests', () => {
 
     expect(wrapper.exists(LinearProgress)).toBeTruthy();
   });
+
+  it('display filter warning on datafile table', () => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 0,
+          loadedCount: true,
+        },
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: createLocation(
+            '/browse/investigation/1/dataset/25/datafile'
+          ),
+        },
+      })
+    );
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              key: 'testKey',
+              pathname: '/browse/investigation/1/dataset/25/datafile',
+            },
+          ]}
+        >
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find('[aria-label="filter-message"]').first().text()
+    ).toEqual('loading.filter_message');
+  });
+
+  it('display filter warning on toggle table', () => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 0,
+          loadedCount: true,
+        },
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: createLocation('/browse/investigation'),
+        },
+      })
+    );
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[
+            { key: 'testKey', pathname: '/browse/investigation' },
+          ]}
+        >
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find('[aria-label="filter-message"]').first().text()
+    ).toEqual('loading.filter_message');
+  });
+
+  it('do not display filter warning on toggle card', () => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 0,
+          loadedCount: true,
+          query: {
+            ...dGCommonInitialState.query,
+            view: 'card',
+          },
+        },
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: createLocation('/browse/investigation?view=card'),
+        },
+      })
+    );
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              key: 'testKey',
+              pathname: '/browse/investigation',
+              search: 'view=card',
+            },
+          ]}
+        >
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.exists('[aria-label="filter-message"]')).toBeFalsy();
+  });
 });

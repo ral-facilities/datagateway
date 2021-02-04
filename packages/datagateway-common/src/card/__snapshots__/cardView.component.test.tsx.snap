@@ -91,23 +91,6 @@ exports[`Card View renders correctly 1`] = `
             </Styled(MuiBox)>
           </WithStyles(ForwardRef(Paper))>
         </WithStyles(ForwardRef(Grid))>
-        <WithStyles(ForwardRef(Grid))
-          item={true}
-          xs={true}
-        >
-          <WithStyles(ForwardRef(Paper))>
-            <Styled(MuiBox)
-              p={2}
-            >
-              <WithStyles(ForwardRef(Typography))
-                variant="h5"
-              >
-                Filter By
-              </WithStyles(ForwardRef(Typography))>
-            </Styled(MuiBox)>
-            <Styled(MuiBox) />
-          </WithStyles(ForwardRef(Paper))>
-        </WithStyles(ForwardRef(Grid))>
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
     <WithStyles(ForwardRef(Grid))
@@ -129,7 +112,6 @@ exports[`Card View renders correctly 1`] = `
           key="0"
         >
           <EntityCard
-            tags={Array []}
             title={
               Object {
                 "content": undefined,
