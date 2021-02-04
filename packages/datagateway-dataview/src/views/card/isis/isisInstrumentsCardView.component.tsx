@@ -1,30 +1,25 @@
 import { Link } from '@material-ui/core';
 import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
-  clearData,
   Entity,
   fetchInstrumentCount,
   fetchInstrumentDetails,
   fetchInstruments,
   Filter,
-  FiltersType,
   Instrument,
-  Order,
   pushPageFilter,
   pushPageNum,
-  pushPageResults,
-  pushPageSort,
-  SortType,
+  pushQuery,
   tableLink,
   TextColumnFilter,
   TextFilter,
 } from 'datagateway-common';
-import { QueryParams, ViewsType } from 'datagateway-common/lib/state/app.types';
+import { QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
@@ -40,22 +35,18 @@ interface ISISInstrumentsCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;
   fetchCount: () => Promise<void>;
   fetchDetails: (instrumentId: number) => Promise<void>;
-  clearData: () => Action;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInstrumentsCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  view: ViewsType;
-  filters: FiltersType;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
+  loadedData: boolean;
+  loadedCount: boolean;
 }
 
 type ISISInstrumentsCVCombinedProps = ISISInstrumentsCVDispatchProps &
@@ -68,25 +59,21 @@ const ISISInstrumentsCardView = (
   const {
     data,
     totalDataCount,
-    loading,
     query,
-    sort,
+    loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
     fetchDetails,
-    view,
-    filters,
     pushFilters,
     pushPage,
-    pushResults,
-    pushSort,
-    clearData,
+    pushQuery,
     studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
 
-  const [fetchedCount, setFetchedCount] = React.useState(false);
+  const filters = query.filters;
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -98,14 +85,6 @@ const ISISInstrumentsCardView = (
     />
   );
 
-  React.useEffect(() => {
-    // Load count to trigger data to be fetched.
-    if (!fetchedCount) {
-      fetchCount();
-      setFetchedCount(true);
-    }
-  }, [data, fetchedCount, fetchCount, setFetchedCount]);
-
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
 
@@ -115,15 +94,12 @@ const ISISInstrumentsCardView = (
       totalDataCount={totalDataCount}
       loadData={fetchData}
       loadCount={fetchCount}
-      loading={loading}
-      sort={sort}
-      filters={filters}
       query={query}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
+      loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('instruments.name'),
         dataKey: 'FULLNAME',
@@ -131,7 +107,7 @@ const ISISInstrumentsCardView = (
           tableLink(
             `/${pathRoot}/instrument/${instrument.ID}/${instrumentChild}`,
             instrument.FULLNAME || instrument.NAME,
-            view
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -172,11 +148,9 @@ const mapStateToProps = (state: StateType): ISISInstrumentsCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    view: state.dgcommon.query.view,
-    filters: state.dgcommon.filters,
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
+    loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 
@@ -188,14 +162,11 @@ const mapDispatchToProps = (
   fetchCount: () => dispatch(fetchInstrumentCount()),
   fetchDetails: (instrumentId: number) =>
     dispatch(fetchInstrumentDetails(instrumentId)),
-  clearData: () => dispatch(clearData()),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 export default connect(

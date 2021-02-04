@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   addToCartRequest,
   dGCommonInitialState,
+  fetchAllIdsRequest,
   fetchDatafileCountRequest,
   fetchDatafilesRequest,
   filterTable,
@@ -80,7 +81,8 @@ describe('DLS datafiles table component', () => {
     wrapper.setProps({ store: testStore });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatafileCountRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchDatafilesRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
   });
 
   it('sends fetchDatafiles action when loadMoreRows is called', () => {

@@ -158,20 +158,15 @@ const ISISInvestigationsTable = (
 
   React.useEffect(() => {
     fetchCount(parseInt(instrumentId), parseInt(instrumentChildId));
+    fetchAllIds();
+  }, [fetchCount, fetchAllIds, instrumentId, instrumentChildId, filters]);
+
+  React.useEffect(() => {
     fetchData(parseInt(instrumentId), parseInt(instrumentChildId), {
       startIndex: 0,
       stopIndex: 49,
     });
-    fetchAllIds();
-  }, [
-    fetchCount,
-    fetchData,
-    instrumentId,
-    instrumentChildId,
-    sort,
-    filters,
-    fetchAllIds,
-  ]);
+  }, [fetchData, instrumentId, instrumentChildId, sort, filters]);
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
@@ -344,7 +339,12 @@ const mapDispatchToProps = (
             filterType: 'where',
             filterValue: JSON.stringify({
               'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-              'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
             }),
           },
         ],
@@ -359,7 +359,12 @@ const mapDispatchToProps = (
           filterType: 'where',
           filterValue: JSON.stringify({
             'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-            'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
           }),
         },
       ])
@@ -384,11 +389,14 @@ const mapDispatchToProps = (
           filterType: 'where',
           filterValue: JSON.stringify({
             'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': {
-              eq: parseInt(ownProps.instrumentId),
+              eq: ownProps.instrumentId,
             },
-            'INVESTIGATIONSTUDY.STUDY.ID': {
-              eq: parseInt(ownProps.instrumentChildId),
-            },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'STUDYINVESTIGATION.STUDY.ID': { eq: ownProps.instrumentChildId },
           }),
         },
       ])
@@ -399,8 +407,8 @@ const mapStateToProps = (
   state: StateType
 ): ISISInvestigationsTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

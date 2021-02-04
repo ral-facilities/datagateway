@@ -20,7 +20,8 @@ exports[`Download cart table component renders correctly 1`] = `
       <WithStyles(ForwardRef(Paper))
         style={
           Object {
-            "height": "calc(100vh - 150px)",
+            "height": "calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)",
+            "minHeight": 230,
             "overflowX": "auto",
           }
         }
@@ -74,7 +75,7 @@ exports[`Download cart table component renders correctly 1`] = `
             "marginRight": "1.2em",
           }
         }
-        xs={3}
+        xs={true}
       >
         <WithStyles(ForwardRef(Typography))
           id="fileCountDisplay"
@@ -103,7 +104,7 @@ exports[`Download cart table component renders correctly 1`] = `
             "marginRight": "1em",
           }
         }
-        xs={3}
+        xs={true}
       >
         <WithStyles(ForwardRef(Grid))
           item={true}

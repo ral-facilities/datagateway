@@ -3,13 +3,11 @@ import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
   addToCartRequest,
-  clearData,
   dGCommonInitialState,
-  fetchDatasetsRequest,
   filterTable,
   removeFromCartRequest,
-  sortTable,
   updatePage,
+  updateQueryParams,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -55,6 +53,8 @@ describe('Dataset - Card View', () => {
     state = {
       dgcommon: {
         ...dGCommonInitialState,
+        loadedCount: true,
+        loadedData: true,
         totalDataCount: 1,
         data: [
           {
@@ -97,8 +97,8 @@ describe('Dataset - Card View', () => {
     const wrapper = createWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[4]).toEqual(addToCartRequest());
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[2]).toEqual(addToCartRequest());
   });
 
   it('removeFromCart dispatched on button click', () => {
@@ -114,8 +114,8 @@ describe('Dataset - Card View', () => {
     const wrapper = createWrapper();
     wrapper.find(Card).find('button').simulate('click');
 
-    expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[4]).toEqual(removeFromCartRequest());
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[2]).toEqual(removeFromCartRequest());
   });
 
   it('pushFilters dispatched by date filter', () => {
@@ -126,12 +126,18 @@ describe('Dataset - Card View', () => {
       .find('input')
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(
       filterTable('MOD_TIME', { endDate: '2019-08-06' })
     );
+    expect(store.getActions()[3]).toEqual(push('?'));
+
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '' } });
+    expect(store.getActions().length).toEqual(6);
+    expect(store.getActions()[4]).toEqual(filterTable('MOD_TIME', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -143,12 +149,18 @@ describe('Dataset - Card View', () => {
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(
       filterTable('NAME', { value: 'test', type: 'include' })
     );
+    expect(store.getActions()[3]).toEqual(push('?'));
+
+    advancedFilter
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: '' } });
+    expect(store.getActions().length).toEqual(6);
+    expect(store.getActions()[4]).toEqual(filterTable('NAME', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -159,9 +171,15 @@ describe('Dataset - Card View', () => {
     button.simulate('click');
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(11);
-    expect(store.getActions()[4]).toEqual(sortTable('NAME', 'asc'));
-    expect(store.getActions()[5]).toEqual(push('?'));
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(
+      updateQueryParams({
+        ...dGCommonInitialState.query,
+        sort: { NAME: 'asc' },
+        page: 1,
+      })
+    );
+    expect(store.getActions()[3]).toEqual(push('?'));
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
@@ -176,31 +194,20 @@ describe('Dataset - Card View', () => {
           search: null,
           page: 2,
           results: null,
+          filters: {},
+          sort: {},
         },
       },
     });
     wrapper.setProps({ store: store });
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[0]).toEqual(updatePage(1));
-    expect(store.getActions()[1]).toEqual(push('?page=2'));
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[1]).toEqual(updatePage(1));
+    expect(store.getActions()[2]).toEqual(push('?page=2'));
   });
 
   // TODO: Can't trigger onChange for the Select element.
   // Had a similar issue in DG download with the new version of M-UI.
   it.todo('pushResults dispatched onChange');
-
-  it('clearData dispatched on store update', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, totalDataCount: 2 },
-    });
-    wrapper.setProps({ store: store });
-
-    expect(store.getActions().length).toEqual(2);
-    expect(store.getActions()[0]).toEqual(clearData());
-    expect(store.getActions()[1]).toEqual(fetchDatasetsRequest(1));
-  });
 });

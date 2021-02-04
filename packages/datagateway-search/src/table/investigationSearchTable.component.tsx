@@ -24,7 +24,6 @@ import { connect } from 'react-redux';
 import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import useAfterMountEffect from '../state/utils';
 import { useTranslation } from 'react-i18next';
 
 interface InvestigationTableProps {
@@ -115,10 +114,13 @@ const InvestigationSearchTable = (
     clearTable();
   }, [clearTable, luceneData]);
 
-  useAfterMountEffect(() => {
+  React.useEffect(() => {
     fetchCount(luceneData);
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
     fetchAllIds(luceneData);
+  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
+
+  React.useEffect(() => {
+    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   return (
@@ -286,8 +288,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

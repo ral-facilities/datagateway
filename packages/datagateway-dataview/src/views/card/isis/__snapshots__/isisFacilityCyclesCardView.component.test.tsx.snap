@@ -5,7 +5,6 @@ exports[`ISIS Facility Cycles - Card View renders correctly 1`] = `
   value={null}
 >
   <ISISFacilityCyclesCardView
-    clearData={[Function]}
     data={
       Array [
         Object {
@@ -17,22 +16,22 @@ exports[`ISIS Facility Cycles - Card View renders correctly 1`] = `
     }
     fetchCount={[Function]}
     fetchData={[Function]}
-    filters={Object {}}
     instrumentId="1"
-    loading={false}
+    loadedCount={true}
+    loadedData={true}
     pushFilters={[Function]}
     pushPage={[Function]}
-    pushResults={[Function]}
-    pushSort={[Function]}
+    pushQuery={[Function]}
     query={
       Object {
+        "filters": Object {},
         "page": null,
         "results": null,
         "search": null,
+        "sort": Object {},
         "view": null,
       }
     }
-    sort={Object {}}
     store={
       Object {
         "clearActions": [Function],
@@ -44,7 +43,6 @@ exports[`ISIS Facility Cycles - Card View renders correctly 1`] = `
       }
     }
     totalDataCount={1}
-    view={null}
   />
 </ContextProvider>
 `;

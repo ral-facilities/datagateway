@@ -13,67 +13,41 @@ describe('Investigations Cards', () => {
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 10000,
+      });
   });
 
-  it.skip('should load correctly', () => {
+  it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it.skip('should be able to click an investigation to see its datasets', () => {
+  it('should be able to click an investigation to see its datasets', () => {
     cy.get('#card')
       .contains('Including spend increase ability music skill former.')
       .click({ force: true });
     cy.location('pathname').should('eq', '/browse/investigation/1/dataset');
   });
 
-  it.skip('should be able to sort by one field', () => {
+  it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('A nothing almost arrive I.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('#card').contains('Whom anything affect consider left.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains(
@@ -81,51 +55,31 @@ describe('Investigations Cards', () => {
     );
   });
 
-  it.skip('should be able to sort by multiple fields', () => {
+  it('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('Too ball particularly since true news like.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('Color knowledge economy return determine tell.');
   });
 
-  it.skip('should be able to filter by multiple fields', () => {
+  it('should be able to filter by multiple fields', () => {
     cy.contains('[role="button"]', 'Type ID').click();
     cy.contains('[role="button"]', 'Type ID')
       .parent()
       .contains('[role="button"]', '1')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 10000,
+      });
     cy.contains('[role="button"]', 'Type ID - 1').should('exist');
     cy.get('#card').contains('Dog want single resource major.');
 

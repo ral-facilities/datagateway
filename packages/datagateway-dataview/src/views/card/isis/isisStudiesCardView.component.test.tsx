@@ -2,12 +2,13 @@ import { Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
-  clearData,
   dGCommonInitialState,
+  fetchAllIdsRequest,
   fetchStudiesRequest,
+  fetchStudyCountRequest,
   filterTable,
-  sortTable,
   updatePage,
+  updateQueryParams,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -53,6 +54,8 @@ describe('ISIS Studies - Card View', () => {
     state = {
       dgcommon: {
         ...dGCommonInitialState,
+        loadedCount: true,
+        loadedData: true,
         totalDataCount: 1,
         data: [
           {
@@ -68,7 +71,6 @@ describe('ISIS Studies - Card View', () => {
             },
           },
         ],
-        allIds: [1],
       },
       dgdataview: initialState,
       router: {
@@ -95,6 +97,24 @@ describe('ISIS Studies - Card View', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('sends fetchAllIdRequest on load', () => {
+    createWrapper();
+    expect(store.getActions().length).toEqual(1);
+    expect(store.getActions()[0]).toEqual(fetchAllIdsRequest(1));
+  });
+
+  it('sends fetchStudyCount and fetchStudies requests when allIds fetched', () => {
+    const wrapper = createWrapper();
+    store = mockStore({
+      ...state,
+      dgcommon: { ...state.dgcommon, allIds: [1] },
+    });
+    wrapper.setProps({ store: store });
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[0]).toEqual(fetchStudyCountRequest(1));
+    expect(store.getActions()[1]).toEqual(fetchStudiesRequest(1));
+  });
+
   it('pushFilters dispatched by date filter', () => {
     const wrapper = createWrapper();
     const advancedFilter = wrapper.find(AdvancedFilter);
@@ -103,16 +123,21 @@ describe('ISIS Studies - Card View', () => {
       .find('input')
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[1]).toEqual(
       filterTable('STUDY.ENDDATE', {
         endDate: '2019-08-06',
         startDate: undefined,
       })
     );
-    expect(store.getActions()[6]).toEqual(push('?'));
+
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '' } });
+    expect(store.getActions().length).toEqual(5);
+    expect(store.getActions()[3]).toEqual(filterTable('STUDY.ENDDATE', null));
+    expect(store.getActions()[4]).toEqual(push('?'));
   });
 
   it('pushFilters dispatched by text filter', () => {
@@ -123,13 +148,19 @@ describe('ISIS Studies - Card View', () => {
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[1]).toEqual(
       filterTable('STUDY.NAME', { value: 'test', type: 'include' })
     );
-    expect(store.getActions()[6]).toEqual(push('?'));
+    expect(store.getActions()[2]).toEqual(push('?'));
+
+    advancedFilter
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: '' } });
+    expect(store.getActions().length).toEqual(5);
+    expect(store.getActions()[3]).toEqual(filterTable('STUDY.NAME', null));
+    expect(store.getActions()[4]).toEqual(push('?'));
   });
 
   it('pushSort dispatched when sort button clicked', () => {
@@ -139,9 +170,15 @@ describe('ISIS Studies - Card View', () => {
     button.simulate('click');
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(12);
-    expect(store.getActions()[5]).toEqual(sortTable('STUDY.NAME', 'asc'));
-    expect(store.getActions()[6]).toEqual(push('?'));
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[1]).toEqual(
+      updateQueryParams({
+        ...dGCommonInitialState.query,
+        sort: { 'STUDY.NAME': 'asc' },
+        page: 1,
+      })
+    );
+    expect(store.getActions()[2]).toEqual(push('?'));
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
@@ -156,13 +193,15 @@ describe('ISIS Studies - Card View', () => {
           search: null,
           page: 2,
           results: null,
+          filters: {},
+          sort: {},
         },
       },
     });
     wrapper.setProps({ store: store });
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(5);
+    expect(store.getActions().length).toEqual(3);
     expect(store.getActions()[0]).toEqual(updatePage(1));
     expect(store.getActions()[1]).toEqual(push('?page=2'));
   });
@@ -170,16 +209,4 @@ describe('ISIS Studies - Card View', () => {
   // TODO: Can't trigger onChange for the Select element.
   // Had a similar issue in DG download with the new version of M-UI.
   it.todo('pushResults dispatched onChange');
-
-  it('clearData dispatched on store update', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, totalDataCount: 2 },
-    });
-    wrapper.setProps({ store: store });
-    expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(clearData());
-    expect(store.getActions()[2]).toEqual(fetchStudiesRequest(1));
-  });
 });

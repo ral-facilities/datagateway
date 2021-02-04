@@ -10,24 +10,15 @@ import {
   TextFilter,
   DateColumnFilter,
   Filter,
-  FiltersType,
   DateFilter,
   pushPageFilter,
-  SortType,
-  Order,
-  pushPageSort,
-  clearData,
   pushPageNum,
-  pushPageResults,
+  pushQuery,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import {
-  QueryParams,
-  StateType,
-  ViewsType,
-} from 'datagateway-common/lib/state/app.types';
-import { Action, AnyAction } from 'redux';
+import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
+import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { CalendarToday } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
@@ -41,22 +32,18 @@ interface ISISFacilityCyclesCVProps {
 interface ISISFacilityCyclesCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  view: ViewsType;
-  filters: FiltersType;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
+  loadedData: boolean;
+  loadedCount: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISFacilityCyclesCVDispatchProps {
   fetchData: (instrumentId: number, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (instrumentId: number) => Promise<void>;
-  clearData: () => Action;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 type ISISFacilityCyclesCVCombinedProps = ISISFacilityCyclesCVDispatchProps &
@@ -70,23 +57,18 @@ const ISISFacilityCyclesCardView = (
     instrumentId,
     data,
     totalDataCount,
-    loading,
     query,
-    sort,
+    loadedData,
+    loadedCount,
     fetchData,
     fetchCount,
-    view,
-    filters,
     pushFilters,
     pushPage,
-    pushResults,
-    pushSort,
-    clearData,
+    pushQuery,
   } = props;
 
+  const filters = query.filters;
   const [t] = useTranslation();
-
-  const [fetchedCount, setFetchedCount] = React.useState(false);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -108,28 +90,27 @@ const ISISFacilityCyclesCardView = (
     />
   );
 
-  React.useEffect(() => {
-    if (!fetchedCount) {
-      fetchCount(parseInt(instrumentId));
-      setFetchedCount(true);
-    }
-  }, [instrumentId, data, fetchedCount, fetchCount, setFetchedCount]);
+  const loadCount = React.useCallback(
+    () => fetchCount(parseInt(instrumentId)),
+    [fetchCount, instrumentId]
+  );
+  const loadData = React.useCallback(
+    (params) => fetchData(parseInt(instrumentId), params),
+    [fetchData, instrumentId]
+  );
 
   return (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loadData={(params) => fetchData(parseInt(instrumentId), params)}
-      loadCount={() => fetchCount(parseInt(instrumentId))}
-      loading={loading}
-      sort={sort}
-      filters={filters}
+      loadData={loadData}
+      loadCount={loadCount}
       query={query}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
+      pushQuery={pushQuery}
+      loadedData={loadedData}
+      loadedCount={loadedCount}
       title={{
         label: t('facilitycycles.name'),
         dataKey: 'NAME',
@@ -137,7 +118,7 @@ const ISISFacilityCyclesCardView = (
           tableLink(
             `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycle.ID}/investigation`,
             facilityCycle.NAME,
-            view
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -171,25 +152,20 @@ const mapDispatchToProps = (
     dispatch(fetchFacilityCycles(instrumentId, offsetParams)),
   fetchCount: (instrumentId: number) =>
     dispatch(fetchFacilityCycleCount(instrumentId)),
-  clearData: () => dispatch(clearData()),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 const mapStateToProps = (state: StateType): ISISFacilityCyclesCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    view: state.dgcommon.query.view,
-    filters: state.dgcommon.filters,
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
+    loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

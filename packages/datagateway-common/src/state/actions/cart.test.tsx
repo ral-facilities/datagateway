@@ -235,10 +235,13 @@ describe('Cart actions', () => {
       const getState = (): Partial<StateType> => ({
         dgcommon: {
           ...initialState,
-          sort: { column1: 'desc' },
-          filters: {
-            column1: { value: '1', type: 'include' },
-            column2: { value: '2', type: 'include' },
+          query: {
+            ...initialState.query,
+            sort: { column1: 'desc' },
+            filters: {
+              column1: { value: '1', type: 'include' },
+              column2: { value: '2', type: 'include' },
+            },
           },
         },
       });
@@ -350,10 +353,13 @@ describe('Cart actions', () => {
       const getState = (): Partial<StateType> => ({
         dgcommon: {
           ...initialState,
-          sort: { column1: 'desc' },
-          filters: {
-            column1: { value: '1', type: 'include' },
-            column2: { value: '2', type: 'include' },
+          query: {
+            ...initialState.query,
+            sort: { column1: 'desc' },
+            filters: {
+              column1: { value: '1', type: 'include' },
+              column2: { value: '2', type: 'include' },
+            },
           },
         },
       });

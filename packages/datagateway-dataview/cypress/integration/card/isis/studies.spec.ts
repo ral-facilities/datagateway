@@ -9,7 +9,7 @@ describe('ISIS - Studies Cards', () => {
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(['@getStudiesCount', '@getStudiesCount', '@getStudiesOrder'], {
+      .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
   });
@@ -31,7 +31,7 @@ describe('ISIS - Studies Cards', () => {
   it.skip('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
-      .wait(['@getStudiesCount', '@getStudiesOrder', '@getStudiesOrder'], {
+      .wait('@getStudiesOrder', {
         timeout: 10000,
       });
     cy.contains('[role="button"]', 'asc').should('exist');
@@ -40,7 +40,7 @@ describe('ISIS - Studies Cards', () => {
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
-      .wait(['@getStudiesCount', '@getStudiesOrder', '@getStudiesOrder'], {
+      .wait('@getStudiesOrder', {
         timeout: 10000,
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
@@ -49,7 +49,7 @@ describe('ISIS - Studies Cards', () => {
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
-      .wait(['@getStudiesCount', '@getStudiesOrder', '@getStudiesOrder'], {
+      .wait('@getStudiesOrder', {
         timeout: 10000,
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
@@ -60,7 +60,7 @@ describe('ISIS - Studies Cards', () => {
   it.skip('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
-      .wait(['@getStudiesCount', '@getStudiesOrder', '@getStudiesOrder'], {
+      .wait('@getStudiesOrder', {
         timeout: 10000,
       });
     cy.contains('[role="button"]', 'asc').should('exist');
@@ -69,7 +69,7 @@ describe('ISIS - Studies Cards', () => {
 
     cy.contains('[role="button"]', 'End Date')
       .click()
-      .wait(['@getStudiesCount', '@getStudiesOrder', '@getStudiesOrder'], {
+      .wait('@getStudiesOrder', {
         timeout: 10000,
       });
     cy.contains('[role="button"]', 'asc').should('exist');

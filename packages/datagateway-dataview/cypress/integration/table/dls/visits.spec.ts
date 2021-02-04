@@ -1,8 +1,19 @@
 describe('DLS - Visits Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-    cy.visit('/browse/proposal/INVESTIGATION%201/investigation/');
-    cy.intercept('/datasets/count').as('getDatasetCount');
+    cy.intercept('/investigations?').as('investigations');
+    cy.intercept('/investigations/count?').as('investigationsCount');
+    cy.intercept('/investigations/findone?').as('investigationsFindOne');
+    cy.intercept('/datasets/count').as('datasetsCount');
+    cy.visit('/browse/proposal/INVESTIGATION%201/investigation/').wait(
+      [
+        '@investigations',
+        '@investigationsCount',
+        '@investigationsFindOne',
+        '@datasetsCount',
+      ],
+      { timeout: 10000 }
+    );
   });
 
   it('should load correctly', () => {

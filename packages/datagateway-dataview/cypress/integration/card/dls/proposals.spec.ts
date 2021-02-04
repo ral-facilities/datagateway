@@ -9,14 +9,9 @@ describe('DLS - Proposals Cards', () => {
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 10000,
+      });
   });
 
   it('should load correctly', () => {
@@ -37,42 +32,21 @@ describe('DLS - Proposals Cards', () => {
   it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('A nothing almost arrive I.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('#card').contains('Whom anything affect consider left.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains(
@@ -83,28 +57,14 @@ describe('DLS - Proposals Cards', () => {
   it('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Name')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('INVESTIGATION 1');
 
     cy.contains('[role="button"]', 'Title')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsOrder',
-        ],
-        { timeout: 10000 }
-      );
+      .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('INVESTIGATION 1');

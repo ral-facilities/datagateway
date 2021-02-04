@@ -10,6 +10,7 @@ import {
   createStyles,
   IconButton,
   Badge,
+  makeStyles,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -22,20 +23,31 @@ import {
   saveView,
   Sticky,
   QueryParams,
-  SavedView,
   ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Route } from 'react-router';
+import { Switch as SwitchRouting, Route } from 'react-router';
 import { push } from 'connected-react-router';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
-import PageCard from './pageCard.component';
-import PageTable from './pageTable.component';
+import PageRouting from './pageRouting.component';
+
+const usePaperStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      cardPaper: { backgroundColor: 'inhereit' },
+      tablePaper: {
+        height: 'calc(100vh - 150px)',
+        width: '100%',
+        backgroundColor: 'inherit',
+        overflowX: 'auto',
+      },
+    })
+);
 
 const gridStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -118,13 +130,14 @@ const NavBar = (props: {
           />
         </Grid>
 
-        {/* The table entity count takes up an xs of 2, where the breadcrumbs
-      will take the remainder of the space. */}
+        {/* The table entity count has a size of 2 (or 3 for xs screens); the
+            breadcrumbs will take the remainder of the space. */}
         <Grid
           className="tour-dataview-results"
           style={{ textAlign: 'center' }}
           item
-          xs={2}
+          sm={2}
+          xs={3}
           aria-label="container-table-count"
         >
           <Route
@@ -222,8 +235,43 @@ const CardSwitch = (props: {
   );
 };
 
+const ViewRouting = (props: { view: ViewsType }): React.ReactElement => {
+  const paperClasses = usePaperStyles();
+  return (
+    <SwitchRouting>
+      {/* For "toggle" paths, check state for the current view */}
+      <Route
+        exact
+        path={Object.values(paths.toggle).concat(
+          Object.values(paths.studyHierarchy.toggle)
+        )}
+        render={() => (
+          <Paper
+            square
+            className={
+              props.view === 'card'
+                ? paperClasses.cardPaper
+                : paperClasses.tablePaper
+            }
+          >
+            <PageRouting view={props.view} />
+          </Paper>
+        )}
+      />
+      {/* Otherwise, use the paper styling for tables*/}
+      <Route
+        render={() => (
+          <Paper square className={paperClasses.tablePaper}>
+            <PageRouting view={props.view} />
+          </Paper>
+        )}
+      />
+    </SwitchRouting>
+  );
+};
+
 interface PageContainerDispatchProps {
-  loadQuery: () => Promise<void>;
+  loadQuery: (pathChanged: boolean) => Promise<void>;
   pushView: (view: ViewsType, path: string) => Promise<void>;
   saveView: (view: ViewsType) => Promise<void>;
   fetchDownloadCart: () => Promise<void>;
@@ -234,8 +282,9 @@ interface PageContainerDispatchProps {
 interface PageContainerStateProps {
   entityCount: number;
   path: string;
+  locationSearch: string;
   query: QueryParams;
-  savedView: SavedView;
+  savedView: ViewsType;
   loading: boolean;
   cartItems: DownloadCartItem[];
 }
@@ -257,7 +306,7 @@ class PageContainer extends React.Component<
     super(props);
 
     // Load the current URL query parameters.
-    this.props.loadQuery();
+    this.props.loadQuery(true);
 
     // Allow for query parameter to override the
     // toggle state in the localStorage.
@@ -272,8 +321,11 @@ class PageContainer extends React.Component<
 
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // Ensure if the location changes, then we update the query parameters.
-    if (prevProps.path !== this.props.path) {
-      this.props.loadQuery();
+    if (
+      prevProps.path !== this.props.path ||
+      prevProps.locationSearch !== this.props.locationSearch
+    ) {
+      this.props.loadQuery(prevProps.path !== this.props.path);
     }
 
     // If the view query parameter was not found and the previously
@@ -397,26 +449,7 @@ class PageContainer extends React.Component<
 
           {/* Hold the table for remainder of the page */}
           <Grid item xs={12} aria-label="container-table">
-            {!this.state.toggleCard ? (
-              // Place table in Paper component which adjusts for the height
-              // of the AppBar (64px) on parent application, the cart icon
-              // (48px) and the CV toggle (38px).
-              <Paper
-                square
-                style={{
-                  height: 'calc(100vh - 150px)',
-                  width: '100%',
-                  backgroundColor: 'inherit',
-                  overflowX: 'auto',
-                }}
-              >
-                <PageTable />
-              </Paper>
-            ) : (
-              <Paper square style={{ backgroundColor: 'inherit' }}>
-                <PageCard />
-              </Paper>
-            )}
+            <ViewRouting view={this.props.query.view} />
           </Grid>
         </StyledGrid>
       </Paper>
@@ -427,8 +460,9 @@ class PageContainer extends React.Component<
 const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   entityCount: state.dgcommon.totalDataCount,
   path: state.router.location.pathname,
+  locationSearch: state.router.location.search,
   query: state.dgcommon.query,
-  savedView: state.dgcommon.savedView,
+  savedView: state.dgcommon.savedQuery.view,
   loading: state.dgcommon.loading,
   cartItems: state.dgcommon.cartItems,
 });
@@ -436,7 +470,7 @@ const mapStateToProps = (state: StateType): PageContainerStateProps => ({
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): PageContainerDispatchProps => ({
-  loadQuery: () => dispatch(loadURLQuery()),
+  loadQuery: (pathChanged: boolean) => dispatch(loadURLQuery(pathChanged)),
   pushView: (view: ViewsType, path: string) =>
     dispatch(pushPageView(view, path)),
   saveView: (view: ViewsType) => dispatch(saveView(view)),

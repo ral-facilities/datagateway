@@ -10,6 +10,7 @@ import {
   sortTable,
   fetchStudyCountRequest,
   dGCommonInitialState,
+  fetchAllIdsRequest,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -64,7 +65,19 @@ describe('ISIS Studies table component', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchStudiesCount and fetchStudies actions when watched store values change', () => {
+  it('sends fetchAllIds action on load', () => {
+    const testStore = mockStore(state);
+    mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISStudiesTable instrumentId="1" />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(testStore.getActions()[0]).toEqual(fetchAllIdsRequest(1));
+  });
+
+  it('sends fetchStudyCount and fetchStudies requests when allIds fetched', () => {
     let testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -73,14 +86,12 @@ describe('ISIS Studies table component', () => {
         </MemoryRouter>
       </Provider>
     );
-
-    // simulate clearTable action
     testStore = mockStore({
       ...state,
-      dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
+      dgcommon: { ...state.dgcommon, allIds: [1] },
     });
     wrapper.setProps({ store: testStore });
-
+    expect(testStore.getActions().length).toEqual(3);
     expect(testStore.getActions()[1]).toEqual(fetchStudyCountRequest(1));
     expect(testStore.getActions()[2]).toEqual(fetchStudiesRequest(1));
   });
@@ -112,14 +123,14 @@ describe('ISIS Studies table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(
+    expect(testStore.getActions()[1]).toEqual(
       filterTable('STUDY.NAME', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('STUDY.NAME', null));
+    expect(testStore.getActions()[3]).toEqual(filterTable('STUDY.NAME', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -138,14 +149,14 @@ describe('ISIS Studies table component', () => {
     filterInput.instance().value = '2019-08-06';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(
+    expect(testStore.getActions()[1]).toEqual(
       filterTable('STUDY.ENDDATE', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(
+    expect(testStore.getActions()[3]).toEqual(
       filterTable('STUDY.ENDDATE', null)
     );
   });
@@ -165,7 +176,7 @@ describe('ISIS Studies table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[3]).toEqual(sortTable('STUDY.NAME', 'asc'));
+    expect(testStore.getActions()[1]).toEqual(sortTable('STUDY.NAME', 'asc'));
   });
 
   it('renders studies name as a link', () => {

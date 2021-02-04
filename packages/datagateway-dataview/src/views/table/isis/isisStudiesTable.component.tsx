@@ -95,14 +95,24 @@ const ISISStudiesTable = (
     />
   );
 
-  React.useEffect(() => {
-    fetchIds(parseInt(instrumentId));
-  }, [fetchIds, instrumentId]);
+  const [allIdsCleared, setAllIdsCleared] = React.useState(false);
 
   React.useEffect(() => {
-    fetchCount(allIds);
-    fetchData(allIds, { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, sort, filters, allIds]);
+    if (allIds.length === 0) setAllIdsCleared(true);
+  }, [setAllIdsCleared, allIds]);
+
+  React.useEffect(() => {
+    if (allIdsCleared) fetchIds(parseInt(instrumentId));
+  }, [fetchIds, instrumentId, allIdsCleared]);
+
+  React.useEffect(() => {
+    if (allIdsCleared && allIds.length > 0) fetchCount(allIds);
+  }, [fetchCount, filters, allIds, allIdsCleared]);
+
+  React.useEffect(() => {
+    if (allIdsCleared && allIds.length > 0)
+      fetchData(allIds, { startIndex: 0, stopIndex: 49 });
+  }, [fetchData, sort, filters, allIds, allIdsCleared]);
 
   const pathRoot = 'browseStudyHierarchy';
   const instrumentChild = 'study';
@@ -207,8 +217,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISStudiesTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     allIds: state.dgcommon.allIds,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,

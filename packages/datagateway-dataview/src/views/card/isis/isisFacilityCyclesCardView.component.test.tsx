@@ -2,12 +2,10 @@ import { Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
-  clearData,
   dGCommonInitialState,
-  fetchFacilityCyclesRequest,
   filterTable,
-  sortTable,
   updatePage,
+  updateQueryParams,
 } from 'datagateway-common';
 import { ReactWrapper } from 'enzyme';
 import React from 'react';
@@ -53,6 +51,8 @@ describe('ISIS Facility Cycles - Card View', () => {
     state = {
       dgcommon: {
         ...dGCommonInitialState,
+        loadedCount: true,
+        loadedData: true,
         totalDataCount: 1,
         data: [
           {
@@ -96,12 +96,18 @@ describe('ISIS Facility Cycles - Card View', () => {
       .find('input')
       .last()
       .simulate('change', { target: { value: '2019-08-06' } });
-
-    // The push has outdated query?
-    expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(
       filterTable('ENDDATE', { endDate: '2019-08-06', startDate: undefined })
     );
+    expect(store.getActions()[3]).toEqual(push('?'));
+
+    advancedFilter
+      .find('input')
+      .last()
+      .simulate('change', { target: { value: '' } });
+    expect(store.getActions().length).toEqual(6);
+    expect(store.getActions()[4]).toEqual(filterTable('ENDDATE', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -113,12 +119,16 @@ describe('ISIS Facility Cycles - Card View', () => {
       .find('input')
       .first()
       .simulate('change', { target: { value: 'test' } });
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[3]).toEqual(push('?'));
 
-    // The push has outdated query?
+    advancedFilter
+      .find('input')
+      .first()
+      .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(
-      filterTable('NAME', { value: 'test', type: 'include' })
-    );
+    expect(store.getActions()[4]).toEqual(filterTable('NAME', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -129,9 +139,15 @@ describe('ISIS Facility Cycles - Card View', () => {
     button.simulate('click');
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(11);
-    expect(store.getActions()[4]).toEqual(sortTable('NAME', 'asc'));
-    expect(store.getActions()[5]).toEqual(push('?'));
+    expect(store.getActions().length).toEqual(4);
+    expect(store.getActions()[2]).toEqual(
+      updateQueryParams({
+        ...dGCommonInitialState.query,
+        sort: { NAME: 'asc' },
+        page: 1,
+      })
+    );
+    expect(store.getActions()[3]).toEqual(push('?'));
   });
 
   it('pushPage dispatched when page number is no longer valid', () => {
@@ -146,31 +162,20 @@ describe('ISIS Facility Cycles - Card View', () => {
           search: null,
           page: 2,
           results: null,
+          filters: {},
+          sort: {},
         },
       },
     });
     wrapper.setProps({ store: store });
 
     // The push has outdated query?
-    expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[0]).toEqual(updatePage(1));
-    expect(store.getActions()[1]).toEqual(push('?page=2'));
+    expect(store.getActions().length).toEqual(3);
+    expect(store.getActions()[1]).toEqual(updatePage(1));
+    expect(store.getActions()[2]).toEqual(push('?page=2'));
   });
 
   // TODO: Can't trigger onChange for the Select element.
   // Had a similar issue in DG download with the new version of M-UI.
   it.todo('pushResults dispatched onChange');
-
-  it('clearData dispatched on store update', () => {
-    const wrapper = createWrapper();
-    store = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, totalDataCount: 2 },
-    });
-    wrapper.setProps({ store: store });
-
-    expect(store.getActions().length).toEqual(2);
-    expect(store.getActions()[0]).toEqual(clearData());
-    expect(store.getActions()[1]).toEqual(fetchFacilityCyclesRequest(1));
-  });
 });

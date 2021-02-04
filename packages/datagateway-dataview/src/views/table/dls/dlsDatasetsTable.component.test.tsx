@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   addToCartRequest,
   dGCommonInitialState,
+  fetchAllIdsRequest,
   fetchDatasetCountRequest,
   fetchDatasetDetailsRequest,
   fetchDatasetSizeRequest,
@@ -82,7 +83,8 @@ describe('DLS Dataset table component', () => {
     wrapper.setProps({ store: testStore });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatasetCountRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchDatasetsRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest(1));
   });
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {

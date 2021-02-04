@@ -1,6 +1,8 @@
 describe('DLS - Proposals Table', () => {
   beforeEach(() => {
     cy.login('user', 'password');
+    cy.intercept('/investigations?').as('investigations');
+    cy.intercept('/investigations/count?').as('investigationsCount');
     cy.visit('/browse/proposal');
   });
 
@@ -84,6 +86,10 @@ describe('DLS - Proposals Table', () => {
   });
 
   describe('should be able to sort by', () => {
+    beforeEach(() => {
+      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
+    });
+
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Title').click();
 
@@ -139,6 +145,9 @@ describe('DLS - Proposals Table', () => {
   });
 
   describe('should be able to filter by', () => {
+    beforeEach(() => {
+      cy.wait(['@investigations', '@investigationsCount'], { timeout: 10000 });
+    });
     it('text', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')

@@ -1,11 +1,23 @@
 describe('DLS - Datasets Table', () => {
   beforeEach(() => {
-    cy.intercept('/datasets/count').as('datasetsCount');
-    cy.intercept('/datasets?order=').as('datasetsOrder');
+    cy.intercept('/investigations/1').as('investigations');
+    cy.intercept('/investigations/findone').as('investigationsFindOne');
+    cy.intercept('/datasets/count?').as('datasetsCount');
+    cy.intercept('/datasets?').as('datasets');
     cy.login('user', 'password');
     cy.visit(
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
-    ).wait(['@datasetsCount'], { timeout: 10000 });
+    ).wait(
+      [
+        '@investigations',
+        '@investigations',
+        '@investigationsFindOne',
+        '@datasetsCount',
+        '@datasets',
+        '@datasets',
+      ],
+      { timeout: 10000 }
+    );
   });
 
   it('should load correctly', () => {
@@ -99,7 +111,7 @@ describe('DLS - Datasets Table', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
@@ -109,10 +121,10 @@ describe('DLS - Datasets Table', () => {
     it('descending order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -126,13 +138,13 @@ describe('DLS - Datasets Table', () => {
     it('no order', () => {
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
       cy.contains('[role="button"]', 'Name')
         .click()
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
@@ -150,11 +162,11 @@ describe('DLS - Datasets Table', () => {
         .find('input')
         .first()
         .type('1')
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
 
       cy.get('[aria-label="Create Time date filter to"]')
         .type('2002-01-01')
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait('@datasets', { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
@@ -203,11 +215,11 @@ describe('DLS - Datasets Table', () => {
         .find('input')
         .first()
         .type('1')
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 
       cy.get('[aria-label="Create Time date filter to"]')
         .type('2002-01-01')
-        .wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+        .wait(['@datasetsCount', '@datasets'], { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
