@@ -53,7 +53,7 @@ describe('Table component', () => {
     mount.cleanUp();
   });
 
-  it.skip('renders data columns correctly', () => {
+  it('renders data columns correctly', () => {
     const wrapper = mount(<Table {...tableProps} />);
 
     expect(wrapper.exists('[aria-colcount=2]')).toBe(true);
@@ -66,7 +66,8 @@ describe('Table component', () => {
         .find('div')
         .first()
         .text()
-    ).toEqual('Test 1');
+      // Empty Selects (like the one in textColumnFilter) render a zero width space character
+    ).toEqual('Test 1\u200B');
 
     expect(
       wrapper
