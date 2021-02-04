@@ -1,8 +1,8 @@
 import React from 'react';
 
-import CardView from '../cardView.component';
 import { IndexRange } from 'react-virtualized';
 import {
+  CardView,
   Entity,
   DownloadCartItem,
   fetchDatasets,

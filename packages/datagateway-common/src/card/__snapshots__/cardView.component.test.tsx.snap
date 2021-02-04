@@ -1,0 +1,171 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Card View renders correctly 1`] = `
+<WithStyles(ForwardRef(Grid))
+  alignItems="center"
+  container={true}
+  direction="column"
+>
+  <WithStyles(ForwardRef(Grid))
+    alignItems="center"
+    container={true}
+    direction="row"
+    item={true}
+    justify="center"
+    xs={12}
+  >
+    <WithStyles(ForwardRef(Grid))
+      alignItems="center"
+      className="makeStyles-paginationGrid-6"
+      container={true}
+      direction="row"
+      item={true}
+      justify="space-around"
+      xs={12}
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+      >
+        <WithStyles(ForwardRef(Pagination))
+          color="secondary"
+          count={0}
+          hideNextButton={true}
+          hidePrevButton={true}
+          onChange={[Function]}
+          page={1}
+          showFirstButton={true}
+          showLastButton={true}
+          size="large"
+          style={
+            Object {
+              "textAlign": "center",
+            }
+          }
+        />
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    container={true}
+    direction="row"
+  >
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+      md={3}
+      xs={12}
+    >
+      <WithStyles(ForwardRef(Grid))
+        alignItems="stretch"
+        container={true}
+        direction="column"
+        item={true}
+        justify="flex-start"
+        spacing={5}
+        style={
+          Object {
+            "marginBottom": 0,
+            "marginLeft": 0,
+            "marginRight": 0,
+          }
+        }
+        xs={12}
+      >
+        <WithStyles(ForwardRef(Grid))
+          item={true}
+          xs={true}
+        >
+          <WithStyles(ForwardRef(Paper))>
+            <Styled(MuiBox)
+              p={2}
+            >
+              <WithStyles(ForwardRef(Typography))
+                variant="h5"
+              >
+                Sort By
+              </WithStyles(ForwardRef(Typography))>
+            </Styled(MuiBox)>
+            <Styled(MuiBox)>
+              <WithStyles(ForwardRef(List))
+                component="nav"
+              />
+            </Styled(MuiBox)>
+          </WithStyles(ForwardRef(Paper))>
+        </WithStyles(ForwardRef(Grid))>
+        <WithStyles(ForwardRef(Grid))
+          item={true}
+          xs={true}
+        >
+          <WithStyles(ForwardRef(Paper))>
+            <Styled(MuiBox)
+              p={2}
+            >
+              <WithStyles(ForwardRef(Typography))
+                variant="h5"
+              >
+                Filter By
+              </WithStyles(ForwardRef(Typography))>
+            </Styled(MuiBox)>
+            <Styled(MuiBox) />
+          </WithStyles(ForwardRef(Paper))>
+        </WithStyles(ForwardRef(Grid))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+    <WithStyles(ForwardRef(Grid))
+      item={true}
+      md={9}
+      xs={12}
+    >
+      <WithStyles(ForwardRef(List))
+        style={
+          Object {
+            "marginRight": 20,
+            "padding": 0,
+          }
+        }
+      >
+        <WithStyles(ForwardRef(ListItem))
+          alignItems="flex-start"
+          className="makeStyles-root-1"
+          key="0"
+        >
+          <EntityCard
+            tags={Array []}
+            title={
+              Object {
+                "content": undefined,
+                "label": "Test 1",
+              }
+            }
+          />
+        </WithStyles(ForwardRef(ListItem))>
+      </WithStyles(ForwardRef(List))>
+    </WithStyles(ForwardRef(Grid))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    style={
+      Object {
+        "padding": "50px",
+      }
+    }
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Pagination))
+      color="secondary"
+      count={0}
+      hideNextButton={true}
+      hidePrevButton={true}
+      onChange={[Function]}
+      page={1}
+      showFirstButton={true}
+      showLastButton={true}
+      size="large"
+      style={
+        Object {
+          "textAlign": "center",
+        }
+      }
+    />
+  </WithStyles(ForwardRef(Grid))>
+</WithStyles(ForwardRef(Grid))>
+`;

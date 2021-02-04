@@ -10,6 +10,7 @@ import {
 } from '@material-ui/icons';
 import {
   addToCart,
+  CardView,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -37,7 +38,6 @@ import { IndexRange } from 'react-virtualized';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
-import CardView from '../cardView.component';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInvestigationsCardViewProps {

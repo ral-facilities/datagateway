@@ -61,32 +61,23 @@ describe('PageContainer - Tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('fetches cart once on update', () => {
+  it('fetches cart on mount', () => {
     // Mock getElementById so that it returns truthy.
     const testElement = document.createElement('DIV');
     document.getElementById = jest.fn(() => testElement);
     const mockStore = configureStore([thunk]);
-    let testStore = mockStore(state);
-    const wrapper = mount(
+    const testStore = mockStore(state);
+    mount(
       <Provider store={testStore}>
         <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
           <PageContainer />
         </MemoryRouter>
       </Provider>
     );
-    // Update store to trigger componentDidUpdate
-    testStore = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, totalDataCount: 102 },
-    });
-    wrapper.setProps({ store: testStore });
-
     expect(document.getElementById.mock.calls[0][0]).toBe(
       'datagateway-dataview'
     );
-
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual({
+    expect(testStore.getActions()).toContainEqual({
       type: 'datagateway_common:fetch_download_cart_request',
     });
   });

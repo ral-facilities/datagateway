@@ -2,6 +2,7 @@ import { Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   dGCommonInitialState,
   fetchInstrumentDetailsRequest,
   filterTable,
@@ -18,7 +19,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import ISISInstrumentsCardView from './isisInstrumentsCardView.component';
-import AdvancedFilter from '../advancedFilter.component';
 
 describe('ISIS Instruments - Card View', () => {
   let mount;

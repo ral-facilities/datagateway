@@ -1,7 +1,7 @@
 import React from 'react';
 
-import CardView from '../cardView.component';
 import {
+  CardView,
   Entity,
   DownloadCartItem,
   fetchDatasets,

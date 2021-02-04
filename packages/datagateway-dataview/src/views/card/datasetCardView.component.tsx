@@ -7,6 +7,7 @@ import {
 } from '@material-ui/icons';
 import {
   addToCart,
+  CardView,
   Dataset,
   datasetLink,
   DateColumnFilter,
@@ -29,7 +30,6 @@ import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import CardView from './cardView.component';
 
 interface DatasetCVDispatchProps {
   fetchData: (
