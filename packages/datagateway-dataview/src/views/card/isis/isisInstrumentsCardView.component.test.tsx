@@ -127,7 +127,9 @@ describe('ISIS Instruments - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(filterTable('FULLNAME', 'test'));
+    expect(store.getActions()[2]).toEqual(
+      filterTable('FULLNAME', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter

@@ -180,7 +180,9 @@ describe('ISIS Investigations - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(filterTable('TITLE', 'test'));
+    expect(store.getActions()[2]).toEqual(
+      filterTable('TITLE', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter
@@ -188,9 +190,6 @@ describe('ISIS Investigations - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(
-      filterTable('TITLE', { value: 'test', type: 'include' })
-    );
     expect(store.getActions()[4]).toEqual(filterTable('TITLE', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
