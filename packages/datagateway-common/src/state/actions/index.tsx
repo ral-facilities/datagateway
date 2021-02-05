@@ -7,6 +7,7 @@ import {
   FiltersType,
   Order,
   SortType,
+  TextFilter,
 } from '../../app.types';
 import {
   ActionType,
@@ -158,8 +159,17 @@ const objectChanged = (
           });
         }
       } else if (
-        parsedEntry.startDate !== (stateEntry as DateFilter).startDate ||
-        parsedEntry.endDate !== (stateEntry as DateFilter).endDate
+        ('startDate' in parsedEntry &&
+          parsedEntry.startDate !== (stateEntry as DateFilter).startDate) ||
+        ('endDate' in parsedEntry &&
+          parsedEntry.endDate !== (stateEntry as DateFilter).endDate)
+      ) {
+        changed = true;
+      } else if (
+        ('value' in parsedEntry &&
+          parsedEntry.value !== (stateEntry as TextFilter).value) ||
+        ('type' in parsedEntry &&
+          parsedEntry.type !== (stateEntry as TextFilter).value)
       ) {
         changed = true;
       }
