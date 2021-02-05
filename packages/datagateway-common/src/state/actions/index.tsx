@@ -169,7 +169,7 @@ const objectChanged = (
         ('value' in parsedEntry &&
           parsedEntry.value !== (stateEntry as TextFilter).value) ||
         ('type' in parsedEntry &&
-          parsedEntry.type !== (stateEntry as TextFilter).value)
+          parsedEntry.type !== (stateEntry as TextFilter).type)
       ) {
         changed = true;
       }
