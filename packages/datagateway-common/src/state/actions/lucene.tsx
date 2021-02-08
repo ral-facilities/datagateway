@@ -1,7 +1,8 @@
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import axios from 'axios';
 import { format } from 'date-fns';
-import { handleICATError, readSciGatewayToken } from '../..';
+import handleICATError from '../../handleICATError';
+import { readSciGatewayToken } from '../../parseTokens';
 import { ActionType, ThunkResult } from '../app.types';
 import {
   FailurePayload,
@@ -35,27 +36,27 @@ const urlParamsBuilder = (
   datasearchtype: DatasearchType,
   params: UrlBuilderParameters
 ): QueryParameters => {
-  let stringStartDate = '';
-  if (params.startDate !== null) {
-    stringStartDate = format(params.startDate, 'yyyy-MM-dd');
-    const stringStartDateArray = stringStartDate.split('-');
-    stringStartDate =
-      stringStartDateArray[0] +
-      stringStartDateArray[1] +
-      stringStartDateArray[2] +
-      '0000';
-  }
+  let stringStartDate =
+    params.startDate !== null
+      ? format(params.startDate, 'yyyy-MM-dd')
+      : '00000-01-01';
+  const stringStartDateArray = stringStartDate.split('-');
+  stringStartDate =
+    stringStartDateArray[0] +
+    stringStartDateArray[1] +
+    stringStartDateArray[2] +
+    '0000';
 
-  let stringEndDate = '';
-  if (params.endDate !== null) {
-    stringEndDate = format(params.endDate, 'yyyy-MM-dd');
-    const stringEndDateArray = stringEndDate.split('-');
-    stringEndDate =
-      stringEndDateArray[0] +
-      stringEndDateArray[1] +
-      stringEndDateArray[2] +
-      '2359';
-  }
+  let stringEndDate =
+    params.endDate !== null
+      ? format(params.endDate, 'yyyy-MM-dd')
+      : '90000-12-31';
+  const stringEndDateArray = stringEndDate.split('-');
+  stringEndDate =
+    stringEndDateArray[0] +
+    stringEndDateArray[1] +
+    stringEndDateArray[2] +
+    '2359';
 
   const query: QueryParameters = {
     target: datasearchtype,
