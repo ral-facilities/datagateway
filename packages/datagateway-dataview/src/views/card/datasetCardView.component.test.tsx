@@ -150,7 +150,9 @@ describe('Dataset - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[2]).toEqual(
+      filterTable('NAME', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter

@@ -354,9 +354,9 @@ describe('Download Status Table', () => {
       wrapper.update();
     });
 
-    const downloadNameFilterInput = wrapper.find(
-      '[aria-label="Filter by downloadStatus.filename"] input'
-    );
+    const downloadNameFilterInput = wrapper
+      .find('[aria-label="Filter by downloadStatus.filename"] input')
+      .first();
     downloadNameFilterInput.instance().value = '1';
     downloadNameFilterInput.simulate('change');
 
@@ -367,9 +367,9 @@ describe('Download Status Table', () => {
       )
     ).toBe(true);
 
-    const accessMethodFilterInput = wrapper.find(
-      '[aria-label="Filter by downloadStatus.transport"] input'
-    );
+    const accessMethodFilterInput = wrapper
+      .find('[aria-label="Filter by downloadStatus.transport"] input')
+      .first();
 
     downloadNameFilterInput.instance().value = '';
     downloadNameFilterInput.simulate('change');
@@ -392,9 +392,9 @@ describe('Download Status Table', () => {
     accessMethodFilterInput.simulate('change');
 
     // Test varying download availabilities.
-    const availabilityFilterInput = wrapper.find(
-      '[aria-label="Filter by downloadStatus.status"] input'
-    );
+    const availabilityFilterInput = wrapper
+      .find('[aria-label="Filter by downloadStatus.status"] input')
+      .first();
 
     availabilityFilterInput.instance().value = 'complete';
     availabilityFilterInput.simulate('change');

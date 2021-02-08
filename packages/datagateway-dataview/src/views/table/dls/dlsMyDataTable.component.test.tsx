@@ -137,13 +137,15 @@ describe('DLS Visits table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by investigations.visit_id"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by investigations.visit_id"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[6]).toEqual(filterTable('VISIT_ID', 'test'));
+    expect(testStore.getActions()[6]).toEqual(
+      filterTable('VISIT_ID', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

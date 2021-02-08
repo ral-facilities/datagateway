@@ -69,6 +69,7 @@ describe('Add/remove from cart functionality', () => {
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
+          .first()
           .type('e')
           .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
@@ -85,6 +86,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
+          .first()
           .clear()
           .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
@@ -238,6 +240,7 @@ describe('Add/remove from cart functionality', () => {
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
+          .first()
           .type('e')
           .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
@@ -254,6 +257,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
+          .first()
           .clear()
           .wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
 
@@ -400,6 +404,7 @@ describe('Add/remove from cart functionality', () => {
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
+          .first()
           .type('e')
           .wait(['@getDatafiles', '@getDatafiles']);
 
@@ -416,6 +421,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
+          .first()
           .clear()
           .wait(['@getDatafiles', '@getDatafiles']);
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
@@ -766,6 +772,7 @@ describe('Add/remove from cart functionality', () => {
       it('by all items in a filtered table', () => {
         cy.get('[aria-label="Filter by Visit ID"]')
           .find('input')
+          .first()
           .type('6')
           .wait(['@getInvestigations', '@getInvestigations']);
 
@@ -782,6 +789,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="Filter by Visit ID"]')
           .find('input')
+          .first()
           .clear()
           .wait(['@getInvestigations', '@getInvestigations']);
         cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(

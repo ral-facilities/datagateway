@@ -68,7 +68,10 @@ describe('ISIS - Instruments Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('radio');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .first()
+        .type('radio');
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(

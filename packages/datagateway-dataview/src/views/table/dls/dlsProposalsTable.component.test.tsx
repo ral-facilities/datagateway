@@ -120,7 +120,9 @@ describe('DLS Proposals table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('TITLE', 'test'));
+    expect(testStore.getActions()[2]).toEqual(
+      filterTable('TITLE', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
