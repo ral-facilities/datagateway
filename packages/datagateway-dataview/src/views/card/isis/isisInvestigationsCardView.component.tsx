@@ -10,7 +10,6 @@ import {
 } from '@material-ui/icons';
 import {
   addToCart,
-  clearData,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -21,29 +20,21 @@ import {
   fetchISISInvestigationCount,
   fetchISISInvestigations,
   Filter,
-  FiltersType,
   formatBytes,
   Investigation,
-  Order,
   pushPageFilter,
   pushPageNum,
-  pushPageResults,
-  pushPageSort,
+  pushQuery,
   removeFromCart,
-  SortType,
   tableLink,
   TextColumnFilter,
 } from 'datagateway-common';
-import {
-  QueryParams,
-  StateType,
-  ViewsType,
-} from 'datagateway-common/lib/state/app.types';
+import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { Action, AnyAction } from 'redux';
+import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import CardView from '../cardView.component';
@@ -59,12 +50,10 @@ interface ISISInvestigationsCardViewProps {
 interface ISISInvestigationsCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  loading: boolean;
   query: QueryParams;
-  sort: SortType;
   cartItems: DownloadCartItem[];
-  view: ViewsType;
-  filters: FiltersType;
+  loadedData: boolean;
+  loadedCount: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -87,11 +76,9 @@ interface ISISInvestigationsCVDispatchProps {
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  clearData: () => Action;
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  pushResults: (results: number) => Promise<void>;
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
+  pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 type ISISInvestigationsCVCombinedProps = ISISInvestigationsCVDispatchProps &
@@ -105,11 +92,11 @@ const ISISInvestigationsCardView = (
     instrumentId,
     instrumentChildId,
     data,
-    sort,
     totalDataCount,
-    loading,
     query,
     cartItems,
+    loadedData,
+    loadedCount,
     fetchFacilityCycleData,
     fetchStudyData,
     fetchFacilityCycleCount,
@@ -117,21 +104,15 @@ const ISISInvestigationsCardView = (
     fetchDetails,
     addToCart,
     removeFromCart,
-    view,
-    clearData,
-    filters,
     pushFilters,
     pushPage,
-    pushResults,
-    pushSort,
+    pushQuery,
     studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
 
-  const [fetchedCount, setFetchedCount] = React.useState(false);
-  const [investigationIds, setInvestigationIds] = React.useState<number[]>([]);
-
+  const filters = query.filters;
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
@@ -144,10 +125,12 @@ const ISISInvestigationsCardView = (
         .filter(
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
-            investigationIds.includes(cartItem.entityId)
+            data
+              .map((investigation) => investigation.ID)
+              .includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
-    [cartItems, investigationIds]
+    [cartItems, data]
   );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -168,43 +151,28 @@ const ISISInvestigationsCardView = (
     />
   );
 
-  React.useEffect(() => {
-    // Set the IDs of the investigation data.
-    setInvestigationIds(data.map((investigation) => investigation.ID));
-
-    if (!fetchedCount) {
-      fetchCount(parseInt(instrumentId), parseInt(instrumentChildId));
-      setFetchedCount(true);
-    }
-  }, [
-    instrumentId,
-    instrumentChildId,
-    data,
-    clearData,
-    fetchedCount,
-    fetchCount,
-    setFetchedCount,
-  ]);
+  const loadCount = React.useCallback(
+    () => fetchCount(parseInt(instrumentId), parseInt(instrumentChildId)),
+    [fetchCount, instrumentId, instrumentChildId]
+  );
+  const loadData = React.useCallback(
+    (params) =>
+      fetchData(parseInt(instrumentId), parseInt(instrumentChildId), params),
+    [fetchData, instrumentId, instrumentChildId]
+  );
 
   return (
     <CardView
       data={data}
       totalDataCount={totalDataCount}
-      loading={loading}
-      sort={sort}
-      filters={filters}
       query={query}
       onPageChange={pushPage}
-      onResultsChange={pushResults}
-      onSort={pushSort}
       onFilter={pushFilters}
-      clearData={clearData}
-      loadData={(params) =>
-        fetchData(parseInt(instrumentId), parseInt(instrumentChildId), params)
-      }
-      loadCount={() =>
-        fetchCount(parseInt(instrumentId), parseInt(instrumentChildId))
-      }
+      pushQuery={pushQuery}
+      loadedData={loadedData}
+      loadedCount={loadedCount}
+      loadData={loadData}
+      loadCount={loadCount}
       title={{
         label: t('investigations.title'),
         dataKey: 'TITLE',
@@ -212,7 +180,7 @@ const ISISInvestigationsCardView = (
           tableLink(
             `${urlPrefix}/${investigation.ID}/dataset`,
             investigation.TITLE,
-            view
+            query.view
           ),
         filterComponent: textFilter,
       }}
@@ -339,7 +307,12 @@ const mapDispatchToProps = (
             filterType: 'where',
             filterValue: JSON.stringify({
               'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-              'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
             }),
           },
         ],
@@ -354,7 +327,12 @@ const mapDispatchToProps = (
           filterType: 'where',
           filterValue: JSON.stringify({
             'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-            'INVESTIGATIONSTUDY.STUDY.ID': { eq: studyId },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
           }),
         },
       ])
@@ -365,26 +343,21 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  clearData: () => dispatch(clearData()),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
-  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
 const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
     query: state.dgcommon.query,
-    sort: state.dgcommon.sort,
     cartItems: state.dgcommon.cartItems,
-    view: state.dgcommon.query.view,
-    filters: state.dgcommon.filters,
+    loadedData: state.dgcommon.loadedData,
+    loadedCount: state.dgcommon.loadedCount,
   };
 };
 

@@ -1,5 +1,45 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) Includes view in url for generic datafiles route 1`] = `
+<div>
+  <WithStyles(ForwardRef(Paper))
+    elevation={0}
+    square={true}
+  >
+    <WithStyles(WithStyles(ForwardRef(Breadcrumbs)))
+      aria-label="breadcrumb"
+      separator=""
+    >
+      <WrappedBreadcrumb
+        ariaLabel="Breadcrumb-home"
+        displayName="breadcrumbs.home"
+      />
+      <WrappedBreadcrumb
+        ariaLabel="Breadcrumb-base"
+        displayName="breadcrumbs.investigation"
+        url="/browse/investigation?view=card"
+      />
+      <WrappedBreadcrumb
+        ariaLabel="Breadcrumb-hierarchy-1"
+        displayName="Test 1"
+        key="breadcrumb-1"
+        url="/browse/investigation/1/dataset?view=card"
+      />
+      <WrappedBreadcrumb
+        ariaLabel="Breadcrumb-hierarchy-2"
+        displayName="INVESTIGATION 1"
+        key="breadcrumb-2"
+      />
+      <WrappedBreadcrumb
+        ariaLabel="Breadcrumb-last"
+        displayName="breadcrumbs.datafile"
+        isLast={true}
+      />
+    </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
+  </WithStyles(ForwardRef(Paper))>
+</div>
+`;
+
 exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an updated breadcrumb for a new router location 1`] = `
 <Provider
   store={
@@ -60,6 +100,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
           breadcrumbSettings={Object {}}
           dispatch={[Function]}
           location="/browse/investigation/1/dataset/1/datafile"
+          view={null}
         >
           <PageBreadcrumbs
             apiUrl=""
@@ -67,6 +108,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
             dispatch={[Function]}
             location="/browse/investigation/1/dataset/1/datafile"
             t={[Function]}
+            view={null}
           >
             <div>
               <WithStyles(ForwardRef(Paper))

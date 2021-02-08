@@ -9,7 +9,7 @@ describe('Datasets Cards', () => {
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(['@getDatasetsCount', '@getDatasetsCount', '@getDatasetsOrder'], {
+      .wait(['@getDatasetsCount', '@getDatasetsOrder'], {
         timeout: 10000,
       });
   });
@@ -28,29 +28,23 @@ describe('Datasets Cards', () => {
   });
 
   it('should be able to sort by one field', () => {
-    cy.contains('[role="button"]', 'Name')
-      .click()
-      .wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
-        timeout: 10000,
-      });
+    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
+      timeout: 10000,
+    });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('DATASET 1');
 
-    cy.contains('[role="button"]', 'Name')
-      .click()
-      .wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
-        timeout: 10000,
-      });
+    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
+      timeout: 10000,
+    });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('#card').contains('DATASET 241');
 
-    cy.contains('[role="button"]', 'Name')
-      .click()
-      .wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
-        timeout: 10000,
-      });
+    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
+      timeout: 10000,
+    });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('DATASET 1');
@@ -59,18 +53,16 @@ describe('Datasets Cards', () => {
   it('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Create Time')
       .click()
-      .wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
+      .wait('@getDatasetsOrder', {
         timeout: 10000,
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('DATASET 241');
 
-    cy.contains('[role="button"]', 'Name')
-      .click()
-      .wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {
-        timeout: 10000,
-      });
+    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
+      timeout: 10000,
+    });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('DATASET 241');

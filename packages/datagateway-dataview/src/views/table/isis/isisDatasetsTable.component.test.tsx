@@ -14,6 +14,7 @@ import {
   addToCartRequest,
   removeFromCartRequest,
   dGCommonInitialState,
+  fetchAllIdsRequest,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -95,7 +96,8 @@ describe('ISIS Dataset table component', () => {
     wrapper.setProps({ store: testStore });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatasetCountRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchDatasetsRequest(1));
+    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
+    expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest(1));
   });
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {
