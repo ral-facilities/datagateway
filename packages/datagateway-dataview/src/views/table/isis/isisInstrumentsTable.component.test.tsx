@@ -111,7 +111,9 @@ describe('ISIS Instruments table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('FULLNAME', 'test'));
+    expect(testStore.getActions()[2]).toEqual(
+      filterTable('FULLNAME', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
