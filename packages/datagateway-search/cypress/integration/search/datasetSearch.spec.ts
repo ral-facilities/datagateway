@@ -29,22 +29,9 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Submit search button"]')
       .click()
-      .wait(
-        [
-          '@investigations',
-          '@investigations',
-          '@investigationsCount',
-          '@datasets',
-          '@datasets',
-          '@datasetsCount',
-          '@datafiles',
-          '@datafiles',
-          '@datafilesCount',
-        ],
-        {
-          timeout: 10000,
-        }
-      );
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')

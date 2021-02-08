@@ -36,42 +36,34 @@ const urlParamsBuilder = (
   datasearchtype: DatasearchType,
   params: UrlBuilderParameters
 ): QueryParameters => {
-  let stringStartDate =
+  const query: QueryParameters = {
+    target: datasearchtype,
+  };
+
+  const stringStartDate =
     params.startDate !== null
       ? format(params.startDate, 'yyyy-MM-dd')
       : '00000-01-01';
   const stringStartDateArray = stringStartDate.split('-');
-  stringStartDate =
+  query.lower =
     stringStartDateArray[0] +
     stringStartDateArray[1] +
     stringStartDateArray[2] +
     '0000';
 
-  let stringEndDate =
+  const stringEndDate =
     params.endDate !== null
       ? format(params.endDate, 'yyyy-MM-dd')
       : '90000-12-31';
   const stringEndDateArray = stringEndDate.split('-');
-  stringEndDate =
+  query.upper =
     stringEndDateArray[0] +
     stringEndDateArray[1] +
     stringEndDateArray[2] +
     '2359';
 
-  const query: QueryParameters = {
-    target: datasearchtype,
-  };
-
   if (params.searchText.length > 0) {
     query.text = params.searchText;
-  }
-
-  if (stringStartDate.length > 0) {
-    query.lower = stringStartDate;
-  }
-
-  if (stringEndDate.length > 0) {
-    query.upper = stringEndDate;
   }
 
   // return query.
