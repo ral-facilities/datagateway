@@ -41,9 +41,9 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const settings = React.useContext(DownloadSettingsContext);
 
   const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
-  const [filters, setFilters] = React.useState<{ [column: string]: string }>(
-    {}
-  );
+  const [filters, setFilters] = React.useState<{
+    [column: string]: { value?: string | number; type: string };
+  }>({});
   const [data, setData] = React.useState<DownloadCartTableItem[]>([]);
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [sizesLoaded, setSizesLoaded] = React.useState(true);
@@ -147,7 +147,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      onChange={(value: string) => {
+      onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
           setFilters({ ...filters, [dataKey]: value });
         } else {
@@ -164,7 +164,11 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
         const tableValue = item[key];
         if (
           tableValue === undefined ||
-          (typeof tableValue === 'string' && !tableValue.includes(value))
+          (typeof tableValue === 'string' &&
+            typeof value.value === 'string' &&
+            (value.type === 'include'
+              ? !tableValue.includes(value.value)
+              : tableValue.includes(value.value)))
         ) {
           return false;
         }

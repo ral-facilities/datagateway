@@ -117,14 +117,14 @@ describe('ISIS Studies table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by studies.name"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by studies.name"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('STUDY.NAME', 'test')
+      filterTable('STUDY.NAME', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
