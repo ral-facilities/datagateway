@@ -104,13 +104,15 @@ describe('ISIS FacilityCycles table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by facilitycycles.name"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by facilitycycles.name"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('NAME', 'test'));
+    expect(testStore.getActions()[2]).toEqual(
+      filterTable('NAME', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

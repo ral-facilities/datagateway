@@ -5,11 +5,48 @@ exports[`Text filter component renders correctly 1`] = `
   <WithStyles(ForwardRef(Input))
     aria-label="Filter by test"
     color="secondary"
+    endAdornment={
+      <ForwardRef(WithStyles)
+        position="end"
+      >
+        <ForwardRef(WithStyles)
+          IconComponent={
+            Object {
+              "$$typeof": Symbol(react.memo),
+              "compare": null,
+              "displayName": "SettingsIcon",
+              "muiName": "SvgIcon",
+              "type": Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "render": [Function],
+              },
+            }
+          }
+          id="select-filter-type"
+          onChange={[Function]}
+          renderValue={[Function]}
+          value="include"
+        >
+          <ForwardRef(WithStyles)
+            id="select-filter-type-include"
+            value="include"
+          >
+            Include
+          </ForwardRef(WithStyles)>
+          <ForwardRef(WithStyles)
+            id="select-filter-type-exclude"
+            value="exclude"
+          >
+            Exclude
+          </ForwardRef(WithStyles)>
+        </ForwardRef(WithStyles)>
+      </ForwardRef(WithStyles)>
+    }
     fullWidth={true}
     id="test filter"
     onChange={[Function]}
-    placeholder="Contains..."
-    value="test value"
+    placeholder="Include..."
+    value=""
   />
 </div>
 `;
