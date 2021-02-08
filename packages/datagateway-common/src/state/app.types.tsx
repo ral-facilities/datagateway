@@ -1,17 +1,17 @@
 import { RouterState } from 'connected-react-router';
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { DownloadCartItem, Entity, Filter, Order } from '../app.types';
+import { DownloadCartItem, Entity, FiltersType, SortType } from '../app.types';
 import { URLs } from './actions/actions.types';
 
 export interface DGCommonState {
   facilityName: string;
-  sort: {
-    [column: string]: Order;
-  };
-  filters: {
-    [column: string]: Filter;
-  };
+  urls: URLs;
+  loading: boolean;
+  loadedData: boolean;
+  loadedCount: boolean;
+  downloading: boolean;
+  error: string | null;
   data: Entity[];
   totalDataCount: number;
   investigationCache: EntityCache;
@@ -19,14 +19,28 @@ export interface DGCommonState {
   cartItems: DownloadCartItem[];
   allIds: number[];
   luceneIds: number[];
-  loading: boolean;
-  downloading: boolean;
-  error: string | null;
+  luceneIdsTimestamp: number;
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;
-  luceneIdsTimestamp: number;
-  urls: URLs;
+  filterData: FilterDataType;
+  query: QueryParams;
+  savedQuery: QueryParams;
+}
+
+export type ViewsType = 'table' | 'card' | null;
+
+export interface QueryParams {
+  sort: SortType;
+  filters: FiltersType;
+  view: ViewsType;
+  search: string | null;
+  page: number | null;
+  results: number | null;
+}
+
+export interface FilterDataType {
+  [filterKey: string]: string[];
 }
 
 export interface EntityCache {

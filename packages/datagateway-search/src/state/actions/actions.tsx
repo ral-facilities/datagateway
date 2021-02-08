@@ -20,6 +20,8 @@ import {
   ToggleInvestigationType,
   ToggleLuceneRequestReceivedType,
   TogglePayload,
+  CurrentTabPayload,
+  SetCurrentTabType,
 } from './actions.types';
 
 export const toggleDataset = (
@@ -183,3 +185,11 @@ export const fetchLuceneDatafiles = (
     });
   };
 };
+export const setCurrentTab = (
+  currentTab: string
+): ActionType<CurrentTabPayload> => ({
+  type: SetCurrentTabType,
+  payload: {
+    currentTab,
+  },
+});

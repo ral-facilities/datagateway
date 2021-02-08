@@ -4,17 +4,30 @@ import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, LinearProgress } from '@material-ui/core';
 
 import SearchPageTable from './searchPageTable';
 import SearchBoxContainer from './searchBoxContainer.component';
+import SearchBoxContainerSide from './searchBoxContainerSide.component';
 
-class SearchPageContainer extends React.Component<{ entityCount: number }> {
-  public constructor(props: { entityCount: number }) {
+interface SearchPageContainerStoreProps {
+  entityCount: number;
+  loading: boolean;
+  sideLayout: boolean;
+}
+class SearchPageContainer extends React.Component<
+  SearchPageContainerStoreProps
+> {
+  public constructor(props: SearchPageContainerStoreProps) {
     super(props);
   }
 
   public render(): React.ReactElement {
+    // Table should take up page but leave room for: SG appbar, SG footer,
+    // grid padding, search box, checkboxes, date selectors, padding.
+    const spacing = 2;
+    const containerHeight = `calc(100vh - 64px - 30px - ${spacing}*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)`;
+
     return (
       <Switch>
         <Route
@@ -25,25 +38,42 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
         <div>
           <Grid
             container
-            direction="row"
+            direction={this.props.sideLayout ? 'row' : 'column'}
             justify="flex-start"
             alignItems="flex-start"
-            spacing={2}
+            spacing={spacing}
+            style={{ margin: 0, width: '100%' }}
           >
             <Grid item id="container-search-filters">
-              <Paper style={{ height: '100%', width: '100%' }}>
-                <SearchBoxContainer />
-              </Paper>
+              {this.props.sideLayout ? (
+                <Paper style={{ height: '100%', width: '100%' }}>
+                  <SearchBoxContainerSide />
+                </Paper>
+              ) : (
+                <Paper
+                  style={{ height: '100%', width: 'calc(70vw)', minWidth: 584 }}
+                >
+                  <SearchBoxContainer />
+                </Paper>
+              )}
             </Grid>
 
             <Grid item id="container-search-table">
               <Paper
                 style={{
-                  height: 'calc(85vh)',
+                  height: containerHeight,
+                  minHeight: 326,
                   width: 'calc(70vw)',
+                  minWidth: 584,
                 }}
               >
-                <SearchPageTable />
+                {/* Show loading progress if data is still being loaded */}
+                {this.props.loading && (
+                  <Grid item xs={12}>
+                    <LinearProgress color="secondary" />
+                  </Grid>
+                )}
+                <SearchPageTable containerHeight={containerHeight} />
               </Paper>
             </Grid>
           </Grid>
@@ -53,8 +83,10 @@ class SearchPageContainer extends React.Component<{ entityCount: number }> {
   }
 }
 
-const mapStateToProps = (state: StateType): { entityCount: number } => ({
+const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   entityCount: state.dgcommon.totalDataCount,
+  loading: state.dgcommon.loading,
+  sideLayout: state.dgsearch.sideLayout,
 });
 
 export default connect(mapStateToProps)(SearchPageContainer);

@@ -10,6 +10,7 @@ exports[`DatePicker component tests renders correctly 1`] = `
       animateYearScrolling={true}
       className="makeStyles-root-1"
       clearable={true}
+      color="secondary"
       disableFuture={true}
       format="yyyy-MM-dd"
       inputProps={
@@ -26,6 +27,11 @@ exports[`DatePicker component tests renders correctly 1`] = `
       onChange={[Function]}
       openTo="date"
       placeholder="searchBox.start_date"
+      style={
+        Object {
+          "paddingRight": 6,
+        }
+      }
       value={null}
       views={
         Array [
@@ -34,12 +40,12 @@ exports[`DatePicker component tests renders correctly 1`] = `
         ]
       }
     />
-    <br />
     <PickerWithState
       allowKeyboardControl={true}
       animateYearScrolling={true}
       className="makeStyles-root-1"
       clearable={true}
+      color="secondary"
       disableFuture={true}
       format="yyyy-MM-dd"
       inputProps={

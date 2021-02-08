@@ -1,11 +1,5 @@
-import {
-  Datafile,
-  Dataset,
-  DownloadCart,
-  FacilityCycle,
-  Instrument,
-  Investigation,
-} from '../../app.types';
+import DGCommonReducer, { initialState } from './dgcommon.reducer';
+import { DGCommonState, EntityCache, QueryParams } from '../app.types';
 import {
   addToCartFailure,
   addToCartRequest,
@@ -60,31 +54,49 @@ import {
   fetchInstrumentsFailure,
   fetchInstrumentsRequest,
   fetchInstrumentsSuccess,
-  fetchInvestigationCountFailure,
-  fetchInvestigationCountRequest,
-  fetchInvestigationCountSuccess,
   fetchInvestigationDatasetsCountFailure,
   fetchInvestigationDatasetsCountRequest,
   fetchInvestigationDatasetsCountSuccess,
   fetchInvestigationDetailsFailure,
   fetchInvestigationDetailsRequest,
   fetchInvestigationDetailsSuccess,
-  fetchInvestigationsFailure,
   fetchInvestigationSizeFailure,
   fetchInvestigationSizeRequest,
   fetchInvestigationSizeSuccess,
   fetchInvestigationsRequest,
   fetchInvestigationsSuccess,
-  filterTable,
-  loadFacilityName,
-  loadUrls,
-  removeFromCartFailure,
-  removeFromCartRequest,
-  removeFromCartSuccess,
-  sortTable,
+  fetchInvestigationsFailure,
+  fetchInvestigationCountRequest,
+  fetchInvestigationCountSuccess,
+  fetchInvestigationCountFailure,
+  fetchFilterRequest,
+  fetchFilterSuccess,
+  clearData,
+  updateSaveView,
+  updateQueryParams,
+  updateSort,
+  updateFilters,
+  updateResults,
+  updatePage,
+  updateSearch,
+  updateView,
+  fetchStudiesRequest,
+  fetchStudiesSuccess,
+  fetchStudiesFailure,
+  fetchStudyCountRequest,
+  fetchStudyCountSuccess,
+  fetchStudyCountFailure,
 } from '../actions';
-import { DGCommonState, EntityCache } from '../app.types';
-import DGCommonReducer, { initialState } from './dgcommon.reducer';
+
+import {
+  Investigation,
+  Dataset,
+  Datafile,
+  Instrument,
+  FacilityCycle,
+  DownloadCart,
+  StudyInvestigation,
+} from '../../app.types';
 
 describe('DGCommon reducer', () => {
   let state: DGCommonState;
@@ -103,40 +115,52 @@ describe('DGCommon reducer', () => {
   });
 
   it('should set the sort state when given a SortTable action with asc or desc order', () => {
-    expect(state.sort).toEqual({});
+    expect(state.query.sort).toEqual({});
 
     const updatedState = DGCommonReducer(state, sortTable('test', 'asc'));
-    expect(updatedState.sort).toEqual({ test: 'asc' });
+    expect(updatedState.query.sort).toEqual({ test: 'asc' });
   });
 
   it('should remove column from sort state when given a SortTable action with null order', () => {
-    state.sort = {
-      test: 'asc',
+    state = {
+      ...initialState,
+      query: {
+        ...initialState.query,
+        sort: {
+          test: 'asc',
+        },
+      },
     };
 
     const updatedState = DGCommonReducer(state, sortTable('test', null));
-    expect(updatedState.sort).toEqual({});
+    expect(updatedState.query.sort).toEqual({});
   });
 
   it('should set the filters state when given a FilterTable action', () => {
-    expect(state.filters).toEqual({});
+    expect(state.query.filters).toEqual({});
 
     const updatedState = DGCommonReducer(
       state,
       filterTable('test column', 'test filter')
     );
-    expect(updatedState.filters).toEqual({
+    expect(updatedState.query.filters).toEqual({
       'test column': 'test filter',
     });
   });
 
   it('should remove column from filter state when given a FilterTable action with null filter', () => {
-    state.filters = {
-      'test column': 'test filter',
+    state = {
+      ...initialState,
+      query: {
+        ...initialState.query,
+        filters: {
+          test: 'test filter',
+        },
+      },
     };
 
     const updatedState = DGCommonReducer(state, filterTable('test', null));
-    expect(updatedState.sort).toEqual({});
+    expect(updatedState.query.filters).toEqual({});
   });
 
   it('should clear the table state when given a ClearTable action', () => {
@@ -147,8 +171,14 @@ describe('DGCommon reducer', () => {
       loading: true,
       downloading: true,
       error: 'test error',
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
     };
 
     const updatedState = DGCommonReducer(state, clearTable());
@@ -159,8 +189,133 @@ describe('DGCommon reducer', () => {
       loading: false,
       downloading: false,
       error: null,
-      sort: {},
-      filters: {},
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
+    });
+  });
+
+  it('should clear data only when given a clearData action', () => {
+    state = {
+      ...initialState,
+      data: [{ ID: 1, NAME: 'test' }],
+      totalDataCount: 1,
+      loading: true,
+      downloading: true,
+      error: 'test error',
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
+    };
+
+    const updatedState = DGCommonReducer(state, clearData());
+    expect(updatedState).toEqual({
+      ...initialState,
+      data: [],
+      totalDataCount: 1,
+      loading: true,
+      downloading: true,
+      error: 'test error',
+      query: {
+        view: 'table',
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
+    });
+  });
+
+  it('should save state on a saveView action without a saved view already present', () => {
+    const queryOne: QueryParams = {
+      view: 'table',
+      search: 'searchOne',
+      page: 1,
+      results: 1,
+      sort: { NAME: 'asc' },
+      filters: { NAME: 't' },
+    };
+    state = {
+      ...initialState,
+      query: queryOne,
+      data: [{ ID: 1, NAME: 'test' }],
+    };
+
+    const updatedState = DGCommonReducer(state, updateSaveView('table'));
+    expect(updatedState).toEqual({
+      ...initialState,
+      data: [],
+      totalDataCount: 0,
+      query: {
+        view: null,
+        search: null,
+        page: null,
+        results: null,
+        sort: { NAME: 'asc' },
+        filters: { NAME: 't' },
+      },
+      savedQuery: {
+        sort: {},
+        filters: {},
+        search: 'searchOne',
+        page: 1,
+        results: 1,
+        view: 'table',
+      },
+    });
+  });
+
+  it('should save state on a saveView action with saved view already present', () => {
+    const queryOne: QueryParams = {
+      view: 'table',
+      search: 'searchOne',
+      page: 1,
+      results: 1,
+      sort: { NAME: 'asc' },
+      filters: { TABLE: 't', CUSTOM: ['1', '2', '3'] },
+    };
+    const queryTwo: QueryParams = {
+      view: 'card',
+      search: 'searchTwo',
+      page: 2,
+      results: 2,
+      filters: { CARD: 'c' },
+      sort: { NAME: 'desc' },
+    };
+    state = {
+      ...initialState,
+      data: [{ ID: 1, NAME: 'test' }],
+      totalDataCount: 1,
+      query: queryOne,
+      savedQuery: queryTwo,
+    };
+
+    const updatedState = DGCommonReducer(state, updateSaveView('table'));
+    expect(updatedState).toEqual({
+      ...initialState,
+      data: [],
+      totalDataCount: 0,
+      query: {
+        ...queryTwo,
+        sort: queryOne.sort,
+        filters: { CARD: 'c', TABLE: 't' },
+      },
+      savedQuery: {
+        ...queryOne,
+        sort: queryTwo.sort,
+        filters: { CUSTOM: ['1', '2', '3'] },
+      },
     });
   });
 
@@ -243,6 +398,16 @@ describe('DGCommon reducer', () => {
         fetchInvestigationCountSuccess(1, validTimestamp)
       );
       expect(updatedState.countTimestamp).toBe(validTimestamp);
+      expect(updatedState.loadedData).toBeFalsy();
+    });
+
+    it('should set loadedData when fetchCountSuccess has count of 0', () => {
+      const updatedState = DGCommonReducer(
+        state,
+        fetchInvestigationCountSuccess(0, validTimestamp)
+      );
+      expect(updatedState.countTimestamp).toBe(validTimestamp);
+      expect(updatedState.loadedData).toBeTruthy();
     });
 
     it('should update allIdsTimestamp when given a valid fetchAllIdsRequest', () => {
@@ -714,12 +879,12 @@ describe('DGCommon reducer', () => {
   });
 
   describe('FetchInvestigationDatasetsCount actions', () => {
-    it('should not affect state when given a FetchInvestigationDatasetsCountRequest action', () => {
+    it('should set loading when given a FetchInvestigationDatasetsCountRequest action', () => {
       const updatedState = DGCommonReducer(
         state,
         fetchInvestigationDatasetsCountRequest(validTimestamp)
       );
-      expect(updatedState).toEqual(state);
+      expect(updatedState).toEqual({ ...state, loading: true });
     });
 
     it('should set the data state and reset error and loading state when given a FetchInvestigationDatasetsCountSuccess action', () => {
@@ -1029,12 +1194,12 @@ describe('DGCommon reducer', () => {
   });
 
   describe('FetchDatasetDatafilesCount actions', () => {
-    it('should not affect state when given a FetchDatasetDatafilesCountRequest action', () => {
+    it('should set loading when given a FetchDatasetDatafilesCountRequest action', () => {
       const updatedState = DGCommonReducer(
         state,
         fetchDatasetDatafilesCountRequest(validTimestamp)
       );
-      expect(updatedState).toEqual(state);
+      expect(updatedState).toEqual({ ...state, loading: true });
     });
 
     it('should set the data state and reset error and loading state when given a FetchDatasetDatafilesCountSuccess action', () => {
@@ -1376,6 +1541,104 @@ describe('DGCommon reducer', () => {
     });
   });
 
+  describe('FetchStudies actions', () => {
+    it('should set the loading state when given a FetchStudiesRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudiesRequest(validTimestamp)
+      );
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the data state and reset error and loading state when given a FetchStudiesSuccess action', () => {
+      state.loading = true;
+      const mockData: StudyInvestigation[] = [
+        {
+          ID: 1,
+          STUDY_ID: 1,
+          INVESTIGATION_ID: 1,
+          STUDY: {
+            ID: 1,
+            PID: 'doi 1',
+            NAME: 'Test 1',
+            MOD_TIME: '2000-01-01',
+            CREATE_TIME: '2000-01-01',
+          },
+        },
+        {
+          ID: 2,
+          STUDY_ID: 2,
+          INVESTIGATION_ID: 2,
+          STUDY: {
+            ID: 2,
+            PID: 'doi 2',
+            NAME: 'Test 2',
+            MOD_TIME: '2000-01-02',
+            CREATE_TIME: '2000-01-02',
+          },
+        },
+      ];
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudiesSuccess(mockData, validTimestamp)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual(mockData);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state and reset loading and data state when given a FetchStudiesFailure action', () => {
+      state.loading = true;
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudiesFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.data).toEqual([]);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchStudyCount actions', () => {
+    it('should set the loading state when given a FetchStudyCountRequest action', () => {
+      expect(state.loading).toBe(false);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudyCountRequest(validTimestamp)
+      );
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the totalDataCount state and reset error and loading state when given a FetchStudyCountSuccess action', () => {
+      state.loading = true;
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudyCountSuccess(15, validTimestamp)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.totalDataCount).toEqual(15);
+      expect(updatedState.error).toBeNull();
+    });
+
+    it('should set the error state and reset loading and data state when given a FetchStudyCountFailure action', () => {
+      state.loading = true;
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchStudyCountFailure('Test error message')
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.totalDataCount).toEqual(0);
+      expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
   describe('Cart actions', () => {
     const mockData: DownloadCart = {
       cartItems: [
@@ -1531,5 +1794,240 @@ describe('DGCommon reducer', () => {
     it.todo(
       'should set the error state and reset loading state when given a FetchLuceneIdsFailure action'
     );
+  });
+
+  describe('FetchFilter actions', () => {
+    it('should set the loading state when given a FetchFilterRequest action', () => {
+      state = { ...initialState, loading: false };
+      expect(state.loading).toBe(false);
+
+      const updatedState = DGCommonReducer(state, fetchFilterRequest());
+      expect(updatedState.loading).toBe(true);
+    });
+
+    it('should set the loading, filter data when given a FetchFilterSuccess action', () => {
+      state = { ...initialState, loading: true };
+      expect(state.loading).toBe(true);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchFilterSuccess('testKey', ['testData'])
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.filterData).toEqual({ testKey: ['testData'] });
+    });
+  });
+
+  describe('Update actions', () => {
+    it('should update view on UpdateView', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateView('card'));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'card',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      });
+    });
+    it('should update search on UpdateSearch', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateSearch('searchTwo'));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchTwo',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      });
+    });
+
+    it('should update page on UpdatePage', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updatePage(2));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 2,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      });
+    });
+
+    it('should update results on UpdateResults', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateResults(2));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 2,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      });
+    });
+
+    it('should update filter on UpdateFilters', () => {
+      state = {
+        ...initialState,
+        data: [{ ID: 1, NAME: 'test' }],
+        totalDataCount: 1,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateFilters({ NAME: 'c' }));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        data: [],
+        totalDataCount: 0,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 'c' },
+          sort: { NAME: 'asc' },
+        },
+      });
+    });
+
+    it('should update sort on UpdateSort', () => {
+      state = {
+        ...initialState,
+        data: [{ ID: 1, NAME: 'test' }],
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      };
+
+      const updatedState = DGCommonReducer(state, updateSort({ NAME: 'desc' }));
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        data: [],
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'desc' },
+        },
+      });
+    });
+
+    it('should update query on UpdateQueryParams', () => {
+      state = {
+        ...initialState,
+        query: {
+          view: 'table',
+          search: 'searchOne',
+          page: 1,
+          results: 1,
+          filters: { NAME: 't' },
+          sort: { NAME: 'asc' },
+        },
+      };
+
+      const updatedState = DGCommonReducer(
+        state,
+        updateQueryParams({
+          view: 'card',
+          search: 'searchTwo',
+          page: 2,
+          results: 2,
+          filters: { NAME: 'c' },
+          sort: { NAME: 'desc' },
+        })
+      );
+
+      expect(updatedState).toEqual({
+        ...initialState,
+        query: {
+          view: 'card',
+          search: 'searchTwo',
+          page: 2,
+          results: 2,
+          filters: { NAME: 'c' },
+          sort: { NAME: 'desc' },
+        },
+      });
+    });
   });
 });

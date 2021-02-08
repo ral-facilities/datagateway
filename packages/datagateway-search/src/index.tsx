@@ -11,6 +11,8 @@ import * as log from 'loglevel';
 import singleSpaReact from 'single-spa-react';
 
 import { MicroFrontendId, RegisterRouteType } from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 
 const pluginName = 'datagateway-search';
 
@@ -81,10 +83,22 @@ document.dispatchEvent(
         section: 'Test',
         link: '/search/data',
         plugin: 'datagateway-search',
-        displayName: 'DataGateway Search',
+        displayName: '\xa0Search',
         order: 0,
-        helpText:
-          'DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters.',
+        helpSteps: [
+          {
+            target: '#plugin-link--search-data',
+            content:
+              'DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters',
+          },
+          {
+            target: '.tour-search-tab-select',
+            content: 'Select which type of data to view the search results for',
+          },
+        ],
+        logoLightMode: LogoLight,
+        logoDarkMode: LogoDark,
+        logoAltText: 'DataGateway',
       },
     },
   })

@@ -1,20 +1,12 @@
 describe('Download Cart', () => {
-  before(() => {
-    // Ensure the download cart is cleared before running tests.
+  beforeEach(() => {
+    cy.intercept('GET', '**/topcat/user/cart/**').as('fetchCart');
+    cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
     cy.login('root', 'pw');
     cy.clearDownloadCart();
-  });
-
-  beforeEach(() => {
-    Cypress.currentTest.retries(2);
-    cy.server();
-    cy.route('GET', '**/topcat/user/cart/**').as('fetchCart');
-    cy.route('GET', '**/topcat/user/downloads**').as('fetchDownloads');
-    cy.login('root', 'pw');
 
     cy.seedDownloadCart().then(() => {
-      cy.visit('/');
-      cy.wait('@fetchCart');
+      cy.visit('/').wait('@fetchCart');
     });
   });
 
@@ -32,13 +24,11 @@ describe('Download Cart', () => {
 
     // Ensure we can move away from the table and come back to it.
     cy.get('[aria-label="Download cart panel"]').should('exist');
-    cy.get('[aria-label="Downloads tab"]').should('exist').click();
-
     // Wait for the downloads to be fetched before moving back to the cart.
-    cy.wait('@fetchDownloads');
+    cy.get('[aria-label="Downloads tab"]').should('exist').click().wait('@fetchDownloads');
     cy.get('[aria-label="Download status panel"]').should('exist');
 
-    cy.get('[aria-label="Cart tab').click();
+    cy.get('[aria-label="Cart tab').click().wait('@fetchCart');
     cy.get('[aria-label="Download cart panel"]').should('exist');
 
     cy.get('[aria-rowcount=59]', { timeout: 10000 }).should('exist');
@@ -107,13 +97,13 @@ describe('Download Cart', () => {
   });
 
   it('should be able to remove individual items from the cart', () => {
-    cy.route('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
+    cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.get('[aria-label="Remove DATASET 1 from cart"]').click();
-    cy.contains(/^DATASET 1$/).should('not.be.visible');
+    cy.contains(/^DATASET 1$/).should('not.exist');
     cy.get('[aria-rowcount=58]').should('exist');
 
     cy.wait('@removeFromCart').then((xhr) =>
@@ -124,12 +114,12 @@ describe('Download Cart', () => {
   });
 
   it('should be able to remove all items from the cart', () => {
-    cy.route('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
+    cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
 
     cy.contains(/^DATASET 1$/).should('be.visible');
     cy.contains('Remove All').click();
-    cy.contains(/^DATASET 1$/).should('not.be.visible');
+    cy.contains(/^DATASET 1$/).should('not.exist');
     cy.get('[aria-rowcount=0]').should('exist');
 
     cy.wait('@removeFromCart').then(
@@ -137,7 +127,7 @@ describe('Download Cart', () => {
     );
   });
 
-  it.only('should be able open and close the download confirmation dialog', () => {
+  it('should be able open and close the download confirmation dialog', () => {
     cy.contains('Calculating...', { timeout: 10000 }).should('not.exist');
     cy.contains('Download Cart').click();
 

@@ -1,33 +1,37 @@
+import axios from 'axios';
+import { batch } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
+import { Action } from 'redux';
+import { getApiFilter, nestedValue } from '.';
+import { Entity, Investigation } from '../../app.types';
+import handleICATError from '../../handleICATError';
+import { readSciGatewayToken } from '../../parseTokens';
+import { ActionType, ThunkResult } from '../app.types';
 import {
-  FetchInvestigationsSuccessType,
-  FetchInvestigationsFailureType,
-  FetchInvestigationsRequestType,
-  FetchDataSuccessPayload,
   FailurePayload,
-  FetchInvestigationDetailsSuccessType,
-  FetchInvestigationDetailsFailureType,
-  FetchInvestigationDetailsRequestType,
   FetchCountSuccessPayload,
-  FetchInvestigationCountSuccessType,
+  FetchDataSuccessPayload,
+  FetchDetailsSuccessPayload,
+  FetchFilterFailureType,
+  FetchFilterRequestType,
+  FetchFilterSuccessPayload,
+  FetchFilterSuccessType,
   FetchInvestigationCountFailureType,
   FetchInvestigationCountRequestType,
-  RequestPayload,
-  FetchDetailsSuccessPayload,
-  FetchInvestigationSizeRequestType,
-  FetchSizeSuccessPayload,
-  FetchInvestigationSizeSuccessType,
+  FetchInvestigationCountSuccessType,
+  FetchInvestigationDetailsFailureType,
+  FetchInvestigationDetailsRequestType,
+  FetchInvestigationDetailsSuccessType,
+  FetchInvestigationsFailureType,
   FetchInvestigationSizeFailureType,
+  FetchInvestigationSizeRequestType,
+  FetchInvestigationSizeSuccessType,
+  FetchInvestigationsRequestType,
+  FetchInvestigationsSuccessType,
+  FetchSizeSuccessPayload,
+  RequestPayload,
 } from './actions.types';
-import { ActionType, ThunkResult } from '../app.types';
-import { Action } from 'redux';
-import { batch } from 'react-redux';
-import axios from 'axios';
-import { getApiFilter } from '.';
 import { fetchInvestigationDatasetsCount } from './datasets';
-import { Investigation } from '../../app.types';
-import { IndexRange } from 'react-virtualized';
-import { readSciGatewayToken } from '../../parseTokens';
-import handleICATError from '../../handleICATError';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[],
@@ -417,6 +421,98 @@ export const fetchISISInvestigationCount = (
       .catch((error) => {
         handleICATError(error);
         dispatch(fetchInvestigationCountFailure(error.message));
+      });
+  };
+};
+
+export const fetchFilterRequest = (): Action => ({
+  type: FetchFilterRequestType,
+});
+
+export const fetchFilterSuccess = (
+  filterKey: string,
+  filterData: string[]
+): ActionType<FetchFilterSuccessPayload> => ({
+  type: FetchFilterSuccessType,
+  payload: {
+    filterKey,
+    data: filterData,
+  },
+});
+
+export const fetchFilterFailure = (
+  error: string
+): ActionType<FailurePayload> => ({
+  type: FetchFilterFailureType,
+  payload: {
+    error,
+  },
+});
+
+export const fetchFilter = (
+  entityType: 'investigation' | 'dataset' | 'datafile',
+  filterKey: string,
+  additionalFilters?: {
+    filterType: 'where' | 'distinct' | 'include';
+    filterValue: string;
+  }[],
+  // NOTE: Support for nested values by providing a dataKey for API request
+  //       which differs from filter key used in code.
+  dataKey?: string
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    dispatch(fetchFilterRequest());
+
+    const params = new URLSearchParams();
+    // Allow for other additional filters to be applied.
+    if (additionalFilters) {
+      additionalFilters.forEach((filter) => {
+        params.append(filter.filterType, filter.filterValue);
+      });
+    }
+
+    // Add in the distinct if it as not already been added.
+    const distinctFilterString = params.get('distinct');
+    // Use the dataKey if provided, this allows for nested items
+    // to be read as requesting them from the API maybe in a different format.
+    // i.e. INVESTIGATIONINSTRUMENT[0].INSTRUMENT maybe requested as INVESTIGATIONINSTRUMENT.INSTRUMENT
+    const filterValue = dataKey ? dataKey : filterKey;
+    if (distinctFilterString) {
+      const distinctFilter: string | string[] = JSON.parse(
+        distinctFilterString
+      );
+      if (typeof distinctFilter === 'string') {
+        params.set('distinct', JSON.stringify([distinctFilter, filterValue]));
+      } else {
+        params.set(
+          'distinct',
+          JSON.stringify([...distinctFilter, filterValue])
+        );
+      }
+    } else {
+      params.set('distinct', JSON.stringify(filterValue));
+    }
+
+    const { apiUrl } = getState().dgcommon.urls;
+
+    await axios
+      .get<Entity[]>(`${apiUrl}/${entityType}s`, {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        dispatch(
+          fetchFilterSuccess(
+            filterKey,
+            response.data.map((x) => nestedValue(x, filterKey))
+          )
+        );
+      })
+      .catch((error) => {
+        handleICATError(error);
+        dispatch(fetchFilterFailure(error.message));
       });
   };
 };

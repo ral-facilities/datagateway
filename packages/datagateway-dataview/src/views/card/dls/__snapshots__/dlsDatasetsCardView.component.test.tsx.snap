@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DLS Datasets - Card View renders correctly 1`] = `
+<ContextProvider
+  value={null}
+>
+  <DLSDatasetsCardView
+    addToCart={[Function]}
+    cartItems={Array []}
+    data={
+      Array [
+        Object {
+          "CREATE_TIME": "2019-07-23",
+          "ID": 1,
+          "INVESTIGATION_ID": 1,
+          "MOD_TIME": "2019-07-23",
+          "NAME": "Test 1",
+        },
+      ]
+    }
+    fetchCount={[Function]}
+    fetchData={[Function]}
+    fetchDetails={[Function]}
+    fetchSize={[Function]}
+    fetchTypeFilter={[Function]}
+    filterData={Object {}}
+    investigationId="1"
+    loadedCount={true}
+    loadedData={true}
+    proposalName="test"
+    pushFilters={[Function]}
+    pushPage={[Function]}
+    pushQuery={[Function]}
+    query={
+      Object {
+        "filters": Object {},
+        "page": null,
+        "results": null,
+        "search": null,
+        "sort": Object {},
+        "view": null,
+      }
+    }
+    removeFromCart={[Function]}
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    totalDataCount={1}
+  />
+</ContextProvider>
+`;

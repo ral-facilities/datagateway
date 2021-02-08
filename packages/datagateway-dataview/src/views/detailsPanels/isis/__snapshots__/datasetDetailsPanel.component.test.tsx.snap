@@ -1,0 +1,184 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dataset details panel component renders correctly 1`] = `
+<div
+  id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
+>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="datasets.details.tabs_label"
+    onChange={[Function]}
+    scrollButtons="auto"
+    value="details"
+    variant="scrollable"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-details-panel"
+      id="dataset-details-tab"
+      label="datasets.details.label"
+      value="details"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="dataset-details-tab"
+    hidden={false}
+    id="dataset-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+</div>
+`;
+
+exports[`Dataset details panel component renders type tab when present in the data 1`] = `
+<div
+  id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
+>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="datasets.details.tabs_label"
+    onChange={[Function]}
+    scrollButtons="auto"
+    value="details"
+    variant="scrollable"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-details-panel"
+      id="dataset-details-tab"
+      label="datasets.details.label"
+      value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-type-panel"
+      id="dataset-type-tab"
+      label="datasets.details.type.label"
+      value="type"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="dataset-details-tab"
+    hidden={false}
+    id="dataset-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+  <div
+    aria-labelledby="dataset-type-tab"
+    hidden={true}
+    id="dataset-type-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test type
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.type.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            Test type description
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+</div>
+`;

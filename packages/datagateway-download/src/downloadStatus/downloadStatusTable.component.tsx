@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper, IconButton } from '@material-ui/core';
+import { Grid, Paper, IconButton, LinearProgress } from '@material-ui/core';
 
 import {
   Table,
@@ -193,8 +193,23 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
 
   return (
     <Grid container direction="column">
+      {/* Show loading progress if data is still being loaded */}
+      {!dataLoaded && (
+        <Grid item xs={12}>
+          <LinearProgress color="secondary" />
+        </Grid>
+      )}
       <Grid item>
-        <Paper style={{ height: 'calc(100vh - 110px)' }}>
+        {/* Table should take up page but leave room for: SG appbar, SG footer,
+            tabs,table padding, and text above table (respectively). */}
+        <Paper
+          style={{
+            height:
+              'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
+            minHeight: 230,
+            overflowX: 'auto',
+          }}
+        >
           <Table
             columns={[
               {
@@ -231,6 +246,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   }
                 },
                 filterComponent: dateFilter,
+                disableHeaderWrap: true,
               },
             ]}
             sort={sort}
@@ -258,9 +274,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 const [clicked, setClicked] = React.useState(false);
                 return (
                   <BlackTooltip
-                    title={t('downloadStatus.download_disabled_tooltip', {
-                      transport: downloadItem.transport,
-                    })}
+                    title={
+                      t('downloadStatus.download_disabled_tooltip', {
+                        transport: downloadItem.transport,
+                      }) as string
+                    }
                     enterDelay={500}
                     // Disable tooltip for access methods that are not http/https.
                     disableHoverListener={isDownloadable}

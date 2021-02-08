@@ -24,7 +24,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Action } from 'redux';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import useAfterMountEffect from '../state/utils';
 import { useTranslation } from 'react-i18next';
 
 interface DatasetTableStoreProps {
@@ -97,10 +96,13 @@ const DatasetSearchTable = (
     clearTable();
   }, [clearTable, luceneData]);
 
-  useAfterMountEffect(() => {
+  React.useEffect(() => {
     fetchCount(luceneData);
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
     fetchAllIds(luceneData);
+  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
+
+  React.useEffect(() => {
+    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
   }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -159,11 +161,13 @@ const DatasetSearchTable = (
           label: t('datasets.create_time'),
           dataKey: 'CREATE_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
         {
           label: t('datasets.modified_time'),
           dataKey: 'MOD_TIME',
           filterComponent: dateFilter,
+          disableHeaderWrap: true,
         },
       ]}
     />
@@ -222,8 +226,8 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
   return {
-    sort: state.dgcommon.sort,
-    filters: state.dgcommon.filters,
+    sort: state.dgcommon.query.sort,
+    filters: state.dgcommon.query.filters,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

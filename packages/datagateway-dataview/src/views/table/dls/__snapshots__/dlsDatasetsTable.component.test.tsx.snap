@@ -1,0 +1,325 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DLS Dataset table component renders Dataset title as a link 1`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browse/proposal/Proposal 1/investigation/1/dataset/1/datafile"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
+    to="/browse/proposal/Proposal 1/investigation/1/dataset/1/datafile"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
+      onBlur={[Function]}
+      onFocus={[Function]}
+      to="/browse/proposal/Proposal 1/investigation/1/dataset/1/datafile"
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        onBlur={[Function]}
+        onFocus={[Function]}
+        to="/browse/proposal/Proposal 1/investigation/1/dataset/1/datafile"
+        variant="inherit"
+      >
+        <Link
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          to="/browse/proposal/Proposal 1/investigation/1/dataset/1/datafile"
+        >
+          <LinkAnchor
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            href="/browse/proposal/Proposal 1/investigation/1/dataset/1/datafile"
+            navigate={[Function]}
+            onBlur={[Function]}
+            onFocus={[Function]}
+          >
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browse/proposal/Proposal 1/investigation/1/dataset/1/datafile"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              Test 1
+            </a>
+          </LinkAnchor>
+        </Link>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;
+
+exports[`DLS Dataset table component renders correctly 1`] = `
+<WithStyles(VirtualizedTable)
+  allIds={
+    Array [
+      1,
+    ]
+  }
+  columns={
+    Array [
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
+        "label": "datasets.name",
+      },
+      Object {
+        "dataKey": "DATAFILE_COUNT",
+        "disableSort": true,
+        "icon": <Memo(ConfirmationNumberIcon) />,
+        "label": "datasets.datafile_count",
+      },
+      Object {
+        "dataKey": "CREATE_TIME",
+        "disableHeaderWrap": true,
+        "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "datasets.create_time",
+      },
+      Object {
+        "dataKey": "MOD_TIME",
+        "disableHeaderWrap": true,
+        "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "datasets.modified_time",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "CREATE_TIME": "2019-07-23",
+        "ID": 1,
+        "INVESTIGATION_ID": 1,
+        "MOD_TIME": "2019-07-23",
+        "NAME": "Test 1",
+        "SIZE": 1,
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  disableSelectAll={false}
+  loadMoreRows={[Function]}
+  loading={false}
+  onCheck={[Function]}
+  onSort={[Function]}
+  onUncheck={[Function]}
+  selectedRows={Array []}
+  sort={Object {}}
+  totalRowCount={0}
+/>
+`;
+
+exports[`DLS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
+<div
+  id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
+>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="datasets.details.tabs_label"
+    onChange={[Function]}
+    scrollButtons="auto"
+    value="details"
+    variant="scrollable"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-details-panel"
+      id="dataset-details-tab"
+      label="datasets.details.label"
+      value="details"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="dataset-details-tab"
+    hidden={false}
+    id="dataset-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-209"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-210"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.start_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.end_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b />
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.size
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            1 B
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+</div>
+`;

@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Card renders correctly 1`] = `
+<WithStyles(ForwardRef(Card))
+  className="makeStyles-root-1"
+  id="card"
+>
+  <WithStyles(ForwardRef(CardContent))
+    style={
+      Object {
+        "minWidth": 0,
+        "width": "100%",
+      }
+    }
+  >
+    <div
+      className="makeStyles-highlight-3"
+    >
+      <div
+        className="makeStyles-main-4"
+      >
+        <div>
+          <ArrowTooltip
+            enterDelay={500}
+            maxEnabledHeight={32}
+            percentageWidth={30}
+            title="Title"
+          >
+            <WithStyles(ForwardRef(Typography))
+              className="makeStyles-title-5"
+              component="h5"
+              variant="h5"
+            >
+              <span
+                aria-label="card-title"
+                style={
+                  Object {
+                    "whiteSpace": "nowrap",
+                  }
+                }
+              >
+                Title
+              </span>
+            </WithStyles(ForwardRef(Typography))>
+          </ArrowTooltip>
+          <div
+            className="makeStyles-description-6"
+          >
+            <WithStyles(ForwardRef(Collapse))
+              collapsedHeight={100}
+              in={false}
+            >
+              <WithStyles(ForwardRef(Typography))
+                aria-label="card-description"
+                paragraph={true}
+                variant="body1"
+              >
+                entity_card.no_description
+              </WithStyles(ForwardRef(Typography))>
+            </WithStyles(ForwardRef(Collapse))>
+          </div>
+        </div>
+      </div>
+      <div
+        style={
+          Object {
+            "paddingLeft": 15,
+          }
+        }
+      />
+    </div>
+  </WithStyles(ForwardRef(CardContent))>
+</WithStyles(ForwardRef(Card))>
+`;

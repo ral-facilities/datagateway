@@ -1,8 +1,9 @@
-import { Dataset, Entity, Investigation } from '../../app.types';
+import { Dataset, Entity, FiltersType, Investigation } from '../../app.types';
 import {
   AddToCartFailureType,
   AddToCartRequestType,
   AddToCartSuccessType,
+  ClearDataType,
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
@@ -56,6 +57,16 @@ import {
   FetchFacilityCyclesRequestType,
   FetchFacilityCyclesSuccessType,
   FetchIdsSuccessPayload,
+  FetchStudyCountFailureType,
+  FetchStudyCountRequestType,
+  FetchStudyCountSuccessType,
+  FetchStudiesFailureType,
+  FetchStudiesRequestType,
+  FetchStudiesSuccessType,
+  FetchFilterFailureType,
+  FetchFilterRequestType,
+  FetchFilterSuccessPayload,
+  FetchFilterSuccessType,
   FetchInstrumentCountFailureType,
   FetchInstrumentCountRequestType,
   FetchInstrumentCountSuccessType,
@@ -90,11 +101,36 @@ import {
   RemoveFromCartRequestType,
   RemoveFromCartSuccessType,
   RequestPayload,
+  SaveViewPayload,
   SortTablePayload,
   SortTableType,
+  UpdateFiltersPayload,
+  UpdateFiltersType,
+  UpdatePagePayload,
+  UpdatePageType,
+  UpdateQueryPayload,
+  UpdateQueryType,
+  UpdateResultsPayload,
+  UpdateResultsType,
+  UpdateSaveViewType,
+  UpdateSortPayload,
+  UpdateSortType,
+  UpdateViewPayload,
+  UpdateViewType,
+  UpdateSearchPayload,
+  UpdateSearchType,
 } from '../actions/actions.types';
-import { DGCommonState } from '../app.types';
+import { DGCommonState, QueryParams } from '../app.types';
 import createReducer from './createReducer';
+
+const initialQuery: QueryParams = {
+  view: null,
+  search: null,
+  page: null,
+  results: null,
+  sort: {},
+  filters: {},
+};
 
 export const initialState: DGCommonState = {
   facilityName: '',
@@ -103,10 +139,11 @@ export const initialState: DGCommonState = {
   investigationCache: {},
   datasetCache: {},
   loading: false,
+  loadedData: false,
+  loadedCount: false,
   downloading: false,
   error: null,
-  sort: {},
-  filters: {},
+  filterData: {},
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
   allIdsTimestamp: Date.now(),
@@ -119,6 +156,8 @@ export const initialState: DGCommonState = {
   cartItems: [],
   allIds: [],
   luceneIds: [],
+  query: initialQuery,
+  savedQuery: initialQuery,
 };
 
 export function handleSortTable(
@@ -130,23 +169,29 @@ export function handleSortTable(
     // if given an defined order (asc or desc), update the relevant column in the sort state
     return {
       ...state,
-      sort: {
-        ...state.sort,
-        [column]: order,
-      },
+      loadedData: false,
       data: [],
-      totalDataCount: 0,
+      query: {
+        ...state.query,
+        sort: {
+          ...state.query.sort,
+          [column]: order,
+        },
+      },
     };
   } else {
     // if order is null, user no longer wants to sort by that column so remove column from sort state
-    const { [column]: order, ...rest } = state.sort;
+    const { [column]: order, ...rest } = state.query.sort;
     return {
       ...state,
-      sort: {
-        ...rest,
-      },
+      loadedData: false,
       data: [],
-      totalDataCount: 0,
+      query: {
+        ...state.query,
+        sort: {
+          ...rest,
+        },
+      },
     };
   }
 }
@@ -160,23 +205,33 @@ export function handleFilterTable(
     // if given an defined filter, update the relevant column in the sort state
     return {
       ...state,
-      filters: {
-        ...state.filters,
-        [column]: filter,
-      },
       data: [],
       totalDataCount: 0,
+      loadedData: false,
+      loadedCount: false,
+      query: {
+        ...state.query,
+        filters: {
+          ...state.query.filters,
+          [column]: filter,
+        },
+      },
     };
   } else {
     // if filter is null, user no longer wants to filter by that column so remove column from filter state
-    const { [column]: filter, ...rest } = state.filters;
+    const { [column]: filter, ...rest } = state.query.filters;
     return {
       ...state,
-      filters: {
-        ...rest,
-      },
       data: [],
       totalDataCount: 0,
+      loadedData: false,
+      loadedCount: false,
+      query: {
+        ...state.query,
+        filters: {
+          ...rest,
+        },
+      },
     };
   }
 }
@@ -191,16 +246,166 @@ export function handleConfigureFacilityName(
   };
 }
 
+export function handleUpdateView(
+  state: DGCommonState,
+  payload: UpdateViewPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      view: payload.view,
+    },
+  };
+}
+
+export function handleUpdateSearch(
+  state: DGCommonState,
+  payload: UpdateSearchPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      search: payload.search,
+    },
+  };
+}
+
+export function handleUpdatePage(
+  state: DGCommonState,
+  payload: UpdatePagePayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      page: payload.page,
+    },
+  };
+}
+
+export function handleUpdateResults(
+  state: DGCommonState,
+  payload: UpdateResultsPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: {
+      ...state.query,
+      results: payload.results,
+    },
+  };
+}
+
+export function handleUpdateFilters(
+  state: DGCommonState,
+  payload: UpdateFiltersPayload
+): DGCommonState {
+  return {
+    ...state,
+    data: [],
+    totalDataCount: 0,
+    loadedData: false,
+    loadedCount: false,
+    query: {
+      ...state.query,
+      filters: payload.filters,
+    },
+  };
+}
+
+export function handleUpdateSort(
+  state: DGCommonState,
+  payload: UpdateSortPayload
+): DGCommonState {
+  return {
+    ...state,
+    data: [],
+    loadedData: false,
+    query: {
+      ...state.query,
+      sort: payload.sort,
+    },
+  };
+}
+
+export function handleUpdateQuery(
+  state: DGCommonState,
+  payload: UpdateQueryPayload
+): DGCommonState {
+  return {
+    ...state,
+    query: payload.query,
+  };
+}
+
+export function handleSaveView(
+  state: DGCommonState,
+  payload: SaveViewPayload
+): DGCommonState {
+  const currentFilters = state.query.filters;
+  const savedFilters = state.savedQuery.filters;
+  const sharedFilters: FiltersType = {};
+  const uniqueFilters: FiltersType = {};
+  Object.keys(currentFilters).forEach((key) => {
+    const value = currentFilters[key];
+    if (Array.isArray(value)) {
+      uniqueFilters[key] = value;
+    } else {
+      sharedFilters[key] = value;
+    }
+  });
+
+  Object.keys(savedFilters).forEach((key) => {
+    sharedFilters[key] = savedFilters[key];
+  });
+
+  return {
+    ...state,
+    // Clear current information to reload on new view.
+    data: [],
+    totalDataCount: 0,
+    allIds: [],
+    loadedData: false,
+    loadedCount: false,
+
+    // Switch view and save information unique to that view.
+    // Information common between views stays in the state.
+    query: {
+      ...state.savedQuery,
+      sort: state.query.sort,
+      filters: sharedFilters,
+    },
+    savedQuery: {
+      ...state.query,
+      view: payload.view,
+      sort: state.savedQuery.sort,
+      filters: uniqueFilters,
+    },
+  };
+}
+
 export function handleClearTable(state: DGCommonState): DGCommonState {
   return {
     ...state,
     data: [],
     totalDataCount: 0,
+    allIds: [],
     loading: false,
+    loadedData: false,
+    loadedCount: false,
     downloading: false,
     error: null,
-    sort: {},
-    filters: {},
+    savedQuery: initialQuery,
+  };
+}
+
+export function handleClearData(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    data: [],
+    loadedData: false,
   };
 }
 
@@ -227,6 +432,7 @@ export function handleFetchDataSuccess(
     return {
       ...state,
       loading: false,
+      loadedData: true,
       data: state.data.concat(payload.data),
       dataTimestamp: payload.timestamp,
       error: null,
@@ -243,6 +449,7 @@ export function handleFetchDataFailure(
   return {
     ...state,
     loading: false,
+    loadedData: true,
     error: payload.error,
   };
 }
@@ -270,6 +477,9 @@ export function handleFetchCountSuccess(
     return {
       ...state,
       loading: false,
+      // If the count is zero, then mark the data as loaded prematurely
+      loadedData: payload.count > 0 ? state.loadedData : true,
+      loadedCount: true,
       totalDataCount: payload.count,
       countTimestamp: payload.timestamp,
       error: null,
@@ -286,6 +496,7 @@ export function handleFetchCountFailure(
   return {
     ...state,
     loading: false,
+    loadedCount: true,
     error: payload.error,
   };
 }
@@ -392,6 +603,7 @@ export function handleFetchDataCountRequest(
 ): DGCommonState {
   return {
     ...state,
+    loading: true,
   };
 }
 
@@ -401,6 +613,7 @@ export function handleFetchDataCountFailure(
 ): DGCommonState {
   return {
     ...state,
+    loading: false,
     error: payload.error,
   };
 }
@@ -585,13 +798,46 @@ export function handleFetchLuceneIdsSuccess(
   }
 }
 
+export function handleFetchFilterRequest(
+  state: DGCommonState,
+  payload: RequestPayload
+): DGCommonState {
+  return {
+    ...state,
+    loading: true,
+  };
+}
+
+export function handleFetchFilterSuccess(
+  state: DGCommonState,
+  payload: FetchFilterSuccessPayload
+): DGCommonState {
+  return {
+    ...state,
+    loading: false,
+    filterData: {
+      ...state.filterData,
+      [payload.filterKey]: payload.data,
+    },
+  };
+}
+
 // remove things I want
 const dGCommonReducer = createReducer(initialState, {
-  [SortTableType]: handleSortTable,
-  [FilterTableType]: handleFilterTable,
-  [ClearTableType]: handleClearTable,
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
   [ConfigureURLsType]: handleConfigureUrls,
+  [SortTableType]: handleSortTable,
+  [FilterTableType]: handleFilterTable,
+  [UpdateViewType]: handleUpdateView,
+  [UpdateSearchType]: handleUpdateSearch,
+  [UpdatePageType]: handleUpdatePage,
+  [UpdateResultsType]: handleUpdateResults,
+  [UpdateFiltersType]: handleUpdateFilters,
+  [UpdateSortType]: handleUpdateSort,
+  [UpdateQueryType]: handleUpdateQuery,
+  [UpdateSaveViewType]: handleSaveView,
+  [ClearTableType]: handleClearTable,
+  [ClearDataType]: handleClearData,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,
@@ -655,6 +901,15 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchFacilityCyclesRequestType]: handleFetchDataRequest,
   [FetchFacilityCyclesSuccessType]: handleFetchDataSuccess,
   [FetchFacilityCyclesFailureType]: handleFetchDataFailure,
+  [FetchStudiesRequestType]: handleFetchDataRequest,
+  [FetchStudiesSuccessType]: handleFetchDataSuccess,
+  [FetchStudiesFailureType]: handleFetchDataFailure,
+  [FetchStudyCountRequestType]: handleFetchCountRequest,
+  [FetchStudyCountSuccessType]: handleFetchCountSuccess,
+  [FetchStudyCountFailureType]: handleFetchCountFailure,
+  [FetchStudiesRequestType]: handleFetchDataRequest,
+  [FetchStudiesSuccessType]: handleFetchDataSuccess,
+  [FetchStudiesFailureType]: handleFetchDataFailure,
   [FetchDownloadCartRequestType]: handleDownloadCartRequest,
   [FetchDownloadCartSuccessType]: handleDownloadCartSuccess,
   [FetchDownloadCartFailureType]: handleDownloadCartFailure,
@@ -670,6 +925,9 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchLuceneIdsRequestType]: handleFetchLuceneIdsRequest,
   [FetchLuceneIdsSuccessType]: handleFetchLuceneIdsSuccess,
   [FetchLuceneIdsFailureType]: handleFetchDataFailure,
+  [FetchFilterRequestType]: handleFetchFilterRequest,
+  [FetchFilterSuccessType]: handleFetchFilterSuccess,
+  [FetchFilterFailureType]: handleFetchDataFailure,
 });
 
 export default dGCommonReducer;

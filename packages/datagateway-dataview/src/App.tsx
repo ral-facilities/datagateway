@@ -1,33 +1,34 @@
-import React from 'react';
-import './App.css';
-import * as log from 'loglevel';
-import thunk, { ThunkDispatch } from 'redux-thunk';
-import { createStore, applyMiddleware, compose, AnyAction } from 'redux';
-import AppReducer from './state/reducers/app.reducer';
-import { Provider, connect } from 'react-redux';
-import { createLogger } from 'redux-logger';
-import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { createBrowserHistory } from 'history';
-import {
-  DGCommonMiddleware,
-  listenToMessages,
-  RegisterRouteType,
-  MicroFrontendId,
-  DGThemeProvider,
-} from 'datagateway-common';
-import { configureApp } from './state/actions';
-import { StateType } from './state/app.types';
-import { Preloader } from 'datagateway-common';
-import { saveApiUrlMiddleware } from './idCheckFunctions';
-import { Translation } from 'react-i18next';
-
 import {
   createGenerateClassName,
   StylesProvider,
 } from '@material-ui/core/styles';
-import PageContainer from './pageContainer.component';
+import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
+import {
+  DGCommonMiddleware,
+  DGThemeProvider,
+  listenToMessages,
+  MicroFrontendId,
+  Preloader,
+  RegisterRouteType,
+} from 'datagateway-common';
+// history package is part of react-router, which we depend on
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { createBrowserHistory } from 'history';
+import * as log from 'loglevel';
+import React from 'react';
+import { Translation } from 'react-i18next';
+import { connect, Provider } from 'react-redux';
+import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
+import { createLogger } from 'redux-logger';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import './App.css';
+import { saveApiUrlMiddleware } from './page/idCheckFunctions';
+import PageContainer from './page/pageContainer.component';
+import { configureApp } from './state/actions';
+import { StateType } from './state/app.types';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+import AppReducer from './state/reducers/app.reducer';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
@@ -76,9 +77,41 @@ const registerRouteAction = {
     section: 'Data',
     link: '/browse/investigation',
     plugin: 'datagateway-dataview',
-    displayName: 'DataGateway DataView',
+    displayName: '\xa0DataView',
     order: 0,
-    helpText: 'TODO: write some help text for the user tour',
+    helpSteps: [
+      {
+        target: '#plugin-link--browse-investigation',
+        content:
+          'DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria',
+      },
+      {
+        target: '.tour-dataview-breadcrumbs',
+        content:
+          'The hierarchy of the currently displayed data is shown here, and allows navigation to the dataset or investigation containing it',
+      },
+      {
+        target: '.tour-dataview-results',
+        content:
+          'The number of results found taking into account any applied filters is displayed here',
+      },
+      {
+        target: '.tour-dataview-search-icon',
+        content: 'Navigate to Datagateway Search',
+      },
+      {
+        target: '.tour-dataview-cart-icon',
+        content:
+          'Displays the current number of items in the download cart, and navigates to Datagateway Download',
+      },
+      {
+        target: '.tour-dataview-toggle-card',
+        content: 'Toggle between list and card view',
+      },
+    ],
+    logoLightMode: LogoLight,
+    logoDarkMode: LogoDark,
+    logoAltText: 'DataGateway',
   },
 };
 

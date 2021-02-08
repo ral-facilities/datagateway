@@ -20,6 +20,8 @@ import {
   SetDatafileTabType,
   SetInvestigationTabType,
   SettingsLoadedType,
+  CurrentTabPayload,
+  SetCurrentTabType,
 } from '../actions/actions.types';
 
 export const initialState: DGSearchState = {
@@ -38,6 +40,7 @@ export const initialState: DGSearchState = {
     datasetTab: false,
     datafileTab: false,
     investigationTab: false,
+    currentTab: 'none',
   },
   requestReceived: false,
   searchData: {
@@ -46,6 +49,7 @@ export const initialState: DGSearchState = {
     investigation: [],
   },
   settingsLoaded: false,
+  sideLayout: false,
 };
 
 export function handleSettingsLoaded(state: DGSearchState): DGSearchState {
@@ -218,6 +222,19 @@ export function handleSetInvestigationTab(
   };
 }
 
+export function handleSetCurrentTab(
+  state: DGSearchState,
+  payload: CurrentTabPayload
+): DGSearchState {
+  return {
+    ...state,
+    tabs: {
+      ...state.tabs,
+      currentTab: payload.currentTab,
+    },
+  };
+}
+
 const DGSearchReducer = createReducer(initialState, {
   [ToggleDatasetType]: handleToggleDataset,
   [ToggleDatafileType]: handleToggleDatafile,
@@ -233,6 +250,7 @@ const DGSearchReducer = createReducer(initialState, {
   [SetDatafileTabType]: handleSetDatafileTab,
   [SetInvestigationTabType]: handleSetInvestigationTab,
   [SettingsLoadedType]: handleSettingsLoaded,
+  [SetCurrentTabType]: handleSetCurrentTab,
 });
 
 export default DGSearchReducer;

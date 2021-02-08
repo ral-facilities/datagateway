@@ -83,8 +83,8 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
     }
 
     // Set the appropriate tabs.
-    this.props.setDatasetTab(this.props.dataset);
     this.props.setDatafileTab(this.props.datafile);
+    this.props.setDatasetTab(this.props.dataset);
     this.props.setInvestigationTab(this.props.investigation);
   };
 

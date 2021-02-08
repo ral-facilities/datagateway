@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DLS datafiles table component renders correctly 1`] = `
+<WithStyles(VirtualizedTable)
+  allIds={
+    Array [
+      1,
+    ]
+  }
+  columns={
+    Array [
+      Object {
+        "dataKey": "NAME",
+        "filterComponent": [Function],
+        "icon": <Memo(TitleIcon) />,
+        "label": "datafiles.name",
+      },
+      Object {
+        "dataKey": "LOCATION",
+        "filterComponent": [Function],
+        "icon": <Memo(ExploreIcon) />,
+        "label": "datafiles.location",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "FILESIZE",
+        "filterComponent": [Function],
+        "icon": <Memo(SaveIcon) />,
+        "label": "datafiles.size",
+      },
+      Object {
+        "dataKey": "CREATE_TIME",
+        "disableHeaderWrap": true,
+        "filterComponent": [Function],
+        "icon": <Memo(CalendarTodayIcon) />,
+        "label": "datafiles.create_time",
+      },
+    ]
+  }
+  data={
+    Array [
+      Object {
+        "CREATE_TIME": "2019-07-23",
+        "DATASET_ID": 1,
+        "FILESIZE": 1,
+        "ID": 1,
+        "LOCATION": "/test1",
+        "MOD_TIME": "2019-07-23",
+        "NAME": "Test 1",
+      },
+    ]
+  }
+  detailsPanel={[Function]}
+  disableSelectAll={false}
+  loadMoreRows={[Function]}
+  loading={false}
+  onCheck={[Function]}
+  onSort={[Function]}
+  onUncheck={[Function]}
+  selectedRows={Array []}
+  sort={Object {}}
+  totalRowCount={0}
+/>
+`;
+
+exports[`DLS datafiles table component renders details panel correctly 1`] = `
+<div
+  className="MuiGrid-root makeStyles-root-1 MuiGrid-container MuiGrid-direction-xs-column"
+  id="details-panel"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="h6"
+    >
+      <b>
+        Test 1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Divider))
+      className="makeStyles-divider-2"
+    />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      datafiles.details.size
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        1 B
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+    xs={true}
+  >
+    <WithStyles(ForwardRef(Typography))
+      variant="overline"
+    >
+      datafiles.details.location
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Typography))>
+      <b>
+        /test1
+      </b>
+    </WithStyles(ForwardRef(Typography))>
+  </WithStyles(ForwardRef(Grid))>
+</div>
+`;

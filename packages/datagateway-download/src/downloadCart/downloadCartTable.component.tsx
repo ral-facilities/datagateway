@@ -8,7 +8,14 @@ import {
   DownloadCartItem,
   DownloadCartTableItem,
 } from 'datagateway-common';
-import { IconButton, Grid, Paper, Typography, Button } from '@material-ui/core';
+import {
+  IconButton,
+  Grid,
+  Paper,
+  Typography,
+  Button,
+  LinearProgress,
+} from '@material-ui/core';
 import { RemoveCircle } from '@material-ui/icons';
 import {
   fetchDownloadCartItems,
@@ -193,8 +200,24 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
   return (
     <div>
       <Grid container direction="column">
+        {/* Show loading progress if data is still being loaded */}
+        {!dataLoaded && (
+          <Grid item xs={12}>
+            <LinearProgress color="secondary" />
+          </Grid>
+        )}
         <Grid item>
-          <Paper style={{ height: 'calc(100vh - 150px)' }}>
+          {/* Table should take up page but leave room for: SG appbar, 
+              SG footer, tabs, table padding, text below table, and buttons
+              (respectively). */}
+          <Paper
+            style={{
+              height:
+                'calc(100vh - 64px - 30px - 48px - 48px - 3rem - (1.75 * 0.875rem + 12px)',
+              minHeight: 230,
+              overflowX: 'auto',
+            }}
+          >
             <Table
               columns={[
                 {
@@ -279,7 +302,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             container
             item
             direction="column"
-            xs={3}
+            xs
             alignContent="flex-end"
             style={{ marginRight: '1.2em' }}
           >
@@ -299,7 +322,7 @@ const DownloadCartTable: React.FC<DownloadCartTableProps> = (
             item
             justify="flex-end"
             spacing={1}
-            xs={3}
+            xs
             style={{ marginRight: '1em' }}
           >
             <Grid item>

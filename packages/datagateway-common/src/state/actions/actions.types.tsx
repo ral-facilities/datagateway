@@ -2,9 +2,12 @@ import {
   DownloadCart,
   Entity,
   Filter,
-  MicroFrontendId,
+  FiltersType,
   Order,
+  SortType,
+  MicroFrontendId,
 } from '../../app.types';
+import { QueryParams, ViewsType } from '../app.types';
 
 // parent app actions
 export const CustomFrontendMessageType = `${MicroFrontendId}:api`;
@@ -15,12 +18,26 @@ export const RequestPluginRerenderType = `${CustomFrontendMessageType}:plugin_re
 export const SendThemeOptionsType = `${CustomFrontendMessageType}:send_themeoptions`;
 
 // internal actions
-export const SortTableType = 'datagateway_common:sort_table';
-export const FilterTableType = 'datagateway_common:filter_table';
-export const ClearTableType = 'datagateway_common:clear_table';
 export const ConfigureFacilityNameType =
   'datagateway_common:configure_facility_name';
 export const ConfigureURLsType = 'datagateway_common:configure_urls';
+
+export const SortTableType = 'datagateway_common:sort_table';
+export const FilterTableType = 'datagateway_common:filter_table';
+
+export const UpdateFiltersType = 'datagateway_common:update_filters';
+export const UpdateSortType = 'datagateway_common:update_sort';
+export const UpdateQueryType = 'datagateway_common:update_query';
+
+export const UpdateViewType = 'datagateway_common:update_view';
+export const UpdateSearchType = 'datagateway_common:update_search';
+export const UpdatePageType = 'datagateway_common:update_page';
+export const UpdateResultsType = 'datagateway_common:update_results';
+
+export const UpdateSaveViewType = 'datagateway_common:update_save_view';
+
+export const ClearTableType = 'datagateway_common:clear_table';
+export const ClearDataType = 'datagateway_common:clear_data';
 
 export const FetchInvestigationsRequestType =
   'datagateway_common:fetch_investigations_request';
@@ -162,6 +179,20 @@ export const FetchFacilityCycleCountFailureType =
 export const FetchFacilityCycleCountSuccessType =
   'datagateway_common:fetch_facility_cycle_count_success';
 
+export const FetchStudiesRequestType =
+  'datagateway_common:fetch_studies_request';
+export const FetchStudiesFailureType =
+  'datagateway_common:fetch_studies_failure';
+export const FetchStudiesSuccessType =
+  'datagateway_common:fetch_studies_success';
+
+export const FetchStudyCountRequestType =
+  'datagateway_common:fetch_study_count_request';
+export const FetchStudyCountFailureType =
+  'datagateway_common:fetch_study_count_failure';
+export const FetchStudyCountSuccessType =
+  'datagateway_common:fetch_study_count_success';
+
 export const FetchDownloadCartRequestType =
   'datagateway_common:fetch_download_cart_request';
 export const FetchDownloadCartFailureType =
@@ -193,6 +224,9 @@ export const FetchLuceneIdsFailureType =
   'datagateway_common:fetch_lucene_ids_failure';
 export const FetchLuceneIdsSuccessType =
   'datagateway_common:fetch_lucene_ids_success';
+export const FetchFilterRequestType = 'datagateway_common:fetch_filter_request';
+export const FetchFilterFailureType = 'datagateway_common:fetch_filter_failure';
+export const FetchFilterSuccessType = 'datagateway_common:fetch_filter_success';
 
 export interface SortTablePayload {
   column: string;
@@ -221,6 +255,38 @@ export interface URLs {
   downloadApiUrl: string;
 }
 
+export interface UpdateViewPayload {
+  view: ViewsType;
+}
+
+export interface UpdateSearchPayload {
+  search: string | null;
+}
+
+export interface UpdatePagePayload {
+  page: number | null;
+}
+
+export interface UpdateResultsPayload {
+  results: number | null;
+}
+
+export interface UpdateFiltersPayload {
+  filters: FiltersType;
+}
+
+export interface UpdateSortPayload {
+  sort: SortType;
+}
+
+export interface UpdateQueryPayload {
+  query: QueryParams;
+}
+
+export interface SaveViewPayload {
+  view: ViewsType;
+}
+
 export interface RequestPayload {
   timestamp: number;
 }
@@ -241,6 +307,11 @@ export interface FetchDetailsSuccessPayload {
 export interface FetchIdsSuccessPayload {
   data: number[];
   timestamp: number;
+}
+
+export interface FetchFilterSuccessPayload {
+  filterKey: string;
+  data: string[];
 }
 
 export interface FetchCountSuccessPayload {

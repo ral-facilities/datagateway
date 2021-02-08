@@ -2,7 +2,8 @@
 export const MicroFrontendId = 'scigateway';
 export const MicroFrontendToken = `${MicroFrontendId}:token`;
 
-// TODO: type entities properly
+// TODO: type entities properly; DownloadCartItem does not
+//       include string indexing due to DownloadCartTableItem
 export interface Investigation {
   ID: number;
   TITLE: string;
@@ -111,17 +112,23 @@ export interface DatasetType {
   DESCRIPTION?: string;
 }
 
-interface StudyInvestigation {
+export interface StudyInvestigation {
   ID: number;
   STUDY_ID: number;
   INVESTIGATION_ID: number;
-  STUDY?: Study;
+  STUDY: Study;
   INVESTIGATION?: Investigation;
 }
 
 interface Study {
   ID: number;
   PID: string;
+  NAME: string;
+  MOD_TIME: string;
+  CREATE_TIME: string;
+  DESCRIPTION?: string;
+  STARTDATE?: string;
+  ENDDATE?: string;
 }
 
 interface InstrumentScientist {
@@ -223,9 +230,15 @@ export type ICATEntity =
   | Dataset
   | Datafile
   | Instrument
-  | FacilityCycle;
+  | FacilityCycle
+  | StudyInvestigation;
 
-export type Entity = ICATEntity | DownloadCartTableItem | Download;
+export type Entity = (ICATEntity | DownloadCartTableItem | Download) & {
+  // We will have to ignore the any typing here to access
+  // Entity attributes with string indexing.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
 
 export const EntityTypes: string[] = [
   'investigation',
@@ -234,9 +247,22 @@ export const EntityTypes: string[] = [
   'facilityCycle',
   'instrument',
   'facility',
+  'study',
 ];
 
-// TODO: type this properly
-export type Filter = string | number | { startDate?: string; endDate?: string };
+// TODO: type these properly
+export interface DateFilter {
+  startDate?: string;
+  endDate?: string;
+}
+export type Filter = string | string[] | number | DateFilter;
 
 export type Order = 'asc' | 'desc';
+
+export interface FiltersType {
+  [column: string]: Filter;
+}
+
+export interface SortType {
+  [column: string]: Order;
+}

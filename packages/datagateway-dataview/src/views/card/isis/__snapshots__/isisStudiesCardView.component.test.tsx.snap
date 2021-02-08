@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ISIS Studies - Card View renders correctly 1`] = `
+<ContextProvider
+  value={null}
+>
+  <ISISStudiesCardView
+    allIds={Array []}
+    data={
+      Array [
+        Object {
+          "ID": 1,
+          "INVESTIGATION_ID": 1,
+          "STUDY": Object {
+            "CREATE_TIME": "2000-01-01",
+            "ID": 1,
+            "MOD_TIME": "2000-01-01",
+            "NAME": "Test 1",
+            "PID": "doi",
+          },
+          "STUDY_ID": 1,
+        },
+      ]
+    }
+    fetchCount={[Function]}
+    fetchData={[Function]}
+    fetchIds={[Function]}
+    instrumentId="1"
+    loadedCount={true}
+    loadedData={true}
+    pushFilters={[Function]}
+    pushPage={[Function]}
+    pushQuery={[Function]}
+    query={
+      Object {
+        "filters": Object {},
+        "page": null,
+        "results": null,
+        "search": null,
+        "sort": Object {},
+        "view": null,
+      }
+    }
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    totalDataCount={1}
+  />
+</ContextProvider>
+`;

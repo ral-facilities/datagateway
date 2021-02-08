@@ -104,6 +104,7 @@ describe('Table component', () => {
         selectedRows={[]}
         onCheck={jest.fn()}
         onUncheck={jest.fn()}
+        selectAllSetting={true}
       />
     );
 
@@ -118,6 +119,7 @@ describe('Table component', () => {
         onCheck={jest.fn()}
         onUncheck={jest.fn()}
         allIds={[1, 2, 3, 4]}
+        selectAllSetting={true}
       />
     );
 

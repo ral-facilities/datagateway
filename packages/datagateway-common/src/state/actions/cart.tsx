@@ -46,6 +46,7 @@ export const fetchDownloadCartRequest = (): Action => ({
   type: FetchDownloadCartRequestType,
 });
 
+// TODO: Pass in facilityName as a parameter?
 export const fetchDownloadCart = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDownloadCartRequest());
@@ -91,6 +92,7 @@ export const addToCartRequest = (): Action => ({
   type: AddToCartRequestType,
 });
 
+// TODO: Pass in facilityName as a parameter?
 export const addToCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[]
@@ -142,6 +144,7 @@ export const removeFromCartRequest = (): Action => ({
   type: RemoveFromCartRequestType,
 });
 
+// TODO: Pass in facilityName as a parameter?
 export const removeFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[]
