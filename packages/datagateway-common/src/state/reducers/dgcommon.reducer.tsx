@@ -392,6 +392,7 @@ export function handleClearTable(state: DGCommonState): DGCommonState {
     loadedCount: false,
     downloading: false,
     error: null,
+    query: initialQuery,
     savedQuery: initialQuery,
   };
 }

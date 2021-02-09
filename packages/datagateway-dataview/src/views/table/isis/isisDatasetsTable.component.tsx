@@ -24,6 +24,7 @@ import {
   FiltersType,
   SortType,
   DateFilter,
+  ViewsType,
 } from 'datagateway-common';
 import { IconButton } from '@material-ui/core';
 import { AnyAction } from 'redux';
@@ -49,6 +50,7 @@ interface ISISDatasetsTableProps {
 interface ISISDatasetsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -91,6 +93,7 @@ const ISISDatasetsTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     investigationId,
     instrumentChildId,
     instrumentId,
@@ -198,7 +201,8 @@ const ISISDatasetsTable = (
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
               `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-              props.rowData.NAME
+              props.rowData.NAME,
+              view
             ),
           filterComponent: textFilter,
         },
@@ -287,6 +291,7 @@ const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

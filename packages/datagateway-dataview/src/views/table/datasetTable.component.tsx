@@ -28,6 +28,7 @@ import {
   DateFilter,
   SortType,
   FiltersType,
+  ViewsType,
 } from 'datagateway-common';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
@@ -58,6 +59,7 @@ interface DatasetTableProps {
 interface DatasetTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -94,6 +96,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     pushSort,
     filters,
     pushFilters,
+    view,
     investigationId,
     cartItems,
     addToCart,
@@ -198,7 +201,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
             return datasetLink(
               investigationId,
               datasetData.ID,
-              datasetData.NAME
+              datasetData.NAME,
+              view
             );
           },
           filterComponent: textFilter,
@@ -283,6 +287,7 @@ const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
