@@ -262,15 +262,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               {
                 label: t('downloadStatus.status'),
                 dataKey: 'status',
-                // cellContentRenderer: (props: TableCellProps) => {
-                //   if (props.cellData) {
-                //     const status: string = props.cellData;
-                //     return (
-                //       status.substring(0, 1).toUpperCase() +
-                //       status.substring(1).toLowerCase()
-                //     );
-                //   }
-                // },
                 filterComponent: availabilityFilter,
               },
               {
