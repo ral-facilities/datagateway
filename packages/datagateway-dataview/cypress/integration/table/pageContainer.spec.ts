@@ -1,8 +1,8 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
     cy.login('user', 'password');
-
     cy.visit('/browse/investigation/');
+    cy.clearDownloadCart();
   });
 
   it('should load correctly', () => {
@@ -27,9 +27,6 @@ describe('PageContainer Component', () => {
   });
 
   it('should display number of items in cart correctly', () => {
-    // Check that the download cart has displayed correctly.
-    cy.clearDownloadCart();
-
     cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
       .children()
       .should('be.hidden');
