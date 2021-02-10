@@ -63,7 +63,9 @@ describe('DownloadConfirmDialog', () => {
         data: { disabled: false, message: '' },
       });
     });
-    global.Date.now = jest.fn(() => 1);
+    // Cannot mock to epoch time as Britain adopted BST permanently from 1968
+    // to 1971, so snapshot will be an hour out depending on the date locale.
+    global.Date.now = jest.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
   });
 
   afterEach(() => {
@@ -212,7 +214,7 @@ describe('DownloadConfirmDialog', () => {
               },
             ],
             facilityName: 'LILS',
-            fileName: 'LILS_1970-1-1_1-0-0',
+            fileName: 'LILS_2020-1-1_1-1-1',
             fullName: 'simple/root',
             id: 1,
             isDeleted: false,
@@ -289,7 +291,7 @@ describe('DownloadConfirmDialog', () => {
     params.append('sessionId', '');
     params.append('transport', 'https');
     params.append('email', '');
-    params.append('fileName', 'LILS_1970-1-1_1-0-0');
+    params.append('fileName', 'LILS_2020-1-1_1-1-1');
     params.append('zipType', 'ZIP');
 
     expect(axios.post).toHaveBeenCalled();
@@ -463,7 +465,7 @@ describe('DownloadConfirmDialog', () => {
     params.append('sessionId', '');
     params.append('transport', 'https');
     params.append('email', '');
-    params.append('fileName', 'LILS_1970-1-1_1-0-0');
+    params.append('fileName', 'LILS_2020-1-1_1-1-1');
     params.append('zipType', 'ZIP');
 
     expect(axios.post).toHaveBeenCalled();
