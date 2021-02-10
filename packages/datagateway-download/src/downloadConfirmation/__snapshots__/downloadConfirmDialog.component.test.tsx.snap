@@ -489,7 +489,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                       class="MuiInputBase-input MuiInput-input"
                                       id="confirm-download-name"
                                       maxlength="255"
-                                      placeholder="LILS_2020-1-1_1-1-1"
+                                      placeholder="LILS_1970-1-1_1-0-0"
                                       type="text"
                                       value=""
                                     />
@@ -1334,7 +1334,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                       }
                                                       label="downloadConfirmDialog.download_name_label"
                                                       onChange={[Function]}
-                                                      placeholder="LILS_2020-1-1_1-1-1"
+                                                      placeholder="LILS_1970-1-1_1-0-0"
                                                     >
                                                       <ForwardRef(TextField)
                                                         classes={
@@ -1352,7 +1352,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                         }
                                                         label="downloadConfirmDialog.download_name_label"
                                                         onChange={[Function]}
-                                                        placeholder="LILS_2020-1-1_1-1-1"
+                                                        placeholder="LILS_1970-1-1_1-0-0"
                                                       >
                                                         <WithStyles(ForwardRef(FormControl))
                                                           className="MuiTextField-root"
@@ -1464,7 +1464,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                 }
                                                                 multiline={false}
                                                                 onChange={[Function]}
-                                                                placeholder="LILS_2020-1-1_1-1-1"
+                                                                placeholder="LILS_1970-1-1_1-0-0"
                                                               >
                                                                 <ForwardRef(Input)
                                                                   aria-describedby="confirm-download-name-helper-text"
@@ -1496,7 +1496,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   }
                                                                   multiline={false}
                                                                   onChange={[Function]}
-                                                                  placeholder="LILS_2020-1-1_1-1-1"
+                                                                  placeholder="LILS_1970-1-1_1-0-0"
                                                                 >
                                                                   <WithStyles(ForwardRef(InputBase))
                                                                     aria-describedby="confirm-download-name-helper-text"
@@ -1529,7 +1529,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     }
                                                                     multiline={false}
                                                                     onChange={[Function]}
-                                                                    placeholder="LILS_2020-1-1_1-1-1"
+                                                                    placeholder="LILS_1970-1-1_1-0-0"
                                                                     type="text"
                                                                   >
                                                                     <ForwardRef(InputBase)
@@ -1567,7 +1567,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       }
                                                                       multiline={false}
                                                                       onChange={[Function]}
-                                                                      placeholder="LILS_2020-1-1_1-1-1"
+                                                                      placeholder="LILS_1970-1-1_1-0-0"
                                                                       type="text"
                                                                     >
                                                                       <div
@@ -1586,7 +1586,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           onBlur={[Function]}
                                                                           onChange={[Function]}
                                                                           onFocus={[Function]}
-                                                                          placeholder="LILS_2020-1-1_1-1-1"
+                                                                          placeholder="LILS_1970-1-1_1-0-0"
                                                                           required={false}
                                                                           type="text"
                                                                         />
@@ -1924,20 +1924,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     },
                                                                     "autoWidth": false,
                                                                     "children": Array [
-                                                                      <ForwardRef(WithStyles)
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
-                                                                      </ForwardRef(WithStyles)>,
-                                                                      <ForwardRef(WithStyles)
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
                                                                         Globus
-                                                                      </ForwardRef(WithStyles)>,
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
                                                                     ],
                                                                     "classes": Object {
                                                                       "disabled": "Mui-disabled",
@@ -2037,20 +2037,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       },
                                                                       "autoWidth": false,
                                                                       "children": Array [
-                                                                        <ForwardRef(WithStyles)
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
-                                                                        </ForwardRef(WithStyles)>,
-                                                                        <ForwardRef(WithStyles)
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
                                                                           Globus
-                                                                        </ForwardRef(WithStyles)>,
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
                                                                       ],
                                                                       "classes": Object {
                                                                         "disabled": "Mui-disabled",
@@ -2151,20 +2151,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         },
                                                                         "autoWidth": false,
                                                                         "children": Array [
-                                                                          <ForwardRef(WithStyles)
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
-                                                                          </ForwardRef(WithStyles)>,
-                                                                          <ForwardRef(WithStyles)
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
                                                                             Globus
-                                                                          </ForwardRef(WithStyles)>,
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
                                                                         ],
                                                                         "classes": Object {
                                                                           "disabled": "Mui-disabled",
@@ -2271,20 +2271,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           },
                                                                           "autoWidth": false,
                                                                           "children": Array [
-                                                                            <ForwardRef(WithStyles)
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
-                                                                            </ForwardRef(WithStyles)>,
-                                                                            <ForwardRef(WithStyles)
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
                                                                               Globus
-                                                                            </ForwardRef(WithStyles)>,
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
                                                                           ],
                                                                           "classes": Object {
                                                                             "disabled": "Mui-disabled",
@@ -2680,7 +2680,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                             class="MuiInputBase-input MuiInput-input"
                                                                                                             id="confirm-download-name"
                                                                                                             maxlength="255"
-                                                                                                            placeholder="LILS_2020-1-1_1-1-1"
+                                                                                                            placeholder="LILS_1970-1-1_1-0-0"
                                                                                                             type="text"
                                                                                                             value=""
                                                                                                           />
@@ -4379,7 +4379,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       class="MuiInputBase-input MuiInput-input"
                                       id="confirm-download-name"
                                       maxlength="255"
-                                      placeholder="LILS_2020-1-1_1-1-1"
+                                      placeholder="LILS_1970-1-1_1-0-0"
                                       type="text"
                                       value=""
                                     />
@@ -5275,7 +5275,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                       }
                                                       label="downloadConfirmDialog.download_name_label"
                                                       onChange={[Function]}
-                                                      placeholder="LILS_2020-1-1_1-1-1"
+                                                      placeholder="LILS_1970-1-1_1-0-0"
                                                     >
                                                       <ForwardRef(TextField)
                                                         classes={
@@ -5293,7 +5293,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                         }
                                                         label="downloadConfirmDialog.download_name_label"
                                                         onChange={[Function]}
-                                                        placeholder="LILS_2020-1-1_1-1-1"
+                                                        placeholder="LILS_1970-1-1_1-0-0"
                                                       >
                                                         <WithStyles(ForwardRef(FormControl))
                                                           className="MuiTextField-root"
@@ -5405,7 +5405,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                 }
                                                                 multiline={false}
                                                                 onChange={[Function]}
-                                                                placeholder="LILS_2020-1-1_1-1-1"
+                                                                placeholder="LILS_1970-1-1_1-0-0"
                                                               >
                                                                 <ForwardRef(Input)
                                                                   aria-describedby="confirm-download-name-helper-text"
@@ -5437,7 +5437,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   }
                                                                   multiline={false}
                                                                   onChange={[Function]}
-                                                                  placeholder="LILS_2020-1-1_1-1-1"
+                                                                  placeholder="LILS_1970-1-1_1-0-0"
                                                                 >
                                                                   <WithStyles(ForwardRef(InputBase))
                                                                     aria-describedby="confirm-download-name-helper-text"
@@ -5470,7 +5470,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     }
                                                                     multiline={false}
                                                                     onChange={[Function]}
-                                                                    placeholder="LILS_2020-1-1_1-1-1"
+                                                                    placeholder="LILS_1970-1-1_1-0-0"
                                                                     type="text"
                                                                   >
                                                                     <ForwardRef(InputBase)
@@ -5508,7 +5508,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       }
                                                                       multiline={false}
                                                                       onChange={[Function]}
-                                                                      placeholder="LILS_2020-1-1_1-1-1"
+                                                                      placeholder="LILS_1970-1-1_1-0-0"
                                                                       type="text"
                                                                     >
                                                                       <div
@@ -5527,7 +5527,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           onBlur={[Function]}
                                                                           onChange={[Function]}
                                                                           onFocus={[Function]}
-                                                                          placeholder="LILS_2020-1-1_1-1-1"
+                                                                          placeholder="LILS_1970-1-1_1-0-0"
                                                                           required={false}
                                                                           type="text"
                                                                         />
@@ -5865,20 +5865,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     },
                                                                     "autoWidth": false,
                                                                     "children": Array [
-                                                                      <ForwardRef(WithStyles)
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
-                                                                      </ForwardRef(WithStyles)>,
-                                                                      <ForwardRef(WithStyles)
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
                                                                         Globus
-                                                                      </ForwardRef(WithStyles)>,
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
                                                                     ],
                                                                     "classes": Object {
                                                                       "disabled": "Mui-disabled",
@@ -5978,20 +5978,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       },
                                                                       "autoWidth": false,
                                                                       "children": Array [
-                                                                        <ForwardRef(WithStyles)
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
-                                                                        </ForwardRef(WithStyles)>,
-                                                                        <ForwardRef(WithStyles)
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
                                                                           Globus
-                                                                        </ForwardRef(WithStyles)>,
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
                                                                       ],
                                                                       "classes": Object {
                                                                         "disabled": "Mui-disabled",
@@ -6092,20 +6092,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         },
                                                                         "autoWidth": false,
                                                                         "children": Array [
-                                                                          <ForwardRef(WithStyles)
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
-                                                                          </ForwardRef(WithStyles)>,
-                                                                          <ForwardRef(WithStyles)
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
                                                                             Globus
-                                                                          </ForwardRef(WithStyles)>,
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
                                                                         ],
                                                                         "classes": Object {
                                                                           "disabled": "Mui-disabled",
@@ -6212,20 +6212,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           },
                                                                           "autoWidth": false,
                                                                           "children": Array [
-                                                                            <ForwardRef(WithStyles)
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
-                                                                            </ForwardRef(WithStyles)>,
-                                                                            <ForwardRef(WithStyles)
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
                                                                               Globus
-                                                                            </ForwardRef(WithStyles)>,
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
                                                                           ],
                                                                           "classes": Object {
                                                                             "disabled": "Mui-disabled",
@@ -6621,7 +6621,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                             class="MuiInputBase-input MuiInput-input"
                                                                                                             id="confirm-download-name"
                                                                                                             maxlength="255"
-                                                                                                            placeholder="LILS_2020-1-1_1-1-1"
+                                                                                                            placeholder="LILS_1970-1-1_1-0-0"
                                                                                                             type="text"
                                                                                                             value=""
                                                                                                           />

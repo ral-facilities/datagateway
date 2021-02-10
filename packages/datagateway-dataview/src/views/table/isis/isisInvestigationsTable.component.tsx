@@ -201,8 +201,8 @@ const ISISInvestigationsTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}/dataset`,
               investigationData.TITLE
@@ -214,8 +214,8 @@ const ISISInvestigationsTable = (
           icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}/dataset`,
               investigationData.VISIT_ID
@@ -227,8 +227,8 @@ const ISISInvestigationsTable = (
           icon: <FingerprintIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}/dataset`,
               investigationData.NAME
@@ -240,8 +240,8 @@ const ISISInvestigationsTable = (
           icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION.STUDY.PID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.STUDYINVESTIGATION &&
               investigationData.STUDYINVESTIGATION[0].STUDY
@@ -260,8 +260,8 @@ const ISISInvestigationsTable = (
           icon: <SaveIcon />,
           label: t('investigations.size'),
           dataKey: 'SIZE',
-          cellContentRenderer: (props) => {
-            return formatBytes(props.cellData);
+          cellContentRenderer: (cellProps) => {
+            return formatBytes(cellProps.cellData);
           },
           disableSort: true,
         },
@@ -269,8 +269,8 @@ const ISISInvestigationsTable = (
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT

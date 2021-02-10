@@ -18,7 +18,9 @@ import handleICATError from '../../handleICATError';
 jest.mock('../../handleICATError');
 
 describe('Study actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -222,6 +224,12 @@ describe('Study actions', () => {
   });
 
   it('fetchStudies applies skip and limit when specified via optional parameters', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
     const asyncAction = fetchStudies({
       offsetParams: {
         startIndex: 0,

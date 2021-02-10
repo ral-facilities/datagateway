@@ -167,8 +167,8 @@ const ISISMyDataTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
@@ -199,8 +199,8 @@ const ISISMyDataTable = (
           icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION.STUDY.PID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.STUDYINVESTIGATION &&
               investigationData.STUDYINVESTIGATION[0].STUDY
@@ -222,8 +222,8 @@ const ISISMyDataTable = (
           icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
@@ -254,8 +254,8 @@ const ISISMyDataTable = (
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
@@ -272,8 +272,8 @@ const ISISMyDataTable = (
           icon: <SaveIcon />,
           label: t('investigations.size'),
           dataKey: 'SIZE',
-          cellContentRenderer: (props) => {
-            return formatBytes(props.cellData);
+          cellContentRenderer: (cellProps) => {
+            return formatBytes(cellProps.cellData);
           },
           disableSort: true,
         },

@@ -25,6 +25,8 @@ const mockedSettings = {
   },
 };
 
+jest.mock('../downloadApi');
+
 describe('DownloadTab', () => {
   let shallow;
   let mount;

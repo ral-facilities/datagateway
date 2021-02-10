@@ -56,40 +56,21 @@ const mockedSettings = {
 describe('DownloadConfirmDialog', () => {
   let mount;
 
-  beforeAll(() => {
-    // Fix the time to 2020-1-1 1hr:1min:1sec in order to match
-    // snapshots for the DownloadConfirmDialog component.
-    const fixedDate = new Date(2020, 0, 1, 1, 1, 1);
-    const d = Date;
-
-    const _global: NodeJS.Global = global;
-    _global.Date = jest.fn(() => fixedDate);
-    _global.Date.parse = d.parse;
-    _global.Date.UTC = d.UTC;
-    _global.Date.now = d.now;
-
-    // Axios GET responses download submission.
+  beforeEach(() => {
+    mount = createMount();
     (axios.get as jest.Mock).mockImplementation(() => {
       return Promise.resolve({
         data: { disabled: false, message: '' },
       });
     });
-  });
-
-  beforeEach(() => {
-    mount = createMount();
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
     mount.cleanUp();
-
     (axios.get as jest.Mock).mockClear();
     (axios.post as jest.Mock).mockClear();
     (handleICATError as jest.Mock).mockClear();
-  });
-
-  afterAll(() => {
-    global.Date = Date;
   });
 
   const createWrapper = (
@@ -231,7 +212,7 @@ describe('DownloadConfirmDialog', () => {
               },
             ],
             facilityName: 'LILS',
-            fileName: 'LILS_2020-1-1_1-1-1',
+            fileName: 'LILS_1970-1-1_1-0-0',
             fullName: 'simple/root',
             id: 1,
             isDeleted: false,
@@ -308,7 +289,7 @@ describe('DownloadConfirmDialog', () => {
     params.append('sessionId', '');
     params.append('transport', 'https');
     params.append('email', '');
-    params.append('fileName', 'LILS_2020-1-1_1-1-1');
+    params.append('fileName', 'LILS_1970-1-1_1-0-0');
     params.append('zipType', 'ZIP');
 
     expect(axios.post).toHaveBeenCalled();
@@ -482,7 +463,7 @@ describe('DownloadConfirmDialog', () => {
     params.append('sessionId', '');
     params.append('transport', 'https');
     params.append('email', '');
-    params.append('fileName', 'LILS_2020-1-1_1-1-1');
+    params.append('fileName', 'LILS_1970-1-1_1-0-0');
     params.append('zipType', 'ZIP');
 
     expect(axios.post).toHaveBeenCalled();
@@ -624,17 +605,13 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
     );
   };
 
-  beforeAll(() => {
-    // Axios GET responses download submission.
+  beforeEach(() => {
+    timeMount = createMount();
     (axios.get as jest.Mock).mockImplementation(() => {
       return Promise.resolve({
         data: { disabled: false, message: '' },
       });
     });
-  });
-
-  beforeEach(() => {
-    timeMount = createMount();
   });
 
   afterEach(() => {

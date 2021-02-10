@@ -35,8 +35,6 @@ import {
 jest.mock('../../handleICATError');
 
 describe('Investigation actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
-
   const mockData: Investigation[] = [
     {
       ID: 1,
@@ -86,13 +84,6 @@ describe('Investigation actions', () => {
     },
   ];
 
-  // Mock axios GET requests to return mock data.
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({
-      data: mockData,
-    })
-  );
-
   // Investigation cache for investigation ID 1 which has a size of 1.
   const mockInvestigationCache: EntityCache = {
     1: {
@@ -100,6 +91,15 @@ describe('Investigation actions', () => {
       childEntityCount: null,
     },
   };
+
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();

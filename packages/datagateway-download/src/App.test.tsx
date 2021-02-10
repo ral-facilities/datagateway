@@ -9,6 +9,7 @@ import { StylesProvider } from '@material-ui/core/styles';
 import { flushPromises } from './setupTests';
 
 jest.mock('loglevel');
+jest.mock('./ConfigProvider');
 
 describe('App', () => {
   let mount: typeof enzymeMount;

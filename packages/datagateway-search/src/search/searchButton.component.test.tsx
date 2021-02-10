@@ -23,9 +23,6 @@ describe('Search Button component tests', () => {
   let state: StateType;
   let mockStore;
   let mount;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -67,6 +64,9 @@ describe('Search Button component tests', () => {
     };
 
     mockStore = configureStore([thunk]);
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
   });
 
   it('renders correctly', () => {

@@ -130,10 +130,10 @@ const ISISStudiesTable = (
           icon: <FingerprintIcon />,
           label: t('studies.name'),
           dataKey: 'STUDY.NAME',
-          cellContentRenderer: (props: TableCellProps) =>
+          cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.STUDY?.ID}/investigation`,
-              props.rowData.STUDY?.NAME
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.STUDY?.ID}/investigation`,
+              cellProps.rowData.STUDY?.NAME
             ),
           filterComponent: textFilter,
         },

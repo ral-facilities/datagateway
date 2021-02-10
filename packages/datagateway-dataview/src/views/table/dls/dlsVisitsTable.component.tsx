@@ -132,8 +132,8 @@ const DLSVisitsTable = (
           icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `/browse/proposal/${proposalName}/investigation/${investigationData.ID}/dataset`,
               investigationData.VISIT_ID
@@ -151,8 +151,8 @@ const DLSVisitsTable = (
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT

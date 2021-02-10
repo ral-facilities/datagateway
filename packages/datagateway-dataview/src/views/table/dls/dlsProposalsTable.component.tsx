@@ -95,8 +95,8 @@ const DLSProposalsTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `/browse/proposal/${investigationData.NAME}/investigation`,
               investigationData.TITLE
@@ -108,10 +108,10 @@ const DLSProposalsTable = (
           icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) => {
+          cellContentRenderer: (cellProps: TableCellProps) => {
             return tableLink(
-              `/browse/proposal/${props.rowData.NAME}/investigation`,
-              props.rowData.NAME
+              `/browse/proposal/${cellProps.rowData.NAME}/investigation`,
+              cellProps.rowData.NAME
             );
           },
           filterComponent: textFilter,

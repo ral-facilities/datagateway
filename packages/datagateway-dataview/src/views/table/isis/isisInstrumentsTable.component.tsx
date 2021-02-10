@@ -115,8 +115,8 @@ const ISISInstrumentsTable = (
           icon: <TitleIcon />,
           label: t('instruments.name'),
           dataKey: 'FULLNAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const instrumentData = props.rowData as Instrument;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const instrumentData = cellProps.rowData as Instrument;
             return tableLink(
               `/${pathRoot}/instrument/${instrumentData.ID}/${instrumentChild}`,
               instrumentData.FULLNAME || instrumentData.NAME

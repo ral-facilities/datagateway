@@ -38,8 +38,8 @@ describe('Table component', () => {
       {
         label: 'Test 2',
         dataKey: 'TEST2',
-        cellContentRenderer: (props: TableCellProps) => {
-          return formatBytes(props.cellData);
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          return formatBytes(cellProps.cellData);
         },
       },
     ],

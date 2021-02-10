@@ -164,10 +164,10 @@ const DLSDatasetsTable = (
           icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) =>
+          cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-              props.rowData.NAME
+              `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${cellProps.rowData.ID}/datafile`,
+              cellProps.rowData.NAME
             ),
           filterComponent: textFilter,
         },

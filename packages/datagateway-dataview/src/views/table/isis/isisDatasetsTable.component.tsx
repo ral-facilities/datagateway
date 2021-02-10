@@ -195,10 +195,10 @@ const ISISDatasetsTable = (
           icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) =>
+          cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-              props.rowData.NAME
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${cellProps.rowData.ID}/datafile`,
+              cellProps.rowData.NAME
             ),
           filterComponent: textFilter,
         },
@@ -206,8 +206,8 @@ const ISISDatasetsTable = (
           icon: <SaveIcon />,
           label: t('datasets.size'),
           dataKey: 'SIZE',
-          cellContentRenderer: (props) => {
-            return formatBytes(props.cellData);
+          cellContentRenderer: (cellProps) => {
+            return formatBytes(cellProps.cellData);
           },
           disableSort: true,
         },

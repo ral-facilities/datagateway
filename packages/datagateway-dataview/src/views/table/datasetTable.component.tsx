@@ -193,8 +193,8 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props) => {
-            const datasetData = props.rowData as Dataset;
+          cellContentRenderer: (cellProps) => {
+            const datasetData = cellProps.rowData as Dataset;
             return datasetLink(
               investigationId,
               datasetData.ID,

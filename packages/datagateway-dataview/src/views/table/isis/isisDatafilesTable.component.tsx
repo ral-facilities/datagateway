@@ -198,8 +198,8 @@ const ISISDatafilesTable = (
           icon: <SaveIcon />,
           label: t('datafiles.size'),
           dataKey: 'FILESIZE',
-          cellContentRenderer: (props) => {
-            return formatBytes(props.cellData);
+          cellContentRenderer: (cellProps) => {
+            return formatBytes(cellProps.cellData);
           },
           filterComponent: textFilter,
         },

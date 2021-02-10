@@ -113,10 +113,10 @@ const ISISFacilityCyclesTable = (
           icon: <TitleIcon />,
           label: t('facilitycycles.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) =>
+          cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${props.rowData.ID}/investigation`,
-              props.rowData.NAME
+              `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.ID}/investigation`,
+              cellProps.rowData.NAME
             ),
           filterComponent: textFilter,
         },
