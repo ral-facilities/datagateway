@@ -45,7 +45,6 @@ exports[`Download Status Table renders correctly 1`] = `
               "label": "downloadStatus.transport",
             },
             Object {
-              "cellContentRenderer": [Function],
               "dataKey": "status",
               "filterComponent": [Function],
               "label": "downloadStatus.status",

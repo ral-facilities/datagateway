@@ -19,7 +19,12 @@
     "download_disabled_tooltip": "Instant download not supported for {{transport}} download type",
     "download_disabled_button": "Instant download not supported for {{filename}}",
     "download": "Download {{filename}}",
-    "remove": "Remove {{filename}} from downloads"
+    "remove": "Remove {{filename}} from downloads",
+    "complete": "Available",
+    "expired": "Expired",
+    "paused": "Paused",
+    "preparing": "Preparing",
+    "restoring": "Restoring from tape"
   },
   "downloadConfirmDialog": {
     "close_arialabel": "Close download confirmation dialog",
