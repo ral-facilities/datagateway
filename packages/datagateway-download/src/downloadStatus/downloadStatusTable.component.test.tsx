@@ -105,6 +105,24 @@ describe('Download Status Table', () => {
       transport: 'globus',
       userName: 'test user',
     },
+    {
+      createdAt: '2020-03-01T15:57:28Z',
+      downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
+      email: 'test5@email.com',
+      facilityName: 'LILS',
+      fileName: 'test-file-5',
+      fullName: 'Person 5',
+      id: 5,
+      isDeleted: false,
+      isEmailSent: true,
+      isTwoLevel: false,
+      preparedId: 'test-prepared-id',
+      sessionId: 'test-session-id',
+      size: 5000,
+      status: 'PAUSED',
+      transport: 'globus',
+      userName: 'test user',
+    },
   ];
 
   beforeEach(() => {
@@ -132,6 +150,39 @@ describe('Download Status Table', () => {
       />
     );
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('translates the status strings correctly', async () => {
+    const wrapper = mount(
+      <div id="datagateway-download">
+        <DownloadStatusTable
+          refreshTable={false}
+          setRefreshTable={jest.fn()}
+          setLastChecked={jest.fn()}
+        />
+      </div>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(
+      wrapper.find('[aria-rowindex=1]').find('[aria-colindex=3]').text()
+    ).toEqual('downloadStatus.paused');
+    expect(
+      wrapper.find('[aria-rowindex=2]').find('[aria-colindex=3]').text()
+    ).toEqual('downloadStatus.expired');
+    expect(
+      wrapper.find('[aria-rowindex=3]').find('[aria-colindex=3]').text()
+    ).toEqual('downloadStatus.restoring');
+    expect(
+      wrapper.find('[aria-rowindex=4]').find('[aria-colindex=3]').text()
+    ).toEqual('downloadStatus.preparing');
+    expect(
+      wrapper.find('[aria-rowindex=5]').find('[aria-colindex=3]').text()
+    ).toEqual('downloadStatus.complete');
   });
 
   it('fetches the download items on load', async () => {
@@ -285,7 +336,7 @@ describe('Download Status Table', () => {
         '[aria-label="downloadStatus.remove {filename:test-file-1}"]'
       )
     ).toBe(false);
-    expect(wrapper.exists('[aria-rowcount=3]')).toBe(true);
+    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
   });
 
   it('sorts data when headers are clicked', async () => {
@@ -313,7 +364,7 @@ describe('Download Status Table', () => {
 
     accessMethodSortLabel.simulate('click');
 
-    expect(firstNameCell.text()).toEqual('test-file-4');
+    expect(firstNameCell.text()).toEqual('test-file-5');
 
     accessMethodSortLabel.simulate('click');
 
@@ -395,7 +446,7 @@ describe('Download Status Table', () => {
       .find('[aria-label="Filter by downloadStatus.status"] input')
       .first();
 
-    availabilityFilterInput.instance().value = 'complete';
+    availabilityFilterInput.instance().value = 'downloadStatus.complete';
     availabilityFilterInput.simulate('change');
 
     expect(wrapper.exists('[aria-rowcount=1]')).toBe(true);
@@ -408,7 +459,7 @@ describe('Download Status Table', () => {
     availabilityFilterInput.instance().value = '';
     availabilityFilterInput.simulate('change');
 
-    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
+    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
 
   it('filters data when date filter is altered', async () => {
@@ -434,7 +485,7 @@ describe('Download Status Table', () => {
     dateFromFilterInput.instance().value = '2020-01-01';
     dateFromFilterInput.simulate('change');
 
-    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
+    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
 
     const dateToFilterInput = wrapper.find(
       '[aria-label="downloadStatus.createdAt date filter to"]'
@@ -469,6 +520,6 @@ describe('Download Status Table', () => {
     dateToFilterInput.instance().value = '';
     dateToFilterInput.simulate('change');
 
-    expect(wrapper.exists('[aria-rowcount=4]')).toBe(true);
+    expect(wrapper.exists('[aria-rowcount=5]')).toBe(true);
   });
 });

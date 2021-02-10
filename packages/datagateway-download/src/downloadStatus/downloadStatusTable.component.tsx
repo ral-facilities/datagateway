@@ -4,7 +4,7 @@ import { Grid, Paper, IconButton, LinearProgress } from '@material-ui/core';
 import {
   Table,
   Order,
-  Download,
+  FormattedDownload,
   TextColumnFilter,
   TableActionProps,
   DateColumnFilter,
@@ -35,7 +35,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       | { value?: string | number; type: string }
       | { startDate?: string; endDate?: string };
   }>({});
-  const [data, setData] = React.useState<Download[]>([]);
+  const [data, setData] = React.useState<FormattedDownload[]>([]);
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { refreshTable, setRefreshTable, setLastChecked } = props;
@@ -60,7 +60,29 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
           facilityName: settings.facilityName,
           downloadApiUrl: settings.downloadApiUrl,
         }).then((downloads) => {
-          setData([...downloads].reverse());
+          // Replace the status field here
+          const formattedDownloads = downloads.map((download) => {
+            let formattedStatus = '';
+            switch (download.status) {
+              case 'COMPLETE':
+                formattedStatus = t('downloadStatus.complete');
+                break;
+              case 'EXPIRED':
+                formattedStatus = t('downloadStatus.expired');
+                break;
+              case 'PAUSED':
+                formattedStatus = t('downloadStatus.paused');
+                break;
+              case 'PREPARING':
+                formattedStatus = t('downloadStatus.preparing');
+                break;
+              case 'RESTORING':
+                formattedStatus = t('downloadStatus.restoring');
+                break;
+            }
+            return { ...download, status: formattedStatus };
+          });
+          setData([...formattedDownloads].reverse());
           setDataLoaded(true);
 
           // Set the time at which we set the download data.
@@ -76,6 +98,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     settings.facilityName,
     settings.downloadApiUrl,
     dgDownloadElement,
+    t,
   ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -100,10 +123,9 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       label={label}
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value && typeof value.value === 'string') {
-          // We convert the input value to uppercase to match the table value.
           setFilters({
             ...filters,
-            [dataKey]: { value: value.value.toUpperCase(), type: value.type },
+            [dataKey]: { value: value.value, type: value.type },
           });
         } else {
           const { [dataKey]: value, ...restOfFilters } = filters;
@@ -138,8 +160,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             'value' in value &&
             typeof value.value === 'string' &&
             (value.type === 'include'
-              ? !tableValue.includes(value.value)
-              : tableValue.includes(value.value))
+              ? !tableValue.toLowerCase().includes(value.value.toLowerCase())
+              : tableValue.toLowerCase().includes(value.value.toLowerCase()))
           ) {
             return false;
           } else if (
@@ -170,7 +192,10 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
       return true;
     });
 
-    function sortDownloadItems(a: Download, b: Download): number {
+    function sortDownloadItems(
+      a: FormattedDownload,
+      b: FormattedDownload
+    ): number {
       for (const [sortColumn, sortDirection] of Object.entries(sort)) {
         const aColumnValue = a[sortColumn];
         const bColumnValue = b[sortColumn];
@@ -237,15 +262,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               {
                 label: t('downloadStatus.status'),
                 dataKey: 'status',
-                cellContentRenderer: (props: TableCellProps) => {
-                  if (props.cellData) {
-                    const status: string = props.cellData;
-                    return (
-                      status.substring(0, 1).toUpperCase() +
-                      status.substring(1).toLowerCase()
-                    );
-                  }
-                },
                 filterComponent: availabilityFilter,
               },
               {
@@ -276,8 +292,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             actionsWidth={100}
             actions={[
               function DownloadButton({ rowData }: TableActionProps) {
-                const downloadItem = rowData as Download;
-                const isDownloadable = downloadItem.transport.match(
+                const downloadItem = rowData as FormattedDownload;
+                const isDownloadable = (downloadItem.transport as string).match(
                   /https|http/
                 )
                   ? true
@@ -301,8 +317,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                         <IconButton
                           component="a"
                           href={getDataUrl(
-                            downloadItem.preparedId,
-                            downloadItem.fileName
+                            downloadItem.preparedId as string,
+                            downloadItem.fileName as string
                           )}
                           target="_blank"
                           aria-label={t('downloadStatus.download', {
@@ -343,7 +359,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
               function RemoveButton({
                 rowData,
               }: TableActionProps): JSX.Element {
-                const downloadItem = rowData as Download;
+                const downloadItem = rowData as FormattedDownload;
                 const [isDeleting, setIsDeleting] = React.useState(false);
 
                 return (
@@ -357,7 +373,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                       setIsDeleting(true);
                       setTimeout(
                         () =>
-                          downloadDeleted(downloadItem.id, true, {
+                          downloadDeleted(downloadItem.id as number, true, {
                             facilityName: settings.facilityName,
                             downloadApiUrl: settings.downloadApiUrl,
                           }).then(() =>
