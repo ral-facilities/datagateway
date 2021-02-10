@@ -139,7 +139,10 @@ describe('ISIS - FacilityCycles Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('2010');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .first()
+        .type('2010');
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
@@ -174,9 +177,12 @@ describe('ISIS - FacilityCycles Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('3');
+      cy.get('[aria-label="Filter by Name"]').find('input').first().type('3');
 
-      cy.get('[aria-label="Filter by Description"]').find('input').type('Call');
+      cy.get('[aria-label="Filter by Description"]')
+        .find('input')
+        .first()
+        .type('Call');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

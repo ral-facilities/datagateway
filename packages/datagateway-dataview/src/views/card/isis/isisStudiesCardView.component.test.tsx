@@ -149,7 +149,9 @@ describe('ISIS Studies - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(filterTable('STUDY.NAME', 'test'));
+    expect(store.getActions()[1]).toEqual(
+      filterTable('STUDY.NAME', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[2]).toEqual(push('?'));
 
     advancedFilter

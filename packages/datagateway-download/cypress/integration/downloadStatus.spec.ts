@@ -120,6 +120,7 @@ describe('Download Status', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by Download Name"]')
         .find('input')
+        .first()
         .type('file');
 
       cy.get('[aria-rowcount="4"]').should('exist');
@@ -194,10 +195,12 @@ describe('Download Status', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Access Method')
         .find('input')
+        .first()
         .type('globus');
 
       cy.get('[aria-label="Filter by Availability"]')
         .find('input')
+        .first()
         .type('restoring');
 
       cy.get('[aria-rowcount="1"]').should('exist');

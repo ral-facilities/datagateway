@@ -21,6 +21,8 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
+  TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +43,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 interface ISISMyDataTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -78,6 +81,7 @@ const ISISMyDataTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     loading,
     cartItems,
     addToCart,
@@ -105,8 +109,10 @@ const ISISMyDataTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
@@ -183,7 +189,8 @@ const ISISMyDataTable = (
               if (facilityCycle) {
                 return tableLink(
                   `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
-                  investigationData.TITLE
+                  investigationData.TITLE,
+                  view
                 );
               } else {
                 return investigationData.TITLE;
@@ -238,7 +245,8 @@ const ISISMyDataTable = (
               if (facilityCycle) {
                 return tableLink(
                   `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation/${investigationData.ID}/dataset`,
-                  investigationData.NAME
+                  investigationData.NAME,
+                  view
                 );
               } else {
                 return investigationData.NAME;
@@ -368,6 +376,7 @@ const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

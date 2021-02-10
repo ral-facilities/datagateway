@@ -165,7 +165,10 @@ describe('DLS - Datafiles Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Location"]').find('input').type('ok');
+      cy.get('[aria-label="Filter by Location"]')
+        .find('input')
+        .first()
+        .type('ok');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
@@ -205,11 +208,13 @@ describe('DLS - Datafiles Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
+        .first()
         .type('5')
         .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
+        .first()
         .type('.png')
         .wait('@datafilesCount', { timeout: 10000 });
 

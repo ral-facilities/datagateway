@@ -155,7 +155,9 @@ describe('DLS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[3]).toEqual(
+      filterTable('NAME', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[4]).toEqual(push('?'));
 
     advancedFilter
