@@ -1,8 +1,6 @@
 declare namespace Cypress {
   interface Chainable<Subject> {
     login(
-      username: string,
-      password: string,
       noRootCredentials?: boolean
     ): Cypress.Chainable<Cypress.Response>;
     clearDownloadCart(): Cypress.Chainable<Cypress.Response>;

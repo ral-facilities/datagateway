@@ -2,7 +2,7 @@ describe('Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/browse/investigation').wait(
       [
         '@getInvestigationsCount',
