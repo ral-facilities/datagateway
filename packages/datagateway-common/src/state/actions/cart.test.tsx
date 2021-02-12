@@ -29,8 +29,6 @@ import handleICATError from '../../handleICATError';
 jest.mock('../../handleICATError');
 
 describe('Cart actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
-
   const mockData: DownloadCart = {
     cartItems: [
       {
@@ -47,6 +45,10 @@ describe('Cart actions', () => {
     updatedAt: '2019-10-15T14:11:43+01:00',
     userName: 'test',
   };
+
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();

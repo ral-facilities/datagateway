@@ -56,40 +56,23 @@ const mockedSettings = {
 describe('DownloadConfirmDialog', () => {
   let mount;
 
-  beforeAll(() => {
-    // Fix the time to 2020-1-1 1hr:1min:1sec in order to match
-    // snapshots for the DownloadConfirmDialog component.
-    const fixedDate = new Date(2020, 0, 1, 1, 1, 1);
-    const d = Date;
-
-    const _global: NodeJS.Global = global;
-    _global.Date = jest.fn(() => fixedDate);
-    _global.Date.parse = d.parse;
-    _global.Date.UTC = d.UTC;
-    _global.Date.now = d.now;
-
-    // Axios GET responses download submission.
+  beforeEach(() => {
+    mount = createMount();
     (axios.get as jest.Mock).mockImplementation(() => {
       return Promise.resolve({
         data: { disabled: false, message: '' },
       });
     });
-  });
-
-  beforeEach(() => {
-    mount = createMount();
+    // Cannot mock to epoch time as Britain adopted BST permanently from 1968
+    // to 1971, so snapshot will be an hour out depending on the date locale.
+    global.Date.now = jest.fn(() => new Date(2020, 0, 1, 1, 1, 1).getTime());
   });
 
   afterEach(() => {
     mount.cleanUp();
-
     (axios.get as jest.Mock).mockClear();
     (axios.post as jest.Mock).mockClear();
     (handleICATError as jest.Mock).mockClear();
-  });
-
-  afterAll(() => {
-    global.Date = Date;
   });
 
   const createWrapper = (
@@ -624,17 +607,13 @@ describe('DownloadConfirmDialog - renders the estimated download speed/time tabl
     );
   };
 
-  beforeAll(() => {
-    // Axios GET responses download submission.
+  beforeEach(() => {
+    timeMount = createMount();
     (axios.get as jest.Mock).mockImplementation(() => {
       return Promise.resolve({
         data: { disabled: false, message: '' },
       });
     });
-  });
-
-  beforeEach(() => {
-    timeMount = createMount();
   });
 
   afterEach(() => {

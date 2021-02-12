@@ -160,8 +160,8 @@ const InvestigationSearchTable = (
         {
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return investigationLink(
               investigationData.ID,
               investigationData.TITLE
@@ -192,8 +192,8 @@ const InvestigationSearchTable = (
         {
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
@@ -210,8 +210,10 @@ const InvestigationSearchTable = (
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            if (cellProps.cellData) {
+              return cellProps.cellData.toString().split(' ')[0];
+            }
           },
           disableHeaderWrap: true,
         },
@@ -219,8 +221,10 @@ const InvestigationSearchTable = (
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            if (cellProps.cellData) {
+              return cellProps.cellData.toString().split(' ')[0];
+            }
           },
           disableHeaderWrap: true,
         },
