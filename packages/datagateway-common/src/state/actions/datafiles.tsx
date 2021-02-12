@@ -222,7 +222,7 @@ export const fetchDatasetDatafilesCount = (
 
     const params = {
       where: {
-        DATASET_ID: { eq: datasetId },
+        dataset: { eq: datasetId },
       },
     };
     const { apiUrl } = getState().dgcommon.urls;
@@ -295,11 +295,8 @@ export const fetchDatafileDetails = (
 
     const params = new URLSearchParams();
 
-    params.append('where', JSON.stringify({ ID: { eq: datasetId } }));
-    params.append(
-      'include',
-      JSON.stringify({ DATAFILEPARAMETER: 'PARAMETERTYPE' })
-    );
+    params.append('where', JSON.stringify({ id: { eq: datasetId } }));
+    params.append('include', JSON.stringify({ datafileParameters: 'type' }));
     const { apiUrl } = getState().dgcommon.urls;
 
     await axios

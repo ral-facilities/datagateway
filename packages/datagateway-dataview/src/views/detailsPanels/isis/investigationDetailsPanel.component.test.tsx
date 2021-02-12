@@ -14,39 +14,39 @@ describe('Investigation details panel component', () => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowData = {
-      ID: 1,
-      TITLE: 'Test 1',
-      NAME: 'Test 1',
-      SUMMARY: 'foo bar',
-      VISIT_ID: '1',
+      id: 1,
+      title: 'Test 1',
+      name: 'Test 1',
+      summary: 'foo bar',
+      visitId: '1',
       RB_NUMBER: '1',
-      DOI: 'doi 1',
-      SIZE: 1,
-      INVESTIGATIONINSTRUMENT: [
+      doi: 'doi 1',
+      size: 1,
+      investigationInstruments: [
         {
-          ID: 1,
+          id: 1,
           INVESTIGATION_ID: 1,
           INSTRUMENT_ID: 3,
-          INSTRUMENT: {
-            ID: 3,
-            NAME: 'LARMOR',
+          instrument: {
+            id: 3,
+            name: 'LARMOR',
             FACILITY_ID: 8,
           },
         },
       ],
-      STUDYINVESTIGATION: [
+      studyInvestigations: [
         {
-          ID: 11,
+          id: 11,
           INVESTIGATION_ID: 1,
           STUDY_ID: 12,
-          STUDY: {
-            ID: 12,
+          study: {
+            id: 12,
             PID: 'study pid',
           },
         },
       ],
-      STARTDATE: '2019-06-10',
-      ENDDATE: '2019-06-11',
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
     };
   });
 
@@ -68,42 +68,42 @@ describe('Investigation details panel component', () => {
   });
 
   it('renders user, sample and publication tabs when present in the data', () => {
-    rowData.INVESTIGATIONUSER = [
+    rowData.investigationUsers = [
       {
-        ID: 4,
+        id: 4,
         INVESTIGATION_ID: 1,
         USER_ID: 5,
-        ROLE: 'Investigator',
-        USER_: {
-          ID: 5,
-          NAME: 'Louise',
-          FULL_NAME: 'Louise Davies',
+        role: 'Investigator',
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
         },
       },
       {
-        ID: 9,
+        id: 9,
         INVESTIGATION_ID: 1,
         USER_ID: 10,
-        ROLE: 'Investigator',
-        USER_: {
-          ID: 10,
-          NAME: 'Louise',
+        role: 'Investigator',
+        user: {
+          id: 10,
+          name: 'Louise',
         },
       },
     ];
 
-    rowData.SAMPLE = [
+    rowData.samples = [
       {
-        ID: 7,
+        id: 7,
         INVESTIGATION_ID: 1,
-        NAME: 'Test sample',
+        name: 'Test sample',
       },
     ];
 
-    rowData.PUBLICATION = [
+    rowData.publications = [
       {
-        ID: 8,
-        FULLREFERENCE: 'Test publication',
+        id: 8,
+        fullReference: 'Test publication',
       },
     ];
 
@@ -118,10 +118,10 @@ describe('Investigation details panel component', () => {
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
-    rowData.PUBLICATION = [
+    rowData.publications = [
       {
-        ID: 8,
-        FULLREFERENCE: 'Test publication',
+        id: 8,
+        fullReference: 'Test publication',
       },
     ];
 
@@ -144,10 +144,10 @@ describe('Investigation details panel component', () => {
   });
 
   it('detailsPanelResize not called when not provided', () => {
-    rowData.PUBLICATION = [
+    rowData.publications = [
       {
-        ID: 8,
-        FULLREFERENCE: 'Test publication',
+        id: 8,
+        fullReference: 'Test publication',
       },
     ];
 
@@ -168,7 +168,7 @@ describe('Investigation details panel component', () => {
     expect(detailsPanelResize).toHaveBeenCalledTimes(0);
   });
 
-  it('calls fetchDetails on load if INVESTIGATIONUSER, SAMPLE or PUBLICATIONS are missing', () => {
+  it('calls fetchDetails on load if investigationUsers, samples or publications are missing', () => {
     mount(
       <InvestigationsDetailsPanel
         rowData={rowData}
@@ -181,7 +181,7 @@ describe('Investigation details panel component', () => {
     expect(fetchDetails).toHaveBeenCalledWith(1);
     fetchDetails.mockClear();
 
-    rowData.INVESTIGATIONUSER = [];
+    rowData.investigationUsers = [];
     mount(
       <InvestigationsDetailsPanel
         rowData={rowData}
@@ -194,7 +194,7 @@ describe('Investigation details panel component', () => {
     expect(fetchDetails).toHaveBeenCalledWith(1);
     fetchDetails.mockClear();
 
-    rowData.SAMPLE = [];
+    rowData.samples = [];
     mount(
       <InvestigationsDetailsPanel
         rowData={rowData}
@@ -207,7 +207,7 @@ describe('Investigation details panel component', () => {
     expect(fetchDetails).toHaveBeenCalledWith(1);
     fetchDetails.mockClear();
 
-    rowData.PUBLICATION = [];
+    rowData.publications = [];
     mount(
       <InvestigationsDetailsPanel
         rowData={rowData}
@@ -219,20 +219,20 @@ describe('Investigation details panel component', () => {
   });
 
   it('gracefully handles StudyInvestigations without Studies and InvestigationUsers without Users', () => {
-    rowData.STUDYINVESTIGATION = [
+    rowData.studyInvestigations = [
       {
-        ID: 11,
+        id: 11,
         INVESTIGATION_ID: 1,
         STUDY_ID: 12,
       },
     ];
 
-    rowData.INVESTIGATIONUSER = [
+    rowData.investigationUsers = [
       {
-        ID: 4,
+        id: 4,
         INVESTIGATION_ID: 1,
         USER_ID: 5,
-        ROLE: 'Investigator',
+        role: 'Investigator',
       },
     ];
 

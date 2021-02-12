@@ -41,19 +41,19 @@ describe('ISIS Instruments table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        FULLNAME: 'Test instrument 1',
-        DESCRIPTION: 'foo bar',
+        id: 1,
+        name: 'Test 1',
+        fullName: 'Test instrument 1',
+        description: 'foo bar',
         FACILITY_ID: 8,
-        URL: 'test url',
+        url: 'test url',
       },
       {
-        ID: 2,
-        NAME: 'Test 2',
-        DESCRIPTION: 'foo bar',
+        id: 2,
+        name: 'Test 2',
+        description: 'foo bar',
         FACILITY_ID: 8,
-        URL: 'test url',
+        url: 'test url',
       },
     ];
   });
@@ -111,12 +111,12 @@ describe('ISIS Instruments table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('FULLNAME', 'test'));
+    expect(testStore.getActions()[2]).toEqual(filterTable('fullName', 'test'));
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[4]).toEqual(filterTable('FULLNAME', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('fullName', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -134,7 +134,7 @@ describe('ISIS Instruments table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(sortTable('FULLNAME', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('fullName', 'asc'));
   });
 
   it('renders details panel correctly and it sends off an FetchInstrumentDetails action', () => {

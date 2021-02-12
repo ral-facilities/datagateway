@@ -43,9 +43,9 @@ const DatasetDetailsPanel = (
 
   React.useEffect(() => {
     if (!datasetData.DATASETTYPE) {
-      fetchDetails(datasetData.ID);
+      fetchDetails(datasetData.id);
     }
-  }, [datasetData.DATASETTYPE, datasetData.ID, fetchDetails]);
+  }, [datasetData.DATASETTYPE, datasetData.id, fetchDetails]);
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -84,7 +84,7 @@ const DatasetDetailsPanel = (
         <Grid container className={classes.root} direction="column">
           <Grid item xs>
             <Typography variant="h6">
-              <b>{datasetData.NAME}</b>
+              <b>{datasetData.name}</b>
             </Typography>
             <Divider className={classes.divider} />
           </Grid>
@@ -93,7 +93,7 @@ const DatasetDetailsPanel = (
               {t('datasets.details.description')}
             </Typography>
             <Typography>
-              <b>{datasetData.DESCRIPTION}</b>
+              <b>{datasetData.description}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -101,7 +101,7 @@ const DatasetDetailsPanel = (
               {t('datasets.details.start_date')}
             </Typography>
             <Typography>
-              <b>{datasetData.STARTDATE}</b>
+              <b>{datasetData.startDate}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -109,7 +109,7 @@ const DatasetDetailsPanel = (
               {t('datasets.details.end_date')}
             </Typography>
             <Typography>
-              <b>{datasetData.ENDDATE}</b>
+              <b>{datasetData.endDate}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -118,12 +118,12 @@ const DatasetDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                {datasetData.SIZE ? (
-                  formatBytes(datasetData.SIZE)
+                {datasetData.size ? (
+                  formatBytes(datasetData.size)
                 ) : (
                   <Button
                     onClick={() => {
-                      fetchSize(datasetData.ID);
+                      fetchSize(datasetData.id);
                     }}
                     variant="outlined"
                     color="secondary"
@@ -148,7 +148,7 @@ const DatasetDetailsPanel = (
           <Grid container className={classes.root} direction="column">
             <Grid item xs>
               <Typography variant="h6">
-                <b>{datasetData.DATASETTYPE.NAME}</b>
+                <b>{datasetData.DATASETTYPE.name}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -157,7 +157,7 @@ const DatasetDetailsPanel = (
                 {t('datasets.details.type.description')}
               </Typography>
               <Typography>
-                <b>{datasetData.DATASETTYPE.DESCRIPTION}</b>
+                <b>{datasetData.DATASETTYPE.description}</b>
               </Typography>
             </Grid>
           </Grid>

@@ -6,7 +6,7 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "FULLNAME",
+        "dataKey": "fullName",
         "filterComponent": [Function],
         "icon": <Memo(TitleIcon) />,
         "label": "instruments.name",
@@ -16,19 +16,19 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DESCRIPTION": "foo bar",
+        "description": "foo bar",
         "FACILITY_ID": 8,
-        "FULLNAME": "Test instrument 1",
-        "ID": 1,
-        "NAME": "Test 1",
-        "URL": "test url",
+        "fullName": "Test instrument 1",
+        "id": 1,
+        "name": "Test 1",
+        "url": "test url",
       },
       Object {
-        "DESCRIPTION": "foo bar",
+        "description": "foo bar",
         "FACILITY_ID": 8,
-        "ID": 2,
-        "NAME": "Test 2",
-        "URL": "test url",
+        "id": 2,
+        "name": "Test 2",
+        "url": "test url",
       },
     ]
   }

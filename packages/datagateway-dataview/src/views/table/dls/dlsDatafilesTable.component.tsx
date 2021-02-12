@@ -169,7 +169,7 @@ const DLSDatafilesTable = (
           >
             <Grid item xs>
               <Typography variant="h6">
-                <b>{datafileData.NAME}</b>
+                <b>{datafileData.name}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -178,7 +178,7 @@ const DLSDatafilesTable = (
                 {t('datafiles.details.size')}
               </Typography>
               <Typography>
-                <b>{formatBytes(datafileData.FILESIZE)}</b>
+                <b>{formatBytes(datafileData.fileSize)}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -186,7 +186,7 @@ const DLSDatafilesTable = (
                 {t('datafiles.details.location')}
               </Typography>
               <Typography>
-                <b>{datafileData.LOCATION}</b>
+                <b>{datafileData.location}</b>
               </Typography>
             </Grid>
           </Grid>
@@ -196,19 +196,19 @@ const DLSDatafilesTable = (
         {
           icon: <TitleIcon />,
           label: t('datafiles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
           icon: <ExploreIcon />,
           label: t('datafiles.location'),
-          dataKey: 'LOCATION',
+          dataKey: 'location',
           filterComponent: textFilter,
         },
         {
           icon: <SaveIcon />,
           label: t('datafiles.size'),
-          dataKey: 'FILESIZE',
+          dataKey: 'fileSize',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
@@ -217,7 +217,7 @@ const DLSDatafilesTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('datafiles.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -241,7 +241,7 @@ const mapDispatchToProps = (
         additionalFilters: [
           {
             filterType: 'where',
-            filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+            filterValue: JSON.stringify({ dataset: { eq: datasetId } }),
           },
         ],
       })
@@ -251,7 +251,7 @@ const mapDispatchToProps = (
       fetchDatafileCount([
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+          filterValue: JSON.stringify({ dataset: { eq: datasetId } }),
         },
       ])
     ),
@@ -265,7 +265,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            DATASET_ID: { eq: parseInt(ownProps.datasetId) },
+            dataset: { eq: parseInt(ownProps.datasetId) },
           }),
         },
       ])

@@ -62,7 +62,7 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
       {
         params: {
           where: {
-            ID: {
+            id: {
               eq: investigationId,
             },
           },
@@ -95,9 +95,9 @@ const unmemoizedCheckInstrumentAndStudyId = (
     .get(`${apiUrl}/investigations/`, {
       params: {
         where: {
-          ID: { eq: investigationId },
-          'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-          'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+          id: { eq: investigationId },
+          'investigationInstruments.instrument.id': { eq: instrumentId },
+          'studyInvestigations.study.id': { eq: studyId },
         },
       },
       headers: {
@@ -129,7 +129,7 @@ export const unmemoizedCheckProposalName = (
       },
     })
     .then((response: AxiosResponse<Investigation>) => {
-      return response.data.NAME === proposalName;
+      return response.data.name === proposalName;
     })
     .catch((error) => {
       handleICATError(error);

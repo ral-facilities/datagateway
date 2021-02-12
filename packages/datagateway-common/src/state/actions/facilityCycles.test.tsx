@@ -29,18 +29,18 @@ describe('FacilityCycle actions', () => {
   it('dispatches fetchFacilityCyclesRequest and fetchFacilityCyclesSuccess actions upon successful fetchFacilityCycles action', async () => {
     const mockData: FacilityCycle[] = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        DESCRIPTION: 'Test 1',
-        STARTDATE: '2019-07-03',
-        ENDDATE: '2019-07-04',
+        id: 1,
+        name: 'Test 1',
+        description: 'Test 1',
+        startDate: '2019-07-03',
+        endDate: '2019-07-04',
       },
       {
-        ID: 2,
-        NAME: 'Test 2',
-        DESCRIPTION: 'Test 2',
-        STARTDATE: '2019-07-03',
-        ENDDATE: '2019-07-04',
+        id: 2,
+        name: 'Test 2',
+        description: 'Test 2',
+        startDate: '2019-07-03',
+        endDate: '2019-07-04',
       },
     ];
 
@@ -83,7 +83,7 @@ describe('FacilityCycle actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
@@ -199,7 +199,7 @@ describe('FacilityCycle actions', () => {
     await asyncAction(dispatch, getState, null);
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
 

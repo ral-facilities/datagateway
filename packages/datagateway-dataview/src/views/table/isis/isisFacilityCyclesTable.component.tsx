@@ -109,31 +109,31 @@ const ISISFacilityCyclesTable = (
         {
           icon: <TitleIcon />,
           label: t('facilitycycles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${props.rowData.ID}/investigation`,
-              props.rowData.NAME
+              `/browse/instrument/${instrumentId}/facilityCycle/${props.rowData.id}/investigation`,
+              props.rowData.name
             ),
           filterComponent: textFilter,
         },
         {
           icon: <DescriptionIcon />,
           label: t('facilitycycles.description'),
-          dataKey: 'DESCRIPTION',
+          dataKey: 'description',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('facilitycycles.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('facilitycycles.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },

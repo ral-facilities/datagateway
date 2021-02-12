@@ -50,14 +50,14 @@ describe('dgdataview reducer', () => {
       state,
       loadBreadcrumbSettings({
         test: {
-          replaceEntityField: 'TITLE',
+          replaceEntityField: 'title',
         },
       })
     );
 
     expect(updatedState.breadcrumbSettings).toEqual({
       test: {
-        replaceEntityField: 'TITLE',
+        replaceEntityField: 'title',
       },
     });
   });

@@ -43,38 +43,38 @@ describe('Investigation Search Table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        SUMMARY: 'foo bar',
-        VISIT_ID: '1',
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        summary: 'foo bar',
+        visitId: '1',
         RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
+        doi: 'doi 1',
+        size: 1,
+        investigationInstruments: [
           {
-            ID: 1,
+            id: 1,
             INVESTIGATION_ID: 1,
             INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 3,
-              NAME: 'LARMOR',
+            instrument: {
+              id: 3,
+              name: 'LARMOR',
             },
           },
         ],
-        STUDYINVESTIGATION: [
+        studyInvestigations: [
           {
-            ID: 6,
+            id: 6,
             STUDY_ID: 7,
             INVESTIGATION_ID: 1,
-            STUDY: {
-              ID: 7,
+            study: {
+              id: 7,
               PID: 'study pid',
             },
           },
         ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
+        startDate: '2019-06-10',
+        endDate: '2019-06-11',
       },
     ];
     state.dgcommon.allIds = [1];
@@ -146,13 +146,13 @@ describe('Investigation Search Table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[4]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06' })
+      filterTable('endDate', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('endDate', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -170,7 +170,7 @@ describe('Investigation Search Table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[4]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[4]).toEqual(sortTable('title', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -296,9 +296,9 @@ describe('Investigation Search Table component', () => {
     // this can happen when navigating between tables and the previous table's state still exists
     state.dgcommon.data = [
       {
-        ID: 1,
-        NAME: 'test',
-        TITLE: 'test',
+        id: 1,
+        name: 'test',
+        title: 'test',
       },
     ];
 

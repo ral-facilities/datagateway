@@ -142,14 +142,14 @@ const InvestigationSearchTable = (
               {investigationData.RB_NUMBER}
             </Typography>
             <Typography>
-              <b>{t('investigations.title')}:</b> {investigationData.TITLE}
+              <b>{t('investigations.title')}:</b> {investigationData.title}
             </Typography>
             <Typography>
               <b>{t('investigations.start_date')}:</b>{' '}
-              {investigationData.STARTDATE}
+              {investigationData.startDate}
             </Typography>
             <Typography>
-              <b>{t('investigations.end_date')}:</b> {investigationData.ENDDATE}
+              <b>{t('investigations.end_date')}:</b> {investigationData.endDate}
             </Typography>
           </div>
         );
@@ -157,19 +157,19 @@ const InvestigationSearchTable = (
       columns={[
         {
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return investigationLink(
-              investigationData.ID,
-              investigationData.TITLE
+              investigationData.id,
+              investigationData.title
             );
           },
           filterComponent: textFilter,
         },
         {
-          label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          label: t('investigations.visitId'),
+          dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
@@ -179,25 +179,25 @@ const InvestigationSearchTable = (
         },
         {
           label: t('investigations.doi'),
-          dataKey: 'DOI',
+          dataKey: 'doi',
           filterComponent: textFilter,
         },
         {
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           disableSort: true,
         },
         {
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
+          dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+              investigationData.investigationInstruments &&
+              investigationData.investigationInstruments[0].instrument
             ) {
-              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                .FULLNAME;
+              return investigationData.investigationInstruments[0].instrument
+                .fullName;
             } else {
               return '';
             }
@@ -206,7 +206,7 @@ const InvestigationSearchTable = (
         },
         {
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
@@ -215,7 +215,7 @@ const InvestigationSearchTable = (
         },
         {
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
@@ -243,13 +243,13 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { in: luceneData },
+              id: { in: luceneData },
             }),
           },
           {
             filterType: 'include',
             filterValue: JSON.stringify({
-              INVESTIGATIONINSTRUMENT: 'INSTRUMENT',
+              investigationInstruments: 'instrument',
             }),
           },
         ],
@@ -261,7 +261,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -277,7 +277,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])

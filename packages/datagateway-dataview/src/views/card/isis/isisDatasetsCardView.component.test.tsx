@@ -60,11 +60,11 @@ describe('ISIS Datasets - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            NAME: 'Test 1',
-            SIZE: 1,
-            MOD_TIME: '2019-07-23',
-            CREATE_TIME: '2019-07-23',
+            id: 1,
+            name: 'Test 1',
+            size: 1,
+            modTime: '2019-07-23',
+            createTime: '2019-07-23',
             INVESTIGATION_ID: 1,
           },
         ],
@@ -172,7 +172,7 @@ describe('ISIS Datasets - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
     expect(store.getActions().length).toEqual(4);
     expect(store.getActions()[2]).toEqual(
-      filterTable('MOD_TIME', { endDate: '2019-08-06' })
+      filterTable('modTime', { endDate: '2019-08-06' })
     );
     expect(store.getActions()[3]).toEqual(push('?'));
 
@@ -181,7 +181,7 @@ describe('ISIS Datasets - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('MOD_TIME', null));
+    expect(store.getActions()[4]).toEqual(filterTable('modTime', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -194,7 +194,7 @@ describe('ISIS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[2]).toEqual(filterTable('name', 'test'));
     expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter
@@ -202,7 +202,7 @@ describe('ISIS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('NAME', null));
+    expect(store.getActions()[4]).toEqual(filterTable('name', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -217,7 +217,7 @@ describe('ISIS Datasets - Card View', () => {
     expect(store.getActions()[2]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { NAME: 'asc' },
+        sort: { name: 'asc' },
         page: 1,
       })
     );

@@ -113,7 +113,7 @@ const InvestigationCardView = (
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             data
-              .map((investigation) => investigation.ID)
+              .map((investigation) => investigation.id)
               .includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
@@ -154,11 +154,11 @@ const InvestigationCardView = (
         // Provide label for filter component.
         label: t('investigations.title'),
         // Provide both the dataKey (for tooltip) and content to render.
-        dataKey: 'TITLE',
+        dataKey: 'title',
         content: (investigation: Investigation) => {
           return investigationLink(
-            investigation.ID,
-            investigation.TITLE,
+            investigation.id,
+            investigation.title,
             query.view
           );
         },
@@ -166,20 +166,20 @@ const InvestigationCardView = (
       }}
       description={{
         label: t('investigations.details.summary'),
-        dataKey: 'SUMMARY',
+        dataKey: 'summary',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Public />,
           label: t('investigations.doi'),
-          dataKey: 'DOI',
+          dataKey: 'doi',
           filterComponent: textFilter,
         },
         {
           icon: <Fingerprint />,
-          label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          label: t('investigations.visitId'),
+          dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
@@ -192,27 +192,27 @@ const InvestigationCardView = (
         {
           icon: <ConfirmationNumber />,
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           filterComponent: textFilter,
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.details.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.details.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}
       buttons={[
         function cartButton(investigation: Investigation) {
           return !(
-            selectedCards && selectedCards.includes(investigation.ID)
+            selectedCards && selectedCards.includes(investigation.id)
           ) ? (
             <Button
               id="add-to-cart-btn"
@@ -220,7 +220,7 @@ const InvestigationCardView = (
               color="primary"
               startIcon={<AddCircleOutlineOutlined />}
               disableElevation
-              onClick={() => addToCart([investigation.ID])}
+              onClick={() => addToCart([investigation.id])}
             >
               Add to cart
             </Button>
@@ -232,8 +232,8 @@ const InvestigationCardView = (
               startIcon={<RemoveCircleOutlineOutlined />}
               disableElevation
               onClick={() => {
-                if (selectedCards && selectedCards.includes(investigation.ID))
-                  removeFromCart([investigation.ID]);
+                if (selectedCards && selectedCards.includes(investigation.id))
+                  removeFromCart([investigation.id]);
               }}
             >
               Remove from cart

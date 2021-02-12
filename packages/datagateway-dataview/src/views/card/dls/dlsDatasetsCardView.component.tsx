@@ -113,7 +113,7 @@ const DLSDatasetsCardView = (
         .filter(
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
-            data.map((dataset) => dataset.ID).includes(cartItem.entityId)
+            data.map((dataset) => dataset.id).includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
     [cartItems, data]
@@ -165,43 +165,43 @@ const DLSDatasetsCardView = (
       loadedCount={loadedCount}
       title={{
         label: t('datasets.name'),
-        dataKey: 'NAME',
+        dataKey: 'name',
         content: (dataset: Dataset) =>
           tableLink(
-            `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME,
+            `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${dataset.id}/datafile`,
+            dataset.name,
             query.view
           ),
         filterComponent: textFilter,
       }}
       description={{
         label: t('datasets.details.description'),
-        dataKey: 'DESCRIPTION',
+        dataKey: 'description',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <ConfirmationNumber />,
           label: t('datasets.datafile_count'),
-          dataKey: 'DATAFILE_COUNT',
+          dataKey: 'datafileCount',
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('datasets.details.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
@@ -220,14 +220,14 @@ const DLSDatasetsCardView = (
       )}
       buttons={[
         function cartButton(dataset: Dataset) {
-          return !(selectedCards && selectedCards.includes(dataset.ID)) ? (
+          return !(selectedCards && selectedCards.includes(dataset.id)) ? (
             <Button
               id="add-to-cart-btn"
               variant="contained"
               color="primary"
               startIcon={<AddCircleOutlineOutlined />}
               disableElevation
-              onClick={() => addToCart([dataset.ID])}
+              onClick={() => addToCart([dataset.id])}
             >
               Add to cart
             </Button>
@@ -239,8 +239,8 @@ const DLSDatasetsCardView = (
               startIcon={<RemoveCircleOutlineOutlined />}
               disableElevation
               onClick={() => {
-                if (selectedCards && selectedCards.includes(dataset.ID))
-                  removeFromCart([dataset.ID]);
+                if (selectedCards && selectedCards.includes(dataset.id))
+                  removeFromCart([dataset.id]);
               }}
             >
               Remove from cart

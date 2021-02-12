@@ -75,7 +75,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             breadcrumbs: {
               test: {
-                replaceEntityField: 'TITLE',
+                replaceEntityField: 'title',
               },
             },
             downloadApiUrl: 'download-api',
@@ -107,7 +107,7 @@ describe('Actions', () => {
     expect(actions).toContainEqual(
       loadBreadcrumbSettings({
         test: {
-          replaceEntityField: 'TITLE',
+          replaceEntityField: 'title',
         },
       })
     );

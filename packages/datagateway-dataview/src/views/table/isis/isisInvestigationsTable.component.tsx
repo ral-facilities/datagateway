@@ -197,25 +197,25 @@ const ISISInvestigationsTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.TITLE
+              `${urlPrefix}/${investigationData.id}/dataset`,
+              investigationData.title
             );
           },
           filterComponent: textFilter,
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          label: t('investigations.visitId'),
+          dataKey: 'visitId',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.VISIT_ID
+              `${urlPrefix}/${investigationData.id}/dataset`,
+              investigationData.visitId
             );
           },
           filterComponent: textFilter,
@@ -223,12 +223,12 @@ const ISISInvestigationsTable = (
         {
           icon: <FingerprintIcon />,
           label: t('investigations.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.NAME
+              `${urlPrefix}/${investigationData.id}/dataset`,
+              investigationData.name
             );
           },
           filterComponent: textFilter,
@@ -236,16 +236,16 @@ const ISISInvestigationsTable = (
         {
           icon: <PublicIcon />,
           label: t('investigations.doi'),
-          dataKey: 'STUDYINVESTIGATION.STUDY.PID',
+          dataKey: 'studyInvestigations.study.PID',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             if (
-              investigationData.STUDYINVESTIGATION &&
-              investigationData.STUDYINVESTIGATION[0].STUDY
+              investigationData.studyInvestigations &&
+              investigationData.studyInvestigations[0].study
             ) {
               return tableLink(
-                `${urlPrefix}/${investigationData.ID}/dataset`,
-                investigationData.STUDYINVESTIGATION[0].STUDY.PID
+                `${urlPrefix}/${investigationData.id}/dataset`,
+                investigationData.studyInvestigations[0].study.PID
               );
             } else {
               return '';
@@ -256,7 +256,7 @@ const ISISInvestigationsTable = (
         {
           icon: <SaveIcon />,
           label: t('investigations.size'),
-          dataKey: 'SIZE',
+          dataKey: 'size',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
@@ -265,15 +265,15 @@ const ISISInvestigationsTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
+          dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+              investigationData.investigationInstruments &&
+              investigationData.investigationInstruments[0].instrument
             ) {
-              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                .FULLNAME;
+              return investigationData.investigationInstruments[0].instrument
+                .fullName;
             } else {
               return '';
             }
@@ -283,7 +283,7 @@ const ISISInvestigationsTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -291,7 +291,7 @@ const ISISInvestigationsTable = (
           icon: <CalendarTodayIcon />,
 
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -335,13 +335,13 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              'investigationInstruments.instrument.id': { eq: instrumentId },
             }),
           },
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+              'studyInvestigations.study.id': { eq: studyId },
             }),
           },
         ],
@@ -355,13 +355,13 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'investigationInstruments.instrument.id': { eq: instrumentId },
           }),
         },
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+            'studyInvestigations.study.id': { eq: studyId },
           }),
         },
       ])
@@ -385,7 +385,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': {
+            'investigationInstruments.instrument.id': {
               eq: ownProps.instrumentId,
             },
           }),
@@ -393,7 +393,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'STUDYINVESTIGATION.STUDY.ID': { eq: ownProps.instrumentChildId },
+            'studyInvestigations.study.id': { eq: ownProps.instrumentChildId },
           }),
         },
       ])

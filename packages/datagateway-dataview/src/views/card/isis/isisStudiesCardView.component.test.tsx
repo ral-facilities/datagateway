@@ -59,15 +59,15 @@ describe('ISIS Studies - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
+            id: 1,
             STUDY_ID: 1,
             INVESTIGATION_ID: 1,
-            STUDY: {
-              ID: 1,
+            study: {
+              id: 1,
               PID: 'doi',
-              NAME: 'Test 1',
-              MOD_TIME: '2000-01-01',
-              CREATE_TIME: '2000-01-01',
+              name: 'Test 1',
+              modTime: '2000-01-01',
+              createTime: '2000-01-01',
             },
           },
         ],
@@ -125,7 +125,7 @@ describe('ISIS Studies - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
     expect(store.getActions().length).toEqual(3);
     expect(store.getActions()[1]).toEqual(
-      filterTable('STUDY.ENDDATE', {
+      filterTable('study.endDate', {
         endDate: '2019-08-06',
         startDate: undefined,
       })
@@ -136,7 +136,7 @@ describe('ISIS Studies - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(filterTable('STUDY.ENDDATE', null));
+    expect(store.getActions()[3]).toEqual(filterTable('study.endDate', null));
     expect(store.getActions()[4]).toEqual(push('?'));
   });
 
@@ -149,7 +149,7 @@ describe('ISIS Studies - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(filterTable('STUDY.NAME', 'test'));
+    expect(store.getActions()[1]).toEqual(filterTable('study.name', 'test'));
     expect(store.getActions()[2]).toEqual(push('?'));
 
     advancedFilter
@@ -157,7 +157,7 @@ describe('ISIS Studies - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(filterTable('STUDY.NAME', null));
+    expect(store.getActions()[3]).toEqual(filterTable('study.name', null));
     expect(store.getActions()[4]).toEqual(push('?'));
   });
 
@@ -172,7 +172,7 @@ describe('ISIS Studies - Card View', () => {
     expect(store.getActions()[1]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { 'STUDY.NAME': 'asc' },
+        sort: { 'study.name': 'asc' },
         page: 1,
       })
     );

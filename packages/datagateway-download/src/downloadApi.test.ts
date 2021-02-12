@@ -436,9 +436,9 @@ describe('Download Cart API functions test', () => {
       axios.get = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: {
-            ID: 1,
-            NAME: 'test datafile',
-            FILESIZE: 1,
+            id: 1,
+            name: 'test datafile',
+            fileSize: 1,
           },
         })
       );
@@ -580,7 +580,7 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              DATASET_ID: {
+              dataset: {
                 eq: 1,
               },
             },
@@ -608,7 +608,7 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              DATASET_ID: {
+              dataset: {
                 eq: 1,
               },
             },
@@ -761,9 +761,9 @@ describe('Download Cart API functions test', () => {
           if (path.includes('datafiles/')) {
             return Promise.resolve({
               data: {
-                ID: 1,
-                NAME: 'test datafile',
-                FILESIZE: 1,
+                id: 1,
+                name: 'test datafile',
+                fileSize: 1,
               },
             });
           } else {

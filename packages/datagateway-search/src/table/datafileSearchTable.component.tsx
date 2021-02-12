@@ -142,13 +142,13 @@ const DatafileSearchTable = (
         return (
           <div>
             <Typography>
-              <b>{t('datafiles.name')}:</b> {datafileData.NAME}
+              <b>{t('datafiles.name')}:</b> {datafileData.name}
             </Typography>
             <Typography>
-              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.FILESIZE)}
+              <b>{t('datafiles.size')}:</b> {formatBytes(datafileData.fileSize)}
             </Typography>
             <Typography>
-              <b>{t('datafiles.location')}:</b> {datafileData.LOCATION}
+              <b>{t('datafiles.location')}:</b> {datafileData.location}
             </Typography>
           </div>
         );
@@ -156,24 +156,24 @@ const DatafileSearchTable = (
       columns={[
         {
           label: t('datafiles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
           label: t('datafiles.location'),
-          dataKey: 'LOCATION',
+          dataKey: 'location',
           filterComponent: textFilter,
         },
         {
           label: t('datafiles.size'),
-          dataKey: 'FILESIZE',
+          dataKey: 'fileSize',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
         },
         {
           label: t('datafiles.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -197,7 +197,7 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { in: luceneData },
+              id: { in: luceneData },
             }),
           },
         ],
@@ -209,7 +209,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -226,7 +226,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])

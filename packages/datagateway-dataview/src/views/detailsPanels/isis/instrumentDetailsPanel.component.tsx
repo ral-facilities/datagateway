@@ -43,9 +43,9 @@ const InstrumentDetailsPanel = (
 
   React.useEffect(() => {
     if (!instrumentData.INSTRUMENTSCIENTIST) {
-      fetchDetails(instrumentData.ID);
+      fetchDetails(instrumentData.id);
     }
-  }, [instrumentData.INSTRUMENTSCIENTIST, instrumentData.ID, fetchDetails]);
+  }, [instrumentData.INSTRUMENTSCIENTIST, instrumentData.id, fetchDetails]);
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -84,7 +84,7 @@ const InstrumentDetailsPanel = (
         <Grid container className={classes.root} direction="column">
           <Grid item xs>
             <Typography variant="h6">
-              <b>{instrumentData.FULLNAME}</b>
+              <b>{instrumentData.fullName}</b>
             </Typography>
             <Divider className={classes.divider} />
           </Grid>
@@ -93,7 +93,7 @@ const InstrumentDetailsPanel = (
               {t('instruments.details.description')}
             </Typography>
             <Typography>
-              <b>{instrumentData.DESCRIPTION}</b>
+              <b>{instrumentData.description}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -110,7 +110,7 @@ const InstrumentDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                <Link href={instrumentData.URL}>{instrumentData.URL}</Link>
+                <Link href={instrumentData.url}>{instrumentData.url}</Link>
               </b>
             </Typography>
           </Grid>
@@ -125,7 +125,7 @@ const InstrumentDetailsPanel = (
         >
           <Grid container className={classes.root} direction="column">
             {instrumentData.INSTRUMENTSCIENTIST.map((instrumentScientist) => {
-              if (instrumentScientist.USER_) {
+              if (instrumentScientist.user) {
                 return (
                   <Grid key={instrumentScientist.USER_ID} item xs>
                     <Typography variant="overline">
@@ -133,8 +133,8 @@ const InstrumentDetailsPanel = (
                     </Typography>
                     <Typography>
                       <b>
-                        {instrumentScientist.USER_.FULL_NAME ||
-                          instrumentScientist.USER_.NAME}
+                        {instrumentScientist.user.fullName ||
+                          instrumentScientist.user.name}
                       </b>
                     </Typography>
                   </Grid>

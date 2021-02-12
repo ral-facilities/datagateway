@@ -60,10 +60,10 @@ describe('DLS Datasets - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            NAME: 'Test 1',
-            MOD_TIME: '2019-07-23',
-            CREATE_TIME: '2019-07-23',
+            id: 1,
+            name: 'Test 1',
+            modTime: '2019-07-23',
+            createTime: '2019-07-23',
             INVESTIGATION_ID: 1,
           },
         ],
@@ -155,7 +155,7 @@ describe('DLS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(filterTable('NAME', 'test'));
+    expect(store.getActions()[3]).toEqual(filterTable('name', 'test'));
     expect(store.getActions()[4]).toEqual(push('?'));
 
     advancedFilter
@@ -163,7 +163,7 @@ describe('DLS Datasets - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(7);
-    expect(store.getActions()[5]).toEqual(filterTable('NAME', null));
+    expect(store.getActions()[5]).toEqual(filterTable('name', null));
     expect(store.getActions()[6]).toEqual(push('?'));
   });
 
@@ -178,7 +178,7 @@ describe('DLS Datasets - Card View', () => {
     expect(store.getActions()[3]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { NAME: 'asc' },
+        sort: { name: 'asc' },
         page: 1,
       })
     );

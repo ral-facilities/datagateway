@@ -159,15 +159,15 @@ const ISISDatafilesTable = (
       }}
       actions={[
         function downloadButton({ rowData }: TableActionProps) {
-          const { ID, LOCATION } = rowData as Datafile;
-          if (LOCATION) {
+          const { id, location } = rowData as Datafile;
+          if (location) {
             return (
               <IconButton
                 aria-label={t('datafiles.download')}
                 key="download"
                 size="small"
                 onClick={() => {
-                  downloadData(ID, LOCATION);
+                  downloadData(id, location);
                 }}
               >
                 <GetApp />
@@ -182,19 +182,19 @@ const ISISDatafilesTable = (
         {
           icon: <TitleIcon />,
           label: t('datafiles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
           icon: <ExploreIcon />,
           label: t('datafiles.location'),
-          dataKey: 'LOCATION',
+          dataKey: 'location',
           filterComponent: textFilter,
         },
         {
           icon: <SaveIcon />,
           label: t('datafiles.size'),
-          dataKey: 'FILESIZE',
+          dataKey: 'fileSize',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
@@ -203,7 +203,7 @@ const ISISDatafilesTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('datafiles.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -228,7 +228,7 @@ const mapDispatchToProps = (
         additionalFilters: [
           {
             filterType: 'where',
-            filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+            filterValue: JSON.stringify({ dataset: { eq: datasetId } }),
           },
         ],
       })
@@ -238,7 +238,7 @@ const mapDispatchToProps = (
       fetchDatafileCount([
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+          filterValue: JSON.stringify({ dataset: { eq: datasetId } }),
         },
       ])
     ),
@@ -256,7 +256,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            DATASET_ID: { eq: parseInt(ownProps.datasetId) },
+            dataset: { eq: parseInt(ownProps.datasetId) },
           }),
         },
       ])

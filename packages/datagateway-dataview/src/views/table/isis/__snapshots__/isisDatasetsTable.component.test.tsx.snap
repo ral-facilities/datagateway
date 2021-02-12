@@ -16,27 +16,27 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo(TitleIcon) />,
         "label": "datasets.name",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "SIZE",
+        "dataKey": "size",
         "disableSort": true,
         "icon": <Memo(SaveIcon) />,
         "label": "datasets.size",
       },
       Object {
-        "dataKey": "CREATE_TIME",
+        "dataKey": "createTime",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "datasets.create_time",
       },
       Object {
-        "dataKey": "MOD_TIME",
+        "dataKey": "modTime",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
@@ -47,12 +47,12 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "CREATE_TIME": "2019-07-23",
-        "ID": 1,
+        "createTime": "2019-07-23",
+        "id": 1,
         "INVESTIGATION_ID": 1,
-        "MOD_TIME": "2019-07-23",
-        "NAME": "Test 1",
-        "SIZE": 1,
+        "modTime": "2019-07-23",
+        "name": "Test 1",
+        "size": 1,
       },
     ]
   }

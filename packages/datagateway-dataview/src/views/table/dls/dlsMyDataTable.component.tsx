@@ -95,9 +95,9 @@ const DLSMyDataTable = (
   );
 
   React.useEffect(() => {
-    // Sort and filter by STARTDATE upon load.
-    pushSort('STARTDATE', 'desc');
-    pushFilters('STARTDATE', {
+    // Sort and filter by startDate upon load.
+    pushSort('startDate', 'desc');
+    pushFilters('startDate', {
       endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
     });
   }, [pushSort, pushFilters]);
@@ -133,25 +133,25 @@ const DLSMyDataTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}/dataset`,
-              investigationData.TITLE
+              `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
+              investigationData.title
             );
           },
           filterComponent: textFilter,
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          label: t('investigations.visitId'),
+          dataKey: 'visitId',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return tableLink(
-              `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}/dataset`,
-              investigationData.VISIT_ID
+              `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
+              investigationData.visitId
             );
           },
           filterComponent: textFilter,
@@ -159,21 +159,21 @@ const DLSMyDataTable = (
         {
           icon: <ConfirmationNumberIcon />,
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           disableSort: true,
         },
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
+          dataKey: 'investigationInstruments.instrument.name',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
+              investigationData.investigationInstruments &&
+              investigationData.investigationInstruments[0].instrument
             ) {
-              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                .NAME;
+              return investigationData.investigationInstruments[0].instrument
+                .name;
             } else {
               return '';
             }
@@ -183,7 +183,7 @@ const DLSMyDataTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -191,7 +191,7 @@ const DLSMyDataTable = (
           icon: <CalendarTodayIcon />,
 
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -216,16 +216,16 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'INVESTIGATIONUSER.USER.NAME': { eq: username },
+              'investigationUsers.USER.name': { eq: username },
             }),
           },
           {
             filterType: 'include',
             filterValue: JSON.stringify([
               {
-                INVESTIGATIONINSTRUMENT: 'INSTRUMENT',
+                investigationInstruments: 'instrument',
               },
-              { INVESTIGATIONUSER: 'USER_' },
+              { investigationUsers: 'user' },
             ]),
           },
         ],
@@ -238,12 +238,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONUSER.USER.NAME': { eq: username },
+            'investigationUsers.USER.name': { eq: username },
           }),
         },
         {
           filterType: 'include',
-          filterValue: JSON.stringify({ INVESTIGATIONUSER: 'USER_' }),
+          filterValue: JSON.stringify({ investigationUsers: 'user' }),
         },
       ])
     ),

@@ -225,18 +225,18 @@ export const fetchAllIds = (
         distinctFilterString
       );
       if (typeof distinctFilter === 'string') {
-        params.set('distinct', JSON.stringify([distinctFilter, 'ID']));
+        params.set('distinct', JSON.stringify([distinctFilter, 'id']));
       } else {
-        params.set('distinct', JSON.stringify([...distinctFilter, 'ID']));
+        params.set('distinct', JSON.stringify([...distinctFilter, 'id']));
       }
     } else {
-      params.set('distinct', JSON.stringify('ID'));
+      params.set('distinct', JSON.stringify('id'));
     }
 
     const { apiUrl } = getState().dgcommon.urls;
 
     await axios
-      .get<{ ID: number }[]>(`${apiUrl}/${entityType}s`, {
+      .get<{ id: number }[]>(`${apiUrl}/${entityType}s`, {
         params,
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
@@ -245,7 +245,7 @@ export const fetchAllIds = (
       .then((response) => {
         dispatch(
           fetchAllIdsSuccess(
-            response.data.map((x) => x.ID),
+            response.data.map((x) => x.id),
             timestamp
           )
         );
@@ -269,7 +269,7 @@ export const fetchAllISISInvestigationIds = (
 
     // TODO: currently datagateway-api can't apply distinct filter to ISIS queries,
     // so for now just retrieve everything
-    // params.set('distinct', JSON.stringify('ID'));
+    // params.set('distinct', JSON.stringify('id'));
 
     const { apiUrl } = getState().dgcommon.urls;
 
@@ -286,7 +286,7 @@ export const fetchAllISISInvestigationIds = (
       .then((response) => {
         dispatch(
           fetchAllIdsSuccess(
-            response.data.map((x) => x.ID),
+            response.data.map((x) => x.id),
             timestamp
           )
         );

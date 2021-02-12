@@ -179,7 +179,7 @@ const ISISDatasetsTable = (
               key="download"
               size="small"
               onClick={() => {
-                downloadData(datasetData.ID, datasetData.NAME);
+                downloadData(datasetData.id, datasetData.name);
               }}
             >
               <GetApp />
@@ -191,18 +191,18 @@ const ISISDatasetsTable = (
         {
           icon: <TitleIcon />,
           label: t('datasets.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-              props.rowData.NAME
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${props.rowData.id}/datafile`,
+              props.rowData.name
             ),
           filterComponent: textFilter,
         },
         {
           icon: <SaveIcon />,
           label: t('datasets.size'),
-          dataKey: 'SIZE',
+          dataKey: 'size',
           cellContentRenderer: (props) => {
             return formatBytes(props.cellData);
           },
@@ -211,14 +211,14 @@ const ISISDatasetsTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },

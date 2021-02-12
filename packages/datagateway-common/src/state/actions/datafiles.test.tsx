@@ -31,22 +31,22 @@ describe('Datafile actions', () => {
   Date.now = jest.fn().mockImplementation(() => 1);
   const mockData: Datafile[] = [
     {
-      ID: 1,
-      NAME: 'Test 1',
-      LOCATION: '/test1',
-      FILESIZE: 1,
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-10',
-      DATASET_ID: 1,
+      id: 1,
+      name: 'Test 1',
+      location: '/test1',
+      fileSize: 1,
+      modTime: '2019-06-10',
+      createTime: '2019-06-10',
+      dataset: 1,
     },
     {
-      ID: 2,
-      NAME: 'Test 2',
-      LOCATION: '/test2',
-      FILESIZE: 2,
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-10',
-      DATASET_ID: 1,
+      id: 2,
+      name: 'Test 2',
+      location: '/test2',
+      fileSize: 2,
+      modTime: '2019-06-10',
+      createTime: '2019-06-10',
+      dataset: 1,
     },
   ];
 
@@ -75,7 +75,7 @@ describe('Datafile actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+          filterValue: JSON.stringify({ dataset: { eq: 1 } }),
         },
       ],
     });
@@ -85,8 +85,8 @@ describe('Datafile actions', () => {
     expect(actions[1]).toEqual(fetchDatafilesSuccess(mockData, 1));
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
-    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
+    params.append('order', JSON.stringify('id asc'));
+    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles', {
       headers: { Authorization: 'Bearer null' },
@@ -105,7 +105,7 @@ describe('Datafile actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+          filterValue: JSON.stringify({ dataset: { eq: 1 } }),
         },
       ],
     });
@@ -127,10 +127,10 @@ describe('Datafile actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles', {
       headers: { Authorization: 'Bearer null' },
@@ -167,7 +167,7 @@ describe('Datafile actions', () => {
     const asyncAction = fetchDatafileCount([
       {
         filterType: 'where',
-        filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+        filterValue: JSON.stringify({ dataset: { eq: 1 } }),
       },
     ]);
     await asyncAction(dispatch, getState, null);
@@ -176,7 +176,7 @@ describe('Datafile actions', () => {
     expect(actions[1]).toEqual(fetchDatafileCountSuccess(5, 1));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles/count', {
       headers: { Authorization: 'Bearer null' },
@@ -194,7 +194,7 @@ describe('Datafile actions', () => {
     const asyncAction = fetchDatafileCount([
       {
         filterType: 'where',
-        filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+        filterValue: JSON.stringify({ dataset: { eq: 1 } }),
       },
     ]);
     const getState = (): Partial<StateType> => ({
@@ -215,7 +215,7 @@ describe('Datafile actions', () => {
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles/count', {
       headers: { Authorization: 'Bearer null' },
@@ -261,7 +261,7 @@ describe('Datafile actions', () => {
       '/datafiles/count',
       expect.objectContaining({
         params: {
-          where: { DATASET_ID: { eq: 1 } },
+          where: { dataset: { eq: 1 } },
         },
       })
     );
@@ -331,13 +331,13 @@ describe('Datafile actions', () => {
   it('dispatches fetchDatafileDetailsRequest and fetchDatafileDetailsSuccess actions upon successful fetchDatafileDetails action', async () => {
     const mockData: Datafile[] = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        LOCATION: '/test1',
-        FILESIZE: 1,
-        MOD_TIME: '2019-06-10',
-        CREATE_TIME: '2019-06-10',
-        DATASET_ID: 1,
+        id: 1,
+        name: 'Test 1',
+        location: '/test1',
+        fileSize: 1,
+        modTime: '2019-06-10',
+        createTime: '2019-06-10',
+        dataset: 1,
       },
     ];
 
@@ -354,10 +354,10 @@ describe('Datafile actions', () => {
     expect(actions[1]).toEqual(fetchDatafileDetailsSuccess(mockData));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ id: { eq: 1 } }));
     params.append(
       'include',
-      JSON.stringify({ DATAFILEPARAMETER: 'PARAMETERTYPE' })
+      JSON.stringify({ datafileParameters: 'PARAMETERTYPE' })
     );
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles', {
@@ -393,7 +393,7 @@ describe('Datafile actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+          filterValue: JSON.stringify({ dataset: { eq: 1 } }),
         },
       ],
     });
@@ -406,8 +406,8 @@ describe('Datafile actions', () => {
     await asyncAction(dispatch, getState, null);
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
-    params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
+    params.append('order', JSON.stringify('id asc'));
+    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
 

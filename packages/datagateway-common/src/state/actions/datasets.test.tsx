@@ -37,17 +37,17 @@ describe('Dataset actions', () => {
 
   const mockData: Dataset[] = [
     {
-      ID: 1,
-      NAME: 'Test 1',
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-11',
+      id: 1,
+      name: 'Test 1',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
       INVESTIGATION_ID: 1,
     },
     {
-      ID: 2,
-      NAME: 'Test 2',
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-12',
+      id: 2,
+      name: 'Test 2',
+      modTime: '2019-06-10',
+      createTime: '2019-06-12',
       INVESTIGATION_ID: 1,
     },
   ];
@@ -95,7 +95,7 @@ describe('Dataset actions', () => {
     expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
 
     expect(axios.get).toHaveBeenCalledWith('/datasets', {
@@ -131,7 +131,7 @@ describe('Dataset actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
@@ -361,7 +361,7 @@ describe('Dataset actions', () => {
     await asyncAction(dispatch, getState, null);
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
@@ -375,14 +375,14 @@ describe('Dataset actions', () => {
   it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsSuccess actions upon successful fetchDatasetDetails action', async () => {
     const mockDetailsData: Dataset[] = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        MOD_TIME: '2019-06-10',
-        CREATE_TIME: '2019-06-11',
+        id: 1,
+        name: 'Test 1',
+        modTime: '2019-06-10',
+        createTime: '2019-06-11',
         INVESTIGATION_ID: 1,
         DATASETTYPE: {
-          ID: 2,
-          NAME: 'Test type',
+          id: 2,
+          name: 'Test type',
         },
       },
     ];
@@ -400,7 +400,7 @@ describe('Dataset actions', () => {
     expect(actions[1]).toEqual(fetchDatasetDetailsSuccess(mockDetailsData));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ id: { eq: 1 } }));
     params.append('include', JSON.stringify('DATASETTYPE'));
 
     expect(axios.get).toHaveBeenCalledWith('/datasets', {

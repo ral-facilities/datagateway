@@ -328,7 +328,7 @@ export const getSize: (
         },
       })
       .then((response) => {
-        const size = response.data['FILESIZE'] as number;
+        const size = response.data['fileSize'] as number;
         return size;
       })
       .catch((error) => {
@@ -371,7 +371,7 @@ export const getDatafileCount: (
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
           where: {
-            DATASET_ID: {
+            dataset: {
               eq: entityId,
             },
           },
@@ -391,9 +391,9 @@ export const getDatafileCount: (
     return axios
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
-          include: '"DATASET"',
+          include: '"dataset"',
           where: {
-            'DATASET.INVESTIGATION_ID': {
+            'dataset.INVESTIGATION_ID': {
               eq: entityId,
             },
           },

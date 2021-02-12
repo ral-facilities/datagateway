@@ -166,7 +166,7 @@ const InvestigationTable = (
           >
             <Grid item xs>
               <Typography variant="h6">
-                <b>{investigationData.TITLE}</b>
+                <b>{investigationData.title}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -183,7 +183,7 @@ const InvestigationTable = (
                 {t('investigations.details.start_date')}
               </Typography>
               <Typography>
-                <b>{investigationData.STARTDATE}</b>
+                <b>{investigationData.startDate}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -191,7 +191,7 @@ const InvestigationTable = (
                 {t('investigations.details.end_date')}
               </Typography>
               <Typography>
-                <b>{investigationData.ENDDATE}</b>
+                <b>{investigationData.endDate}</b>
               </Typography>
             </Grid>
           </Grid>
@@ -201,20 +201,20 @@ const InvestigationTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             return investigationLink(
-              investigationData.ID,
-              investigationData.TITLE
+              investigationData.id,
+              investigationData.title
             );
           },
           filterComponent: textFilter,
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          label: t('investigations.visitId'),
+          dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
@@ -227,26 +227,26 @@ const InvestigationTable = (
         {
           icon: <PublicIcon />,
           label: t('investigations.doi'),
-          dataKey: 'DOI',
+          dataKey: 'doi',
           filterComponent: textFilter,
         },
         {
           icon: <ConfirmationNumberIcon />,
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           disableSort: true,
         },
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INSTRUMENT.NAME',
+          dataKey: 'instrument.name',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarTodayIcon />,
 
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];
@@ -256,7 +256,7 @@ const InvestigationTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
           cellContentRenderer: (props: TableCellProps) => {
             if (props.cellData) return props.cellData.toString().split(' ')[0];

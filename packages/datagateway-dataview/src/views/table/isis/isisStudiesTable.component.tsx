@@ -126,36 +126,36 @@ const ISISStudiesTable = (
         {
           icon: <FingerprintIcon />,
           label: t('studies.name'),
-          dataKey: 'STUDY.NAME',
+          dataKey: 'study.name',
           cellContentRenderer: (props: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.STUDY?.ID}/investigation`,
-              props.rowData.STUDY?.NAME
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.study?.id}/investigation`,
+              props.rowData.study?.name
             ),
           filterComponent: textFilter,
         },
         {
           icon: <DescriptionIcon />,
           label: t('studies.description'),
-          dataKey: 'STUDY.DESCRIPTION',
+          dataKey: 'study.description',
           filterComponent: textFilter,
         },
         {
           icon: <PublicIcon />,
           label: t('studies.pid'),
-          dataKey: 'STUDY.PID',
+          dataKey: 'study.PID',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('studies.start_date'),
-          dataKey: 'STUDY.STARTDATE',
+          dataKey: 'study.startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('studies.end_date'),
-          dataKey: 'STUDY.ENDDATE',
+          dataKey: 'study.endDate',
           filterComponent: dateFilter,
         },
       ]}
@@ -172,7 +172,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'investigationInstruments.instrument.id': { eq: instrumentId },
           }),
         },
       ])
@@ -190,7 +190,7 @@ const mapDispatchToProps = (
           },
           {
             filterType: 'include',
-            filterValue: JSON.stringify('STUDY'),
+            filterValue: JSON.stringify('study'),
           },
         ],
       })

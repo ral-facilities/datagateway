@@ -11,16 +11,16 @@ exports[`Investigation table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "TITLE",
+        "dataKey": "title",
         "filterComponent": [Function],
         "icon": <Memo(TitleIcon) />,
         "label": "investigations.title",
       },
       Object {
-        "dataKey": "VISIT_ID",
+        "dataKey": "visitId",
         "filterComponent": [Function],
         "icon": <Memo(FingerprintIcon) />,
-        "label": "investigations.visit_id",
+        "label": "investigations.visitId",
       },
       Object {
         "dataKey": "RB_NUMBER",
@@ -30,26 +30,26 @@ exports[`Investigation table component renders correctly 1`] = `
         "label": "investigations.rb_number",
       },
       Object {
-        "dataKey": "DOI",
+        "dataKey": "doi",
         "filterComponent": [Function],
         "icon": <Memo(PublicIcon) />,
         "label": "investigations.doi",
       },
       Object {
-        "dataKey": "DATASET_COUNT",
+        "dataKey": "datasetCount",
         "disableSort": true,
         "icon": <Memo(ConfirmationNumberIcon) />,
         "label": "investigations.dataset_count",
       },
       Object {
-        "dataKey": "INSTRUMENT.NAME",
+        "dataKey": "instrument.name",
         "filterComponent": [Function],
         "icon": <Memo(AssessmentIcon) />,
         "label": "investigations.instrument",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "STARTDATE",
+        "dataKey": "startDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
@@ -57,7 +57,7 @@ exports[`Investigation table component renders correctly 1`] = `
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "ENDDATE",
+        "dataKey": "endDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
@@ -68,18 +68,18 @@ exports[`Investigation table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DOI": "doi 1",
-        "ENDDATE": "2019-07-24",
-        "ID": 1,
-        "INSTRUMENT": Object {
-          "NAME": "LARMOR",
+        "doi": "doi 1",
+        "endDate": "2019-07-24",
+        "id": 1,
+        "instrument": Object {
+          "name": "LARMOR",
         },
-        "NAME": "Test 1",
+        "name": "Test 1",
         "RB_NUMBER": "1",
-        "SIZE": 1,
-        "STARTDATE": "2019-07-23",
-        "TITLE": "Test 1",
-        "VISIT_ID": "1",
+        "size": 1,
+        "startDate": "2019-07-23",
+        "title": "Test 1",
+        "visitId": "1",
       },
     ]
   }

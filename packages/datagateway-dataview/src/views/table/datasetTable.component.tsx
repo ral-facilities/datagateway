@@ -170,7 +170,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           >
             <Grid item xs>
               <Typography variant="h6">
-                <b>{datasetData.NAME}</b>
+                <b>{datasetData.name}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -179,7 +179,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
                 {t('datasets.details.description')}
               </Typography>
               <Typography>
-                <b>{datasetData.NAME}</b>
+                <b>{datasetData.name}</b>
               </Typography>
             </Grid>
           </Grid>
@@ -189,13 +189,13 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         {
           icon: <TitleIcon />,
           label: t('datasets.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (props) => {
             const datasetData = props.rowData as Dataset;
             return datasetLink(
               investigationId,
-              datasetData.ID,
-              datasetData.NAME
+              datasetData.id,
+              datasetData.name
             );
           },
           filterComponent: textFilter,
@@ -203,20 +203,20 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         {
           icon: <ConfirmationNumberIcon />,
           label: t('datasets.datafile_count'),
-          dataKey: 'DATAFILE_COUNT',
+          dataKey: 'datafileCount',
           disableSort: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },

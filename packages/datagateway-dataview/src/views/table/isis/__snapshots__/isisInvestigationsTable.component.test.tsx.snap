@@ -11,55 +11,55 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "TITLE",
+        "dataKey": "title",
         "filterComponent": [Function],
         "icon": <Memo(TitleIcon) />,
         "label": "investigations.title",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "VISIT_ID",
+        "dataKey": "visitId",
         "filterComponent": [Function],
         "icon": <Memo(FingerprintIcon) />,
-        "label": "investigations.visit_id",
+        "label": "investigations.visitId",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo(FingerprintIcon) />,
         "label": "investigations.name",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "STUDYINVESTIGATION.STUDY.PID",
+        "dataKey": "studyInvestigations.study.PID",
         "filterComponent": [Function],
         "icon": <Memo(PublicIcon) />,
         "label": "investigations.doi",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "SIZE",
+        "dataKey": "size",
         "disableSort": true,
         "icon": <Memo(SaveIcon) />,
         "label": "investigations.size",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME",
+        "dataKey": "investigationInstruments.instrument.fullName",
         "filterComponent": [Function],
         "icon": <Memo(AssessmentIcon) />,
         "label": "investigations.instrument",
       },
       Object {
-        "dataKey": "STARTDATE",
+        "dataKey": "startDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
         "label": "investigations.start_date",
       },
       Object {
-        "dataKey": "ENDDATE",
+        "dataKey": "endDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo(CalendarTodayIcon) />,
@@ -70,39 +70,39 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DOI": "doi 1",
-        "ENDDATE": "2019-06-11",
-        "ID": 1,
-        "INVESTIGATIONINSTRUMENT": Array [
+        "doi": "doi 1",
+        "endDate": "2019-06-11",
+        "id": 1,
+        "investigationInstruments": Array [
           Object {
-            "ID": 1,
-            "INSTRUMENT": Object {
+            "id": 1,
+            "instrument": Object {
               "FACILITY_ID": 8,
-              "ID": 3,
-              "NAME": "LARMOR",
+              "id": 3,
+              "name": "LARMOR",
             },
             "INSTRUMENT_ID": 3,
             "INVESTIGATION_ID": 1,
           },
         ],
-        "NAME": "Test 1",
+        "name": "Test 1",
         "RB_NUMBER": "1",
-        "SIZE": 1,
-        "STARTDATE": "2019-06-10",
-        "STUDYINVESTIGATION": Array [
+        "size": 1,
+        "startDate": "2019-06-10",
+        "studyInvestigations": Array [
           Object {
-            "ID": 6,
+            "id": 6,
             "INVESTIGATION_ID": 1,
-            "STUDY": Object {
-              "ID": 7,
+            "study": Object {
+              "id": 7,
               "PID": "study pid",
             },
             "STUDY_ID": 7,
           },
         ],
-        "SUMMARY": "foo bar",
-        "TITLE": "Test 1",
-        "VISIT_ID": "1",
+        "summary": "foo bar",
+        "title": "Test 1",
+        "visitId": "1",
       },
     ]
   }
@@ -190,7 +190,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>

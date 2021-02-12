@@ -58,7 +58,7 @@ describe('ID check functions', () => {
       expect.assertions(2);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: { ID: 2, NAME: 'Test dataset', INVESTIGATION_ID: 1 },
+          data: { id: 2, name: 'Test dataset', INVESTIGATION_ID: 1 },
         })
       );
 
@@ -72,7 +72,7 @@ describe('ID check functions', () => {
       expect.assertions(1);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: { ID: 2, NAME: 'Test dataset', INVESTIGATION_ID: 3 },
+          data: { id: 2, name: 'Test dataset', INVESTIGATION_ID: 3 },
         })
       );
 
@@ -100,7 +100,7 @@ describe('ID check functions', () => {
       expect.assertions(2);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: { ID: 1, NAME: 'Proposal 1' },
+          data: { id: 1, name: 'Proposal 1' },
         })
       );
 
@@ -114,7 +114,7 @@ describe('ID check functions', () => {
       expect.assertions(1);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: { ID: 1, NAME: 'Proposal 2' },
+          data: { id: 1, name: 'Proposal 2' },
         })
       );
 
@@ -142,7 +142,7 @@ describe('ID check functions', () => {
       expect.assertions(2);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: [{ ID: 3, NAME: 'Test investigation' }],
+          data: [{ id: 3, name: 'Test investigation' }],
         })
       );
 
@@ -151,7 +151,7 @@ describe('ID check functions', () => {
       expect(axios.get).toHaveBeenCalledWith(
         '/instruments/1/facilitycycles/2/investigations/',
         {
-          params: { where: { ID: { eq: 3 } } },
+          params: { where: { id: { eq: 3 } } },
           headers: { Authorization: 'Bearer null' },
         }
       );
@@ -188,7 +188,7 @@ describe('ID check functions', () => {
       expect.assertions(2);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: [{ ID: 3, NAME: 'Test investigation' }],
+          data: [{ id: 3, name: 'Test investigation' }],
         })
       );
 
@@ -197,9 +197,9 @@ describe('ID check functions', () => {
       expect(axios.get).toHaveBeenCalledWith('/investigations/', {
         params: {
           where: {
-            ID: { eq: 3 },
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: 1 },
-            'STUDYINVESTIGATION.STUDY.ID': { eq: 2 },
+            id: { eq: 3 },
+            'investigationInstruments.instrument.id': { eq: 1 },
+            'studyInvestigations.study.id': { eq: 2 },
           },
         },
         headers: { Authorization: 'Bearer null' },

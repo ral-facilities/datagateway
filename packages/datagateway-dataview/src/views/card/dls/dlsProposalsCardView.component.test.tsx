@@ -56,10 +56,10 @@ describe('DLS Proposals - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            TITLE: 'Test 1',
-            NAME: 'Test 1',
-            VISIT_ID: '1',
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
           },
         ],
         allIds: [1],
@@ -96,7 +96,7 @@ describe('DLS Proposals - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
-    expect(store.getActions()[2]).toEqual(filterTable('TITLE', 'test'));
+    expect(store.getActions()[2]).toEqual(filterTable('title', 'test'));
     expect(store.getActions()[3]).toEqual(push('?'));
 
     advancedFilter
@@ -104,7 +104,7 @@ describe('DLS Proposals - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('TITLE', null));
+    expect(store.getActions()[4]).toEqual(filterTable('title', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -119,7 +119,7 @@ describe('DLS Proposals - Card View', () => {
     expect(store.getActions()[2]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { TITLE: 'asc' },
+        sort: { title: 'asc' },
         page: 1,
       })
     );
