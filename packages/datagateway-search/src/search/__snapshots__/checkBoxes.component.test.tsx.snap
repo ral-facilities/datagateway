@@ -21,7 +21,7 @@ exports[`Checkbox component tests renders correctly 1`] = `
       </WithStyles(ForwardRef(FormLabel))>
       <WithStyles(ForwardRef(FormControlLabel))
         control={
-          <ForwardRef(WithStyles)
+          <WithStyles(ForwardRef(Checkbox))
             checked={false}
             inputProps={
               Object {
@@ -36,7 +36,7 @@ exports[`Checkbox component tests renders correctly 1`] = `
       />
       <WithStyles(ForwardRef(FormControlLabel))
         control={
-          <ForwardRef(WithStyles)
+          <WithStyles(ForwardRef(Checkbox))
             checked={true}
             inputProps={
               Object {
@@ -51,7 +51,7 @@ exports[`Checkbox component tests renders correctly 1`] = `
       />
       <WithStyles(ForwardRef(FormControlLabel))
         control={
-          <ForwardRef(WithStyles)
+          <WithStyles(ForwardRef(Checkbox))
             checked={true}
             inputProps={
               Object {

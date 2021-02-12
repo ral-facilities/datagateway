@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { ArrowTooltip } from 'datagateway-common';
+import ArrowTooltip from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -9,6 +9,7 @@ import {
 } from '@material-ui/icons';
 import {
   addToCart,
+  CardView,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -37,7 +38,6 @@ import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import CardView from './cardView.component';
 
 interface InvestigationCVDispatchProps {
   fetchData: (offsetParams: IndexRange) => Promise<void>;

@@ -22,8 +22,10 @@ import { push } from 'connected-react-router';
 
 import PageContainer from './pageContainer.component';
 import { Provider } from 'react-redux';
+import { checkInvestigationId } from './idCheckFunctions';
 
 jest.mock('loglevel');
+jest.mock('./idCheckFunctions');
 
 describe('PageContainer - Tests', () => {
   let shallow;
@@ -66,32 +68,23 @@ describe('PageContainer - Tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('fetches cart once on update', () => {
+  it('fetches cart on mount', () => {
     // Mock getElementById so that it returns truthy.
     const testElement = document.createElement('DIV');
     document.getElementById = jest.fn(() => testElement);
     const mockStore = configureStore([thunk]);
-    let testStore = mockStore(state);
-    const wrapper = mount(
+    const testStore = mockStore(state);
+    mount(
       <Provider store={testStore}>
         <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
           <PageContainer />
         </MemoryRouter>
       </Provider>
     );
-    // Update store to trigger componentDidUpdate
-    testStore = mockStore({
-      ...state,
-      dgcommon: { ...state.dgcommon, totalDataCount: 102 },
-    });
-    wrapper.setProps({ store: testStore });
-
     expect(document.getElementById.mock.calls[0][0]).toBe(
       'datagateway-dataview'
     );
-
-    expect(testStore.getActions().length).toEqual(1);
-    expect(testStore.getActions()[0]).toEqual({
+    expect(testStore.getActions()).toContainEqual({
       type: 'datagateway_common:fetch_download_cart_request',
     });
   });
@@ -187,6 +180,119 @@ describe('PageContainer - Tests', () => {
     expect(wrapper.exists(LinearProgress)).toBeTruthy();
   });
 
+  it('display filter warning on datafile table', () => {
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 0,
+          loadedCount: true,
+        },
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: createLocation(
+            '/browse/investigation/1/dataset/25/datafile'
+          ),
+        },
+      })
+    );
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              key: 'testKey',
+              pathname: '/browse/investigation/1/dataset/25/datafile',
+            },
+          ]}
+        >
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find('[aria-label="filter-message"]').first().text()
+    ).toEqual('loading.filter_message');
+  });
+
+  it('display filter warning on toggle table', () => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 0,
+          loadedCount: true,
+        },
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: createLocation('/browse/investigation'),
+        },
+      })
+    );
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[
+            { key: 'testKey', pathname: '/browse/investigation' },
+          ]}
+        >
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(
+      wrapper.find('[aria-label="filter-message"]').first().text()
+    ).toEqual('loading.filter_message');
+  });
+
+  it('do not display filter warning on toggle card', () => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 0,
+          loadedCount: true,
+          query: {
+            ...dGCommonInitialState.query,
+            view: 'card',
+          },
+        },
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: createLocation('/browse/investigation?view=card'),
+        },
+      })
+    );
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              key: 'testKey',
+              pathname: '/browse/investigation',
+              search: 'view=card',
+            },
+          ]}
+        >
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.exists('[aria-label="filter-message"]')).toBeFalsy();
+  });
+
   it('clearTable and updateQueryParams when location.pathname changes', () => {
     state = JSON.parse(
       JSON.stringify({
@@ -229,7 +335,6 @@ describe('PageContainer - Tests', () => {
       JSON.stringify({
         dgcommon: dGCommonInitialState,
         dgdataview: dgDataViewInitialState,
-
         router: {
           action: 'POP',
           location: createLocation('/browse/investigation'),

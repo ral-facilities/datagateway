@@ -28,7 +28,6 @@ import handleICATError from '../../handleICATError';
 jest.mock('../../handleICATError');
 
 describe('Datafile actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
   const mockData: Datafile[] = [
     {
       ID: 1,
@@ -57,6 +56,10 @@ describe('Datafile actions', () => {
       childEntitySize: 3,
     },
   };
+
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -394,6 +397,12 @@ describe('Datafile actions', () => {
   });
 
   it('fetchDatafiles applies skip and limit when specified via optional parameters', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
     const asyncAction = fetchDatafiles({
       offsetParams: { startIndex: 0, stopIndex: 49 },
       additionalFilters: [

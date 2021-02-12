@@ -1,6 +1,5 @@
 import React from 'react';
 
-import CardView from '../cardView.component';
 import { IndexRange } from 'react-virtualized';
 import {
   StateType,
@@ -8,6 +7,7 @@ import {
   QueryParams,
 } from 'datagateway-common/lib/state/app.types';
 import {
+  CardView,
   Entity,
   fetchInvestigations,
   fetchInvestigationCount,

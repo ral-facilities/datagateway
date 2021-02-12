@@ -6,11 +6,11 @@ exports[`Search text box component tests renders correctly 1`] = `
     InputProps={
       Object {
         "aria-label": "searchBox.search_text_arialabel",
-        "endAdornment": <ForwardRef(WithStyles)
+        "endAdornment": <WithStyles(ForwardRef(InputAdornment))
           position="start"
         >
           <Memo(SearchIcon) />
-        </ForwardRef(WithStyles)>,
+        </WithStyles(ForwardRef(InputAdornment))>,
       }
     }
     color="secondary"

@@ -7,7 +7,6 @@ import { fetchDownloads, downloadDeleted } from '../downloadApi';
 import { Download } from 'datagateway-common';
 
 jest.mock('../downloadApi');
-jest.useFakeTimers();
 
 const RefreshHOC: React.FC<{ refresh: boolean }> = (props: {
   refresh: boolean;
@@ -126,22 +125,20 @@ describe('Download Status Table', () => {
     },
   ];
 
-  (fetchDownloads as jest.Mock).mockImplementation(() =>
-    Promise.resolve(downloadItems)
-  );
-
-  (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
-
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+    (downloadDeleted as jest.Mock).mockImplementation(() => Promise.resolve());
+    (fetchDownloads as jest.Mock).mockImplementation(() =>
+      Promise.resolve(downloadItems)
+    );
   });
 
   afterEach(() => {
     mount.cleanUp();
-
     (fetchDownloads as jest.Mock).mockClear();
     (downloadDeleted as jest.Mock).mockClear();
+    jest.useRealTimers();
   });
 
   it('renders correctly', () => {
@@ -235,6 +232,7 @@ describe('Download Status Table', () => {
   });
 
   it('should have a link for a download item', async () => {
+    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <DownloadStatusTable
@@ -293,6 +291,7 @@ describe('Download Status Table', () => {
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
+    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <DownloadStatusTable

@@ -2,6 +2,7 @@ import { Card, Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   addToCartRequest,
   dGCommonInitialState,
   fetchInvestigationCountRequest,
@@ -22,7 +23,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import ISISInvestigationsCardView from './isisInvestigationsCardView.component';
-import AdvancedFilter from '../advancedFilter.component';
 
 describe('ISIS Investigations - Card View', () => {
   let mount;
@@ -41,13 +41,6 @@ describe('ISIS Investigations - Card View', () => {
       </Provider>
     );
   };
-
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
-  // Prevent error logging
-  window.scrollTo = jest.fn();
 
   beforeEach(() => {
     mount = createMount();
@@ -81,6 +74,13 @@ describe('ISIS Investigations - Card View', () => {
         },
       },
     };
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
+    // Prevent error logging
+    window.scrollTo = jest.fn();
   });
 
   afterEach(() => {

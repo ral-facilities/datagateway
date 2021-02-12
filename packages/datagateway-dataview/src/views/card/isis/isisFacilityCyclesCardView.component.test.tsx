@@ -2,6 +2,7 @@ import { Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   dGCommonInitialState,
   filterTable,
   updatePage,
@@ -17,7 +18,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import ISISFacilityCyclesCardView from './isisFacilityCyclesCardView.component';
-import AdvancedFilter from '../advancedFilter.component';
 
 describe('ISIS Facility Cycles - Card View', () => {
   let mount;

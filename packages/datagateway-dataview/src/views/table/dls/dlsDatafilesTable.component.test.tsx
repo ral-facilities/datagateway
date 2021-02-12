@@ -24,10 +24,6 @@ describe('DLS datafiles table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DLSDatafilesTable' });
@@ -52,6 +48,11 @@ describe('DLS datafiles table component', () => {
       },
     ];
     state.dgcommon.allIds = [1];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {

@@ -49,6 +49,20 @@ const usePaperStyles = makeStyles(
         backgroundColor: 'inherit',
         overflowX: 'auto',
       },
+      tablePaperMessage: {
+        height: 'calc(100vh - 244px - 4rem)',
+        width: '100%',
+        backgroundColor: 'inherit',
+        overflowX: 'auto',
+      },
+      noResultsPaper: {
+        padding: theme.spacing(2),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        maxWidth: '960px',
+      },
     })
 );
 
@@ -240,9 +254,18 @@ const CardSwitch = (props: {
 
 const ViewRouting = (props: {
   view: ViewsType;
+  loadedCount: boolean;
+  totalDataCount: number;
   location: LocationType;
 }): React.ReactElement => {
+  const { view, loadedCount, totalDataCount, location } = props;
   const paperClasses = usePaperStyles();
+  const [t] = useTranslation();
+  const displayFilterMessage = loadedCount && totalDataCount === 0;
+  const tableClassName = displayFilterMessage
+    ? paperClasses.tablePaperMessage
+    : paperClasses.tablePaper;
+
   return (
     <SwitchRouting>
       {/* For "toggle" paths, check state for the current view */}
@@ -252,24 +275,50 @@ const ViewRouting = (props: {
           Object.values(paths.studyHierarchy.toggle)
         )}
         render={() => (
-          <Paper
-            square
-            className={
-              props.view === 'card'
-                ? paperClasses.cardPaper
-                : paperClasses.tablePaper
-            }
-          >
-            <PageRouting view={props.view} location={props.location} />
-          </Paper>
+          <div>
+            {view !== 'card' && displayFilterMessage && (
+              <Paper className={paperClasses.noResultsPaper}>
+                <Typography
+                  align="center"
+                  variant="h6"
+                  component="h6"
+                  aria-label="filter-message"
+                >
+                  {t('loading.filter_message')}
+                </Typography>
+              </Paper>
+            )}
+            <Paper
+              square
+              className={
+                view === 'card' ? paperClasses.cardPaper : tableClassName
+              }
+            >
+              <PageRouting view={view} location={location} />
+            </Paper>
+          </div>
         )}
       />
       {/* Otherwise, use the paper styling for tables*/}
       <Route
         render={() => (
-          <Paper square className={paperClasses.tablePaper}>
-            <PageRouting view={props.view} location={props.location} />
-          </Paper>
+          <div>
+            {displayFilterMessage && (
+              <Paper className={paperClasses.noResultsPaper}>
+                <Typography
+                  align="center"
+                  variant="h6"
+                  component="h6"
+                  aria-label="filter-message"
+                >
+                  {t('loading.filter_message')}
+                </Typography>
+              </Paper>
+            )}
+            <Paper square className={tableClassName}>
+              <PageRouting view={view} location={location} />
+            </Paper>
+          </div>
         )}
       />
     </SwitchRouting>
@@ -291,6 +340,8 @@ interface PageContainerStateProps {
   query: QueryParams;
   savedView: ViewsType;
   loading: boolean;
+  loadedCount: boolean;
+  totalDataCount: number;
   cartItems: DownloadCartItem[];
 }
 
@@ -300,7 +351,6 @@ type PageContainerCombinedProps = PageContainerStateProps &
 interface PageContainerState {
   paths: string[];
   toggleCard: boolean;
-  isCartFetched: boolean;
   modifiedLocation: LocationType;
 }
 
@@ -321,9 +371,15 @@ class PageContainer extends React.Component<
         Object.values(paths.studyHierarchy.toggle)
       ),
       toggleCard: this.getToggle(),
-      isCartFetched: false,
       modifiedLocation: props.location,
     };
+  }
+
+  public componentDidMount(): void {
+    // Fetch the download cart on mount, ensuring dataview element is present.
+    if (document.getElementById('datagateway-dataview')) {
+      this.props.fetchDownloadCart();
+    }
   }
 
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
@@ -354,19 +410,6 @@ class PageContainer extends React.Component<
       this.setState({
         ...this.state,
         toggleCard: this.getToggle(),
-      });
-    }
-
-    // Fetch the download cart on mount,
-    // ensuring that dataview element is present.
-    if (
-      !this.state.isCartFetched &&
-      document.getElementById('datagateway-dataview')
-    ) {
-      this.props.fetchDownloadCart();
-      this.setState({
-        ...this.state,
-        isCartFetched: true,
       });
     }
   }
@@ -469,6 +512,8 @@ class PageContainer extends React.Component<
           <Grid item xs={12} aria-label="container-table">
             <ViewRouting
               view={this.props.query.view}
+              loadedCount={this.props.loadedCount}
+              totalDataCount={this.props.totalDataCount}
               location={this.state.modifiedLocation}
             />
           </Grid>
@@ -484,6 +529,8 @@ const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   query: state.dgcommon.query,
   savedView: state.dgcommon.savedQuery.view,
   loading: state.dgcommon.loading,
+  loadedCount: state.dgcommon.loadedCount,
+  totalDataCount: state.dgcommon.totalDataCount,
   cartItems: state.dgcommon.cartItems,
 });
 

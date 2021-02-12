@@ -24,10 +24,6 @@ describe('DLS Visits table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DLSVisitsTable' });
@@ -66,6 +62,11 @@ describe('DLS Visits table component', () => {
         ENDDATE: '2019-06-11',
       },
     ];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
