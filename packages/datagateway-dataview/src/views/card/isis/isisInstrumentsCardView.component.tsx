@@ -1,6 +1,7 @@
 import { Link } from '@material-ui/core';
 import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
+  CardView,
   Entity,
   fetchInstrumentCount,
   fetchInstrumentDetails,
@@ -23,7 +24,6 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
-import CardView from '../cardView.component';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISStudiesCVProps {

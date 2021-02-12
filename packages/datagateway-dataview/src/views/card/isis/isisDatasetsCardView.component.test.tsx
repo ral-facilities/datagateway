@@ -2,6 +2,7 @@ import { Card, Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   addToCartRequest,
   dGCommonInitialState,
   downloadDatasetRequest,
@@ -21,7 +22,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import ISISDatasetsCardView from './isisDatasetsCardView.component';
-import AdvancedFilter from '../advancedFilter.component';
 
 describe('ISIS Datasets - Card View', () => {
   let mount;

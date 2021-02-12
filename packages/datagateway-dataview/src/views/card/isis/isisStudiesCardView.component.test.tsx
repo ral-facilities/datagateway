@@ -2,6 +2,7 @@ import { Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   dGCommonInitialState,
   fetchAllIdsRequest,
   fetchStudiesRequest,
@@ -20,7 +21,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import ISISStudiesCardView from './isisStudiesCardView.component';
-import AdvancedFilter from '../advancedFilter.component';
 
 describe('ISIS Studies - Card View', () => {
   let mount;

@@ -20,6 +20,9 @@ export { default as DataCellComponent } from './table/cellRenderers/dataCell.com
 export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
 
+export { default as CardView } from './card/cardView.component';
+export { default as AdvancedFilter } from './card/advancedFilter.component';
+
 export * from './state/actions/index';
 export * from './state/app.types';
 

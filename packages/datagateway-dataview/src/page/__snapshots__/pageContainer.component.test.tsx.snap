@@ -50,6 +50,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       xs={12}
     >
       <ViewRouting
+        loadedCount={false}
         location={
           Object {
             "hash": "",
@@ -57,6 +58,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
             "search": "",
           }
         }
+        totalDataCount={101}
         view={null}
       />
     </WithStyles(ForwardRef(Grid))>
