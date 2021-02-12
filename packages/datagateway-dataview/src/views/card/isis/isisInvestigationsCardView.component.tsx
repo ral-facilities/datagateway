@@ -11,6 +11,7 @@ import {
 import { push } from 'connected-react-router';
 import {
   addToCart,
+  CardView,
   DateColumnFilter,
   DateFilter,
   DownloadCartItem,
@@ -29,6 +30,7 @@ import {
   removeFromCart,
   tableLink,
   TextColumnFilter,
+  TextFilter,
 } from 'datagateway-common';
 import {
   QueryParams,
@@ -42,7 +44,6 @@ import { IndexRange } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
-import CardView from '../cardView.component';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInvestigationsCardViewProps {
@@ -143,8 +144,10 @@ const ISISInvestigationsCardView = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 

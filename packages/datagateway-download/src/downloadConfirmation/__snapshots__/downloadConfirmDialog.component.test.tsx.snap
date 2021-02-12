@@ -1924,20 +1924,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     },
                                                                     "autoWidth": false,
                                                                     "children": Array [
-                                                                      <ForwardRef(WithStyles)
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
-                                                                      </ForwardRef(WithStyles)>,
-                                                                      <ForwardRef(WithStyles)
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
                                                                         Globus
-                                                                      </ForwardRef(WithStyles)>,
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
                                                                     ],
                                                                     "classes": Object {
                                                                       "disabled": "Mui-disabled",
@@ -2037,20 +2037,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       },
                                                                       "autoWidth": false,
                                                                       "children": Array [
-                                                                        <ForwardRef(WithStyles)
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
-                                                                        </ForwardRef(WithStyles)>,
-                                                                        <ForwardRef(WithStyles)
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
                                                                           Globus
-                                                                        </ForwardRef(WithStyles)>,
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
                                                                       ],
                                                                       "classes": Object {
                                                                         "disabled": "Mui-disabled",
@@ -2151,20 +2151,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         },
                                                                         "autoWidth": false,
                                                                         "children": Array [
-                                                                          <ForwardRef(WithStyles)
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
-                                                                          </ForwardRef(WithStyles)>,
-                                                                          <ForwardRef(WithStyles)
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
                                                                             Globus
-                                                                          </ForwardRef(WithStyles)>,
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
                                                                         ],
                                                                         "classes": Object {
                                                                           "disabled": "Mui-disabled",
@@ -2271,20 +2271,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           },
                                                                           "autoWidth": false,
                                                                           "children": Array [
-                                                                            <ForwardRef(WithStyles)
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
-                                                                            </ForwardRef(WithStyles)>,
-                                                                            <ForwardRef(WithStyles)
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
                                                                               Globus
-                                                                            </ForwardRef(WithStyles)>,
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
                                                                           ],
                                                                           "classes": Object {
                                                                             "disabled": "Mui-disabled",
@@ -5865,20 +5865,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     },
                                                                     "autoWidth": false,
                                                                     "children": Array [
-                                                                      <ForwardRef(WithStyles)
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
-                                                                      </ForwardRef(WithStyles)>,
-                                                                      <ForwardRef(WithStyles)
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
                                                                         Globus
-                                                                      </ForwardRef(WithStyles)>,
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
                                                                     ],
                                                                     "classes": Object {
                                                                       "disabled": "Mui-disabled",
@@ -5978,20 +5978,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       },
                                                                       "autoWidth": false,
                                                                       "children": Array [
-                                                                        <ForwardRef(WithStyles)
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
-                                                                        </ForwardRef(WithStyles)>,
-                                                                        <ForwardRef(WithStyles)
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
                                                                           Globus
-                                                                        </ForwardRef(WithStyles)>,
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
                                                                       ],
                                                                       "classes": Object {
                                                                         "disabled": "Mui-disabled",
@@ -6092,20 +6092,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         },
                                                                         "autoWidth": false,
                                                                         "children": Array [
-                                                                          <ForwardRef(WithStyles)
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
-                                                                          </ForwardRef(WithStyles)>,
-                                                                          <ForwardRef(WithStyles)
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
                                                                             Globus
-                                                                          </ForwardRef(WithStyles)>,
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
                                                                         ],
                                                                         "classes": Object {
                                                                           "disabled": "Mui-disabled",
@@ -6212,20 +6212,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           },
                                                                           "autoWidth": false,
                                                                           "children": Array [
-                                                                            <ForwardRef(WithStyles)
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
-                                                                            </ForwardRef(WithStyles)>,
-                                                                            <ForwardRef(WithStyles)
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
                                                                               Globus
-                                                                            </ForwardRef(WithStyles)>,
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
                                                                           ],
                                                                           "classes": Object {
                                                                             "disabled": "Mui-disabled",

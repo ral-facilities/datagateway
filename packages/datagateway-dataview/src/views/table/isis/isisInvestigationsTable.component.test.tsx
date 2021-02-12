@@ -27,10 +27,6 @@ describe('ISIS Investigations table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'ISISInvestigationsTable' });
@@ -81,6 +77,11 @@ describe('ISIS Investigations table component', () => {
       },
     ];
     state.dgcommon.allIds = [1];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -157,13 +158,15 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by investigations.title"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by investigations.title"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('TITLE', 'test'));
+    expect(testStore.getActions()[3]).toEqual(
+      filterTable('TITLE', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

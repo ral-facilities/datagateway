@@ -90,7 +90,7 @@ describe('Actions', () => {
           query: {
             ...dGCommonInitialState.query,
             filters: {
-              column1: 'test',
+              column1: { value: 'test', type: 'include' },
               column2: { endDate: '2019-09-18' },
             },
           },
@@ -152,7 +152,10 @@ describe('Actions', () => {
           query: {
             ...dGCommonInitialState.query,
             sort: { column1: 'asc', column2: 'desc' },
-            filters: { column1: 'test', column2: { startDate: '2019-09-17' } },
+            filters: {
+              column1: { value: 'test', type: 'exclude' },
+              column2: { startDate: '2019-09-17' },
+            },
           },
         },
         router: routerState,
@@ -163,7 +166,7 @@ describe('Actions', () => {
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
       params.append('order', JSON.stringify('ID asc'));
-      params.append('where', JSON.stringify({ column1: { like: 'test' } }));
+      params.append('where', JSON.stringify({ column1: { nlike: 'test' } }));
       params.append(
         'where',
         JSON.stringify({ column2: { gte: '2019-09-17 00:00:00' } })

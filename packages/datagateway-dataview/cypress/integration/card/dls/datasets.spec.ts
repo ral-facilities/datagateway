@@ -74,6 +74,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
+      .first()
       .type('241')
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], { timeout: 10000 });
     cy.get('#card').contains('DATASET 241');

@@ -23,6 +23,8 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
+  TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -50,6 +52,7 @@ interface ISISInvestigationsTableProps {
 interface ISISInvestigationsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -104,6 +107,7 @@ const ISISInvestigationsTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     instrumentId,
     instrumentChildId,
     loading,
@@ -134,8 +138,10 @@ const ISISInvestigationsTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
@@ -201,11 +207,12 @@ const ISISInvestigationsTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}`,
-              investigationData.TITLE
+              investigationData.TITLE,
+              view
             );
           },
           filterComponent: textFilter,
@@ -214,11 +221,12 @@ const ISISInvestigationsTable = (
           icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}`,
-              investigationData.VISIT_ID
+              investigationData.VISIT_ID,
+              view
             );
           },
           filterComponent: textFilter,
@@ -227,11 +235,12 @@ const ISISInvestigationsTable = (
           icon: <FingerprintIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `${urlPrefix}/${investigationData.ID}`,
-              investigationData.NAME
+              investigationData.NAME,
+              view
             );
           },
           filterComponent: textFilter,
@@ -240,15 +249,16 @@ const ISISInvestigationsTable = (
           icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION.STUDY.PID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.STUDYINVESTIGATION &&
               investigationData.STUDYINVESTIGATION[0].STUDY
             ) {
               return tableLink(
                 `${urlPrefix}/${investigationData.ID}`,
-                investigationData.STUDYINVESTIGATION[0].STUDY.PID
+                investigationData.STUDYINVESTIGATION[0].STUDY.PID,
+                view
               );
             } else {
               return '';
@@ -260,8 +270,8 @@ const ISISInvestigationsTable = (
           icon: <SaveIcon />,
           label: t('investigations.size'),
           dataKey: 'SIZE',
-          cellContentRenderer: (props) => {
-            return formatBytes(props.cellData);
+          cellContentRenderer: (cellProps) => {
+            return formatBytes(cellProps.cellData);
           },
           disableSort: true,
         },
@@ -269,8 +279,8 @@ const ISISInvestigationsTable = (
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
@@ -414,6 +424,7 @@ const mapStateToProps = (
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

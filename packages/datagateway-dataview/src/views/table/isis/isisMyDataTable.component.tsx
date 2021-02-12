@@ -21,6 +21,8 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
+  TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,6 +44,7 @@ import { push } from 'connected-react-router';
 interface ISISMyDataTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -80,6 +83,7 @@ const ISISMyDataTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     loading,
     cartItems,
     addToCart,
@@ -108,8 +112,10 @@ const ISISMyDataTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
@@ -194,13 +200,14 @@ const ISISMyDataTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             const url = urlPrefix(investigationData);
             if (url) {
               return tableLink(
                 `${url}/${investigationData.ID}`,
-                investigationData.TITLE
+                investigationData.TITLE,
+                view
               );
             } else {
               return investigationData.TITLE;
@@ -212,8 +219,8 @@ const ISISMyDataTable = (
           icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'STUDYINVESTIGATION.STUDY.PID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.STUDYINVESTIGATION &&
               investigationData.STUDYINVESTIGATION[0].STUDY
@@ -235,13 +242,14 @@ const ISISMyDataTable = (
           icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             const url = urlPrefix(investigationData);
             if (url) {
               return tableLink(
                 `${url}/${investigationData.ID}`,
-                investigationData.NAME
+                investigationData.NAME,
+                view
               );
             } else {
               return investigationData.NAME;
@@ -253,8 +261,8 @@ const ISISMyDataTable = (
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
@@ -271,8 +279,8 @@ const ISISMyDataTable = (
           icon: <SaveIcon />,
           label: t('investigations.size'),
           dataKey: 'SIZE',
-          cellContentRenderer: (props) => {
-            return formatBytes(props.cellData);
+          cellContentRenderer: (cellProps) => {
+            return formatBytes(cellProps.cellData);
           },
           disableSort: true,
         },
@@ -375,6 +383,7 @@ const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

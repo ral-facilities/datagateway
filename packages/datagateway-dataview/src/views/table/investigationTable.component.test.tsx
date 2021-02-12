@@ -24,10 +24,6 @@ describe('Investigation table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'InvestigationTable' });
@@ -57,6 +53,11 @@ describe('Investigation table component', () => {
       },
     ];
     state.dgcommon.allIds = [1];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -117,7 +118,9 @@ describe('Investigation table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(filterTable('TITLE', 'test'));
+    expect(testStore.getActions()[3]).toEqual(
+      filterTable('TITLE', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

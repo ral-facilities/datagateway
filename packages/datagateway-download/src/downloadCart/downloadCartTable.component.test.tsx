@@ -14,7 +14,6 @@ import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
 
 jest.mock('../downloadApi');
-jest.useFakeTimers();
 
 describe('Download cart table component', () => {
   let shallow;
@@ -51,24 +50,6 @@ describe('Download cart table component', () => {
     },
   ];
 
-  (fetchDownloadCartItems as jest.Mock).mockImplementation(() =>
-    Promise.resolve(cartItems)
-  );
-
-  (removeAllDownloadCartItems as jest.Mock).mockImplementation(() =>
-    Promise.resolve()
-  );
-
-  (removeDownloadCartItem as jest.Mock).mockImplementation(() =>
-    Promise.resolve()
-  );
-
-  (getSize as jest.Mock).mockImplementation(() => Promise.resolve(1));
-
-  (getCartDatafileCount as jest.Mock).mockImplementation(() =>
-    Promise.resolve(7)
-  );
-
   // Create our mocked datagateway-download settings file.
   const mockedSettings = {
     facilityName: 'LILS',
@@ -94,6 +75,19 @@ describe('Download cart table component', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+    (fetchDownloadCartItems as jest.Mock).mockImplementation(() =>
+      Promise.resolve(cartItems)
+    );
+    (removeAllDownloadCartItems as jest.Mock).mockImplementation(() =>
+      Promise.resolve()
+    );
+    (removeDownloadCartItem as jest.Mock).mockImplementation(() =>
+      Promise.resolve()
+    );
+    (getSize as jest.Mock).mockImplementation(() => Promise.resolve(1));
+    (getCartDatafileCount as jest.Mock).mockImplementation(() =>
+      Promise.resolve(7)
+    );
   });
 
   afterEach(() => {
@@ -104,6 +98,7 @@ describe('Download cart table component', () => {
     (removeAllDownloadCartItems as jest.Mock).mockClear();
     (removeDownloadCartItem as jest.Mock).mockClear();
     jest.clearAllTimers();
+    jest.useRealTimers();
   });
 
   it('renders correctly', () => {
@@ -266,6 +261,7 @@ describe('Download cart table component', () => {
   });
 
   it("removes an item when said item's remove button is clicked", async () => {
+    jest.useFakeTimers();
     const wrapper = mount(
       <div id="datagateway-download">
         <DownloadSettingsContext.Provider value={mockedSettings}>
@@ -370,9 +366,9 @@ describe('Download cart table component', () => {
       wrapper.update();
     });
 
-    const nameFilterInput = wrapper.find(
-      '[aria-label="Filter by downloadCart.name"] input'
-    );
+    const nameFilterInput = wrapper
+      .find('[aria-label="Filter by downloadCart.name"] input')
+      .first();
     nameFilterInput.instance().value = '1';
     nameFilterInput.simulate('change');
 
@@ -383,9 +379,9 @@ describe('Download cart table component', () => {
       )
     ).toBe(false);
 
-    const typeFilterInput = wrapper.find(
-      '[aria-label="Filter by downloadCart.type"] input'
-    );
+    const typeFilterInput = wrapper
+      .find('[aria-label="Filter by downloadCart.type"] input')
+      .first();
     typeFilterInput.instance().value = 'data';
     typeFilterInput.simulate('change');
 

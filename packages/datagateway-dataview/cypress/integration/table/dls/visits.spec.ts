@@ -144,7 +144,10 @@ describe('DLS - Visits Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('64');
+      cy.get('[aria-label="Filter by Visit ID"]')
+        .find('input')
+        .first()
+        .type('64');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
@@ -175,10 +178,14 @@ describe('DLS - Visits Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('64');
+      cy.get('[aria-label="Filter by Visit ID"]')
+        .find('input')
+        .first()
+        .type('64');
 
       cy.get('[aria-label="Filter by Instrument')
         .find('input')
+        .first()
         .type('INSTRUMENT 8');
 
       cy.get('[aria-rowcount="1"').should('exist');

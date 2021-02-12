@@ -371,7 +371,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   ]);
 
   const getDefaultFileName = (): string => {
-    const now = new Date();
+    const now = new Date(Date.now());
     const defaultName = `${settings.facilityName}_${now.getFullYear()}-${
       now.getMonth() + 1
     }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
