@@ -22,8 +22,10 @@ import { push } from 'connected-react-router';
 
 import PageContainer from './pageContainer.component';
 import { Provider } from 'react-redux';
+import { checkInvestigationId } from './idCheckFunctions';
 
 jest.mock('loglevel');
+jest.mock('./idCheckFunctions');
 
 describe('PageContainer - Tests', () => {
   let shallow;
@@ -179,6 +181,9 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display filter warning on datafile table', () => {
+    (checkInvestigationId as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true)
+    );
     state = JSON.parse(
       JSON.stringify({
         dgcommon: {
