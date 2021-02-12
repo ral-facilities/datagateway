@@ -1,5 +1,8 @@
 import { createMount } from '@material-ui/core/test-utils';
 import axios from 'axios';
+import { MicroFrontendId, RegisterRouteType } from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import { ReactWrapper } from 'enzyme';
 import * as log from 'loglevel';
 import React from 'react';
@@ -54,6 +57,14 @@ describe('ConfigProvider', () => {
           description: 'HTTP description',
         },
       },
+      routes: [
+        {
+          section: 'section',
+          link: 'link',
+          displayName: 'displayName',
+          order: 0,
+        },
+      ],
     };
 
     (axios.get as jest.Mock).mockImplementationOnce(() =>
@@ -61,6 +72,7 @@ describe('ConfigProvider', () => {
         data: settingsResult,
       })
     );
+    const spy = jest.spyOn(document, 'dispatchEvent');
 
     // Create the wrapper and wait for it to load.
     const wrapper = createWrapper();
@@ -79,6 +91,124 @@ describe('ConfigProvider', () => {
     expect(wrapper.find('#settings').text()).toEqual(
       JSON.stringify(settingsResult)
     );
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenLastCalledWith(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: RegisterRouteType,
+          payload: {
+            section: 'section',
+            link: 'link',
+            plugin: 'datagateway-download',
+            displayName: 'displayName',
+            order: 0,
+            helpSteps: [],
+            logoLightMode: LogoLight,
+            logoDarkMode: LogoDark,
+            logoAltText: 'DataGateway',
+          },
+        },
+      })
+    );
+    spy.mockClear();
+  });
+
+  it('settings loaded and multiple routes registered with any helpSteps provided', async () => {
+    const settingsResult = {
+      facilityName: 'Generic',
+      idsUrl: 'ids',
+      apiUrl: 'api',
+      downloadApiUrl: 'download-api',
+      fileCountMax: 5000,
+      totalSizeMax: 1000000000000,
+      accessMethods: {
+        https: {
+          idsUrl: 'https-ids',
+          displayName: 'HTTPS',
+          description: 'HTTP description',
+        },
+      },
+      routes: [
+        {
+          section: 'section0',
+          link: 'link0',
+          displayName: 'displayName0',
+          order: 0,
+        },
+        {
+          section: 'section1',
+          link: 'link1',
+          displayName: 'displayName1',
+          order: 1,
+        },
+      ],
+      helpSteps: [{ target: '#id', content: 'content' }],
+    };
+
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: settingsResult,
+      })
+    );
+    const spy = jest.spyOn(document, 'dispatchEvent');
+
+    // Create the wrapper and wait for it to load.
+    const wrapper = createWrapper();
+
+    // Preloader is in a loading state when ConfigProvider is
+    // loading the configuration.
+    expect(wrapper.find('Preloader').prop('loading')).toBe(true);
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.find('Preloader').prop('loading')).toBe(false);
+    expect(wrapper.exists('#settings')).toBe(true);
+    expect(wrapper.find('#settings').text()).toEqual(
+      JSON.stringify(settingsResult)
+    );
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenNthCalledWith(
+      1,
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: RegisterRouteType,
+          payload: {
+            section: 'section0',
+            link: 'link0',
+            plugin: 'datagateway-download',
+            displayName: 'displayName0',
+            order: 0,
+            helpSteps: [{ target: '#id', content: 'content' }],
+            logoLightMode: LogoLight,
+            logoDarkMode: LogoDark,
+            logoAltText: 'DataGateway',
+          },
+        },
+      })
+    );
+    expect(spy).toHaveBeenNthCalledWith(
+      2,
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: RegisterRouteType,
+          payload: {
+            section: 'section1',
+            link: 'link1',
+            plugin: 'datagateway-download',
+            displayName: 'displayName1',
+            order: 1,
+            helpSteps: [],
+            logoLightMode: LogoLight,
+            logoDarkMode: LogoDark,
+            logoAltText: 'DataGateway',
+          },
+        },
+      })
+    );
+    spy.mockClear();
   });
 
   it('logs an error if facilityName is not defined in the settings', async () => {
@@ -333,6 +463,48 @@ describe('ConfigProvider', () => {
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading datagateway-download-settings.json: fileCountMax or totalSizeMax is undefined in settings'
+    );
+  });
+
+  it('logs an error if no routes are defined in the settings', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download-api',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+            globus: {
+              idsUrl: 'https-ids',
+              displayName: 'Globus',
+              description: 'Globus description',
+            },
+          },
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
+        },
+      })
+    );
+
+    // Create the wrapper and wait for it to load.
+    const wrapper = createWrapper();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-download-settings.json: No routes provided in the settings'
     );
   });
 });

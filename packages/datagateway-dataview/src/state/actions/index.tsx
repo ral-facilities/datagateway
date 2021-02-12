@@ -14,7 +14,12 @@ import {
   loadUrls,
   loadFacilityName,
   MicroFrontendToken,
+  MicroFrontendId,
+  PluginRoute,
+  RegisterRouteType,
 } from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -100,6 +105,33 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('selectAllSetting' in settings) {
           dispatch(loadSelectAllSetting(settings['selectAllSetting']));
+        }
+
+        if ('routes' in settings) {
+          settings['routes'].forEach((route: PluginRoute, index: number) => {
+            const registerRouteAction = {
+              type: RegisterRouteType,
+              payload: {
+                section: 'Data',
+                link: route['link'],
+                plugin: 'datagateway-dataview',
+                displayName: '\xa0' + route['displayName'],
+                order: route['order'],
+                helpSteps:
+                  index === 0 && 'helpSteps' in settings
+                    ? settings['helpSteps']
+                    : [],
+                logoLightMode: LogoLight,
+                logoDarkMode: LogoDark,
+                logoAltText: 'DataGateway',
+              },
+            };
+            document.dispatchEvent(
+              new CustomEvent(MicroFrontendId, { detail: registerRouteAction })
+            );
+          });
+        } else {
+          throw new Error('No routes provided in the settings');
         }
 
         /* istanbul ignore if */

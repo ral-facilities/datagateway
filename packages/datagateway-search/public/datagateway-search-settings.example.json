@@ -2,5 +2,24 @@
   "facilityName": "Generic",
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
-  "downloadApiUrl": "example.download.api.url"
+  "downloadApiUrl": "example.download.api.url",
+  "helpSteps": [
+    {
+      "target": "#plugin-link--search-data",
+      "content":
+        "DataGateway Search allows you to search for specific datasets, datafiles or investigations using date and text filters"
+    },
+    {
+      "target": ".tour-search-tab-select",
+      "content": "Select which type of data to view the search results for"
+    }
+  ],
+  "routes": [
+    {
+      "section": "Test",
+      "link": "/search/data",
+      "displayName": "Search",
+      "order": 0
+    }
+  ]
 }
