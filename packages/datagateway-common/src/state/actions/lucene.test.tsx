@@ -11,7 +11,9 @@ import {
 jest.mock('../../handleICATError');
 
 describe('Lucene actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
