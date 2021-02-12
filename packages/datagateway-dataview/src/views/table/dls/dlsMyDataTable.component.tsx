@@ -19,6 +19,8 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
+  TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +40,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 interface DLSMyDataTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -71,6 +74,7 @@ const DLSMyDataTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     loading,
     selectAllSetting,
   } = props;
@@ -96,8 +100,10 @@ const DLSMyDataTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
@@ -157,11 +163,12 @@ const DLSMyDataTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}/dataset`,
-              investigationData.TITLE
+              investigationData.TITLE,
+              view
             );
           },
           filterComponent: textFilter,
@@ -170,11 +177,12 @@ const DLSMyDataTable = (
           icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
           dataKey: 'VISIT_ID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}/dataset`,
-              investigationData.VISIT_ID
+              investigationData.VISIT_ID,
+              view
             );
           },
           filterComponent: textFilter,
@@ -189,8 +197,8 @@ const DLSMyDataTable = (
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.INVESTIGATIONINSTRUMENT &&
               investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
@@ -281,6 +289,7 @@ const mapStateToProps = (state: StateType): DLSMyDataTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

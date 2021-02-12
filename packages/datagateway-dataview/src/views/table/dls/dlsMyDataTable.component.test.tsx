@@ -27,10 +27,6 @@ describe('DLS Visits table component', () => {
   let mockStore;
   let state: StateType;
   let events: CustomEvent<AnyAction>[] = [];
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DLSMyDataTable' });
@@ -74,6 +70,11 @@ describe('DLS Visits table component', () => {
         ENDDATE: '2019-06-11',
       },
     ];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -146,13 +147,15 @@ describe('DLS Visits table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by investigations.visit_id"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by investigations.visit_id"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[6]).toEqual(filterTable('VISIT_ID', 'test'));
+    expect(testStore.getActions()[6]).toEqual(
+      filterTable('VISIT_ID', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

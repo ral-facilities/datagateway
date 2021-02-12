@@ -1,6 +1,7 @@
 import { Link } from '@material-ui/core';
 import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
+  CardView,
   Entity,
   fetchInstrumentCount,
   fetchInstrumentDetails,
@@ -12,6 +13,7 @@ import {
   pushQuery,
   tableLink,
   TextColumnFilter,
+  TextFilter,
 } from 'datagateway-common';
 import { QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
@@ -22,7 +24,6 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
-import CardView from '../cardView.component';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISStudiesCVProps {
@@ -77,8 +78,10 @@ const ISISInstrumentsCardView = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 

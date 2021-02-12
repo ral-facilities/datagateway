@@ -18,7 +18,9 @@ import handleICATError from '../../handleICATError';
 jest.mock('../../handleICATError');
 
 describe('Study actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -94,7 +96,10 @@ describe('Study actions', () => {
         query: {
           ...initialState.query,
           sort: { column1: 'desc' },
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });
@@ -169,7 +174,10 @@ describe('Study actions', () => {
         ...initialState,
         query: {
           ...initialState.query,
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });
@@ -216,6 +224,12 @@ describe('Study actions', () => {
   });
 
   it('fetchStudies applies skip and limit when specified via optional parameters', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
     const asyncAction = fetchStudies({
       offsetParams: {
         startIndex: 0,

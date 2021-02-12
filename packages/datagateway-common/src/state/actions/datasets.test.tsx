@@ -33,8 +33,6 @@ import handleICATError from '../../handleICATError';
 jest.mock('../../handleICATError');
 
 describe('Dataset actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
-
   const mockData: Dataset[] = [
     {
       ID: 1,
@@ -52,12 +50,6 @@ describe('Dataset actions', () => {
     },
   ];
 
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({
-      data: mockData,
-    })
-  );
-
   // Investigation cache for investigation ID 1 which has 2 datasets.
   const mockInvestigationCache: EntityCache = {
     1: {
@@ -73,6 +65,15 @@ describe('Dataset actions', () => {
       childEntityCount: null,
     },
   };
+
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -119,7 +120,10 @@ describe('Dataset actions', () => {
         query: {
           ...initialState.query,
           sort: { column1: 'desc' },
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });
@@ -302,7 +306,10 @@ describe('Dataset actions', () => {
         query: {
           ...initialState.query,
           sort: { column1: 'desc' },
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });

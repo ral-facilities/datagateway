@@ -9,6 +9,7 @@ import {
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   addToCartRequest,
   dGCommonInitialState,
   fetchFilterRequest,
@@ -27,7 +28,6 @@ import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import InvestigationCardView from './investigationCardView.component';
-import AdvancedFilter from './advancedFilter.component';
 
 describe('Investigation - Card View', () => {
   let mount;
@@ -156,7 +156,9 @@ describe('Investigation - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('TITLE', 'test'));
+    expect(store.getActions()[4]).toEqual(
+      filterTable('TITLE', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[5]).toEqual(push('?'));
 
     advancedFilter

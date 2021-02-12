@@ -28,6 +28,8 @@ describe('ID check functions', () => {
   });
 
   it('saveApiUrlMiddleware sets apiUrl on ConfigureUrls action', async () => {
+    (axios.get as jest.Mock).mockImplementation(() => Promise.resolve());
+
     const store = configureStore()({});
 
     await checkInvestigationId(1, 2);
