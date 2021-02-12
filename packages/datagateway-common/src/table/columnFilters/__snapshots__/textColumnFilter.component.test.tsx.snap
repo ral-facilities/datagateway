@@ -6,10 +6,10 @@ exports[`Text filter component renders correctly 1`] = `
     aria-label="Filter by test"
     color="secondary"
     endAdornment={
-      <ForwardRef(WithStyles)
+      <WithStyles(ForwardRef(InputAdornment))
         position="end"
       >
-        <ForwardRef(WithStyles)
+        <WithStyles(ForwardRef(Select))
           IconComponent={
             Object {
               "$$typeof": Symbol(react.memo),
@@ -27,20 +27,20 @@ exports[`Text filter component renders correctly 1`] = `
           renderValue={[Function]}
           value="include"
         >
-          <ForwardRef(WithStyles)
+          <WithStyles(ForwardRef(MenuItem))
             id="select-filter-type-include"
             value="include"
           >
             Include
-          </ForwardRef(WithStyles)>
-          <ForwardRef(WithStyles)
+          </WithStyles(ForwardRef(MenuItem))>
+          <WithStyles(ForwardRef(MenuItem))
             id="select-filter-type-exclude"
             value="exclude"
           >
             Exclude
-          </ForwardRef(WithStyles)>
-        </ForwardRef(WithStyles)>
-      </ForwardRef(WithStyles)>
+          </WithStyles(ForwardRef(MenuItem))>
+        </WithStyles(ForwardRef(Select))>
+      </WithStyles(ForwardRef(InputAdornment))>
     }
     fullWidth={true}
     id="test filter"

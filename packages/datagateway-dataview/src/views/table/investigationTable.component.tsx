@@ -28,6 +28,7 @@ import {
   DateFilter,
   SortType,
   FiltersType,
+  ViewsType,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface InvestigationTableProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -91,6 +93,7 @@ const InvestigationTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     cartItems,
     addToCart,
     removeFromCart,
@@ -205,11 +208,12 @@ const InvestigationTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return investigationLink(
               investigationData.ID,
-              investigationData.TITLE
+              investigationData.TITLE,
+              view
             );
           },
           filterComponent: textFilter,
@@ -251,8 +255,10 @@ const InvestigationTable = (
           label: t('investigations.start_date'),
           dataKey: 'STARTDATE',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            if (cellProps.cellData) {
+              return cellProps.cellData.toString().split(' ')[0];
+            }
           },
           disableHeaderWrap: true,
         },
@@ -261,8 +267,10 @@ const InvestigationTable = (
           label: t('investigations.end_date'),
           dataKey: 'ENDDATE',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            if (cellProps.cellData) {
+              return cellProps.cellData.toString().split(' ')[0];
+            }
           },
           disableHeaderWrap: true,
         },
@@ -294,6 +302,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

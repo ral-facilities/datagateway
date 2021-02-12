@@ -13,6 +13,7 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
   TextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -34,6 +35,7 @@ interface ISISFacilityCyclesTableProps {
 interface ISISFacilityCyclesTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -64,6 +66,7 @@ const ISISFacilityCyclesTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     instrumentId,
     loading,
     selectAllSetting,
@@ -113,10 +116,11 @@ const ISISFacilityCyclesTable = (
           icon: <TitleIcon />,
           label: t('facilitycycles.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) =>
+          cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${props.rowData.ID}/investigation`,
-              props.rowData.NAME
+              `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.ID}/investigation`,
+              cellProps.rowData.NAME,
+              view
             ),
           filterComponent: textFilter,
         },
@@ -165,6 +169,7 @@ const mapStateToProps = (
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

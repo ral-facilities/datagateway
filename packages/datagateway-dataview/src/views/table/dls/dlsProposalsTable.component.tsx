@@ -12,6 +12,7 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
   TextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -27,6 +28,7 @@ import TitleIcon from '@material-ui/icons/Title';
 interface DLSProposalsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -57,6 +59,7 @@ const DLSProposalsTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     loading,
     selectAllSetting,
   } = props;
@@ -95,11 +98,12 @@ const DLSProposalsTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'TITLE',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return tableLink(
               `/browse/proposal/${investigationData.NAME}/investigation`,
-              investigationData.TITLE
+              investigationData.TITLE,
+              view
             );
           },
           filterComponent: textFilter,
@@ -108,10 +112,11 @@ const DLSProposalsTable = (
           icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) => {
+          cellContentRenderer: (cellProps: TableCellProps) => {
             return tableLink(
-              `/browse/proposal/${props.rowData.NAME}/investigation`,
-              props.rowData.NAME
+              `/browse/proposal/${cellProps.rowData.NAME}/investigation`,
+              cellProps.rowData.NAME,
+              view
             );
           },
           filterComponent: textFilter,
@@ -156,6 +161,7 @@ const mapStateToProps = (state: StateType): DLSProposalsTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

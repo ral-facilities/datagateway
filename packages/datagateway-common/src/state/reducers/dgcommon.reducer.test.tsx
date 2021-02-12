@@ -190,6 +190,14 @@ describe('DGCommon reducer', () => {
         sort: { NAME: 'asc' },
         filters: { NAME: 't' },
       },
+      savedQuery: {
+        view: 'card',
+        search: 'searchTwo',
+        page: 2,
+        results: 2,
+        sort: { NAME: 'desc' },
+        filters: { NAME: 'c' },
+      },
     };
 
     const updatedState = DGCommonReducer(state, clearTable());
@@ -200,14 +208,8 @@ describe('DGCommon reducer', () => {
       loading: false,
       downloading: false,
       error: null,
-      query: {
-        view: 'table',
-        search: 'searchOne',
-        page: 1,
-        results: 1,
-        sort: { NAME: 'asc' },
-        filters: { NAME: 't' },
-      },
+      query: initialState.query,
+      savedQuery: initialState.savedQuery,
     });
   });
 

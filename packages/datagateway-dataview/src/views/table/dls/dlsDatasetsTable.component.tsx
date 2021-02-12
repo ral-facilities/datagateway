@@ -19,6 +19,7 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
   TextFilter,
 } from 'datagateway-common';
 import React from 'react';
@@ -42,6 +43,7 @@ interface DLSDatasetsTableProps {
 interface DLSDatasetsTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -82,6 +84,7 @@ const DLSDatasetsTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     investigationId,
     proposalName,
     loading,
@@ -164,10 +167,11 @@ const DLSDatasetsTable = (
           icon: <TitleIcon />,
           label: t('datasets.name'),
           dataKey: 'NAME',
-          cellContentRenderer: (props: TableCellProps) =>
+          cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${props.rowData.ID}/datafile`,
-              props.rowData.NAME
+              `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${cellProps.rowData.ID}/datafile`,
+              cellProps.rowData.NAME,
+              view
             ),
           filterComponent: textFilter,
         },
@@ -253,6 +257,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
