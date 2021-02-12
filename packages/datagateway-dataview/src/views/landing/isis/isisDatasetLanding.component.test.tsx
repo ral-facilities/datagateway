@@ -23,10 +23,6 @@ describe('ISIS Dataset Landing page', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   const initialData: Dataset[] = [
     {
@@ -62,6 +58,11 @@ describe('ISIS Dataset Landing page', () => {
     );
     state.dgcommon.data = initialData;
     state.dgcommon.allIds = [87];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {

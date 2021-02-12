@@ -294,7 +294,7 @@ const ViewRouting = (props: {
         path={Object.values(paths.landing).concat(
           Object.values(paths.studyHierarchy.landing)
         )}
-        render={() => <PageRouting view={props.view} />}
+        render={() => <PageRouting view={props.view} location={location} />}
       />
       {/* For "toggle" paths, check state for the current view */}
       <Route

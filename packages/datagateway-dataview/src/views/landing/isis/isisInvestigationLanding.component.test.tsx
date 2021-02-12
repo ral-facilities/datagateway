@@ -19,10 +19,6 @@ describe('ISIS Investigation Landing page', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   const initialData = [
     {
@@ -143,6 +139,11 @@ describe('ISIS Investigation Landing page', () => {
     );
     state.dgcommon.data = initialData;
     state.dgcommon.allIds = [1];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {

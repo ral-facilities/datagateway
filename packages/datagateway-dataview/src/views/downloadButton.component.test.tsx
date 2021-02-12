@@ -19,10 +19,6 @@ describe('Generic download button', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow();
@@ -35,6 +31,11 @@ describe('Generic download button', () => {
         dgcommon: dGCommonInitialState,
       })
     );
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
