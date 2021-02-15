@@ -394,7 +394,6 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        // cy.get('[aria-label="grid"]').scrollTo('bottom');
         cy.get(`[aria-label="select row 54"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
@@ -439,7 +438,6 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        // cy.get('[aria-label="grid"]').scrollTo('bottom');
         cy.get('[aria-label="select row 53"]').should('not.be.checked');
         cy.get('[aria-label="select row 54"]').should('be.checked');
       });
