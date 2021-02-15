@@ -8,6 +8,7 @@ import {
   fetchInvestigationDetailsRequest,
   fetchInvestigationsRequest,
   filterTable,
+  NotificationType,
   removeFromCartRequest,
   sortTable,
   Table,
@@ -15,6 +16,7 @@ import {
 import React from 'react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
+import { AnyAction } from 'redux';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -26,10 +28,17 @@ describe('ISIS Investigations table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
+  let events: CustomEvent<AnyAction>[] = [];
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'ISISMyDataTable' });
     mount = createMount();
+    events = [];
+
+    document.dispatchEvent = (e: Event) => {
+      events.push(e as CustomEvent<AnyAction>);
+      return true;
+    };
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -409,5 +418,27 @@ describe('ISIS Investigations table component', () => {
     expect(wrapper.find('[aria-colindex=4]').find('p').text()).toEqual('');
 
     expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
+  });
+
+  it('sends a notification to SciGateway if user is not logged in', () => {
+    state.dgcommon.data = [];
+    localStorage.setItem('autoLogin', 'true');
+
+    mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISMyDataTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(events.length).toBe(1);
+    expect(events[0].detail).toEqual({
+      type: NotificationType,
+      payload: {
+        severity: 'warning',
+        message: 'my_data_table.login_warning_msg',
+      },
+    });
   });
 });
