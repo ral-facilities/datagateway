@@ -62,11 +62,25 @@ exports[`Investigation Search Table component renders correctly 1`] = `
       Object {
         "DOI": "doi 1",
         "ENDDATE": "2019-06-11",
+        "FACILITY": Object {
+          "FACILITYCYCLE": Array [
+            Object {
+              "ENDDATE": "2020-06-11",
+              "FACILITY_ID": 2,
+              "ID": 2,
+              "NAME": "facility cycle name",
+              "STARTDATE": "2000-06-10",
+            },
+          ],
+          "ID": 2,
+          "NAME": "facility name",
+        },
         "ID": 1,
         "INVESTIGATIONINSTRUMENT": Array [
           Object {
             "ID": 1,
             "INSTRUMENT": Object {
+              "FACILITY_ID": 1,
               "ID": 3,
               "NAME": "LARMOR",
             },
@@ -83,7 +97,10 @@ exports[`Investigation Search Table component renders correctly 1`] = `
             "ID": 6,
             "INVESTIGATION_ID": 1,
             "STUDY": Object {
+              "CREATE_TIME": "2019-06-10",
               "ID": 7,
+              "MOD_TIME": "2019-06-10",
+              "NAME": "study name",
               "PID": "study pid",
             },
             "STUDY_ID": 7,
