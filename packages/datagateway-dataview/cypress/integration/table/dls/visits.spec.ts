@@ -1,6 +1,6 @@
 describe('DLS - Visits Table', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
     cy.intercept('/investigations?').as('investigations');
     cy.intercept('/investigations/count?').as('investigationsCount');
     cy.intercept('/investigations/findone?').as('investigationsFindOne');

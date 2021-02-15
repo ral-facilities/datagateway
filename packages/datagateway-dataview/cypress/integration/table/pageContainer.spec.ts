@@ -1,6 +1,6 @@
 describe('PageContainer Component', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
 
     cy.visit('/browse/investigation/');
   });

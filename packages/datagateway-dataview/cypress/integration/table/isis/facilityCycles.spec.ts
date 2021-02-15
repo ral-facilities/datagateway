@@ -1,6 +1,6 @@
 describe('ISIS - FacilityCycles Table', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/browse/instrument/1/facilityCycle');
   });
 
