@@ -26,9 +26,15 @@ import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-m
 jest.mock('loglevel');
 
 describe('Actions', () => {
+  beforeEach(() => {
+    global.document.dispatchEvent = jest.fn();
+    global.CustomEvent = jest.fn();
+  });
+
   afterEach(() => {
     (axios.get as jest.Mock).mockReset();
     (log.error as jest.Mock).mockReset();
+    (CustomEvent as jest.Mock).mockClear();
     resetActions();
   });
 
@@ -92,7 +98,6 @@ describe('Actions', () => {
                 section: 'section',
                 link: 'link',
                 displayName: 'displayName',
-                order: 0,
               },
             ],
           },
@@ -105,7 +110,6 @@ describe('Actions', () => {
           },
         })
       );
-    const spy = jest.spyOn(document, 'dispatchEvent');
 
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
@@ -129,26 +133,23 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(loadSelectAllSetting(false));
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenLastCalledWith(
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: RegisterRouteType,
-          payload: {
-            section: 'section',
-            link: 'link',
-            plugin: 'datagateway-dataview',
-            displayName: 'displayName',
-            order: 0,
-            helpSteps: [],
-            logoLightMode: LogoLight,
-            logoDarkMode: LogoDark,
-            logoAltText: 'DataGateway',
-          },
+    expect(CustomEvent).toHaveBeenCalledTimes(1);
+    expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'section',
+          link: 'link',
+          plugin: 'datagateway-dataview',
+          displayName: '\xa0displayName',
+          order: 0,
+          helpSteps: [],
+          logoLightMode: LogoLight,
+          logoDarkMode: LogoDark,
+          logoAltText: 'DataGateway',
         },
-      })
-    );
-    spy.mockClear();
+      },
+    });
   });
 
   it('settings are loaded despite no features', async () => {
@@ -160,7 +161,13 @@ describe('Actions', () => {
             idsUrl: 'ids',
             apiUrl: 'api',
             downloadApiUrl: 'download-api',
-            routes: [],
+            routes: [
+              {
+                section: 'section',
+                link: 'link',
+                displayName: 'displayName',
+              },
+            ],
           },
         })
       )
@@ -228,51 +235,43 @@ describe('Actions', () => {
           },
         })
       );
-    const spy = jest.spyOn(document, 'dispatchEvent');
 
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(spy).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenNthCalledWith(
-      1,
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: RegisterRouteType,
-          payload: {
-            section: 'section0',
-            link: 'link0',
-            plugin: 'datagateway-dataview',
-            displayName: 'displayName0',
-            order: 0,
-            helpSteps: [{ target: '#id', content: 'content' }],
-            logoLightMode: LogoLight,
-            logoDarkMode: LogoDark,
-            logoAltText: 'DataGateway',
-          },
+    expect(CustomEvent).toHaveBeenCalledTimes(2);
+    expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'section0',
+          link: 'link0',
+          plugin: 'datagateway-dataview',
+          displayName: '\xa0displayName0',
+          order: 0,
+          helpSteps: [{ target: '#id', content: 'content' }],
+          logoLightMode: LogoLight,
+          logoDarkMode: LogoDark,
+          logoAltText: 'DataGateway',
         },
-      })
-    );
-    expect(spy).toHaveBeenNthCalledWith(
-      2,
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: RegisterRouteType,
-          payload: {
-            section: 'section1',
-            link: 'link1',
-            plugin: 'datagateway-dataview',
-            displayName: 'displayName1',
-            order: 0,
-            helpSteps: [],
-            logoLightMode: LogoLight,
-            logoDarkMode: LogoDark,
-            logoAltText: 'DataGateway',
-          },
+      },
+    });
+    expect(CustomEvent).toHaveBeenNthCalledWith(2, MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'section1',
+          link: 'link1',
+          plugin: 'datagateway-dataview',
+          displayName: '\xa0displayName1',
+          order: 1,
+          helpSteps: [],
+          logoLightMode: LogoLight,
+          logoDarkMode: LogoDark,
+          logoAltText: 'DataGateway',
         },
-      })
-    );
-    spy.mockClear();
+      },
+    });
   });
 
   it('logs an error if facility name is not defined in settings.json and fails to be loaded', async () => {
@@ -330,6 +329,34 @@ describe('Actions', () => {
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading datagateway-dataview-settings.json: No routes provided in the settings'
+    );
+  });
+
+  it('logs an error if route has missing entries', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download-api',
+          routes: [
+            {
+              section: 'section',
+              link: 'link',
+            },
+          ],
+        },
+      })
+    );
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-dataview-settings.json: Route provided does not have all the required entries (section, link, displayName)'
     );
   });
 

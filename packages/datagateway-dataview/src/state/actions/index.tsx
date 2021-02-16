@@ -107,28 +107,40 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           dispatch(loadSelectAllSetting(settings['selectAllSetting']));
         }
 
-        if ('routes' in settings) {
+        if (Array.isArray(settings['routes']) && settings['routes'].length) {
           settings['routes'].forEach((route: PluginRoute, index: number) => {
-            const registerRouteAction = {
-              type: RegisterRouteType,
-              payload: {
-                section: 'Data',
-                link: route['link'],
-                plugin: 'datagateway-dataview',
-                displayName: '\xa0' + route['displayName'],
-                order: route['order'],
-                helpSteps:
-                  index === 0 && 'helpSteps' in settings
-                    ? settings['helpSteps']
-                    : [],
-                logoLightMode: LogoLight,
-                logoDarkMode: LogoDark,
-                logoAltText: 'DataGateway',
-              },
-            };
-            document.dispatchEvent(
-              new CustomEvent(MicroFrontendId, { detail: registerRouteAction })
-            );
+            if (
+              'section' in route &&
+              'link' in route &&
+              'displayName' in route
+            ) {
+              const registerRouteAction = {
+                type: RegisterRouteType,
+                payload: {
+                  section: route['section'],
+                  link: route['link'],
+                  plugin: 'datagateway-dataview',
+                  displayName: '\xa0' + route['displayName'],
+                  order: route['order'] ? route['order'] : 0,
+                  helpSteps:
+                    index === 0 && 'helpSteps' in settings
+                      ? settings['helpSteps']
+                      : [],
+                  logoLightMode: LogoLight,
+                  logoDarkMode: LogoDark,
+                  logoAltText: 'DataGateway',
+                },
+              };
+              document.dispatchEvent(
+                new CustomEvent(MicroFrontendId, {
+                  detail: registerRouteAction,
+                })
+              );
+            } else {
+              throw new Error(
+                'Route provided does not have all the required entries (section, link, displayName)'
+              );
+            }
           });
         } else {
           throw new Error('No routes provided in the settings');

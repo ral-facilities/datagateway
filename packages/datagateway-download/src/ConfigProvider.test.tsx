@@ -24,6 +24,8 @@ describe('ConfigProvider', () => {
 
   beforeEach(() => {
     mount = createMount();
+    global.document.dispatchEvent = jest.fn();
+    global.CustomEvent = jest.fn();
   });
 
   afterEach(() => {
@@ -31,6 +33,7 @@ describe('ConfigProvider', () => {
 
     (axios.get as jest.Mock).mockClear();
     (log.error as jest.Mock).mockClear();
+    (CustomEvent as jest.Mock).mockClear();
   });
 
   // Create a wrapper for our settings tests.
@@ -62,7 +65,6 @@ describe('ConfigProvider', () => {
           section: 'section',
           link: 'link',
           displayName: 'displayName',
-          order: 0,
         },
       ],
     };
@@ -72,7 +74,6 @@ describe('ConfigProvider', () => {
         data: settingsResult,
       })
     );
-    const spy = jest.spyOn(document, 'dispatchEvent');
 
     // Create the wrapper and wait for it to load.
     const wrapper = createWrapper();
@@ -91,26 +92,23 @@ describe('ConfigProvider', () => {
     expect(wrapper.find('#settings').text()).toEqual(
       JSON.stringify(settingsResult)
     );
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenLastCalledWith(
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: RegisterRouteType,
-          payload: {
-            section: 'section',
-            link: 'link',
-            plugin: 'datagateway-download',
-            displayName: 'displayName',
-            order: 0,
-            helpSteps: [],
-            logoLightMode: LogoLight,
-            logoDarkMode: LogoDark,
-            logoAltText: 'DataGateway',
-          },
+    expect(CustomEvent).toHaveBeenCalledTimes(1);
+    expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'section',
+          link: 'link',
+          plugin: 'datagateway-download',
+          displayName: '\xa0displayName',
+          order: 0,
+          helpSteps: [],
+          logoLightMode: LogoLight,
+          logoDarkMode: LogoDark,
+          logoAltText: 'DataGateway',
         },
-      })
-    );
-    spy.mockClear();
+      },
+    });
   });
 
   it('settings loaded and multiple routes registered with any helpSteps provided', async () => {
@@ -150,7 +148,6 @@ describe('ConfigProvider', () => {
         data: settingsResult,
       })
     );
-    const spy = jest.spyOn(document, 'dispatchEvent');
 
     // Create the wrapper and wait for it to load.
     const wrapper = createWrapper();
@@ -169,46 +166,39 @@ describe('ConfigProvider', () => {
     expect(wrapper.find('#settings').text()).toEqual(
       JSON.stringify(settingsResult)
     );
-    expect(spy).toHaveBeenCalledTimes(2);
-    expect(spy).toHaveBeenNthCalledWith(
-      1,
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: RegisterRouteType,
-          payload: {
-            section: 'section0',
-            link: 'link0',
-            plugin: 'datagateway-download',
-            displayName: 'displayName0',
-            order: 0,
-            helpSteps: [{ target: '#id', content: 'content' }],
-            logoLightMode: LogoLight,
-            logoDarkMode: LogoDark,
-            logoAltText: 'DataGateway',
-          },
+    expect(CustomEvent).toHaveBeenCalledTimes(2);
+    expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'section0',
+          link: 'link0',
+          plugin: 'datagateway-download',
+          displayName: '\xa0displayName0',
+          order: 0,
+          helpSteps: [{ target: '#id', content: 'content' }],
+          logoLightMode: LogoLight,
+          logoDarkMode: LogoDark,
+          logoAltText: 'DataGateway',
         },
-      })
-    );
-    expect(spy).toHaveBeenNthCalledWith(
-      2,
-      new CustomEvent(MicroFrontendId, {
-        detail: {
-          type: RegisterRouteType,
-          payload: {
-            section: 'section1',
-            link: 'link1',
-            plugin: 'datagateway-download',
-            displayName: 'displayName1',
-            order: 1,
-            helpSteps: [],
-            logoLightMode: LogoLight,
-            logoDarkMode: LogoDark,
-            logoAltText: 'DataGateway',
-          },
+      },
+    });
+    expect(CustomEvent).toHaveBeenNthCalledWith(2, MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'section1',
+          link: 'link1',
+          plugin: 'datagateway-download',
+          displayName: '\xa0displayName1',
+          order: 1,
+          helpSteps: [],
+          logoLightMode: LogoLight,
+          logoDarkMode: LogoDark,
+          logoAltText: 'DataGateway',
         },
-      })
-    );
-    spy.mockClear();
+      },
+    });
   });
 
   it('logs an error if facilityName is not defined in the settings', async () => {
@@ -505,6 +495,55 @@ describe('ConfigProvider', () => {
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
       'Error loading datagateway-download-settings.json: No routes provided in the settings'
+    );
+  });
+
+  it('logs an error if route has missing entries', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: {
+          facilityName: 'Generic',
+          idsUrl: 'ids',
+          apiUrl: 'api',
+          downloadApiUrl: 'download-api',
+          accessMethods: {
+            https: {
+              idsUrl: 'https-ids',
+              displayName: 'HTTPS',
+              description: 'HTTP description',
+            },
+            globus: {
+              idsUrl: 'https-ids',
+              displayName: 'Globus',
+              description: 'Globus description',
+            },
+          },
+          fileCountMax: 5000,
+          totalSizeMax: 1000000000000,
+          routes: [
+            {
+              section: 'section',
+              link: 'link',
+              order: 0,
+            },
+          ],
+        },
+      })
+    );
+
+    // Create the wrapper and wait for it to load.
+    const wrapper = createWrapper();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading datagateway-download-settings.json: Route provided does not have all the required entries (section, link, displayName)'
     );
   });
 });

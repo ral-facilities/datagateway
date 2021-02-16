@@ -120,8 +120,19 @@ class ConfigProvider extends React.Component<
           }
         }
 
-        if (!('routes' in settings)) {
+        console.log(settings);
+        if (!(Array.isArray(settings['routes']) && settings['routes'].length)) {
           throw new Error('No routes provided in the settings');
+        } else {
+          settings['routes'].forEach((route: PluginRoute) => {
+            if (
+              !('section' in route && 'link' in route && 'displayName' in route)
+            ) {
+              throw new Error(
+                'Route provided does not have all the required entries (section, link, displayName)'
+              );
+            }
+          });
         }
 
         return settings;
@@ -142,11 +153,11 @@ class ConfigProvider extends React.Component<
         const registerRouteAction = {
           type: RegisterRouteType,
           payload: {
-            section: 'Test',
+            section: route['section'],
             link: route['link'],
             plugin: 'datagateway-download',
             displayName: '\xa0' + route['displayName'],
-            order: route['order'],
+            order: route['order'] ? route['order'] : 0,
             helpSteps:
               index === 0 && 'helpSteps' in settings
                 ? settings['helpSteps']
