@@ -1,6 +1,6 @@
 describe('Add/remove from cart functionality', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
     cy.clearDownloadCart();
     cy.intercept('/datasets/').as('getDataset');
     cy.intercept('/investigations/').as('getInvestigation');

@@ -1,7 +1,7 @@
 describe('Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
-    cy.login('download-e2e-tests', 'pw');
+    cy.login();
 
     // Seed the initial downloads.
     cy.clearDownloads();
@@ -9,7 +9,7 @@ describe('Download Status', () => {
 
   beforeEach(() => {
     cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
-    cy.login('download-e2e-tests', 'pw');
+    cy.login();
 
     // Ensure the downloads are cleared before running tests.
     cy.clearDownloads();

@@ -2,7 +2,7 @@ describe('DLS - Datasets Cards', () => {
   beforeEach(() => {
     cy.intercept('**/datasets/count*').as('getDatasetsCount');
     cy.intercept('**/datasets?order*').as('getDatasetsOrder');
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/1/dataset').wait(
       ['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'],
       {
