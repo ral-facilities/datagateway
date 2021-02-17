@@ -74,8 +74,12 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
                     index === 0 && 'helpSteps' in settings
                       ? settings['helpSteps']
                       : [],
-                  logoLightMode: LogoLight,
-                  logoDarkMode: LogoDark,
+                  logoLightMode: settings['pluginHost']
+                    ? settings['pluginHost'] + LogoLight
+                    : undefined,
+                  logoDarkMode: settings['pluginHost']
+                    ? settings['pluginHost'] + LogoDark
+                    : undefined,
                   logoAltText: 'DataGateway',
                 },
               };

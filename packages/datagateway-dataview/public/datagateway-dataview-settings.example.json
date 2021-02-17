@@ -64,5 +64,6 @@
       "displayName": "ISIS View",
       "order": 2
     }
-  ]
+  ],
+  "pluginHost": "http://localhost:3000"
 }

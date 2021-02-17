@@ -30,6 +30,7 @@ export interface DownloadSettings {
   accessMethods: DownloadSettingsAccessMethod;
   routes: PluginRoute[];
   helpSteps: { target: string; content: string }[];
+  pluginHost?: string;
 }
 
 const initialConfiguration = {
@@ -120,7 +121,6 @@ class ConfigProvider extends React.Component<
           }
         }
 
-        console.log(settings);
         if (!(Array.isArray(settings['routes']) && settings['routes'].length)) {
           throw new Error('No routes provided in the settings');
         } else {
@@ -162,8 +162,12 @@ class ConfigProvider extends React.Component<
               index === 0 && 'helpSteps' in settings
                 ? settings['helpSteps']
                 : [],
-            logoLightMode: LogoLight,
-            logoDarkMode: LogoDark,
+            logoLightMode: settings['pluginHost']
+              ? settings['pluginHost'] + LogoLight
+              : undefined,
+            logoDarkMode: settings['pluginHost']
+              ? settings['pluginHost'] + LogoDark
+              : undefined,
             logoAltText: 'DataGateway',
           },
         };

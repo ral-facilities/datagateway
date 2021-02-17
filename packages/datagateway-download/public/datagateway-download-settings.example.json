@@ -39,5 +39,6 @@
       "displayName": "Download",
       "order": 0
     }
-  ]
+  ],
+  "pluginHost": "http://localhost:3000"
 }
