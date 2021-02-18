@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { Preloader } from 'datagateway-common';
+import {
+  MicroFrontendId,
+  PluginRoute,
+  Preloader,
+  RegisterRouteType,
+} from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import * as log from 'loglevel';
 import React from 'react';
 
@@ -21,6 +28,9 @@ export interface DownloadSettings {
   totalSizeMax: number;
 
   accessMethods: DownloadSettingsAccessMethod;
+  routes: PluginRoute[];
+  helpSteps: { target: string; content: string }[];
+  pluginHost?: string;
 }
 
 const initialConfiguration = {
@@ -31,6 +41,8 @@ const initialConfiguration = {
   fileCountMax: -1,
   totalSizeMax: -1,
   accessMethods: {},
+  routes: [],
+  helpSteps: [],
 };
 
 export const DownloadSettingsContext = React.createContext<DownloadSettings>(
@@ -109,6 +121,20 @@ class ConfigProvider extends React.Component<
           }
         }
 
+        if (!(Array.isArray(settings['routes']) && settings['routes'].length)) {
+          throw new Error('No routes provided in the settings');
+        } else {
+          settings['routes'].forEach((route: PluginRoute) => {
+            if (
+              !('section' in route && 'link' in route && 'displayName' in route)
+            ) {
+              throw new Error(
+                'Route provided does not have all the required entries (section, link, displayName)'
+              );
+            }
+          });
+        }
+
         return settings;
       })
       .catch((error) => {
@@ -122,6 +148,32 @@ class ConfigProvider extends React.Component<
       this.setState({
         loading: false,
         settings: settings,
+      });
+      settings['routes'].forEach((route: PluginRoute, index: number) => {
+        const registerRouteAction = {
+          type: RegisterRouteType,
+          payload: {
+            section: route['section'],
+            link: route['link'],
+            plugin: 'datagateway-download',
+            displayName: '\xa0' + route['displayName'],
+            order: route['order'] ? route['order'] : 0,
+            helpSteps:
+              index === 0 && 'helpSteps' in settings
+                ? settings['helpSteps']
+                : [],
+            logoLightMode: settings['pluginHost']
+              ? settings['pluginHost'] + LogoLight
+              : undefined,
+            logoDarkMode: settings['pluginHost']
+              ? settings['pluginHost'] + LogoDark
+              : undefined,
+            logoAltText: 'DataGateway',
+          },
+        };
+        document.dispatchEvent(
+          new CustomEvent(MicroFrontendId, { detail: registerRouteAction })
+        );
       });
     }
   };

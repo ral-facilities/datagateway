@@ -18,5 +18,65 @@
       "replaceEntityField": "VISIT_ID",
       "parentEntity": "proposal"
     }
-  }
+  },
+  "helpSteps": [
+    {
+      "target": "#plugin-link--browse-investigation",
+      "content":
+        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+    },
+    {
+      "target": "#plugin-link--browse-propsal",
+      "content":
+        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+    },
+    {
+      "target": "#plugin-link--browse-instrument",
+      "content":
+        "DataGateway DataView allows you to browse datafiles, datasets and investigations using a variety of filters and sorting criteria"
+    },
+    {
+      "target": ".tour-dataview-breadcrumbs",
+      "content":
+        "The hierarchy of the currently displayed data is shown here, and allows navigation to the dataset or investigation containing it"
+    },
+    {
+      "target": ".tour-dataview-results",
+      "content":
+        "The number of results found taking into account any applied filters is displayed here"
+    },
+    {
+      "target": ".tour-dataview-search-icon",
+      "content": "Navigate to Datagateway Search"
+    },
+    {
+      "target": ".tour-dataview-cart-icon",
+      "content":
+        "Displays the current number of items in the download cart, and navigates to Datagateway Download"
+    },
+    {
+      "target": ".tour-dataview-toggle-card",
+      "content": "Toggle between list and card view"
+    }
+  ],
+  "routes": [
+    {
+      "section": "Data",
+      "link": "/browse/investigation",
+      "displayName": "DataView",
+      "order": 0
+    },
+    {
+      "section": "Data",
+      "link": "/browse/proposal",
+      "displayName": "DLS View",
+      "order": 1
+    },
+    {
+      "section": "Data",
+      "link": "/browse/instrument",
+      "displayName": "ISIS View",
+      "order": 2
+    }
+  ]
 }

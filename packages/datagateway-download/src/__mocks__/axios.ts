@@ -27,6 +27,14 @@ export default {
               description: 'Example description for Globus access method.',
             },
           },
+          routes: [
+            {
+              section: 'Test',
+              link: '/download',
+              displayName: 'Download',
+              order: 0,
+            },
+          ],
         },
       });
     } else if (path.includes('/topcat/user/downloads')) {
