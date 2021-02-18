@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-export default {
+const requests = {
   get: jest.fn((path) => {
     if (path === '/datagateway-dataview-settings.json') {
       return Promise.resolve({
@@ -24,3 +24,5 @@ export default {
   delete: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
 };
+
+export default requests;
