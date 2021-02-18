@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-export default {
+const requests = {
   get: jest.fn((path) => {
     if (path.includes('/topcat/user/cart/')) {
       return Promise.resolve({ data: { cartItems: [] } });
@@ -39,3 +39,5 @@ export default {
   put: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
 };
+
+export default requests;
