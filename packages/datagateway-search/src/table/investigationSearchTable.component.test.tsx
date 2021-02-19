@@ -54,8 +54,6 @@ describe('Investigation Search Table component', () => {
         investigationInstruments: [
           {
             id: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
             instrument: {
               id: 3,
               name: 'LARMOR',
@@ -65,8 +63,6 @@ describe('Investigation Search Table component', () => {
         studyInvestigations: [
           {
             id: 6,
-            STUDY_ID: 7,
-            INVESTIGATION_ID: 1,
             study: {
               id: 7,
               PID: 'study pid',
