@@ -441,8 +441,7 @@ export const fetchDatasetDetails = (
     const params = new URLSearchParams();
 
     params.append('where', JSON.stringify({ id: { eq: datasetId } }));
-    // TODO - Go back to
-    params.append('include', JSON.stringify('DATASETTYPE'));
+    params.append('include', JSON.stringify('type'));
 
     const { apiUrl } = getState().dgcommon.urls;
 

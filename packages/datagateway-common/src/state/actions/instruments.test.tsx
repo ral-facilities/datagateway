@@ -204,7 +204,7 @@ describe('Instrument actions', () => {
       {
         id: 1,
         name: 'Test 1',
-        INSTRUMENTSCIENTIST: [
+        instrumentScientists: [
           {
             id: 2,
             INSTRUMENT_ID: 1,
@@ -232,7 +232,7 @@ describe('Instrument actions', () => {
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ id: { eq: 1 } }));
-    params.append('include', JSON.stringify({ INSTRUMENTSCIENTIST: 'user' }));
+    params.append('include', JSON.stringify({ instrumentScientists: 'user' }));
 
     expect(axios.get).toHaveBeenCalledWith('/instruments', {
       headers: { Authorization: 'Bearer null' },

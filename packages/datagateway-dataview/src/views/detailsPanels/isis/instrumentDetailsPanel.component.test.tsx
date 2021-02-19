@@ -18,7 +18,7 @@ describe('Instrument details panel component', () => {
       name: 'Test',
       fullName: 'Test Instrument',
       description: 'An instrument purely for testing',
-      TYPE: 'testing',
+      type: 'testing',
       url: 'www.example.com',
     };
   });
@@ -37,7 +37,7 @@ describe('Instrument details panel component', () => {
   });
 
   it('renders users tab when present in the data', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
         id: 4,
         INSTRUMENT_ID: 1,
@@ -70,7 +70,7 @@ describe('Instrument details panel component', () => {
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
         id: 4,
         INSTRUMENT_ID: 1,
@@ -99,7 +99,7 @@ describe('Instrument details panel component', () => {
   });
 
   it('detailsPanelResize not called when not provided', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
         id: 4,
         INSTRUMENT_ID: 1,
@@ -137,7 +137,7 @@ describe('Instrument details panel component', () => {
   });
 
   it('gracefully handles InstrumentScientists without Users', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
         id: 4,
         INSTRUMENT_ID: 1,

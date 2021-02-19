@@ -1429,7 +1429,7 @@ describe('DGCommon reducer', () => {
 
       const instrumentDetails: Instrument = {
         ...mockData[0],
-        INSTRUMENTSCIENTIST: [
+        instrumentScientists: [
           {
             id: 3,
             INSTRUMENT_ID: 1,

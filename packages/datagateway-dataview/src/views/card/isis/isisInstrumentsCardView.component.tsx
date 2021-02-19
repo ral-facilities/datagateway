@@ -117,7 +117,7 @@ const ISISInstrumentsCardView = (
         {
           icon: <Title />,
           label: t('instruments.type'),
-          dataKey: 'TYPE',
+          dataKey: 'type',
           filterComponent: textFilter,
         },
         {
