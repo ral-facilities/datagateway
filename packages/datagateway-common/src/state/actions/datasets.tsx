@@ -363,11 +363,13 @@ export const fetchInvestigationDatasetsCount = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationDatasetsCountRequest(timestamp));
 
-    const params = {
-      where: {
-        INVESTIGATION_ID: { eq: investigationId },
-      },
-    };
+    const params = new URLSearchParams();
+    params.append(
+      'where',
+      JSON.stringify({ 'investigation.id': { eq: investigationId } })
+    );
+    params.append('include', JSON.stringify('investigation'));
+
     const { apiUrl } = getState().dgcommon.urls;
 
     const currentCache = getState().dgcommon.investigationCache[
