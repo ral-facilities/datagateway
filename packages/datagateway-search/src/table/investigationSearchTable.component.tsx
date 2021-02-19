@@ -194,6 +194,7 @@ const InvestigationSearchTable = (
             const investigationData = props.rowData as Investigation;
             if (
               investigationData.investigationInstruments &&
+              investigationData.investigationInstruments.length !== 0 &&
               investigationData.investigationInstruments[0].instrument
             ) {
               return investigationData.investigationInstruments[0].instrument
