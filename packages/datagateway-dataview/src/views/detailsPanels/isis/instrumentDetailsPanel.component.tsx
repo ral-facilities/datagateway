@@ -127,7 +127,7 @@ const InstrumentDetailsPanel = (
             {instrumentData.instrumentScientists.map((instrumentScientist) => {
               if (instrumentScientist.user) {
                 return (
-                  <Grid key={instrumentScientist.USER_ID} item xs>
+                  <Grid key={instrumentScientist.user.id} item xs>
                     <Typography variant="overline">
                       {t('instruments.details.instrument_scientists.name')}
                     </Typography>

@@ -391,9 +391,9 @@ export const getDatafileCount: (
     return axios
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
-          include: '"dataset"',
+          include: '{"dataset": "investigation"}',
           where: {
-            'dataset.INVESTIGATION_ID': {
+            'dataset.investigation.id': {
               eq: entityId,
             },
           },

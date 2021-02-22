@@ -199,7 +199,7 @@ const InvestigationDetailsPanel = (
             {investigationData.investigationUsers.map((investigationUser) => {
               if (investigationUser.user) {
                 return (
-                  <Grid key={investigationUser.USER_ID} item xs>
+                  <Grid key={investigationUser.user.id} item xs>
                     <Typography variant="overline">
                       {t('investigations.details.users.name')}
                     </Typography>

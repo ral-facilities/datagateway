@@ -211,8 +211,12 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              INVESTIGATION_ID: { eq: investigationId },
+              'investigation.id': { eq: investigationId },
             }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('investigation'),
           },
         ],
       })
@@ -223,8 +227,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: investigationId },
+            'investigation.id': { eq: investigationId },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),
@@ -238,8 +246,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+            'investigation.id': { eq: parseInt(ownProps.investigationId) },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),
