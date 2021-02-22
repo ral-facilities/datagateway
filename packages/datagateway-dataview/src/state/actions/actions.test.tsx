@@ -288,7 +288,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-dataview-settings.json: facilityName is undefined in settings'
+      'Error loading /datagateway-dataview-settings.json: facilityName is undefined in settings'
     );
   });
 
@@ -307,7 +307,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-dataview-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+      'Error loading /datagateway-dataview-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
     );
   });
 
@@ -329,7 +329,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-dataview-settings.json: No routes provided in the settings'
+      'Error loading /datagateway-dataview-settings.json: No routes provided in the settings'
     );
   });
 
@@ -357,7 +357,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-dataview-settings.json: Route provided does not have all the required entries (section, link, displayName)'
+      'Error loading /datagateway-dataview-settings.json: Route provided does not have all the required entries (section, link, displayName)'
     );
   });
 
@@ -371,9 +371,24 @@ describe('Actions', () => {
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
       expect.stringContaining(
-        `Error loading datagateway-dataview-settings.json: `
+        `Error loading /datagateway-dataview-settings.json: `
       )
     );
+  });
+
+  it('logs an error if settings.json fails to be loaded with custom path', async () => {
+    process.env.REACT_APP_DATAVIEW_SETTINGS_PATH = 'custom/path.json';
+    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
+
+    const asyncAction = configureApp();
+    await asyncAction(dispatch, getState);
+
+    expect(log.error).toHaveBeenCalled();
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      expect.stringContaining(`Error loading custom/path.json: `)
+    );
+    delete process.env.REACT_APP_DATAVIEW_SETTINGS_PATH;
   });
 
   it('logs an error if settings.json is invalid JSON object', async () => {
@@ -389,7 +404,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-dataview-settings.json: Invalid format'
+      'Error loading /datagateway-dataview-settings.json: Invalid format'
     );
   });
 });

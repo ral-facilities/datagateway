@@ -57,9 +57,12 @@ export const loadSelectAllSetting = (
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
+  const settingsPath = process.env.REACT_APP_DATAVIEW_SETTINGS_PATH
+    ? process.env.REACT_APP_DATAVIEW_SETTINGS_PATH
+    : '/datagateway-dataview-settings.json';
   return async (dispatch) => {
     await axios
-      .get('/datagateway-dataview-settings.json')
+      .get(settingsPath)
       .then((res) => {
         const settings = res.data;
 
@@ -207,9 +210,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(settingsLoaded());
       })
       .catch((error) => {
-        log.error(
-          `Error loading datagateway-dataview-settings.json: ${error.message}`
-        );
+        log.error(`Error loading ${settingsPath}: ${error.message}`);
       });
   };
 };

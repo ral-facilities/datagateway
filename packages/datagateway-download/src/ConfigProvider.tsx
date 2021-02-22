@@ -67,8 +67,11 @@ class ConfigProvider extends React.Component<
   }
 
   private updateConfigurationState = async (): Promise<void> => {
+    const settingsPath = process.env.REACT_APP_DOWNLOAD_SETTINGS_PATH
+      ? process.env.REACT_APP_DOWNLOAD_SETTINGS_PATH
+      : '/datagateway-download-settings.json';
     const settings = await axios
-      .get<DownloadSettings>('/datagateway-download-settings.json')
+      .get<DownloadSettings>(settingsPath)
       .then((res) => {
         const settings = res.data;
 
@@ -138,9 +141,7 @@ class ConfigProvider extends React.Component<
         return settings;
       })
       .catch((error) => {
-        log.error(
-          `Error loading datagateway-download-settings.json: ${error.message}`
-        );
+        log.error(`Error loading ${settingsPath}: ${error.message}`);
         return null;
       });
 
