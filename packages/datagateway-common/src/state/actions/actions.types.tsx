@@ -249,6 +249,13 @@ export interface URLs {
   downloadApiUrl: string;
 }
 
+export interface PluginRoute {
+  section: string;
+  link: string;
+  displayName: string;
+  order: number;
+}
+
 export interface UpdateViewPayload {
   view: ViewsType;
 }

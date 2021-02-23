@@ -54,6 +54,7 @@ describe('Investigation Search Table component', () => {
             INSTRUMENT_ID: 3,
             INSTRUMENT: {
               ID: 3,
+              FACILITY_ID: 1,
               NAME: 'LARMOR',
             },
           },
@@ -66,11 +67,27 @@ describe('Investigation Search Table component', () => {
             STUDY: {
               ID: 7,
               PID: 'study pid',
+              NAME: 'study name',
+              MOD_TIME: '2019-06-10',
+              CREATE_TIME: '2019-06-10',
             },
           },
         ],
         STARTDATE: '2019-06-10',
         ENDDATE: '2019-06-11',
+        FACILITY: {
+          ID: 2,
+          NAME: 'facility name',
+          FACILITYCYCLE: [
+            {
+              ID: 2,
+              FACILITY_ID: 2,
+              NAME: 'facility cycle name',
+              STARTDATE: '2000-06-10',
+              ENDDATE: '2020-06-11',
+            },
+          ],
+        },
       },
     ];
     state.dgcommon.allIds = [1];
@@ -127,6 +144,32 @@ describe('Investigation Search Table component', () => {
     wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchInvestigationsRequest(1));
+  });
+
+  it('sends filterTable action on text filter', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="data" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const filterInput = wrapper
+      .find('[aria-label="Filter by investigations.title"] input')
+      .first();
+    filterInput.instance().value = 'test';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[4]).toEqual(
+      filterTable('TITLE', { type: 'include', value: 'test' })
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[5]).toEqual(filterTable('TITLE', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -311,5 +354,99 @@ describe('Investigation Search Table component', () => {
         </Provider>
       )
     ).not.toThrowError();
+  });
+
+  it('renders generic link correctly', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="data" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+      '/browse/investigation/1/dataset'
+    );
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+  });
+
+  it('renders DLS link correctly', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="dls" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+      '/browse/proposal/Test 1/investigation/1/dataset'
+    );
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+  });
+
+  it('renders ISIS link correctly', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+      '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'
+    );
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+  });
+
+  it('does not render ISIS link when instrumentId cannot be found', () => {
+    delete state.dgcommon.data[0].INVESTIGATIONINSTRUMENT;
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+  });
+
+  it('does not render ISIS link when facilityCycleId cannot be found', () => {
+    delete state.dgcommon.data[0].FACILITY;
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+  });
+
+  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
+    state.dgcommon.data[0].FACILITY.FACILITYCYCLE[0].STARTDATE = '2020-06-11';
+    state.dgcommon.data[0].FACILITY.FACILITYCYCLE[0].ENDDATE = '2000-06-10';
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
   });
 });

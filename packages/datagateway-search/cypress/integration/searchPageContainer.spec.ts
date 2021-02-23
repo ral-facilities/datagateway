@@ -1,6 +1,6 @@
 describe('SearchPageContainer Component', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
 
     cy.visit('/search/data/');
   });

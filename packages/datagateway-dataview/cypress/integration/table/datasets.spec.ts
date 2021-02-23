@@ -1,6 +1,6 @@
 describe('Datasets Table', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/browse/investigation/1/dataset');
   });
 

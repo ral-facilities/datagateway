@@ -16,7 +16,12 @@ import {
   loadUrls,
   loadFacilityName,
   MicroFrontendToken,
+  MicroFrontendId,
+  PluginRoute,
+  RegisterRouteType,
 } from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -115,6 +120,49 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('pluginHost' in settings) {
           dispatch(loadPluginHostSetting(settings['pluginHost']));
+        }
+
+        if (Array.isArray(settings['routes']) && settings['routes'].length) {
+          settings['routes'].forEach((route: PluginRoute, index: number) => {
+            if (
+              'section' in route &&
+              'link' in route &&
+              'displayName' in route
+            ) {
+              const registerRouteAction = {
+                type: RegisterRouteType,
+                payload: {
+                  section: route['section'],
+                  link: route['link'],
+                  plugin: 'datagateway-dataview',
+                  displayName: '\xa0' + route['displayName'],
+                  order: route['order'] ? route['order'] : 0,
+                  helpSteps:
+                    index === 0 && 'helpSteps' in settings
+                      ? settings['helpSteps']
+                      : [],
+                  logoLightMode: settings['pluginHost']
+                    ? settings['pluginHost'] + LogoLight
+                    : undefined,
+                  logoDarkMode: settings['pluginHost']
+                    ? settings['pluginHost'] + LogoDark
+                    : undefined,
+                  logoAltText: 'DataGateway',
+                },
+              };
+              document.dispatchEvent(
+                new CustomEvent(MicroFrontendId, {
+                  detail: registerRouteAction,
+                })
+              );
+            } else {
+              throw new Error(
+                'Route provided does not have all the required entries (section, link, displayName)'
+              );
+            }
+          });
+        } else {
+          throw new Error('No routes provided in the settings');
         }
 
         /* istanbul ignore if */

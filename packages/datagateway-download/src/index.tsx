@@ -10,12 +10,9 @@ import singleSpaReact from 'single-spa-react';
 
 import {
   RequestPluginRerenderType,
-  RegisterRouteType,
   MicroFrontendId,
   MicroFrontendToken,
 } from 'datagateway-common';
-import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
-import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
@@ -116,36 +113,3 @@ if (
       );
   }
 }
-
-document.dispatchEvent(
-  new CustomEvent(MicroFrontendId, {
-    detail: {
-      type: RegisterRouteType,
-      payload: {
-        section: 'Test',
-        link: '/download',
-        plugin: 'datagateway-download',
-        displayName: '\xa0Download',
-        order: 0,
-        helpSteps: [
-          {
-            target: '#plugin-link--download',
-            content:
-              'DataGateway Download allows you to view and manage items in the current download cart as well see previous downloads',
-          },
-          {
-            target: '.tour-download-cart-tab',
-            content: 'Show the items currently in the cart for download',
-          },
-          {
-            target: '.tour-download-downloads-tab',
-            content: 'Show the status of previous downloads',
-          },
-        ],
-        logoLightMode: LogoLight,
-        logoDarkMode: LogoDark,
-        logoAltText: 'DataGateway',
-      },
-    },
-  })
-);

@@ -2,7 +2,7 @@ describe('ISIS - Instruments Cards', () => {
   beforeEach(() => {
     cy.intercept('**/instruments/count*').as('getInstrumentsCount');
     cy.intercept('**/instruments?order*').as('getInstrumentsOrder');
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/browse/instrument').wait(
       ['@getInstrumentsCount', '@getInstrumentsOrder'],
       { timeout: 10000 }

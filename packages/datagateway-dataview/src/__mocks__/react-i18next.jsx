@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+// eslint-disable-next-line no-use-before-define
 import React from 'react';
 import * as reactI18next from 'react-i18next';
 
@@ -39,11 +40,19 @@ const useMock = [(k) => k, {}];
 useMock.t = (k) => k;
 useMock.i18n = {};
 
+const applyTranslation = (Component) => {
+  const applyProps = (props) => (
+    <Component
+      t={(k, o) => (o ? `${k} ${JSON.stringify(o).replace(/"/g, '')}` : k)}
+      {...props}
+    />
+  );
+  return applyProps;
+};
+
 module.exports = {
   // this mock makes sure any components using the translate HoC receive the t function as a prop
-  withTranslation: () => (Component) => (props) => (
-    <Component t={(k) => k} {...props} />
-  ),
+  withTranslation: () => (Component) => applyTranslation(Component),
   Trans: ({ children }) => renderNodes(children),
   Translation: ({ children }) => children((k) => k, { i18n: {} }),
   useTranslation: () => useMock,

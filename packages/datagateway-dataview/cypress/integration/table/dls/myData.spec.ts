@@ -1,7 +1,7 @@
 describe('DLS - MyData Table', () => {
   beforeEach(() => {
     cy.intercept('/datasets/count').as('getDatasetCount');
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
   });
 

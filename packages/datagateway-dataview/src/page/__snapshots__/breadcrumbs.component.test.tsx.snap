@@ -16,7 +16,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) Includes view in 
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.investigation"
+        displayName="breadcrumbs.investigation {count:100}"
         url="/browse/investigation?view=card"
       />
       <WrappedBreadcrumb
@@ -32,7 +32,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) Includes view in 
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.datafile"
+        displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -421,13 +421,13 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-base"
-                                      displayName="breadcrumbs.investigation"
+                                      displayName="breadcrumbs.investigation {count:100}"
                                       key=".1"
                                       url="/browse/investigation"
                                     >
                                       <ArrowTooltip
                                         percentageWidth={20}
-                                        title="breadcrumbs.investigation"
+                                        title="breadcrumbs.investigation {count:100}"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -451,7 +451,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              breadcrumbs.investigation
+                                              breadcrumbs.investigation {count:100}
                                               <span
                                                 className="makeStyles-arrow-4"
                                               />
@@ -489,7 +489,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                breadcrumbs.investigation
+                                                breadcrumbs.investigation {count:100}
                                                 <span
                                                   className="makeStyles-arrow-4"
                                                 />
@@ -655,7 +655,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                             onFocus={[Function]}
                                                           >
                                                             <span>
-                                                              breadcrumbs.investigation
+                                                              breadcrumbs.investigation {count:100}
                                                             </span>
                                                           </a>
                                                         </LinkAnchor>
@@ -676,7 +676,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                     href="/browse/investigation"
                                                   >
                                                     <span>
-                                                      breadcrumbs.investigation
+                                                      breadcrumbs.investigation {count:100}
                                                     </span>
                                                   </a>
                                                 </div>
@@ -1188,13 +1188,13 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                   >
                                     <WrappedBreadcrumb
                                       ariaLabel="Breadcrumb-last"
-                                      displayName="breadcrumbs.datafile"
+                                      displayName="breadcrumbs.datafile {count:100}"
                                       isLast={true}
                                       key=".3"
                                     >
                                       <ArrowTooltip
                                         percentageWidth={20}
-                                        title="breadcrumbs.datafile"
+                                        title="breadcrumbs.datafile {count:100}"
                                       >
                                         <WithStyles(ForwardRef(Tooltip))
                                           PopperProps={
@@ -1218,7 +1218,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                           disableHoverListener={true}
                                           title={
                                             <React.Fragment>
-                                              breadcrumbs.datafile
+                                              breadcrumbs.datafile {count:100}
                                               <span
                                                 className="makeStyles-arrow-4"
                                               />
@@ -1256,7 +1256,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                             disableHoverListener={true}
                                             title={
                                               <React.Fragment>
-                                                breadcrumbs.datafile
+                                                breadcrumbs.datafile {count:100}
                                                 <span
                                                   className="makeStyles-arrow-4"
                                                 />
@@ -1320,7 +1320,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   >
                                                     <span>
                                                       <i>
-                                                        breadcrumbs.datafile
+                                                        breadcrumbs.datafile {count:100}
                                                       </i>
                                                     </span>
                                                   </p>
@@ -1338,7 +1338,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders an update
                                                   >
                                                     <span>
                                                       <i>
-                                                        breadcrumbs.datafile
+                                                        breadcrumbs.datafile {count:100}
                                                       </i>
                                                     </span>
                                                   </p>
@@ -1400,7 +1400,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.proposal"
+        displayName="breadcrumbs.proposal {count:100}"
         url="/browse/proposal"
       />
       <WrappedBreadcrumb
@@ -1422,7 +1422,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.datafile"
+        displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1446,7 +1446,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.proposal"
+        displayName="breadcrumbs.proposal {count:100}"
         url="/browse/proposal"
       />
       <WrappedBreadcrumb
@@ -1462,7 +1462,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.dataset"
+        displayName="breadcrumbs.dataset {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1486,7 +1486,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.proposal"
+        displayName="breadcrumbs.proposal {count:100}"
         url="/browse/proposal"
       />
       <WrappedBreadcrumb
@@ -1496,7 +1496,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.investigation"
+        displayName="breadcrumbs.investigation {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1520,7 +1520,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.proposal"
+        displayName="breadcrumbs.proposal {count:100}"
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
   </WithStyles(ForwardRef(Paper))>
@@ -1543,7 +1543,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.instrument"
+        displayName="breadcrumbs.instrument {count:100}"
         url="/browse/instrument"
       />
       <WrappedBreadcrumb
@@ -1571,7 +1571,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.datafile"
+        displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1595,7 +1595,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.instrument"
+        displayName="breadcrumbs.instrument {count:100}"
         url="/browse/instrument"
       />
       <WrappedBreadcrumb
@@ -1617,7 +1617,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.dataset"
+        displayName="breadcrumbs.dataset {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1641,7 +1641,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.instrument"
+        displayName="breadcrumbs.instrument {count:100}"
         url="/browse/instrument"
       />
       <WrappedBreadcrumb
@@ -1651,7 +1651,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.facilityCycle"
+        displayName="breadcrumbs.facilityCycle {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1675,7 +1675,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.instrument"
+        displayName="breadcrumbs.instrument {count:100}"
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
   </WithStyles(ForwardRef(Paper))>
@@ -1698,7 +1698,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.investigation"
+        displayName="breadcrumbs.investigation {count:100}"
         url="/browse/investigation"
       />
       <WrappedBreadcrumb
@@ -1714,7 +1714,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.datafile"
+        displayName="breadcrumbs.datafile {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1738,7 +1738,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.investigation"
+        displayName="breadcrumbs.investigation {count:100}"
         url="/browse/investigation"
       />
       <WrappedBreadcrumb
@@ -1748,7 +1748,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-last"
-        displayName="breadcrumbs.dataset"
+        displayName="breadcrumbs.dataset {count:100}"
         isLast={true}
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
@@ -1772,7 +1772,7 @@ exports[`PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS) renders correctly
       />
       <WrappedBreadcrumb
         ariaLabel="Breadcrumb-base"
-        displayName="breadcrumbs.investigation"
+        displayName="breadcrumbs.investigation {count:100}"
       />
     </WithStyles(WithStyles(ForwardRef(Breadcrumbs)))>
   </WithStyles(ForwardRef(Paper))>
