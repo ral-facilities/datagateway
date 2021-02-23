@@ -1,24 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`] = `
-<div
-  computedMatch={
-    Object {
-      "isExact": false,
-      "params": Object {},
-      "path": "/",
-      "url": "/",
-    }
-  }
-  location={
-    Object {
-      "hash": "",
-      "key": "testKey",
-      "pathname": "/search/data",
-      "search": "",
-    }
-  }
->
+<div>
   <WithStyles(ForwardRef(Grid))
     alignItems="flex-start"
     container={true}
@@ -64,6 +47,7 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
       >
         <Connect(SearchPageTable)
           containerHeight="calc(100vh - 64px - 30px - 2*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)"
+          hierarchy="data"
         />
       </WithStyles(ForwardRef(Paper))>
     </WithStyles(ForwardRef(Grid))>

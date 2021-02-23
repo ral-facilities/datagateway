@@ -1,7 +1,7 @@
 import React from 'react';
 import { StateType } from './state/app.types';
 import { connect } from 'react-redux';
-import { Switch, Route } from 'react-router';
+import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { Grid, Paper, LinearProgress } from '@material-ui/core';
@@ -35,49 +35,61 @@ class SearchPageContainer extends React.Component<
           path="/"
           render={() => <Link to="/search/data">Search data</Link>}
         />
-        <div>
-          <Grid
-            container
-            direction={this.props.sideLayout ? 'row' : 'column'}
-            justify="flex-start"
-            alignItems="flex-start"
-            spacing={spacing}
-            style={{ margin: 0, width: '100%' }}
-          >
-            <Grid item id="container-search-filters">
-              {this.props.sideLayout ? (
-                <Paper style={{ height: '100%', width: '100%' }}>
-                  <SearchBoxContainerSide />
-                </Paper>
-              ) : (
-                <Paper
-                  style={{ height: '100%', width: 'calc(70vw)', minWidth: 584 }}
-                >
-                  <SearchBoxContainer />
-                </Paper>
-              )}
-            </Grid>
-
-            <Grid item id="container-search-table">
-              <Paper
-                style={{
-                  height: containerHeight,
-                  minHeight: 326,
-                  width: 'calc(70vw)',
-                  minWidth: 584,
-                }}
+        <Route
+          path="/search/:hierarchy"
+          render={({ match }: RouteComponentProps<{ hierarchy: string }>) => (
+            <div>
+              <Grid
+                container
+                direction={this.props.sideLayout ? 'row' : 'column'}
+                justify="flex-start"
+                alignItems="flex-start"
+                spacing={spacing}
+                style={{ margin: 0, width: '100%' }}
               >
-                {/* Show loading progress if data is still being loaded */}
-                {this.props.loading && (
-                  <Grid item xs={12}>
-                    <LinearProgress color="secondary" />
-                  </Grid>
-                )}
-                <SearchPageTable containerHeight={containerHeight} />
-              </Paper>
-            </Grid>
-          </Grid>
-        </div>
+                <Grid item id="container-search-filters">
+                  {this.props.sideLayout ? (
+                    <Paper style={{ height: '100%', width: '100%' }}>
+                      <SearchBoxContainerSide />
+                    </Paper>
+                  ) : (
+                    <Paper
+                      style={{
+                        height: '100%',
+                        width: 'calc(70vw)',
+                        minWidth: 584,
+                      }}
+                    >
+                      <SearchBoxContainer />
+                    </Paper>
+                  )}
+                </Grid>
+
+                <Grid item id="container-search-table">
+                  <Paper
+                    style={{
+                      height: containerHeight,
+                      minHeight: 326,
+                      width: 'calc(70vw)',
+                      minWidth: 584,
+                    }}
+                  >
+                    {/* Show loading progress if data is still being loaded */}
+                    {this.props.loading && (
+                      <Grid item xs={12}>
+                        <LinearProgress color="secondary" />
+                      </Grid>
+                    )}
+                    <SearchPageTable
+                      containerHeight={containerHeight}
+                      hierarchy={match.params.hierarchy}
+                    />
+                  </Paper>
+                </Grid>
+              </Grid>
+            </div>
+          )}
+        />
       </Switch>
     );
   }

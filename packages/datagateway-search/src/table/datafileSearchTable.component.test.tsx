@@ -90,6 +90,32 @@ describe('Datafile search table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });
 
+  it('sends filterTable action on text filter', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatafileSearchTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const filterInput = wrapper
+      .find('[aria-label="Filter by datafiles.name"] input')
+      .first();
+    filterInput.instance().value = 'test';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[4]).toEqual(
+      filterTable('NAME', { type: 'include', value: 'test' })
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
+  });
+
   it('sends filterTable action on date filter', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
