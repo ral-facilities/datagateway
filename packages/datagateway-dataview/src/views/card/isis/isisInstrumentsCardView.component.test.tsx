@@ -59,8 +59,6 @@ describe('ISIS Instruments - Card View', () => {
           {
             id: 1,
             name: 'Test 1',
-            FACILITY_ID: 1,
-            URL: 'test url',
           },
         ],
         allIds: [1],

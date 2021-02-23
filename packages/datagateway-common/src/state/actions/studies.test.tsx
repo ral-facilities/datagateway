@@ -30,8 +30,6 @@ describe('Study actions', () => {
     const mockData: StudyInvestigation[] = [
       {
         id: 1,
-        STUDY_ID: 1,
-        INVESTIGATION_ID: 1,
         study: {
           id: 1,
           PID: 'doi 1',
@@ -42,8 +40,6 @@ describe('Study actions', () => {
       },
       {
         id: 2,
-        STUDY_ID: 2,
-        INVESTIGATION_ID: 2,
         study: {
           id: 2,
           PID: 'doi 2',
@@ -65,7 +61,7 @@ describe('Study actions', () => {
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { in: [1] },
+            'investigation.id': { in: [1] },
           }),
         },
         {
@@ -146,8 +142,12 @@ describe('Study actions', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          INVESTIGATION_ID: { in: [1] },
+          'investigation.id': { in: [1] },
         }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('investigation'),
       },
     ]);
     await asyncAction(dispatch, getState, null);
@@ -200,8 +200,12 @@ describe('Study actions', () => {
       {
         filterType: 'where',
         filterValue: JSON.stringify({
-          INVESTIGATION_ID: { in: [1] },
+          'investigation.id': { in: [1] },
         }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('investigation'),
       },
     ]);
     await asyncAction(dispatch, getState, null);

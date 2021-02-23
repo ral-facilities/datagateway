@@ -69,13 +69,13 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
   data={
     Array [
       Object {
+        "RB_NUMBER": "1",
         "doi": "doi 1",
         "endDate": "2019-06-11",
         "facility": Object {
           "facilityCycles": Array [
             Object {
               "endDate": "2019-07-01",
-              "FACILITY_ID": 8,
               "id": 8,
               "name": "Cycle name",
               "startDate": "2019-06-01",
@@ -89,27 +89,21 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           Object {
             "id": 1,
             "instrument": Object {
-              "FACILITY_ID": 8,
               "id": 3,
               "name": "LARMOR",
             },
-            "INSTRUMENT_ID": 3,
-            "INVESTIGATION_ID": 1,
           },
         ],
         "name": "Test 1 name",
-        "RB_NUMBER": "1",
         "size": 1,
         "startDate": "2019-06-10",
         "studyInvestigations": Array [
           Object {
             "id": 6,
-            "INVESTIGATION_ID": 1,
             "study": Object {
-              "id": 7,
               "PID": "study pid",
+              "id": 7,
             },
-            "STUDY_ID": 7,
           },
         ],
         "summary": "foo bar",

@@ -41,13 +41,11 @@ describe('Datafile details panel component', () => {
   });
 
   it('renders parameters tab when present in the data', () => {
-    rowData.datafileParameters = [
+    rowData.parameters = [
       {
         id: 2,
         stringValue: 'String test',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 3,
-        PARAMETERTYPE: {
+        type: {
           id: 3,
           name: 'String parameter',
           units: 'foo/s',
@@ -57,9 +55,7 @@ describe('Datafile details panel component', () => {
       {
         id: 4,
         numericValue: 1337,
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 5,
-        PARAMETERTYPE: {
+        type: {
           id: 5,
           name: 'Numeric parameter',
           units: 'bar/s',
@@ -69,9 +65,7 @@ describe('Datafile details panel component', () => {
       {
         id: 6,
         dateTimeValue: '2019-09-10 11:48:00',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 7,
-        PARAMETERTYPE: {
+        type: {
           id: 7,
           name: 'Datetime parameter',
           units: 'baz/s',
@@ -81,9 +75,7 @@ describe('Datafile details panel component', () => {
       {
         id: 8,
         dateTimeValue: '2019-09-10 11:48:00',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 9,
-        PARAMETERTYPE: {
+        type: {
           id: 9,
           name: 'Invalid parameter',
           units: 'n/a',
@@ -93,8 +85,6 @@ describe('Datafile details panel component', () => {
       {
         id: 10,
         stringValue: 'Missing PARAMETERTYPE',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 11,
       },
     ];
 
@@ -109,13 +99,11 @@ describe('Datafile details panel component', () => {
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
-    rowData.datafileParameters = [
+    rowData.parameters = [
       {
         id: 2,
         stringValue: 'String test',
-        DATAFILE_ID: 1,
-        PARAMETER_TYPE_ID: 3,
-        PARAMETERTYPE: {
+        type: {
           id: 3,
           name: 'String parameter',
           units: 'foo/s',

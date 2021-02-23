@@ -40,10 +40,10 @@ const DatafileDetailsPanel = (
   const datafileData = rowData as Datafile;
 
   React.useEffect(() => {
-    if (!datafileData.datafileParameters) {
+    if (!datafileData.parameters) {
       fetchDetails(datafileData.id);
     }
-  }, [datafileData.datafileParameters, datafileData.id, fetchDetails]);
+  }, [datafileData.parameters, datafileData.id, fetchDetails]);
 
   React.useLayoutEffect(() => {
     detailsPanelResize();
@@ -64,7 +64,7 @@ const DatafileDetailsPanel = (
           label={t('datafiles.details.label')}
           value="details"
         />
-        {datafileData.datafileParameters && (
+        {datafileData.parameters && (
           <Tab
             id="datafile-parameters-tab"
             aria-controls="datafile-parameters-panel"
@@ -104,7 +104,7 @@ const DatafileDetailsPanel = (
           </Grid>
         </Grid>
       </div>
-      {datafileData.datafileParameters && (
+      {datafileData.parameters && (
         <div
           id="datafile-parameters-panel"
           aria-labelledby="datafile-parameters-tab"
@@ -117,14 +117,14 @@ const DatafileDetailsPanel = (
             className={classes.root}
             direction="column"
           >
-            {datafileData.datafileParameters.map((parameter) => {
-              if (parameter.PARAMETERTYPE) {
-                switch (parameter.PARAMETERTYPE.valueType) {
+            {datafileData.parameters.map((parameter) => {
+              if (parameter.type) {
+                switch (parameter.type.valueType) {
                   case 'STRING':
                     return (
                       <Grid key={parameter.id} item xs>
                         <Typography variant="overline">
-                          {parameter.PARAMETERTYPE.name}
+                          {parameter.type.name}
                         </Typography>
                         <Typography>
                           <b>{parameter.stringValue}</b>
@@ -135,7 +135,7 @@ const DatafileDetailsPanel = (
                     return (
                       <Grid key={parameter.id} item xs>
                         <Typography variant="overline">
-                          {parameter.PARAMETERTYPE.name}
+                          {parameter.type.name}
                         </Typography>
                         <Typography>
                           <b>{parameter.numericValue}</b>
@@ -146,7 +146,7 @@ const DatafileDetailsPanel = (
                     return (
                       <Grid key={parameter.id} item xs>
                         <Typography variant="overline">
-                          {parameter.PARAMETERTYPE.name}
+                          {parameter.type.name}
                         </Typography>
                         <Typography>
                           <b>

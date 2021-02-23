@@ -10,11 +10,9 @@ exports[`Investigation - Card View renders correctly 1`] = `
     data={
       Array [
         Object {
-          "FACILITY_ID": "2",
           "id": 1,
           "name": "Test 1",
           "title": "Test 1",
-          "TYPE_ID": "2",
           "visitId": "1",
         },
       ]

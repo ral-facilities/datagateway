@@ -60,8 +60,6 @@ describe('ISIS Studies - Card View', () => {
         data: [
           {
             id: 1,
-            STUDY_ID: 1,
-            INVESTIGATION_ID: 1,
             study: {
               id: 1,
               PID: 'doi',

@@ -44,7 +44,6 @@ describe('ISIS FacilityCycles table component', () => {
         description: 'Test 1',
         startDate: '2019-07-03',
         endDate: '2019-07-04',
-        FACILITY_ID: 1,
       },
     ];
   });

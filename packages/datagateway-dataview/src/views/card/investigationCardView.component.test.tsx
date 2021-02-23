@@ -70,8 +70,6 @@ describe('Investigation - Card View', () => {
             title: 'Test 1',
             name: 'Test 1',
             visitId: '1',
-            TYPE_ID: '2',
-            FACILITY_ID: '2',
           },
         ],
         allIds: [1],

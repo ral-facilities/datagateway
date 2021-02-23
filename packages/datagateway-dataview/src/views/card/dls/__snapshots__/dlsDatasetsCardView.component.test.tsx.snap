@@ -12,7 +12,6 @@ exports[`DLS Datasets - Card View renders correctly 1`] = `
         Object {
           "createTime": "2019-07-23",
           "id": 1,
-          "INVESTIGATION_ID": 1,
           "modTime": "2019-07-23",
           "name": "Test 1",
         },

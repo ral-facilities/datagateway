@@ -27,13 +27,21 @@ const unmemoizedCheckInvestigationId = (
   datasetId: number
 ): Promise<boolean> => {
   return axios
-    .get(`${apiUrl}/datasets/${datasetId}`, {
+    .get(`${apiUrl}/datasets/findone`, {
+      params: {
+        where: {
+          id: {
+            eq: datasetId,
+          },
+        },
+        include: 'investigation',
+      },
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
     .then((response: AxiosResponse<Dataset>) => {
-      return response.data.INVESTIGATION_ID === investigationId;
+      return response.data.investigation?.id === investigationId;
     })
     .catch((error) => {
       handleICATError(error);

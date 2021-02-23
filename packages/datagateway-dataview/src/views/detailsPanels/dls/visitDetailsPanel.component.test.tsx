@@ -26,8 +26,6 @@ describe('Visit details panel component', () => {
       investigationInstruments: [
         {
           id: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
           instrument: {
             id: 3,
             name: 'LARMOR',
@@ -61,8 +59,6 @@ describe('Visit details panel component', () => {
     rowData.investigationUsers = [
       {
         id: 4,
-        INVESTIGATION_ID: 1,
-        USER_ID: 5,
         role: 'Investigator',
         user: {
           id: 5,
@@ -72,8 +68,6 @@ describe('Visit details panel component', () => {
       },
       {
         id: 9,
-        INVESTIGATION_ID: 1,
-        USER_ID: 10,
         role: 'Investigator',
         user: {
           id: 10,
@@ -85,7 +79,6 @@ describe('Visit details panel component', () => {
     rowData.samples = [
       {
         id: 7,
-        INVESTIGATION_ID: 1,
         name: 'Test sample',
       },
     ];
@@ -245,8 +238,6 @@ describe('Visit details panel component', () => {
     rowData.investigationUsers = [
       {
         id: 4,
-        INVESTIGATION_ID: 1,
-        USER_ID: 5,
         role: 'Investigator',
       },
     ];

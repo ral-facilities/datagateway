@@ -10,15 +10,13 @@ exports[`ISIS Studies - Card View renders correctly 1`] = `
       Array [
         Object {
           "id": 1,
-          "INVESTIGATION_ID": 1,
           "study": Object {
+            "PID": "doi",
             "createTime": "2000-01-01",
             "id": 1,
             "modTime": "2000-01-01",
             "name": "Test 1",
-            "PID": "doi",
           },
-          "STUDY_ID": 1,
         },
       ]
     }

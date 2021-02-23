@@ -8,10 +8,8 @@ exports[`ISIS Instruments - Card View renders correctly 1`] = `
     data={
       Array [
         Object {
-          "FACILITY_ID": 1,
           "id": 1,
           "name": "Test 1",
-          "url": "test url",
         },
       ]
     }

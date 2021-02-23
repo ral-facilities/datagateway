@@ -559,8 +559,6 @@ describe('DGCommon reducer', () => {
         investigationUsers: [
           {
             id: 3,
-            INVESTIGATION_ID: 1,
-            USER_ID: 4,
             role: 'Investigator',
             user: { id: 4, name: 'Louise' },
           },
@@ -729,14 +727,12 @@ describe('DGCommon reducer', () => {
           name: 'Test 1',
           modTime: '2019-06-10',
           createTime: '2019-06-11',
-          INVESTIGATION_ID: 1,
         },
         {
           id: 2,
           name: 'Test 2',
           modTime: '2019-06-10',
           createTime: '2019-06-12',
-          INVESTIGATION_ID: 1,
         },
       ];
 
@@ -776,14 +772,12 @@ describe('DGCommon reducer', () => {
           name: 'Test 1',
           modTime: '2019-06-10',
           createTime: '2019-06-11',
-          INVESTIGATION_ID: 1,
         },
         {
           id: 2,
           name: 'Test 2',
           modTime: '2019-06-10',
           createTime: '2019-06-12',
-          INVESTIGATION_ID: 1,
         },
       ];
 
@@ -791,7 +785,7 @@ describe('DGCommon reducer', () => {
 
       const datasetDetails = {
         ...mockData[0],
-        DATASETTYPE: {
+        type: {
           id: 3,
           name: 'Test type',
         },
@@ -1133,12 +1127,10 @@ describe('DGCommon reducer', () => {
 
       const datafileDetails: Datafile = {
         ...mockData[0],
-        datafileParameters: [
+        parameters: [
           {
             id: 3,
-            DATAFILE_ID: 1,
-            PARAMETER_TYPE_ID: 4,
-            PARAMETERTYPE: {
+            type: {
               id: 4,
               name: 'Test parameter type',
               units: 'Test unit',
@@ -1217,14 +1209,12 @@ describe('DGCommon reducer', () => {
           name: 'Test 1',
           modTime: '2019-06-10',
           createTime: '2019-06-11',
-          INVESTIGATION_ID: 1,
         },
         {
           id: 2,
           name: 'Test 2',
           modTime: '2019-06-10',
           createTime: '2019-06-12',
-          INVESTIGATION_ID: 1,
         },
       ];
 
@@ -1262,21 +1252,18 @@ describe('DGCommon reducer', () => {
           name: 'Test 1',
           modTime: '2019-10-08',
           createTime: '2019-10-08',
-          INVESTIGATION_ID: 1,
         },
         {
           id: 2,
           name: 'Test 2',
           modTime: '2019-10-08',
           createTime: '2019-10-08',
-          INVESTIGATION_ID: 1,
         },
         {
           id: 3,
           name: 'Test 3',
           modTime: '2019-10-08',
           createTime: '2019-10-08',
-          INVESTIGATION_ID: 1,
         },
       ];
 
@@ -1432,8 +1419,6 @@ describe('DGCommon reducer', () => {
         instrumentScientists: [
           {
             id: 3,
-            INSTRUMENT_ID: 1,
-            USER_ID: 4,
             user: { id: 4, name: 'Louise' },
           },
         ],
@@ -1564,8 +1549,6 @@ describe('DGCommon reducer', () => {
       const mockData: StudyInvestigation[] = [
         {
           id: 1,
-          STUDY_ID: 1,
-          INVESTIGATION_ID: 1,
           study: {
             id: 1,
             PID: 'doi 1',
@@ -1576,8 +1559,6 @@ describe('DGCommon reducer', () => {
         },
         {
           id: 2,
-          STUDY_ID: 2,
-          INVESTIGATION_ID: 2,
           study: {
             id: 2,
             PID: 'doi 2',

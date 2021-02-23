@@ -93,11 +93,18 @@ const InvestigationCardView = (
     fetchFacilityFilter();
   }, [fetchTypeFilter, fetchFacilityFilter]);
 
+  // TODO - Sort out TYPE_ID and FACILITY_ID in this file
   // Get the distinct 'TYPE_ID' options.
+  console.log('filter data');
+  console.log(filterData);
+  console.log('fetch type filter ()');
+  //console.log(fetchTypeFilter());
   const typeFilteredItems = React.useMemo(
     () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
     [filterData]
   );
+  console.log('type filtered items');
+  console.log(typeFilteredItems);
 
   // Get the distinct 'FACILITY_ID' options.
   const facilityFilteredItems = React.useMemo(
@@ -282,7 +289,15 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  fetchTypeFilter: () => dispatch(fetchFilter('investigation', 'TYPE_ID')),
+  fetchTypeFilter: () =>
+    dispatch(
+      fetchFilter('investigation', 'type.id', [
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('type'),
+        },
+      ])
+    ),
   fetchFacilityFilter: () =>
     dispatch(fetchFilter('investigation', 'FACILITY_ID')),
 

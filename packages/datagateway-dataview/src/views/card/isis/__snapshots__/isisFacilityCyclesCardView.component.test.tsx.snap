@@ -8,7 +8,6 @@ exports[`ISIS Facility Cycles - Card View renders correctly 1`] = `
     data={
       Array [
         Object {
-          "FACILITY_ID": 1,
           "id": 1,
           "name": "Test 1",
         },

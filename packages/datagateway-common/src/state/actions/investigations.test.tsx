@@ -49,12 +49,9 @@ describe('Investigation actions', () => {
       investigationInstruments: [
         {
           id: 3,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 4,
           instrument: {
             id: 4,
             name: 'LARMOR',
-            FACILITY_ID: 8,
           },
         },
       ],
@@ -72,12 +69,9 @@ describe('Investigation actions', () => {
       investigationInstruments: [
         {
           id: 5,
-          INVESTIGATION_ID: 2,
-          INSTRUMENT_ID: 3,
           instrument: {
             id: 4,
             name: 'LARMOR',
-            FACILITY_ID: 8,
           },
         },
       ],
@@ -431,8 +425,6 @@ describe('Investigation actions', () => {
         investigationUsers: [
           {
             id: 2,
-            INVESTIGATION_ID: 1,
-            USER_ID: 3,
             role: 'Investigator',
             user: {
               id: 3,

@@ -642,9 +642,9 @@ describe('Download Cart API functions test', () => {
         'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
         {
           params: {
-            include: '"DATASET"',
+            include: '{"dataset": "investigation"}',
             where: {
-              'DATASET.INVESTIGATION_ID': {
+              'dataset.investigation.id': {
                 eq: 2,
               },
             },
@@ -671,9 +671,9 @@ describe('Download Cart API functions test', () => {
         'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
         {
           params: {
-            include: '"DATASET"',
+            include: '{"dataset": "investigation"}',
             where: {
-              'DATASET.INVESTIGATION_ID': {
+              'dataset.investigation.id': {
                 eq: 2,
               },
             },

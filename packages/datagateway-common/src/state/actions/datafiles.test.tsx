@@ -261,7 +261,8 @@ describe('Datafile actions', () => {
       '/datafiles/count',
       expect.objectContaining({
         params: {
-          where: { dataset: { eq: 1 } },
+          where: { 'dataset.id': { eq: 1 } },
+          include: 'dataset',
         },
       })
     );
@@ -355,10 +356,7 @@ describe('Datafile actions', () => {
 
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ id: { eq: 1 } }));
-    params.append(
-      'include',
-      JSON.stringify({ datafileParameters: 'PARAMETERTYPE' })
-    );
+    params.append('include', JSON.stringify({ parameters: 'type' }));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles', {
       headers: { Authorization: 'Bearer null' },

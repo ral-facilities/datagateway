@@ -18,7 +18,6 @@ describe('Dataset details panel component', () => {
       name: 'Test 1',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
-      INVESTIGATION_ID: 1,
     };
   });
 
@@ -40,7 +39,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('renders type tab when present in the data', () => {
-    rowData.DATASETTYPE = {
+    rowData.type = {
       id: 7,
       name: 'Test type',
       description: 'Test type description',
@@ -57,7 +56,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
-    rowData.DATASETTYPE = {
+    rowData.type = {
       id: 7,
       name: 'Test type',
       description: 'Test type description',
@@ -79,7 +78,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('detailsPanelResize not called when not provided', () => {
-    rowData.DATASETTYPE = {
+    rowData.type = {
       id: 7,
       name: 'Test type',
       description: 'Test type description',

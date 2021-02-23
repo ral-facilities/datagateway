@@ -58,7 +58,6 @@ describe('ISIS Facility Cycles - Card View', () => {
           {
             id: 1,
             name: 'Test 1',
-            FACILITY_ID: 1,
           },
         ],
         allIds: [1],

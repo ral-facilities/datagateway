@@ -55,20 +55,15 @@ describe('ISIS Investigations table component', () => {
         investigationInstruments: [
           {
             id: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
             instrument: {
               id: 3,
               name: 'LARMOR',
-              FACILITY_ID: 8,
             },
           },
         ],
         studyInvestigations: [
           {
             id: 6,
-            STUDY_ID: 7,
-            INVESTIGATION_ID: 1,
             study: {
               id: 7,
               PID: 'study pid',
@@ -82,7 +77,6 @@ describe('ISIS Investigations table component', () => {
             {
               id: 8,
               name: 'Cycle name',
-              FACILITY_ID: 8,
               startDate: '2019-06-01',
               endDate: '2019-07-01',
             },
@@ -379,15 +373,11 @@ describe('ISIS Investigations table component', () => {
       investigationInstruments: [
         {
           id: 1,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 3,
         },
       ],
       studyInvestigations: [
         {
           id: 6,
-          STUDY_ID: 7,
-          INVESTIGATION_ID: 1,
         },
       ],
       facility: {

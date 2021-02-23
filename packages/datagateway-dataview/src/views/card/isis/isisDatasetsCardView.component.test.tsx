@@ -65,7 +65,6 @@ describe('ISIS Datasets - Card View', () => {
             size: 1,
             modTime: '2019-07-23',
             createTime: '2019-07-23',
-            INVESTIGATION_ID: 1,
           },
         ],
         allIds: [1],

@@ -17,7 +17,6 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
     Array [
       Object {
         "description": "foo bar",
-        "FACILITY_ID": 8,
         "fullName": "Test instrument 1",
         "id": 1,
         "name": "Test 1",
@@ -25,7 +24,6 @@ exports[`ISIS Instruments table component renders correctly 1`] = `
       },
       Object {
         "description": "foo bar",
-        "FACILITY_ID": 8,
         "id": 2,
         "name": "Test 2",
         "url": "test url",

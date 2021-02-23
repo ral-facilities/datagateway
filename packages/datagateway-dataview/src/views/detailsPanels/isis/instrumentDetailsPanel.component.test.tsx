@@ -40,8 +40,6 @@ describe('Instrument details panel component', () => {
     rowData.instrumentScientists = [
       {
         id: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
         user: {
           id: 5,
           name: 'Louise',
@@ -50,8 +48,6 @@ describe('Instrument details panel component', () => {
       },
       {
         id: 9,
-        INSTRUMENT_ID: 1,
-        USER_ID: 10,
         user: {
           id: 10,
           name: 'Louise',
@@ -73,8 +69,6 @@ describe('Instrument details panel component', () => {
     rowData.instrumentScientists = [
       {
         id: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
         user: {
           id: 5,
           name: 'Louise',
@@ -102,8 +96,6 @@ describe('Instrument details panel component', () => {
     rowData.instrumentScientists = [
       {
         id: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
         user: {
           id: 5,
           name: 'Louise',
@@ -140,8 +132,6 @@ describe('Instrument details panel component', () => {
     rowData.instrumentScientists = [
       {
         id: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
       },
     ];
 

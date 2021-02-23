@@ -31,7 +31,11 @@ describe('ID check functions', () => {
     const store = configureStore()({});
 
     await checkInvestigationId(1, 2);
-    expect(axios.get).toHaveBeenCalledWith('/datasets/2', {
+    expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
+      params: {
+        where: { id: { eq: 2 } },
+        include: 'investigation',
+      },
       headers: { Authorization: 'Bearer null' },
     });
     (axios.get as jest.Mock).mockClear();
@@ -42,7 +46,11 @@ describe('ID check functions', () => {
     });
 
     await checkInvestigationId(1, 2);
-    expect(axios.get).toHaveBeenCalledWith('/test/datasets/2', {
+    expect(axios.get).toHaveBeenCalledWith('/test/datasets/findone', {
+      params: {
+        where: { id: { eq: 2 } },
+        include: 'investigation',
+      },
       headers: { Authorization: 'Bearer null' },
     });
 
@@ -58,13 +66,17 @@ describe('ID check functions', () => {
       expect.assertions(2);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: { id: 2, name: 'Test dataset', INVESTIGATION_ID: 1 },
+          data: { id: 2, name: 'Test dataset', investigation: { id: 1 } },
         })
       );
 
       const result = await checkInvestigationId(1, 2);
       expect(result).toBe(true);
-      expect(axios.get).toHaveBeenCalledWith('/datasets/2', {
+      expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
+        params: {
+          where: { id: { eq: 2 } },
+          include: 'investigation',
+        },
         headers: { Authorization: 'Bearer null' },
       });
     });
@@ -72,7 +84,7 @@ describe('ID check functions', () => {
       expect.assertions(1);
       (axios.get as jest.Mock).mockImplementation(() =>
         Promise.resolve({
-          data: { id: 2, name: 'Test dataset', INVESTIGATION_ID: 3 },
+          data: { id: 2, name: 'Test dataset', investigation: { id: 3 } },
         })
       );
 

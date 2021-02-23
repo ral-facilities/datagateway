@@ -363,12 +363,12 @@ export const fetchInvestigationDatasetsCount = (
     const timestamp = Date.now();
     dispatch(fetchInvestigationDatasetsCountRequest(timestamp));
 
-    const params = new URLSearchParams();
-    params.append(
-      'where',
-      JSON.stringify({ 'investigation.id': { eq: investigationId } })
-    );
-    params.append('include', JSON.stringify('investigation'));
+    const params = {
+      where: {
+        'investigation.id': { eq: investigationId },
+      },
+      include: 'investigation',
+    };
 
     const { apiUrl } = getState().dgcommon.urls;
 

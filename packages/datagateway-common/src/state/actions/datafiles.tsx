@@ -220,9 +220,12 @@ export const fetchDatasetDatafilesCount = (
     const timestamp = Date.now();
     dispatch(fetchDatasetDatafilesCountRequest(timestamp));
 
-    const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ 'dataset.id': { eq: datasetId } }));
-    params.append('include', JSON.stringify('dataset'));
+    const params = {
+      where: {
+        'dataset.id': { eq: datasetId },
+      },
+      include: 'dataset',
+    };
 
     const { apiUrl } = getState().dgcommon.urls;
 

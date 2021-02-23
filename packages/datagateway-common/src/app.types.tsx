@@ -9,6 +9,7 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
+  // TODO - camelCase this
   RB_NUMBER?: string;
   doi?: string;
   startDate?: string;
@@ -29,13 +30,13 @@ export interface Dataset {
   name: string;
   modTime: string;
   createTime: string;
-  INVESTIGATION_ID: number;
   description?: string;
   startDate?: string;
   endDate?: string;
   size?: number;
   datafileCount?: number;
-  DATASETTYPE?: DatasetType;
+  investigation?: Investigation;
+  type?: DatasetType;
 }
 
 export interface Datafile {
@@ -47,15 +48,11 @@ export interface Datafile {
   fileSize?: number;
   location?: string;
   description?: string;
-  // TODO - this will change in API ICAT backend
-  datafileParameters?: DatafileParameter[];
+  parameters?: DatafileParameter[];
 }
 
 export interface InvestigationInstrument {
   id: number;
-  INSTRUMENT_ID: number;
-  INVESTIGATION_ID: number;
-  // TODO - Got to here
   instrument?: Instrument;
   investigation?: Investigation;
 }
@@ -75,8 +72,6 @@ export interface Instrument {
 
 export interface InvestigationUser {
   id: number;
-  USER_ID: number;
-  INVESTIGATION_ID: number;
   role: string;
   user?: User;
   investigation?: Investigation;
@@ -91,7 +86,6 @@ export interface User {
 export interface Sample {
   id: number;
   name: string;
-  INVESTIGATION_ID: number;
 }
 
 export interface Publication {
@@ -117,10 +111,7 @@ export interface DatasetType {
 
 export interface StudyInvestigation {
   id: number;
-  STUDY_ID: number;
-  INVESTIGATION_ID: number;
   study: Study;
-  // TODO - I left some of the search results 'unreplaced'
   investigation?: Investigation;
 }
 
@@ -137,8 +128,6 @@ interface Study {
 
 interface InstrumentScientist {
   id: number;
-  INSTRUMENT_ID: number;
-  USER_ID: number;
   instrument?: Instrument;
   user?: User;
 }
@@ -150,10 +139,8 @@ interface DatafileParameter {
   dateTimeValue?: string;
   rangeBottom?: number;
   rangeTop?: number;
-  DATAFILE_ID: number;
-  PARAMETER_TYPE_ID: number;
   datafile?: Datafile;
-  PARAMETERTYPE: ParameterType;
+  type: ParameterType;
 }
 
 interface ParameterType {

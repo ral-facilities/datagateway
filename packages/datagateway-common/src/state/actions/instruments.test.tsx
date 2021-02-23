@@ -207,8 +207,6 @@ describe('Instrument actions', () => {
         instrumentScientists: [
           {
             id: 2,
-            INSTRUMENT_ID: 1,
-            USER_ID: 3,
             user: {
               id: 3,
               name: 'Louise',

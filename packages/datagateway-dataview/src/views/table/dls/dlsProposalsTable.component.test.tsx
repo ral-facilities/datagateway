@@ -50,12 +50,9 @@ describe('DLS Proposals table component', () => {
         investigationInstruments: [
           {
             id: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
             instrument: {
               id: 3,
               name: 'LARMOR',
-              FACILITY_ID: 8,
             },
           },
         ],
