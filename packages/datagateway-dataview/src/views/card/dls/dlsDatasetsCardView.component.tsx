@@ -120,7 +120,7 @@ const DLSDatasetsCardView = (
   );
 
   const typeFilteredItems = React.useMemo(
-    () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
+    () => ('type.id' in filterData ? filterData['type.id'] : []),
     [filterData]
   );
 
@@ -303,7 +303,7 @@ const mapDispatchToProps = (
     dispatch(removeFromCart('dataset', entityIds)),
   fetchTypeFilter: (investigationId: number) =>
     dispatch(
-      fetchFilter('dataset', 'TYPE_ID', [
+      fetchFilter('dataset', 'type.id', [
         {
           filterType: 'where',
           filterValue: JSON.stringify({

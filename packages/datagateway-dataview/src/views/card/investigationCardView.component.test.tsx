@@ -215,8 +215,8 @@ describe('Investigation - Card View', () => {
 
   it('pushFilters dispatched by filter panel', () => {
     state.dgcommon.filterData = {
-      TYPE_ID: ['1', '2'],
-      FACILITY_ID: ['1', '2'],
+      'type.id': ['1', '2'],
+      'facility.id': ['1', '2'],
     };
     const wrapper = createWrapper();
 
@@ -236,8 +236,8 @@ describe('Investigation - Card View', () => {
 
   it('pushFilters dispatched by deleting chip', () => {
     state.dgcommon.filterData = {
-      TYPE_ID: ['1', '2'],
-      FACILITY_ID: ['1', '2'],
+      'type.id': ['1', '2'],
+      'facility.id': ['1', '2'],
     };
     state.dgcommon.query.filters = { TYPE_ID: ['1'] };
     const wrapper = createWrapper();

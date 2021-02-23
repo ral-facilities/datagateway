@@ -65,8 +65,6 @@ export interface Instrument {
   type?: string;
   url?: string;
   instrumentScientists?: InstrumentScientist[];
-  // TODO - these will have the same variable name now
-  FACILITY_ID: number;
   facility?: Facility;
 }
 
@@ -99,7 +97,6 @@ export interface FacilityCycle {
   description?: string;
   startDate?: string;
   endDate?: string;
-  FACILITY_ID: number;
   facility?: Facility;
 }
 

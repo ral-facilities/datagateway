@@ -92,7 +92,7 @@ const DLSVisitsCardView = (
   }, [proposalName, fetchTypeFilter]);
 
   const typeFilteredItems = React.useMemo(
-    () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
+    () => ('type.id' in filterData ? filterData['type.id'] : []),
     [filterData]
   );
 
@@ -232,7 +232,7 @@ const mapDispatchToProps = (
     dispatch(fetchInvestigationSize(investigationId)),
   fetchTypeFilter: (proposalName: string) =>
     dispatch(
-      fetchFilter('investigation', 'TYPE_ID', [
+      fetchFilter('investigation', 'type.id', [
         {
           filterType: 'where',
           filterValue: JSON.stringify({ name: { eq: proposalName } }),
