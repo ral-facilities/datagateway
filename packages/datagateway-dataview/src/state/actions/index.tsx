@@ -57,8 +57,9 @@ export const loadSelectAllSetting = (
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
-  const settingsPath = process.env.REACT_APP_DATAVIEW_SETTINGS_PATH
-    ? process.env.REACT_APP_DATAVIEW_SETTINGS_PATH
+  const settingsPath = process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY
+    ? process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY +
+      'datagateway-dataview-settings.json'
     : '/datagateway-dataview-settings.json';
   return async (dispatch) => {
     await axios

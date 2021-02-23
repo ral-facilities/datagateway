@@ -67,8 +67,9 @@ class ConfigProvider extends React.Component<
   }
 
   private updateConfigurationState = async (): Promise<void> => {
-    const settingsPath = process.env.REACT_APP_DOWNLOAD_SETTINGS_PATH
-      ? process.env.REACT_APP_DOWNLOAD_SETTINGS_PATH
+    const settingsPath = process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY
+      ? process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY +
+        'datagateway-download-settings.json'
       : '/datagateway-download-settings.json';
     const settings = await axios
       .get<DownloadSettings>(settingsPath)

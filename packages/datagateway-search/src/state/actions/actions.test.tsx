@@ -271,7 +271,7 @@ describe('Actions', () => {
   });
 
   it('logs an error if settings.json fails to be loaded with custom path', async () => {
-    process.env.REACT_APP_SEARCH_SETTINGS_PATH = 'custom/path.json';
+    process.env.REACT_APP_SEARCH_BUILD_DIRECTORY = '/custom/directory/';
     (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
 
     const asyncAction = configureApp();
@@ -280,9 +280,11 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      expect.stringContaining(`Error loading custom/path.json: `)
+      expect.stringContaining(
+        `Error loading /custom/directory/datagateway-search-settings.json: `
+      )
     );
-    delete process.env.REACT_APP_SEARCH_SETTINGS_PATH;
+    delete process.env.REACT_APP_SEARCH_BUILD_DIRECTORY;
   });
 
   it('logs an error if settings.json is invalid JSON object', async () => {

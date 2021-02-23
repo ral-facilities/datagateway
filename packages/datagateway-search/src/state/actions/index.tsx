@@ -19,8 +19,9 @@ export const settingsLoaded = (): Action => ({
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
-  const settingsPath = process.env.REACT_APP_SEARCH_SETTINGS_PATH
-    ? process.env.REACT_APP_SEARCH_SETTINGS_PATH
+  const settingsPath = process.env.REACT_APP_SEARCH_BUILD_DIRECTORY
+    ? process.env.REACT_APP_SEARCH_BUILD_DIRECTORY +
+      'datagateway-search-settings.json'
     : '/datagateway-search-settings.json';
   return async (dispatch) => {
     await axios

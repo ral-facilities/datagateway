@@ -400,7 +400,7 @@ describe('ConfigProvider', () => {
   });
 
   it('logs an error if settings.json fails to be loaded with custom path', async () => {
-    process.env.REACT_APP_DOWNLOAD_SETTINGS_PATH = 'custom/path.json';
+    process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY = '/custom/directory/';
     (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
 
     // Create the wrapper and wait for it to load.
@@ -415,9 +415,9 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading custom/path.json: undefined'
+      'Error loading /custom/directory/datagateway-download-settings.json: undefined'
     );
-    delete process.env.REACT_APP_DOWNLOAD_SETTINGS_PATH;
+    delete process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY;
   });
 
   it('logs an error if fails to load a settings.json and is still in a loading state', async () => {
