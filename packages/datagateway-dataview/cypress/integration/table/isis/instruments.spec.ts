@@ -89,7 +89,9 @@ describe('ISIS - Instruments Table', () => {
     });
 
     it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]').eq(2).click();
+      cy.get('[aria-label="Show details"]')
+        .eq(2)
+        .click({ scrollBehavior: 'center' });
 
       cy.get('[aria-label="Show details"]').first().click();
 
@@ -118,8 +120,9 @@ describe('ISIS - Instruments Table', () => {
         .should('be.visible');
 
       cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
-      cy.get('[aria-controls="instrument-users-panel"]').click();
-      cy.get('[aria-label="grid"]').scrollTo('top');
+      cy.get('[aria-controls="instrument-users-panel"]').click({
+        scrollBehavior: 'center',
+      });
       cy.get('#details-panel').contains('Matthew50').should('be.visible');
     });
 

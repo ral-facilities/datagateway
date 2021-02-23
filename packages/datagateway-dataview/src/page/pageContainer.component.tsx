@@ -44,7 +44,7 @@ const usePaperStyles = makeStyles(
     createStyles({
       cardPaper: { backgroundColor: 'inhereit' },
       tablePaper: {
-        height: 'calc(100vh - 150px)',
+        height: 'calc(100vh - 180px)',
         width: '100%',
         backgroundColor: 'inherit',
         overflowX: 'auto',
