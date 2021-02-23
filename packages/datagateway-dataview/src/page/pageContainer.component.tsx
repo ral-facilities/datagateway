@@ -510,12 +510,14 @@ class PageContainer extends React.Component<
 
           {/* Hold the table for remainder of the page */}
           <Grid item xs={12} aria-label="container-table">
-            <ViewRouting
-              view={this.props.query.view}
-              loadedCount={this.props.loadedCount}
-              totalDataCount={this.props.totalDataCount}
-              location={this.state.modifiedLocation}
-            />
+            {document.getElementById('datagateway-dataview') && (
+              <ViewRouting
+                view={this.props.query.view}
+                loadedCount={this.props.loadedCount}
+                totalDataCount={this.props.totalDataCount}
+                location={this.state.modifiedLocation}
+              />
+            )}
           </Grid>
         </StyledGrid>
       </Paper>

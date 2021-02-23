@@ -181,6 +181,9 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display filter warning on datafile table', () => {
+    // Mock getElementById so that it returns truthy.
+    const testElement = document.createElement('DIV');
+    document.getElementById = jest.fn(() => testElement);
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
@@ -222,6 +225,9 @@ describe('PageContainer - Tests', () => {
   });
 
   it('display filter warning on toggle table', () => {
+    // Mock getElementById so that it returns truthy.
+    const testElement = document.createElement('DIV');
+    document.getElementById = jest.fn(() => testElement);
     state = JSON.parse(
       JSON.stringify({
         dgcommon: {
