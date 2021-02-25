@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "husky": "^4.2.3",
+    "husky": "^5.1.1",
     "lerna": "^3.22.1",
     "lerna-update-wizard": "^0.17.7"
   },
