@@ -19,9 +19,13 @@ export const settingsLoaded = (): Action => ({
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
+  const settingsPath = process.env.REACT_APP_SEARCH_BUILD_DIRECTORY
+    ? process.env.REACT_APP_SEARCH_BUILD_DIRECTORY +
+      'datagateway-search-settings.json'
+    : '/datagateway-search-settings.json';
   return async (dispatch) => {
     await axios
-      .get('/datagateway-search-settings.json')
+      .get(settingsPath)
       .then((res) => {
         const settings = res.data;
 
@@ -155,9 +159,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(settingsLoaded());
       })
       .catch((error) => {
-        log.error(
-          `Error loading datagateway-search-settings.json: ${error.message}`
-        );
+        log.error(`Error loading ${settingsPath}: ${error.message}`);
       });
   };
 };
