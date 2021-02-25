@@ -1,75 +1,68 @@
 import DGCommonReducer, { initialState } from './dgcommon.reducer';
 import { DGCommonState, EntityCache, QueryParams } from '../app.types';
 import {
-  clearTable,
-  sortTable,
-  filterTable,
-  fetchDatafilesRequest,
-  fetchDatafilesSuccess,
-  fetchDatafilesFailure,
-  fetchDatasetDatafilesCountRequest,
-  fetchDatasetDatafilesCountSuccess,
-  fetchDatasetDatafilesCountFailure,
-  fetchInstrumentsRequest,
-  fetchInstrumentsSuccess,
-  fetchInstrumentsFailure,
-  fetchFacilityCyclesRequest,
-  fetchFacilityCyclesSuccess,
-  fetchFacilityCyclesFailure,
-  downloadDatafileRequest,
-  downloadDatafileSuccess,
-  downloadDatafileFailure,
-  fetchDatafileCountRequest,
-  fetchDatafileCountSuccess,
-  fetchDatafileCountFailure,
-  fetchInstrumentCountRequest,
-  fetchInstrumentCountSuccess,
-  fetchInstrumentCountFailure,
-  fetchFacilityCycleCountRequest,
-  fetchFacilityCycleCountSuccess,
-  fetchFacilityCycleCountFailure,
-  loadFacilityName,
-  loadUrls,
-  fetchInvestigationDetailsRequest,
-  fetchInvestigationDetailsSuccess,
-  fetchInvestigationDetailsFailure,
-  fetchInstrumentDetailsRequest,
-  fetchInstrumentDetailsSuccess,
-  fetchInstrumentDetailsFailure,
-  fetchDatafileDetailsRequest,
-  fetchDatafileDetailsSuccess,
-  fetchDatafileDetailsFailure,
-  fetchDownloadCartRequest,
-  fetchDownloadCartSuccess,
-  fetchDownloadCartFailure,
+  addToCartFailure,
   addToCartRequest,
   addToCartSuccess,
-  addToCartFailure,
-  removeFromCartRequest,
-  removeFromCartSuccess,
-  removeFromCartFailure,
+  clearTable,
+  downloadDatafileFailure,
+  downloadDatafileRequest,
+  downloadDatafileSuccess,
+  downloadDatasetFailure,
+  downloadDatasetRequest,
+  downloadDatasetSuccess,
+  fetchAllIdsFailure,
   fetchAllIdsRequest,
   fetchAllIdsSuccess,
-  fetchAllIdsFailure,
+  fetchDatafileCountFailure,
+  fetchDatafileCountRequest,
+  fetchDatafileCountSuccess,
+  fetchDatafileDetailsFailure,
+  fetchDatafileDetailsRequest,
+  fetchDatafileDetailsSuccess,
+  fetchDatafilesFailure,
+  fetchDatafilesRequest,
+  fetchDatafilesSuccess,
+  fetchDatasetCountFailure,
+  fetchDatasetCountRequest,
+  fetchDatasetCountSuccess,
+  fetchDatasetDatafilesCountFailure,
+  fetchDatasetDatafilesCountRequest,
+  fetchDatasetDatafilesCountSuccess,
+  fetchDatasetDetailsFailure,
+  fetchDatasetDetailsRequest,
+  fetchDatasetDetailsSuccess,
+  fetchDatasetsFailure,
   fetchDatasetSizeSuccess,
   fetchDatasetsRequest,
   fetchDatasetsSuccess,
-  fetchDatasetsFailure,
-  fetchDatasetDetailsRequest,
-  fetchDatasetDetailsSuccess,
-  fetchDatasetDetailsFailure,
+  fetchDownloadCartFailure,
+  fetchDownloadCartRequest,
+  fetchDownloadCartSuccess,
+  fetchFacilityCycleCountFailure,
+  fetchFacilityCycleCountRequest,
+  fetchFacilityCycleCountSuccess,
+  fetchFacilityCyclesFailure,
+  fetchFacilityCyclesRequest,
+  fetchFacilityCyclesSuccess,
+  fetchInstrumentCountFailure,
+  fetchInstrumentCountRequest,
+  fetchInstrumentCountSuccess,
+  fetchInstrumentDetailsFailure,
+  fetchInstrumentDetailsRequest,
+  fetchInstrumentDetailsSuccess,
+  fetchInstrumentsFailure,
+  fetchInstrumentsRequest,
+  fetchInstrumentsSuccess,
+  fetchInvestigationDatasetsCountFailure,
   fetchInvestigationDatasetsCountRequest,
   fetchInvestigationDatasetsCountSuccess,
-  fetchInvestigationDatasetsCountFailure,
-  downloadDatasetRequest,
-  downloadDatasetSuccess,
-  downloadDatasetFailure,
-  fetchDatasetCountRequest,
-  fetchDatasetCountSuccess,
-  fetchDatasetCountFailure,
+  fetchInvestigationDetailsFailure,
+  fetchInvestigationDetailsRequest,
+  fetchInvestigationDetailsSuccess,
+  fetchInvestigationSizeFailure,
   fetchInvestigationSizeRequest,
   fetchInvestigationSizeSuccess,
-  fetchInvestigationSizeFailure,
   fetchInvestigationsRequest,
   fetchInvestigationsSuccess,
   fetchInvestigationsFailure,
@@ -93,6 +86,13 @@ import {
   fetchStudyCountRequest,
   fetchStudyCountSuccess,
   fetchStudyCountFailure,
+  removeFromCartFailure,
+  removeFromCartSuccess,
+  removeFromCartRequest,
+  filterTable,
+  loadFacilityName,
+  loadUrls,
+  sortTable,
 } from '../actions';
 
 import {
@@ -104,6 +104,10 @@ import {
   DownloadCart,
   StudyInvestigation,
 } from '../../app.types';
+import {
+  fetchLuceneIdsRequest,
+  fetchLuceneIdsSuccess,
+} from '../actions/lucene';
 
 describe('DGCommon reducer', () => {
   let state: DGCommonState;
@@ -1788,6 +1792,55 @@ describe('DGCommon reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.error).toEqual('Test error message');
+    });
+  });
+
+  describe('FetchLuceneIds actions', () => {
+    it('should set state when given a FetchLuceneIdsRequest action', () => {
+      state = { ...initialState, loading: false };
+      expect(state.loading).toBe(false);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchLuceneIdsRequest(validTimestamp)
+      );
+      expect(updatedState.loading).toBe(true);
+      expect(updatedState.luceneIdsTimestamp).toEqual(validTimestamp);
+    });
+
+    it('should not set state when given a FetchLuceneIdsRequest action with invalid timestamp', () => {
+      state = { ...initialState, loading: false };
+      expect(state.loading).toBe(false);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchLuceneIdsRequest(invalidTimestamp)
+      );
+      expect(updatedState).toEqual(state);
+    });
+
+    it('should set state when given a FetchLuceneIdsSuccess action', () => {
+      state = { ...initialState, loading: true };
+      expect(state.loading).toBe(true);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchLuceneIdsSuccess([1], validTimestamp)
+      );
+      expect(updatedState.loading).toBe(false);
+      expect(updatedState.luceneIdsTimestamp).toEqual(validTimestamp);
+      expect(updatedState.luceneIds).toEqual([1]);
+    });
+
+    it('should not set state when given a FetchLuceneIdsSuccess action with invalid timestamp', () => {
+      state = { ...initialState, loading: true };
+      expect(state.loading).toBe(true);
+
+      const updatedState = DGCommonReducer(
+        state,
+        fetchLuceneIdsSuccess([1], invalidTimestamp)
+      );
+      expect(updatedState).toEqual(state);
     });
   });
 

@@ -6,7 +6,6 @@ import configureStore from 'redux-mock-store';
 import SearchButton from './searchButton.component';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
-import { initialState } from '../state/reducers/dgsearch.reducer';
 import axios from 'axios';
 import {
   setInvestigationTab,
@@ -15,6 +14,7 @@ import {
 } from '../state/actions/actions';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
+import { dGCommonInitialState } from 'datagateway-common';
 
 jest.mock('loglevel');
 
@@ -28,15 +28,7 @@ describe('Search Button component tests', () => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
 
-    state = JSON.parse(JSON.stringify({ dgsearch: initialState }));
-
-    state.dgcommon = {
-      urls: {
-        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-      },
-    };
-
-    state.dgsearch = {
+    const dGSearchInitialState = {
       searchText: '',
       text: '',
       selectDate: {
@@ -61,6 +53,28 @@ describe('Search Button component tests', () => {
         investigation: [],
       },
       settingsLoaded: true,
+      sideLayout: false,
+    };
+
+    state = {
+      dgcommon: {
+        ...dGCommonInitialState,
+        urls: {
+          ...dGCommonInitialState.urls,
+          downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+        },
+      },
+      dgsearch: dGSearchInitialState,
+      router: {
+        action: 'POP',
+        location: {
+          hash: '',
+          key: '',
+          pathname: '/',
+          search: '',
+          state: {},
+        },
+      },
     };
 
     mockStore = configureStore([thunk]);
@@ -100,7 +114,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -145,7 +159,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -190,7 +204,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -228,7 +242,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -271,7 +285,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -314,7 +328,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -351,7 +365,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -394,7 +408,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -437,7 +451,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -466,7 +480,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -505,7 +519,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {
@@ -544,7 +558,7 @@ describe('Search Button component tests', () => {
     wrapper
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
-    expect(axios.get).toHaveBeenCalledWith(
+    expect(axios.get).toHaveBeenLastCalledWith(
       'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
       {
         params: {

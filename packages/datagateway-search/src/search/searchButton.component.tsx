@@ -1,23 +1,20 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { StateType } from '../state/app.types';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { format } from 'date-fns';
+import { LuceneSearchParams } from 'datagateway-common';
+import React from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { Action, AnyAction } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 import {
-  toggleLuceneRequestReceived,
-  storeDatasetLucene,
-  storeDatafileLucene,
-  storeInvestigationLucene,
-  setDatasetTab,
+  fetchLuceneDatafiles,
+  fetchLuceneDatasets,
+  fetchLuceneInvestigations,
   setDatafileTab,
+  setDatasetTab,
   setInvestigationTab,
 } from '../state/actions/actions';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action, AnyAction } from 'redux';
-import { readSciGatewayToken } from 'datagateway-common';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { StateType } from '../state/app.types';
 
 interface SearchButtonStoreProps {
   searchText: string;
@@ -37,10 +34,10 @@ interface SearchButtonStoreProps {
 }
 
 interface SearchButtonDispatchProps {
-  toggleLuceneRequestReceived: (requestReceived: boolean) => Action;
-  storeDatasetLucene: (luceneData: number[]) => Action;
-  storeDatafileLucene: (luceneData: number[]) => Action;
-  storeInvestigationLucene: (luceneData: number[]) => Action;
+  fetchLuceneInvestigations: (params: LuceneSearchParams) => Promise<void>;
+  fetchLuceneDatasets: (params: LuceneSearchParams) => Promise<void>;
+  fetchLuceneDatafiles: (params: LuceneSearchParams) => Promise<void>;
+
   setDatasetTab: (toggleOption: boolean) => Action;
   setDatafileTab: (toggleOption: boolean) => Action;
   setInvestigationTab: (toggleOption: boolean) => Action;
@@ -50,114 +47,46 @@ type SearchButtonCombinedProps = WithTranslation &
   SearchButtonStoreProps &
   SearchButtonDispatchProps;
 
-interface QueryParameters {
-  text?: string;
-  lower?: string;
-  upper?: string;
-  target: string;
-}
-
-interface RequestParameters {
-  sessionId: string | null;
-  maxCount: number;
-}
-
-type LuceneParameters = QueryParameters | RequestParameters;
-
 class SearchButton extends React.Component<SearchButtonCombinedProps> {
   public constructor(props: SearchButtonCombinedProps) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
-    this.fetchLuceneResults = this.fetchLuceneResults.bind(this);
-    this.urlParamsBuilder = this.urlParamsBuilder.bind(this);
   }
-
-  public urlParamsBuilder = (datasearchtype: string): LuceneParameters => {
-    let stringStartDate =
-      this.props.startDate !== null
-        ? format(this.props.startDate, 'yyyy-MM-dd')
-        : '00000-01-01';
-    const stringStartDateArray = stringStartDate.split('-');
-    stringStartDate =
-      stringStartDateArray[0] +
-      stringStartDateArray[1] +
-      stringStartDateArray[2] +
-      '0000';
-
-    let stringEndDate =
-      this.props.endDate !== null
-        ? format(this.props.endDate, 'yyyy-MM-dd')
-        : '90000-12-31';
-    const stringEndDateArray = stringEndDate.split('-');
-    stringEndDate =
-      stringEndDateArray[0] +
-      stringEndDateArray[1] +
-      stringEndDateArray[2] +
-      '2359';
-
-    const query: QueryParameters = {
-      target: datasearchtype,
-    };
-
-    if (this.props.searchText.length > 0) {
-      query.text = this.props.searchText;
-    }
-    query.lower = stringStartDate;
-    query.upper = stringEndDate;
-
-    const queryParams = {
-      sessionId: readSciGatewayToken().sessionId,
-      query,
-      maxCount: 300,
-    };
-
-    return queryParams;
-  };
 
   public handleClick = async (
     event: React.MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
     if (this.props.dataset === true) {
-      const datasetParams = this.urlParamsBuilder('Dataset');
-      const luceneResults = await this.fetchLuceneResults(datasetParams);
-      const luceneResultIds = luceneResults.map((result) => result.id);
-      this.props.storeDatasetLucene(luceneResultIds);
-
-      this.props.toggleLuceneRequestReceived(true);
+      // Fetch lucene datasets
+      this.props.fetchLuceneDatasets({
+        searchText: this.props.searchText,
+        startDate: this.props.startDate,
+        endDate: this.props.endDate,
+      });
     }
-    if (this.props.datafile === true) {
-      const datafileParams = this.urlParamsBuilder('Datafile');
-      const luceneResults = await this.fetchLuceneResults(datafileParams);
-      const luceneResultIds = luceneResults.map((result) => result.id);
-      this.props.storeDatafileLucene(luceneResultIds);
 
-      this.props.toggleLuceneRequestReceived(true);
+    if (this.props.datafile === true) {
+      // Fetch lucene datafiles
+      this.props.fetchLuceneDatafiles({
+        searchText: this.props.searchText,
+        startDate: this.props.startDate,
+        endDate: this.props.endDate,
+      });
     }
     if (this.props.investigation === true) {
-      const investigationParams = this.urlParamsBuilder('Investigation');
-      const luceneResults = await this.fetchLuceneResults(investigationParams);
-      const luceneResultIds = luceneResults.map((result) => result.id);
-      this.props.storeInvestigationLucene(luceneResultIds);
-
-      this.props.toggleLuceneRequestReceived(true);
+      // Fetch lucene investigations
+      this.props.fetchLuceneInvestigations({
+        searchText: this.props.searchText,
+        startDate: this.props.startDate,
+        endDate: this.props.endDate,
+      });
     }
 
+    // Set the appropriate tabs.
     this.props.setDatafileTab(this.props.datafile);
     this.props.setDatasetTab(this.props.dataset);
     this.props.setInvestigationTab(this.props.investigation);
   };
-
-  public async fetchLuceneResults(
-    queryParams: LuceneParameters
-    // eslint-disable-next-line
-  ): Promise<any[]> {
-    const splitUrl = this.props.downloadApiUrl.split('/');
-    const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
-    const response = await axios.get(`${icatUrl}/lucene/data`, {
-      params: queryParams,
-    });
-    return response.data;
-  }
 
   public render(): React.ReactNode {
     return (
@@ -180,14 +109,13 @@ class SearchButton extends React.Component<SearchButtonCombinedProps> {
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): SearchButtonDispatchProps => ({
-  toggleLuceneRequestReceived: (requestReceived: boolean) =>
-    dispatch(toggleLuceneRequestReceived(requestReceived)),
-  storeDatasetLucene: (luceneData: number[]) =>
-    dispatch(storeDatasetLucene(luceneData)),
-  storeDatafileLucene: (luceneData: number[]) =>
-    dispatch(storeDatafileLucene(luceneData)),
-  storeInvestigationLucene: (luceneData: number[]) =>
-    dispatch(storeInvestigationLucene(luceneData)),
+  fetchLuceneInvestigations: (params: LuceneSearchParams) =>
+    dispatch(fetchLuceneInvestigations(params)),
+  fetchLuceneDatasets: (params: LuceneSearchParams) =>
+    dispatch(fetchLuceneDatasets(params)),
+  fetchLuceneDatafiles: (params: LuceneSearchParams) =>
+    dispatch(fetchLuceneDatafiles(params)),
+
   setDatasetTab: (toggleOption: boolean) =>
     dispatch(setDatasetTab(toggleOption)),
   setDatafileTab: (toggleOption: boolean) =>

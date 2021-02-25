@@ -1,28 +1,28 @@
+import axios from 'axios';
+import { Action } from 'redux';
+import { getApiFilter } from '.';
+import { DownloadCart, Investigation } from '../../app.types';
+import handleICATError from '../../handleICATError';
+import { readSciGatewayToken } from '../../parseTokens';
+import { ActionType, ThunkResult } from '../app.types';
 import {
-  FailurePayload,
-  DownloadCartPayload,
-  FetchDownloadCartSuccessType,
-  FetchDownloadCartFailureType,
-  FetchDownloadCartRequestType,
-  AddToCartSuccessType,
   AddToCartFailureType,
   AddToCartRequestType,
-  RemoveFromCartSuccessType,
+  AddToCartSuccessType,
+  DownloadCartPayload,
+  FailurePayload,
+  FetchAllIdsFailureType,
+  FetchAllIdsRequestType,
+  FetchAllIdsSuccessType,
+  FetchDownloadCartFailureType,
+  FetchDownloadCartRequestType,
+  FetchDownloadCartSuccessType,
+  FetchIdsSuccessPayload,
   RemoveFromCartFailureType,
   RemoveFromCartRequestType,
-  FetchAllIdsSuccessPayload,
-  FetchAllIdsSuccessType,
-  FetchAllIdsFailureType,
+  RemoveFromCartSuccessType,
   RequestPayload,
-  FetchAllIdsRequestType,
 } from './actions.types';
-import { ActionType, ThunkResult } from '../app.types';
-import { Action } from 'redux';
-import axios from 'axios';
-import { DownloadCart, Investigation } from '../../app.types';
-import { getApiFilter } from '.';
-import { readSciGatewayToken } from '../../parseTokens';
-import handleICATError from '../../handleICATError';
 
 export const fetchDownloadCartSuccess = (
   downloadCart: DownloadCart
@@ -175,7 +175,7 @@ export const removeFromCart = (
 export const fetchAllIdsSuccess = (
   allIds: number[],
   timestamp: number
-): ActionType<FetchAllIdsSuccessPayload> => ({
+): ActionType<FetchIdsSuccessPayload> => ({
   type: FetchAllIdsSuccessType,
   payload: {
     data: allIds,
