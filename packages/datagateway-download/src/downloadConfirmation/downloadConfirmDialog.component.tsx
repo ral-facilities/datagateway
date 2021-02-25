@@ -150,9 +150,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const settings = React.useContext(DownloadSettingsContext);
 
   // Sorting and loading status.
-  const [statusMethods, setStatusMethods] = React.useState<
-    DownloadConfirmAccessMethod
-  >(
+  const [
+    statusMethods,
+    setStatusMethods,
+  ] = React.useState<DownloadConfirmAccessMethod>(
     (): DownloadConfirmAccessMethod => {
       // Create an updated status method with disabled and message properties.
       const defaultStatusMethods: DownloadConfirmAccessMethod = {};

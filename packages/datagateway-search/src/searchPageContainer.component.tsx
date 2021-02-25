@@ -15,9 +15,7 @@ interface SearchPageContainerStoreProps {
   loading: boolean;
   sideLayout: boolean;
 }
-class SearchPageContainer extends React.Component<
-  SearchPageContainerStoreProps
-> {
+class SearchPageContainer extends React.Component<SearchPageContainerStoreProps> {
   public constructor(props: SearchPageContainerStoreProps) {
     super(props);
   }
