@@ -3,7 +3,7 @@ describe('DLS - Datafiles Table', () => {
     cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datasets/25').as('datasets');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit(
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
     ).wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {

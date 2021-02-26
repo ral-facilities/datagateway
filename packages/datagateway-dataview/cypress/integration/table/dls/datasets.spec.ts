@@ -4,7 +4,7 @@ describe('DLS - Datasets Table', () => {
     cy.intercept('/investigations/findone').as('investigationsFindOne');
     cy.intercept('/datasets/count?').as('datasetsCount');
     cy.intercept('/datasets?').as('datasets');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit(
       '/browse/proposal/INVESTIGATION%201/investigation/1/dataset'
     ).wait(

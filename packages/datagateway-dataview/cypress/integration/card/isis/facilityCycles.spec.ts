@@ -3,7 +3,7 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.intercept('**/facilitycycles/count*').as('getFacilityCyclesCount');
     cy.intercept('**/facilitycycles?order*').as('getFacilityCyclesOrder');
     cy.intercept('instruments/1').as('instrument');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browse/instrument/1/facilityCycle?view=card').wait(
       ['@instrument', '@getFacilityCyclesCount', '@getFacilityCyclesOrder'],
       { timeout: 10000 }

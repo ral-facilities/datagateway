@@ -2,7 +2,7 @@ describe('ISIS - Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }

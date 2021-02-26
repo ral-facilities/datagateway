@@ -1,6 +1,6 @@
 describe('ISIS - Instruments Table', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browse/instrument');
   });
 

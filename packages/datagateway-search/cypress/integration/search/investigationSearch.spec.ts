@@ -1,6 +1,6 @@
 describe('Investigation search tab', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/search/data/');
     cy.intercept('/investigations/count?where=%7B%22id').as(
       'investigationsCount'

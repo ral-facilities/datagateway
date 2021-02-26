@@ -2,7 +2,7 @@ describe('ISIS - Studies Cards', () => {
   beforeEach(() => {
     cy.intercept('**/studyinvestigations/count*').as('getStudiesCount');
     cy.intercept('**/studyinvestigations?order*').as('getStudiesOrder');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browseStudyHierarchy/instrument/1/study').wait(
       ['@getStudiesCount', '@getStudiesOrder'],
       { timeout: 10000 }

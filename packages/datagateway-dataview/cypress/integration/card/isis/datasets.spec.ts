@@ -2,7 +2,7 @@ describe('ISIS - Datasets Cards', () => {
   beforeEach(() => {
     cy.intercept('**/datasets/count*').as('getDatasetsCount');
     cy.intercept('**/datasets?order*').as('getDatasetsOrder');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
     ).wait(['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'], {

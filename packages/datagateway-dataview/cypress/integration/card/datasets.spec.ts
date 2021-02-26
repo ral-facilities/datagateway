@@ -2,7 +2,7 @@ describe('Datasets Cards', () => {
   beforeEach(() => {
     cy.intercept('**/datasets/count*').as('getDatasetsCount');
     cy.intercept('**/datasets?order*').as('getDatasetsOrder');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browse/investigation/1/dataset').wait(
       ['@getDatasetsCount', '@getDatasetsOrder', '@getDatasetsOrder'],
       { timeout: 10000 }

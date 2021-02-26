@@ -1,7 +1,7 @@
 describe('ISIS - MyData Table', () => {
   beforeEach(() => {
     cy.intercept('/investigations/count').as('getInvestigationCount');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/my-data/ISIS').wait(['@getInvestigationCount'], {
       timeout: 10000,
     });

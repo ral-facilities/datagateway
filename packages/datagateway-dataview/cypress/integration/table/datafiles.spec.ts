@@ -4,7 +4,7 @@ describe('Datafiles Table', () => {
     cy.intercept('/datasets/25').as('datasets');
     cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browse/investigation/1/dataset/25/datafile');
   });
 

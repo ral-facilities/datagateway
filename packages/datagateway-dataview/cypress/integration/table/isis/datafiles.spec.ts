@@ -5,7 +5,7 @@ describe('ISIS - Datafiles Table', () => {
     cy.intercept('/datasets/118').as('datasets');
     cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
     ).wait(

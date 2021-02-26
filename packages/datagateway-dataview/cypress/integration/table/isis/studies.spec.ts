@@ -1,6 +1,6 @@
 describe('ISIS - Studies Table', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browseStudyHierarchy/instrument/1/study');
   });
 

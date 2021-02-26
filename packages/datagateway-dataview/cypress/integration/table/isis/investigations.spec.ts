@@ -1,6 +1,6 @@
 describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login('root', 'pw');
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
   });
 
