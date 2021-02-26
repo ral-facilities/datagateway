@@ -34,7 +34,7 @@
     "redux-logger": "^3.0.6",
     "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.3.0",
-    "single-spa-react": "^3.0.0",
+    "single-spa-react": "^4.1.0",
     "typescript": "4.2.2",
     "tslib": "^2.1.0",
     "url-search-params-polyfill": "^8.1.0"
