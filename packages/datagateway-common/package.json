@@ -13,7 +13,7 @@
     "@types/lodash.debounce": "^4.0.6",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
-    "connected-react-router": "^6.5.2",
+    "connected-react-router": "^6.9.1",
     "date-fns": "^2.17.0",
     "lodash.debounce": "^4.0.8",
     "loglevel": "^1.7.1",
