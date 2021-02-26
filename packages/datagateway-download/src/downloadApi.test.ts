@@ -1,20 +1,20 @@
 import axios from 'axios';
+import { DownloadCartItem, handleICATError } from 'datagateway-common';
 import {
+  downloadDeleted,
+  downloadPreparedCart,
   fetchDownloadCartItems,
-  removeAllDownloadCartItems,
-  removeDownloadCartItem,
-  getSize,
-  getDatafileCount,
+  fetchDownloads,
   getCartDatafileCount,
   getCartSize,
-  submitCart,
-  getIsTwoLevel,
+  getDatafileCount,
   getDownload,
-  downloadPreparedCart,
-  fetchDownloads,
-  downloadDeleted,
+  getIsTwoLevel,
+  getSize,
+  removeAllDownloadCartItems,
+  removeDownloadCartItem,
+  submitCart,
 } from './downloadApi';
-import { DownloadCartItem, handleICATError } from 'datagateway-common';
 
 const settings = {
   facilityName: 'LILS',

@@ -236,7 +236,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: facilityName is undefined in settings'
+      'Error loading /datagateway-download-settings.json: facilityName is undefined in settings'
     );
   });
 
@@ -270,7 +270,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+      'Error loading /datagateway-download-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
     );
   });
 
@@ -300,7 +300,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: accessMethods is undefined in settings'
+      'Error loading /datagateway-download-settings.json: accessMethods is undefined in settings'
     );
   });
 
@@ -341,7 +341,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: Access method globus, defined in settings, does not contain a idsUrl'
+      'Error loading /datagateway-download-settings.json: Access method globus, defined in settings, does not contain a idsUrl'
     );
   });
 
@@ -372,7 +372,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: At least one access method should be defined under accessMethods in settings'
+      'Error loading /datagateway-download-settings.json: At least one access method should be defined under accessMethods in settings'
     );
   });
 
@@ -395,8 +395,29 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: Invalid format'
+      'Error loading /datagateway-download-settings.json: Invalid format'
     );
+  });
+
+  it('logs an error if settings.json fails to be loaded with custom path', async () => {
+    process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY = '/custom/directory/';
+    (axios.get as jest.Mock).mockImplementationOnce(() => Promise.reject({}));
+
+    // Create the wrapper and wait for it to load.
+    const wrapper = createWrapper();
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.exists('#settings')).toBe(false);
+    expect(log.error).toHaveBeenCalled();
+
+    const mockLog = (log.error as jest.Mock).mock;
+    expect(mockLog.calls[0][0]).toEqual(
+      'Error loading /custom/directory/datagateway-download-settings.json: undefined'
+    );
+    delete process.env.REACT_APP_DOWNLOAD_BUILD_DIRECTORY;
   });
 
   it('logs an error if fails to load a settings.json and is still in a loading state', async () => {
@@ -414,7 +435,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: undefined'
+      'Error loading /datagateway-download-settings.json: undefined'
     );
   });
 
@@ -453,7 +474,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: fileCountMax or totalSizeMax is undefined in settings'
+      'Error loading /datagateway-download-settings.json: fileCountMax or totalSizeMax is undefined in settings'
     );
   });
 
@@ -495,7 +516,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: No routes provided in the settings'
+      'Error loading /datagateway-download-settings.json: No routes provided in the settings'
     );
   });
 
@@ -544,7 +565,7 @@ describe('ConfigProvider', () => {
 
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading datagateway-download-settings.json: Route provided does not have all the required entries (section, link, displayName)'
+      'Error loading /datagateway-download-settings.json: Route provided does not have all the required entries (section, link, displayName)'
     );
   });
 });

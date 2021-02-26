@@ -53,6 +53,7 @@ export * from './facilityCycles';
 export * from './studies';
 export * from './instruments';
 export * from './investigations';
+export * from './lucene';
 
 // Get the nested value from an Entity object given a dataKey
 // which drills specifies the property or array indexes.

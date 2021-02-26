@@ -88,6 +88,7 @@ describe('Download Cart', () => {
 
     cy.get('@nameFilter').type('1');
     cy.get('[aria-rowcount=13]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo(0, 150);
     cy.contains('DATASET 31').should('be.visible');
 
     cy.get('[aria-label="Filter by Type"]')
