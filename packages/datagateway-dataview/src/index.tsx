@@ -66,7 +66,7 @@ export function bootstrap(props: unknown): Promise<void> {
     .then(() => {
       log.info(`${pluginName} has been successfully bootstrapped`);
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       log.error(`${pluginName} failed whilst bootstrapping: ${error}`);
     });
 }
@@ -77,7 +77,7 @@ export function mount(props: unknown): Promise<void> {
     .then(() => {
       log.info(`${pluginName} has been successfully mounted`);
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       log.error(`${pluginName} failed whilst mounting: ${error}`);
     });
 }
@@ -88,7 +88,7 @@ export function unmount(props: unknown): Promise<void> {
     .then(() => {
       log.info(`${pluginName} has been successfully unmounted`);
     })
-    .catch((error) => {
+    .catch((error: Error) => {
       log.error(`${pluginName} failed whilst unmounting: ${error}`);
     });
 }
