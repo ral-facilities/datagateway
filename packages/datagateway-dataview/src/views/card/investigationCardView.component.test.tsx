@@ -1,7 +1,7 @@
 import {
   Card,
   Chip,
-  ExpansionPanel,
+  Accordion,
   Link,
   ListItemText,
   SvgIcon,
@@ -224,7 +224,7 @@ describe('Investigation - Card View', () => {
     };
     const wrapper = createWrapper();
 
-    const typePanel = wrapper.find(ExpansionPanel).first();
+    const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');
