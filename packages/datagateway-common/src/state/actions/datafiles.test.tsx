@@ -257,14 +257,13 @@ describe('Datafile actions', () => {
     expect(actions[0]).toEqual(fetchDatasetDatafilesCountRequest(1));
     expect(actions[1]).toEqual(fetchDatasetDatafilesCountSuccess(1, 2, 1));
 
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('dataset'));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datafiles/count',
-      expect.objectContaining({
-        params: {
-          where: { 'dataset.id': { eq: 1 } },
-          include: 'dataset',
-        },
-      })
+      expect.objectContaining({ params })
     );
   });
 

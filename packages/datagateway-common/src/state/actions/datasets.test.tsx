@@ -464,14 +464,14 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
     expect(actions[1]).toEqual(fetchInvestigationDatasetsCountSuccess(1, 2, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('investigation'));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets/count',
-      expect.objectContaining({
-        params: {
-          where: { 'investigation.id': { eq: 1 } },
-          include: 'investigation',
-        },
-      })
+      expect.objectContaining({ params })
     );
   });
 
