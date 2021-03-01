@@ -96,11 +96,11 @@ describe('dgsearch reducer', () => {
   });
 
   it('should set currentTab property when setCurrentTab action is sent', () => {
-    expect(state.tabs.currentTab).toEqual('none');
+    expect(state.tabs.currentTab).toEqual('investigation');
 
-    const updatedState = DGSearchReducer(state, setCurrentTab('investigation'));
+    const updatedState = DGSearchReducer(state, setCurrentTab('dataset'));
 
-    expect(updatedState.tabs.currentTab).toEqual('investigation');
+    expect(updatedState.tabs.currentTab).toEqual('dataset');
   });
 
   it('should set start date property when select start date action is sent', () => {

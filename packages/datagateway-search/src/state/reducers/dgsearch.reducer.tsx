@@ -40,7 +40,7 @@ export const initialState: DGSearchState = {
     datasetTab: false,
     datafileTab: false,
     investigationTab: false,
-    currentTab: 'none',
+    currentTab: 'investigation',
   },
   requestReceived: false,
   searchData: {
