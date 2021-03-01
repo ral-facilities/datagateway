@@ -1,9 +1,9 @@
 import {
   Box,
   Chip,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   FormControl,
   Grid,
   InputLabel,
@@ -617,16 +617,16 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         Object.entries(filtersInfo).map(
                           ([filterKey, filter], filterIndex) => {
                             return (
-                              <ExpansionPanel
+                              <Accordion
                                 key={filterIndex}
                                 defaultExpanded={filter.hasSelectedItems}
                               >
-                                <ExpansionPanelSummary
+                                <AccordionSummary
                                   expandIcon={<ExpandMoreIcon />}
                                 >
                                   <Typography>{filter.label}</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
+                                </AccordionSummary>
+                                <AccordionDetails>
                                   <div className={classes.expandDetails}>
                                     <List component="nav">
                                       {Object.entries(filter.items).map(
@@ -653,8 +653,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                       )}
                                     </List>
                                   </div>
-                                </ExpansionPanelDetails>
-                              </ExpansionPanel>
+                                </AccordionDetails>
+                              </Accordion>
                             );
                           }
                         )}

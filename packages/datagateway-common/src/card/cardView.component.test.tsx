@@ -1,7 +1,7 @@
 import {
   Button,
   Chip,
-  ExpansionPanel,
+  Accordion,
   ListItemText,
   Select,
   SvgIcon,
@@ -90,7 +90,7 @@ describe('Card View', () => {
     expect(wrapper.find('#card').find(Chip).text()).toEqual('1');
 
     // Open custom filters
-    const typePanel = wrapper.find(ExpansionPanel).first();
+    const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');
@@ -163,7 +163,7 @@ describe('Card View', () => {
     expect(wrapper.find('#card').find(Chip).text()).toEqual('1');
 
     // Open custom filters
-    const typePanel = wrapper.find(ExpansionPanel).first();
+    const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');
