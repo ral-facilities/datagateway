@@ -1001,7 +1001,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                     <span
                                                       className="MuiIconButton-label"
                                                     >
-                                                      <ForwardRef>
+                                                      <ForwardRef(CloseIcon)>
                                                         <WithStyles(ForwardRef(SvgIcon))>
                                                           <ForwardRef(SvgIcon)
                                                             classes={
@@ -1030,7 +1030,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             </svg>
                                                           </ForwardRef(SvgIcon)>
                                                         </WithStyles(ForwardRef(SvgIcon))>
-                                                      </ForwardRef>
+                                                      </ForwardRef(CloseIcon)>
                                                     </span>
                                                     <WithStyles(memo)
                                                       center={true}
@@ -4952,7 +4952,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                     <span
                                                       className="MuiIconButton-label"
                                                     >
-                                                      <ForwardRef>
+                                                      <ForwardRef(CloseIcon)>
                                                         <WithStyles(ForwardRef(SvgIcon))>
                                                           <ForwardRef(SvgIcon)
                                                             classes={
@@ -4981,7 +4981,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             </svg>
                                                           </ForwardRef(SvgIcon)>
                                                         </WithStyles(ForwardRef(SvgIcon))>
-                                                      </ForwardRef>
+                                                      </ForwardRef(CloseIcon)>
                                                     </span>
                                                     <WithStyles(memo)
                                                       center={true}

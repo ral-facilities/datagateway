@@ -10,7 +10,7 @@ exports[`Expand cell component renders correctly when expanded 1`] = `
     aria-label="Hide details"
     onClick={[Function]}
   >
-    <ExpandLessIcon />
+    <Memo(ForwardRef(ExpandLessIcon)) />
   </WithStyles(ForwardRef(IconButton))>
 </div>
 `;
@@ -25,7 +25,7 @@ exports[`Expand cell component renders correctly when not expanded 1`] = `
     aria-label="Show details"
     onClick={[Function]}
   >
-    <ExpandMoreIcon />
+    <Memo(ForwardRef(ExpandMoreIcon)) />
   </WithStyles(ForwardRef(IconButton))>
 </div>
 `;
