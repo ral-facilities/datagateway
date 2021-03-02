@@ -259,11 +259,19 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         <Route
           exact
           path={paths.toggle.dlsVisit}
-          render={({ match }: RouteComponentProps<{ proposalName: string }>) =>
+          render={({
+            match,
+          }: RouteComponentProps<{
+            [x: string]: string | undefined;
+          }>) =>
             this.props.view === 'card' ? (
-              <DLSVisitsCardView proposalName={match.params.proposalName} />
+              <DLSVisitsCardView
+                proposalName={match.params.proposalName as string}
+              />
             ) : (
-              <DLSVisitsTable proposalName={match.params.proposalName} />
+              <DLSVisitsTable
+                proposalName={match.params.proposalName as string}
+              />
             )
           }
         />
@@ -273,18 +281,17 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            proposalName: string;
-            investigationId: string;
+            [x: string]: string | undefined;
           }>) =>
             this.props.view === 'card' ? (
               <SafeDLSDatasetsCardView
-                proposalName={match.params.proposalName}
-                investigationId={match.params.investigationId}
+                proposalName={match.params.proposalName as string}
+                investigationId={match.params.investigationId as string}
               />
             ) : (
               <SafeDLSDatasetsTable
-                proposalName={match.params.proposalName}
-                investigationId={match.params.investigationId}
+                proposalName={match.params.proposalName as string}
+                investigationId={match.params.investigationId as string}
               />
             )
           }
@@ -295,10 +302,14 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            proposalName: string;
-            investigationId: string;
-            datasetId: string;
-          }>) => <SafeDLSDatafilesTable {...match.params} />}
+            [x: string]: string | undefined;
+          }>) => (
+            <SafeDLSDatafilesTable
+              proposalName={match.params.proposalName as string}
+              investigationId={match.params.investigationId as string}
+              datasetId={match.params.datasetId as string}
+            />
+          )}
         />
         {/* ISIS studyHierarchy routes */}
         <Route
@@ -315,11 +326,19 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         <Route
           exact
           path={paths.studyHierarchy.toggle.isisStudy}
-          render={({ match }: RouteComponentProps<{ instrumentId: string }>) =>
+          render={({
+            match,
+          }: RouteComponentProps<{
+            [instrumentId: string]: string | undefined;
+          }>) =>
             this.props.view === 'card' ? (
-              <ISISStudiesCardView instrumentId={match.params.instrumentId} />
+              <ISISStudiesCardView
+                instrumentId={match.params.instrumentId as string}
+              />
             ) : (
-              <ISISStudiesTable instrumentId={match.params.instrumentId} />
+              <ISISStudiesTable
+                instrumentId={match.params.instrumentId as string}
+              />
             )
           }
         />
@@ -329,20 +348,19 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            instrumentId: string;
-            studyId: string;
+            [x: string]: string | undefined;
           }>) =>
             this.props.view === 'card' ? (
               <ISISInvestigationsCardView
                 studyHierarchy={true}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.studyId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.studyId as string}
               />
             ) : (
               <ISISInvestigationsTable
                 studyHierarchy={true}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.studyId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.studyId as string}
               />
             )
           }
@@ -353,23 +371,21 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            instrumentId: string;
-            studyId: string;
-            investigationId: string;
+            [x: string]: string | undefined;
           }>) =>
             this.props.view === 'card' ? (
               <SafeISISDatasetsCardView
                 studyHierarchy={true}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.studyId}
-                investigationId={match.params.investigationId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.studyId as string}
+                investigationId={match.params.investigationId as string}
               />
             ) : (
               <SafeISISDatasetsTable
                 studyHierarchy={true}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.studyId}
-                investigationId={match.params.investigationId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.studyId as string}
+                investigationId={match.params.investigationId as string}
               />
             )
           }
@@ -380,17 +396,14 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            instrumentId: string;
-            studyId: string;
-            investigationId: string;
-            datasetId: string;
+            [x: string]: string | undefined;
           }>) => (
             <SafeISISDatafilesTable
               studyHierarchy={true}
-              instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.studyId}
-              investigationId={match.params.investigationId}
-              datasetId={match.params.datasetId}
+              instrumentId={match.params.instrumentId as string}
+              instrumentChildId={match.params.studyId as string}
+              investigationId={match.params.investigationId as string}
+              datasetId={match.params.datasetId as string}
             />
           )}
         />
@@ -409,14 +422,18 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
         <Route
           exact
           path={paths.toggle.isisFacilityCycle}
-          render={({ match }: RouteComponentProps<{ instrumentId: string }>) =>
+          render={({
+            match,
+          }: RouteComponentProps<{
+            [instrumentId: string]: string | undefined;
+          }>) =>
             this.props.view === 'card' ? (
               <ISISFacilityCyclesCardView
-                instrumentId={match.params.instrumentId}
+                instrumentId={match.params.instrumentId as string}
               />
             ) : (
               <ISISFacilityCyclesTable
-                instrumentId={match.params.instrumentId}
+                instrumentId={match.params.instrumentId as string}
               />
             )
           }
@@ -427,20 +444,19 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            instrumentId: string;
-            facilityCycleId: string;
+            [x: string]: string | undefined;
           }>) =>
             this.props.view === 'card' ? (
               <ISISInvestigationsCardView
                 studyHierarchy={false}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.facilityCycleId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.facilityCycleId as string}
               />
             ) : (
               <ISISInvestigationsTable
                 studyHierarchy={false}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.facilityCycleId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.facilityCycleId as string}
               />
             )
           }
@@ -451,23 +467,21 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            instrumentId: string;
-            facilityCycleId: string;
-            investigationId: string;
+            [x: string]: string | undefined;
           }>) =>
             this.props.view === 'card' ? (
               <SafeISISDatasetsCardView
                 studyHierarchy={false}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.facilityCycleId}
-                investigationId={match.params.investigationId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.facilityCycleId as string}
+                investigationId={match.params.investigationId as string}
               />
             ) : (
               <SafeISISDatasetsTable
                 studyHierarchy={false}
-                instrumentId={match.params.instrumentId}
-                instrumentChildId={match.params.facilityCycleId}
-                investigationId={match.params.investigationId}
+                instrumentId={match.params.instrumentId as string}
+                instrumentChildId={match.params.facilityCycleId as string}
+                investigationId={match.params.investigationId as string}
               />
             )
           }
@@ -478,17 +492,14 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            instrumentId: string;
-            facilityCycleId: string;
-            investigationId: string;
-            datasetId: string;
+            [x: string]: string | undefined;
           }>) => (
             <SafeISISDatafilesTable
               studyHierarchy={false}
-              instrumentId={match.params.instrumentId}
-              instrumentChildId={match.params.facilityCycleId}
-              investigationId={match.params.investigationId}
-              datasetId={match.params.datasetId}
+              instrumentId={match.params.instrumentId as string}
+              instrumentChildId={match.params.facilityCycleId as string}
+              investigationId={match.params.investigationId as string}
+              datasetId={match.params.datasetId as string}
             />
           )}
         />
@@ -508,11 +519,17 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.toggle.dataset}
           render={({
             match,
-          }: RouteComponentProps<{ investigationId: string }>) =>
+          }: RouteComponentProps<{
+            [investigationId: string]: string | undefined;
+          }>) =>
             this.props.view === 'card' ? (
-              <DatasetCardView investigationId={match.params.investigationId} />
+              <DatasetCardView
+                investigationId={match.params.investigationId as string}
+              />
             ) : (
-              <DatasetTable investigationId={match.params.investigationId} />
+              <DatasetTable
+                investigationId={match.params.investigationId as string}
+              />
             )
           }
         />
@@ -522,12 +539,11 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           render={({
             match,
           }: RouteComponentProps<{
-            investigationId: string;
-            datasetId: string;
+            [x: string]: string | undefined;
           }>) => (
             <SafeDatafileTable
-              datasetId={match.params.datasetId}
-              investigationId={match.params.investigationId}
+              datasetId={match.params.datasetId as string}
+              investigationId={match.params.investigationId as string}
             />
           )}
         />
