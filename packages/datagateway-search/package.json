@@ -93,7 +93,7 @@
     "@types/jsrsasign": "^8.0.3",
     "@types/loglevel": "^1.6.3",
     "@types/react-redux": "^7.1.16",
-    "@types/react-router": "^5.1.8",
+    "@types/react-router": "^5.1.12",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-virtualized": "^9.21.10",
     "@types/redux-logger": "^3.0.8",
