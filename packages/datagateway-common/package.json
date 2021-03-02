@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.9.1",
+    "@material-ui/icons": "^4.11.2",
     "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.4",
     "@types/node": "^14.14.31",

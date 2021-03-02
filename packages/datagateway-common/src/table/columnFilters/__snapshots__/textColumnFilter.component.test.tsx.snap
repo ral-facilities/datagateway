@@ -14,8 +14,6 @@ exports[`Text filter component renders correctly 1`] = `
             Object {
               "$$typeof": Symbol(react.memo),
               "compare": null,
-              "displayName": "SettingsIcon",
-              "muiName": "SvgIcon",
               "type": Object {
                 "$$typeof": Symbol(react.forward_ref),
                 "render": [Function],

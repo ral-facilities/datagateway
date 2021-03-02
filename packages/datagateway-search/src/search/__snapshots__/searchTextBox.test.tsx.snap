@@ -9,7 +9,7 @@ exports[`Search text box component tests renders correctly 1`] = `
         "endAdornment": <WithStyles(ForwardRef(InputAdornment))
           position="start"
         >
-          <Memo(SearchIcon) />
+          <Memo />
         </WithStyles(ForwardRef(InputAdornment))>,
       }
     }
