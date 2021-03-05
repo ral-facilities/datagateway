@@ -19,7 +19,7 @@ describe('Investigation details panel component', () => {
       name: 'Test 1',
       summary: 'foo bar',
       visitId: '1',
-      RB_NUMBER: '1',
+      rbNumber: '1',
       doi: 'doi 1',
       size: 1,
       investigationInstruments: [

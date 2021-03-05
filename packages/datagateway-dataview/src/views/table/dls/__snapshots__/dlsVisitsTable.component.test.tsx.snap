@@ -43,7 +43,6 @@ exports[`DLS Visits table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "RB_NUMBER": "1",
         "doi": "doi 1",
         "endDate": "2019-06-11",
         "id": 1,
@@ -57,6 +56,7 @@ exports[`DLS Visits table component renders correctly 1`] = `
           },
         ],
         "name": "Test 1",
+        "rbNumber": "1",
         "size": 1,
         "startDate": "2019-06-10",
         "summary": "foo bar",

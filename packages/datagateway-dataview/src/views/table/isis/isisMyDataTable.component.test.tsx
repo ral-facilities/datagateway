@@ -49,7 +49,7 @@ describe('ISIS Investigations table component', () => {
         name: 'Test 1 name',
         summary: 'foo bar',
         visitId: '1',
-        RB_NUMBER: '1',
+        rbNumber: '1',
         doi: 'doi 1',
         size: 1,
         investigationInstruments: [

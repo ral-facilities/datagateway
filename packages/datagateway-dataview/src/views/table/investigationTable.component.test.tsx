@@ -46,7 +46,7 @@ describe('Investigation table component', () => {
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
-        RB_NUMBER: '1',
+        rbNumber: '1',
         doi: 'doi 1',
         size: 1,
         instrument: {

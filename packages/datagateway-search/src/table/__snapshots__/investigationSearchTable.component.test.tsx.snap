@@ -21,7 +21,7 @@ exports[`Investigation Search Table component renders correctly 1`] = `
         "label": "investigations.visitId",
       },
       Object {
-        "dataKey": "RB_NUMBER",
+        "dataKey": "rbNumber",
         "filterComponent": [Function],
         "label": "investigations.rb_number",
       },
@@ -60,7 +60,6 @@ exports[`Investigation Search Table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "RB_NUMBER": "1",
         "doi": "doi 1",
         "endDate": "2019-06-11",
         "id": 1,
@@ -74,6 +73,7 @@ exports[`Investigation Search Table component renders correctly 1`] = `
           },
         ],
         "name": "Test 1",
+        "rbNumber": "1",
         "size": 1,
         "startDate": "2019-06-10",
         "studyInvestigations": Array [

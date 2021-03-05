@@ -9,8 +9,7 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
-  // TODO - camelCase this
-  RB_NUMBER?: string;
+  rbNumber?: string;
   doi?: string;
   startDate?: string;
   endDate?: string;
