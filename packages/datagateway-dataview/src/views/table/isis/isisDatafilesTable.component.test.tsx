@@ -51,7 +51,6 @@ describe('ISIS datafiles table component', () => {
         fileSize: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
-        dataset: 1,
       },
     ];
     state.dgcommon.allIds = [1];

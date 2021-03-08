@@ -268,7 +268,11 @@ const mapDispatchToProps = (
         additionalFilters: [
           {
             filterType: 'where',
-            filterValue: JSON.stringify({ dataset: { eq: datasetId } }),
+            filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('dataset'),
           },
         ],
       })
@@ -278,7 +282,11 @@ const mapDispatchToProps = (
       fetchDatafileCount([
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ dataset: { eq: datasetId } }),
+          filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('dataset'),
         },
       ])
     ),
@@ -294,8 +302,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            dataset: { eq: parseInt(ownProps.datasetId) },
+            'dataset.id': { eq: parseInt(ownProps.datasetId) },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('dataset'),
         },
       ])
     ),

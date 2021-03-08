@@ -19,7 +19,6 @@ describe('Datafile details panel component', () => {
       location: '/test/location',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
-      dataset: 1,
     };
   });
 

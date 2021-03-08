@@ -371,10 +371,11 @@ export const getDatafileCount: (
       .get<number>(`${settings.apiUrl}/datafiles/count`, {
         params: {
           where: {
-            dataset: {
+            'dataset.id': {
               eq: entityId,
             },
           },
+          include: 'dataset',
         },
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,

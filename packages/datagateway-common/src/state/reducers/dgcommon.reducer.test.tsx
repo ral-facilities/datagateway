@@ -1020,7 +1020,6 @@ describe('DGCommon reducer', () => {
           fileSize: 1,
           modTime: '2019-06-10',
           createTime: '2019-06-10',
-          dataset: 1,
         },
         {
           id: 2,
@@ -1029,7 +1028,6 @@ describe('DGCommon reducer', () => {
           fileSize: 2,
           modTime: '2019-06-10',
           createTime: '2019-06-10',
-          dataset: 1,
         },
       ];
 
@@ -1110,7 +1108,6 @@ describe('DGCommon reducer', () => {
           fileSize: 1,
           modTime: '2019-06-10',
           createTime: '2019-06-10',
-          dataset: 1,
         },
         {
           id: 2,
@@ -1119,7 +1116,6 @@ describe('DGCommon reducer', () => {
           fileSize: 2,
           modTime: '2019-06-10',
           createTime: '2019-06-10',
-          dataset: 1,
         },
       ];
 

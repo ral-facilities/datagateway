@@ -220,7 +220,6 @@ describe('Actions', () => {
       name: 'test',
       modTime: '2019-09-17 00:00:00',
       createTime: '2019-09-17 00:00:00',
-      dataset: 0,
       test: null,
     };
     expect(nestedValue(datafileEntity, 'test')).toEqual('');

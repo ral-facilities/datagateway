@@ -37,7 +37,6 @@ describe('Datafile actions', () => {
       fileSize: 1,
       modTime: '2019-06-10',
       createTime: '2019-06-10',
-      dataset: 1,
     },
     {
       id: 2,
@@ -46,7 +45,6 @@ describe('Datafile actions', () => {
       fileSize: 2,
       modTime: '2019-06-10',
       createTime: '2019-06-10',
-      dataset: 1,
     },
   ];
 
@@ -75,7 +73,11 @@ describe('Datafile actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ dataset: { eq: 1 } }),
+          filterValue: JSON.stringify({ 'dataset.id': { eq: 1 } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('dataset'),
         },
       ],
     });
@@ -86,7 +88,8 @@ describe('Datafile actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('id asc'));
-    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('dataset'));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles', {
       headers: { Authorization: 'Bearer null' },
@@ -105,7 +108,11 @@ describe('Datafile actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ dataset: { eq: 1 } }),
+          filterValue: JSON.stringify({ 'dataset.id': { eq: 1 } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('dataset'),
         },
       ],
     });
@@ -130,7 +137,8 @@ describe('Datafile actions', () => {
     params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('dataset'));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles', {
       headers: { Authorization: 'Bearer null' },
@@ -167,7 +175,11 @@ describe('Datafile actions', () => {
     const asyncAction = fetchDatafileCount([
       {
         filterType: 'where',
-        filterValue: JSON.stringify({ dataset: { eq: 1 } }),
+        filterValue: JSON.stringify({ 'dataset.id': { eq: 1 } }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('dataset'),
       },
     ]);
     await asyncAction(dispatch, getState, null);
@@ -176,7 +188,8 @@ describe('Datafile actions', () => {
     expect(actions[1]).toEqual(fetchDatafileCountSuccess(5, 1));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('dataset'));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles/count', {
       headers: { Authorization: 'Bearer null' },
@@ -194,7 +207,11 @@ describe('Datafile actions', () => {
     const asyncAction = fetchDatafileCount([
       {
         filterType: 'where',
-        filterValue: JSON.stringify({ dataset: { eq: 1 } }),
+        filterValue: JSON.stringify({ 'dataset.id': { eq: 1 } }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('dataset'),
       },
     ]);
     const getState = (): Partial<StateType> => ({
@@ -215,7 +232,8 @@ describe('Datafile actions', () => {
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('dataset'));
 
     expect(axios.get).toHaveBeenCalledWith('/datafiles/count', {
       headers: { Authorization: 'Bearer null' },
@@ -337,7 +355,6 @@ describe('Datafile actions', () => {
         fileSize: 1,
         modTime: '2019-06-10',
         createTime: '2019-06-10',
-        dataset: 1,
       },
     ];
 
@@ -390,7 +407,11 @@ describe('Datafile actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ dataset: { eq: 1 } }),
+          filterValue: JSON.stringify({ 'dataset.id': { eq: 1 } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('dataset'),
         },
       ],
     });
@@ -404,7 +425,8 @@ describe('Datafile actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('id asc'));
-    params.append('where', JSON.stringify({ dataset: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('dataset'));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
 

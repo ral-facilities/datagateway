@@ -45,7 +45,6 @@ exports[`Datafile table component renders correctly 1`] = `
     Array [
       Object {
         "createTime": "2019-07-23",
-        "dataset": 1,
         "fileSize": 1,
         "id": 1,
         "location": "/test1",

@@ -580,10 +580,11 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              dataset: {
+              'dataset.id': {
                 eq: 1,
               },
             },
+            include: 'dataset',
           },
           headers: { Authorization: 'Bearer null' },
         }
@@ -608,10 +609,11 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              dataset: {
+              'dataset.id': {
                 eq: 1,
               },
             },
+            include: 'dataset',
           },
           headers: { Authorization: 'Bearer null' },
         }

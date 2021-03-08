@@ -43,7 +43,6 @@ export interface Datafile {
   name: string;
   modTime: string;
   createTime: string;
-  dataset: number;
   fileSize?: number;
   location?: string;
   description?: string;
