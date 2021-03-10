@@ -1,0 +1,91 @@
+name: Release Build
+on:
+  push:
+    branches: master
+    tags: '*'
+
+jobs:
+  build:
+    name: Release Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+
+      # Cache yarn dependencies/ restore the cached dependencies during future workflows
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
+        run: |
+          npm config set scripts-prepend-node-path true
+          sudo apt-get install libgconf-2-4
+          yarn --frozen-lockfile
+
+      - name: Determine tag name
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/master" ]
+          then
+            echo TAG_NAME=snapshot >> $GITHUB_ENV
+          else
+            echo TAG_NAME=`basename ${{ github.ref }}` >> $GITHUB_ENV
+          fi
+
+      - name: Build datagateway-dataview
+        run: |
+          cd packages/datagateway-dataview
+          echo "REACT_APP_DATAVIEW_BUILD_DIRECTORY=/plugins/datagateway-dataview/" > .env.production
+          yarn build
+          mv build datagateway-dataview-$TAG_NAME
+          tar -czf ../../datagateway-dataview-$TAG_NAME.tar.gz datagateway-dataview-$TAG_NAME
+
+      - name: Build datagateway-download
+        run: |
+          cd packages/datagateway-download
+          echo "REACT_APP_DOWNLOAD_BUILD_DIRECTORY=/plugins/datagateway-download/" > .env.production
+          yarn build
+          mv build datagateway-download-$TAG_NAME
+          tar -czf ../../datagateway-download-$TAG_NAME.tar.gz datagateway-download-$TAG_NAME
+
+      - name: Build datagateway-search
+        run: |
+          cd packages/datagateway-search
+          echo "REACT_APP_SEARCH_BUILD_DIRECTORY=/plugins/datagateway-search/" > .env.production
+          yarn build
+          mv build datagateway-search-$TAG_NAME
+          tar -czf ../../datagateway-search-$TAG_NAME.tar.gz datagateway-search-$TAG_NAME
+
+      - name: Update snapshot tag
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.ref == 'refs/heads/master' }}
+
+      - name: Create/update release
+        uses: johnwbyrd/update-release@v1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./datagateway-dataview-${{ env.TAG_NAME }}.tar.gz ./datagateway-download-${{ env.TAG_NAME }}.tar.gz ./datagateway-search-${{ env.TAG_NAME }}.tar.gz
+          release: Release ${{ env.TAG_NAME }}
+          tag: ${{ env.TAG_NAME }}
+          prerelease: ${{ github.ref == 'refs/heads/master' }}
+          draft: false
