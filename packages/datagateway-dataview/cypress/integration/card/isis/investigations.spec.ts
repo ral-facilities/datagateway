@@ -106,7 +106,7 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#investigation-users-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('Michelle228');
+      .contains('Scott Brewer');
     cy.get('#investigation-samples-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')

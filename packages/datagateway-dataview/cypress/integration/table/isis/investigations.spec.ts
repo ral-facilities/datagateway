@@ -218,7 +218,7 @@ describe('ISIS - Investigations Table', () => {
       );
       cy.get('[aria-controls="investigation-users-panel"]').click();
 
-      cy.get('#details-panel').contains('Michelle228').should('be.visible');
+      cy.get('#details-panel').contains('Scott Brewer').should('be.visible');
 
       cy.get('[aria-controls="investigation-samples-panel"]').should(
         'be.visible'

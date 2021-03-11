@@ -177,7 +177,7 @@ describe('ISIS - MyData Table', () => {
       );
       cy.get('[aria-controls="investigation-users-panel"]').click();
 
-      cy.get('#details-panel').contains('Robert499').should('be.visible');
+      cy.get('#details-panel').contains('Antonio Cooper').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
