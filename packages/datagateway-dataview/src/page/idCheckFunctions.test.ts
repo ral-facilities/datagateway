@@ -34,7 +34,7 @@ describe('ID check functions', () => {
     expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
       params: {
         where: { id: { eq: 2 } },
-        include: 'investigation',
+        include: '"investigation"',
       },
       headers: { Authorization: 'Bearer null' },
     });
@@ -49,7 +49,7 @@ describe('ID check functions', () => {
     expect(axios.get).toHaveBeenCalledWith('/test/datasets/findone', {
       params: {
         where: { id: { eq: 2 } },
-        include: 'investigation',
+        include: '"investigation"',
       },
       headers: { Authorization: 'Bearer null' },
     });
@@ -75,7 +75,7 @@ describe('ID check functions', () => {
       expect(axios.get).toHaveBeenCalledWith('/datasets/findone', {
         params: {
           where: { id: { eq: 2 } },
-          include: 'investigation',
+          include: '"investigation"',
         },
         headers: { Authorization: 'Bearer null' },
       });

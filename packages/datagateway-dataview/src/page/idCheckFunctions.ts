@@ -34,7 +34,7 @@ const unmemoizedCheckInvestigationId = (
             eq: datasetId,
           },
         },
-        include: 'investigation',
+        include: '"investigation"',
       },
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
