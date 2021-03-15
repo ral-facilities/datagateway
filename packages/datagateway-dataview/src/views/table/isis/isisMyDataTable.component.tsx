@@ -308,7 +308,7 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'investigationUsers.USER.name': { eq: username },
+              'investigationUsers.user.name': { eq: username },
             }),
           },
           {
@@ -332,7 +332,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'investigationUsers.USER.name': { eq: username },
+            'investigationUsers.user.name': { eq: username },
           }),
         },
         {
@@ -353,7 +353,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'investigationUsers.USER.name': { eq: username },
+            'investigationUsers.user.name': { eq: username },
           }),
         },
         {

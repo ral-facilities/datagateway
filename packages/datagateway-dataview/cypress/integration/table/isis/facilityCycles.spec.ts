@@ -90,7 +90,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Many last prepare small. Maintain throw hope parent.'
       );
     });
 
@@ -105,7 +105,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Performance lose brother thought recognize different.'
       );
     });
 

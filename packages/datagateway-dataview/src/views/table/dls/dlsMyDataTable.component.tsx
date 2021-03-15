@@ -165,7 +165,7 @@ const DLSMyDataTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments.instrument.name',
+          dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (props: TableCellProps) => {
             const investigationData = props.rowData as Investigation;
             if (
@@ -173,7 +173,7 @@ const DLSMyDataTable = (
               investigationData.investigationInstruments[0].instrument
             ) {
               return investigationData.investigationInstruments[0].instrument
-                .name;
+                .fullName;
             } else {
               return '';
             }
@@ -216,7 +216,7 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'investigationUsers.USER.name': { eq: username },
+              'investigationUsers.user.name': { eq: username },
             }),
           },
           {
@@ -238,7 +238,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'investigationUsers.USER.name': { eq: username },
+            'investigationUsers.user.name': { eq: username },
           }),
         },
         {

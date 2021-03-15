@@ -2,7 +2,7 @@ describe('DLS - MyData Table', () => {
   beforeEach(() => {
     cy.intercept('/datasets/count').as('getDatasetCount');
     cy.login('root', 'pw');
-    cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
+    cy.visit('/my-data/DLS');
   });
 
   it('should load correctly', () => {
@@ -117,8 +117,11 @@ describe('DLS - MyData Table', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
+    // TODO - Come back to this
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Instrument').find('input').type('8');
+      cy.get('[aria-label="Filter by Instrument')
+        .find('input')
+        .type('Who set wind carry matter.');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 

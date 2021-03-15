@@ -2,9 +2,7 @@ describe('ISIS - MyData Table', () => {
   beforeEach(() => {
     cy.intercept('/investigations/count').as('getInvestigationCount');
     cy.login('root', 'pw');
-    cy.visit('/my-data/ISIS').wait(['@getInvestigationCount'], {
-      timeout: 10000,
-    });
+    cy.visit('/my-data/ISIS');
   });
 
   it('should load correctly', () => {
@@ -125,7 +123,7 @@ describe('ISIS - MyData Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument"]')
         .find('input')
-        .type('INSTRUMENT 8');
+        .type('Who set wind carry matter.');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
