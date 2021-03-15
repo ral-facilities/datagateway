@@ -2,6 +2,7 @@ describe('Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
+    cy.intercept('/investigations?include').as('getInvestigationsInclude');
     cy.login('root', 'pw');
     cy.visit('/browse/investigation').wait(
       [
@@ -13,9 +14,16 @@ describe('Investigations Cards', () => {
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
-      });
+      .wait(
+        [
+          '@getInvestigationsCount',
+          '@getInvestigationsOrder',
+          '@getInvestigationsInclude',
+        ],
+        {
+          timeout: 15000,
+        }
+      );
   });
 
   it('should load correctly', () => {
@@ -78,7 +86,7 @@ describe('Investigations Cards', () => {
       .contains('[role="button"]', '1')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
+        timeout: 30000,
       });
     cy.contains('[role="button"]', 'Type ID - 1').should('exist');
     cy.get('#card').contains('Dog want single resource major.');

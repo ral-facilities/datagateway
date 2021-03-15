@@ -250,8 +250,8 @@ const DLSDatasetsCardView = (
       ]}
       customFilters={[
         {
-          label: t('datasets.type.type_id'),
-          dataKey: 'TYPE_ID',
+          label: t('datasets.type.id'),
+          dataKey: 'type.id',
           filterItems: typeFilteredItems,
         },
       ]}
@@ -312,7 +312,7 @@ const mapDispatchToProps = (
         },
         {
           filterType: 'include',
-          filterValue: JSON.stringify('investigation'),
+          filterValue: JSON.stringify(['investigation', 'type']),
         },
       ])
     ),

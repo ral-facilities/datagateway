@@ -186,8 +186,8 @@ const DLSVisitsCardView = (
       )}
       customFilters={[
         {
-          label: t('investigations.type_id'),
-          dataKey: 'TYPE_ID',
+          label: t('investigations.type.id'),
+          dataKey: 'type.id',
           filterItems: typeFilteredItems,
         },
       ]}
@@ -236,6 +236,10 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({ name: { eq: proposalName } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('type'),
         },
       ])
     ),

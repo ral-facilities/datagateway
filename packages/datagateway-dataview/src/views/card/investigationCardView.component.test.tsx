@@ -230,7 +230,7 @@ describe('Investigation - Card View', () => {
     expect(store.getActions().length).toEqual(8);
     expect(store.getActions()[1]).toEqual(fetchFilterRequest());
     expect(store.getActions()[2]).toEqual(fetchFilterRequest());
-    expect(store.getActions()[6]).toEqual(filterTable('TYPE_ID', ['1']));
+    expect(store.getActions()[6]).toEqual(filterTable('type.id', ['1']));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 
@@ -239,7 +239,7 @@ describe('Investigation - Card View', () => {
       'type.id': ['1', '2'],
       'facility.id': ['1', '2'],
     };
-    state.dgcommon.query.filters = { TYPE_ID: ['1'] };
+    state.dgcommon.query.filters = { 'type.id': ['1'] };
     const wrapper = createWrapper();
     wrapper.find(Chip).at(4).find(SvgIcon).simulate('click');
 
@@ -247,7 +247,7 @@ describe('Investigation - Card View', () => {
     expect(store.getActions().length).toEqual(8);
     expect(store.getActions()[1]).toEqual(fetchFilterRequest());
     expect(store.getActions()[2]).toEqual(fetchFilterRequest());
-    expect(store.getActions()[6]).toEqual(filterTable('TYPE_ID', null));
+    expect(store.getActions()[6]).toEqual(filterTable('type.id', null));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 });

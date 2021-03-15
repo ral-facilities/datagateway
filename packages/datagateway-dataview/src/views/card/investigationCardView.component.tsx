@@ -245,13 +245,13 @@ const InvestigationCardView = (
       // use that over the filterKey here.
       customFilters={[
         {
-          label: t('investigations.type_id'),
-          dataKey: 'TYPE_ID',
+          label: t('investigations.type.id'),
+          dataKey: 'type.id',
           filterItems: typeFilteredItems,
         },
         {
-          label: t('investigations.facility_id'),
-          dataKey: 'FACILITY_ID',
+          label: t('investigations.facility.id'),
+          dataKey: 'facility.id',
           filterItems: facilityFilteredItems,
         },
       ]}
