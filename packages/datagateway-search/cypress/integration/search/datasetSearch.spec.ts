@@ -42,7 +42,7 @@ describe('Dataset search tab', () => {
           '@datafilesCount',
         ],
         {
-          timeout: 10000,
+          timeout: 20000,
         }
       );
 
@@ -93,7 +93,21 @@ describe('Dataset search tab', () => {
   it('should be hidden if dataset checkbox is unchecked', () => {
     cy.get('[aria-label="Dataset checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(
+        [
+          '@investigations',
+          '@investigations',
+          '@investigationsCount',
+          '@datafiles',
+          '@datafiles',
+          '@datafilesCount',
+        ],
+        {
+          timeout: 20000,
+        }
+      );
 
     cy.get('[aria-rowcount="50"]').should('exist');
 

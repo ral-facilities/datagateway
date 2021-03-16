@@ -42,7 +42,7 @@ describe('Investigation search tab', () => {
           '@datafilesCount',
         ],
         {
-          timeout: 10000,
+          timeout: 20000,
         }
       );
 
@@ -71,7 +71,23 @@ describe('Investigation search tab', () => {
       .find('#filled-search')
       .type('knowledge media');
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(
+        [
+          '@investigations',
+          '@investigationsCount',
+          '@datasets',
+          '@datasets',
+          '@datasetsCount',
+          '@datafiles',
+          '@datafiles',
+          '@datafilesCount',
+        ],
+        {
+          timeout: 20000,
+        }
+      );
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
@@ -102,7 +118,21 @@ describe('Investigation search tab', () => {
   it('should be hidden if investigation checkbox is unchecked', () => {
     cy.get('[aria-label="Investigation checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(
+        [
+          '@datasets',
+          '@datasets',
+          '@datasetsCount',
+          '@datafiles',
+          '@datafiles',
+          '@datafilesCount',
+        ],
+        {
+          timeout: 20000,
+        }
+      );
 
     cy.get('[aria-rowcount="50"]').should('exist');
 

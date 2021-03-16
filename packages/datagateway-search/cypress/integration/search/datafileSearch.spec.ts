@@ -42,7 +42,7 @@ describe('Datafile search tab', () => {
           '@datafilesCount',
         ],
         {
-          timeout: 10000,
+          timeout: 20000,
         }
       );
 
@@ -86,10 +86,24 @@ describe('Datafile search tab', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 120');
   });
 
-  it('should be hidden if dataset checkbox is unchecked', () => {
+  it('should be hidden if datafile checkbox is unchecked', () => {
     cy.get('[aria-label="Datafile checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(
+        [
+          '@datasets',
+          '@datasets',
+          '@datasetsCount',
+          '@investigations',
+          '@investigations',
+          '@investigationsCount',
+        ],
+        {
+          timeout: 20000,
+        }
+      );
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
