@@ -26,7 +26,7 @@ exports[`DLS Visits table component renders correctly 1`] = `
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "investigationInstruments.instrument.name",
+        "dataKey": "investigationInstruments.instrument.fullName",
         "filterComponent": [Function],
         "icon": <Memo(AssessmentIcon) />,
         "label": "investigations.instrument",
