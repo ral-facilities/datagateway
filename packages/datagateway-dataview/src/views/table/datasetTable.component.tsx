@@ -275,10 +275,6 @@ const mapDispatchToProps = (
             'investigation.id': { eq: parseInt(ownProps.investigationId) },
           }),
         },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify('investigation'),
-        },
       ])
     ),
 

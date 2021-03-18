@@ -356,10 +356,6 @@ const mapDispatchToProps = (
             'investigationUsers.user.name': { eq: username },
           }),
         },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify({ investigationUsers: 'user' }),
-        },
       ])
     ),
 });

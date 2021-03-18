@@ -227,10 +227,6 @@ describe('Cart actions', () => {
           filterValue: JSON.stringify({ 'dataset.id': { eq: 1 } }),
         },
         {
-          filterType: 'include',
-          filterValue: JSON.stringify('dataset'),
-        },
-        {
           filterType: 'distinct',
           filterValue: JSON.stringify('name'),
         },
@@ -257,7 +253,6 @@ describe('Cart actions', () => {
       params.append('where', JSON.stringify({ column1: { like: '1' } }));
       params.append('where', JSON.stringify({ column2: { like: '2' } }));
       params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
-      params.append('include', JSON.stringify('dataset'));
       params.append('distinct', JSON.stringify(['name', 'id']));
 
       expect(axios.get).toHaveBeenCalledWith('/datasets', {

@@ -267,10 +267,6 @@ const mapDispatchToProps = (
             'dataset.id': { eq: parseInt(ownProps.datasetId) },
           }),
         },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify('dataset'),
-        },
       ])
     ),
 });
