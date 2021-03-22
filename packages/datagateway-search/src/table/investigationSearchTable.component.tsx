@@ -94,7 +94,7 @@ const InvestigationSearchTable = (
     let facilityCycleId;
     if (investigationData.investigationInstruments?.length) {
       instrumentId =
-        investigationData.investigationInstruments[0].instrument.id;
+        investigationData.investigationInstruments[0].instrument?.id;
     } else {
       return investigationData.title;
     }
