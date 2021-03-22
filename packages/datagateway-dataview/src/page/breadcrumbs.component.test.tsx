@@ -49,21 +49,6 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
   let shallow;
   let state: StateType;
 
-  // Set up generic axios response; to be used for all tests.
-  // We only need to include the ID, name, title and visitId
-  // as those are the entity fields which the breadcrumb looks for
-  // when requesting information from the API.
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({
-      data: {
-        id: 1,
-        name: 'INVESTIGATION 1',
-        title: 'Test 1',
-        visitId: '1',
-      },
-    })
-  );
-
   const createWrapper = (state: StateType): ReactWrapper => {
     const mockStore = configureStore([thunk]);
     return shallow(
@@ -89,13 +74,25 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
         },
       })
     );
+
+    // Set up generic axios response; to be used for all tests.
+    // We only need to include the ID, NAME, TITLE and VISIT_ID
+    // as those are the entity fields which the breadcrumb looks for
+    // when requesting information from the API.
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          ID: 1,
+          NAME: 'INVESTIGATION 1',
+          TITLE: 'Test 1',
+          VISIT_ID: '1',
+        },
+      })
+    );
   });
 
   afterEach(() => {
     mount.cleanUp();
-  });
-
-  afterAll(() => {
     (axios.get as jest.Mock).mockClear();
   });
 

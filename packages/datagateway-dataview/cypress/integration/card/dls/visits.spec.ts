@@ -2,7 +2,7 @@ describe('DLS - Visits Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/proposal/INVESTIGATION%201/investigation/').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
@@ -81,6 +81,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Visit ID"]')
       .find('input')
+      .first()
       .type('4')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,

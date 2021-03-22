@@ -1,6 +1,6 @@
 describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
   });
 
@@ -140,7 +140,10 @@ describe('ISIS - Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('series');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('series');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('15');
@@ -173,9 +176,15 @@ describe('ISIS - Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('series');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('series');
 
-      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('15');
+      cy.get('[aria-label="Filter by Visit ID"]')
+        .find('input')
+        .first()
+        .type('15');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

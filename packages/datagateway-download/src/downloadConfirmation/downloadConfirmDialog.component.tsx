@@ -150,9 +150,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   const settings = React.useContext(DownloadSettingsContext);
 
   // Sorting and loading status.
-  const [statusMethods, setStatusMethods] = React.useState<
-    DownloadConfirmAccessMethod
-  >(
+  const [
+    statusMethods,
+    setStatusMethods,
+  ] = React.useState<DownloadConfirmAccessMethod>(
     (): DownloadConfirmAccessMethod => {
       // Create an updated status method with disabled and message properties.
       const defaultStatusMethods: DownloadConfirmAccessMethod = {};
@@ -371,7 +372,7 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
   ]);
 
   const getDefaultFileName = (): string => {
-    const now = new Date();
+    const now = new Date(Date.now());
     const defaultName = `${settings.facilityName}_${now.getFullYear()}-${
       now.getMonth() + 1
     }-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;

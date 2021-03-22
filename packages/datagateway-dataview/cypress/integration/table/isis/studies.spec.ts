@@ -1,6 +1,6 @@
 describe('ISIS - Studies Table', () => {
   beforeEach(() => {
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browseStudyHierarchy/instrument/1/study');
   });
 
@@ -140,7 +140,10 @@ describe('ISIS - Studies Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by RB Number"]').find('input').type('3');
+      cy.get('[aria-label="Filter by RB Number"]')
+        .find('input')
+        .first()
+        .type('3');
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
@@ -159,10 +162,14 @@ describe('ISIS - Studies Table', () => {
 
     // Cannot filter on two joined fields at the same time
     it.skip('multiple columns', () => {
-      cy.get('[aria-label="Filter by RB Number"]').find('input').type('4');
+      cy.get('[aria-label="Filter by RB Number"]')
+        .find('input')
+        .first()
+        .type('4');
 
       cy.get('[aria-label="Filter by Description"]')
         .find('input')
+        .first()
         .type('energy');
 
       cy.get('[aria-rowcount="1"]').should('exist');

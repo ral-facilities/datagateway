@@ -2,6 +2,7 @@ import { Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   dGCommonInitialState,
   fetchInvestigationDetailsRequest,
   fetchInvestigationSizeRequest,
@@ -19,7 +20,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import DLSVisitsCardView from './dlsVisitsCardView.component';
-import AdvancedFilter from '../advancedFilter.component';
 
 describe('DLS Visits - Card View', () => {
   let mount;
@@ -123,7 +123,9 @@ describe('DLS Visits - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(filterTable('visitId', 'test'));
+    expect(store.getActions()[3]).toEqual(
+      filterTable('visitId', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[4]).toEqual(push('?'));
 
     advancedFilter

@@ -2,7 +2,7 @@ describe('ISIS - Instruments Cards', () => {
   beforeEach(() => {
     cy.intercept('**/instruments/count*').as('getInstrumentsCount');
     cy.intercept('**/instruments?order*').as('getInstrumentsOrder');
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/instrument').wait(
       ['@getInstrumentsCount', '@getInstrumentsOrder'],
       { timeout: 10000 }
@@ -73,6 +73,7 @@ describe('ISIS - Instruments Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
+      .first()
       .type('Radio')
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
         timeout: 10000,
@@ -81,6 +82,7 @@ describe('ISIS - Instruments Cards', () => {
 
     cy.get('[aria-label="Filter by Type"]')
       .find('input')
+      .first()
       .type('1')
       .wait(['@getInstrumentsCount', '@getInstrumentsOrder'], {
         timeout: 10000,

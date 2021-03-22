@@ -52,6 +52,7 @@ import {
 } from './idCheckFunctions';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
+import axios from 'axios';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -131,21 +132,29 @@ describe('PageTable', () => {
       })
     );
 
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
     (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-
     (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-
     (checkInvestigationId as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
-
     (checkProposalName as jest.Mock).mockImplementation(() =>
       Promise.resolve(true)
     );
+  });
+
+  afterEach(() => {
+    (axios.get as jest.Mock).mockRestore();
+    (checkInstrumentAndFacilityCycleId as jest.Mock).mockRestore();
+    (checkInstrumentAndStudyId as jest.Mock).mockRestore();
+    (checkInvestigationId as jest.Mock).mockRestore();
+    (checkProposalName as jest.Mock).mockRestore();
   });
 
   describe('Generic', () => {

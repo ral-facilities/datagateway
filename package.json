@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "husky": "^4.2.3",
+    "husky": "^5.1.2",
     "lerna": "^3.22.1",
     "lerna-update-wizard": "^0.17.7"
   },
@@ -20,11 +20,7 @@
     "test:e2e:lerna": "lerna run e2e --stream --concurrency 1",
     "datagateway-dataview": "cd packages/datagateway-dataview && yarn start",
     "datagateway-download": "cd packages/datagateway-download && yarn start",
-    "datagateway-search": "cd packages/datagateway-search && yarn start"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lerna run --concurrency 1 --stream pre-commit"
-    }
+    "datagateway-search": "cd packages/datagateway-search && yarn start",
+    "postinstall": "husky install"
   }
 }

@@ -31,6 +31,12 @@ const badgeStyles = (theme: Theme): StyleRules =>
       top: '0.875em',
     },
   });
+
+interface SearchTableProps {
+  containerHeight: string;
+  hierarchy: string;
+}
+
 interface SearchTableStoreProps {
   requestReceived: boolean;
   datafile: number[];
@@ -79,8 +85,7 @@ function a11yProps(index: string): React.ReactFragment {
 const StyledBadge = withStyles(badgeStyles)(Badge);
 
 const SearchPageTable = (
-  props: SearchTableStoreProps &
-    SearchTableDispatchProps & { containerHeight: string }
+  props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
 ): React.ReactElement => {
   const {
     requestReceived,
@@ -93,6 +98,7 @@ const SearchPageTable = (
     currentTab,
     setCurrentTab,
     containerHeight,
+    hierarchy,
   } = props;
   const [t] = useTranslation();
 
@@ -223,7 +229,7 @@ const SearchPageTable = (
               }}
               elevation={0}
             >
-              <InvestigationSearchTable />
+              <InvestigationSearchTable hierarchy={hierarchy} />
             </Paper>
           </TabPanel>
         ) : null}

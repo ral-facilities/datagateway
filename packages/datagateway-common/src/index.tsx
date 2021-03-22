@@ -7,6 +7,7 @@
 import { StateType } from './state/app.types';
 
 export * from './app.types';
+export { default as Preloader } from './preloader/preloader.component';
 export * from './state/actions/actions.types';
 
 export { default as Table } from './table/table.component';
@@ -20,15 +21,19 @@ export { default as DataCellComponent } from './table/cellRenderers/dataCell.com
 export { default as ExpandCellComponent } from './table/cellRenderers/expandCell.component';
 export * from './table/cellRenderers/cellContentRenderers';
 
+export { default as CardView } from './card/cardView.component';
+export { default as AdvancedFilter } from './card/advancedFilter.component';
+
 export * from './state/actions/index';
+export * from './state/middleware/dgcommon.middleware';
 export * from './state/app.types';
 
 export { default as DGCommonMiddleware } from './state/middleware/dgcommon.middleware';
 export { default as createReducer } from './state/reducers/createReducer';
-export * from './state/middleware/dgcommon.middleware';
-export { default as Preloader } from './preloader/preloader.component';
-export { initialState as dGCommonInitialState } from './state/reducers/dgcommon.reducer';
-export { default as dGCommonReducer } from './state/reducers/dgcommon.reducer';
+export {
+  default as dGCommonReducer,
+  initialState as dGCommonInitialState,
+} from './state/reducers/dgcommon.reducer';
 
 export type DGCommonState = StateType;
 

@@ -10,6 +10,7 @@ import {
 import {
   Table,
   TextColumnFilter,
+  TextFilter,
   DateColumnFilter,
   investigationLink,
   Order,
@@ -27,6 +28,7 @@ import {
   DateFilter,
   SortType,
   FiltersType,
+  ViewsType,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
@@ -56,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface InvestigationTableProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -90,6 +93,7 @@ const InvestigationTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     cartItems,
     addToCart,
     removeFromCart,
@@ -118,8 +122,10 @@ const InvestigationTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
@@ -202,11 +208,12 @@ const InvestigationTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'title',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             return investigationLink(
               investigationData.id,
-              investigationData.title
+              investigationData.title,
+              view
             );
           },
           filterComponent: textFilter,
@@ -248,8 +255,10 @@ const InvestigationTable = (
           label: t('investigations.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            if (cellProps.cellData) {
+              return cellProps.cellData.toString().split(' ')[0];
+            }
           },
           disableHeaderWrap: true,
         },
@@ -258,8 +267,10 @@ const InvestigationTable = (
           label: t('investigations.end_date'),
           dataKey: 'endDate',
           filterComponent: dateFilter,
-          cellContentRenderer: (props: TableCellProps) => {
-            if (props.cellData) return props.cellData.toString().split(' ')[0];
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            if (cellProps.cellData) {
+              return cellProps.cellData.toString().split(' ')[0];
+            }
           },
           disableHeaderWrap: true,
         },
@@ -291,6 +302,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

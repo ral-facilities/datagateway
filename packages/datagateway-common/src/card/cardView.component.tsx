@@ -1,9 +1,9 @@
 import {
   Box,
   Chip,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   FormControl,
   Grid,
   InputLabel,
@@ -20,15 +20,11 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
-import {
-  ArrowTooltip,
-  Entity,
-  Filter,
-  nestedValue,
-  Order,
-  QueryParams,
-  SortTablePayload,
-} from 'datagateway-common';
+import ArrowTooltip from '../arrowtooltip.component';
+import { Entity, Filter, Order } from '../app.types';
+import { QueryParams } from '../state/app.types';
+import { nestedValue } from '../state/actions';
+import { SortTablePayload } from '../state/actions/actions.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange } from 'react-virtualized';
@@ -82,7 +78,7 @@ export interface CardViewDetails {
 
 type CVPaginationPosition = 'top' | 'bottom' | 'both';
 
-interface CardViewProps {
+export interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
   query: QueryParams;
@@ -621,16 +617,16 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         Object.entries(filtersInfo).map(
                           ([filterKey, filter], filterIndex) => {
                             return (
-                              <ExpansionPanel
+                              <Accordion
                                 key={filterIndex}
                                 defaultExpanded={filter.hasSelectedItems}
                               >
-                                <ExpansionPanelSummary
+                                <AccordionSummary
                                   expandIcon={<ExpandMoreIcon />}
                                 >
                                   <Typography>{filter.label}</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
+                                </AccordionSummary>
+                                <AccordionDetails>
                                   <div className={classes.expandDetails}>
                                     <List component="nav">
                                       {Object.entries(filter.items).map(
@@ -657,8 +653,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                                       )}
                                     </List>
                                   </div>
-                                </ExpansionPanelDetails>
-                              </ExpansionPanel>
+                                </AccordionDetails>
+                              </Accordion>
                             );
                           }
                         )}

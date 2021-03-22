@@ -48,11 +48,7 @@ exports[`PageContainer - Tests displays the correct entity count 1`] = `
       aria-label="container-table"
       item={true}
       xs={12}
-    >
-      <ViewRouting
-        view={null}
-      />
-    </WithStyles(ForwardRef(Grid))>
+    />
   </WithStyles(WithStyles(ForwardRef(Grid)))>
 </div>
 `;

@@ -21,10 +21,6 @@ describe('DLS Proposals table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DLSProposalsTable' });
@@ -60,6 +56,11 @@ describe('DLS Proposals table component', () => {
         endDate: '2019-06-11',
       },
     ];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -117,7 +118,9 @@ describe('DLS Proposals table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('title', 'test'));
+    expect(testStore.getActions()[2]).toEqual(
+      filterTable('title', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

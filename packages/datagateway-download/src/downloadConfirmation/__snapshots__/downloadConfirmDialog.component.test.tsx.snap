@@ -530,7 +530,9 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                       HTTPS
                                     </div>
                                     <input
-                                      type="hidden"
+                                      aria-hidden="true"
+                                      class="MuiSelect-nativeInput"
+                                      tabindex="-1"
                                       value="https"
                                     />
                                     <svg
@@ -793,8 +795,8 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                     >
                       <div
                         className="MuiDialog-container MuiDialog-scrollPaper"
-                        onClick={[Function]}
                         onMouseDown={[Function]}
+                        onMouseUp={[Function]}
                         role="none presentation"
                         style={
                           Object {
@@ -999,7 +1001,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                     <span
                                                       className="MuiIconButton-label"
                                                     >
-                                                      <ForwardRef>
+                                                      <ForwardRef(CloseIcon)>
                                                         <WithStyles(ForwardRef(SvgIcon))>
                                                           <ForwardRef(SvgIcon)
                                                             classes={
@@ -1028,7 +1030,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             </svg>
                                                           </ForwardRef(SvgIcon)>
                                                         </WithStyles(ForwardRef(SvgIcon))>
-                                                      </ForwardRef>
+                                                      </ForwardRef(CloseIcon)>
                                                     </span>
                                                     <WithStyles(memo)
                                                       center={true}
@@ -1858,6 +1860,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                   "iconFilled": "MuiSelect-iconFilled",
                                                                   "iconOpen": "MuiSelect-iconOpen",
                                                                   "iconOutlined": "MuiSelect-iconOutlined",
+                                                                  "nativeInput": "MuiSelect-nativeInput",
                                                                   "outlined": "MuiSelect-outlined",
                                                                   "root": "MuiSelect-root",
                                                                   "select": "MuiSelect-select",
@@ -1899,7 +1902,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       "open": [Function],
                                                                       "readOnly": [Function],
                                                                       "renderValue": [Function],
-                                                                      "required": [Function],
                                                                       "tabIndex": [Function],
                                                                       "type": [Function],
                                                                       "value": [Function],
@@ -1924,20 +1926,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                     },
                                                                     "autoWidth": false,
                                                                     "children": Array [
-                                                                      <ForwardRef(WithStyles)
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
-                                                                      </ForwardRef(WithStyles)>,
-                                                                      <ForwardRef(WithStyles)
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
                                                                         Globus
-                                                                      </ForwardRef(WithStyles)>,
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
                                                                     ],
                                                                     "classes": Object {
                                                                       "disabled": "Mui-disabled",
@@ -1946,6 +1948,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       "iconFilled": "MuiSelect-iconFilled",
                                                                       "iconOpen": "MuiSelect-iconOpen",
                                                                       "iconOutlined": "MuiSelect-iconOutlined",
+                                                                      "nativeInput": "MuiSelect-nativeInput",
                                                                       "outlined": "MuiSelect-outlined",
                                                                       "root": "MuiSelect-root",
                                                                       "select": "MuiSelect-select",
@@ -2012,7 +2015,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         "open": [Function],
                                                                         "readOnly": [Function],
                                                                         "renderValue": [Function],
-                                                                        "required": [Function],
                                                                         "tabIndex": [Function],
                                                                         "type": [Function],
                                                                         "value": [Function],
@@ -2037,20 +2039,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                       },
                                                                       "autoWidth": false,
                                                                       "children": Array [
-                                                                        <ForwardRef(WithStyles)
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
-                                                                        </ForwardRef(WithStyles)>,
-                                                                        <ForwardRef(WithStyles)
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
                                                                           Globus
-                                                                        </ForwardRef(WithStyles)>,
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
                                                                       ],
                                                                       "classes": Object {
                                                                         "disabled": "Mui-disabled",
@@ -2059,6 +2061,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         "iconFilled": "MuiSelect-iconFilled",
                                                                         "iconOpen": "MuiSelect-iconOpen",
                                                                         "iconOutlined": "MuiSelect-iconOutlined",
+                                                                        "nativeInput": "MuiSelect-nativeInput",
                                                                         "outlined": "MuiSelect-outlined",
                                                                         "root": "MuiSelect-root",
                                                                         "select": "MuiSelect-select",
@@ -2126,7 +2129,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           "open": [Function],
                                                                           "readOnly": [Function],
                                                                           "renderValue": [Function],
-                                                                          "required": [Function],
                                                                           "tabIndex": [Function],
                                                                           "type": [Function],
                                                                           "value": [Function],
@@ -2151,20 +2153,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                         },
                                                                         "autoWidth": false,
                                                                         "children": Array [
-                                                                          <ForwardRef(WithStyles)
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
-                                                                          </ForwardRef(WithStyles)>,
-                                                                          <ForwardRef(WithStyles)
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
                                                                             Globus
-                                                                          </ForwardRef(WithStyles)>,
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
                                                                         ],
                                                                         "classes": Object {
                                                                           "disabled": "Mui-disabled",
@@ -2173,6 +2175,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           "iconFilled": "MuiSelect-iconFilled",
                                                                           "iconOpen": "MuiSelect-iconOpen",
                                                                           "iconOutlined": "MuiSelect-iconOutlined",
+                                                                          "nativeInput": "MuiSelect-nativeInput",
                                                                           "outlined": "MuiSelect-outlined",
                                                                           "root": "MuiSelect-root",
                                                                           "select": "MuiSelect-select",
@@ -2246,7 +2249,6 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             "open": [Function],
                                                                             "readOnly": [Function],
                                                                             "renderValue": [Function],
-                                                                            "required": [Function],
                                                                             "tabIndex": [Function],
                                                                             "type": [Function],
                                                                             "value": [Function],
@@ -2271,20 +2273,20 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                           },
                                                                           "autoWidth": false,
                                                                           "children": Array [
-                                                                            <ForwardRef(WithStyles)
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
-                                                                            </ForwardRef(WithStyles)>,
-                                                                            <ForwardRef(WithStyles)
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
                                                                               Globus
-                                                                            </ForwardRef(WithStyles)>,
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
                                                                           ],
                                                                           "classes": Object {
                                                                             "disabled": "Mui-disabled",
@@ -2293,6 +2295,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             "iconFilled": "MuiSelect-iconFilled",
                                                                             "iconOpen": "MuiSelect-iconOpen",
                                                                             "iconOutlined": "MuiSelect-iconOutlined",
+                                                                            "nativeInput": "MuiSelect-nativeInput",
                                                                             "outlined": "MuiSelect-outlined",
                                                                             "root": "MuiSelect-root",
                                                                             "select": "MuiSelect-select",
@@ -2344,6 +2347,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                               "iconFilled": "MuiSelect-iconFilled",
                                                                               "iconOpen": "MuiSelect-iconOpen",
                                                                               "iconOutlined": "MuiSelect-iconOutlined",
+                                                                              "nativeInput": "MuiSelect-nativeInput",
                                                                               "outlined": "MuiSelect-outlined",
                                                                               "root": "MuiSelect-root",
                                                                               "select": "MuiSelect-select",
@@ -2378,8 +2382,12 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                             HTTPS
                                                                           </div>
                                                                           <input
+                                                                            aria-hidden={true}
+                                                                            className="MuiSelect-nativeInput"
                                                                             onAnimationStart={[Function]}
-                                                                            type="hidden"
+                                                                            onChange={[Function]}
+                                                                            required={false}
+                                                                            tabIndex={-1}
                                                                             value="https"
                                                                           />
                                                                           <ForwardRef(ArrowDropDownIcon)
@@ -2721,7 +2729,9 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                             HTTPS
                                                                                                           </div>
                                                                                                           <input
-                                                                                                            type="hidden"
+                                                                                                            aria-hidden="true"
+                                                                                                            class="MuiSelect-nativeInput"
+                                                                                                            tabindex="-1"
                                                                                                             value="https"
                                                                                                           />
                                                                                                           <svg
@@ -4420,7 +4430,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                       HTTPS
                                     </div>
                                     <input
-                                      type="hidden"
+                                      aria-hidden="true"
+                                      class="MuiSelect-nativeInput"
+                                      tabindex="-1"
                                       value="https"
                                     />
                                     <svg
@@ -4734,8 +4746,8 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                     >
                       <div
                         className="MuiDialog-container MuiDialog-scrollPaper"
-                        onClick={[Function]}
                         onMouseDown={[Function]}
+                        onMouseUp={[Function]}
                         role="none presentation"
                         style={
                           Object {
@@ -4940,7 +4952,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                     <span
                                                       className="MuiIconButton-label"
                                                     >
-                                                      <ForwardRef>
+                                                      <ForwardRef(CloseIcon)>
                                                         <WithStyles(ForwardRef(SvgIcon))>
                                                           <ForwardRef(SvgIcon)
                                                             classes={
@@ -4969,7 +4981,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             </svg>
                                                           </ForwardRef(SvgIcon)>
                                                         </WithStyles(ForwardRef(SvgIcon))>
-                                                      </ForwardRef>
+                                                      </ForwardRef(CloseIcon)>
                                                     </span>
                                                     <WithStyles(memo)
                                                       center={true}
@@ -5799,6 +5811,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                   "iconFilled": "MuiSelect-iconFilled",
                                                                   "iconOpen": "MuiSelect-iconOpen",
                                                                   "iconOutlined": "MuiSelect-iconOutlined",
+                                                                  "nativeInput": "MuiSelect-nativeInput",
                                                                   "outlined": "MuiSelect-outlined",
                                                                   "root": "MuiSelect-root",
                                                                   "select": "MuiSelect-select",
@@ -5840,7 +5853,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       "open": [Function],
                                                                       "readOnly": [Function],
                                                                       "renderValue": [Function],
-                                                                      "required": [Function],
                                                                       "tabIndex": [Function],
                                                                       "type": [Function],
                                                                       "value": [Function],
@@ -5865,20 +5877,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                     },
                                                                     "autoWidth": false,
                                                                     "children": Array [
-                                                                      <ForwardRef(WithStyles)
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-https"
                                                                         value="https"
                                                                       >
                                                                         HTTPS
-                                                                      </ForwardRef(WithStyles)>,
-                                                                      <ForwardRef(WithStyles)
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
+                                                                      <WithStyles(ForwardRef(MenuItem))
                                                                         disabled={false}
                                                                         id="confirm-access-method-globus"
                                                                         value="globus"
                                                                       >
                                                                         Globus
-                                                                      </ForwardRef(WithStyles)>,
+                                                                      </WithStyles(ForwardRef(MenuItem))>,
                                                                     ],
                                                                     "classes": Object {
                                                                       "disabled": "Mui-disabled",
@@ -5887,6 +5899,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       "iconFilled": "MuiSelect-iconFilled",
                                                                       "iconOpen": "MuiSelect-iconOpen",
                                                                       "iconOutlined": "MuiSelect-iconOutlined",
+                                                                      "nativeInput": "MuiSelect-nativeInput",
                                                                       "outlined": "MuiSelect-outlined",
                                                                       "root": "MuiSelect-root",
                                                                       "select": "MuiSelect-select",
@@ -5953,7 +5966,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         "open": [Function],
                                                                         "readOnly": [Function],
                                                                         "renderValue": [Function],
-                                                                        "required": [Function],
                                                                         "tabIndex": [Function],
                                                                         "type": [Function],
                                                                         "value": [Function],
@@ -5978,20 +5990,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                       },
                                                                       "autoWidth": false,
                                                                       "children": Array [
-                                                                        <ForwardRef(WithStyles)
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-https"
                                                                           value="https"
                                                                         >
                                                                           HTTPS
-                                                                        </ForwardRef(WithStyles)>,
-                                                                        <ForwardRef(WithStyles)
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
+                                                                        <WithStyles(ForwardRef(MenuItem))
                                                                           disabled={false}
                                                                           id="confirm-access-method-globus"
                                                                           value="globus"
                                                                         >
                                                                           Globus
-                                                                        </ForwardRef(WithStyles)>,
+                                                                        </WithStyles(ForwardRef(MenuItem))>,
                                                                       ],
                                                                       "classes": Object {
                                                                         "disabled": "Mui-disabled",
@@ -6000,6 +6012,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         "iconFilled": "MuiSelect-iconFilled",
                                                                         "iconOpen": "MuiSelect-iconOpen",
                                                                         "iconOutlined": "MuiSelect-iconOutlined",
+                                                                        "nativeInput": "MuiSelect-nativeInput",
                                                                         "outlined": "MuiSelect-outlined",
                                                                         "root": "MuiSelect-root",
                                                                         "select": "MuiSelect-select",
@@ -6067,7 +6080,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           "open": [Function],
                                                                           "readOnly": [Function],
                                                                           "renderValue": [Function],
-                                                                          "required": [Function],
                                                                           "tabIndex": [Function],
                                                                           "type": [Function],
                                                                           "value": [Function],
@@ -6092,20 +6104,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                         },
                                                                         "autoWidth": false,
                                                                         "children": Array [
-                                                                          <ForwardRef(WithStyles)
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-https"
                                                                             value="https"
                                                                           >
                                                                             HTTPS
-                                                                          </ForwardRef(WithStyles)>,
-                                                                          <ForwardRef(WithStyles)
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
+                                                                          <WithStyles(ForwardRef(MenuItem))
                                                                             disabled={false}
                                                                             id="confirm-access-method-globus"
                                                                             value="globus"
                                                                           >
                                                                             Globus
-                                                                          </ForwardRef(WithStyles)>,
+                                                                          </WithStyles(ForwardRef(MenuItem))>,
                                                                         ],
                                                                         "classes": Object {
                                                                           "disabled": "Mui-disabled",
@@ -6114,6 +6126,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           "iconFilled": "MuiSelect-iconFilled",
                                                                           "iconOpen": "MuiSelect-iconOpen",
                                                                           "iconOutlined": "MuiSelect-iconOutlined",
+                                                                          "nativeInput": "MuiSelect-nativeInput",
                                                                           "outlined": "MuiSelect-outlined",
                                                                           "root": "MuiSelect-root",
                                                                           "select": "MuiSelect-select",
@@ -6187,7 +6200,6 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             "open": [Function],
                                                                             "readOnly": [Function],
                                                                             "renderValue": [Function],
-                                                                            "required": [Function],
                                                                             "tabIndex": [Function],
                                                                             "type": [Function],
                                                                             "value": [Function],
@@ -6212,20 +6224,20 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                           },
                                                                           "autoWidth": false,
                                                                           "children": Array [
-                                                                            <ForwardRef(WithStyles)
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-https"
                                                                               value="https"
                                                                             >
                                                                               HTTPS
-                                                                            </ForwardRef(WithStyles)>,
-                                                                            <ForwardRef(WithStyles)
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
+                                                                            <WithStyles(ForwardRef(MenuItem))
                                                                               disabled={false}
                                                                               id="confirm-access-method-globus"
                                                                               value="globus"
                                                                             >
                                                                               Globus
-                                                                            </ForwardRef(WithStyles)>,
+                                                                            </WithStyles(ForwardRef(MenuItem))>,
                                                                           ],
                                                                           "classes": Object {
                                                                             "disabled": "Mui-disabled",
@@ -6234,6 +6246,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             "iconFilled": "MuiSelect-iconFilled",
                                                                             "iconOpen": "MuiSelect-iconOpen",
                                                                             "iconOutlined": "MuiSelect-iconOutlined",
+                                                                            "nativeInput": "MuiSelect-nativeInput",
                                                                             "outlined": "MuiSelect-outlined",
                                                                             "root": "MuiSelect-root",
                                                                             "select": "MuiSelect-select",
@@ -6285,6 +6298,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                               "iconFilled": "MuiSelect-iconFilled",
                                                                               "iconOpen": "MuiSelect-iconOpen",
                                                                               "iconOutlined": "MuiSelect-iconOutlined",
+                                                                              "nativeInput": "MuiSelect-nativeInput",
                                                                               "outlined": "MuiSelect-outlined",
                                                                               "root": "MuiSelect-root",
                                                                               "select": "MuiSelect-select",
@@ -6319,8 +6333,12 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                             HTTPS
                                                                           </div>
                                                                           <input
+                                                                            aria-hidden={true}
+                                                                            className="MuiSelect-nativeInput"
                                                                             onAnimationStart={[Function]}
-                                                                            type="hidden"
+                                                                            onChange={[Function]}
+                                                                            required={false}
+                                                                            tabIndex={-1}
                                                                             value="https"
                                                                           />
                                                                           <ForwardRef(ArrowDropDownIcon)
@@ -6662,7 +6680,9 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                             HTTPS
                                                                                                           </div>
                                                                                                           <input
-                                                                                                            type="hidden"
+                                                                                                            aria-hidden="true"
+                                                                                                            class="MuiSelect-nativeInput"
+                                                                                                            tabindex="-1"
                                                                                                             value="https"
                                                                                                           />
                                                                                                           <svg

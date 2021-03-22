@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-export default {
+const requests = {
   get: jest.fn((path) => {
     if (path.includes('/topcat/user/cart/')) {
       return Promise.resolve({ data: { cartItems: [] } });
@@ -27,6 +27,14 @@ export default {
               description: 'Example description for Globus access method.',
             },
           },
+          routes: [
+            {
+              section: 'Test',
+              link: '/download',
+              displayName: 'Download',
+              order: 0,
+            },
+          ],
         },
       });
     } else if (path.includes('/topcat/user/downloads')) {
@@ -39,3 +47,5 @@ export default {
   put: jest.fn(() => Promise.resolve({ data: {} })),
   CancelToken: axios.CancelToken,
 };
+
+export default requests;

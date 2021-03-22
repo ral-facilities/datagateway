@@ -23,10 +23,6 @@ describe('ISIS Instruments table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'ISISInstrumentsTable' });
@@ -54,6 +50,11 @@ describe('ISIS Instruments table component', () => {
         url: 'test url',
       },
     ];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -109,7 +110,9 @@ describe('ISIS Instruments table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[2]).toEqual(filterTable('fullName', 'test'));
+    expect(testStore.getActions()[2]).toEqual(
+      filterTable('fullName', { value: 'test', type: 'include' })
+    );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');

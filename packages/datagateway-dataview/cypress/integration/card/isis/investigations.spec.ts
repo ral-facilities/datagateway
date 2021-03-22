@@ -2,7 +2,7 @@ describe('ISIS - Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
@@ -72,6 +72,7 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
       .find('input')
+      .first()
       .type('yes')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,

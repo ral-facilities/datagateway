@@ -35,16 +35,33 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
+// history package is part of react-router, which we depend on
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Location as LocationType } from 'history';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
       cardPaper: { backgroundColor: 'inhereit' },
       tablePaper: {
-        height: 'calc(100vh - 150px)',
+        height: 'calc(100vh - 180px)',
         width: '100%',
         backgroundColor: 'inherit',
         overflowX: 'auto',
+      },
+      tablePaperMessage: {
+        height: 'calc(100vh - 244px - 4rem)',
+        width: '100%',
+        backgroundColor: 'inherit',
+        overflowX: 'auto',
+      },
+      noResultsPaper: {
+        padding: theme.spacing(2),
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        maxWidth: '960px',
       },
     })
 );
@@ -235,8 +252,20 @@ const CardSwitch = (props: {
   );
 };
 
-const ViewRouting = (props: { view: ViewsType }): React.ReactElement => {
+const ViewRouting = (props: {
+  view: ViewsType;
+  loadedCount: boolean;
+  totalDataCount: number;
+  location: LocationType;
+}): React.ReactElement => {
+  const { view, loadedCount, totalDataCount, location } = props;
   const paperClasses = usePaperStyles();
+  const [t] = useTranslation();
+  const displayFilterMessage = loadedCount && totalDataCount === 0;
+  const tableClassName = displayFilterMessage
+    ? paperClasses.tablePaperMessage
+    : paperClasses.tablePaper;
+
   return (
     <SwitchRouting>
       {/* For "toggle" paths, check state for the current view */}
@@ -246,24 +275,50 @@ const ViewRouting = (props: { view: ViewsType }): React.ReactElement => {
           Object.values(paths.studyHierarchy.toggle)
         )}
         render={() => (
-          <Paper
-            square
-            className={
-              props.view === 'card'
-                ? paperClasses.cardPaper
-                : paperClasses.tablePaper
-            }
-          >
-            <PageRouting view={props.view} />
-          </Paper>
+          <div>
+            {view !== 'card' && displayFilterMessage && (
+              <Paper className={paperClasses.noResultsPaper}>
+                <Typography
+                  align="center"
+                  variant="h6"
+                  component="h6"
+                  aria-label="filter-message"
+                >
+                  {t('loading.filter_message')}
+                </Typography>
+              </Paper>
+            )}
+            <Paper
+              square
+              className={
+                view === 'card' ? paperClasses.cardPaper : tableClassName
+              }
+            >
+              <PageRouting view={view} location={location} />
+            </Paper>
+          </div>
         )}
       />
       {/* Otherwise, use the paper styling for tables*/}
       <Route
         render={() => (
-          <Paper square className={paperClasses.tablePaper}>
-            <PageRouting view={props.view} />
-          </Paper>
+          <div>
+            {displayFilterMessage && (
+              <Paper className={paperClasses.noResultsPaper}>
+                <Typography
+                  align="center"
+                  variant="h6"
+                  component="h6"
+                  aria-label="filter-message"
+                >
+                  {t('loading.filter_message')}
+                </Typography>
+              </Paper>
+            )}
+            <Paper square className={tableClassName}>
+              <PageRouting view={view} location={location} />
+            </Paper>
+          </div>
         )}
       />
     </SwitchRouting>
@@ -281,11 +336,12 @@ interface PageContainerDispatchProps {
 
 interface PageContainerStateProps {
   entityCount: number;
-  path: string;
-  locationSearch: string;
+  location: LocationType;
   query: QueryParams;
   savedView: ViewsType;
   loading: boolean;
+  loadedCount: boolean;
+  totalDataCount: number;
   cartItems: DownloadCartItem[];
 }
 
@@ -295,7 +351,7 @@ type PageContainerCombinedProps = PageContainerStateProps &
 interface PageContainerState {
   paths: string[];
   toggleCard: boolean;
-  isCartFetched: boolean;
+  modifiedLocation: LocationType;
 }
 
 class PageContainer extends React.Component<
@@ -315,42 +371,45 @@ class PageContainer extends React.Component<
         Object.values(paths.studyHierarchy.toggle)
       ),
       toggleCard: this.getToggle(),
-      isCartFetched: false,
+      modifiedLocation: props.location,
     };
+  }
+
+  public componentDidMount(): void {
+    // Fetch the download cart on mount, ensuring dataview element is present.
+    if (document.getElementById('datagateway-dataview')) {
+      this.props.fetchDownloadCart();
+    }
   }
 
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // Ensure if the location changes, then we update the query parameters.
-    if (
-      prevProps.path !== this.props.path ||
-      prevProps.locationSearch !== this.props.locationSearch
-    ) {
-      this.props.loadQuery(prevProps.path !== this.props.path);
+    // Use a dummy URL for the routing until we've updated the query to prevent
+    // sending requests for the old query on the new entity or vice versa.
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.setState({
+        ...this.state,
+        modifiedLocation: { ...this.props.location, pathname: '/' },
+      });
+      this.props.loadQuery(true);
+    } else if (prevProps.location.search !== this.props.location.search) {
+      this.props.loadQuery(false);
+    }
+
+    if (prevProps.query !== this.props.query) {
+      this.setState({ ...this.state, modifiedLocation: this.props.location });
     }
 
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
     if (this.getToggle() && !this.props.query.view)
-      this.props.pushView('card', this.props.path);
+      this.props.pushView('card', this.props.location.pathname);
 
     // Keep the query parameter for view and the state in sync, by getting the latest update.
     if (prevProps.query.view !== this.props.query.view) {
       this.setState({
         ...this.state,
         toggleCard: this.getToggle(),
-      });
-    }
-
-    // Fetch the download cart on mount,
-    // ensuring that dataview element is present.
-    if (
-      !this.state.isCartFetched &&
-      document.getElementById('datagateway-dataview')
-    ) {
-      this.props.fetchDownloadCart();
-      this.setState({
-        ...this.state,
-        isCartFetched: true,
       });
     }
   }
@@ -361,8 +420,10 @@ class PageContainer extends React.Component<
       .some((p) => {
         // Look for the character set where the parameter for ID would be
         // replaced with the regex to catch any character between the forward slashes.
-        const match = this.props.path.match(p.replace(/(:[^./]*)/g, '(.)+'));
-        return match && this.props.path === match[0];
+        const match = this.props.location.pathname.match(
+          p.replace(/(:[^./]*)/g, '(.)+')
+        );
+        return match && this.props.location.pathname === match[0];
       });
     return res;
   };
@@ -406,7 +467,7 @@ class PageContainer extends React.Component<
     this.storeDataView(nextView);
 
     // Add the view and push the final query parameters.
-    this.props.pushView(nextView, this.props.path);
+    this.props.pushView(nextView, this.props.location.pathname);
 
     // Set the state with the toggled card option and the saved query.
     this.setState({
@@ -449,7 +510,14 @@ class PageContainer extends React.Component<
 
           {/* Hold the table for remainder of the page */}
           <Grid item xs={12} aria-label="container-table">
-            <ViewRouting view={this.props.query.view} />
+            {document.getElementById('datagateway-dataview') && (
+              <ViewRouting
+                view={this.props.query.view}
+                loadedCount={this.props.loadedCount}
+                totalDataCount={this.props.totalDataCount}
+                location={this.state.modifiedLocation}
+              />
+            )}
           </Grid>
         </StyledGrid>
       </Paper>
@@ -459,11 +527,12 @@ class PageContainer extends React.Component<
 
 const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   entityCount: state.dgcommon.totalDataCount,
-  path: state.router.location.pathname,
-  locationSearch: state.router.location.search,
+  location: state.router.location,
   query: state.dgcommon.query,
   savedView: state.dgcommon.savedQuery.view,
   loading: state.dgcommon.loading,
+  loadedCount: state.dgcommon.loadedCount,
+  totalDataCount: state.dgcommon.totalDataCount,
   cartItems: state.dgcommon.cartItems,
 });
 

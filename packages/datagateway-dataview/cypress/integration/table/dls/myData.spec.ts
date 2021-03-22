@@ -1,8 +1,9 @@
 describe('DLS - MyData Table', () => {
   beforeEach(() => {
     cy.intercept('/datasets/count').as('getDatasetCount');
-    cy.login('root', 'pw');
-    cy.visit('/my-data/DLS');
+    cy.login();
+    // TODO - I removed the wait before, see if it works with it
+    cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
   });
 
   it('should load correctly', () => {
@@ -85,7 +86,10 @@ describe('DLS - MyData Table', () => {
   describe('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
@@ -125,7 +129,10 @@ describe('DLS - MyData Table', () => {
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });

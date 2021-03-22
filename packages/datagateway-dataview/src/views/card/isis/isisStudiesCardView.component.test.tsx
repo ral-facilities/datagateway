@@ -2,6 +2,7 @@ import { Link, ListItemText } from '@material-ui/core';
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   dGCommonInitialState,
   fetchAllIdsRequest,
   fetchStudiesRequest,
@@ -20,7 +21,6 @@ import { StateType } from '../../../state/app.types';
 import { initialState } from '../../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import ISISStudiesCardView from './isisStudiesCardView.component';
-import AdvancedFilter from '../advancedFilter.component';
 
 describe('ISIS Studies - Card View', () => {
   let mount;
@@ -39,13 +39,6 @@ describe('ISIS Studies - Card View', () => {
       </Provider>
     );
   };
-
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
-  // Prevent error logging
-  window.scrollTo = jest.fn();
 
   beforeEach(() => {
     mount = createMount();
@@ -82,6 +75,13 @@ describe('ISIS Studies - Card View', () => {
         },
       },
     };
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
+    // Prevent error logging
+    window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
@@ -147,7 +147,9 @@ describe('ISIS Studies - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(3);
-    expect(store.getActions()[1]).toEqual(filterTable('study.name', 'test'));
+    expect(store.getActions()[1]).toEqual(
+      filterTable('study.name', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[2]).toEqual(push('?'));
 
     advancedFilter

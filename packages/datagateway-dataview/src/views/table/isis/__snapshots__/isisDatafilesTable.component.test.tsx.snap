@@ -17,27 +17,27 @@ exports[`ISIS datafiles table component renders correctly 1`] = `
       Object {
         "dataKey": "name",
         "filterComponent": [Function],
-        "icon": <Memo(TitleIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.name",
       },
       Object {
         "dataKey": "location",
         "filterComponent": [Function],
-        "icon": <Memo(ExploreIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "fileSize",
         "filterComponent": [Function],
-        "icon": <Memo(SaveIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.size",
       },
       Object {
         "dataKey": "modTime",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
-        "icon": <Memo(CalendarTodayIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.modified_time",
       },
     ]

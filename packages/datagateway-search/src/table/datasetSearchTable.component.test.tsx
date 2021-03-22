@@ -25,10 +25,6 @@ describe('Dataset table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DatasetSearchTable' });
@@ -48,6 +44,10 @@ describe('Dataset table component', () => {
       },
     ];
     state.dgcommon.allIds = [1];
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -85,6 +85,32 @@ describe('Dataset table component', () => {
     wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
     expect(testStore.getActions()[0]).toEqual(fetchDatasetsRequest(1));
+  });
+
+  it('sends filterTable action on text filter', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const filterInput = wrapper
+      .find('[aria-label="Filter by datasets.name"] input')
+      .first();
+    filterInput.instance().value = 'test';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[4]).toEqual(
+      filterTable('NAME', { type: 'include', value: 'test' })
+    );
+
+    filterInput.instance().value = '';
+    filterInput.simulate('change');
+
+    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
   });
 
   it('sends filterTable action on date filter', () => {

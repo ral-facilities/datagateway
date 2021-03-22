@@ -1,7 +1,7 @@
 describe('Breadcrumbs Component', () => {
   beforeEach(() => {
     // Get a session and visit the table.
-    cy.login('root', 'pw');
+    cy.login();
 
     // Create route and aliases.
     cy.intercept('/investigations/').as('getInvestigation');

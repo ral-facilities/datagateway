@@ -9,18 +9,18 @@ exports[`Select column header component renders correctly when checked 1`] = `
   <WithStyles(ForwardRef(Checkbox))
     checked={true}
     checkedIcon={
-      <Memo(CheckBoxIcon)
+      <Memo
         fontSize="small"
       />
     }
     icon={
-      <Memo(CheckBoxOutlineBlankIcon)
+      <Memo
         fontSize="small"
       />
     }
     indeterminate={false}
     indeterminateIcon={
-      <Memo(IndeterminateCheckBoxIcon)
+      <Memo
         fontSize="small"
       />
     }
@@ -50,18 +50,18 @@ exports[`Select column header component renders correctly when indeterminate 1`]
   <WithStyles(ForwardRef(Checkbox))
     checked={false}
     checkedIcon={
-      <Memo(CheckBoxIcon)
+      <Memo
         fontSize="small"
       />
     }
     icon={
-      <Memo(CheckBoxOutlineBlankIcon)
+      <Memo
         fontSize="small"
       />
     }
     indeterminate={true}
     indeterminateIcon={
-      <Memo(IndeterminateCheckBoxIcon)
+      <Memo
         fontSize="small"
       />
     }
@@ -91,18 +91,18 @@ exports[`Select column header component renders correctly when unchecked 1`] = `
   <WithStyles(ForwardRef(Checkbox))
     checked={false}
     checkedIcon={
-      <Memo(CheckBoxIcon)
+      <Memo
         fontSize="small"
       />
     }
     icon={
-      <Memo(CheckBoxOutlineBlankIcon)
+      <Memo
         fontSize="small"
       />
     }
     indeterminate={false}
     indeterminateIcon={
-      <Memo(IndeterminateCheckBoxIcon)
+      <Memo
         fontSize="small"
       />
     }

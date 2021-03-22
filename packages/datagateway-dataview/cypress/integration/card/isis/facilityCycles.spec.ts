@@ -3,7 +3,7 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.intercept('**/facilitycycles/count*').as('getFacilityCyclesCount');
     cy.intercept('**/facilitycycles?order*').as('getFacilityCyclesOrder');
     cy.intercept('instruments/1').as('instrument');
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/instrument/1/facilityCycle?view=card').wait(
       ['@instrument', '@getFacilityCyclesCount', '@getFacilityCyclesOrder'],
       { timeout: 10000 }
@@ -67,6 +67,7 @@ describe('ISIS - FacilityCycles Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
+      .first()
       .type('4')
       .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
         timeout: 10000,

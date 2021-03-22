@@ -7,6 +7,7 @@ import {
   FiltersType,
   Order,
   SortType,
+  TextFilter,
 } from '../../app.types';
 import {
   ActionType,
@@ -52,6 +53,7 @@ export * from './facilityCycles';
 export * from './studies';
 export * from './instruments';
 export * from './investigations';
+export * from './lucene';
 
 // Get the nested value from an Entity object given a dataKey
 // which drills specifies the property or array indexes.
@@ -158,8 +160,17 @@ const objectChanged = (
           });
         }
       } else if (
-        parsedEntry.startDate !== (stateEntry as DateFilter).startDate ||
-        parsedEntry.endDate !== (stateEntry as DateFilter).endDate
+        ('startDate' in parsedEntry &&
+          parsedEntry.startDate !== (stateEntry as DateFilter).startDate) ||
+        ('endDate' in parsedEntry &&
+          parsedEntry.endDate !== (stateEntry as DateFilter).endDate)
+      ) {
+        changed = true;
+      } else if (
+        ('value' in parsedEntry &&
+          parsedEntry.value !== (stateEntry as TextFilter).value) ||
+        ('type' in parsedEntry &&
+          parsedEntry.type !== (stateEntry as TextFilter).type)
       ) {
         changed = true;
       }
@@ -327,6 +338,19 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
             JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
           );
         }
+        if ('type' in filter && filter.type) {
+          if (filter.type === 'include') {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { like: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { nlike: filter.value } })
+            );
+          }
+        }
       } else {
         // If it is an array (strings or numbers) we use IN
         // and filter by what is in the array at the moment.
@@ -335,11 +359,6 @@ export const getApiFilter = (getState: () => StateType): URLSearchParams => {
           JSON.stringify({ [column]: { in: filter } })
         );
       }
-    } else {
-      searchParams.append(
-        'where',
-        JSON.stringify({ [column]: { like: filter } })
-      );
     }
   }
 

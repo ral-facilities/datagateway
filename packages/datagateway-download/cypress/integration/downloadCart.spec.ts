@@ -2,7 +2,7 @@ describe('Download Cart', () => {
   beforeEach(() => {
     cy.intercept('GET', '**/topcat/user/cart/**').as('fetchCart');
     cy.intercept('GET', '**/topcat/user/downloads**').as('fetchDownloads');
-    cy.login('root', 'pw');
+    cy.login();
     cy.clearDownloadCart();
 
     cy.seedDownloadCart().then(() => {
@@ -25,7 +25,10 @@ describe('Download Cart', () => {
     // Ensure we can move away from the table and come back to it.
     cy.get('[aria-label="Download cart panel"]').should('exist');
     // Wait for the downloads to be fetched before moving back to the cart.
-    cy.get('[aria-label="Downloads tab"]').should('exist').click().wait('@fetchDownloads');
+    cy.get('[aria-label="Downloads tab"]')
+      .should('exist')
+      .click()
+      .wait('@fetchDownloads');
     cy.get('[aria-label="Download status panel"]').should('exist');
 
     cy.get('[aria-label="Cart tab').click().wait('@fetchCart');
@@ -78,13 +81,20 @@ describe('Download Cart', () => {
   });
 
   it('should be able to filter cart items by name and type', () => {
-    cy.get('[aria-label="Filter by Name"]').find('input').as('nameFilter');
+    cy.get('[aria-label="Filter by Name"]')
+      .find('input')
+      .first()
+      .as('nameFilter');
 
     cy.get('@nameFilter').type('1');
     cy.get('[aria-rowcount=13]').should('exist');
+    cy.get('[aria-label="grid"]').scrollTo(0, 150);
     cy.contains('DATASET 31').should('be.visible');
 
-    cy.get('[aria-label="Filter by Type"]').find('input').as('typeFilter');
+    cy.get('[aria-label="Filter by Type"]')
+      .find('input')
+      .first()
+      .as('typeFilter');
 
     cy.get('@typeFilter').type('in');
     cy.get('[aria-rowcount=8]').should('exist');

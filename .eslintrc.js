@@ -11,7 +11,6 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'prettier/@typescript-eslint',
     'plugin:cypress/recommended',
   ],
   plugins: ['prettier', 'cypress'],

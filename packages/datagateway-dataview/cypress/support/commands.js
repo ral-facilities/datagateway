@@ -54,16 +54,17 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', (username, password) => {
+Cypress.Commands.add('login', () => {
   return cy.readFile('server/e2e-settings.json').then((settings) => {
     cy.request('POST', `${settings.apiUrl}/sessions`, {
-      username: username,
-      password: password,
+      username: '',
+      password: '',
+      mechanism: 'anon',
     }).then((response) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
-        username: 'Robert499',
+        username: 'test', // TODO - was set to Robert499 before
       };
       const jwt = jsrsasign.KJUR.jws.JWS.sign(
         'HS256',
@@ -71,7 +72,6 @@ Cypress.Commands.add('login', (username, password) => {
         payload,
         'shh'
       );
-
       window.localStorage.setItem('scigateway:token', jwt);
     });
   });

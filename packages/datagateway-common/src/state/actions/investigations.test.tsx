@@ -35,8 +35,6 @@ import {
 jest.mock('../../handleICATError');
 
 describe('Investigation actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
-
   const mockData: Investigation[] = [
     {
       id: 1,
@@ -80,13 +78,6 @@ describe('Investigation actions', () => {
     },
   ];
 
-  // Mock axios GET requests to return mock data.
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({
-      data: mockData,
-    })
-  );
-
   // Investigation cache for investigation ID 1 which has a size of 1.
   const mockInvestigationCache: EntityCache = {
     1: {
@@ -94,6 +85,15 @@ describe('Investigation actions', () => {
       childEntityCount: null,
     },
   };
+
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({
+        data: mockData,
+      })
+    );
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -124,7 +124,10 @@ describe('Investigation actions', () => {
         query: {
           ...initialState.query,
           sort: { column1: 'desc' },
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });
@@ -355,7 +358,10 @@ describe('Investigation actions', () => {
         query: {
           ...initialState.query,
           sort: { column1: 'desc' },
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });
@@ -520,7 +526,10 @@ describe('Investigation actions', () => {
         ...initialState,
         query: {
           ...initialState.query,
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });
@@ -590,7 +599,10 @@ describe('Investigation actions', () => {
         ...initialState,
         query: {
           ...initialState.query,
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });

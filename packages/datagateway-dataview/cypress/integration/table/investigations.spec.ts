@@ -1,6 +1,6 @@
 describe('Investigations Table', () => {
   beforeEach(() => {
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/investigation');
   });
 
@@ -135,7 +135,10 @@ describe('Investigations Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('dog');
 
       cy.get('[aria-rowcount="4"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
@@ -168,9 +171,15 @@ describe('Investigations Table', () => {
     });
 
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Title"]').find('input').type('dog');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('dog');
 
-      cy.get('[aria-label="Filter by Visit ID"]').find('input').type('9');
+      cy.get('[aria-label="Filter by Visit ID"]')
+        .find('input')
+        .first()
+        .type('9');
 
       cy.get('[aria-rowcount="2"]').should('exist');
     });

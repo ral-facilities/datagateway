@@ -138,6 +138,9 @@
     },
     "download": "Download"
   },
+  "my_data_table": {
+    "login_warning_msg": "You need to be logged in to be able to see your own data."
+  },
   "loading": {
     "verifying": "Verifying URL",
     "oops": "Oops!",

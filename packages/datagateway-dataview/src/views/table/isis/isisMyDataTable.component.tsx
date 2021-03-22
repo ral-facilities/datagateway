@@ -12,6 +12,8 @@ import {
   FiltersType,
   formatBytes,
   Investigation,
+  MicroFrontendId,
+  NotificationType,
   Order,
   pushPageFilter,
   pushPageSort,
@@ -21,6 +23,8 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  ViewsType,
+  TextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +45,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 interface ISISMyDataTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -78,6 +83,7 @@ const ISISMyDataTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     loading,
     cartItems,
     addToCart,
@@ -102,11 +108,28 @@ const ISISMyDataTable = (
     [cartItems, allIds]
   );
 
+  // Broadcast a SciGateway notification for any warning encountered.
+  const broadcastWarning = (message: string): void => {
+    document.dispatchEvent(
+      new CustomEvent(MicroFrontendId, {
+        detail: {
+          type: NotificationType,
+          payload: {
+            severity: 'warning',
+            message,
+          },
+        },
+      })
+    );
+  };
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
@@ -119,6 +142,12 @@ const ISISMyDataTable = (
       }
     />
   );
+
+  React.useEffect(() => {
+    if (localStorage.getItem('autoLogin') === 'true') {
+      broadcastWarning(t('my_data_table.login_warning_msg'));
+    }
+  }, [t]);
 
   React.useEffect(() => {
     // Sort by startDate on load.
@@ -164,8 +193,8 @@ const ISISMyDataTable = (
           icon: <TitleIcon />,
           label: t('investigations.title'),
           dataKey: 'title',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.investigationInstruments &&
               investigationData.investigationInstruments[0].instrument &&
@@ -182,8 +211,9 @@ const ISISMyDataTable = (
               );
               if (facilityCycle) {
                 return tableLink(
-                  `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
-                  investigationData.title
+                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
+                  investigationData.title,
+                  view
                 );
               } else {
                 return investigationData.title;
@@ -196,8 +226,8 @@ const ISISMyDataTable = (
           icon: <PublicIcon />,
           label: t('investigations.doi'),
           dataKey: 'studyInvestigations.study.PID',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.studyInvestigations &&
               investigationData.studyInvestigations[0].study
@@ -219,8 +249,8 @@ const ISISMyDataTable = (
           icon: <TitleIcon />,
           label: t('investigations.name'),
           dataKey: 'name',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.investigationInstruments &&
               investigationData.investigationInstruments[0].instrument &&
@@ -237,8 +267,9 @@ const ISISMyDataTable = (
               );
               if (facilityCycle) {
                 return tableLink(
-                  `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
-                  investigationData.name
+                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
+                  investigationData.name,
+                  view
                 );
               } else {
                 return investigationData.name;
@@ -250,9 +281,9 @@ const ISISMyDataTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments.instrument.fullName',
-          cellContentRenderer: (props: TableCellProps) => {
-            const investigationData = props.rowData as Investigation;
+          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.fullName',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.investigationInstruments &&
               investigationData.investigationInstruments[0].instrument
@@ -269,8 +300,8 @@ const ISISMyDataTable = (
           icon: <SaveIcon />,
           label: t('investigations.size'),
           dataKey: 'size',
-          cellContentRenderer: (props) => {
-            return formatBytes(props.cellData);
+          cellContentRenderer: (cellProps) => {
+            return formatBytes(cellProps.cellData);
           },
           disableSort: true,
         },
@@ -364,6 +395,7 @@ const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

@@ -14,15 +14,10 @@ describe('withIdCheck', () => {
   const Test: React.FC<{ message: string }> = (props: { message: string }) => (
     <div>{props.message}</div>
   );
-  const pendingPromiseMock = jest.fn().mockImplementation(
-    () =>
-      new Promise((resolve, reject) => {
-        // do nothing
-      })
-  );
-  const resolvedTruePromiseMock = jest.fn().mockResolvedValue(true);
-  const resolvedFalsePromiseMock = jest.fn().mockResolvedValue(false);
-  const rejectedPromiseMock = jest.fn().mockRejectedValue('');
+  let pendingPromiseMock: jest.Mock;
+  let resolvedTruePromiseMock: jest.Mock;
+  let resolvedFalsePromiseMock: jest.Mock;
+  let rejectedPromiseMock: jest.Mock;
 
   const mockUseEffect = (): void => {
     useEffect.mockImplementationOnce((f) => f());
@@ -31,6 +26,15 @@ describe('withIdCheck', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'WithIdCheckComponent' });
     useEffect = jest.spyOn(React, 'useEffect');
+    pendingPromiseMock = jest.fn().mockImplementation(
+      () =>
+        new Promise((resolve, reject) => {
+          // do nothing
+        })
+    );
+    resolvedTruePromiseMock = jest.fn().mockResolvedValue(true);
+    resolvedFalsePromiseMock = jest.fn().mockResolvedValue(false);
+    rejectedPromiseMock = jest.fn().mockRejectedValue('');
 
     mockUseEffect(); // initial run
     mockUseEffect(); // promise resolve/reject

@@ -3,7 +3,7 @@ describe('Investigations Cards', () => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
     cy.intercept('/investigations?include').as('getInvestigationsInclude');
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/investigation').wait(
       [
         '@getInvestigationsCount',
@@ -94,6 +94,7 @@ describe('Investigations Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
       .find('input')
+      .first()
       .type('before')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,

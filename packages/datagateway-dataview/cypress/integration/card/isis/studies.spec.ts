@@ -2,7 +2,7 @@ describe('ISIS - Studies Cards', () => {
   beforeEach(() => {
     cy.intercept('**/studyinvestigations/count*').as('getStudiesCount');
     cy.intercept('**/studyinvestigations?order*').as('getStudiesOrder');
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browseStudyHierarchy/instrument/1/study').wait(
       ['@getStudiesCount', '@getStudiesOrder'],
       { timeout: 10000 }
@@ -86,6 +86,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.get('[aria-label="Filter by RB Number"]')
       .find('input')
+      .first()
       .type('4')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
@@ -94,6 +95,7 @@ describe('ISIS - Studies Cards', () => {
 
     cy.get('[aria-label="Filter by Description"]')
       .find('input')
+      .first()
       .type('energy')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,

@@ -2,7 +2,7 @@ describe('DLS - Proposals Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/proposal/').wait(
       ['@getInvestigationsCount', '@getInvestigationsOrder'],
       { timeout: 10000 }
@@ -74,6 +74,7 @@ describe('DLS - Proposals Cards', () => {
     cy.get('[aria-label="advanced-filters-link"]').click();
     cy.get('[aria-label="Filter by Title"]')
       .find('input')
+      .first()
       .type('Dog')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
@@ -82,6 +83,7 @@ describe('DLS - Proposals Cards', () => {
 
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
+      .first()
       .type('2')
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,

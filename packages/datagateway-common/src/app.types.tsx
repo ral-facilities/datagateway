@@ -199,6 +199,10 @@ export interface Download {
   [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
+export interface FormattedDownload extends Omit<Download, 'status'> {
+  status: string;
+}
+
 export interface SubmitCart {
   cartItems: DownloadCartItem[];
   facilityName: string;
@@ -219,7 +223,12 @@ export type ICATEntity =
   | FacilityCycle
   | StudyInvestigation;
 
-export type Entity = (ICATEntity | DownloadCartTableItem | Download) & {
+export type Entity = (
+  | ICATEntity
+  | DownloadCartTableItem
+  | Download
+  | FormattedDownload
+) & {
   // We will have to ignore the any typing here to access
   // Entity attributes with string indexing.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -241,7 +250,13 @@ export interface DateFilter {
   startDate?: string;
   endDate?: string;
 }
-export type Filter = string | string[] | number | DateFilter;
+
+export interface TextFilter {
+  value?: string | number;
+  type: string;
+}
+
+export type Filter = string[] | TextFilter | DateFilter;
 
 export type Order = 'asc' | 'desc';
 

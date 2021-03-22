@@ -1,6 +1,6 @@
 describe('ISIS - Instruments Table', () => {
   beforeEach(() => {
-    cy.login('root', 'pw');
+    cy.login();
     cy.visit('/browse/instrument');
   });
 
@@ -68,7 +68,10 @@ describe('ISIS - Instruments Table', () => {
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').type('radio');
+      cy.get('[aria-label="Filter by Name"]')
+        .find('input')
+        .first()
+        .type('radio');
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
@@ -86,7 +89,9 @@ describe('ISIS - Instruments Table', () => {
     });
 
     it('when another row is showing details', () => {
-      cy.get('[aria-label="Show details"]').eq(2).click();
+      cy.get('[aria-label="Show details"]')
+        .eq(2)
+        .click({ scrollBehavior: 'center' });
 
       cy.get('[aria-label="Show details"]').first().click();
 
@@ -115,9 +120,11 @@ describe('ISIS - Instruments Table', () => {
         .should('be.visible');
 
       cy.get('[aria-controls="instrument-users-panel"]').should('be.visible');
-      cy.get('[aria-controls="instrument-users-panel"]').click();
-      cy.get('[aria-label="grid"]').scrollTo('top');
-      cy.get('#details-panel').contains('Vanessa Smith').should('be.visible');
+      cy.get('[aria-controls="instrument-users-panel"]').click({
+        scrollBehavior: 'center',
+      });
+      // cy.get('[aria-label="grid"]').scrollTo('top'); TODO, need to be removed?
+      cy.get('#details-panel').contains('Matthew50').should('be.visible');
     });
 
     it('and then not view details anymore', () => {

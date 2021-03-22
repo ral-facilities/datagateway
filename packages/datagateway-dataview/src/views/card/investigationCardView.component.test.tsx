@@ -1,7 +1,7 @@
 import {
   Card,
   Chip,
-  ExpansionPanel,
+  Accordion,
   Link,
   ListItemText,
   SvgIcon,
@@ -9,6 +9,7 @@ import {
 import { createMount, createShallow } from '@material-ui/core/test-utils';
 import { push } from 'connected-react-router';
 import {
+  AdvancedFilter,
   addToCartRequest,
   dGCommonInitialState,
   fetchFilterRequest,
@@ -27,7 +28,6 @@ import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
 import axios from 'axios';
 import InvestigationCardView from './investigationCardView.component';
-import AdvancedFilter from './advancedFilter.component';
 
 describe('Investigation - Card View', () => {
   let mount;
@@ -154,7 +154,9 @@ describe('Investigation - Card View', () => {
       .first()
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('title', 'test'));
+    expect(store.getActions()[4]).toEqual(
+      filterTable('title', { value: 'test', type: 'include' })
+    );
     expect(store.getActions()[5]).toEqual(push('?'));
 
     advancedFilter
@@ -220,7 +222,7 @@ describe('Investigation - Card View', () => {
     };
     const wrapper = createWrapper();
 
-    const typePanel = wrapper.find(ExpansionPanel).first();
+    const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');

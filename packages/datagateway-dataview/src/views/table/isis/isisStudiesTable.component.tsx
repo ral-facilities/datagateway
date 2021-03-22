@@ -13,7 +13,9 @@ import {
   Table,
   tableLink,
   TextColumnFilter,
+  TextFilter,
   fetchAllIds,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +37,7 @@ interface ISISStudiesTableProps {
 interface ISISStudiesTableStoreProps {
   sort: SortType;
   filters: FiltersType;
+  view: ViewsType;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -68,6 +71,7 @@ const ISISStudiesTable = (
     pushSort,
     filters,
     pushFilters,
+    view,
     instrumentId,
     loading,
   } = props;
@@ -77,8 +81,10 @@ const ISISStudiesTable = (
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
-      value={filters[dataKey] as string}
-      onChange={(value: string) => pushFilters(dataKey, value ? value : null)}
+      value={filters[dataKey] as TextFilter}
+      onChange={(value: { value?: string | number; type: string } | null) =>
+        pushFilters(dataKey, value ? value : null)
+      }
     />
   );
 
@@ -126,11 +132,12 @@ const ISISStudiesTable = (
         {
           icon: <FingerprintIcon />,
           label: t('studies.name'),
-          dataKey: 'study.name',
-          cellContentRenderer: (props: TableCellProps) =>
+          dataKey: 'STUDY.name',
+          cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${props.rowData.study?.id}/investigation`,
-              props.rowData.study?.name
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.study?.id}/investigation`,
+              cellProps.rowData.study?.name,
+              view
             ),
           filterComponent: textFilter,
         },
@@ -224,6 +231,7 @@ const mapStateToProps = (state: StateType): ISISStudiesTableStoreProps => {
   return {
     sort: state.dgcommon.query.sort,
     filters: state.dgcommon.query.filters,
+    view: state.dgcommon.query.view,
     allIds: state.dgcommon.allIds,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,

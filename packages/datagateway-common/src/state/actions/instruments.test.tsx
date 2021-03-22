@@ -22,7 +22,9 @@ import handleICATError from '../../handleICATError';
 jest.mock('../../handleICATError');
 
 describe('Instrument actions', () => {
-  Date.now = jest.fn().mockImplementation(() => 1);
+  beforeEach(() => {
+    Date.now = jest.fn().mockImplementation(() => 1);
+  });
 
   afterEach(() => {
     (axios.get as jest.Mock).mockClear();
@@ -69,7 +71,10 @@ describe('Instrument actions', () => {
         query: {
           ...initialState.query,
           sort: { column1: 'desc' },
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });
@@ -111,6 +116,12 @@ describe('Instrument actions', () => {
   });
 
   it('fetchInstruments applies skip and limit when specified via optional parameters', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
     const asyncAction = fetchInstruments({ startIndex: 0, stopIndex: 49 });
 
     const getState = (): Partial<StateType> => ({
@@ -158,7 +169,10 @@ describe('Instrument actions', () => {
         ...initialState,
         query: {
           ...initialState.query,
-          filters: { column1: '1', column2: '2' },
+          filters: {
+            column1: { value: '1', type: 'include' },
+            column2: { value: '2', type: 'include' },
+          },
         },
       },
     });

@@ -1,8 +1,11 @@
 describe('ISIS - MyData Table', () => {
   beforeEach(() => {
     cy.intercept('/investigations/count').as('getInvestigationCount');
-    cy.login('root', 'pw');
-    cy.visit('/my-data/ISIS');
+    cy.login();
+    // TODO - Does wait() need to be removed?
+    cy.visit('/my-data/ISIS').wait(['@getInvestigationCount'], {
+      timeout: 10000,
+    });
   });
 
   it('should load correctly', () => {
@@ -91,7 +94,10 @@ describe('ISIS - MyData Table', () => {
   describe('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });
@@ -123,11 +129,15 @@ describe('ISIS - MyData Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument"]')
         .find('input')
+        // TODO - might need .first()?
         .type('Who set wind carry matter.');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
-      cy.get('[aria-label="Filter by Title"]').find('input').type('invalid');
+      cy.get('[aria-label="Filter by Title"]')
+        .find('input')
+        .first()
+        .type('invalid');
 
       cy.get('[aria-rowcount="0"]').should('exist');
     });

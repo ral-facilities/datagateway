@@ -22,10 +22,6 @@ describe('ISIS Studies table component', () => {
   let mount;
   let mockStore;
   let state: StateType;
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'ISISStudiesTable' });
@@ -50,6 +46,11 @@ describe('ISIS Studies table component', () => {
         },
       },
     ];
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
@@ -115,14 +116,14 @@ describe('ISIS Studies table component', () => {
       </Provider>
     );
 
-    const filterInput = wrapper.find(
-      '[aria-label="Filter by studies.name"] input'
-    );
+    const filterInput = wrapper
+      .find('[aria-label="Filter by studies.name"] input')
+      .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('study.name', 'test')
+      filterTable('study.name', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';

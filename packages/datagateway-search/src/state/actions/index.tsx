@@ -1,6 +1,14 @@
 import { ThunkResult } from '../app.types';
 import { SettingsLoadedType } from './actions.types';
-import { loadUrls, loadFacilityName } from 'datagateway-common';
+import {
+  loadUrls,
+  loadFacilityName,
+  RegisterRouteType,
+  PluginRoute,
+  MicroFrontendId,
+} from 'datagateway-common';
+import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
+import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import { Action } from 'redux';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -11,9 +19,13 @@ export const settingsLoaded = (): Action => ({
 });
 
 export const configureApp = (): ThunkResult<Promise<void>> => {
+  const settingsPath = process.env.REACT_APP_SEARCH_BUILD_DIRECTORY
+    ? process.env.REACT_APP_SEARCH_BUILD_DIRECTORY +
+      'datagateway-search-settings.json'
+    : '/datagateway-search-settings.json';
   return async (dispatch) => {
     await axios
-      .get('/datagateway-search-settings.json')
+      .get(settingsPath)
       .then((res) => {
         const settings = res.data;
 
@@ -45,6 +57,49 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           throw new Error(
             'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
           );
+        }
+
+        if (Array.isArray(settings['routes']) && settings['routes'].length) {
+          settings['routes'].forEach((route: PluginRoute, index: number) => {
+            if (
+              'section' in route &&
+              'link' in route &&
+              'displayName' in route
+            ) {
+              const registerRouteAction = {
+                type: RegisterRouteType,
+                payload: {
+                  section: route['section'],
+                  link: route['link'],
+                  plugin: 'datagateway-search',
+                  displayName: '\xa0' + route['displayName'],
+                  order: route['order'] ? route['order'] : 0,
+                  helpSteps:
+                    index === 0 && 'helpSteps' in settings
+                      ? settings['helpSteps']
+                      : [],
+                  logoLightMode: settings['pluginHost']
+                    ? settings['pluginHost'] + LogoLight
+                    : undefined,
+                  logoDarkMode: settings['pluginHost']
+                    ? settings['pluginHost'] + LogoDark
+                    : undefined,
+                  logoAltText: 'DataGateway',
+                },
+              };
+              document.dispatchEvent(
+                new CustomEvent(MicroFrontendId, {
+                  detail: registerRouteAction,
+                })
+              );
+            } else {
+              throw new Error(
+                'Route provided does not have all the required entries (section, link, displayName)'
+              );
+            }
+          });
+        } else {
+          throw new Error('No routes provided in the settings');
         }
 
         /* istanbul ignore if */
@@ -104,9 +159,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         dispatch(settingsLoaded());
       })
       .catch((error) => {
-        log.error(
-          `Error loading datagateway-search-settings.json: ${error.message}`
-        );
+        log.error(`Error loading ${settingsPath}: ${error.message}`);
       });
   };
 };

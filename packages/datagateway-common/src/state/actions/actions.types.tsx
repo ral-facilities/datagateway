@@ -218,6 +218,12 @@ export const FetchAllIdsFailureType =
 export const FetchAllIdsSuccessType =
   'datagateway_common:fetch_all_ids_success';
 
+export const FetchLuceneIdsRequestType =
+  'datagateway_common:fetch_lucene_ids_request';
+export const FetchLuceneIdsFailureType =
+  'datagateway_common:fetch_lucene_ids_failure';
+export const FetchLuceneIdsSuccessType =
+  'datagateway_common:fetch_lucene_ids_success';
 export const FetchFilterRequestType = 'datagateway_common:fetch_filter_request';
 export const FetchFilterFailureType = 'datagateway_common:fetch_filter_failure';
 export const FetchFilterSuccessType = 'datagateway_common:fetch_filter_success';
@@ -247,6 +253,13 @@ export interface URLs {
   idsUrl: string;
   apiUrl: string;
   downloadApiUrl: string;
+}
+
+export interface PluginRoute {
+  section: string;
+  link: string;
+  displayName: string;
+  order: number;
 }
 
 export interface UpdateViewPayload {
@@ -298,7 +311,7 @@ export interface FetchDetailsSuccessPayload {
   data: Entity[];
 }
 
-export interface FetchAllIdsSuccessPayload {
+export interface FetchIdsSuccessPayload {
   data: number[];
   timestamp: number;
 }
