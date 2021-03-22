@@ -107,13 +107,13 @@ describe('Datafile search table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[4]).toEqual(
-      filterTable('NAME', { type: 'include', value: 'test' })
+      filterTable('name', { type: 'include', value: 'test' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('name', null));
   });
 
   it('sends filterTable action on date filter', () => {

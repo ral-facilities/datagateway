@@ -92,12 +92,11 @@ exports[`Investigation Search Table component renders correctly 1`] = `
           Object {
             "id": 6,
             "study": Object {
+              "PID": "study pid",
               "createTime": "2019-06-10",
               "id": 7,
               "modTime": "2019-06-10",
               "name": "study name",
-              "PID": "study pid",
-              "id": 7,
             },
           },
         ],

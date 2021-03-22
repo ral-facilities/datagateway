@@ -132,7 +132,7 @@ const ISISStudiesTable = (
         {
           icon: <FingerprintIcon />,
           label: t('studies.name'),
-          dataKey: 'STUDY.name',
+          dataKey: 'study.name',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
               `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.study?.id}/investigation`,

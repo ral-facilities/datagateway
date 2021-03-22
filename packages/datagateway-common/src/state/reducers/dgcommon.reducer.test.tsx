@@ -195,8 +195,8 @@ describe('DGCommon reducer', () => {
         search: 'searchTwo',
         page: 2,
         results: 2,
-        sort: { NAME: 'desc' },
-        filters: { NAME: 'c' },
+        sort: { name: 'desc' },
+        filters: { name: 'c' },
       },
     };
 

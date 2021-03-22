@@ -254,7 +254,7 @@ const ISISInvestigationsTable = (
             ) {
               return tableLink(
                 `${urlPrefix}/${investigationData.id}/dataset`,
-                investigationData.STUDYINVESTIGATION[0].study.PID,
+                investigationData.studyInvestigations[0].study.PID,
                 view
               );
             } else {

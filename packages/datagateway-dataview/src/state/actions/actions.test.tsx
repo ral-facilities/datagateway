@@ -206,7 +206,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             breadcrumbs: {
               test: {
-                replaceEntityField: 'TITLE',
+                replaceEntityField: 'title',
               },
             },
             downloadApiUrl: 'download-api',

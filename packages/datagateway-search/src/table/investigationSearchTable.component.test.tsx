@@ -62,9 +62,9 @@ describe('Investigation Search Table component', () => {
             study: {
               id: 7,
               PID: 'study pid',
-              NAME: 'study name',
-              MOD_TIME: '2019-06-10',
-              CREATE_TIME: '2019-06-10',
+              name: 'study name',
+              modTime: '2019-06-10',
+              createTime: '2019-06-10',
             },
           },
         ],
@@ -157,13 +157,13 @@ describe('Investigation Search Table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[4]).toEqual(
-      filterTable('TITLE', { type: 'include', value: 'test' })
+      filterTable('title', { type: 'include', value: 'test' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('TITLE', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('title', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -399,7 +399,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when instrumentId cannot be found', () => {
-    delete state.dgcommon.data[0].INVESTIGATIONINSTRUMENT;
+    delete state.dgcommon.data[0].investigationInstruments;
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -414,7 +414,7 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    delete state.dgcommon.data[0].FACILITY;
+    delete state.dgcommon.data[0].facility;
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -429,8 +429,8 @@ describe('Investigation Search Table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
-    state.dgcommon.data[0].FACILITY.FACILITYCYCLE[0].STARTDATE = '2020-06-11';
-    state.dgcommon.data[0].FACILITY.FACILITYCYCLE[0].ENDDATE = '2000-06-10';
+    state.dgcommon.data[0].facility.facilityCycles[0].startDate = '2020-06-11';
+    state.dgcommon.data[0].facility.facilityCycles[0].endDate = '2000-06-10';
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>

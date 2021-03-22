@@ -83,8 +83,8 @@ const InvestigationSearchTable = (
 
   const dlsLink = (investigationData: Investigation): React.ReactElement =>
     tableLink(
-      `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}/dataset`,
-      investigationData.TITLE
+      `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
+      investigationData.title
     );
 
   const isisLink = (
@@ -92,43 +92,44 @@ const InvestigationSearchTable = (
   ): React.ReactElement | string => {
     let instrumentId;
     let facilityCycleId;
-    if (investigationData.INVESTIGATIONINSTRUMENT?.length) {
-      instrumentId = investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT_ID;
+    if (investigationData.investigationInstruments?.length) {
+      instrumentId =
+        investigationData.investigationInstruments[0].instrument.id;
     } else {
-      return investigationData.TITLE;
+      return investigationData.title;
     }
 
     if (
-      investigationData.STARTDATE &&
-      investigationData.FACILITY?.FACILITYCYCLE?.length
+      investigationData.startDate &&
+      investigationData.facility?.facilityCycles?.length
     ) {
-      const facilityCycles = investigationData.FACILITY.FACILITYCYCLE.filter(
+      const facilityCycles = investigationData.facility.facilityCycles.filter(
         (facilityCycle) =>
-          investigationData.STARTDATE &&
-          facilityCycle.STARTDATE &&
-          facilityCycle.ENDDATE &&
-          investigationData.STARTDATE >= facilityCycle.STARTDATE &&
-          investigationData.STARTDATE <= facilityCycle.ENDDATE
+          investigationData.startDate &&
+          facilityCycle.startDate &&
+          facilityCycle.endDate &&
+          investigationData.startDate >= facilityCycle.startDate &&
+          investigationData.startDate <= facilityCycle.endDate
       );
       if (facilityCycles.length) {
-        facilityCycleId = facilityCycles[0].ID;
+        facilityCycleId = facilityCycles[0].id;
       }
     }
 
     if (facilityCycleId) {
       return tableLink(
-        `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.ID}/dataset`,
-        investigationData.TITLE
+        `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`,
+        investigationData.title
       );
     } else {
-      return investigationData.TITLE;
+      return investigationData.title;
     }
   };
 
   const genericLink = (investigationData: Investigation): React.ReactElement =>
     tableLink(
-      `/browse/investigation/${investigationData.ID}/dataset`,
-      investigationData.TITLE
+      `/browse/investigation/${investigationData.id}/dataset`,
+      investigationData.title
     );
 
   const hierarchyLink = React.useMemo(() => {

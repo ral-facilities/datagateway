@@ -211,7 +211,7 @@ const ISISMyDataTable = (
               );
               if (facilityCycle) {
                 return tableLink(
-                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
+                  `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
                   investigationData.title,
                   view
                 );
@@ -267,7 +267,7 @@ const ISISMyDataTable = (
               );
               if (facilityCycle) {
                 return tableLink(
-                  `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
+                  `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
                   investigationData.name,
                   view
                 );
@@ -281,7 +281,7 @@ const ISISMyDataTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.fullName',
+          dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             if (

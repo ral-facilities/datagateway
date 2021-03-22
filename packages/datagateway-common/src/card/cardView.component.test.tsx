@@ -43,10 +43,10 @@ describe('Card View', () => {
     props = {
       data: [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
           TYPE_ID: '1',
           FACILITY_ID: '1',
         },
@@ -57,7 +57,7 @@ describe('Card View', () => {
       paginationPosition: 'both',
       loadedCount: true,
       loadedData: true,
-      title: { dataKey: 'TITLE' },
+      title: { dataKey: 'title' },
       loadData: loadData,
       loadCount: jest.fn(),
       onPageChange: onPageChange,
@@ -184,7 +184,7 @@ describe('Card View', () => {
     const updatedProps = {
       ...props,
       title: {
-        dataKey: 'TITLE',
+        dataKey: 'title',
         label: 'Title',
         filterComponent: textFilter,
       },
@@ -230,7 +230,7 @@ describe('Card View', () => {
     );
     const updatedProps = {
       ...props,
-      title: { dataKey: 'TITLE', content: content },
+      title: { dataKey: 'title', content: content },
     };
     const wrapper = createWrapper(updatedProps);
     expect(wrapper.find('#test-title-content').text()).toEqual('TEST');
@@ -240,17 +240,17 @@ describe('Card View', () => {
     let updatedProps = { ...props, query: { ...props.query, page: 1 } };
     const wrapper = createWrapper(props);
     const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('TITLE');
+    expect(button.text()).toEqual('title');
 
     // Click to sort ascending
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(1, {
       ...updatedProps.query,
-      sort: { TITLE: 'asc' },
+      sort: { title: 'asc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { TITLE: 'asc' } },
+      query: { ...updatedProps.query, sort: { title: 'asc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -258,11 +258,11 @@ describe('Card View', () => {
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(2, {
       ...updatedProps.query,
-      sort: { TITLE: 'desc' },
+      sort: { title: 'desc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { TITLE: 'desc' } },
+      query: { ...updatedProps.query, sort: { title: 'desc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -278,8 +278,8 @@ describe('Card View', () => {
     let updatedProps = {
       ...props,
       query: { ...props.query, page: 1 },
-      title: { dataKey: 'TITLE', disableSort: true },
-      description: { dataKey: 'NAME', label: 'Name' },
+      title: { dataKey: 'title', disableSort: true },
+      description: { dataKey: 'name', label: 'Name' },
     };
     const wrapper = createWrapper(updatedProps);
     const button = wrapper.find(ListItemText).first();
@@ -289,11 +289,11 @@ describe('Card View', () => {
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(1, {
       ...updatedProps.query,
-      sort: { NAME: 'asc' },
+      sort: { name: 'asc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { NAME: 'asc' } },
+      query: { ...updatedProps.query, sort: { name: 'asc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -301,11 +301,11 @@ describe('Card View', () => {
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(2, {
       ...updatedProps.query,
-      sort: { NAME: 'desc' },
+      sort: { name: 'desc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { NAME: 'desc' } },
+      query: { ...updatedProps.query, sort: { name: 'desc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -321,22 +321,22 @@ describe('Card View', () => {
     let updatedProps = {
       ...props,
       query: { ...props.query, page: 1 },
-      title: { dataKey: 'TITLE', disableSort: true },
-      description: { dataKey: 'NAME' },
+      title: { dataKey: 'title', disableSort: true },
+      description: { dataKey: 'name' },
     };
     const wrapper = createWrapper(updatedProps);
     const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('NAME');
+    expect(button.text()).toEqual('name');
 
     // Click to sort ascending
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(1, {
       ...updatedProps.query,
-      sort: { NAME: 'asc' },
+      sort: { name: 'asc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { NAME: 'asc' } },
+      query: { ...updatedProps.query, sort: { name: 'asc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -344,11 +344,11 @@ describe('Card View', () => {
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(2, {
       ...updatedProps.query,
-      sort: { NAME: 'desc' },
+      sort: { name: 'desc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { NAME: 'desc' } },
+      query: { ...updatedProps.query, sort: { name: 'desc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -363,12 +363,12 @@ describe('Card View', () => {
   it('information displays and sorts correctly', () => {
     let updatedProps = {
       ...props,
-      title: { dataKey: 'TITLE', disableSort: true },
-      description: { dataKey: 'NAME', disableSort: true },
+      title: { dataKey: 'title', disableSort: true },
+      description: { dataKey: 'name', disableSort: true },
       information: [
-        { dataKey: 'VISIT_ID' },
+        { dataKey: 'visitId' },
         {
-          dataKey: 'NAME',
+          dataKey: 'name',
           label: 'Name',
           content: (entity: Entity) => 'Content',
         },
@@ -377,10 +377,10 @@ describe('Card View', () => {
     };
     const wrapper = createWrapper(updatedProps);
     expect(
-      wrapper.find('[aria-label="card-info-VISIT_ID"]').first().text()
-    ).toEqual('VISIT_ID:');
+      wrapper.find('[aria-label="card-info-visitId"]').first().text()
+    ).toEqual('visitId:');
     expect(
-      wrapper.find('[aria-label="card-info-data-VISIT_ID"]').first().text()
+      wrapper.find('[aria-label="card-info-data-visitId"]').first().text()
     ).toEqual('1');
     expect(
       wrapper.find('[aria-label="card-info-Name"]').first().text()
@@ -391,15 +391,15 @@ describe('Card View', () => {
 
     // Click to sort ascending
     const button = wrapper.find(ListItemText).first();
-    expect(button.text()).toEqual('VISIT_ID');
+    expect(button.text()).toEqual('visitId');
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(1, {
       ...updatedProps.query,
-      sort: { VISIT_ID: 'asc' },
+      sort: { visitId: 'asc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { VISIT_ID: 'asc' } },
+      query: { ...updatedProps.query, sort: { visitId: 'asc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -407,11 +407,11 @@ describe('Card View', () => {
     button.simulate('click');
     expect(pushQuery).toHaveBeenNthCalledWith(2, {
       ...updatedProps.query,
-      sort: { VISIT_ID: 'desc' },
+      sort: { visitId: 'desc' },
     });
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, sort: { VISIT_ID: 'desc' } },
+      query: { ...updatedProps.query, sort: { visitId: 'desc' } },
     };
     wrapper.setProps(updatedProps);
 
@@ -427,9 +427,9 @@ describe('Card View', () => {
     const updatedProps = {
       ...props,
       query: { ...props.query, page: 1 },
-      title: { dataKey: 'TITLE', disableSort: true },
-      description: { dataKey: 'NAME', disableSort: true },
-      information: [{ dataKey: 'VISIT_ID', disableSort: true }],
+      title: { dataKey: 'title', disableSort: true },
+      description: { dataKey: 'name', disableSort: true },
+      information: [{ dataKey: 'visitId', disableSort: true }],
     };
     const wrapper = createWrapper(updatedProps);
     expect(wrapper.exists(ListItemText)).toBeFalsy();
@@ -440,18 +440,18 @@ describe('Card View', () => {
       ...props,
       data: [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
           TYPE_ID: '1',
           FACILITY_ID: '1',
         },
         {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 2',
-          VISIT_ID: '2',
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 2',
+          visitId: '2',
           TYPE_ID: '2',
           FACILITY_ID: '2',
         },
@@ -473,18 +473,18 @@ describe('Card View', () => {
       ...props,
       data: [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
           TYPE_ID: '1',
           FACILITY_ID: '1',
         },
         {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 2',
-          VISIT_ID: '2',
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 2',
+          visitId: '2',
           TYPE_ID: '2',
           FACILITY_ID: '2',
         },
@@ -510,10 +510,10 @@ describe('Card View', () => {
       ...props,
       data: [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
           TYPE_ID: '1',
           FACILITY_ID: '1',
         },
@@ -533,26 +533,26 @@ describe('Card View', () => {
       ...props,
       data: [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
           TYPE_ID: '1',
           FACILITY_ID: '1',
         },
         {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 2',
-          VISIT_ID: '2',
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 2',
+          visitId: '2',
           TYPE_ID: '2',
           FACILITY_ID: '2',
         },
         {
-          ID: 3,
-          TITLE: 'Test 3',
-          NAME: 'Test 3',
-          VISIT_ID: '3',
+          id: 3,
+          title: 'Test 3',
+          name: 'Test 3',
+          visitId: '3',
           TYPE_ID: '3',
           FACILITY_ID: '3',
         },
@@ -577,26 +577,26 @@ describe('Card View', () => {
       ...props,
       data: [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
           TYPE_ID: '1',
           FACILITY_ID: '1',
         },
         {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 2',
-          VISIT_ID: '2',
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 2',
+          visitId: '2',
           TYPE_ID: '2',
           FACILITY_ID: '2',
         },
         {
-          ID: 3,
-          TITLE: 'Test 3',
-          NAME: 'Test 3',
-          VISIT_ID: '3',
+          id: 3,
+          title: 'Test 3',
+          name: 'Test 3',
+          visitId: '3',
           TYPE_ID: '3',
           FACILITY_ID: '3',
         },
