@@ -290,11 +290,7 @@ describe('Investigation Search Table component', () => {
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
-        <InvestigationSearchTable
-          store={mockStore(state)}
-          instrumentId="4"
-          facilityCycleId="5"
-        />
+        <InvestigationSearchTable store={mockStore(state)} />
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
