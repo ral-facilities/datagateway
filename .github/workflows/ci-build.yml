@@ -69,29 +69,30 @@ jobs:
           fail_ci_if_error: true
 
   # Setup Java & Python
-  name: Setup Java and Python
-  runs-on: ubuntu-latest
-  steps:
-    - name: Setup Java
-      uses: actions/setup-java@v1
-      with:
-        java-version: 8
-        java-package: jdk
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: x64
+  java-python-icat:
+    name: Setup Java and Python
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          java-package: jdk
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
 
-    # ICAT Ansible clone and install dependencies
-    - name: Checkout icat-ansible
-      uses: actions/checkout@v2
-      with:
-        repository: icatproject-contrib/icat-ansible
-        ref: change-payara-setup-script-url
-        path: icat-ansible
-    - name: Install Ansible
-      run: pip install -r icat-ansible/requirements.txt
+      # ICAT Ansible clone and install dependencies
+      - name: Checkout icat-ansible
+        uses: actions/checkout@v2
+        with:
+          repository: icatproject-contrib/icat-ansible
+          ref: change-payara-setup-script-url
+          path: icat-ansible
+      - name: Install Ansible
+        run: pip install -r icat-ansible/requirements.txt
 
   # Seperate e2e jobs so that they can run in parallel
   download-e2e-test:
