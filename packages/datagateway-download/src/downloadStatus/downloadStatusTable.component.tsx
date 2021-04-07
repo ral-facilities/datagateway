@@ -224,7 +224,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
   const getDataUrl = (preparedId: string, fileName: string): string => {
     // Construct a link to download the prepared cart.
     return `${settings.idsUrl}/getData?sessionId=${window.localStorage.getItem(
-      'icat:token'
+      'scigateway:token'
     )}&preparedId=${preparedId}&outname=${fileName}`;
   };
 
