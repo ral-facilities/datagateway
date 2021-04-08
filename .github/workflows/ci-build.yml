@@ -18,6 +18,8 @@ jobs:
       matrix:
         python-version: ['3.8', '3.9']
     steps:
+      - name: Add apt repo
+        run: sudo add-apt-repository universe
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
