@@ -115,15 +115,17 @@ jobs:
         run: |
           ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
-      # - name: Checkout DataGateway API
-      #   uses: actions/checkout@v2
-
   # Setup datagateway-api
   datagateway-api-setup:
     # needs: lint-and-unit-test
     name: Setup DataGateway API
     runs-on: ubuntu-16.04
     steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+          architecture: x64
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
         with:
@@ -142,15 +144,17 @@ jobs:
       - name: Set log level to DEBUG
         run: |
           sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json
-      - name: Download Poetry
-        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
       - name: Install Poetry
-        run: pip install poetry
+        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+      - name: Configure Poetry
+        run: source /home/runner/.poetry/env
       - name: Install dependencies
-        run: poetry install
+        run: cd datagateway-api; poetry install
       - name: Add dummy data to icatdb
         run: |
           poetry run python -m util.icat_db_generator -s 4 -y 3
+      - name: Return to home directory
+        run: cd /home/runner
 
   # # Seperate e2e jobs so that they can run in parallel
   # download-e2e-test:
