@@ -9,14 +9,72 @@ on:
       - use-local-ICAT-in-CI-runs-#641
 
 jobs:
-# Setup Java & Python
-  java-python-icat:
-    name: Setup Java and Python
+  lint-and-unit-test:
+    name: Lint & Unit Tests
     runs-on: ubuntu-16.04
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ['3.8', '3.9']
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      # Cache yarn dependencies/ restore the cached dependencies during future workflows
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
+        run: |
+          npm config set scripts-prepend-node-path true
+          sudo apt-get install libgconf-2-4
+          yarn --frozen-lockfile
+      - name: Run linting
+        run: yarn lint
+      - name: Run unit tests
+        run: yarn test:unit
+      - name: Upload unit test coverage for the Common package
+        if: success()
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/datagateway-common/
+          flags: common
+          fail_ci_if_error: true
+      - name: Upload unit test coverage for the DataView package
+        if: success()
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/datagateway-dataview/
+          flags: dataview
+          fail_ci_if_error: true
+      - name: Upload unit test coverage for the Search package
+        if: success()
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/datagateway-search/
+          flags: search
+          fail_ci_if_error: true
+      - name: Upload unit test coverage for the Download package
+        if: success()
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/datagateway-download/
+          flags: download
+          fail_ci_if_error: true
+
+  # Setup ICAT stack
+  icat-setup:
+    needs: lint-and-unit-test
+    name: Setup ICAT stack
+    runs-on: ubuntu-16.04
     steps:
       - name: Add apt repo
         run: sudo add-apt-repository universe
@@ -28,7 +86,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.x
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -36,7 +94,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: change-payara-setup-script-url
+          # ref: change-payara-setup-script-url
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -57,69 +115,42 @@ jobs:
         run: |
           ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
-      - name: Checkout DataGateway API
-        uses: actions/checkout@v2
+      # - name: Checkout DataGateway API
+      #   uses: actions/checkout@v2
 
-  # lint-and-unit-test:
-  #   name: Lint & Unit Tests
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: '14.x'
-  #     # Cache yarn dependencies/ restore the cached dependencies during future workflows
-  #     - name: Get yarn cache directory path
-  #       id: yarn-cache-dir-path
-  #       run: echo "::set-output name=dir::$(yarn cache dir)"
-  #     - name: Cache yarn dependencies
-  #       uses: actions/cache@v2
-  #       id: yarn-cache
-  #       with:
-  #         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-  #         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-yarn-
-  #     - name: Install dependencies
-  #       # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-  #       run: |
-  #         npm config set scripts-prepend-node-path true
-  #         sudo apt-get install libgconf-2-4
-  #         yarn --frozen-lockfile
-  #     - name: Run linting
-  #       run: yarn lint
-  #     - name: Run unit tests
-  #       run: yarn test:unit
-  #     - name: Upload unit test coverage for the Common package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-common/
-  #         flags: common
-  #         fail_ci_if_error: true
-  #     - name: Upload unit test coverage for the DataView package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-dataview/
-  #         flags: dataview
-  #         fail_ci_if_error: true
-  #     - name: Upload unit test coverage for the Search package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-search/
-  #         flags: search
-  #         fail_ci_if_error: true
-  #     - name: Upload unit test coverage for the Download package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-download/
-  #         flags: download
-  #         fail_ci_if_error: true
+  # Setup datagateway-api
+  datagateway-api-setup:
+    needs: lint-and-unit-test
+    name: Setup DataGateway API
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout datagateway-api
+        uses: actions/checkout@v2
+        with:
+          repository: ral-facilities/datagateway-api
+          path: datagateway-api
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
+        '.log_location=$REPO_DIR' datagateway_api/config.json.example`" > datagateway_api/config.json.example
+      - name: Create config.json
+        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+      - name: Set debug mode to true
+        run: |
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json
+      - name: Set log level to DEBUG
+        run: |
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json
+      - name: Download Poetry
+        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Add dummy data to icatdb
+        run: |
+          poetry run python -m util.icat_db_generator -s 4 -y 3
 
   # # Seperate e2e jobs so that they can run in parallel
   # download-e2e-test:
