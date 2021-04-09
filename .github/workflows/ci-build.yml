@@ -147,10 +147,10 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install
+        run: cd datagateway-api; poetry install; cd ..
       - name: Add dummy data to icatdb
         run: |
-          cd /home/runner/datagateway-api; poetry run python -m util.icat_db_generator -s 4 -y 3
+          cd datagateway-api; poetry run python -m util.icat_db_generator -s 4 -y 3
       - name: Return to home directory
         run: cd /home/runner
 
