@@ -71,49 +71,49 @@ jobs:
   #         fail_ci_if_error: true
 
   # Setup ICAT stack
-  icat-setup:
-    # needs: lint-and-unit-test
-    name: Setup ICAT stack
-    runs-on: ubuntu-16.04
-    steps:
-      - name: Add apt repo
-        run: sudo add-apt-repository universe
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 8
-          java-package: jdk
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-          architecture: x64
+  # icat-setup:
+  #   # needs: lint-and-unit-test
+  #   name: Setup ICAT stack
+  #   runs-on: ubuntu-16.04
+  #   steps:
+  #     - name: Add apt repo
+  #       run: sudo add-apt-repository universe
+  #     - name: Setup Java
+  #       uses: actions/setup-java@v1
+  #       with:
+  #         java-version: 8
+  #         java-package: jdk
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.x
+  #         architecture: x64
 
-      # ICAT Ansible clone and install dependencies
-      - name: Checkout icat-ansible
-        uses: actions/checkout@v2
-        with:
-          repository: icatproject-contrib/icat-ansible
-          # ref: change-payara-setup-script-url
-          path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
+  #     # ICAT Ansible clone and install dependencies
+  #     - name: Checkout icat-ansible
+  #       uses: actions/checkout@v2
+  #       with:
+  #         repository: icatproject-contrib/icat-ansible
+  #         # ref: change-payara-setup-script-url
+  #         path: icat-ansible
+  #     - name: Install Ansible
+  #       run: pip install -r icat-ansible/requirements.txt
 
-      # Prep for running the playbook
-      - name: Create hosts file
-        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
-      - name: Prepare vault pass
-        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
-      - name: Move vault to directory it'll get detected by Ansible
-        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
-      - name: Replace default payara user with Actions user
-        run: |
-          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+  #     # Prep for running the playbook
+  #     - name: Create hosts file
+  #       run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+  #     - name: Prepare vault pass
+  #       run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
+  #     - name: Move vault to directory it'll get detected by Ansible
+  #       run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
+  #     - name: Replace default payara user with Actions user
+  #       run: |
+  #         sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
 
-      # Create local instance of ICAT
-      - name: Run ICAT Ansible Playbook
-        run: |
-          ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+  #     # Create local instance of ICAT
+  #     - name: Run ICAT Ansible Playbook
+  #       run: |
+  #         ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
   # Setup datagateway-api
   datagateway-api-setup:
@@ -150,7 +150,7 @@ jobs:
         run: cd datagateway-api; poetry install
       - name: Add dummy data to icatdb
         run: |
-          poetry run python -m util.icat_db_generator -s 4 -y 3
+          cd /home/runner/datagateway-api; poetry run python -m util.icat_db_generator -s 4 -y 3
       - name: Return to home directory
         run: cd /home/runner
 
