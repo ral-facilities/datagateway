@@ -145,7 +145,7 @@ jobs:
         run: |
           sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json
       - name: Install Poetry
-        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+        run: pip install poetry
       - name: Configure Poetry
         run: source /home/runner/.poetry/env
       - name: Install dependencies
