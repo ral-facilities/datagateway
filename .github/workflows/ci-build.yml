@@ -126,7 +126,7 @@ jobs:
         run: touch logs.log
       - name: Configure log file location
         run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway_api/config.json.example`" > datagateway_api/config.json.example
+          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
       - name: Create config.json
         run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
       - name: Set debug mode to true
