@@ -16,7 +16,7 @@ app.get('/datagateway-search-settings.json', function(req, res) {
 
 app.get(/\/sessions|investigations|datasets|datafiles/, function(req, res) {
   axios
-    .get('http://scigateway-preprod.esc.rl.ac.uk:5000' + req.url, {
+    .get('http://localhost:5000' + req.url, {
       headers: req.headers,
     })
     .then(apiRes => {
@@ -29,7 +29,7 @@ app.get(/\/sessions|investigations|datasets|datafiles/, function(req, res) {
 
 app.post(/\/sessions|investigations|datasets|datafiles/, function(req, res) {
   axios
-    .post('http://scigateway-preprod.esc.rl.ac.uk:5000' + req.url, req.body, {
+    .post('http://localhost:5000' + req.url, req.body, {
       headers: req.headers,
     })
     .then(apiRes => {

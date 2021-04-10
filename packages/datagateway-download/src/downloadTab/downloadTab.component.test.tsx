@@ -8,17 +8,17 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
   facilityName: 'LILS',
-  apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-  downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-  idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  apiUrl: 'http://localhost:5000',
+  downloadApiUrl: 'http://localhost:8181/topcat',
+  idsUrl: 'http://localhost:8181/ids',
   accessMethods: {
     https: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: 'http://localhost:8181/ids',
       displayName: 'HTTPS',
       description: 'Example description for HTTPS access method.',
     },
     globus: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: 'http://localhost:8181/ids',
       displayName: 'Globus',
       description: 'Example description for Globus access method.',
     },

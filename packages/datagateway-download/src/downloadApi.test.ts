@@ -18,9 +18,9 @@ import {
 
 const settings = {
   facilityName: 'LILS',
-  apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-  downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-  idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  apiUrl: 'http://localhost:5000',
+  downloadApiUrl: 'http://localhost:8181/topcat',
+  idsUrl: 'http://localhost:8181/ids',
 };
 
 jest.mock('datagateway-common', () => {
@@ -80,7 +80,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.get
       ).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS',
+        'http://localhost:8181/topcat/user/cart/LILS',
         { params: { sessionId: null } }
       );
     });
@@ -102,7 +102,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.get
       ).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS',
+        'http://localhost:8181/topcat/user/cart/LILS',
         { params: { sessionId: null } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -130,7 +130,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
+        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: '*' } }
       );
     });
@@ -152,7 +152,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
+        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: '*' } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -180,7 +180,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
+        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: 'datafile 1' } }
       );
     });
@@ -202,7 +202,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
+        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: 'investigation 1' } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -225,7 +225,7 @@ describe('Download Cart API functions test', () => {
       expect(isTwoLevel).toBe(true);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/ids/isTwoLevel'
+        'http://localhost:8181/ids/isTwoLevel'
       );
     });
 
@@ -241,7 +241,7 @@ describe('Download Cart API functions test', () => {
       expect(isTwoLevel).toBe(false);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/ids/isTwoLevel'
+        'http://localhost:8181/ids/isTwoLevel'
       );
       expect(handleICATError).toHaveBeenCalled();
       expect(handleICATError).toHaveBeenCalledWith(
@@ -286,7 +286,7 @@ describe('Download Cart API functions test', () => {
       expect(downloadId).toBe(1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+        'http://localhost:8181/topcat/user/cart/LILS/submit',
         params
       );
     });
@@ -318,7 +318,7 @@ describe('Download Cart API functions test', () => {
       expect(downloadId).toBe(-1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+        'http://localhost:8181/topcat/user/cart/LILS/submit',
         params
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -368,7 +368,7 @@ describe('Download Cart API functions test', () => {
       expect(download).not.toBe(null);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        'http://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -394,7 +394,7 @@ describe('Download Cart API functions test', () => {
       expect(download).toBe(null);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        'http://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -423,7 +423,7 @@ describe('Download Cart API functions test', () => {
 
       // Create our prepared cart download link.
       const link = document.createElement('a');
-      link.href = `https://scigateway-preprod.esc.rl.ac.uk:8181/ids/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
+      link.href = `http://localhost:8181/ids/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
       link.style.display = 'none';
       link.target = '_blank';
 
@@ -452,7 +452,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/1',
+        'http://localhost:5000/datafiles/1',
         {
           headers: { Authorization: 'Bearer null' },
         }
@@ -475,7 +475,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/1',
+        'http://localhost:5000/datafiles/1',
         {
           headers: { Authorization: 'Bearer null' },
         }
@@ -505,7 +505,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/getSize',
+        'http://localhost:8181/topcat/user/getSize',
         {
           params: {
             sessionId: null,
@@ -533,7 +533,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/getSize',
+        'http://localhost:8181/topcat/user/getSize',
         {
           params: {
             sessionId: null,
@@ -576,7 +576,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
+        'http://localhost:5000/datafiles/count',
         {
           params: {
             where: {
@@ -604,7 +604,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
+        'http://localhost:5000/datafiles/count',
         {
           params: {
             where: {
@@ -639,7 +639,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(5);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
+        'http://localhost:5000/datafiles/count',
         {
           params: {
             include: '"DATASET"',
@@ -668,7 +668,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
+        'http://localhost:5000/datafiles/count',
         {
           params: {
             include: '"DATASET"',
@@ -866,7 +866,7 @@ describe('Download Status API functions test', () => {
       expect(returnData).toBe(downloadsMockData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        'http://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -900,7 +900,7 @@ describe('Download Status API functions test', () => {
       expect(returnData).toBe(downloadsData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        'http://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -926,7 +926,7 @@ describe('Download Status API functions test', () => {
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+        'http://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -958,7 +958,7 @@ describe('Download Status API functions test', () => {
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
+        'http://localhost:8181/topcat/user/download/1/isDeleted',
         params
       );
     });
@@ -982,7 +982,7 @@ describe('Download Status API functions test', () => {
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/1/isDeleted',
+        'http://localhost:8181/topcat/user/download/1/isDeleted',
         params
       );
       expect(handleICATError).toHaveBeenCalled();

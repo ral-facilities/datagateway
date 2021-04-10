@@ -1,8 +1,8 @@
 {
   "facilityName": "Generic",
-  "idsUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/ids",
-  "apiUrl": "http://scigateway-preprod.esc.rl.ac.uk:5000",
-  "downloadApiUrl": "https://scigateway-preprod.esc.rl.ac.uk:8181/topcat",
+  "idsUrl": "http://localhost:8181/ids",
+  "apiUrl": "http://localhost:5000",
+  "downloadApiUrl": "http://localhost:8181/topcat",
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",

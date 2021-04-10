@@ -36,17 +36,17 @@ const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
   facilityName: 'LILS',
-  apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-  downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-  idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  apiUrl: 'http://localhost:5000',
+  downloadApiUrl: 'http://localhost:8181/topcat',
+  idsUrl: 'http://localhost:8181/ids',
   accessMethods: {
     https: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: 'http://localhost:8181/ids',
       displayName: 'HTTPS',
       description: 'Example description for HTTPS access method.',
     },
     globus: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: 'http://localhost:8181/ids',
       displayName: 'Globus',
       description: 'Example description for Globus access method.',
     },
@@ -268,7 +268,7 @@ describe('DownloadConfirmDialog', () => {
     // Expect our status requests to have been called.
     expect(axios.get).toHaveBeenCalledTimes(3);
     expect(axios.get).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloadType/https/status',
+      'http://localhost:8181/topcat/user/downloadType/https/status',
       {
         params: {
           sessionId: null,
@@ -277,7 +277,7 @@ describe('DownloadConfirmDialog', () => {
       }
     );
     expect(axios.get).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloadType/globus/status',
+      'http://localhost:8181/topcat/user/downloadType/globus/status',
       {
         params: {
           sessionId: null,
@@ -296,13 +296,13 @@ describe('DownloadConfirmDialog', () => {
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      'http://localhost:8181/topcat/user/cart/LILS/submit',
       params
     );
 
     // Expect fetching of the submitted download requested.
     expect(axios.get).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+      'http://localhost:8181/topcat/user/downloads',
       {
         params: {
           sessionId: null,
@@ -372,7 +372,7 @@ describe('DownloadConfirmDialog', () => {
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      'http://localhost:8181/topcat/user/cart/LILS/submit',
       params
     );
   });
@@ -470,7 +470,7 @@ describe('DownloadConfirmDialog', () => {
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      'http://localhost:8181/topcat/user/cart/LILS/submit',
       params
     );
   });
