@@ -7,7 +7,7 @@ import {
   SortType,
   MicroFrontendId,
 } from '../../app.types';
-import { QueryParams, ViewsType } from '../app.types';
+import { QueryParams, ViewsType, ApplicationStrings } from '../app.types';
 
 // parent app actions
 export const CustomFrontendMessageType = `${MicroFrontendId}:api`;
@@ -227,6 +227,7 @@ export const FetchLuceneIdsSuccessType =
 export const FetchFilterRequestType = 'datagateway_common:fetch_filter_request';
 export const FetchFilterFailureType = 'datagateway_common:fetch_filter_failure';
 export const FetchFilterSuccessType = 'datagateway_common:fetch_filter_success';
+export const ConfigureStringsType = 'datagateway_common:configure_strings';
 
 export interface SortTablePayload {
   column: string;
@@ -339,4 +340,8 @@ export interface FetchSizeSuccessPayload {
 
 export interface DownloadCartPayload {
   downloadCart: DownloadCart;
+}
+
+export interface ConfigureStringsPayload {
+  res: ApplicationStrings;
 }

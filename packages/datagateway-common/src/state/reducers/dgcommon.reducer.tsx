@@ -7,6 +7,8 @@ import {
   ClearTableType,
   ConfigureFacilityNamePayload,
   ConfigureFacilityNameType,
+  ConfigureStringsType,
+  ConfigureStringsPayload,
   ConfigureUrlsPayload,
   ConfigureURLsType,
   DownloadCartPayload,
@@ -158,6 +160,7 @@ export const initialState: DGCommonState = {
   luceneIds: [],
   query: initialQuery,
   savedQuery: initialQuery,
+  darkMode: false,
 };
 
 export function handleSortTable(
@@ -823,6 +826,26 @@ export function handleFetchFilterSuccess(
   };
 }
 
+// export function handleLoadDarkModePreference(
+//   state: DGCommonState,
+//   payload: LoadDarkModePreferencePayload
+// ): DGCommonState {
+//   return {
+//     ...state,
+//     darkMode: payload.darkMode,
+//   };
+// }
+
+export function handleConfigureStrings(
+  state: DGCommonState,
+  payload: ConfigureStringsPayload
+): DGCommonState {
+  return {
+    ...state,
+    res: payload.res,
+  };
+}
+
 // remove things I want
 const dGCommonReducer = createReducer(initialState, {
   [ConfigureFacilityNameType]: handleConfigureFacilityName,
@@ -929,6 +952,7 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchFilterRequestType]: handleFetchFilterRequest,
   [FetchFilterSuccessType]: handleFetchFilterSuccess,
   [FetchFilterFailureType]: handleFetchDataFailure,
+  [ConfigureStringsType]: handleConfigureStrings,
 });
 
 export default dGCommonReducer;
