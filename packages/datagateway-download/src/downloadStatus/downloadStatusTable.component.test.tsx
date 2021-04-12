@@ -3,7 +3,7 @@ import DownloadStatusTable from './downloadStatusTable.component';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
-import { fetchDownloads, downloadDeleted } from '../downloadApi';
+import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { Download } from 'datagateway-common';
 
 jest.mock('../downloadApi');
@@ -132,12 +132,14 @@ describe('Download Status Table', () => {
     (fetchDownloads as jest.Mock).mockImplementation(() =>
       Promise.resolve(downloadItems)
     );
+    (getDataUrl as jest.Mock).mockImplementation(() => '/getData');
   });
 
   afterEach(() => {
     mount.cleanUp();
     (fetchDownloads as jest.Mock).mockClear();
     (downloadDeleted as jest.Mock).mockClear();
+    (getDataUrl as jest.Mock).mockClear();
     jest.useRealTimers();
   });
 
