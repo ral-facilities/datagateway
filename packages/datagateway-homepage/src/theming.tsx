@@ -148,29 +148,29 @@ export const buildTheme = (darkModePreference: boolean): Theme => {
   return createMuiTheme(options);
 };
 
-function mapThemeProviderStateToProps(
-  state: StateType
-): { prefersDarkMode: boolean } {
-  return {
-    prefersDarkMode: state.dgcommon.darkMode,
-  };
-}
+// function mapThemeProviderStateToProps(
+//   state: StateType
+// ): { prefersDarkMode: boolean } {
+//   return {
+//     prefersDarkMode: state.dgcommon.darkMode,
+//   };
+// }
 
-const SciGatewayThemeProvider = (props: {
-  children: React.ReactNode;
-}): React.ReactElement<{
-  children: React.ReactNode;
-}> => {
-  const darkModePreference: boolean = useSelector(
-    (state: StateType) => state.dgcommon.darkMode
-  );
-  return (
-    <MuiThemeProvider theme={buildTheme(darkModePreference)}>
-      {props.children}
-    </MuiThemeProvider>
-  );
-};
+// const SciGatewayThemeProvider = (props: {
+//   children: React.ReactNode;
+// }): React.ReactElement<{
+//   children: React.ReactNode;
+// }> => {
+//   const darkModePreference: boolean = useSelector(
+//     (state: StateType) => state.dgcommon.darkMode
+//   );
+//   return (
+//     <MuiThemeProvider theme={buildTheme(darkModePreference)}>
+//       {props.children}
+//     </MuiThemeProvider>
+//   );
+// };
 
-export const ConnectedThemeProvider = connect(mapThemeProviderStateToProps)(
-  SciGatewayThemeProvider
-);
+// export const ConnectedThemeProvider = connect(mapThemeProviderStateToProps)(
+//   SciGatewayThemeProvider
+// );

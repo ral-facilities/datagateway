@@ -9,25 +9,24 @@ import {
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 import Image from '../images/Jasmin4 _DSC7054.jpg';
-import DatagatewayLogoWithText from '../images/datagateway-logo.svg';
+import DatagatewayLogoWithText from '../images/datagateway-logo-white.svg';
 import ExploreImage from '../images/explore.jpg';
 import DiscoverImage from '../images/discover.jpg';
 import DownloadImage from '../images/download.jpg';
 import { UKRITheme } from '../theming';
-import { getAppStrings, getString } from '../state/strings';
-import { connect } from 'react-redux';
-import { StateType, AppStrings } from '../state/app.types';
+import homePageContents from './contents';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     bigImage: {
       backgroundImage: `url("${Image}")`,
-      height: 350,
+      height: 250,
       width: '100%',
       '& img': {
-        paddingLeft: 80,
-        paddingTop: 100,
+        paddingLeft: 90,
+        paddingTop: 80,
         height: 150,
+        float: 'left',
       },
     },
     howItWorks: {
@@ -36,7 +35,7 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
       paddingLeft: '10vw',
       paddingRight: '10vw',
-      paddingTop: 30,
+      paddingTop: 20,
       backgroundColor: theme.palette.background.default,
     },
     howItWorksTitle: {
@@ -50,47 +49,32 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
     },
     howItWorksGridItemTitle: {
-      color: (theme as UKRITheme).ukri.bright.orange,
+      color: '#FF6900',      // replace with UKRI orange, currently getting ukri as undefined (see scigateway homepage)
       fontWeight: 'bold',
       paddingBottom: 10,
     },
     howItWorksGridItemImage: {
-      height: 250,
-      width: 250,
-      borderRadius: 250 / 2,
+      height: 225,
+      width: 225,
+      borderRadius: 225 / 2,
       paddingBottom: 10,
     },
     howItWorksGridItemCaption: {
       textAlign: 'center',
-      color: theme.palette.secondary.main,
-    },
-    strapline: {
-      paddingTop: 50,
-      fontStyle: 'italic',
-      color: theme.palette.text.secondary,
-    },
-    purpose: {
-      paddingTop: 20,
-      fontWeight: 'bold',
-      fontStyle: 'italic',
-      color: theme.palette.secondary.main,
-    },
+      color: '#003088',     // change to theme.palette.text.secondary, UKRI theme import not working
+    }
   });
 
-interface HomePageProps {
-  res: AppStrings | undefined;
-}
+export type HomePageProps = WithStyles<typeof styles>;
 
-export type CombinedHomePageProps = HomePageProps & WithStyles<typeof styles>;
-
-const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
+const HomePage = (props : HomePageProps): React.ReactElement => (
   <div>
     <div className={props.classes.bigImage}>
-      <img src={DatagatewayLogoWithText} alt={getString(props.res, 'title')} />
+      <img src={DatagatewayLogoWithText} alt={homePageContents['title']} />
     </div>
     <div className={props.classes.howItWorks}>
       <Typography variant="h4" className={props.classes.howItWorksTitle}>
-        {getString(props.res, 'how-label')}
+        {homePageContents['how-label']}
       </Typography>
 
       <Grid container spacing={3}>
@@ -99,7 +83,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
             variant="h5"
             className={props.classes.howItWorksGridItemTitle}
           >
-            {getString(props.res, 'explore-label')}
+            {homePageContents['explore-label']}
           </Typography>
           <img
             src={ExploreImage}
@@ -110,7 +94,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
             variant="body1"
             className={props.classes.howItWorksGridItemCaption}
           >
-            {getString(props.res, 'explore-description')}
+            {homePageContents['explore-description']}
           </Typography>
         </Grid>
         <Grid item sm={12} md={4} className={props.classes.howItWorksGridItem}>
@@ -118,7 +102,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
             variant="h5"
             className={props.classes.howItWorksGridItemTitle}
           >
-            {getString(props.res, 'discover-label')}
+            {homePageContents['discover-label']}
           </Typography>
           <img
             src={DiscoverImage}
@@ -129,7 +113,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
             variant="body1"
             className={props.classes.howItWorksGridItemCaption}
           >
-            {getString(props.res, 'discover-description')}
+            {homePageContents['discover-description']}
           </Typography>
         </Grid>
         <Grid item sm={12} md={4} className={props.classes.howItWorksGridItem}>
@@ -137,7 +121,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
             variant="h5"
             className={props.classes.howItWorksGridItemTitle}
           >
-            {getString(props.res, 'download-label')}
+            {homePageContents['download-label']}
           </Typography>
           <img
             src={DownloadImage}
@@ -148,7 +132,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
             variant="body1"
             className={props.classes.howItWorksGridItemCaption}
           >
-            {getString(props.res, 'download-description')}
+            {homePageContents['download-description']}
           </Typography>
         </Grid>
       </Grid>
@@ -156,11 +140,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => (
   </div>
 );
 
-const mapStateToProps = (state: StateType): HomePageProps => ({
-  res: getAppStrings(state, 'home-page'),
-});
-
 export const HomePageWithoutStyles = HomePage;
 export const HomePageWithStyles = withStyles(styles)(HomePage);
 
-export default connect(mapStateToProps)(HomePageWithStyles);
+export default HomePageWithStyles;

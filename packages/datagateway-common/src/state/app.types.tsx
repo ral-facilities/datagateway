@@ -26,8 +26,6 @@ export interface DGCommonState {
   filterData: FilterDataType;
   query: QueryParams;
   savedQuery: QueryParams;
-  darkMode: boolean;
-  res?: ApplicationStrings;
 }
 
 export type ViewsType = 'table' | 'card' | null;
