@@ -13,7 +13,7 @@ import DatagatewayLogoWithText from '../images/datagateway-logo-white.svg';
 import ExploreImage from '../images/explore.jpg';
 import DiscoverImage from '../images/discover.jpg';
 import DownloadImage from '../images/download.jpg';
-import { UKRITheme } from '../theming';
+// import { UKRITheme } from './theming';
 import homePageContents from './contents';
 
 const styles = (theme: Theme): StyleRules =>
@@ -35,13 +35,13 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
       paddingLeft: '10vw',
       paddingRight: '10vw',
-      paddingTop: 20,
+      paddingTop: 15,
       backgroundColor: theme.palette.background.default,
     },
     howItWorksTitle: {
       fontWeight: 'bold',
       color: theme.palette.text.primary,
-      paddingBottom: 30,
+      paddingBottom: 20,
     },
     howItWorksGridItem: {
       display: 'flex',
@@ -49,25 +49,25 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
     },
     howItWorksGridItemTitle: {
-      color: '#FF6900',      // replace with UKRI orange, currently getting ukri as undefined (see scigateway homepage)
+      color: '#FF6900', // replace with UKRI orange, currently getting ukri as undefined (see scigateway homepage)
       fontWeight: 'bold',
       paddingBottom: 10,
     },
     howItWorksGridItemImage: {
-      height: 225,
-      width: 225,
-      borderRadius: 225 / 2,
+      height: 200,
+      width: 200,
+      borderRadius: 200 / 2,
       paddingBottom: 10,
     },
     howItWorksGridItemCaption: {
       textAlign: 'center',
-      color: '#003088',     // change to theme.palette.text.secondary, UKRI theme import not working
-    }
+      color: '#003088', // change to theme.palette.text.secondary, UKRI theme import not working
+    },
   });
 
 export type HomePageProps = WithStyles<typeof styles>;
 
-const HomePage = (props : HomePageProps): React.ReactElement => (
+const HomePage = (props: HomePageProps): React.ReactElement => (
   <div>
     <div className={props.classes.bigImage}>
       <img src={DatagatewayLogoWithText} alt={homePageContents['title']} />
