@@ -285,24 +285,9 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  fetchTypeFilter: () =>
-    dispatch(
-      fetchFilter('investigation', 'type.id', [
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify('type'),
-        },
-      ])
-    ),
+  fetchTypeFilter: () => dispatch(fetchFilter('investigation', 'type.id', [])),
   fetchFacilityFilter: () =>
-    dispatch(
-      fetchFilter('investigation', 'facility.id', [
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify('facility'),
-        },
-      ])
-    ),
+    dispatch(fetchFilter('investigation', 'facility.id', [])),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),

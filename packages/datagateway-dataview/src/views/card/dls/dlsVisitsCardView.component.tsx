@@ -240,10 +240,6 @@ const mapDispatchToProps = (
           filterType: 'where',
           filterValue: JSON.stringify({ name: { eq: proposalName } }),
         },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify('type'),
-        },
       ])
     ),
 
