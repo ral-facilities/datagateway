@@ -245,7 +245,7 @@ const ISISInvestigationsTable = (
         {
           icon: <PublicIcon />,
           label: t('investigations.doi'),
-          dataKey: 'studyInvestigations.study.PID',
+          dataKey: 'studyInvestigations.study.pid',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             if (
@@ -254,7 +254,7 @@ const ISISInvestigationsTable = (
             ) {
               return tableLink(
                 `${urlPrefix}/${investigationData.id}/dataset`,
-                investigationData.studyInvestigations[0].study.PID,
+                investigationData.studyInvestigations[0].study.pid,
                 view
               );
             } else {

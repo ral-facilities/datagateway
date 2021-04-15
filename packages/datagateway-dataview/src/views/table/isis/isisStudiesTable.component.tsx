@@ -150,7 +150,7 @@ const ISISStudiesTable = (
         {
           icon: <PublicIcon />,
           label: t('studies.pid'),
-          dataKey: 'study.PID',
+          dataKey: 'study.pid',
           filterComponent: textFilter,
         },
         {

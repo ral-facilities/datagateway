@@ -1561,7 +1561,7 @@ describe('DGCommon reducer', () => {
           id: 1,
           study: {
             id: 1,
-            PID: 'doi 1',
+            pid: 'doi 1',
             name: 'Test 1',
             modTime: '2000-01-01',
             createTime: '2000-01-01',
@@ -1571,7 +1571,7 @@ describe('DGCommon reducer', () => {
           id: 2,
           study: {
             id: 2,
-            PID: 'doi 2',
+            pid: 'doi 2',
             name: 'Test 2',
             modTime: '2000-01-02',
             createTime: '2000-01-02',

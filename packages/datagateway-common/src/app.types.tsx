@@ -112,7 +112,7 @@ export interface StudyInvestigation {
 
 interface Study {
   id: number;
-  PID: string;
+  pid: string;
   name: string;
   modTime: string;
   createTime: string;

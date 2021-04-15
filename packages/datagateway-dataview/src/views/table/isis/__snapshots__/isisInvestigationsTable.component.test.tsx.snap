@@ -32,7 +32,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "studyInvestigations.study.PID",
+        "dataKey": "studyInvestigations.study.pid",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.doi",
@@ -90,7 +90,7 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           Object {
             "id": 6,
             "study": Object {
-              "PID": "study pid",
+              "pid": "study pid",
               "id": 7,
             },
           },

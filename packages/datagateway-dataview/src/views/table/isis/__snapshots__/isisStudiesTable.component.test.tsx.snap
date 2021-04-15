@@ -18,7 +18,7 @@ exports[`ISIS Studies table component renders correctly 1`] = `
         "label": "studies.description",
       },
       Object {
-        "dataKey": "study.PID",
+        "dataKey": "study.pid",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.pid",
@@ -42,7 +42,7 @@ exports[`ISIS Studies table component renders correctly 1`] = `
       Object {
         "id": 1,
         "study": Object {
-          "PID": "doi",
+          "pid": "doi",
           "createTime": "2000-01-01",
           "id": 1,
           "modTime": "2000-01-01",

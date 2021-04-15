@@ -55,7 +55,7 @@ describe('ISIS Studies - Card View', () => {
             id: 1,
             study: {
               id: 1,
-              PID: 'doi',
+              pid: 'doi',
               name: 'Test 1',
               modTime: '2000-01-01',
               createTime: '2000-01-01',

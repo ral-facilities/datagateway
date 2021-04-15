@@ -36,7 +36,7 @@ describe('Investigation details panel component', () => {
           id: 11,
           study: {
             id: 12,
-            PID: 'study pid',
+            pid: 'study pid',
           },
         },
       ],

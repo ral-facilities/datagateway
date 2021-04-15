@@ -208,7 +208,7 @@ const ISISInvestigationsCardView = (
         {
           icon: <Public />,
           label: t('investigations.doi'),
-          dataKey: 'studyInvestigations[0].study.PID',
+          dataKey: 'studyInvestigations[0].study.pid',
           filterComponent: textFilter,
         },
         {

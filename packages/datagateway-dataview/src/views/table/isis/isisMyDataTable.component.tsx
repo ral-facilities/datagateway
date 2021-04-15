@@ -225,14 +225,14 @@ const ISISMyDataTable = (
         {
           icon: <PublicIcon />,
           label: t('investigations.doi'),
-          dataKey: 'studyInvestigations.study.PID',
+          dataKey: 'studyInvestigations.study.pid',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             if (
               investigationData.studyInvestigations &&
               investigationData.studyInvestigations[0].study
             ) {
-              return investigationData.studyInvestigations[0].study.PID;
+              return investigationData.studyInvestigations[0].study.pid;
             } else {
               return '';
             }

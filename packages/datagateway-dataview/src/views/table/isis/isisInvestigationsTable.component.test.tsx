@@ -62,7 +62,7 @@ describe('ISIS Investigations table component', () => {
             id: 6,
             study: {
               id: 7,
-              PID: 'study pid',
+              pid: 'study pid',
             },
           },
         ],

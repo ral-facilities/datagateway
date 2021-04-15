@@ -151,9 +151,9 @@ const InvestigationDetailsPanel = (
                     </Typography>
                     <Typography>
                       <Link
-                        href={`https://doi.org/${studyInvestigation.study.PID}`}
+                        href={`https://doi.org/${studyInvestigation.study.pid}`}
                       >
-                        {studyInvestigation.study.PID}
+                        {studyInvestigation.study.pid}
                       </Link>
                     </Typography>
                   </Grid>

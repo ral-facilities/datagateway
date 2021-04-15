@@ -61,7 +61,7 @@ describe('Investigation Search Table component', () => {
             id: 6,
             study: {
               id: 7,
-              PID: 'study pid',
+              pid: 'study pid',
               name: 'study name',
               modTime: '2019-06-10',
               createTime: '2019-06-10',
