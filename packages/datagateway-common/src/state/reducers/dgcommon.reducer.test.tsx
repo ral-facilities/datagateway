@@ -198,6 +198,14 @@ describe('DGCommon reducer', () => {
         sort: { name: 'desc' },
         filters: { name: 'c' },
       },
+      savedQuery: {
+        view: 'card',
+        search: 'searchTwo',
+        page: 2,
+        results: 2,
+        sort: { name: 'desc' },
+        filters: { name: 'c' },
+      },
     };
 
     const updatedState = DGCommonReducer(state, clearTable());
