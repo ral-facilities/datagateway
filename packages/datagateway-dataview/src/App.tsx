@@ -8,7 +8,7 @@ import {
   DGThemeProvider,
   listenToMessages,
   Preloader,
-  HomePage,
+  //  HomePage,
 } from 'datagateway-common';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -22,7 +22,7 @@ import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import './App.css';
 import { saveApiUrlMiddleware } from './page/idCheckFunctions';
-// import PageContainer from './page/pageContainer.component';
+import PageContainer from './page/pageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
@@ -120,7 +120,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
                         <Preloader loading={true}>Finished loading</Preloader>
                       }
                     >
-                      <HomePage />
+                      <PageContainer />
                     </React.Suspense>
                   </ConnectedPreloader>
                 </DGThemeProvider>
