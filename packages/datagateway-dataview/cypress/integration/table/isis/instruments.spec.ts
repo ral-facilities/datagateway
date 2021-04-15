@@ -124,7 +124,7 @@ describe('ISIS - Instruments Table', () => {
         scrollBehavior: 'center',
       });
       // cy.get('[aria-label="grid"]').scrollTo('top'); TODO, need to be removed?
-      cy.get('#details-panel').contains('Matthew50').should('be.visible');
+      cy.get('#details-panel').contains('Vanessa Smith').should('be.visible');
     });
 
     it('and then not view details anymore', () => {
