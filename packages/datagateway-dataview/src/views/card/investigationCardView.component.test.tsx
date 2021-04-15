@@ -47,13 +47,6 @@ describe('Investigation - Card View', () => {
     );
   };
 
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
-  // Prevent error logging
-  window.scrollTo = jest.fn();
-
   beforeEach(() => {
     mount = createMount();
     shallow = createShallow();
@@ -86,6 +79,19 @@ describe('Investigation - Card View', () => {
         },
       },
     };
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
+    (axios.delete as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
+    global.Date.now = jest.fn(() => 1);
+    // Prevent error logging
+    window.scrollTo = jest.fn();
   });
 
   afterEach(() => {

@@ -37,13 +37,6 @@ describe('DLS Proposals - Card View', () => {
     );
   };
 
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
-  // Prevent error logging
-  window.scrollTo = jest.fn();
-
   beforeEach(() => {
     mount = createMount();
     shallow = createShallow();
@@ -76,6 +69,13 @@ describe('DLS Proposals - Card View', () => {
         },
       },
     };
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
+    // Prevent error logging
+    window.scrollTo = jest.fn();
   });
 
   afterEach(() => {

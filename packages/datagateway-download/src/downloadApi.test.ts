@@ -14,6 +14,7 @@ import {
   removeAllDownloadCartItems,
   removeDownloadCartItem,
   submitCart,
+  getDataUrl,
 } from './downloadApi';
 
 const settings = {
@@ -990,6 +991,19 @@ describe('Download Status API functions test', () => {
       expect(handleICATError).toHaveBeenCalled();
       expect(handleICATError).toHaveBeenCalledWith({
         message: 'Test error message',
+      });
+    });
+  });
+
+  describe('getDataUrl', () => {
+    it('successfully constructs a download link with given parameters', () => {
+      const preparedId = 'test-prepared-id';
+      const fileName = 'test-filename';
+      const idsUrl = 'test-ids-url';
+
+      const result = getDataUrl(preparedId, fileName, idsUrl);
+      [preparedId, fileName, idsUrl].forEach((entry) => {
+        expect(result).toContain(entry);
       });
     });
   });

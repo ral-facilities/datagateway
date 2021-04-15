@@ -22,5 +22,6 @@
     "datagateway-download": "cd packages/datagateway-download && yarn start",
     "datagateway-search": "cd packages/datagateway-search && yarn start",
     "postinstall": "husky install"
-  }
+  },
+  "dependencies": {}
 }

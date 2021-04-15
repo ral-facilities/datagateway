@@ -88,6 +88,12 @@ describe('Investigation Search Table component', () => {
     (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({ data: [] })
     );
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
+    (axios.delete as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
     global.Date.now = jest.fn(() => 1);
   });
 
@@ -97,11 +103,7 @@ describe('Investigation Search Table component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <InvestigationSearchTable
-        store={mockStore(state)}
-        instrumentId="4"
-        facilityCycleId="5"
-      />
+      <InvestigationSearchTable store={mockStore(state)} />
     );
     expect(wrapper).toMatchSnapshot();
   });
@@ -111,7 +113,7 @@ describe('Investigation Search Table component', () => {
     mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -127,13 +129,7 @@ describe('Investigation Search Table component', () => {
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {
     const testStore = mockStore(state);
-    const wrapper = shallow(
-      <InvestigationSearchTable
-        instrumentId="4"
-        facilityCycleId="5"
-        store={testStore}
-      />
-    );
+    const wrapper = shallow(<InvestigationSearchTable store={testStore} />);
 
     wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
@@ -171,7 +167,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -197,7 +193,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -215,7 +211,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -240,7 +236,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -272,7 +268,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -288,11 +284,7 @@ describe('Investigation Search Table component', () => {
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
-        <InvestigationSearchTable
-          store={mockStore(state)}
-          instrumentId="4"
-          facilityCycleId="5"
-        />
+        <InvestigationSearchTable store={mockStore(state)} />
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
@@ -307,7 +299,7 @@ describe('Investigation Search Table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <InvestigationSearchTable instrumentId="4" facilityCycleId="5" />
+          <InvestigationSearchTable />
         </MemoryRouter>
       </Provider>
     );

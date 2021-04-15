@@ -9,7 +9,7 @@ import {
   TableActionProps,
   DateColumnFilter,
 } from 'datagateway-common';
-import { fetchDownloads, downloadDeleted } from '../downloadApi';
+import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
 import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
@@ -221,13 +221,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     return filteredData.sort(sortDownloadItems);
   }, [data, sort, filters]);
 
-  const getDataUrl = (preparedId: string, fileName: string): string => {
-    // Construct a link to download the prepared cart.
-    return `${settings.idsUrl}/getData?sessionId=${window.localStorage.getItem(
-      'icat:token'
-    )}&preparedId=${preparedId}&outname=${fileName}`;
-  };
-
   return (
     <Grid container direction="column">
       {/* Show loading progress if data is still being loaded */}
@@ -318,7 +311,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                           component="a"
                           href={getDataUrl(
                             downloadItem.preparedId as string,
-                            downloadItem.fileName as string
+                            downloadItem.fileName as string,
+                            settings.idsUrl as string
                           )}
                           target="_blank"
                           aria-label={t('downloadStatus.download', {

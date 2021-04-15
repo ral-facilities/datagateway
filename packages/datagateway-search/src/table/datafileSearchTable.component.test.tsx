@@ -52,6 +52,12 @@ describe('Datafile search table component', () => {
     (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({ data: [] })
     );
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
+    (axios.delete as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
     global.Date.now = jest.fn(() => 1);
   });
 
@@ -69,7 +75,7 @@ describe('Datafile search table component', () => {
     mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -121,7 +127,7 @@ describe('Datafile search table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -147,7 +153,7 @@ describe('Datafile search table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -165,7 +171,7 @@ describe('Datafile search table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -190,7 +196,7 @@ describe('Datafile search table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -222,7 +228,7 @@ describe('Datafile search table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -244,7 +250,7 @@ describe('Datafile search table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -255,7 +261,7 @@ describe('Datafile search table component', () => {
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
-        <DatafileSearchTable store={mockStore(state)} datasetId="1" />
+        <DatafileSearchTable store={mockStore(state)} />
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
@@ -270,7 +276,7 @@ describe('Datafile search table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <DatafileSearchTable datasetId="1" />
+          <DatafileSearchTable />
         </MemoryRouter>
       </Provider>
     );

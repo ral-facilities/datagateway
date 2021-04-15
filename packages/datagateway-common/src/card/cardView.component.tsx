@@ -760,7 +760,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                 })}
               </List>
             ) : (
-              <Grid xs={12} md={8}>
+              <Grid item xs={12} md={8}>
                 <Paper className={classes.noResultsPaper}>
                   <Typography align="center" variant="h6" component="h6">
                     {t('loading.filter_message')}

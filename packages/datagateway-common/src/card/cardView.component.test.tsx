@@ -25,13 +25,6 @@ describe('Card View', () => {
     return mount(<CardView {...props} />);
   };
 
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
-  // Prevent error logging
-  window.scrollTo = jest.fn();
-
   const loadData = jest.fn();
   const onFilter = jest.fn();
   const onPageChange = jest.fn();
@@ -64,6 +57,13 @@ describe('Card View', () => {
       onFilter: onFilter,
       pushQuery: pushQuery,
     };
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
+    // Prevent error logging
+    window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
@@ -108,6 +108,10 @@ describe('Card View', () => {
       ...updatedProps,
       query: { ...updatedProps.query, page: 1, filters: { TYPE_ID: ['1'] } },
     };
+
+    // Mock console.error() when updating the filter panels. We use Accordions
+    // with dynamic default values, which works, but would log an error.
+    jest.spyOn(console, 'error').mockImplementationOnce(jest.fn());
     wrapper.setProps(updatedProps);
 
     // Apply second filter

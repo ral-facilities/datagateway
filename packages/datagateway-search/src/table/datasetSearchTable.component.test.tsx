@@ -47,6 +47,12 @@ describe('Dataset table component', () => {
     (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({ data: [] })
     );
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
+    (axios.delete as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
     global.Date.now = jest.fn(() => 1);
   });
 
@@ -64,7 +70,7 @@ describe('Dataset table component', () => {
     mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
+          <DatasetSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -78,9 +84,7 @@ describe('Dataset table component', () => {
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {
     const testStore = mockStore(state);
-    const wrapper = shallow(
-      <DatasetSearchTable investigationId="1" store={testStore} />
-    );
+    const wrapper = shallow(<DatasetSearchTable store={testStore} />);
 
     wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
@@ -118,7 +122,7 @@ describe('Dataset table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
+          <DatasetSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -144,7 +148,7 @@ describe('Dataset table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
+          <DatasetSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -162,7 +166,7 @@ describe('Dataset table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
+          <DatasetSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -187,7 +191,7 @@ describe('Dataset table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
+          <DatasetSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -219,7 +223,7 @@ describe('Dataset table component', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
+          <DatasetSearchTable />
         </MemoryRouter>
       </Provider>
     );
@@ -235,7 +239,7 @@ describe('Dataset table component', () => {
   it('renders details panel correctly', () => {
     const wrapper = shallow(
       <MemoryRouter>
-        <DatasetSearchTable store={mockStore(state)} investigationId="1" />
+        <DatasetSearchTable store={mockStore(state)} />
       </MemoryRouter>
     );
     const detailsPanelWrapper = shallow(
@@ -250,7 +254,7 @@ describe('Dataset table component', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
-          <DatasetSearchTable investigationId="1" />
+          <DatasetSearchTable />
         </MemoryRouter>
       </Provider>
     );
