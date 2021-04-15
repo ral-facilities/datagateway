@@ -10,7 +10,6 @@ describe('ISIS - Datafiles Table', () => {
 
   describe('Wait for initial requests', () => {
     beforeEach(() => {
-      // TODO - note, this has been moved from beforeEach above this
       cy.visit(
         '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
       ).wait(

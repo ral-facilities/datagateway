@@ -177,7 +177,6 @@ describe('ISIS Investigations table component', () => {
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    // TODO - this seemed to fail on dls version
     expect(testStore.getActions()[5]).toEqual(
       filterTable('title', { value: 'test', type: 'include' })
     );

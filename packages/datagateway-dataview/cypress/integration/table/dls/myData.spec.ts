@@ -6,8 +6,7 @@ describe('DLS - MyData Table', () => {
       password: 'pw',
       mechanism: 'simple',
     });
-    // TODO - I removed the wait before, see if it works with it
-    cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
+    cy.visit('/my-data/DLS');
   });
 
   it('should load correctly', () => {
@@ -125,7 +124,6 @@ describe('DLS - MyData Table', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
-    // TODO - Come back to this
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument')
         .find('input')
