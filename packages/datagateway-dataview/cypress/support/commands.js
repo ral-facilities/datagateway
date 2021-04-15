@@ -54,13 +54,17 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', () => {
+Cypress.Commands.add('login', (credentials) => {
   return cy.readFile('server/e2e-settings.json').then((settings) => {
-    cy.request('POST', `${settings.apiUrl}/sessions`, {
+    let body = {
       username: '',
       password: '',
       mechanism: 'anon',
-    }).then((response) => {
+    };
+    if (credentials) {
+      body = credentials;
+    }
+    cy.request('POST', `${settings.apiUrl}/sessions`, body).then((response) => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,

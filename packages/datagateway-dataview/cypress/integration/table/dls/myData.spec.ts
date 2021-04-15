@@ -1,7 +1,11 @@
 describe('DLS - MyData Table', () => {
   beforeEach(() => {
-    cy.intercept('/datasets/count').as('getDatasetCount');
-    cy.login();
+    cy.intercept('/investigations/count').as('getInvestigationCount');
+    cy.login({
+      username: 'root',
+      password: 'pw',
+      mechanism: 'simple',
+    });
     // TODO - I removed the wait before, see if it works with it
     cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
   });
@@ -125,6 +129,7 @@ describe('DLS - MyData Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument')
         .find('input')
+        .first()
         .type('Who set wind carry matter.');
 
       cy.get('[aria-rowcount="1"]').should('exist');

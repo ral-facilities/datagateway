@@ -1,7 +1,11 @@
 describe('ISIS - MyData Table', () => {
   beforeEach(() => {
     cy.intercept('/investigations/count').as('getInvestigationCount');
-    cy.login();
+    cy.login({
+      username: 'root',
+      password: 'pw',
+      mechanism: 'simple',
+    });
     // TODO - Does wait() need to be removed?
     cy.visit('/my-data/ISIS').wait(['@getInvestigationCount'], {
       timeout: 10000,
@@ -129,7 +133,7 @@ describe('ISIS - MyData Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument"]')
         .find('input')
-        // TODO - might need .first()?
+        .first()
         .type('Who set wind carry matter.');
 
       cy.get('[aria-rowcount="1"]').should('exist');
