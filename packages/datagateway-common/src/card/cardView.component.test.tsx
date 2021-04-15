@@ -40,8 +40,10 @@ describe('Card View', () => {
           title: 'Test 1',
           name: 'Test 1',
           visitId: '1',
-          TYPE_ID: '1',
-          FACILITY_ID: '1',
+          type: {
+            id: '1',
+          },
+          facility: '1',
         },
       ],
       totalDataCount: 1,
@@ -83,7 +85,7 @@ describe('Card View', () => {
     let updatedProps = {
       ...props,
       customFilters: [
-        { label: 'Type ID', dataKey: 'TYPE_ID', filterItems: ['1', '2'] },
+        { label: 'Type ID', dataKey: 'type.id', filterItems: ['1', '2'] },
       ],
     };
     const wrapper = createWrapper(updatedProps);
@@ -101,12 +103,12 @@ describe('Card View', () => {
       ...updatedProps.query,
       page: 1,
     });
-    expect(onFilter).toHaveBeenNthCalledWith(1, 'TYPE_ID', ['1']);
+    expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
 
     // Mock result of actions
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, page: 1, filters: { TYPE_ID: ['1'] } },
+      query: { ...updatedProps.query, page: 1, filters: { 'type.id': ['1'] } },
     };
 
     // Mock console.error() when updating the filter panels. We use Accordions
@@ -120,12 +122,12 @@ describe('Card View', () => {
       ...updatedProps.query,
       page: 1,
     });
-    expect(onFilter).toHaveBeenNthCalledWith(2, 'TYPE_ID', ['1', '2']);
+    expect(onFilter).toHaveBeenNthCalledWith(2, 'type.id', ['1', '2']);
 
     // Mock result of actions
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, filters: { TYPE_ID: ['1', '2'] } },
+      query: { ...updatedProps.query, filters: { 'type.id': ['1', '2'] } },
     };
     wrapper.setProps(updatedProps);
 
@@ -136,12 +138,12 @@ describe('Card View', () => {
       ...updatedProps.query,
       page: 1,
     });
-    expect(onFilter).toHaveBeenNthCalledWith(3, 'TYPE_ID', ['2']);
+    expect(onFilter).toHaveBeenNthCalledWith(3, 'type.id', ['2']);
 
     // Mock result of actions
     updatedProps = {
       ...updatedProps,
-      query: { ...updatedProps.query, filters: { TYPE_ID: ['2'] } },
+      query: { ...updatedProps.query, filters: { 'type.id': ['2'] } },
     };
     wrapper.setProps(updatedProps);
 
@@ -152,16 +154,16 @@ describe('Card View', () => {
       ...updatedProps.query,
       page: 1,
     });
-    expect(onFilter).toHaveBeenNthCalledWith(4, 'TYPE_ID', null);
+    expect(onFilter).toHaveBeenNthCalledWith(4, 'type.id', null);
   });
 
   it('custom filter applied when non-custom filter already in state', () => {
     const updatedProps = {
       ...props,
       customFilters: [
-        { label: 'Type ID', dataKey: 'TYPE_ID', filterItems: ['1', '2'] },
+        { label: 'Type ID', dataKey: 'type.id', filterItems: ['1', '2'] },
       ],
-      query: { ...props.query, filters: { TYPE_ID: 'abc' } },
+      query: { ...props.query, filters: { 'type.id': 'abc' } },
     };
     const wrapper = createWrapper(updatedProps);
     expect(wrapper.find('#card').find(Chip).text()).toEqual('1');
@@ -178,7 +180,7 @@ describe('Card View', () => {
       ...updatedProps.query,
       page: 1,
     });
-    expect(onFilter).toHaveBeenNthCalledWith(1, 'TYPE_ID', ['1']);
+    expect(onFilter).toHaveBeenNthCalledWith(1, 'type.id', ['1']);
   });
 
   it('advancedFilter displayed when filter component given', () => {
@@ -448,16 +450,16 @@ describe('Card View', () => {
           title: 'Test 1',
           name: 'Test 1',
           visitId: '1',
-          TYPE_ID: '1',
-          FACILITY_ID: '1',
+          type: '1',
+          facility: '1',
         },
         {
           id: 2,
           title: 'Test 2',
           name: 'Test 2',
           visitId: '2',
-          TYPE_ID: '2',
-          FACILITY_ID: '2',
+          type: '2',
+          facility: '2',
         },
       ],
       totalDataCount: 2,
@@ -481,16 +483,16 @@ describe('Card View', () => {
           title: 'Test 1',
           name: 'Test 1',
           visitId: '1',
-          TYPE_ID: '1',
-          FACILITY_ID: '1',
+          type: '1',
+          facility: '1',
         },
         {
           id: 2,
           title: 'Test 2',
           name: 'Test 2',
           visitId: '2',
-          TYPE_ID: '2',
-          FACILITY_ID: '2',
+          type: '2',
+          facility: '2',
         },
       ],
       totalDataCount: 2,
@@ -518,8 +520,8 @@ describe('Card View', () => {
           title: 'Test 1',
           name: 'Test 1',
           visitId: '1',
-          TYPE_ID: '1',
-          FACILITY_ID: '1',
+          type: '1',
+          facility: '1',
         },
       ],
       totalDataCount: 1,
@@ -541,24 +543,24 @@ describe('Card View', () => {
           title: 'Test 1',
           name: 'Test 1',
           visitId: '1',
-          TYPE_ID: '1',
-          FACILITY_ID: '1',
+          type: '1',
+          facility: '1',
         },
         {
           id: 2,
           title: 'Test 2',
           name: 'Test 2',
           visitId: '2',
-          TYPE_ID: '2',
-          FACILITY_ID: '2',
+          type: '2',
+          facility: '2',
         },
         {
           id: 3,
           title: 'Test 3',
           name: 'Test 3',
           visitId: '3',
-          TYPE_ID: '3',
-          FACILITY_ID: '3',
+          type: '3',
+          facility: '3',
         },
       ],
       totalDataCount: 3,
@@ -585,24 +587,24 @@ describe('Card View', () => {
           title: 'Test 1',
           name: 'Test 1',
           visitId: '1',
-          TYPE_ID: '1',
-          FACILITY_ID: '1',
+          type: '1',
+          facility: '1',
         },
         {
           id: 2,
           title: 'Test 2',
           name: 'Test 2',
           visitId: '2',
-          TYPE_ID: '2',
-          FACILITY_ID: '2',
+          type: '2',
+          facility: '2',
         },
         {
           id: 3,
           title: 'Test 3',
           name: 'Test 3',
           visitId: '3',
-          TYPE_ID: '3',
-          FACILITY_ID: '3',
+          type: '3',
+          facility: '3',
         },
       ],
       totalDataCount: 3,

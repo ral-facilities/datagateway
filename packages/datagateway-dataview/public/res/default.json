@@ -56,7 +56,6 @@
     "rb_number": "RB Number",
     "doi": "DOI",
     "dataset_count": "Dataset Count",
-    "type_id": "Type ID",
     "details": {
       "tabs_label": "Investigation Details Tabs",
       "label": "Investigation Details",
