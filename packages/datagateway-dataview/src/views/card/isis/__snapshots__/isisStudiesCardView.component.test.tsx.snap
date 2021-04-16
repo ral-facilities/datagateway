@@ -11,11 +11,11 @@ exports[`ISIS Studies - Card View renders correctly 1`] = `
         Object {
           "id": 1,
           "study": Object {
-            "pid": "doi",
             "createTime": "2000-01-01",
             "id": 1,
             "modTime": "2000-01-01",
             "name": "Test 1",
+            "pid": "doi",
           },
         },
       ]

@@ -90,8 +90,8 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           Object {
             "id": 6,
             "study": Object {
-              "pid": "study pid",
               "id": 7,
+              "pid": "study pid",
             },
           },
         ],
