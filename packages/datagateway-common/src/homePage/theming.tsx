@@ -1,10 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-// import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeOptions, Theme } from '@material-ui/core/styles/createMuiTheme';
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
-// import React from 'react';
-// import { StateType } from '../state/app.types';
-// import { connect, useSelector } from 'react-redux';
 
 export interface UKRIThemeOptions extends ThemeOptions {
   ukri: {
