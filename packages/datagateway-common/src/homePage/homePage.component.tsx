@@ -13,7 +13,6 @@ import DatagatewayLogoWithText from '../images/datagateway-logo-white.svg';
 import ExploreImage from '../images/explore.jpg';
 import DiscoverImage from '../images/discover.jpg';
 import DownloadImage from '../images/download.jpg';
-// import { UKRITheme } from './theming';
 import homePageContents from './contents';
 
 const styles = (theme: Theme): StyleRules =>
@@ -49,8 +48,7 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
     },
     howItWorksGridItemTitle: {
-      // color: (theme as UKRITheme).ukri.bright.orange,    // TODO add this back. Cannot find 'bright' of undefined
-      color: 'orange',
+      color: '#FF6900',
       fontWeight: 'bold',
       paddingBottom: 10,
     },

@@ -479,8 +479,6 @@ class PageContainer extends React.Component<
   };
 
   public render(): React.ReactElement {
-    // Renders the homepage if the current location equals /datagateway
-    // TODO determine if this is the best way of doing things
     if (this.props.location.pathname === paths.homepage) {
       return <HomePage />;
     } else {
