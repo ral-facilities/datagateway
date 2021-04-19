@@ -10,6 +10,7 @@ import {
   clearTable,
   dGCommonInitialState,
   updateQueryParams,
+  HomePage,
 } from 'datagateway-common';
 
 import { LinearProgress } from '@material-ui/core';
@@ -20,7 +21,7 @@ import { createLocation } from 'history';
 import { MemoryRouter } from 'react-router';
 import { push } from 'connected-react-router';
 
-import PageContainer from './pageContainer.component';
+import PageContainer, { paths } from './pageContainer.component';
 import { Provider } from 'react-redux';
 import { checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
@@ -444,5 +445,30 @@ describe('PageContainer - Tests', () => {
     expect(
       wrapper.find(PageContainer).children().first().state('modifiedLocation')
     ).toEqual(newLocation);
+  });
+
+  it('should return the homepage if current path equals homepage route', () => {
+    const homepageLocation = createLocation(paths.homepage);
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: homepageLocation,
+        },
+      })
+    );
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter initialEntries={[{ key: 'testKey' }]}>
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+    expect(wrapper.find(HomePage).exists()).toEqual(true);
   });
 });
