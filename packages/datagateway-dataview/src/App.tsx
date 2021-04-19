@@ -8,7 +8,6 @@ import {
   DGThemeProvider,
   listenToMessages,
   Preloader,
-  //  HomePage,
 } from 'datagateway-common';
 // history package is part of react-router, which we depend on
 // eslint-disable-next-line import/no-extraneous-dependencies

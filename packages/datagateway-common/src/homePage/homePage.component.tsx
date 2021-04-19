@@ -13,7 +13,7 @@ import DatagatewayLogoWithText from '../images/datagateway-logo-white.svg';
 import ExploreImage from '../images/explore.jpg';
 import DiscoverImage from '../images/discover.jpg';
 import DownloadImage from '../images/download.jpg';
-// import { UKRITheme } from './theming';
+import { UKRITheme } from './theming';
 import homePageContents from './contents';
 
 const styles = (theme: Theme): StyleRules =>
@@ -49,7 +49,7 @@ const styles = (theme: Theme): StyleRules =>
       alignItems: 'center',
     },
     howItWorksGridItemTitle: {
-      color: '#FF6900', // replace with UKRI orange, currently getting ukri as undefined (see scigateway homepage)
+      color: (theme as UKRITheme).ukri.bright.orange,
       fontWeight: 'bold',
       paddingBottom: 10,
     },
@@ -61,7 +61,7 @@ const styles = (theme: Theme): StyleRules =>
     },
     howItWorksGridItemCaption: {
       textAlign: 'center',
-      color: '#003088', // change to theme.palette.text.secondary, UKRI theme import not working
+      color: theme.palette.secondary.main,
     },
   });
 
