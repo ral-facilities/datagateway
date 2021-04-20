@@ -1,6 +1,4 @@
 import React from 'react';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Location as LocationType } from 'history';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
