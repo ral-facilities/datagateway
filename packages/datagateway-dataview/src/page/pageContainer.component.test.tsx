@@ -206,7 +206,7 @@ describe('PageContainer - Tests', () => {
         router: {
           action: 'POP',
           location: createLocation(
-            '/browse/investigation/1/dataset/25/datafile'
+            paths.toggle.investigation + '/1/dataset/25/datafile'
           ),
         },
       })
@@ -250,7 +250,7 @@ describe('PageContainer - Tests', () => {
         dgdataview: dgDataViewInitialState,
         router: {
           action: 'POP',
-          location: createLocation('/browse/investigation'),
+          location: createLocation(paths.toggle.investigation),
         },
       })
     );
@@ -287,7 +287,7 @@ describe('PageContainer - Tests', () => {
         dgdataview: dgDataViewInitialState,
         router: {
           action: 'POP',
-          location: createLocation('/browse/investigation?view=card'),
+          location: createLocation(paths.toggle.investigation + '?view=card'),
         },
       })
     );
@@ -319,7 +319,7 @@ describe('PageContainer - Tests', () => {
 
         router: {
           action: 'POP',
-          location: createLocation('/browse/investigation'),
+          location: createLocation(paths.toggle.investigation),
         },
       })
     );
@@ -337,7 +337,7 @@ describe('PageContainer - Tests', () => {
       ...state,
       router: {
         action: 'PUSH',
-        location: createLocation('/browse/investigation/1/dataset'),
+        location: createLocation(paths.toggle.investigation + '/1/dataset'),
       },
     });
     wrapper.setProps({ store: testStore });
@@ -355,7 +355,7 @@ describe('PageContainer - Tests', () => {
         dgdataview: dgDataViewInitialState,
         router: {
           action: 'POP',
-          location: createLocation('/browse/investigation'),
+          location: createLocation(paths.toggle.investigation),
         },
       })
     );
@@ -386,8 +386,10 @@ describe('PageContainer - Tests', () => {
 
   it('use/remove dummy url when location/query changes', () => {
     const dummyLocation = createLocation('/');
-    const initialLocation = createLocation('/browse/investigation');
-    const newLocation = createLocation('/browse/investigation/1/dataset');
+    const initialLocation = createLocation(paths.toggle.investigation);
+    const newLocation = createLocation(
+      paths.toggle.investigation + '/1/dataset'
+    );
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,

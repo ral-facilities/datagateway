@@ -3,7 +3,7 @@
 exports[`Home page component homepage renders correctly 1`] = `
 <div>
   <div
-    className="bigImage-class"
+    className="HomePage-bigImage-1 bigImage-class"
   >
     <img
       alt="DataGateway"
@@ -11,10 +11,10 @@ exports[`Home page component homepage renders correctly 1`] = `
     />
   </div>
   <div
-    className="howItWorks-class"
+    className="HomePage-howItWorks-2 howItWorks-class"
   >
     <WithStyles(ForwardRef(Typography))
-      className="howItWorksTitle-class"
+      className="HomePage-howItWorksTitle-3 howItWorksTitle-class"
       variant="h4"
     >
       How it works...
@@ -24,72 +24,72 @@ exports[`Home page component homepage renders correctly 1`] = `
       spacing={3}
     >
       <WithStyles(ForwardRef(Grid))
-        className="howItWorksGridItem-class"
+        className="HomePage-howItWorksGridItem-4 howItWorksGridItem-class"
         item={true}
         md={4}
         sm={12}
       >
         <WithStyles(ForwardRef(Typography))
-          className="howItWorksGridItemTitle-class"
+          className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
           1. Explore
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
-          className="howItWorksGridItemImage-class"
+          className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
           src="explore.jpg"
         />
         <WithStyles(ForwardRef(Typography))
-          className="howItWorksGridItemCaption-class"
+          className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
           Browse, explore and visualise the experimental data produced at the facility.
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
-        className="howItWorksGridItem-class"
+        className="HomePage-howItWorksGridItem-4 howItWorksGridItem-class"
         item={true}
         md={4}
         sm={12}
       >
         <WithStyles(ForwardRef(Typography))
-          className="howItWorksGridItemTitle-class"
+          className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
           2. Discover
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
-          className="howItWorksGridItemImage-class"
+          className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
           src="discover.jpg"
         />
         <WithStyles(ForwardRef(Typography))
-          className="howItWorksGridItemCaption-class"
+          className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
           Search for the experimental data according to different criteria.
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
-        className="howItWorksGridItem-class"
+        className="HomePage-howItWorksGridItem-4 howItWorksGridItem-class"
         item={true}
         md={4}
         sm={12}
       >
         <WithStyles(ForwardRef(Typography))
-          className="howItWorksGridItemTitle-class"
+          className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
           3. Download
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
-          className="howItWorksGridItemImage-class"
+          className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
           src="download.jpg"
         />
         <WithStyles(ForwardRef(Typography))
-          className="howItWorksGridItemCaption-class"
+          className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
           Retrieve the experimental data using a variety of download methods.

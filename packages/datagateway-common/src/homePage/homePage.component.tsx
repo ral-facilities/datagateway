@@ -139,7 +139,4 @@ const HomePage = (props: HomePageProps): React.ReactElement => (
   </div>
 );
 
-export const HomePageWithoutStyles = HomePage;
-export const HomePageWithStyles = withStyles(styles)(HomePage);
-
-export default HomePageWithStyles;
+export default withStyles(styles)(HomePage);

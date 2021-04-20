@@ -1,15 +1,13 @@
 import React from 'react';
-import { createMount, createShallow } from '@material-ui/core/test-utils';
-import { HomePageWithoutStyles, HomePageProps } from './homePage.component';
+import { createShallow } from '@material-ui/core/test-utils';
+import HomePage, { HomePageProps } from './homePage.component';
 
 describe('Home page component', () => {
   let shallow;
-  let mount;
   let props: HomePageProps;
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
-    mount = createMount();
 
     props = {
       classes: {
@@ -24,12 +22,8 @@ describe('Home page component', () => {
     };
   });
 
-  afterEach(() => {
-    mount.cleanUp();
-  });
-
   it('homepage renders correctly', () => {
-    const wrapper = shallow(<HomePageWithoutStyles {...props} />);
+    const wrapper = shallow(<HomePage {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });
