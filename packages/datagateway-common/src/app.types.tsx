@@ -281,3 +281,16 @@ export interface FiltersType {
 export interface SortType {
   [column: string]: Order;
 }
+
+export type HomepageContents = {
+  title: string;
+  howLabel: string;
+  exploreLabel: string;
+  exploreDescription: string;
+  discoverLabel: string;
+  discoverDescription: string;
+  downloadLabel: string;
+  downloadDescription: string;
+
+  [key: string]: string;
+};

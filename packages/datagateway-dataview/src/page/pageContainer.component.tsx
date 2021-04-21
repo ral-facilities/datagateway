@@ -26,6 +26,7 @@ import {
   ViewsType,
   HomePage,
 } from 'datagateway-common';
+import { HomepageContents } from 'datagateway-common/src/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -345,6 +346,7 @@ interface PageContainerStateProps {
   loadedCount: boolean;
   totalDataCount: number;
   cartItems: DownloadCartItem[];
+  res: HomepageContents | undefined;
 }
 
 type PageContainerCombinedProps = PageContainerStateProps &
@@ -354,6 +356,7 @@ interface PageContainerState {
   paths: string[];
   toggleCard: boolean;
   modifiedLocation: LocationType;
+  res?: HomepageContents;
 }
 
 class PageContainer extends React.Component<
@@ -480,7 +483,7 @@ class PageContainer extends React.Component<
 
   public render(): React.ReactElement {
     if (this.props.location.pathname === paths.homepage) {
-      return <HomePage />;
+      return <HomePage {...this.props} />;
     } else {
       return (
         <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
@@ -540,6 +543,7 @@ const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   loadedCount: state.dgcommon.loadedCount,
   totalDataCount: state.dgcommon.totalDataCount,
   cartItems: state.dgcommon.cartItems,
+  res: state.dgdataview.res,
 });
 
 const mapDispatchToProps = (

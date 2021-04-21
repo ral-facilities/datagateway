@@ -1,3 +1,5 @@
+import { HomepageContents } from 'datagateway-common/src/app.types';
+
 // internal actions
 export const ConfigureFeatureSwitchesType =
   'datagateway_dataview:configure_feature_switches';
@@ -6,6 +8,8 @@ export const ConfigureBreadcrumbSettingsType =
 export const ConfigureSelectAllSettingType =
   'datagateway_dataview:configure_select_all';
 export const SettingsLoadedType = 'datagateway_dataview:settings_loaded';
+export const ConfigureHomepageStringsType =
+  'datagateway_dataview:homepage_strings_loaded';
 
 export interface FeatureSwitchesPayload {
   switches: FeatureSwitches;
@@ -27,4 +31,8 @@ export interface BreadcrumbSettings {
     replaceEntity?: string;
     parentEntity?: string;
   };
+}
+
+export interface ConfigureHomepageStringsPayload {
+  res: HomepageContents;
 }

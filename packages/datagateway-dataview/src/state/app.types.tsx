@@ -1,6 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { DGCommonState } from 'datagateway-common';
+import { HomepageContents } from 'datagateway-common/src/app.types';
 import { FeatureSwitches, BreadcrumbSettings } from './actions/actions.types';
 
 export interface DGDataViewState {
@@ -8,6 +9,7 @@ export interface DGDataViewState {
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
   selectAllSetting: boolean;
+  res?: HomepageContents;
 }
 
 export interface EntityCache {

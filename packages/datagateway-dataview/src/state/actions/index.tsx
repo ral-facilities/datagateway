@@ -9,6 +9,8 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingPayload,
   ConfigureSelectAllSettingType,
+  ConfigureHomepageStringsType,
+  ConfigureHomepageStringsPayload,
 } from './actions.types';
 import {
   loadUrls,
@@ -18,6 +20,7 @@ import {
   PluginRoute,
   RegisterRouteType,
 } from 'datagateway-common';
+import { HomepageContents } from 'datagateway-common/src/app.types';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 import { Action } from 'redux';
@@ -53,6 +56,15 @@ export const loadSelectAllSetting = (
   type: ConfigureSelectAllSettingType,
   payload: {
     settings: selectAllSetting,
+  },
+});
+
+export const loadHomepageStrings = (
+  HomepageStrings: HomepageContents
+): ActionType<ConfigureHomepageStringsPayload> => ({
+  type: ConfigureHomepageStringsType,
+  payload: {
+    res: HomepageStrings,
   },
 });
 
@@ -152,6 +164,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           });
         } else {
           throw new Error('No routes provided in the settings');
+        }
+
+        if ('home-page' in settings) {
+          dispatch(loadHomepageStrings(settings['home-page']));
         }
 
         /* istanbul ignore if */
