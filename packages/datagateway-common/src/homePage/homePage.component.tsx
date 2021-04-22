@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
 import Image from '../images/Jasmin4 _DSC7054.jpg';
-import DatagatewayLogoWithText from '../images/datagateway-logo-white.svg';
+import DatagatewayLogoWithText from '../images/datgateway-white-text-blue-mark-logo.svg';
 import ExploreImage from '../images/explore.jpg';
 import DiscoverImage from '../images/discover.jpg';
 import DownloadImage from '../images/download.jpg';
