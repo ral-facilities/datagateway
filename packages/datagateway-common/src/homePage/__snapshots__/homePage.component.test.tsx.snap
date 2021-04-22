@@ -1,13 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Home page component homepage renders correctly 1`] = `
-<div>
+<div
+  id="dg-homepage"
+>
   <div
     className="HomePage-bigImage-1 bigImage-class"
   >
     <img
       alt="title"
-      src="datagateway-logo-white.svg"
+      src="datgateway-white-text-blue-mark-logo.svg"
     />
   </div>
   <div
