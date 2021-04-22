@@ -77,7 +77,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
 
   render(): JSX.Element {
     return (
-      <div>
+      <div id="dg-homepage">
         <div className={this.props.classes.bigImage}>
           <img src={DatagatewayLogoWithText} alt={this.getString('title')} />
         </div>

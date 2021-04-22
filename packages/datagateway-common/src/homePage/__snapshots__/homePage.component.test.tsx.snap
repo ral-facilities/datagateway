@@ -6,7 +6,7 @@ exports[`Home page component homepage renders correctly 1`] = `
     className="HomePage-bigImage-1 bigImage-class"
   >
     <img
-      alt="DataGateway"
+      alt="title"
       src="datagateway-logo-white.svg"
     />
   </div>
@@ -17,7 +17,7 @@ exports[`Home page component homepage renders correctly 1`] = `
       className="HomePage-howItWorksTitle-3 howItWorksTitle-class"
       variant="h4"
     >
-      How it works...
+      how-label
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Grid))
       container={true}
@@ -33,7 +33,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
-          1. Explore
+          explore-label
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
@@ -44,7 +44,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
-          Browse, explore and visualise the experimental data produced at the facility.
+          explore-description
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -57,7 +57,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
-          2. Discover
+          discover-label
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
@@ -68,7 +68,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
-          Search for the experimental data according to different criteria.
+          discover-description
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -81,7 +81,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
-          3. Download
+          download-label
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
@@ -92,7 +92,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
-          Retrieve the experimental data using a variety of download methods.
+          download-description
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>

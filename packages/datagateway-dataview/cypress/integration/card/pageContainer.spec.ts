@@ -111,6 +111,6 @@ describe('PageContainer Component', () => {
 
   it('should load the homepage if navigating to home', () => {
     cy.visit('/datagateway');
-    cy.get('img[alt="DataGateway"]');
+    cy.get('div[id="dg-homepage"]');
   });
 });
