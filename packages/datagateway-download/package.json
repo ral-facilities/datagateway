@@ -13,7 +13,7 @@
     "axios": "^0.21.1",
     "datagateway-common": "0.1.0",
     "i18next": "^19.9.0",
-    "i18next-browser-languagedetector": "^6.0.0",
+    "i18next-browser-languagedetector": "^6.1.0",
     "i18next-http-backend": "^1.1.1",
     "lodash.chunk": "^4.2.0",
     "loglevel": "^1.7.1",
