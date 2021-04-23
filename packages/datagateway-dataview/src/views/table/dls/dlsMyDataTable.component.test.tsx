@@ -273,7 +273,22 @@ describe('DLS Visits table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles missing Instrument from InvestigationInstrument object', () => {
+  it('gracefully handles empty InvestigationInstrument and missing Instrument from InvestigationInstrument object', () => {
+    state.dgcommon.data[0] = {
+      ...state.dgcommon.data[0],
+      investigationInstruments: [],
+    };
+
+    let wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <DLSMyDataTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(() => wrapper).not.toThrowError();
+
     state.dgcommon.data[0] = {
       ...state.dgcommon.data[0],
       investigationInstruments: [
@@ -282,7 +297,7 @@ describe('DLS Visits table component', () => {
         },
       ],
     };
-    const wrapper = mount(
+    wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <DLSMyDataTable />

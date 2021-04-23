@@ -196,10 +196,8 @@ const ISISMyDataTable = (
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             if (
-              investigationData.investigationInstruments &&
-              investigationData.investigationInstruments[0].instrument &&
-              investigationData.facility &&
-              investigationData.facility.facilityCycles
+              investigationData?.investigationInstruments?.[0]?.instrument &&
+              investigationData?.facility?.facilityCycles
             ) {
               const facilityCycle = investigationData.facility.facilityCycles.find(
                 (facilitycycle) =>
@@ -228,10 +226,7 @@ const ISISMyDataTable = (
           dataKey: 'studyInvestigations.study.pid',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.studyInvestigations &&
-              investigationData.studyInvestigations[0].study
-            ) {
+            if (investigationData?.studyInvestigations?.[0]?.study) {
               return investigationData.studyInvestigations[0].study.pid;
             } else {
               return '';
@@ -252,10 +247,8 @@ const ISISMyDataTable = (
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             if (
-              investigationData.investigationInstruments &&
-              investigationData.investigationInstruments[0].instrument &&
-              investigationData.facility &&
-              investigationData.facility.facilityCycles
+              investigationData?.investigationInstruments?.[0]?.instrument &&
+              investigationData?.facility?.facilityCycles
             ) {
               const facilityCycle = investigationData.facility.facilityCycles.find(
                 (facilitycycle) =>
@@ -284,10 +277,7 @@ const ISISMyDataTable = (
           dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.investigationInstruments &&
-              investigationData.investigationInstruments[0].instrument
-            ) {
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
               return investigationData.investigationInstruments[0].instrument
                 .fullName;
             } else {

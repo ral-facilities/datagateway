@@ -406,7 +406,27 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
+  it('gracefully handles empty Study Investigation and InvestigationInstrument, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object', () => {
+    state.dgcommon.data[0] = {
+      ...state.dgcommon.data[0],
+      investigationInstruments: [],
+      studyInvestigations: [],
+    };
+
+    let wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISInvestigationsTable
+            studyHierarchy={false}
+            instrumentId="4"
+            instrumentChildId="5"
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(() => wrapper).not.toThrowError();
+
     state.dgcommon.data[0] = {
       ...state.dgcommon.data[0],
       investigationInstruments: [
@@ -420,7 +440,7 @@ describe('ISIS Investigations table component', () => {
         },
       ],
     };
-    const wrapper = mount(
+    wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <ISISInvestigationsTable

@@ -323,11 +323,13 @@ describe('Investigation Search Table component', () => {
 
   it('renders fine with incomplete data', () => {
     // this can happen when navigating between tables and the previous table's state still exists
+    // also tests that empty arrays are fine for investigationInstruments
     state.dgcommon.data = [
       {
         id: 1,
         name: 'test',
         title: 'test',
+        investigationInstruments: [],
       },
     ];
 

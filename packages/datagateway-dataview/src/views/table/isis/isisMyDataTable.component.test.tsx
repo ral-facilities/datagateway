@@ -353,7 +353,28 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('gracefully handles missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object and missing facility cycles', () => {
+  it('gracefully handles empty arrays, missing Study from Study Investigation object and missing Instrument from InvestigationInstrument object and missing facility cycles', () => {
+    // check it doesn't error if arrays are empty
+    state.dgcommon.data[0] = {
+      ...state.dgcommon.data[0],
+      facility: {
+        id: 8,
+        name: 'LILS',
+        facilityCycles: [],
+      },
+      investigationInstruments: [],
+      studyInvestigations: [],
+    };
+    let wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <ISISMyDataTable />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(() => wrapper).not.toThrowError();
+
     // check it renders plain text if valid facility cycle can't be found
     state.dgcommon.data[0] = {
       ...state.dgcommon.data[0],
@@ -369,7 +390,7 @@ describe('ISIS Investigations table component', () => {
         ],
       },
     };
-    let wrapper = mount(
+    wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
           <ISISMyDataTable />

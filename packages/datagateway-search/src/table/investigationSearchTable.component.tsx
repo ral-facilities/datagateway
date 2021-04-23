@@ -253,11 +253,7 @@ const InvestigationSearchTable = (
           dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.investigationInstruments &&
-              investigationData.investigationInstruments.length !== 0 &&
-              investigationData.investigationInstruments[0].instrument
-            ) {
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
               return investigationData.investigationInstruments[0].instrument
                 .fullName;
             } else {

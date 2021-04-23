@@ -248,10 +248,7 @@ const ISISInvestigationsTable = (
           dataKey: 'studyInvestigations.study.pid',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.studyInvestigations &&
-              investigationData.studyInvestigations[0].study
-            ) {
+            if (investigationData?.studyInvestigations?.[0]?.study) {
               return tableLink(
                 `${urlPrefix}/${investigationData.id}/dataset`,
                 investigationData.studyInvestigations[0].study.pid,
@@ -278,10 +275,7 @@ const ISISInvestigationsTable = (
           dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.investigationInstruments &&
-              investigationData.investigationInstruments[0].instrument
-            ) {
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
               return investigationData.investigationInstruments[0].instrument
                 .fullName;
             } else {

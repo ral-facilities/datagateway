@@ -157,10 +157,7 @@ const DLSVisitsTable = (
           dataKey: 'investigationInstruments.instrument.name',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.investigationInstruments &&
-              investigationData.investigationInstruments[0].instrument
-            ) {
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
               return investigationData.investigationInstruments[0].instrument
                 .name;
             } else {
