@@ -111,6 +111,10 @@ jobs:
         run: |
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
 
+      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
+      - name: Change hostname to localhost
+        run: sudo hostname -b localhost
+
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
