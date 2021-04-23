@@ -19,9 +19,9 @@ import {
 
 const settings = {
   facilityName: 'LILS',
-  apiUrl: 'http://localhost:5000',
-  downloadApiUrl: 'http://localhost:8181/topcat',
-  idsUrl: 'http://localhost:8181/ids',
+  apiUrl: 'https://localhost:5000',
+  downloadApiUrl: 'https://localhost:8181/topcat',
+  idsUrl: 'https://localhost:8181/ids',
 };
 
 jest.mock('datagateway-common', () => {
@@ -80,8 +80,7 @@ describe('Download Cart API functions test', () => {
       expect(axios.get).toHaveBeenCalled();
       expect(
         axios.get
-      ).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS',
+      ).toHaveBeenCalledWith('https://localhost:8181/topcat/user/cart/LILS', {
         { params: { sessionId: null } }
       );
     });
@@ -103,7 +102,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.get
       ).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS',
+        'https://localhost:8181/topcat/user/cart/LILS',
         { params: { sessionId: null } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -131,7 +130,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+        'https://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: '*' } }
       );
     });
@@ -153,7 +152,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+        'https://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: '*' } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -181,7 +180,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+        'https://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: 'datafile 1' } }
       );
     });
@@ -203,7 +202,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+        'https://localhost:8181/topcat/user/cart/LILS/cartItems',
         { params: { sessionId: null, items: 'investigation 1' } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -226,7 +225,7 @@ describe('Download Cart API functions test', () => {
       expect(isTwoLevel).toBe(true);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/ids/isTwoLevel'
+        'https://localhost:8181/ids/isTwoLevel'
       );
     });
 
@@ -242,7 +241,7 @@ describe('Download Cart API functions test', () => {
       expect(isTwoLevel).toBe(false);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/ids/isTwoLevel'
+        'https://localhost:8181/ids/isTwoLevel'
       );
       expect(handleICATError).toHaveBeenCalled();
       expect(handleICATError).toHaveBeenCalledWith(
@@ -287,7 +286,7 @@ describe('Download Cart API functions test', () => {
       expect(downloadId).toBe(1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS/submit',
+        'https://localhost:8181/topcat/user/cart/LILS/submit',
         params
       );
     });
@@ -319,7 +318,7 @@ describe('Download Cart API functions test', () => {
       expect(downloadId).toBe(-1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/cart/LILS/submit',
+        'https://localhost:8181/topcat/user/cart/LILS/submit',
         params
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -369,7 +368,7 @@ describe('Download Cart API functions test', () => {
       expect(download).not.toBe(null);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/downloads',
+        'https://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -395,7 +394,7 @@ describe('Download Cart API functions test', () => {
       expect(download).toBe(null);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/downloads',
+        'https://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -424,7 +423,7 @@ describe('Download Cart API functions test', () => {
 
       // Create our prepared cart download link.
       const link = document.createElement('a');
-      link.href = `http://localhost:8181/ids/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
+      link.href = `https://localhost:8181/ids/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
       link.style.display = 'none';
       link.target = '_blank';
 
@@ -453,7 +452,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:5000/datafiles/1',
+        'https://localhost:5000/datafiles/1',
         {
           headers: { Authorization: 'Bearer null' },
         }
@@ -476,7 +475,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:5000/datafiles/1',
+        'https://localhost:5000/datafiles/1',
         {
           headers: { Authorization: 'Bearer null' },
         }
@@ -506,7 +505,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/getSize',
+        'https://localhost:8181/topcat/user/getSize',
         {
           params: {
             sessionId: null,
@@ -534,7 +533,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/getSize',
+        'https://localhost:8181/topcat/user/getSize',
         {
           params: {
             sessionId: null,
@@ -577,7 +576,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:5000/datafiles/count',
+        'https://localhost:5000/datafiles/count',
         {
           params: {
             where: {
@@ -605,7 +604,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:5000/datafiles/count',
+        'https://localhost:5000/datafiles/count',
         {
           params: {
             where: {
@@ -640,7 +639,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(5);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:5000/datafiles/count',
+        'https://localhost:5000/datafiles/count',
         {
           params: {
             include: '"DATASET"',
@@ -669,7 +668,7 @@ describe('Download Cart API functions test', () => {
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:5000/datafiles/count',
+        'https://localhost:5000/datafiles/count',
         {
           params: {
             include: '"DATASET"',
@@ -867,7 +866,7 @@ describe('Download Status API functions test', () => {
       expect(returnData).toBe(downloadsMockData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/downloads',
+        'https://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -901,7 +900,7 @@ describe('Download Status API functions test', () => {
       expect(returnData).toBe(downloadsData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/downloads',
+        'https://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -927,7 +926,7 @@ describe('Download Status API functions test', () => {
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/downloads',
+        'https://localhost:8181/topcat/user/downloads',
         {
           params: {
             sessionId: null,
@@ -959,7 +958,7 @@ describe('Download Status API functions test', () => {
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/download/1/isDeleted',
+        'https://localhost:8181/topcat/user/download/1/isDeleted',
         params
       );
     });
@@ -983,7 +982,7 @@ describe('Download Status API functions test', () => {
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        'http://localhost:8181/topcat/user/download/1/isDeleted',
+        'https://localhost:8181/topcat/user/download/1/isDeleted',
         params
       );
       expect(handleICATError).toHaveBeenCalled();

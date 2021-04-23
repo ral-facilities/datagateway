@@ -92,7 +92,7 @@ export const readSciGatewayToken = () => {
 Cypress.Commands.add('login', () => {
   cy.request({
     method: 'POST',
-    url: 'http://localhost:8181/icat/session',
+    url: 'https://localhost:8181/icat/session',
     body: {
       json: JSON.stringify({
         plugin: 'anon',
@@ -115,7 +115,7 @@ Cypress.Commands.add('clearDownloadCart', () => {
   // TODO: find facility from somewhere... (e2e settings?)
   cy.request({
     method: 'DELETE',
-    url: 'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+    url: 'https://localhost:8181/topcat/user/cart/LILS/cartItems',
     qs: {
       sessionId: readSciGatewayToken().sessionId,
       items: '*',
@@ -135,7 +135,7 @@ Cypress.Commands.add('seedDownloadCart', () => {
 
   cy.request({
     method: 'POST',
-    url: 'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+    url: 'https://localhost:8181/topcat/user/cart/LILS/cartItems',
     body: {
       sessionId: readSciGatewayToken().sessionId,
       items,
@@ -150,7 +150,7 @@ Cypress.Commands.add('addCartItem', (cartItem) => {
 
   cy.request({
     method: 'POST',
-    url: 'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+    url: 'https://localhost:8181/topcat/user/cart/LILS/cartItems',
     body: {
       sessionId: readSciGatewayToken().sessionId,
       items: cartItem,
@@ -165,7 +165,7 @@ Cypress.Commands.add('seedDownloads', () => {
     // Seed a single cart item as items are cleared after each download.
     cy.request({
       method: 'POST',
-      url: 'http://localhost:8181/topcat/user/cart/LILS/cartItems',
+      url: 'https://localhost:8181/topcat/user/cart/LILS/cartItems',
       body: {
         sessionId: readSciGatewayToken().sessionId,
         items: `investigation ${i}`,
@@ -176,7 +176,7 @@ Cypress.Commands.add('seedDownloads', () => {
     // Submit each download request.
     cy.request({
       method: 'POST',
-      url: 'http://localhost:8181/topcat/user/cart/LILS/submit',
+      url: 'https://localhost:8181/topcat/user/cart/LILS/submit',
       body: {
         ...info.submitDetails,
         sessionId: readSciGatewayToken().sessionId,
@@ -189,7 +189,7 @@ Cypress.Commands.add('seedDownloads', () => {
   // Change the status of the download on the server for tests.
   cy.request({
     method: 'GET',
-    url: 'http://localhost:8181/topcat/user/downloads',
+    url: 'https://localhost:8181/topcat/user/downloads',
     qs: {
       sessionId: readSciGatewayToken().sessionId,
       facilityName: 'LILS',
@@ -201,7 +201,7 @@ Cypress.Commands.add('seedDownloads', () => {
       const download = downloads[i];
       cy.request({
         method: 'PUT',
-        url: `http://localhost:8181/topcat/user/download/${download.id}/status`,
+        url: `https://localhost:8181/topcat/user/download/${download.id}/status`,
         body: {
           sessionId: readSciGatewayToken().sessionId,
           facilityName: 'LILS',
@@ -217,7 +217,7 @@ Cypress.Commands.add('clearDownloads', () => {
   // TODO: get url and facility from settings (e2e settings?)
   cy.request({
     method: 'GET',
-    url: 'http://localhost:8181/topcat/user/downloads',
+    url: 'https://localhost:8181/topcat/user/downloads',
     qs: {
       facilityName: 'LILS',
       sessionId: readSciGatewayToken().sessionId,
@@ -230,7 +230,7 @@ Cypress.Commands.add('clearDownloads', () => {
 
       cy.request({
         method: 'PUT',
-        url: `http://localhost:8181/topcat/user/download/${download.id}/isDeleted`,
+        url: `https://localhost:8181/topcat/user/download/${download.id}/isDeleted`,
         body: {
           sessionId: readSciGatewayToken().sessionId,
           facilityName: 'LILS',

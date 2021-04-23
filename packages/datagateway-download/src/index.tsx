@@ -79,7 +79,7 @@ if (
 
   if (process.env.NODE_ENV === `development`) {
     // TODO: get url from settings file
-    const icatUrl = `http://localhost:8181/icat`;
+    const icatUrl = `https://localhost:8181/icat`;
     axios
       .post(
         `${icatUrl}/session`,
