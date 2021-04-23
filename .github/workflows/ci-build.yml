@@ -147,7 +147,7 @@ jobs:
         run: |
           cd datagateway-api; poetry run python -m util.icat_db_generator -s 4 -y 3; cd ..
       - name: Start API
-        run: cd datagateway-api; poetry run python -m datagateway_api.src.main; cd ..
+        run: nohup poetry run python -m datagateway-api/datagateway_api.src.main &
 
   # Separate e2e jobs so that they can run in parallel
   download-e2e-test:
