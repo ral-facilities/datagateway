@@ -146,8 +146,18 @@ jobs:
       - name: Add dummy data to icatdb
         run: |
           cd datagateway-api; poetry run python -m util.icat_db_generator -s 4 -y 3; cd ..
+      # - name: Start API
+      #   run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt 2>&1; cd ..
+
+  # Start API
+  start-api:
+    # Run only if the  Lint & Unit Tests job passed
+    needs: icat-datagateway-api-setup
+    name: Start API
+    runs-on: ubuntu-latest
+    steps:
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt 2>&1; cd ..
+        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt 2>&1
 
   # Separate e2e jobs so that they can run in parallel
   download-e2e-test:
