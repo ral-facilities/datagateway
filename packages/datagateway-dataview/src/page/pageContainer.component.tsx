@@ -35,8 +35,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Location as LocationType } from 'history';
 
 const usePaperStyles = makeStyles(
