@@ -95,14 +95,14 @@ jobs:
         with:
           repository: icatproject-contrib/icat-ansible
           # need to remove line below when icat-ansible/icatdb-minimal-hosts.yml is added to repo
-          ref: change-payara-setup-script-url
+          # ref: change-payara-setup-script-url
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -110,6 +110,9 @@ jobs:
       - name: Replace default payara user with Actions user
         run: |
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      - name: Add additional roles
+        run: |
+          echo -e "    - role: authn-anon" >> icat-ansible/icat-test-hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
