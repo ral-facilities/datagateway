@@ -154,7 +154,9 @@ jobs:
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt 2>&1 &
       - name: Back a dir
         run: cd ..
-      - name: Checkout dg repo
+      
+      # E2E tests
+      - name: Checkout repo
         uses: actions/checkout@v2
       - name: Setup Node.js
         uses: actions/setup-node@v1
@@ -178,8 +180,8 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
-      - name: Run datagateway-download e2e tests
-        run: yarn workspace datagateway-download run e2e
+      - name: Run datagateway-dataview e2e tests
+        run: yarn workspace datagateway-dataview run e2e
 
   # Separate e2e jobs so that they can run in parallel
   # download-e2e-test:

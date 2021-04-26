@@ -58,7 +58,7 @@ Cypress.Commands.add('login', () => {
   // TODO Use the ICAT backend for this request once it is enabled for pre-prod
   cy.request({
     method: 'POST',
-    url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',
+    url: 'https://localhost:8181/icat/session',
     body: {
       json: JSON.stringify({
         plugin: 'anon',
