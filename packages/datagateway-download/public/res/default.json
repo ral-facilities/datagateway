@@ -13,9 +13,13 @@
   },
   "downloadStatus": {
     "filename": "Download Name",
+    "username": "Username",
+    "preparedId": "Prepared ID",
     "transport": "Access Method",
     "status": "Availability",
+    "size": "Size",
     "createdAt": "Requested Date",
+    "deleted": "Deleted",
     "download_disabled_tooltip": "Instant download not supported for {{transport}} download type",
     "download_disabled_button": "Instant download not supported for {{filename}}",
     "download": "Download {{filename}}",
