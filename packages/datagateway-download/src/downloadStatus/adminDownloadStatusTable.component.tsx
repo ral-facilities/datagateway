@@ -1,13 +1,51 @@
 import React from 'react';
 import { Grid, LinearProgress, Paper } from '@material-ui/core';
 
-import { Table } from 'datagateway-common';
+import {
+  DateColumnFilter,
+  formatBytes,
+  Table,
+  TextColumnFilter,
+} from 'datagateway-common';
 
 import { useTranslation } from 'react-i18next';
 
 const AdminDownloadStatusTable: React.FC = () => {
+  const [filters, setFilters] = React.useState<{
+    [column: string]:
+      | { value?: string | number; type: string }
+      | { startDate?: string; endDate?: string };
+  }>({});
   const [dataLoaded] = React.useState(false);
   const [t] = useTranslation();
+
+  const textFilter = (label: string, dataKey: string): React.ReactElement => (
+    <TextColumnFilter
+      label={label}
+      onChange={(value: { value?: string | number; type: string } | null) => {
+        if (value) {
+          setFilters({ ...filters, [dataKey]: value });
+        } else {
+          const { [dataKey]: value, ...restOfFilters } = filters;
+          setFilters(restOfFilters);
+        }
+      }}
+    />
+  );
+
+  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+    <DateColumnFilter
+      label={label}
+      onChange={(value: { startDate?: string; endDate?: string } | null) => {
+        if (value) {
+          setFilters({ ...filters, [dataKey]: value });
+        } else {
+          const { [dataKey]: value, ...restOfFilters } = filters;
+          setFilters(restOfFilters);
+        }
+      }}
+    />
+  );
 
   return (
     <Grid container direction="column">
@@ -31,31 +69,41 @@ const AdminDownloadStatusTable: React.FC = () => {
               {
                 label: t('downloadStatus.username'),
                 dataKey: 'userName',
+                filterComponent: textFilter,
               },
               {
                 label: t('downloadStatus.preparedId'),
                 dataKey: 'preparedId',
+                filterComponent: textFilter,
               },
               {
                 label: t('downloadStatus.transport'),
                 dataKey: 'transport',
+                filterComponent: textFilter,
               },
               {
                 label: t('downloadStatus.status'),
                 dataKey: 'status',
+                filterComponent: textFilter,
               },
               {
                 label: t('downloadStatus.size'),
                 dataKey: 'size',
+                cellContentRenderer: (cellProps) => {
+                  return formatBytes(cellProps.cellData);
+                },
+                filterComponent: textFilter,
               },
               {
                 label: t('downloadStatus.createdAt'),
                 dataKey: 'createdAt',
+                filterComponent: dateFilter,
                 disableHeaderWrap: true,
               },
               {
                 label: t('downloadStatus.deleted'),
                 dataKey: 'isDeleted',
+                filterComponent: textFilter,
               },
             ]}
           />
