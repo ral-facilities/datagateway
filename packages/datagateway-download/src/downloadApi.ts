@@ -177,6 +177,32 @@ export const fetchDownloads: (
     });
 };
 
+export const fetchAdminDownloads: (
+  settings: { facilityName: string; downloadApiUrl: string },
+  queryOffset?: string
+) => Promise<Download[]> = (
+  settings: { facilityName: string; downloadApiUrl: string },
+  queryOffset?: string
+) => {
+  return axios
+    .get<Download[]>(`${settings.downloadApiUrl}/admin/downloads`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: settings.facilityName,
+        queryOffset: !queryOffset
+          ? 'where download.isDeleted = false'
+          : queryOffset,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      handleICATError(error);
+      return [];
+    });
+};
+
 export const getDownload: (
   downloadId: number,
   settings: { facilityName: string; downloadApiUrl: string }
