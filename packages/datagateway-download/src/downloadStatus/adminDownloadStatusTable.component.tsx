@@ -4,6 +4,7 @@ import { Grid, LinearProgress, Paper } from '@material-ui/core';
 import {
   DateColumnFilter,
   formatBytes,
+  Order,
   Table,
   TextColumnFilter,
 } from 'datagateway-common';
@@ -11,6 +12,8 @@ import {
 import { useTranslation } from 'react-i18next';
 
 const AdminDownloadStatusTable: React.FC = () => {
+  // Sorting columns
+  const [sort, setSort] = React.useState<{ [column: string]: Order }>({});
   const [filters, setFilters] = React.useState<{
     [column: string]:
       | { value?: string | number; type: string }
@@ -106,6 +109,15 @@ const AdminDownloadStatusTable: React.FC = () => {
                 filterComponent: textFilter,
               },
             ]}
+            sort={sort}
+            onSort={(column: string, order: 'desc' | 'asc' | null) => {
+              if (order) {
+                setSort({ ...sort, [column]: order });
+              } else {
+                const { [column]: order, ...restOfSort } = sort;
+                setSort(restOfSort);
+              }
+            }}
           />
         </Paper>
       </Grid>
