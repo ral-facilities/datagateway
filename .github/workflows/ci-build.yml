@@ -73,6 +73,8 @@ jobs:
   # Setup ICAT stack
   icat-datagateway-api-setup:
     # needs: lint-and-unit-test
+    - name: Checkout repo
+      uses: actions/checkout@v2
     name: Setup ICAT stack and DataGateway API
     runs-on: ubuntu-16.04
     steps:
@@ -110,10 +112,10 @@ jobs:
       - name: Replace default payara user with Actions user
         run: |
           sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
-      - name: Amending roles
-        run: |
-          sed -i "/role: authn-uows-isis/d" icat-ansible/icat-test-hosts.yml; \
-          echo -e "    - role: authn-anon" >> icat-ansible/icat-test-hosts.yml
+      # - name: Amending roles
+      #   run: |
+      #     sed -i "/role: authn-uows-isis/d" icat-ansible/icat-test-hosts.yml; \
+      #     echo -e "    - role: authn-anon" >> icat-ansible/icat-test-hosts.yml
 
       # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
       - name: Change hostname to localhost
@@ -121,8 +123,10 @@ jobs:
 
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
+        # run: |
+        #   ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
         run: |
-          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook datagateway/ci/icat-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # DataGateway-Api clone 
       - name: Checkout datagateway-api
