@@ -213,7 +213,9 @@ export interface Download {
   [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
-export interface FormattedDownload extends Omit<Download, 'status'> {
+export interface FormattedDownload
+  extends Omit<Download, 'status' | 'isDeleted'> {
+  isDeleted: string;
   status: string;
 }
 

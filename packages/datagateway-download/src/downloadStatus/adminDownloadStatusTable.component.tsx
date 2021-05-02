@@ -3,6 +3,7 @@ import { Grid, LinearProgress, Paper } from '@material-ui/core';
 
 import {
   DateColumnFilter,
+  Download,
   formatBytes,
   FormattedDownload,
   Order,
@@ -26,6 +27,7 @@ const AdminDownloadStatusTable: React.FC = () => {
       | { startDate?: string; endDate?: string };
   }>({});
   const [data, setData] = React.useState<FormattedDownload[]>([]);
+  const [dataCount, setDataCount] = React.useState<number>(-1);
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [t] = useTranslation();
   const dgDownloadElement = document.getElementById('datagateway-download');
@@ -66,7 +68,59 @@ const AdminDownloadStatusTable: React.FC = () => {
     return queryOffset;
   }, [filters, settings.facilityName, sort]);
 
-  const fetchData = useCallback(
+  const formatDownloads = useCallback(
+    (downloads: Download[]) => {
+      return downloads.map((download) => {
+        const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
+        let formattedStatus = '';
+        switch (download.status) {
+          case 'COMPLETE':
+            formattedStatus = t('downloadStatus.complete');
+            break;
+          case 'EXPIRED':
+            formattedStatus = t('downloadStatus.expired');
+            break;
+          case 'PAUSED':
+            formattedStatus = t('downloadStatus.paused');
+            break;
+          case 'PREPARING':
+            formattedStatus = t('downloadStatus.preparing');
+            break;
+          case 'RESTORING':
+            formattedStatus = t('downloadStatus.restoring');
+            break;
+        }
+
+        return {
+          ...download,
+          isDeleted: formattedIsDeleted,
+          status: formattedStatus,
+        };
+      });
+    },
+    [t]
+  );
+
+  const fetchInitialData = useCallback(() => {
+    const queryOffset = buildQueryOffset() + ' LIMIT 0, 50';
+    return fetchAdminDownloads(
+      {
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      },
+      queryOffset
+    ).then((downloads) => {
+      const formattedDownloads = formatDownloads(downloads);
+      setData([...formattedDownloads]);
+    });
+  }, [
+    buildQueryOffset,
+    formatDownloads,
+    settings.downloadApiUrl,
+    settings.facilityName,
+  ]);
+
+  const fetchMoreData = useCallback(
     (offsetParams: IndexRange) => {
       let queryOffset = buildQueryOffset();
       queryOffset += ` LIMIT ${offsetParams.startIndex}, ${
@@ -81,40 +135,32 @@ const AdminDownloadStatusTable: React.FC = () => {
         },
         queryOffset
       ).then((downloads) => {
-        // Replace the status field here
-        const formattedDownloads = downloads.map((download) => {
-          const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
-          let formattedStatus = '';
-          switch (download.status) {
-            case 'COMPLETE':
-              formattedStatus = t('downloadStatus.complete');
-              break;
-            case 'EXPIRED':
-              formattedStatus = t('downloadStatus.expired');
-              break;
-            case 'PAUSED':
-              formattedStatus = t('downloadStatus.paused');
-              break;
-            case 'PREPARING':
-              formattedStatus = t('downloadStatus.preparing');
-              break;
-            case 'RESTORING':
-              formattedStatus = t('downloadStatus.restoring');
-              break;
-          }
-
-          return {
-            ...download,
-            isDeleted: formattedIsDeleted,
-            status: formattedStatus,
-          };
-        });
-        setData([...formattedDownloads]);
+        const formattedDownloads = formatDownloads(downloads);
+        setData([...data, ...formattedDownloads]);
         setDataLoaded(true);
       });
     },
-    [buildQueryOffset, settings.downloadApiUrl, settings.facilityName, t]
+    [
+      buildQueryOffset,
+      data,
+      formatDownloads,
+      settings.downloadApiUrl,
+      settings.facilityName,
+    ]
   );
+
+  const fetchDataCount = useCallback(() => {
+    const queryOffset = buildQueryOffset();
+    fetchAdminDownloads(
+      {
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      },
+      queryOffset
+    ).then((downloads) => {
+      setDataCount(downloads.length);
+    });
+  }, [buildQueryOffset, settings.downloadApiUrl, settings.facilityName]);
 
   React.useEffect(() => {
     // Clear the current contents, this will make sure
@@ -122,16 +168,19 @@ const AdminDownloadStatusTable: React.FC = () => {
     setData([]);
 
     if (dgDownloadElement) {
-      fetchData({ startIndex: 0, stopIndex: 49 });
+      setDataLoaded(false);
+      fetchDataCount();
+      fetchInitialData();
+      setDataLoaded(true);
     }
   }, [
     settings.facilityName,
     settings.downloadApiUrl,
     dgDownloadElement,
-    t,
     filters,
     sort,
-    fetchData,
+    fetchInitialData,
+    fetchDataCount,
   ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -232,6 +281,8 @@ const AdminDownloadStatusTable: React.FC = () => {
             }}
             data={data}
             loading={!dataLoaded}
+            loadMoreRows={fetchMoreData}
+            totalRowCount={dataCount}
           />
         </Paper>
       </Grid>

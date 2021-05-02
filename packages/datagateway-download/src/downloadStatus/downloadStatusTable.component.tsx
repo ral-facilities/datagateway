@@ -62,6 +62,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         }).then((downloads) => {
           // Replace the status field here
           const formattedDownloads = downloads.map((download) => {
+            const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
             let formattedStatus = '';
             switch (download.status) {
               case 'COMPLETE':
@@ -80,7 +81,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 formattedStatus = t('downloadStatus.restoring');
                 break;
             }
-            return { ...download, status: formattedStatus };
+            return {
+              ...download,
+              status: formattedStatus,
+              isDeleted: formattedIsDeleted,
+            };
           });
           setData([...formattedDownloads].reverse());
           setDataLoaded(true);
