@@ -198,6 +198,7 @@ export const fetchAdminDownloads: (
       return response.data;
     })
     .catch((error) => {
+      // Should it be handling ICAT error or TopCat?
       handleICATError(error);
       return [];
     });
@@ -309,6 +310,72 @@ export const downloadDeleted: (
   return axios
     .put(
       `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
+      params
+    )
+    .then(() => {
+      // do nothing
+    })
+    .catch((error) => {
+      handleICATError(error);
+    });
+};
+
+export const adminDownloadDeleted: (
+  downloadId: number,
+  deleted: boolean,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => Promise<void> = (
+  downloadId: number,
+  deleted: boolean,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => {
+  const params = new URLSearchParams();
+  params.append('facilityName', settings.facilityName);
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('value', JSON.stringify(deleted));
+
+  return axios
+    .put(
+      `${settings.downloadApiUrl}/admin/download/${downloadId}/isDeleted`,
+      params
+    )
+    .then(() => {
+      // do nothing
+    })
+    .catch((error) => {
+      handleICATError(error);
+    });
+};
+
+export const adminDownloadStatus: (
+  downloadId: number,
+  status: string,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => Promise<void> = (
+  downloadId: number,
+  status: string,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => {
+  const params = new URLSearchParams();
+  params.append('facilityName', settings.facilityName);
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('value', status);
+
+  return axios
+    .put(
+      `${settings.downloadApiUrl}/admin/download/${downloadId}/status`,
       params
     )
     .then(() => {
