@@ -23,6 +23,7 @@ import {
 import {
   PauseCircleFilled,
   PlayCircleFilled,
+  RemoveCircle,
   Restore,
 } from '@material-ui/icons';
 
@@ -442,6 +443,45 @@ const AdminDownloadStatusTable: React.FC = () => {
                     }}
                   >
                     <Restore />
+                  </IconButton>
+                );
+              },
+
+              function DeleteButton({ rowData }: TableActionProps) {
+                const downloadItem = rowData as FormattedDownload;
+                const [isDeleting, setIsDeleting] = React.useState(false);
+
+                return (
+                  <IconButton
+                    aria-label={t('downloadStatus.delete', {
+                      filename: downloadItem.fileName,
+                    })}
+                    key="delete"
+                    size="small"
+                    onClick={() => {
+                      setIsDeleting(true);
+                      setTimeout(
+                        () =>
+                          adminDownloadDeleted(
+                            downloadItem.id as number,
+                            true,
+                            {
+                              facilityName: settings.facilityName,
+                              downloadApiUrl: settings.downloadApiUrl,
+                            }
+                          )
+                            .then(() => {
+                              downloadItem.isDeleted = 'Yes';
+                              setData([...data, downloadItem]);
+                            })
+                            .finally(() => {
+                              setIsDeleting(false);
+                            }),
+                        100
+                      );
+                    }}
+                  >
+                    <RemoveCircle color={isDeleting ? 'error' : 'inherit'} />
                   </IconButton>
                 );
               },
