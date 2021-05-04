@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   CircularProgress,
   Grid,
@@ -53,6 +53,15 @@ const AdminDownloadStatusTable: React.FC = () => {
   const [lastChecked, setLastChecked] = React.useState('');
   const [t] = useTranslation();
   const dgDownloadElement = document.getElementById('datagateway-download');
+  const downloadStatuses: { [key: string]: string } = useMemo(() => {
+    return {
+      COMPLETE: t('downloadStatus.complete'),
+      EXPIRED: t('downloadStatus.expired'),
+      PAUSED: t('downloadStatus.paused'),
+      PREPARING: t('downloadStatus.preparing'),
+      RESTORING: t('downloadStatus.restoring'),
+    };
+  }, [t]);
 
   const buildQueryOffset = useCallback(() => {
     let queryOffset = `WHERE UPPER(download.facilityName) = '${settings.facilityName}'`;
@@ -94,24 +103,10 @@ const AdminDownloadStatusTable: React.FC = () => {
     (downloads: Download[]) => {
       return downloads.map((download) => {
         const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
-        let formattedStatus = '';
-        switch (download.status) {
-          case 'COMPLETE':
-            formattedStatus = t('downloadStatus.complete');
-            break;
-          case 'EXPIRED':
-            formattedStatus = t('downloadStatus.expired');
-            break;
-          case 'PAUSED':
-            formattedStatus = t('downloadStatus.paused');
-            break;
-          case 'PREPARING':
-            formattedStatus = t('downloadStatus.preparing');
-            break;
-          case 'RESTORING':
-            formattedStatus = t('downloadStatus.restoring');
-            break;
-        }
+        const formattedStatus =
+          download.status in downloadStatuses
+            ? downloadStatuses[download.status]
+            : '';
 
         return {
           ...download,
@@ -120,7 +115,7 @@ const AdminDownloadStatusTable: React.FC = () => {
         };
       });
     },
-    [t]
+    [downloadStatuses]
   );
 
   const fetchInitialData = useCallback(() => {
@@ -227,6 +222,16 @@ const AdminDownloadStatusTable: React.FC = () => {
       label={label}
       onChange={(value: { value?: string | number; type: string } | null) => {
         if (value) {
+          if (dataKey === 'status') {
+            const downloadStatus = Object.keys(downloadStatuses).find(
+              (key) =>
+                downloadStatuses[key].toLowerCase() ===
+                (value.value as string).toLowerCase()
+            );
+            if (typeof downloadStatus !== 'undefined') {
+              value.value = downloadStatus;
+            }
+          }
           setFilters({ ...filters, [dataKey]: value });
         } else {
           const { [dataKey]: value, ...restOfFilters } = filters;
@@ -338,7 +343,7 @@ const AdminDownloadStatusTable: React.FC = () => {
                     cellContentRenderer: (cellProps) => {
                       return formatBytes(cellProps.cellData);
                     },
-                    filterComponent: textFilter,
+                    disableSort: true,
                   },
                   {
                     label: t('downloadStatus.createdAt'),
@@ -355,7 +360,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                   {
                     label: t('downloadStatus.deleted'),
                     dataKey: 'isDeleted',
-                    filterComponent: textFilter,
                   },
                 ]}
                 sort={sort}
@@ -406,7 +410,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                                     downloadItem.status = t(
                                       'downloadStatus.paused'
                                     );
-                                    //setData([...data, downloadItem]);
                                     setData(
                                       data.map((download) =>
                                         download.id === downloadItem.id
@@ -455,7 +458,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                                     downloadItem.status = t(
                                       'downloadStatus.restoring'
                                     );
-                                    //setData([...data, downloadItem]);
                                     setData(
                                       data.map((download) =>
                                         download.id === downloadItem.id
@@ -480,7 +482,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                       <IconButton
                         aria-label={t('downloadStatus.restore', {
                           filename: downloadItem.fileName,
-                          // do we need filename?
                         })}
                         key="restore"
                         size="small"
@@ -497,7 +498,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                                 }
                               )
                                 .then(() => {
-                                  console.log('Restore then running');
                                   // Get the new status and isDeleted state of the download item
                                   fetchAdminDownloads(
                                     {
@@ -513,7 +513,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                                       formattedDownload.status;
                                     downloadItem.isDeleted =
                                       formattedDownload.isDeleted;
-                                    //setData([...data, downloadItem]);
                                     setData(
                                       data.map((download) =>
                                         download.id === downloadItem.id
@@ -567,7 +566,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                               )
                                 .then(() => {
                                   downloadItem.isDeleted = 'Yes';
-                                  //setData([...data, downloadItem]);
                                   setData(
                                     data.map((download) =>
                                       download.id === downloadItem.id
