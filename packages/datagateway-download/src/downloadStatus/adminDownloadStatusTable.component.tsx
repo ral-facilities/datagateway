@@ -191,6 +191,12 @@ const AdminDownloadStatusTable: React.FC = () => {
 
     if (dgDownloadElement) {
       setDataLoaded(false);
+      // Setting a max value as some data count fetch requests can take a long time to respond.
+      // This allows for the table to be scrolled and new rows to be loaded without having to
+      // wait for the count to be set once these requests respond. If the table is scrolled
+      // to the bottom and there are no more rows to be loaded then the underlying InfiniteLoader
+      // component is designed to stop requesting new rows.
+      setDataCount(Number.MAX_VALUE);
       fetchDataCount();
       fetchInitialData();
       setDataLoaded(true);
