@@ -9,13 +9,11 @@ import {
   listenToMessages,
   Preloader,
 } from 'datagateway-common';
-// history package is part of react-router, which we depend on
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { createBrowserHistory } from 'history';
 import * as log from 'loglevel';
 import React from 'react';
 import { Translation } from 'react-i18next';
-import { connect, Provider } from 'react-redux';
+import { batch, connect, Provider } from 'react-redux';
 import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
@@ -25,6 +23,7 @@ import PageContainer from './page/pageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
+import { LocationListener, Location, Action } from 'history';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
@@ -36,6 +35,45 @@ const generateClassName = createGenerateClassName({
 });
 
 const history = createBrowserHistory();
+
+// fix query string freeze bug
+// see https://github.com/supasate/connected-react-router/issues/311#issuecomment-692017995
+let listeners: LocationListener<unknown>[] = [];
+
+function appendListener(fn: LocationListener<unknown>): () => void {
+  let isActive = true;
+
+  const listener: LocationListener<unknown> = (...args) => {
+    if (isActive) fn(...args);
+  };
+
+  listeners.push(listener);
+
+  return () => {
+    isActive = false;
+    listeners = listeners.filter((item) => item !== listener);
+  };
+}
+
+function notifyListeners(
+  ...args: [location: Location<unknown>, action: Action]
+): void {
+  listeners.forEach((listener) => listener(...args));
+}
+
+// make only one subscription to history changes and proxy to our internal listeners
+history.listen((...args) => {
+  // here's the key change
+  batch(() => {
+    notifyListeners(...args);
+  });
+});
+
+// monkey patch to store subscriptions into our own pool
+history.listen = (fn) => {
+  return appendListener(fn);
+};
+
 const middleware = [
   thunk,
   routerMiddleware(history),
