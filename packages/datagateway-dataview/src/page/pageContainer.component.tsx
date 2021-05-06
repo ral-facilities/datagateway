@@ -27,6 +27,11 @@ import {
   HomePage,
 } from 'datagateway-common';
 import { HomepageContents } from 'datagateway-common/src/app.types';
+import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
+import BackgroundImage from 'datagateway-common/src/images/background.jpg';
+import ExploreImage from 'datagateway-common/src/images/explore.jpg';
+import DiscoverImage from 'datagateway-common/src/images/discover.jpg';
+import DownloadImage from 'datagateway-common/src/images/download.jpg';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -38,6 +43,7 @@ import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
+import axios from 'axios';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -355,6 +361,7 @@ interface PageContainerState {
   toggleCard: boolean;
   modifiedLocation: LocationType;
   res?: HomepageContents;
+  imageDir: string;
 }
 
 class PageContainer extends React.Component<
@@ -375,6 +382,7 @@ class PageContainer extends React.Component<
       ),
       toggleCard: this.getToggle(),
       modifiedLocation: props.location,
+      imageDir: '',
     };
   }
 
@@ -382,6 +390,7 @@ class PageContainer extends React.Component<
     // Fetch the download cart on mount, ensuring dataview element is present.
     if (document.getElementById('datagateway-dataview')) {
       this.props.fetchDownloadCart();
+      this.getHostPath();
     }
   }
 
@@ -479,9 +488,48 @@ class PageContainer extends React.Component<
     });
   };
 
+  public getHostPath: () => Promise<void> = async () => {
+    const settingsPath = '/settings.json';
+    await axios
+      .get(settingsPath)
+      .then((res) => {
+        const settings = res.data;
+
+        // invalid settings.json
+        if (typeof settings !== 'object') {
+          throw Error('Invalid format');
+        }
+
+        if (settings.plugins) {
+          const plugins = settings.plugins;
+          plugins.forEach((plugin: { [x: string]: string }) => {
+            if (plugin['name'] === 'datagateway-dataview') {
+              const src = plugin['src'].replace('/main.js', '');
+              this.setState({
+                ...this.state,
+                imageDir: src,
+              });
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(`Error loading ${settingsPath}: ${error.message}`);
+      });
+  };
+
   public render(): React.ReactElement {
     if (this.props.location.pathname === paths.homepage) {
-      return <HomePage {...this.props} />;
+      return (
+        <HomePage
+          {...this.props}
+          logo={this.state.imageDir + DGLogo}
+          backgroundImage={this.state.imageDir + BackgroundImage}
+          exploreImage={this.state.imageDir + ExploreImage}
+          discoverImage={this.state.imageDir + DiscoverImage}
+          downloadImage={this.state.imageDir + DownloadImage}
+        />
+      );
     } else {
       return (
         <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>

@@ -8,17 +8,11 @@ import {
   createStyles,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
-import Image from '../images/Jasmin4 _DSC7054.jpg';
-import DatagatewayLogoWithText from '../images/datgateway-white-text-blue-mark-logo.svg';
-import ExploreImage from '../images/explore.jpg';
-import DiscoverImage from '../images/discover.jpg';
-import DownloadImage from '../images/download.jpg';
 import { HomepageContents } from '../app.types';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
     bigImage: {
-      backgroundImage: `url("${Image}")`,
       height: 250,
       width: '100%',
       '& img': {
@@ -66,6 +60,11 @@ const styles = (theme: Theme): StyleRules =>
 
 interface HomePageProps {
   res: HomepageContents | undefined;
+  logo: string;
+  backgroundImage: string;
+  exploreImage: string;
+  discoverImage: string;
+  downloadImage: string;
 }
 
 export type CombinedHomePageProps = HomePageProps & WithStyles<typeof styles>;
@@ -75,11 +74,19 @@ class HomePage extends React.Component<CombinedHomePageProps> {
     return this.props.res && this.props.res[key] ? this.props.res[key] : key;
   };
 
-  render(): JSX.Element {
+  render(): React.ReactElement {
     return (
       <div id="dg-homepage">
         <div className={this.props.classes.bigImage}>
-          <img src={DatagatewayLogoWithText} alt={this.getString('title')} />
+          <div
+            style={{
+              backgroundImage: `url(${this.props.backgroundImage})`,
+              width: '100%',
+              height: 250,
+            }}
+          >
+            <img src={this.props.logo} alt={this.getString('title')} />
+          </div>
         </div>
         <div className={this.props.classes.howItWorks}>
           <Typography
@@ -103,7 +110,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 {this.getString('explore-label')}
               </Typography>
               <img
-                src={ExploreImage}
+                src={this.props.exploreImage}
                 alt=""
                 className={this.props.classes.howItWorksGridItemImage}
               />
@@ -127,7 +134,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 {this.getString('discover-label')}
               </Typography>
               <img
-                src={DiscoverImage}
+                src={this.props.discoverImage}
                 alt=""
                 className={this.props.classes.howItWorksGridItemImage}
               />
@@ -151,7 +158,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 {this.getString('download-label')}
               </Typography>
               <img
-                src={DownloadImage}
+                src={this.props.downloadImage}
                 alt=""
                 className={this.props.classes.howItWorksGridItemImage}
               />
