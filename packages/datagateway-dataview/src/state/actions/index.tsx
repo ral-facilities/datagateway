@@ -166,8 +166,8 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           throw new Error('No routes provided in the settings');
         }
 
-        if ('home-page' in settings) {
-          dispatch(loadHomepageStrings(settings['home-page']));
+        if ('homePage' in settings) {
+          dispatch(loadHomepageStrings(settings['homePage']));
         }
 
         /* istanbul ignore if */

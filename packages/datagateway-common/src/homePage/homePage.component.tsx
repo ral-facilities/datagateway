@@ -93,7 +93,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
             variant="h4"
             className={this.props.classes.howItWorksTitle}
           >
-            {this.getString('how-label')}
+            {this.getString('howLabel')}
           </Typography>
 
           <Grid container spacing={3}>
@@ -107,7 +107,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 variant="h5"
                 className={this.props.classes.howItWorksGridItemTitle}
               >
-                {this.getString('explore-label')}
+                {this.getString('exploreLabel')}
               </Typography>
               <img
                 src={this.props.exploreImage}
@@ -118,7 +118,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 variant="body1"
                 className={this.props.classes.howItWorksGridItemCaption}
               >
-                {this.getString('explore-description')}
+                {this.getString('exploreDescription')}
               </Typography>
             </Grid>
             <Grid
@@ -131,7 +131,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 variant="h5"
                 className={this.props.classes.howItWorksGridItemTitle}
               >
-                {this.getString('discover-label')}
+                {this.getString('discoverLabel')}
               </Typography>
               <img
                 src={this.props.discoverImage}
@@ -142,7 +142,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 variant="body1"
                 className={this.props.classes.howItWorksGridItemCaption}
               >
-                {this.getString('discover-description')}
+                {this.getString('discoverDescription')}
               </Typography>
             </Grid>
             <Grid
@@ -155,7 +155,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 variant="h5"
                 className={this.props.classes.howItWorksGridItemTitle}
               >
-                {this.getString('download-label')}
+                {this.getString('downloadLabel')}
               </Typography>
               <img
                 src={this.props.downloadImage}
@@ -166,7 +166,7 @@ class HomePage extends React.Component<CombinedHomePageProps> {
                 variant="body1"
                 className={this.props.classes.howItWorksGridItemCaption}
               >
-                {this.getString('download-description')}
+                {this.getString('downloadDescription')}
               </Typography>
             </Grid>
           </Grid>

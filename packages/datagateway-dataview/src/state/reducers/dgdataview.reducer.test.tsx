@@ -5,7 +5,9 @@ import {
   loadBreadcrumbSettings,
   settingsLoaded,
   loadSelectAllSetting,
+  loadHomepageStrings,
 } from '../actions';
+import { HomepageContents } from 'datagateway-common';
 
 describe('dgdataview reducer', () => {
   let state: StateType;
@@ -68,5 +70,25 @@ describe('dgdataview reducer', () => {
     const updatedState = DGDataViewReducer(state, loadSelectAllSetting(false));
 
     expect(updatedState.selectAllSetting).toEqual(false);
+  });
+
+  it('should set homepage strings when configure homepage strings action is sent', () => {
+    expect(state.dgdataview.res).toEqual(undefined);
+    const testHomepageContents: HomepageContents = {
+      title: 'title',
+      howLabel: 'howLabel',
+      exploreLabel: 'exploreLabel',
+      exploreDescription: 'exploreDescription',
+      discoverLabel: 'discoverLabel',
+      discoverDescription: 'discoverDescription',
+      downloadLabel: 'downloadLabel',
+      downloadDescription: 'downloadDescription',
+    };
+    const updatedState = DGDataViewReducer(
+      state,
+      loadHomepageStrings(testHomepageContents)
+    );
+
+    expect(updatedState.res).toEqual(testHomepageContents);
   });
 });

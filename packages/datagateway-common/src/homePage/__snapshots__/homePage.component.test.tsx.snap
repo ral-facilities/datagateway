@@ -28,7 +28,7 @@ exports[`Home page component homepage renders correctly 1`] = `
       className="HomePage-howItWorksTitle-3 howItWorksTitle-class"
       variant="h4"
     >
-      how-label
+      howLabel
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Grid))
       container={true}
@@ -44,7 +44,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
-          explore-label
+          exploreLabel
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
@@ -54,7 +54,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
-          explore-description
+          exploreDescription
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -67,7 +67,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
-          discover-label
+          discoverLabel
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
@@ -77,7 +77,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
-          discover-description
+          discoverDescription
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -90,7 +90,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
         >
-          download-label
+          downloadLabel
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
@@ -100,7 +100,7 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
         >
-          download-description
+          downloadDescription
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>

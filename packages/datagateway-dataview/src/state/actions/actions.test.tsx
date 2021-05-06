@@ -4,12 +4,14 @@ import {
   configureApp,
   settingsLoaded,
   loadSelectAllSetting,
+  loadHomepageStrings,
 } from '.';
 import {
   ConfigureFeatureSwitchesType,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   ConfigureSelectAllSettingType,
+  ConfigureHomepageStringsType,
 } from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -19,11 +21,23 @@ import {
   loadFacilityName,
   MicroFrontendId,
   RegisterRouteType,
+  HomepageContents,
 } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 
 jest.mock('loglevel');
+
+const testHomepageContents: HomepageContents = {
+  title: 'title',
+  howLabel: 'howLabel',
+  exploreLabel: 'exploreLabel',
+  exploreDescription: 'exploreDescription',
+  discoverLabel: 'discoverLabel',
+  discoverDescription: 'discoverDescription',
+  downloadLabel: 'downloadLabel',
+  downloadDescription: 'downloadDescription',
+};
 
 describe('Actions', () => {
   beforeEach(() => {
@@ -77,7 +91,13 @@ describe('Actions', () => {
     });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
+  it('loadHomepageStrings returns a payload of strings for homepage content', () => {
+    const action = loadHomepageStrings(testHomepageContents);
+    expect(action.type).toEqual(ConfigureHomepageStringsType);
+    expect(action.payload).toEqual({ res: testHomepageContents });
+  });
+
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings, settingsLoaded and loadHomepageStrings actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -100,6 +120,7 @@ describe('Actions', () => {
                 displayName: 'displayName',
               },
             ],
+            homePage: testHomepageContents,
             pluginHost: 'http://localhost:3000/',
           },
         })
@@ -115,7 +136,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(6);
+    expect(actions.length).toEqual(7);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
@@ -134,6 +155,7 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(loadSelectAllSetting(false));
+    expect(actions).toContainEqual(loadHomepageStrings(testHomepageContents));
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
       detail: {
