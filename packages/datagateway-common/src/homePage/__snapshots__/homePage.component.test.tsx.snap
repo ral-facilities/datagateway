@@ -7,10 +7,19 @@ exports[`Home page component homepage renders correctly 1`] = `
   <div
     className="HomePage-bigImage-1 bigImage-class"
   >
-    <img
-      alt="title"
-      src="datgateway-white-text-blue-mark-logo.svg"
-    />
+    <div
+      style={
+        Object {
+          "backgroundImage": "url(undefined)",
+          "height": 250,
+          "width": "100%",
+        }
+      }
+    >
+      <img
+        alt="title"
+      />
+    </div>
   </div>
   <div
     className="HomePage-howItWorks-2 howItWorks-class"
@@ -40,7 +49,6 @@ exports[`Home page component homepage renders correctly 1`] = `
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
-          src="explore.jpg"
         />
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
@@ -64,7 +72,6 @@ exports[`Home page component homepage renders correctly 1`] = `
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
-          src="discover.jpg"
         />
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
@@ -88,7 +95,6 @@ exports[`Home page component homepage renders correctly 1`] = `
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
-          src="download.jpg"
         />
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
