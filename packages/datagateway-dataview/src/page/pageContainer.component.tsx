@@ -390,7 +390,7 @@ class PageContainer extends React.Component<
     // Fetch the download cart on mount, ensuring dataview element is present.
     if (document.getElementById('datagateway-dataview')) {
       this.props.fetchDownloadCart();
-      this.getHostPath();
+      this.getImageDir();
     }
   }
 
@@ -488,7 +488,8 @@ class PageContainer extends React.Component<
     });
   };
 
-  public getHostPath: () => Promise<void> = async () => {
+  // Find where the homepage images are being hosted
+  public getImageDir: () => Promise<void> = async () => {
     const settingsPath = '/settings.json';
     await axios
       .get(settingsPath)
@@ -497,13 +498,14 @@ class PageContainer extends React.Component<
 
         // invalid settings.json
         if (typeof settings !== 'object') {
-          throw Error('Invalid format');
+          console.log(`Invalid ${settingsPath}`);
         }
 
         if (settings.plugins) {
           const plugins = settings.plugins;
           plugins.forEach((plugin: { [x: string]: string }) => {
             if (plugin['name'] === 'datagateway-dataview') {
+              // Gives us the host and port where dataview is being hosted
               const src = plugin['src'].replace('/main.js', '');
               this.setState({
                 ...this.state,
