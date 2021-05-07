@@ -198,7 +198,6 @@ export const fetchAdminDownloads: (
       return response.data;
     })
     .catch((error) => {
-      // Should it be handling ICAT error or TopCat?
       handleICATError(error);
       return [];
     });
