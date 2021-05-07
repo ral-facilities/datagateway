@@ -18,7 +18,7 @@ describe('Download Confirmation', () => {
     cy.clearDownloadCart();
 
     cy.addCartItem('investigation 1').then(() => {
-      cy.visit('/');
+      cy.visit('/download');
       cy.wait('@fetchIsTwoLevel');
       cy.wait('@fetchCart');
     });

@@ -15,7 +15,7 @@ describe('Download Status', () => {
     cy.clearDownloads();
 
     cy.seedDownloads().then(() => {
-      cy.visit('/');
+      cy.visit('/download');
 
       cy.get('[aria-label="Downloads tab"]').should('exist');
       cy.get('[aria-label="Downloads tab"]')
