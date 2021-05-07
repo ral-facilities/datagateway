@@ -80,6 +80,8 @@ exports[`Admin Download Status Table renders correctly 1`] = `
               Array [
                 [Function],
                 [Function],
+                [Function],
+                [Function],
               ]
             }
             actionsWidth={100}

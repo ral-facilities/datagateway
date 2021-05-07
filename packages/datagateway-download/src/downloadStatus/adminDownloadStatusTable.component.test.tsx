@@ -533,6 +533,11 @@ describe('Admin Download Status Table', () => {
       downloadApiUrl: '',
       facilityName: '',
     });
+    expect(
+      wrapper.exists(
+        '[aria-label="downloadStatus.resume {filename:test-file-3}"]'
+      )
+    ).toBeTruthy();
   });
 
   it('sends resume restore request when resume button is clicked', async () => {
@@ -563,6 +568,11 @@ describe('Admin Download Status Table', () => {
       downloadApiUrl: '',
       facilityName: '',
     });
+    expect(
+      wrapper.exists(
+        '[aria-label="downloadStatus.pause {filename:test-file-5}"]'
+      )
+    ).toBeTruthy();
   });
 
   it('sends delete item request when delete button is clicked', async () => {
@@ -582,15 +592,6 @@ describe('Admin Download Status Table', () => {
       .find('button[aria-label="downloadStatus.delete {filename:test-file-1}"]')
       .simulate('click');
 
-    expect(
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.delete {filename:test-file-1}"] svg'
-        )
-        .parent()
-        .prop('color')
-    ).toEqual('error');
-
     await act(async () => {
       jest.runAllTimers();
       await flushPromises();
@@ -601,127 +602,9 @@ describe('Admin Download Status Table', () => {
       downloadApiUrl: '',
       facilityName: '',
     });
-  });
-
-  it('continues to display the restore button when restore item request fails', async () => {
-    jest.useFakeTimers();
-
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    (adminDownloadDeleted as jest.Mock).mockImplementation(() =>
-      Promise.reject()
-    );
-
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.restore {filename:test-file-4}"]'
-        )
-        .simulate('click');
-      jest.runAllTimers();
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(adminDownloadDeleted).toHaveBeenCalledTimes(1);
-    expect(adminDownloadDeleted).toHaveBeenCalledWith(4, false, {
-      downloadApiUrl: '',
-      facilityName: '',
-    });
     expect(
       wrapper.exists(
-        '[aria-label="downloadStatus.restore {filename:test-file-4}"]'
-      )
-    ).toBeTruthy();
-  });
-
-  it('continues to display the pause button when pause restore request fails', async () => {
-    jest.useFakeTimers();
-
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    (adminDownloadStatus as jest.Mock).mockImplementation(() =>
-      Promise.reject()
-    );
-
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.pause {filename:test-file-3}"]'
-        )
-        .simulate('click');
-      jest.runAllTimers();
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(adminDownloadStatus).toHaveBeenCalledTimes(1);
-    expect(adminDownloadStatus).toHaveBeenCalledWith(3, 'PAUSED', {
-      downloadApiUrl: '',
-      facilityName: '',
-    });
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.pause {filename:test-file-3}"]'
-      )
-    ).toBeTruthy();
-  });
-
-  it('continues to display the resume button when resume restore request fails', async () => {
-    jest.useFakeTimers();
-
-    const wrapper = mount(
-      <div id="datagateway-download">
-        <AdminDownloadStatusTable />
-      </div>
-    );
-
-    await act(async () => {
-      await flushPromises();
-      wrapper.update();
-    });
-
-    (adminDownloadStatus as jest.Mock).mockImplementation(() =>
-      Promise.reject()
-    );
-
-    await act(async () => {
-      wrapper
-        .find(
-          'button[aria-label="downloadStatus.resume {filename:test-file-5}"]'
-        )
-        .simulate('click');
-      jest.runAllTimers();
-      await flushPromises();
-      wrapper.update();
-    });
-
-    expect(adminDownloadStatus).toHaveBeenCalledTimes(1);
-    expect(adminDownloadStatus).toHaveBeenCalledWith(5, 'RESTORING', {
-      downloadApiUrl: '',
-      facilityName: '',
-    });
-    expect(
-      wrapper.exists(
-        '[aria-label="downloadStatus.resume {filename:test-file-5}"]'
+        '[aria-label="downloadStatus.restore {filename:test-file-1}"]'
       )
     ).toBeTruthy();
   });
