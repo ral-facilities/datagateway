@@ -132,7 +132,7 @@ describe('Admin Download Status Table', () => {
   });
 
   it('renders correctly', () => {
-    const mockedDate = new Date(2020, 0, 1, 1, 1, 1).toLocaleString();
+    const mockedDate = new Date(Date.UTC(2020, 1, 1, 0, 0, 0)).toUTCString();
     global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
 
     const wrapper = shallow(<AdminDownloadStatusTable />);
