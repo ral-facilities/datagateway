@@ -128,9 +128,13 @@ describe('Admin Download Status Table', () => {
     mount.cleanUp();
     (fetchAdminDownloads as jest.Mock).mockClear();
     (adminDownloadDeleted as jest.Mock).mockClear();
+    (adminDownloadStatus as jest.Mock).mockClear();
   });
 
   it('renders correctly', () => {
+    const mockedDate = new Date(2020, 0, 1, 1, 1, 1).toLocaleString();
+    global.Date.prototype.toLocaleString = jest.fn(() => mockedDate);
+
     const wrapper = shallow(<AdminDownloadStatusTable />);
     expect(wrapper).toMatchSnapshot();
   });

@@ -44,6 +44,7 @@ exports[`Admin Download Status Table renders correctly 1`] = `
           : 
         </b>
          
+        01/01/2020, 01:01:01
       </p>
     </WithStyles(ForwardRef(Typography))>
   </WithStyles(ForwardRef(Grid))>
