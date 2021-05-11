@@ -1,11 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
 import {
   CircularProgress,
+  createStyles,
   Grid,
   IconButton,
   LinearProgress,
   Paper,
   Typography,
+  Theme,
+  StyleRules,
+  withStyles,
 } from '@material-ui/core';
 
 import {
@@ -35,6 +39,17 @@ import {
 } from '@material-ui/icons';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
+
+const paperStyles = (theme: Theme): StyleRules =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+      backgroundColor: theme.palette.background.default,
+      overflow: 'hidden',
+    },
+  });
+
+const StyledPaper = withStyles(paperStyles)(Paper);
 
 const AdminDownloadStatusTable: React.FC = () => {
   // Load the settings for use
@@ -258,168 +273,220 @@ const AdminDownloadStatusTable: React.FC = () => {
   );
 
   return (
-    <Grid container spacing={1}>
-      {/* Place the last updated time above the table. */}
-      <Grid
-        item
-        xs={12}
-        aria-label={t('downloadTab.last_updated_time_arialabel')}
-      >
-        <Typography
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            float: 'right',
-          }}
-          variant="subtitle1"
-          component="h3"
+    <StyledPaper square>
+      <Grid container spacing={1}>
+        {/* Place the last updated time above the table. */}
+        <Grid
+          item
+          xs={12}
+          aria-label={t('downloadTab.last_updated_time_arialabel')}
         >
-          {/* Show refresh icon and re-populate the download status table. */}
-          {!refreshDownloads ? (
-            <BlackTooltip title="Refresh Downloads" enterDelay={500}>
-              <IconButton
-                color="secondary"
-                aria-label={t('downloadTab.refresh_download_status_arialabel')}
-                onClick={() => setRefreshDownloads(true)}
-              >
-                <RefreshIcon />
-              </IconButton>
-            </BlackTooltip>
-          ) : (
-            <CircularProgress size={20} />
-          )}
+          <Typography
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              float: 'right',
+            }}
+            variant="subtitle1"
+            component="h3"
+          >
+            {/* Show refresh icon and re-populate the download status table. */}
+            {!refreshDownloads ? (
+              <BlackTooltip title="Refresh Downloads" enterDelay={500}>
+                <IconButton
+                  color="secondary"
+                  aria-label={t(
+                    'downloadTab.refresh_download_status_arialabel'
+                  )}
+                  onClick={() => setRefreshDownloads(true)}
+                >
+                  <RefreshIcon />
+                </IconButton>
+              </BlackTooltip>
+            ) : (
+              <CircularProgress size={20} />
+            )}
 
-          {!refreshDownloads ? (
-            <p style={{ paddingLeft: '10px ' }}>
-              <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
-            </p>
-          ) : (
-            <p style={{ paddingLeft: '20px ' }}>
-              <i>{t('downloadTab.refreshing_downloads')}</i>
-            </p>
-          )}
-        </Typography>
-      </Grid>
-      <Grid item xs>
-        <Grid container direction="column">
-          {/* Show loading progress if data is still being loaded */}
-          {!dataLoaded && (
-            <Grid item xs={12}>
-              <LinearProgress color="secondary" />
-            </Grid>
-          )}
-          <Grid item>
-            <Paper
-              style={{
-                height:
-                  'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
-                minHeight: 230,
-                overflowX: 'auto',
-              }}
-            >
-              <Table
-                columns={[
-                  {
-                    label: t('downloadStatus.username'),
-                    dataKey: 'userName',
-                    filterComponent: textFilter,
-                  },
-                  {
-                    label: t('downloadStatus.preparedId'),
-                    dataKey: 'preparedId',
-                    filterComponent: textFilter,
-                  },
-                  {
-                    label: t('downloadStatus.transport'),
-                    dataKey: 'transport',
-                    filterComponent: textFilter,
-                  },
-                  {
-                    label: t('downloadStatus.status'),
-                    dataKey: 'status',
-                    filterComponent: textFilter,
-                  },
-                  {
-                    label: t('downloadStatus.size'),
-                    dataKey: 'size',
-                    cellContentRenderer: (cellProps) => {
-                      return formatBytes(cellProps.cellData);
-                    },
-                    disableSort: true,
-                  },
-                  {
-                    label: t('downloadStatus.createdAt'),
-                    dataKey: 'createdAt',
-                    cellContentRenderer: (props: TableCellProps) => {
-                      if (props.cellData) {
-                        const date = new Date(props.cellData).toISOString();
-                        return `${date.slice(0, 10)} ${date.slice(11, 19)}`;
-                      }
-                    },
-                    filterComponent: dateFilter,
-                    disableHeaderWrap: true,
-                  },
-                  {
-                    label: t('downloadStatus.deleted'),
-                    dataKey: 'isDeleted',
-                  },
-                ]}
-                sort={sort}
-                onSort={(column: string, order: 'desc' | 'asc' | null) => {
-                  if (order) {
-                    setSort({ ...sort, [column]: order });
-                  } else {
-                    const { [column]: order, ...restOfSort } = sort;
-                    setSort(restOfSort);
-                  }
+            {!refreshDownloads ? (
+              <p style={{ paddingLeft: '10px ' }}>
+                <b>{t('downloadTab.last_checked')}: </b> {lastChecked}
+              </p>
+            ) : (
+              <p style={{ paddingLeft: '20px ' }}>
+                <i>{t('downloadTab.refreshing_downloads')}</i>
+              </p>
+            )}
+          </Typography>
+        </Grid>
+        <Grid item xs>
+          <Grid container direction="column">
+            {/* Show loading progress if data is still being loaded */}
+            {!dataLoaded && (
+              <Grid item xs={12}>
+                <LinearProgress color="secondary" />
+              </Grid>
+            )}
+            <Grid item>
+              <Paper
+                style={{
+                  height:
+                    'calc(100vh - 64px - 30px - 48px - 48px - (1.75rem + 40px))',
+                  minHeight: 230,
+                  overflowX: 'auto',
                 }}
-                data={data}
-                loading={!dataLoaded}
-                loadMoreRows={fetchMoreData}
-                totalRowCount={dataCount}
-                actionsWidth={100}
-                actions={[
-                  function RestoreButton({ rowData }: TableActionProps) {
-                    const downloadItem = rowData as FormattedDownload;
-                    const [isDeleted] = React.useState(downloadItem.isDeleted);
-
-                    if (isDeleted === 'No') {
-                      return null;
+              >
+                <Table
+                  columns={[
+                    {
+                      label: t('downloadStatus.username'),
+                      dataKey: 'userName',
+                      filterComponent: textFilter,
+                    },
+                    {
+                      label: t('downloadStatus.preparedId'),
+                      dataKey: 'preparedId',
+                      filterComponent: textFilter,
+                    },
+                    {
+                      label: t('downloadStatus.transport'),
+                      dataKey: 'transport',
+                      filterComponent: textFilter,
+                    },
+                    {
+                      label: t('downloadStatus.status'),
+                      dataKey: 'status',
+                      filterComponent: textFilter,
+                    },
+                    {
+                      label: t('downloadStatus.size'),
+                      dataKey: 'size',
+                      cellContentRenderer: (cellProps) => {
+                        return formatBytes(cellProps.cellData);
+                      },
+                      disableSort: true,
+                    },
+                    {
+                      label: t('downloadStatus.createdAt'),
+                      dataKey: 'createdAt',
+                      cellContentRenderer: (props: TableCellProps) => {
+                        if (props.cellData) {
+                          const date = new Date(props.cellData).toISOString();
+                          return `${date.slice(0, 10)} ${date.slice(11, 19)}`;
+                        }
+                      },
+                      filterComponent: dateFilter,
+                      disableHeaderWrap: true,
+                    },
+                    {
+                      label: t('downloadStatus.deleted'),
+                      dataKey: 'isDeleted',
+                    },
+                  ]}
+                  sort={sort}
+                  onSort={(column: string, order: 'desc' | 'asc' | null) => {
+                    if (order) {
+                      setSort({ ...sort, [column]: order });
+                    } else {
+                      const { [column]: order, ...restOfSort } = sort;
+                      setSort(restOfSort);
                     }
+                  }}
+                  data={data}
+                  loading={!dataLoaded}
+                  loadMoreRows={fetchMoreData}
+                  totalRowCount={dataCount}
+                  actionsWidth={100}
+                  actions={[
+                    function RestoreButton({ rowData }: TableActionProps) {
+                      const downloadItem = rowData as FormattedDownload;
+                      const [isDeleted] = React.useState(
+                        downloadItem.isDeleted
+                      );
 
-                    return (
-                      <IconButton
-                        aria-label={t('downloadStatus.restore', {
-                          filename: downloadItem.fileName,
-                        })}
-                        key="restore"
-                        size="small"
-                        onClick={() => {
-                          setTimeout(
-                            () =>
-                              adminDownloadDeleted(
-                                downloadItem.id as number,
-                                false,
-                                {
-                                  facilityName: settings.facilityName,
-                                  downloadApiUrl: settings.downloadApiUrl,
-                                }
-                              ).then(() => {
-                                // Get the new status and isDeleted state of the download item
-                                fetchAdminDownloads(
+                      if (isDeleted === 'No') {
+                        return null;
+                      }
+
+                      return (
+                        <IconButton
+                          aria-label={t('downloadStatus.restore', {
+                            filename: downloadItem.fileName,
+                          })}
+                          key="restore"
+                          size="small"
+                          onClick={() => {
+                            setTimeout(
+                              () =>
+                                adminDownloadDeleted(
+                                  downloadItem.id as number,
+                                  false,
                                   {
                                     facilityName: settings.facilityName,
                                     downloadApiUrl: settings.downloadApiUrl,
-                                  },
-                                  `WHERE UPPER(download.id) = ${downloadItem.id}`
-                                ).then((downloads) => {
-                                  const formattedDownload = formatDownloads(
-                                    downloads
-                                  )[0];
-                                  downloadItem.status =
-                                    formattedDownload.status;
-                                  downloadItem.isDeleted =
-                                    formattedDownload.isDeleted;
+                                  }
+                                ).then(() => {
+                                  // Get the new status and isDeleted state of the download item
+                                  fetchAdminDownloads(
+                                    {
+                                      facilityName: settings.facilityName,
+                                      downloadApiUrl: settings.downloadApiUrl,
+                                    },
+                                    `WHERE UPPER(download.id) = ${downloadItem.id}`
+                                  ).then((downloads) => {
+                                    const formattedDownload = formatDownloads(
+                                      downloads
+                                    )[0];
+                                    downloadItem.status =
+                                      formattedDownload.status;
+                                    downloadItem.isDeleted =
+                                      formattedDownload.isDeleted;
+                                    setData(
+                                      data.map((download) =>
+                                        download.id === downloadItem.id
+                                          ? { ...download, ...downloadItem }
+                                          : download
+                                      )
+                                    );
+                                  });
+                                }),
+                              100
+                            );
+                          }}
+                        >
+                          <Restore />
+                        </IconButton>
+                      );
+                    },
+
+                    function DeleteButton({ rowData }: TableActionProps) {
+                      const downloadItem = rowData as FormattedDownload;
+                      const [isDeleted] = React.useState(
+                        downloadItem.isDeleted
+                      );
+
+                      if (isDeleted === 'Yes') {
+                        return null;
+                      }
+
+                      return (
+                        <IconButton
+                          aria-label={t('downloadStatus.delete', {
+                            filename: downloadItem.fileName,
+                          })}
+                          key="delete"
+                          size="small"
+                          onClick={() => {
+                            setTimeout(
+                              () =>
+                                adminDownloadDeleted(
+                                  downloadItem.id as number,
+                                  true,
+                                  {
+                                    facilityName: settings.facilityName,
+                                    downloadApiUrl: settings.downloadApiUrl,
+                                  }
+                                ).then(() => {
+                                  downloadItem.isDeleted = 'Yes';
                                   setData(
                                     data.map((download) =>
                                       download.id === downloadItem.id
@@ -427,169 +494,129 @@ const AdminDownloadStatusTable: React.FC = () => {
                                         : download
                                     )
                                   );
-                                });
-                              }),
-                            100
-                          );
-                        }}
-                      >
-                        <Restore />
-                      </IconButton>
-                    );
-                  },
+                                }),
+                              100
+                            );
+                          }}
+                        >
+                          <RemoveCircle />
+                        </IconButton>
+                      );
+                    },
 
-                  function DeleteButton({ rowData }: TableActionProps) {
-                    const downloadItem = rowData as FormattedDownload;
-                    const [isDeleted] = React.useState(downloadItem.isDeleted);
+                    function ResumeButton({ rowData }: TableActionProps) {
+                      const downloadItem = rowData as FormattedDownload;
+                      const [isDeleted] = React.useState(
+                        downloadItem.isDeleted
+                      );
 
-                    if (isDeleted === 'Yes') {
-                      return null;
-                    }
+                      if (
+                        isDeleted === 'Yes' ||
+                        downloadItem.status === t('downloadStatus.complete') ||
+                        downloadItem.status === t('downloadStatus.expired') ||
+                        downloadItem.status !== t('downloadStatus.paused')
+                      ) {
+                        return null;
+                      }
 
-                    return (
-                      <IconButton
-                        aria-label={t('downloadStatus.delete', {
-                          filename: downloadItem.fileName,
-                        })}
-                        key="delete"
-                        size="small"
-                        onClick={() => {
-                          setTimeout(
-                            () =>
-                              adminDownloadDeleted(
-                                downloadItem.id as number,
-                                true,
-                                {
-                                  facilityName: settings.facilityName,
-                                  downloadApiUrl: settings.downloadApiUrl,
-                                }
-                              ).then(() => {
-                                downloadItem.isDeleted = 'Yes';
-                                setData(
-                                  data.map((download) =>
-                                    download.id === downloadItem.id
-                                      ? { ...download, ...downloadItem }
-                                      : download
-                                  )
-                                );
-                              }),
-                            100
-                          );
-                        }}
-                      >
-                        <RemoveCircle />
-                      </IconButton>
-                    );
-                  },
+                      return (
+                        <IconButton
+                          aria-label={t('downloadStatus.resume', {
+                            filename: downloadItem.fileName,
+                          })}
+                          key="resume"
+                          size="small"
+                          onClick={() => {
+                            setTimeout(
+                              () =>
+                                adminDownloadStatus(
+                                  downloadItem.id as number,
+                                  'RESTORING',
+                                  {
+                                    facilityName: settings.facilityName,
+                                    downloadApiUrl: settings.downloadApiUrl,
+                                  }
+                                ).then(() => {
+                                  downloadItem.status = t(
+                                    'downloadStatus.restoring'
+                                  );
+                                  setData(
+                                    data.map((download) =>
+                                      download.id === downloadItem.id
+                                        ? { ...download, ...downloadItem }
+                                        : download
+                                    )
+                                  );
+                                }),
+                              100
+                            );
+                          }}
+                        >
+                          <PlayCircleFilled />
+                        </IconButton>
+                      );
+                    },
 
-                  function ResumeButton({ rowData }: TableActionProps) {
-                    const downloadItem = rowData as FormattedDownload;
-                    const [isDeleted] = React.useState(downloadItem.isDeleted);
+                    function PauseButton({ rowData }: TableActionProps) {
+                      const downloadItem = rowData as FormattedDownload;
+                      const [isDeleted] = React.useState(
+                        downloadItem.isDeleted
+                      );
 
-                    if (
-                      isDeleted === 'Yes' ||
-                      downloadItem.status === t('downloadStatus.complete') ||
-                      downloadItem.status === t('downloadStatus.expired') ||
-                      downloadItem.status !== t('downloadStatus.paused')
-                    ) {
-                      return null;
-                    }
+                      if (
+                        isDeleted === 'Yes' ||
+                        downloadItem.status === t('downloadStatus.complete') ||
+                        downloadItem.status === t('downloadStatus.expired') ||
+                        downloadItem.status === t('downloadStatus.paused')
+                      ) {
+                        return null;
+                      }
 
-                    return (
-                      <IconButton
-                        aria-label={t('downloadStatus.resume', {
-                          filename: downloadItem.fileName,
-                        })}
-                        key="resume"
-                        size="small"
-                        onClick={() => {
-                          setTimeout(
-                            () =>
-                              adminDownloadStatus(
-                                downloadItem.id as number,
-                                'RESTORING',
-                                {
-                                  facilityName: settings.facilityName,
-                                  downloadApiUrl: settings.downloadApiUrl,
-                                }
-                              ).then(() => {
-                                downloadItem.status = t(
-                                  'downloadStatus.restoring'
-                                );
-                                setData(
-                                  data.map((download) =>
-                                    download.id === downloadItem.id
-                                      ? { ...download, ...downloadItem }
-                                      : download
-                                  )
-                                );
-                              }),
-                            100
-                          );
-                        }}
-                      >
-                        <PlayCircleFilled />
-                      </IconButton>
-                    );
-                  },
-
-                  function PauseButton({ rowData }: TableActionProps) {
-                    const downloadItem = rowData as FormattedDownload;
-                    const [isDeleted] = React.useState(downloadItem.isDeleted);
-
-                    if (
-                      isDeleted === 'Yes' ||
-                      downloadItem.status === t('downloadStatus.complete') ||
-                      downloadItem.status === t('downloadStatus.expired') ||
-                      downloadItem.status === t('downloadStatus.paused')
-                    ) {
-                      return null;
-                    }
-
-                    return (
-                      <IconButton
-                        aria-label={t('downloadStatus.pause', {
-                          filename: downloadItem.fileName,
-                        })}
-                        key="pause"
-                        size="small"
-                        onClick={() => {
-                          setTimeout(
-                            () =>
-                              adminDownloadStatus(
-                                downloadItem.id as number,
-                                'PAUSED',
-                                {
-                                  facilityName: settings.facilityName,
-                                  downloadApiUrl: settings.downloadApiUrl,
-                                }
-                              ).then(() => {
-                                downloadItem.status = t(
-                                  'downloadStatus.paused'
-                                );
-                                setData(
-                                  data.map((download) =>
-                                    download.id === downloadItem.id
-                                      ? { ...download, ...downloadItem }
-                                      : download
-                                  )
-                                );
-                              }),
-                            100
-                          );
-                        }}
-                      >
-                        <PauseCircleFilled />
-                      </IconButton>
-                    );
-                  },
-                ]}
-              />
-            </Paper>
+                      return (
+                        <IconButton
+                          aria-label={t('downloadStatus.pause', {
+                            filename: downloadItem.fileName,
+                          })}
+                          key="pause"
+                          size="small"
+                          onClick={() => {
+                            setTimeout(
+                              () =>
+                                adminDownloadStatus(
+                                  downloadItem.id as number,
+                                  'PAUSED',
+                                  {
+                                    facilityName: settings.facilityName,
+                                    downloadApiUrl: settings.downloadApiUrl,
+                                  }
+                                ).then(() => {
+                                  downloadItem.status = t(
+                                    'downloadStatus.paused'
+                                  );
+                                  setData(
+                                    data.map((download) =>
+                                      download.id === downloadItem.id
+                                        ? { ...download, ...downloadItem }
+                                        : download
+                                    )
+                                  );
+                                }),
+                              100
+                            );
+                          }}
+                        >
+                          <PauseCircleFilled />
+                        </IconButton>
+                      );
+                    },
+                  ]}
+                />
+              </Paper>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </StyledPaper>
   );
 };
 
