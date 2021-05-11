@@ -350,7 +350,7 @@ interface PageContainerStateProps {
   totalDataCount: number;
   cartItems: DownloadCartItem[];
   res: HomepageContents | undefined;
-  pluginHostUrl: string;
+  pluginHostUrl: string | undefined;
 }
 
 type PageContainerCombinedProps = PageContainerStateProps &
@@ -360,7 +360,6 @@ interface PageContainerState {
   paths: string[];
   toggleCard: boolean;
   modifiedLocation: LocationType;
-  res?: HomepageContents;
 }
 
 class PageContainer extends React.Component<

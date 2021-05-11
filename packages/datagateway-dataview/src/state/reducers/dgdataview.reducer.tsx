@@ -19,7 +19,6 @@ export const initialState: DGDataViewState = {
   breadcrumbSettings: {},
   settingsLoaded: false,
   selectAllSetting: true,
-  pluginHostUrl: '',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {

@@ -94,7 +94,7 @@ describe('dgdataview reducer', () => {
   });
 
   it('should set a plugin host url when one is received', () => {
-    expect(state.dgdataview.pluginHostUrl).toEqual('');
+    expect(state.dgdataview.pluginHostUrl).toEqual(undefined);
     const testPluginHostUrl = 'http://localhost-test:5001';
     const updatedState = DGDataViewReducer(
       state,
