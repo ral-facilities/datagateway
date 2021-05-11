@@ -5,6 +5,7 @@ import {
   settingsLoaded,
   loadSelectAllSetting,
   loadHomepageStrings,
+  loadPluginHostUrl,
 } from '.';
 import {
   ConfigureFeatureSwitchesType,
@@ -12,6 +13,7 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingType,
   ConfigureHomepageStringsType,
+  ConfigurePluginHostUrlType,
 } from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -97,7 +99,14 @@ describe('Actions', () => {
     expect(action.payload).toEqual({ res: testHomepageContents });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings, settingsLoaded and loadHomepageStrings actions are sent', async () => {
+  it('sets the plugin host URL if given', () => {
+    const testPluginHost = 'http://localhost-test:5001';
+    const action = loadPluginHostUrl(testPluginHost);
+    expect(action.type).toEqual(ConfigurePluginHostUrlType);
+    expect(action.payload).toEqual({ pluginHostUrl: testPluginHost });
+  });
+
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings, settingsLoaded, loadHomepageStrings and loadPluginHostUrl actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -136,7 +145,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(7);
+    expect(actions.length).toEqual(8);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
@@ -156,6 +165,7 @@ describe('Actions', () => {
     expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(loadSelectAllSetting(false));
     expect(actions).toContainEqual(loadHomepageStrings(testHomepageContents));
+    expect(actions).toContainEqual(loadPluginHostUrl('http://localhost:3000/'));
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
       detail: {

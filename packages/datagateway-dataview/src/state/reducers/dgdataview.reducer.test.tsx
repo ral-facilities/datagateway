@@ -6,6 +6,7 @@ import {
   settingsLoaded,
   loadSelectAllSetting,
   loadHomepageStrings,
+  loadPluginHostUrl,
 } from '../actions';
 import { HomepageContents } from 'datagateway-common';
 
@@ -90,5 +91,16 @@ describe('dgdataview reducer', () => {
     );
 
     expect(updatedState.res).toEqual(testHomepageContents);
+  });
+
+  it('should set a plugin host url when one is received', () => {
+    expect(state.dgdataview.pluginHostUrl).toEqual('');
+    const testPluginHostUrl = 'http://localhost-test:5001';
+    const updatedState = DGDataViewReducer(
+      state,
+      loadPluginHostUrl(testPluginHostUrl)
+    );
+
+    expect(updatedState.pluginHostUrl).toEqual(testPluginHostUrl);
   });
 });

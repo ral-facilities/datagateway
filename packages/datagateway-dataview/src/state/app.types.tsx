@@ -10,6 +10,7 @@ export interface DGDataViewState {
   settingsLoaded: boolean;
   selectAllSetting: boolean;
   res?: HomepageContents;
+  pluginHostUrl: string;
 }
 
 export interface EntityCache {

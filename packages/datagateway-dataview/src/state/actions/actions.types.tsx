@@ -10,6 +10,8 @@ export const ConfigureSelectAllSettingType =
 export const SettingsLoadedType = 'datagateway_dataview:settings_loaded';
 export const ConfigureHomepageStringsType =
   'datagateway_dataview:homepage_strings_loaded';
+export const ConfigurePluginHostUrlType =
+  'datagateway_common:configure_plugin_host_url';
 
 export interface FeatureSwitchesPayload {
   switches: FeatureSwitches;
@@ -35,4 +37,8 @@ export interface BreadcrumbSettings {
 
 export interface ConfigureHomepageStringsPayload {
   res: HomepageContents;
+}
+
+export interface ConfigurePluginHostUrlPayload {
+  pluginHostUrl: string;
 }

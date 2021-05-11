@@ -10,6 +10,8 @@ import {
   ConfigureSelectAllSettingType,
   ConfigureHomepageStringsPayload,
   ConfigureHomepageStringsType,
+  ConfigurePluginHostUrlType,
+  ConfigurePluginHostUrlPayload,
 } from '../actions/actions.types';
 
 export const initialState: DGDataViewState = {
@@ -17,6 +19,7 @@ export const initialState: DGDataViewState = {
   breadcrumbSettings: {},
   settingsLoaded: false,
   selectAllSetting: true,
+  pluginHostUrl: '',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -68,12 +71,23 @@ export function handleConfigureHomepageStrings(
   };
 }
 
+export function handleConfigurePluginHostUrl(
+  state: DGDataViewState,
+  payload: ConfigurePluginHostUrlPayload
+): DGDataViewState {
+  return {
+    ...state,
+    pluginHostUrl: payload.pluginHostUrl,
+  };
+}
+
 const DGDataViewReducer = createReducer(initialState, {
   [SettingsLoadedType]: handleSettingsLoaded,
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
   [ConfigureHomepageStringsType]: handleConfigureHomepageStrings,
+  [ConfigurePluginHostUrlType]: handleConfigurePluginHostUrl,
 });
 
 export default DGDataViewReducer;

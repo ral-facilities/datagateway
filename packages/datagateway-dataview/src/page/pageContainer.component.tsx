@@ -43,7 +43,6 @@ import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
-import axios from 'axios';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -351,6 +350,7 @@ interface PageContainerStateProps {
   totalDataCount: number;
   cartItems: DownloadCartItem[];
   res: HomepageContents | undefined;
+  pluginHostUrl: string;
 }
 
 type PageContainerCombinedProps = PageContainerStateProps &
@@ -361,7 +361,6 @@ interface PageContainerState {
   toggleCard: boolean;
   modifiedLocation: LocationType;
   res?: HomepageContents;
-  imageDir: string;
 }
 
 class PageContainer extends React.Component<
@@ -382,7 +381,6 @@ class PageContainer extends React.Component<
       ),
       toggleCard: this.getToggle(),
       modifiedLocation: props.location,
-      imageDir: '',
     };
   }
 
@@ -390,7 +388,6 @@ class PageContainer extends React.Component<
     // Fetch the download cart on mount, ensuring dataview element is present.
     if (document.getElementById('datagateway-dataview')) {
       this.props.fetchDownloadCart();
-      this.getImageDir();
     }
   }
 
@@ -488,48 +485,16 @@ class PageContainer extends React.Component<
     });
   };
 
-  // Find where the homepage images are being hosted
-  public getImageDir: () => Promise<void> = async () => {
-    const settingsPath = '/settings.json';
-    await axios
-      .get(settingsPath)
-      .then((res) => {
-        const settings = res.data;
-
-        // invalid settings.json
-        if (typeof settings !== 'object') {
-          console.log(`Invalid ${settingsPath}`);
-        }
-
-        if (settings.plugins) {
-          const plugins = settings.plugins;
-          plugins.forEach((plugin: { [x: string]: string }) => {
-            if (plugin['name'] === 'datagateway-dataview') {
-              // Gives us the host and port where dataview is being hosted
-              const src = plugin['src'].replace('/main.js', '');
-              this.setState({
-                ...this.state,
-                imageDir: src,
-              });
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(`Error loading ${settingsPath}: ${error.message}`);
-      });
-  };
-
   public render(): React.ReactElement {
     if (this.props.location.pathname === paths.homepage) {
       return (
         <HomePage
           {...this.props}
-          logo={this.state.imageDir + DGLogo}
-          backgroundImage={this.state.imageDir + BackgroundImage}
-          exploreImage={this.state.imageDir + ExploreImage}
-          discoverImage={this.state.imageDir + DiscoverImage}
-          downloadImage={this.state.imageDir + DownloadImage}
+          logo={this.props.pluginHostUrl + DGLogo}
+          backgroundImage={this.props.pluginHostUrl + BackgroundImage}
+          exploreImage={this.props.pluginHostUrl + ExploreImage}
+          discoverImage={this.props.pluginHostUrl + DiscoverImage}
+          downloadImage={this.props.pluginHostUrl + DownloadImage}
         />
       );
     } else {
@@ -592,6 +557,7 @@ const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   totalDataCount: state.dgcommon.totalDataCount,
   cartItems: state.dgcommon.cartItems,
   res: state.dgdataview.res,
+  pluginHostUrl: state.dgdataview.pluginHostUrl,
 });
 
 const mapDispatchToProps = (

@@ -11,6 +11,8 @@ import {
   ConfigureSelectAllSettingType,
   ConfigureHomepageStringsType,
   ConfigureHomepageStringsPayload,
+  ConfigurePluginHostUrlType,
+  ConfigurePluginHostUrlPayload,
 } from './actions.types';
 import {
   loadUrls,
@@ -65,6 +67,15 @@ export const loadHomepageStrings = (
   type: ConfigureHomepageStringsType,
   payload: {
     res: HomepageStrings,
+  },
+});
+
+export const loadPluginHostUrl = (
+  pluginHostUrl: string
+): ActionType<ConfigurePluginHostUrlPayload> => ({
+  type: ConfigurePluginHostUrlType,
+  payload: {
+    pluginHostUrl: pluginHostUrl,
   },
 });
 
@@ -168,6 +179,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('homePage' in settings) {
           dispatch(loadHomepageStrings(settings['homePage']));
+          dispatch(loadPluginHostUrl(settings['pluginHost']));
         }
 
         /* istanbul ignore if */
