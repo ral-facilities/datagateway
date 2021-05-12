@@ -8,8 +8,6 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingPayload,
   ConfigureSelectAllSettingType,
-  ConfigureHomepageStringsPayload,
-  ConfigureHomepageStringsType,
   ConfigurePluginHostUrlType,
   ConfigurePluginHostUrlPayload,
 } from '../actions/actions.types';
@@ -60,16 +58,6 @@ export function handleConfigureSelectAllSetting(
   };
 }
 
-export function handleConfigureHomepageStrings(
-  state: DGDataViewState,
-  payload: ConfigureHomepageStringsPayload
-): DGDataViewState {
-  return {
-    ...state,
-    res: payload.res,
-  };
-}
-
 export function handleConfigurePluginHostUrl(
   state: DGDataViewState,
   payload: ConfigurePluginHostUrlPayload
@@ -85,7 +73,6 @@ const DGDataViewReducer = createReducer(initialState, {
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
-  [ConfigureHomepageStringsType]: handleConfigureHomepageStrings,
   [ConfigurePluginHostUrlType]: handleConfigurePluginHostUrl,
 });
 

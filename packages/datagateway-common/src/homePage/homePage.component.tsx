@@ -8,7 +8,6 @@ import {
   createStyles,
 } from '@material-ui/core';
 import { StyleRules } from '@material-ui/core/styles';
-import { HomepageContents } from '../app.types';
 
 const styles = (theme: Theme): StyleRules =>
   createStyles({
@@ -58,122 +57,126 @@ const styles = (theme: Theme): StyleRules =>
     },
   });
 
-interface HomePageProps {
-  res: HomepageContents | undefined;
+export interface HomePageProps {
+  title: string;
+  howLabel: string;
+  exploreLabel: string;
+  exploreDescription: string;
+  discoverLabel: string;
+  discoverDescription: string;
+  downloadLabel: string;
+  downloadDescription: string;
   logo: string;
   backgroundImage: string;
   exploreImage: string;
   discoverImage: string;
   downloadImage: string;
+
+  [key: string]: string;
 }
 
-export type CombinedHomePageProps = HomePageProps & WithStyles<typeof styles>;
+type CombinedHomePageProps = HomePageProps & WithStyles<typeof styles>;
 
-class HomePage extends React.Component<CombinedHomePageProps> {
-  getString = (key: string): string => {
-    return this.props.res && this.props.res[key] ? this.props.res[key] : key;
+const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
+  const getString = (key: string): string => {
+    return props[key] !== undefined ? props[key] : key;
   };
 
-  render(): React.ReactElement {
-    return (
-      <div id="dg-homepage">
-        <div className={this.props.classes.bigImage}>
-          <div
-            style={{
-              backgroundImage: `url(${this.props.backgroundImage})`,
-              width: '100%',
-              height: 250,
-            }}
-          >
-            <img src={this.props.logo} alt={this.getString('title')} />
-          </div>
-        </div>
-        <div className={this.props.classes.howItWorks}>
-          <Typography
-            variant="h4"
-            className={this.props.classes.howItWorksTitle}
-          >
-            {this.getString('howLabel')}
-          </Typography>
-
-          <Grid container spacing={3}>
-            <Grid
-              item
-              sm={12}
-              md={4}
-              className={this.props.classes.howItWorksGridItem}
-            >
-              <Typography
-                variant="h5"
-                className={this.props.classes.howItWorksGridItemTitle}
-              >
-                {this.getString('exploreLabel')}
-              </Typography>
-              <img
-                src={this.props.exploreImage}
-                alt=""
-                className={this.props.classes.howItWorksGridItemImage}
-              />
-              <Typography
-                variant="body1"
-                className={this.props.classes.howItWorksGridItemCaption}
-              >
-                {this.getString('exploreDescription')}
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              sm={12}
-              md={4}
-              className={this.props.classes.howItWorksGridItem}
-            >
-              <Typography
-                variant="h5"
-                className={this.props.classes.howItWorksGridItemTitle}
-              >
-                {this.getString('discoverLabel')}
-              </Typography>
-              <img
-                src={this.props.discoverImage}
-                alt=""
-                className={this.props.classes.howItWorksGridItemImage}
-              />
-              <Typography
-                variant="body1"
-                className={this.props.classes.howItWorksGridItemCaption}
-              >
-                {this.getString('discoverDescription')}
-              </Typography>
-            </Grid>
-            <Grid
-              item
-              sm={12}
-              md={4}
-              className={this.props.classes.howItWorksGridItem}
-            >
-              <Typography
-                variant="h5"
-                className={this.props.classes.howItWorksGridItemTitle}
-              >
-                {this.getString('downloadLabel')}
-              </Typography>
-              <img
-                src={this.props.downloadImage}
-                alt=""
-                className={this.props.classes.howItWorksGridItemImage}
-              />
-              <Typography
-                variant="body1"
-                className={this.props.classes.howItWorksGridItemCaption}
-              >
-                {this.getString('downloadDescription')}
-              </Typography>
-            </Grid>
-          </Grid>
+  return (
+    <div id="dg-homepage">
+      <div className={props.classes.bigImage}>
+        <div
+          style={{
+            backgroundImage: `url(${props.backgroundImage})`,
+            width: '100%',
+            height: 250,
+          }}
+        >
+          <img src={props.logo} alt={getString('title')} />
         </div>
       </div>
-    );
-  }
-}
+      <div className={props.classes.howItWorks}>
+        <Typography variant="h4" className={props.classes.howItWorksTitle}>
+          {getString('howLabel')}
+        </Typography>
+
+        <Grid container spacing={3}>
+          <Grid
+            item
+            sm={12}
+            md={4}
+            className={props.classes.howItWorksGridItem}
+          >
+            <Typography
+              variant="h5"
+              className={props.classes.howItWorksGridItemTitle}
+            >
+              {getString('exploreLabel')}
+            </Typography>
+            <img
+              src={props.exploreImage}
+              alt=""
+              className={props.classes.howItWorksGridItemImage}
+            />
+            <Typography
+              variant="body1"
+              className={props.classes.howItWorksGridItemCaption}
+            >
+              {getString('exploreDescription')}
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            sm={12}
+            md={4}
+            className={props.classes.howItWorksGridItem}
+          >
+            <Typography
+              variant="h5"
+              className={props.classes.howItWorksGridItemTitle}
+            >
+              {getString('discoverLabel')}
+            </Typography>
+            <img
+              src={props.discoverImage}
+              alt=""
+              className={props.classes.howItWorksGridItemImage}
+            />
+            <Typography
+              variant="body1"
+              className={props.classes.howItWorksGridItemCaption}
+            >
+              {getString('discoverDescription')}
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            sm={12}
+            md={4}
+            className={props.classes.howItWorksGridItem}
+          >
+            <Typography
+              variant="h5"
+              className={props.classes.howItWorksGridItemTitle}
+            >
+              {getString('downloadLabel')}
+            </Typography>
+            <img
+              src={props.downloadImage}
+              alt=""
+              className={props.classes.howItWorksGridItemImage}
+            />
+            <Typography
+              variant="body1"
+              className={props.classes.howItWorksGridItemCaption}
+            >
+              {getString('downloadDescription')}
+            </Typography>
+          </Grid>
+        </Grid>
+      </div>
+    </div>
+  );
+};
 
 export default withStyles(styles)(HomePage);

@@ -24,14 +24,7 @@ import {
   Sticky,
   QueryParams,
   ViewsType,
-  HomePage,
 } from 'datagateway-common';
-import { HomepageContents } from 'datagateway-common/src/app.types';
-import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
-import BackgroundImage from 'datagateway-common/src/images/background.jpg';
-import ExploreImage from 'datagateway-common/src/images/explore.jpg';
-import DiscoverImage from 'datagateway-common/src/images/discover.jpg';
-import DownloadImage from 'datagateway-common/src/images/download.jpg';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -349,8 +342,6 @@ interface PageContainerStateProps {
   loadedCount: boolean;
   totalDataCount: number;
   cartItems: DownloadCartItem[];
-  res: HomepageContents | undefined;
-  pluginHostUrl: string | undefined;
 }
 
 type PageContainerCombinedProps = PageContainerStateProps &
@@ -485,64 +476,51 @@ class PageContainer extends React.Component<
   };
 
   public render(): React.ReactElement {
-    if (this.props.location.pathname === paths.homepage) {
-      return (
-        <HomePage
-          {...this.props}
-          logo={this.props.pluginHostUrl + DGLogo}
-          backgroundImage={this.props.pluginHostUrl + BackgroundImage}
-          exploreImage={this.props.pluginHostUrl + ExploreImage}
-          discoverImage={this.props.pluginHostUrl + DiscoverImage}
-          downloadImage={this.props.pluginHostUrl + DownloadImage}
+    return (
+      <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+        <NavBar
+          entityCount={this.props.entityCount}
+          cartItems={this.props.cartItems}
+          navigateToSearch={this.props.navigateToSearch}
+          navigateToDownload={this.props.navigateToDownload}
         />
-      );
-    } else {
-      return (
-        <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-          <NavBar
-            entityCount={this.props.entityCount}
-            cartItems={this.props.cartItems}
-            navigateToSearch={this.props.navigateToSearch}
-            navigateToDownload={this.props.navigateToDownload}
-          />
 
-          <StyledGrid container>
-            {/* Toggle between the table and card view */}
-            <Grid item xs={12}>
-              <Route
-                exact
-                path={this.state.paths}
-                render={() => (
-                  <CardSwitch
-                    toggleCard={this.state.toggleCard}
-                    handleToggleChange={this.handleToggleChange}
-                  />
-                )}
-              />
-            </Grid>
-
-            {/* Show loading progress if data is still being loaded */}
-            {this.props.loading && (
-              <Grid item xs={12}>
-                <LinearProgress color="secondary" />
-              </Grid>
-            )}
-
-            {/* Hold the table for remainder of the page */}
-            <Grid item xs={12} aria-label="container-table">
-              {document.getElementById('datagateway-dataview') && (
-                <ViewRouting
-                  view={this.props.query.view}
-                  loadedCount={this.props.loadedCount}
-                  totalDataCount={this.props.totalDataCount}
-                  location={this.state.modifiedLocation}
+        <StyledGrid container>
+          {/* Toggle between the table and card view */}
+          <Grid item xs={12}>
+            <Route
+              exact
+              path={this.state.paths}
+              render={() => (
+                <CardSwitch
+                  toggleCard={this.state.toggleCard}
+                  handleToggleChange={this.handleToggleChange}
                 />
               )}
+            />
+          </Grid>
+
+          {/* Show loading progress if data is still being loaded */}
+          {this.props.loading && (
+            <Grid item xs={12}>
+              <LinearProgress color="secondary" />
             </Grid>
-          </StyledGrid>
-        </Paper>
-      );
-    }
+          )}
+
+          {/* Hold the table for remainder of the page */}
+          <Grid item xs={12} aria-label="container-table">
+            {document.getElementById('datagateway-dataview') && (
+              <ViewRouting
+                view={this.props.query.view}
+                loadedCount={this.props.loadedCount}
+                totalDataCount={this.props.totalDataCount}
+                location={this.state.modifiedLocation}
+              />
+            )}
+          </Grid>
+        </StyledGrid>
+      </Paper>
+    );
   }
 }
 
@@ -555,8 +533,6 @@ const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   loadedCount: state.dgcommon.loadedCount,
   totalDataCount: state.dgcommon.totalDataCount,
   cartItems: state.dgcommon.cartItems,
-  res: state.dgdataview.res,
-  pluginHostUrl: state.dgdataview.pluginHostUrl,
 });
 
 const mapDispatchToProps = (

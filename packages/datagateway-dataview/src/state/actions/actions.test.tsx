@@ -4,7 +4,6 @@ import {
   configureApp,
   settingsLoaded,
   loadSelectAllSetting,
-  loadHomepageStrings,
   loadPluginHostUrl,
 } from '.';
 import {
@@ -12,7 +11,6 @@ import {
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   ConfigureSelectAllSettingType,
-  ConfigureHomepageStringsType,
   ConfigurePluginHostUrlType,
 } from './actions.types';
 import axios from 'axios';
@@ -23,23 +21,11 @@ import {
   loadFacilityName,
   MicroFrontendId,
   RegisterRouteType,
-  HomepageContents,
 } from 'datagateway-common';
 import LogoLight from 'datagateway-common/src/images/datagateway-logo.svg';
 import LogoDark from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
 
 jest.mock('loglevel');
-
-const testHomepageContents: HomepageContents = {
-  title: 'title',
-  howLabel: 'howLabel',
-  exploreLabel: 'exploreLabel',
-  exploreDescription: 'exploreDescription',
-  discoverLabel: 'discoverLabel',
-  discoverDescription: 'discoverDescription',
-  downloadLabel: 'downloadLabel',
-  downloadDescription: 'downloadDescription',
-};
 
 describe('Actions', () => {
   beforeEach(() => {
@@ -93,12 +79,6 @@ describe('Actions', () => {
     });
   });
 
-  it('loadHomepageStrings returns a payload of strings for homepage content', () => {
-    const action = loadHomepageStrings(testHomepageContents);
-    expect(action.type).toEqual(ConfigureHomepageStringsType);
-    expect(action.payload).toEqual({ res: testHomepageContents });
-  });
-
   it('sets the plugin host URL if given', () => {
     const testPluginHost = 'http://localhost-test:5001';
     const action = loadPluginHostUrl(testPluginHost);
@@ -106,7 +86,7 @@ describe('Actions', () => {
     expect(action.payload).toEqual({ pluginHostUrl: testPluginHost });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings, settingsLoaded, loadHomepageStrings and loadPluginHostUrl actions are sent', async () => {
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings, settingsLoaded and loadPluginHostUrl actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -129,7 +109,6 @@ describe('Actions', () => {
                 displayName: 'displayName',
               },
             ],
-            homePage: testHomepageContents,
             pluginHost: 'http://localhost:3000/',
           },
         })
@@ -145,7 +124,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(8);
+    expect(actions.length).toEqual(7);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
@@ -164,7 +143,6 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(loadSelectAllSetting(false));
-    expect(actions).toContainEqual(loadHomepageStrings(testHomepageContents));
     expect(actions).toContainEqual(loadPluginHostUrl('http://localhost:3000/'));
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
@@ -215,7 +193,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(3);
+    expect(actions.length).toEqual(4);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(
       loadUrls({
