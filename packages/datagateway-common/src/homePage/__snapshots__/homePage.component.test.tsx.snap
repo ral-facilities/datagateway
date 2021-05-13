@@ -16,9 +16,7 @@ exports[`Home page component homepage renders correctly 1`] = `
         }
       }
     >
-      <img
-        alt="title"
-      />
+      <img />
     </div>
   </div>
   <div
@@ -27,9 +25,7 @@ exports[`Home page component homepage renders correctly 1`] = `
     <WithStyles(ForwardRef(Typography))
       className="HomePage-howItWorksTitle-3 howItWorksTitle-class"
       variant="h4"
-    >
-      howLabel
-    </WithStyles(ForwardRef(Typography))>
+    />
     <WithStyles(ForwardRef(Grid))
       container={true}
       spacing={3}
@@ -43,9 +39,7 @@ exports[`Home page component homepage renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
-        >
-          exploreLabel
-        </WithStyles(ForwardRef(Typography))>
+        />
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
@@ -53,9 +47,7 @@ exports[`Home page component homepage renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
-        >
-          exploreDescription
-        </WithStyles(ForwardRef(Typography))>
+        />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
         className="HomePage-howItWorksGridItem-4 howItWorksGridItem-class"
@@ -66,9 +58,7 @@ exports[`Home page component homepage renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
-        >
-          discoverLabel
-        </WithStyles(ForwardRef(Typography))>
+        />
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
@@ -76,9 +66,7 @@ exports[`Home page component homepage renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
-        >
-          discoverDescription
-        </WithStyles(ForwardRef(Typography))>
+        />
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
         className="HomePage-howItWorksGridItem-4 howItWorksGridItem-class"
@@ -89,9 +77,7 @@ exports[`Home page component homepage renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemTitle-5 howItWorksGridItemTitle-class"
           variant="h5"
-        >
-          downloadLabel
-        </WithStyles(ForwardRef(Typography))>
+        />
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6 howItWorksGridItemImage-class"
@@ -99,9 +85,7 @@ exports[`Home page component homepage renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7 howItWorksGridItemCaption-class"
           variant="body1"
-        >
-          downloadDescription
-        </WithStyles(ForwardRef(Typography))>
+        />
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
   </div>
