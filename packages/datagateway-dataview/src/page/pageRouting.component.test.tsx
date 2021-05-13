@@ -7,7 +7,9 @@ import { StateType } from '../state/app.types';
 
 import { createMount } from '@material-ui/core/test-utils';
 import { MemoryRouter } from 'react-router';
-import PageRouting from './pageRouting.component';
+import PageRouting, {
+  ConnectedTranslatedHomePage,
+} from './pageRouting.component';
 import { Provider } from 'react-redux';
 import { initialState as dgDataViewInitialState } from '../state/reducers/dgdataview.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
@@ -53,6 +55,8 @@ import {
 import { flushPromises } from '../setupTests';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
+import { createLocation } from 'history';
+import { paths } from './pageContainer.component';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -95,6 +99,41 @@ const DLSRoutes = {
     '/browse/proposal/INVESTIGATION 1/investigation/1/dataset/1/datafile',
   mydata: '/my-data/DLS',
 };
+
+describe('HomePage', () => {
+  let mount;
+  let state: StateType;
+  const newLocation = createLocation(paths.homepage);
+
+  const createHomepageWrapper = (): ReactWrapper => {
+    const mockStore = configureStore([thunk]);
+    return mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter
+          initialEntries={[{ key: 'testKey', pathname: paths.homepage }]}
+        >
+          <PageRouting view="table" location={newLocation} />
+        </MemoryRouter>
+      </Provider>
+    );
+  };
+
+  beforeEach(() => {
+    mount = createMount();
+
+    state = JSON.parse(
+      JSON.stringify({
+        dgdataview: dgDataViewInitialState,
+        dgcommon: dGCommonInitialState,
+      })
+    );
+  });
+
+  it('routes to the homepage if pathname matches homepage path', () => {
+    const wrapper = createHomepageWrapper();
+    expect(wrapper.exists(ConnectedTranslatedHomePage)).toBe(true);
+  });
+});
 
 describe('PageTable', () => {
   let mount;

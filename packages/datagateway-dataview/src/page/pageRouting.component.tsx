@@ -262,7 +262,7 @@ const mapStateToProps = (state: StateType): HomePageStateProps => ({
   pluginHostUrl: state.dgdataview.pluginHostUrl,
 });
 
-const ConnectedTranslatedHomePage = connect(mapStateToProps)(
+export const ConnectedTranslatedHomePage = connect(mapStateToProps)(
   TranslatedHomePage
 );
 
