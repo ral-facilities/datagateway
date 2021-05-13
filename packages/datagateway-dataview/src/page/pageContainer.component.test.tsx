@@ -20,7 +20,7 @@ import { createLocation } from 'history';
 import { MemoryRouter } from 'react-router';
 import { push } from 'connected-react-router';
 
-import PageContainer, { paths } from './pageContainer.component';
+import PageContainer, { paths, NavBar } from './pageContainer.component';
 import { Provider } from 'react-redux';
 import { checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
@@ -446,5 +446,21 @@ describe('PageContainer - Tests', () => {
     expect(
       wrapper.find(PageContainer).children().first().state('modifiedLocation')
     ).toEqual(newLocation);
+  });
+
+  it('routes directly to homepage if location matches homepage path', () => {
+    const homepageLocation = createLocation(paths.homepage);
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: dGCommonInitialState,
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: homepageLocation,
+        },
+      })
+    );
+    const wrapper = createWrapper(state);
+    expect(wrapper.exists(NavBar)).toBe(false);
   });
 });

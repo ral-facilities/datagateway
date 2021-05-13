@@ -121,7 +121,7 @@ export const paths = {
   },
 };
 
-const NavBar = (props: {
+export const NavBar = (props: {
   entityCount: number;
   cartItems: DownloadCartItem[];
   navigateToSearch: () => Action;
