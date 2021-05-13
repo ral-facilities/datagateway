@@ -89,14 +89,22 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', () => {
+Cypress.Commands.add('login', (username = null, password = null) => {
+  let body;
+  if (username === null && password === null) {
+    body = { plugin: 'anon' };
+  } else {
+    body = {
+      plugin: 'simple',
+      credentials: [{ username: username }, { password: password }],
+    };
+  }
+
   cy.request({
     method: 'POST',
     url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',
     body: {
-      json: JSON.stringify({
-        plugin: 'anon',
-      }),
+      json: JSON.stringify(body),
     },
     form: true,
   }).then((response) => {

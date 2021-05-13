@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as log from 'loglevel';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import DownloadTabs from './downloadTab/downloadTab.component';
 
@@ -10,6 +11,7 @@ import {
 import ConfigProvider from './ConfigProvider';
 import { Preloader } from 'datagateway-common';
 import { DGThemeProvider } from 'datagateway-common';
+import AdminDownloadStatusTable from './downloadStatus/adminDownloadStatusTable.component';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwd',
@@ -59,7 +61,16 @@ class App extends Component<unknown, { hasError: boolean }> {
                   <Preloader loading={true}>Finished loading</Preloader>
                 }
               >
-                <DownloadTabs />
+                <Router>
+                  <Switch>
+                    <Route path="/admin-download">
+                      <AdminDownloadStatusTable />
+                    </Route>
+                    <Route path="/download">
+                      <DownloadTabs />
+                    </Route>
+                  </Switch>
+                </Router>
               </React.Suspense>
             </ConfigProvider>
           </DGThemeProvider>
