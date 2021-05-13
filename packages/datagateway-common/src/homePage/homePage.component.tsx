@@ -71,17 +71,11 @@ export interface HomePageProps {
   exploreImage: string;
   discoverImage: string;
   downloadImage: string;
-
-  [key: string]: string;
 }
 
 type CombinedHomePageProps = HomePageProps & WithStyles<typeof styles>;
 
 const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
-  const getString = (key: string): string => {
-    return props[key] !== undefined ? props[key] : key;
-  };
-
   return (
     <div id="dg-homepage">
       <div className={props.classes.bigImage}>
@@ -92,12 +86,12 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
             height: 250,
           }}
         >
-          <img src={props.logo} alt={getString('title')} />
+          <img src={props.logo} alt={props.title} />
         </div>
       </div>
       <div className={props.classes.howItWorks}>
         <Typography variant="h4" className={props.classes.howItWorksTitle}>
-          {getString('howLabel')}
+          {props.howLabel}
         </Typography>
 
         <Grid container spacing={3}>
@@ -111,7 +105,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
               variant="h5"
               className={props.classes.howItWorksGridItemTitle}
             >
-              {getString('exploreLabel')}
+              {props.exploreLabel}
             </Typography>
             <img
               src={props.exploreImage}
@@ -122,7 +116,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
               variant="body1"
               className={props.classes.howItWorksGridItemCaption}
             >
-              {getString('exploreDescription')}
+              {props.exploreDescription}
             </Typography>
           </Grid>
           <Grid
@@ -135,7 +129,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
               variant="h5"
               className={props.classes.howItWorksGridItemTitle}
             >
-              {getString('discoverLabel')}
+              {props.discoverLabel}
             </Typography>
             <img
               src={props.discoverImage}
@@ -146,7 +140,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
               variant="body1"
               className={props.classes.howItWorksGridItemCaption}
             >
-              {getString('discoverDescription')}
+              {props.discoverDescription}
             </Typography>
           </Grid>
           <Grid
@@ -159,7 +153,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
               variant="h5"
               className={props.classes.howItWorksGridItemTitle}
             >
-              {getString('downloadLabel')}
+              {props.downloadLabel}
             </Typography>
             <img
               src={props.downloadImage}
@@ -170,7 +164,7 @@ const HomePage = (props: CombinedHomePageProps): React.ReactElement => {
               variant="body1"
               className={props.classes.howItWorksGridItemCaption}
             >
-              {getString('downloadDescription')}
+              {props.downloadDescription}
             </Typography>
           </Grid>
         </Grid>

@@ -231,13 +231,13 @@ interface HomePageStateProps {
   pluginHostUrl: string | undefined;
 }
 
-const SafeHomePage = React.memo(
+const TranslatedHomePage = React.memo(
   (props: HomePageStateProps): React.ReactElement => {
-    const SafeHomePage = HomePage;
+    const TranslatedHomePage = HomePage;
     const [t] = useTranslation();
 
     return (
-      <SafeHomePage
+      <TranslatedHomePage
         title={t('homePage.title')}
         howLabel={t('homePage.howLabel')}
         exploreLabel={t('homePage.exploreLabel')}
@@ -256,12 +256,15 @@ const SafeHomePage = React.memo(
   }
 );
 
-SafeHomePage.displayName = 'SafeHomePage';
+TranslatedHomePage.displayName = 'TranslatedHomePage';
+
 const mapStateToProps = (state: StateType): HomePageStateProps => ({
   pluginHostUrl: state.dgdataview.pluginHostUrl,
 });
 
-const ConnectedSafeHomePage = connect(mapStateToProps)(SafeHomePage);
+const ConnectedTranslatedHomePage = connect(mapStateToProps)(
+  TranslatedHomePage
+);
 
 interface PageRoutingProps {
   view: ViewsType;
@@ -272,7 +275,11 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
   public render(): React.ReactNode {
     return (
       <Switch location={this.props.location}>
-        <Route exact path={paths.homepage} component={ConnectedSafeHomePage} />
+        <Route
+          exact
+          path={paths.homepage}
+          component={ConnectedTranslatedHomePage}
+        />
         <Route
           exact
           path="/"

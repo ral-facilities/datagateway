@@ -478,47 +478,56 @@ class PageContainer extends React.Component<
   public render(): React.ReactElement {
     return (
       <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-        <NavBar
-          entityCount={this.props.entityCount}
-          cartItems={this.props.cartItems}
-          navigateToSearch={this.props.navigateToSearch}
-          navigateToDownload={this.props.navigateToDownload}
-        />
-
-        <StyledGrid container>
-          {/* Toggle between the table and card view */}
-          <Grid item xs={12}>
-            <Route
-              exact
-              path={this.state.paths}
-              render={() => (
-                <CardSwitch
-                  toggleCard={this.state.toggleCard}
-                  handleToggleChange={this.handleToggleChange}
-                />
-              )}
+        {this.props.location.pathname === paths.homepage ? (
+          <PageRouting
+            view={this.props.savedView}
+            location={this.props.location}
+          />
+        ) : (
+          <>
+            <NavBar
+              entityCount={this.props.entityCount}
+              cartItems={this.props.cartItems}
+              navigateToSearch={this.props.navigateToSearch}
+              navigateToDownload={this.props.navigateToDownload}
             />
-          </Grid>
 
-          {/* Show loading progress if data is still being loaded */}
-          {this.props.loading && (
-            <Grid item xs={12}>
-              <LinearProgress color="secondary" />
-            </Grid>
-          )}
+            <StyledGrid container>
+              {/* Toggle between the table and card view */}
+              <Grid item xs={12}>
+                <Route
+                  exact
+                  path={this.state.paths}
+                  render={() => (
+                    <CardSwitch
+                      toggleCard={this.state.toggleCard}
+                      handleToggleChange={this.handleToggleChange}
+                    />
+                  )}
+                />
+              </Grid>
 
-          {/* Hold the table for remainder of the page */}
-          <Grid item xs={12} aria-label="container-table">
-            {document.getElementById('datagateway-dataview') && (
-              <ViewRouting
-                view={this.props.query.view}
-                loadedCount={this.props.loadedCount}
-                totalDataCount={this.props.totalDataCount}
-                location={this.state.modifiedLocation}
-              />
-            )}
-          </Grid>
-        </StyledGrid>
+              {/* Show loading progress if data is still being loaded */}
+              {this.props.loading && (
+                <Grid item xs={12}>
+                  <LinearProgress color="secondary" />
+                </Grid>
+              )}
+
+              {/* Hold the table for remainder of the page */}
+              <Grid item xs={12} aria-label="container-table">
+                {document.getElementById('datagateway-dataview') && (
+                  <ViewRouting
+                    view={this.props.query.view}
+                    loadedCount={this.props.loadedCount}
+                    totalDataCount={this.props.totalDataCount}
+                    location={this.state.modifiedLocation}
+                  />
+                )}
+              </Grid>
+            </StyledGrid>
+          </>
+        )}
       </Paper>
     );
   }
