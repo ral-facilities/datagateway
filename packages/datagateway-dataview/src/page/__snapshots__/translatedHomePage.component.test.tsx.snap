@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Home page component homepage renders correctly 1`] = `
+exports[`HomePage translated homepage renders correctly 1`] = `
 <div
   id="dg-homepage"
 >
@@ -10,15 +10,15 @@ exports[`Home page component homepage renders correctly 1`] = `
     <div
       style={
         Object {
-          "backgroundImage": "url(test-backgroundImage)",
+          "backgroundImage": "url(testbackground.jpg)",
           "height": 250,
           "width": "100%",
         }
       }
     >
       <img
-        alt="test-title"
-        src="test-logo"
+        alt="homePage.title"
+        src="testdatgateway-white-text-blue-mark-logo.svg"
       />
     </div>
   </div>
@@ -29,7 +29,7 @@ exports[`Home page component homepage renders correctly 1`] = `
       className="HomePage-howItWorksTitle-3"
       variant="h4"
     >
-      test-howLabel
+      homePage.howLabel
     </WithStyles(ForwardRef(Typography))>
     <WithStyles(ForwardRef(Grid))
       container={true}
@@ -45,18 +45,18 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5"
           variant="h5"
         >
-          test-exploreLabel
+          homePage.exploreLabel
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6"
-          src="test-exploreImage"
+          src="testexplore.jpg"
         />
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7"
           variant="body1"
         >
-          test-exploreDescription
+          homePage.exploreDescription
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -69,18 +69,18 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5"
           variant="h5"
         >
-          test-discoverLabel
+          homePage.discoverLabel
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6"
-          src="test-discoverImage"
+          src="testdiscover.jpg"
         />
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7"
           variant="body1"
         >
-          test-discoverDescription
+          homePage.discoverDescription
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -93,18 +93,18 @@ exports[`Home page component homepage renders correctly 1`] = `
           className="HomePage-howItWorksGridItemTitle-5"
           variant="h5"
         >
-          test-downloadLabel
+          homePage.downloadLabel
         </WithStyles(ForwardRef(Typography))>
         <img
           alt=""
           className="HomePage-howItWorksGridItemImage-6"
-          src="test-downloadImage"
+          src="testdownload.jpg"
         />
         <WithStyles(ForwardRef(Typography))
           className="HomePage-howItWorksGridItemCaption-7"
           variant="body1"
         >
-          test-downloadDescription
+          homePage.downloadDescription
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>

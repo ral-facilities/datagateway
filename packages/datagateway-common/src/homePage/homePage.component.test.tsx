@@ -10,15 +10,19 @@ describe('Home page component', () => {
     shallow = createShallow({ untilSelector: 'div' });
 
     props = {
-      classes: {
-        bigImage: 'bigImage-class',
-        howItWorks: 'howItWorks-class',
-        howItWorksTitle: 'howItWorksTitle-class',
-        howItWorksGridItem: 'howItWorksGridItem-class',
-        howItWorksGridItemTitle: 'howItWorksGridItemTitle-class',
-        howItWorksGridItemImage: 'howItWorksGridItemImage-class',
-        howItWorksGridItemCaption: 'howItWorksGridItemCaption-class',
-      },
+      title: 'test-title',
+      howLabel: 'test-howLabel',
+      exploreLabel: 'test-exploreLabel',
+      exploreDescription: 'test-exploreDescription',
+      discoverLabel: 'test-discoverLabel',
+      discoverDescription: 'test-discoverDescription',
+      downloadLabel: 'test-downloadLabel',
+      downloadDescription: 'test-downloadDescription',
+      logo: 'test-logo',
+      backgroundImage: 'test-backgroundImage',
+      exploreImage: 'test-exploreImage',
+      discoverImage: 'test-discoverImage',
+      downloadImage: 'test-downloadImage',
     };
   });
 

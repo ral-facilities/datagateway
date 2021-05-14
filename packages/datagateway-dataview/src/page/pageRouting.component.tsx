@@ -44,15 +44,7 @@ import {
 } from './idCheckFunctions';
 
 import { paths } from './pageContainer.component';
-import { ViewsType, HomePage } from 'datagateway-common';
-import DGLogo from 'datagateway-common/src/images/datgateway-white-text-blue-mark-logo.svg';
-import BackgroundImage from 'datagateway-common/src/images/background.jpg';
-import ExploreImage from 'datagateway-common/src/images/explore.jpg';
-import DiscoverImage from 'datagateway-common/src/images/discover.jpg';
-import DownloadImage from 'datagateway-common/src/images/download.jpg';
-import { StateType } from '../state/app.types';
-import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import { ViewsType } from 'datagateway-common';
 
 const SafeDatafileTable = React.memo(
   (props: {
@@ -227,45 +219,6 @@ const SafeDLSDatasetsCardView = React.memo(
 );
 SafeDLSDatasetsCardView.displayName = 'SafeDLSDatasetsCardView';
 
-interface HomePageStateProps {
-  pluginHostUrl: string | undefined;
-}
-
-const TranslatedHomePage = React.memo(
-  (props: HomePageStateProps): React.ReactElement => {
-    const TranslatedHomePage = HomePage;
-    const [t] = useTranslation();
-
-    return (
-      <TranslatedHomePage
-        title={t('homePage.title')}
-        howLabel={t('homePage.howLabel')}
-        exploreLabel={t('homePage.exploreLabel')}
-        exploreDescription={t('homePage.exploreDescription')}
-        discoverLabel={t('homePage.discoverLabel')}
-        discoverDescription={t('homePage.discoverDescription')}
-        downloadLabel={t('homePage.downloadLabel')}
-        downloadDescription={t('homePage.downloadDescription')}
-        logo={props.pluginHostUrl + DGLogo}
-        backgroundImage={props.pluginHostUrl + BackgroundImage}
-        exploreImage={props.pluginHostUrl + ExploreImage}
-        discoverImage={props.pluginHostUrl + DiscoverImage}
-        downloadImage={props.pluginHostUrl + DownloadImage}
-      />
-    );
-  }
-);
-
-TranslatedHomePage.displayName = 'TranslatedHomePage';
-
-const mapStateToProps = (state: StateType): HomePageStateProps => ({
-  pluginHostUrl: state.dgdataview.pluginHostUrl,
-});
-
-export const ConnectedTranslatedHomePage = connect(mapStateToProps)(
-  TranslatedHomePage
-);
-
 interface PageRoutingProps {
   view: ViewsType;
   location: LocationType;
@@ -275,11 +228,6 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
   public render(): React.ReactNode {
     return (
       <Switch location={this.props.location}>
-        <Route
-          exact
-          path={paths.homepage}
-          component={ConnectedTranslatedHomePage}
-        />
         <Route
           exact
           path="/"
