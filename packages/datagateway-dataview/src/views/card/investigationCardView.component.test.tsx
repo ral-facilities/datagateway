@@ -1,7 +1,7 @@
 import {
   Card,
   Chip,
-  ExpansionPanel,
+  Accordion,
   Link,
   ListItemText,
   SvgIcon,
@@ -47,13 +47,6 @@ describe('Investigation - Card View', () => {
     );
   };
 
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
-  // Prevent error logging
-  window.scrollTo = jest.fn();
-
   beforeEach(() => {
     mount = createMount();
     shallow = createShallow();
@@ -88,6 +81,19 @@ describe('Investigation - Card View', () => {
         },
       },
     };
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    (axios.post as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
+    (axios.delete as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: {} })
+    );
+    global.Date.now = jest.fn(() => 1);
+    // Prevent error logging
+    window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
@@ -224,7 +230,7 @@ describe('Investigation - Card View', () => {
     };
     const wrapper = createWrapper();
 
-    const typePanel = wrapper.find(ExpansionPanel).first();
+    const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');

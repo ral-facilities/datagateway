@@ -5,9 +5,9 @@ import {
   Chip,
   Collapse,
   Divider,
-  ExpansionPanel,
-  ExpansionPanelDetails,
-  ExpansionPanelSummary,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Link,
   Typography,
 } from '@material-ui/core';
@@ -357,24 +357,24 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
               aria-label="card-more-information"
               className={classes.moreInformation}
             >
-              <ExpansionPanel
+              <Accordion
                 square
                 elevation={1}
                 variant="outlined"
                 expanded={isMoreInfoCollapsed}
                 onChange={(e, expanded) => setMoreInfoCollapsed(expanded)}
               >
-                <ExpansionPanelSummary
+                <AccordionSummary
                   aria-label="card-more-info-expand"
                   expandIcon={<ExpandMoreIcon />}
                 >
                   <Typography>More Information</Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails aria-label="card-more-info-details">
+                </AccordionSummary>
+                <AccordionDetails aria-label="card-more-info-details">
                   {/* Only render if the expansion panel has been collapsed */}
                   {isMoreInfoCollapsed && moreInformation}
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+                </AccordionDetails>
+              </Accordion>
             </div>
           </div>
         )}

@@ -5,26 +5,33 @@ import { MemoryRouter } from 'react-router';
 
 import SearchPageTable from './searchPageTable';
 
-import { mount as enzymeMount } from 'enzyme';
-import { createMount } from '@material-ui/core/test-utils';
+import { mount as enzymeMount, shallow as enzymeShallow } from 'enzyme';
+import { createMount, createShallow } from '@material-ui/core/test-utils';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from './state/reducers/dgsearch.reducer';
 import { dGCommonInitialState } from 'datagateway-common';
 import { setCurrentTab } from './state/actions/actions';
+import axios from 'axios';
 
 describe('SearchPageTable', () => {
   let mount: typeof enzymeMount;
+  let shallow: typeof enzymeShallow;
   let state: StateType;
 
   beforeEach(() => {
     mount = createMount();
+    shallow = createShallow({ untilSelector: 'Paper' });
 
     state = JSON.parse(
       JSON.stringify({ dgsearch: initialState, dgcommon: dGCommonInitialState })
     );
 
     state.dgsearch.requestReceived = true;
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
   });
 
   it('renders SearchPageTable correctly before request', () => {
@@ -45,7 +52,7 @@ describe('SearchPageTable', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
-        currentTab: 'none',
+        currentTab: 'investigation',
       },
       searchData: {
         investigation: Array(1),
@@ -54,7 +61,7 @@ describe('SearchPageTable', () => {
       },
     };
     const mockStore = configureStore([thunk]);
-    const wrapper = mount(
+    const wrapper = shallow(
       <Provider store={mockStore(state)}>
         <SearchPageTable store={mockStore(state)} />
       </Provider>
@@ -69,7 +76,7 @@ describe('SearchPageTable', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
-        currentTab: 'none',
+        currentTab: 'investigation',
       },
     };
 
@@ -83,8 +90,9 @@ describe('SearchPageTable', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(setCurrentTab('investigation'));
+    expect(testStore.getActions()).toContainEqual(
+      setCurrentTab('investigation')
+    );
   });
 
   it('defaults to dataset tab when investigation tab is hidden', () => {
@@ -92,14 +100,14 @@ describe('SearchPageTable', () => {
       ...state.dgsearch,
       checkBox: {
         dataset: true,
-        datafile: true,
+        datafile: false,
         investigation: false,
       },
       tabs: {
         datasetTab: true,
-        datafileTab: true,
+        datafileTab: false,
         investigationTab: false,
-        currentTab: 'none',
+        currentTab: 'investigation',
       },
     };
 
@@ -132,7 +140,7 @@ describe('SearchPageTable', () => {
         datasetTab: false,
         datafileTab: true,
         investigationTab: false,
-        currentTab: 'none',
+        currentTab: 'investigation',
       },
     };
 
@@ -160,7 +168,7 @@ describe('SearchPageTable', () => {
         datasetTab: true,
         datafileTab: true,
         investigationTab: true,
-        currentTab: 'none',
+        currentTab: 'investigation',
       },
     };
     const mockStore = configureStore([thunk]);
@@ -173,15 +181,15 @@ describe('SearchPageTable', () => {
       </Provider>
     );
 
-    expect(testStore.getActions()).toHaveLength(1);
-    expect(testStore.getActions()[0]).toEqual(setCurrentTab('investigation'));
+    expect(testStore.getActions()).toContainEqual(
+      setCurrentTab('investigation')
+    );
 
     wrapper
       .find('[aria-controls="simple-tabpanel-dataset"]')
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()).toHaveLength(2);
-    expect(testStore.getActions()[1]).toEqual(setCurrentTab('dataset'));
+    expect(testStore.getActions()).toContainEqual(setCurrentTab('dataset'));
   });
 });

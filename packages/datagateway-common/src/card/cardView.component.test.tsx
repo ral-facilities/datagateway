@@ -1,7 +1,7 @@
 import {
   Button,
   Chip,
-  ExpansionPanel,
+  Accordion,
   ListItemText,
   Select,
   SvgIcon,
@@ -24,13 +24,6 @@ describe('Card View', () => {
   const createWrapper = (props: CardViewProps): ReactWrapper => {
     return mount(<CardView {...props} />);
   };
-
-  (axios.get as jest.Mock).mockImplementation(() =>
-    Promise.resolve({ data: [] })
-  );
-  global.Date.now = jest.fn(() => 1);
-  // Prevent error logging
-  window.scrollTo = jest.fn();
 
   const loadData = jest.fn();
   const onFilter = jest.fn();
@@ -64,6 +57,13 @@ describe('Card View', () => {
       onFilter: onFilter,
       pushQuery: pushQuery,
     };
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
+    );
+    global.Date.now = jest.fn(() => 1);
+    // Prevent error logging
+    window.scrollTo = jest.fn();
   });
 
   afterEach(() => {
@@ -90,7 +90,7 @@ describe('Card View', () => {
     expect(wrapper.find('#card').find(Chip).text()).toEqual('1');
 
     // Open custom filters
-    const typePanel = wrapper.find(ExpansionPanel).first();
+    const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');
@@ -108,6 +108,10 @@ describe('Card View', () => {
       ...updatedProps,
       query: { ...updatedProps.query, page: 1, filters: { TYPE_ID: ['1'] } },
     };
+
+    // Mock console.error() when updating the filter panels. We use Accordions
+    // with dynamic default values, which works, but would log an error.
+    jest.spyOn(console, 'error').mockImplementationOnce(jest.fn());
     wrapper.setProps(updatedProps);
 
     // Apply second filter
@@ -163,7 +167,7 @@ describe('Card View', () => {
     expect(wrapper.find('#card').find(Chip).text()).toEqual('1');
 
     // Open custom filters
-    const typePanel = wrapper.find(ExpansionPanel).first();
+    const typePanel = wrapper.find(Accordion).first();
     typePanel.simulate('click');
     expect(typePanel.find(Chip).first().text()).toEqual('1');
     expect(typePanel.find(Chip).last().text()).toEqual('2');

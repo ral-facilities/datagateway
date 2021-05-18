@@ -20,7 +20,7 @@ exports[`withIdCheck renders error when checkingPromise does not resolve to be t
     item={true}
     justify="center"
   >
-    <BugReportIcon
+    <Memo(ForwardRef(BugReportIcon))
       className="WithIdCheckComponent-bugIcon-14"
     />
     <WithStyles(ForwardRef(Typography))
@@ -85,7 +85,7 @@ exports[`withIdCheck renders error when checkingPromise is rejected 1`] = `
     item={true}
     justify="center"
   >
-    <BugReportIcon
+    <Memo(ForwardRef(BugReportIcon))
       className="WithIdCheckComponent-bugIcon-10"
     />
     <WithStyles(ForwardRef(Typography))

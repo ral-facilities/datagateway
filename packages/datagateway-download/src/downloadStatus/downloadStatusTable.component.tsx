@@ -9,7 +9,7 @@ import {
   TableActionProps,
   DateColumnFilter,
 } from 'datagateway-common';
-import { fetchDownloads, downloadDeleted } from '../downloadApi';
+import { fetchDownloads, downloadDeleted, getDataUrl } from '../downloadApi';
 import { TableCellProps } from 'react-virtualized';
 import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
@@ -62,6 +62,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         }).then((downloads) => {
           // Replace the status field here
           const formattedDownloads = downloads.map((download) => {
+            const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
             let formattedStatus = '';
             switch (download.status) {
               case 'COMPLETE':
@@ -80,7 +81,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 formattedStatus = t('downloadStatus.restoring');
                 break;
             }
-            return { ...download, status: formattedStatus };
+            return {
+              ...download,
+              status: formattedStatus,
+              isDeleted: formattedIsDeleted,
+            };
           });
           setData([...formattedDownloads].reverse());
           setDataLoaded(true);
@@ -221,13 +226,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
     return filteredData.sort(sortDownloadItems);
   }, [data, sort, filters]);
 
-  const getDataUrl = (preparedId: string, fileName: string): string => {
-    // Construct a link to download the prepared cart.
-    return `${settings.idsUrl}/getData?sessionId=${window.localStorage.getItem(
-      'icat:token'
-    )}&preparedId=${preparedId}&outname=${fileName}`;
-  };
-
   return (
     <Grid container direction="column">
       {/* Show loading progress if data is still being loaded */}
@@ -318,7 +316,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                           component="a"
                           href={getDataUrl(
                             downloadItem.preparedId as string,
-                            downloadItem.fileName as string
+                            downloadItem.fileName as string,
+                            settings.idsUrl as string
                           )}
                           target="_blank"
                           aria-label={t('downloadStatus.download', {

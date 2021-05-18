@@ -17,26 +17,26 @@ exports[`Datafile table component renders correctly 1`] = `
       Object {
         "dataKey": "NAME",
         "filterComponent": [Function],
-        "icon": <Memo(TitleIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.name",
       },
       Object {
         "dataKey": "LOCATION",
         "filterComponent": [Function],
-        "icon": <Memo(ExploreIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "FILESIZE",
-        "icon": <Memo(SaveIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.size",
       },
       Object {
         "dataKey": "MOD_TIME",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
-        "icon": <Memo(CalendarTodayIcon) />,
+        "icon": <Memo />,
         "label": "datafiles.modified_time",
       },
     ]

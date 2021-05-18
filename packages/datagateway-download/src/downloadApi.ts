@@ -177,6 +177,32 @@ export const fetchDownloads: (
     });
 };
 
+export const fetchAdminDownloads: (
+  settings: { facilityName: string; downloadApiUrl: string },
+  queryOffset?: string
+) => Promise<Download[]> = (
+  settings: { facilityName: string; downloadApiUrl: string },
+  queryOffset?: string
+) => {
+  return axios
+    .get<Download[]>(`${settings.downloadApiUrl}/admin/downloads`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: settings.facilityName,
+        queryOffset: !queryOffset
+          ? 'where download.isDeleted = false'
+          : queryOffset,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      handleICATError(error);
+      return [];
+    });
+};
+
 export const getDownload: (
   downloadId: number,
   settings: { facilityName: string; downloadApiUrl: string }
@@ -211,19 +237,9 @@ export const downloadPreparedCart: (
   fileName: string,
   settings: { idsUrl: string }
 ) => {
-  // We need to set the preparedId and outname query parameters
-  // for the IDS download.
-  const params = {
-    sessionId: readSciGatewayToken().sessionId,
-    preparedId: preparedId,
-    outname: fileName,
-  };
-
   // Create our IDS link from the query parameters.
   const link = document.createElement('a');
-  link.href = `${settings.idsUrl}/getData?${Object.entries(params)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&')}`;
+  link.href = getDataUrl(preparedId, fileName, settings.idsUrl);
 
   // We trigger an immediate download which will begin in a new tab.
   link.style.display = 'none';
@@ -293,6 +309,72 @@ export const downloadDeleted: (
   return axios
     .put(
       `${settings.downloadApiUrl}/user/download/${downloadId}/isDeleted`,
+      params
+    )
+    .then(() => {
+      // do nothing
+    })
+    .catch((error) => {
+      handleICATError(error);
+    });
+};
+
+export const adminDownloadDeleted: (
+  downloadId: number,
+  deleted: boolean,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => Promise<void> = (
+  downloadId: number,
+  deleted: boolean,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => {
+  const params = new URLSearchParams();
+  params.append('facilityName', settings.facilityName);
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('value', JSON.stringify(deleted));
+
+  return axios
+    .put(
+      `${settings.downloadApiUrl}/admin/download/${downloadId}/isDeleted`,
+      params
+    )
+    .then(() => {
+      // do nothing
+    })
+    .catch((error) => {
+      handleICATError(error);
+    });
+};
+
+export const adminDownloadStatus: (
+  downloadId: number,
+  status: string,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => Promise<void> = (
+  downloadId: number,
+  status: string,
+  settings: {
+    facilityName: string;
+    downloadApiUrl: string;
+  }
+) => {
+  const params = new URLSearchParams();
+  params.append('facilityName', settings.facilityName);
+  params.append('sessionId', readSciGatewayToken().sessionId || '');
+  params.append('value', status);
+
+  return axios
+    .put(
+      `${settings.downloadApiUrl}/admin/download/${downloadId}/status`,
       params
     )
     .then(() => {
@@ -470,4 +552,15 @@ export const getCartSize: (
       0
     )
   );
+};
+
+export const getDataUrl = (
+  preparedId: string,
+  fileName: string,
+  idsUrl: string
+): string => {
+  // Construct a link to download the prepared cart.
+  return `${idsUrl}/getData?sessionId=${
+    readSciGatewayToken().sessionId
+  }&preparedId=${preparedId}&outname=${fileName}`;
 };

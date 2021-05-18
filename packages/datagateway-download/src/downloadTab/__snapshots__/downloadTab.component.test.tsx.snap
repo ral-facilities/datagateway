@@ -69,7 +69,7 @@ exports[`DownloadTab renders correctly 1`] = `
               color="secondary"
               onClick={[Function]}
             >
-              <RefreshIcon />
+              <Memo(ForwardRef(RefreshIcon)) />
             </WithStyles(ForwardRef(IconButton))>
           </BlackTooltip>
           <p

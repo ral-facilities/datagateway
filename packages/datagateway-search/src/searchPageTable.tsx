@@ -103,15 +103,13 @@ const SearchPageTable = (
   const [t] = useTranslation();
 
   useEffect(() => {
-    let newState = 'none';
     if (investigationTab) {
-      newState = 'investigation';
+      setCurrentTab('investigation');
     } else if (datasetTab) {
-      newState = 'dataset';
+      setCurrentTab('dataset');
     } else if (datafileTab) {
-      newState = 'datafile';
+      setCurrentTab('datafile');
     }
-    setCurrentTab(newState);
   }, [setCurrentTab, investigationTab, datasetTab, datafileTab]);
 
   const handleChange = (
@@ -161,7 +159,9 @@ const SearchPageTable = (
                 value="investigation"
                 {...a11yProps('investigation')}
               />
-            ) : null}
+            ) : (
+              <Tab value="investigation" style={{ display: 'none' }} />
+            )}
             {datasetTab ? (
               <Tab
                 label={
@@ -188,7 +188,9 @@ const SearchPageTable = (
                 value="dataset"
                 {...a11yProps('dataset')}
               />
-            ) : null}
+            ) : (
+              <Tab value="dataset" style={{ display: 'none' }} />
+            )}
             {datafileTab ? (
               <Tab
                 label={
@@ -215,7 +217,9 @@ const SearchPageTable = (
                 value="datafile"
                 {...a11yProps('datafile')}
               />
-            ) : null}
+            ) : (
+              <Tab value="datafile" style={{ display: 'none' }} />
+            )}
           </Tabs>
         </AppBar>
 

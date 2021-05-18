@@ -23,6 +23,9 @@ import { push } from 'connected-react-router';
 import PageContainer from './pageContainer.component';
 import { Provider } from 'react-redux';
 import { checkInvestigationId } from './idCheckFunctions';
+import axios from 'axios';
+import { act } from 'react-dom/test-utils';
+import { flushPromises } from '../setupTests';
 
 jest.mock('loglevel');
 jest.mock('./idCheckFunctions');
@@ -54,6 +57,10 @@ describe('PageContainer - Tests', () => {
           location: createLocation('/'),
         },
       })
+    );
+
+    (axios.get as jest.Mock).mockImplementation(() =>
+      Promise.resolve({ data: [] })
     );
   });
 
@@ -180,7 +187,7 @@ describe('PageContainer - Tests', () => {
     expect(wrapper.exists(LinearProgress)).toBeTruthy();
   });
 
-  it('display filter warning on datafile table', () => {
+  it('display filter warning on datafile table', async () => {
     // Mock getElementById so that it returns truthy.
     const testElement = document.createElement('DIV');
     document.getElementById = jest.fn(() => testElement);
@@ -219,6 +226,10 @@ describe('PageContainer - Tests', () => {
         </MemoryRouter>
       </Provider>
     );
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
     expect(
       wrapper.find('[aria-label="filter-message"]').first().text()
     ).toEqual('loading.filter_message');

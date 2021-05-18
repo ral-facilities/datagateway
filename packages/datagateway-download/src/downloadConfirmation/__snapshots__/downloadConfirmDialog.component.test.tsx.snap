@@ -572,7 +572,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                     class="MuiTypography-root MuiTypography-body1"
                                     id="confirm-access-method-https-description"
                                   >
-                                    Example description for HTTPS access method.
+                                    Example description for 
+                                    <b>
+                                      HTTPS
+                                    </b>
+                                     access method.
                                   </p>
                                 </span>
                               </div>
@@ -1001,7 +1005,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                     <span
                                                       className="MuiIconButton-label"
                                                     >
-                                                      <ForwardRef>
+                                                      <ForwardRef(CloseIcon)>
                                                         <WithStyles(ForwardRef(SvgIcon))>
                                                           <ForwardRef(SvgIcon)
                                                             classes={
@@ -1030,7 +1034,7 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                             </svg>
                                                           </ForwardRef(SvgIcon)>
                                                         </WithStyles(ForwardRef(SvgIcon))>
-                                                      </ForwardRef>
+                                                      </ForwardRef(CloseIcon)>
                                                     </span>
                                                     <WithStyles(memo)
                                                       center={true}
@@ -2771,7 +2775,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                                                                           class="MuiTypography-root MuiTypography-body1"
                                                                                                           id="confirm-access-method-https-description"
                                                                                                         >
-                                                                                                          Example description for HTTPS access method.
+                                                                                                          Example description for 
+                                                                                                          <b>
+                                                                                                            HTTPS
+                                                                                                          </b>
+                                                                                                           access method.
                                                                                                         </p>
                                                                                                       </span>
                                                                                                     </div>
@@ -3077,6 +3085,11 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                         </ForwardRef(Typography)>
                                                       </WithStyles(ForwardRef(Typography))>
                                                       <WithStyles(ForwardRef(Typography))
+                                                        dangerouslySetInnerHTML={
+                                                          Object {
+                                                            "__html": "Example description for <b>HTTPS</b> access method.",
+                                                          }
+                                                        }
                                                         id="confirm-access-method-https-description"
                                                       >
                                                         <ForwardRef(Typography)
@@ -3114,14 +3127,22 @@ exports[`DownloadConfirmDialog does not load the download speed/time table when 
                                                               "subtitle2": "MuiTypography-subtitle2",
                                                             }
                                                           }
+                                                          dangerouslySetInnerHTML={
+                                                            Object {
+                                                              "__html": "Example description for <b>HTTPS</b> access method.",
+                                                            }
+                                                          }
                                                           id="confirm-access-method-https-description"
                                                         >
                                                           <p
                                                             className="MuiTypography-root MuiTypography-body1"
+                                                            dangerouslySetInnerHTML={
+                                                              Object {
+                                                                "__html": "Example description for <b>HTTPS</b> access method.",
+                                                              }
+                                                            }
                                                             id="confirm-access-method-https-description"
-                                                          >
-                                                            Example description for HTTPS access method.
-                                                          </p>
+                                                          />
                                                         </ForwardRef(Typography)>
                                                       </WithStyles(ForwardRef(Typography))>
                                                     </span>
@@ -4472,7 +4493,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                     class="MuiTypography-root MuiTypography-body1"
                                     id="confirm-access-method-https-description"
                                   >
-                                    Example description for HTTPS access method.
+                                    Example description for 
+                                    <b>
+                                      HTTPS
+                                    </b>
+                                     access method.
                                   </p>
                                 </span>
                               </div>
@@ -4952,7 +4977,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                     <span
                                                       className="MuiIconButton-label"
                                                     >
-                                                      <ForwardRef>
+                                                      <ForwardRef(CloseIcon)>
                                                         <WithStyles(ForwardRef(SvgIcon))>
                                                           <ForwardRef(SvgIcon)
                                                             classes={
@@ -4981,7 +5006,7 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                             </svg>
                                                           </ForwardRef(SvgIcon)>
                                                         </WithStyles(ForwardRef(SvgIcon))>
-                                                      </ForwardRef>
+                                                      </ForwardRef(CloseIcon)>
                                                     </span>
                                                     <WithStyles(memo)
                                                       center={true}
@@ -6722,7 +6747,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                                                                           class="MuiTypography-root MuiTypography-body1"
                                                                                                           id="confirm-access-method-https-description"
                                                                                                         >
-                                                                                                          Example description for HTTPS access method.
+                                                                                                          Example description for 
+                                                                                                          <b>
+                                                                                                            HTTPS
+                                                                                                          </b>
+                                                                                                           access method.
                                                                                                         </p>
                                                                                                       </span>
                                                                                                     </div>
@@ -7079,6 +7108,11 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                         </ForwardRef(Typography)>
                                                       </WithStyles(ForwardRef(Typography))>
                                                       <WithStyles(ForwardRef(Typography))
+                                                        dangerouslySetInnerHTML={
+                                                          Object {
+                                                            "__html": "Example description for <b>HTTPS</b> access method.",
+                                                          }
+                                                        }
                                                         id="confirm-access-method-https-description"
                                                       >
                                                         <ForwardRef(Typography)
@@ -7116,14 +7150,22 @@ exports[`DownloadConfirmDialog renders correctly 1`] = `
                                                               "subtitle2": "MuiTypography-subtitle2",
                                                             }
                                                           }
+                                                          dangerouslySetInnerHTML={
+                                                            Object {
+                                                              "__html": "Example description for <b>HTTPS</b> access method.",
+                                                            }
+                                                          }
                                                           id="confirm-access-method-https-description"
                                                         >
                                                           <p
                                                             className="MuiTypography-root MuiTypography-body1"
+                                                            dangerouslySetInnerHTML={
+                                                              Object {
+                                                                "__html": "Example description for <b>HTTPS</b> access method.",
+                                                              }
+                                                            }
                                                             id="confirm-access-method-https-description"
-                                                          >
-                                                            Example description for HTTPS access method.
-                                                          </p>
+                                                          />
                                                         </ForwardRef(Typography)>
                                                       </WithStyles(ForwardRef(Typography))>
                                                     </span>
