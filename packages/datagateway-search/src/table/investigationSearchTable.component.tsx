@@ -18,6 +18,9 @@ import {
   filterTable,
   clearTable,
   tableLink,
+  handleICATError,
+  readSciGatewayToken,
+  FacilityCycle,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
@@ -25,6 +28,7 @@ import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 interface InvestigationTableProps {
   sort: {
@@ -40,6 +44,7 @@ interface InvestigationTableProps {
   cartItems: DownloadCartItem[];
   allIds: number[];
   luceneData: number[];
+  apiUrl: string;
 }
 
 interface InvestigationTableDispatchProps {
@@ -77,7 +82,10 @@ const InvestigationSearchTable = (
     luceneData,
     loading,
     hierarchy,
+    apiUrl,
   } = props;
+
+  const [facilityCycles, setFacilityCycles] = React.useState([]);
 
   const [t] = useTranslation();
 
@@ -87,6 +95,8 @@ const InvestigationSearchTable = (
       investigationData.title
     );
 
+  // TODO Sam - remove below line
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const isisLink = (
     investigationData: Investigation
   ): React.ReactElement | string => {
@@ -99,20 +109,17 @@ const InvestigationSearchTable = (
       return investigationData.title;
     }
 
-    if (
-      investigationData.startDate &&
-      investigationData.facility?.facilityCycles?.length
-    ) {
-      const facilityCycles = investigationData.facility.facilityCycles.filter(
-        (facilityCycle) =>
+    if (investigationData.startDate && facilityCycles.length) {
+      const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
+        (facilityCycle: FacilityCycle) =>
           investigationData.startDate &&
           facilityCycle.startDate &&
           facilityCycle.endDate &&
           investigationData.startDate >= facilityCycle.startDate &&
           investigationData.startDate <= facilityCycle.endDate
       );
-      if (facilityCycles.length) {
-        facilityCycleId = facilityCycles[0].id;
+      if (filteredFacilityCycles.length) {
+        facilityCycleId = filteredFacilityCycles[0].id;
       }
     }
 
@@ -140,7 +147,8 @@ const InvestigationSearchTable = (
     } else {
       return genericLink;
     }
-  }, [hierarchy]);
+  }, [hierarchy, isisLink]);
+  // TODO Sam - change above line to [hierarchy]
 
   const selectedRows = React.useMemo(
     () =>
@@ -171,6 +179,28 @@ const InvestigationSearchTable = (
       }
     />
   );
+
+  // TODO Sam - remove below line
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchFacilityCycles = (): void => {
+    axios
+      .get(`${apiUrl}/facilitycycles`, {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        setFacilityCycles(response.data);
+      })
+      .catch((error) => {
+        handleICATError(error);
+      });
+  };
+
+  React.useEffect(() => {
+    fetchFacilityCycles();
+  }, [fetchFacilityCycles]);
+  // TODO Sam - change above line to []
 
   React.useEffect(() => {
     clearTable();
@@ -358,6 +388,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
     luceneData: state.dgsearch.searchData.investigation,
+    apiUrl: state.dgcommon.urls.apiUrl,
   };
 };
 
