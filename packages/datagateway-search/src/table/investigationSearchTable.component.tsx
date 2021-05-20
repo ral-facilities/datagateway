@@ -95,43 +95,42 @@ const InvestigationSearchTable = (
       investigationData.title
     );
 
-  // TODO Sam - remove below line
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const isisLink = (
-    investigationData: Investigation
-  ): React.ReactElement | string => {
-    let instrumentId;
-    let facilityCycleId;
-    if (investigationData.investigationInstruments?.length) {
-      instrumentId =
-        investigationData.investigationInstruments[0].instrument?.id;
-    } else {
-      return investigationData.title;
-    }
-
-    if (investigationData.startDate && facilityCycles.length) {
-      const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
-        (facilityCycle: FacilityCycle) =>
-          investigationData.startDate &&
-          facilityCycle.startDate &&
-          facilityCycle.endDate &&
-          investigationData.startDate >= facilityCycle.startDate &&
-          investigationData.startDate <= facilityCycle.endDate
-      );
-      if (filteredFacilityCycles.length) {
-        facilityCycleId = filteredFacilityCycles[0].id;
+  const isisLink = React.useCallback(
+    (investigationData: Investigation) => {
+      let instrumentId;
+      let facilityCycleId;
+      if (investigationData.investigationInstruments?.length) {
+        instrumentId =
+          investigationData.investigationInstruments[0].instrument?.id;
+      } else {
+        return investigationData.title;
       }
-    }
 
-    if (facilityCycleId) {
-      return tableLink(
-        `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`,
-        investigationData.title
-      );
-    } else {
-      return investigationData.title;
-    }
-  };
+      if (investigationData.startDate && facilityCycles.length) {
+        const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
+          (facilityCycle: FacilityCycle) =>
+            investigationData.startDate &&
+            facilityCycle.startDate &&
+            facilityCycle.endDate &&
+            investigationData.startDate >= facilityCycle.startDate &&
+            investigationData.startDate <= facilityCycle.endDate
+        );
+        if (filteredFacilityCycles.length) {
+          facilityCycleId = filteredFacilityCycles[0].id;
+        }
+      }
+
+      if (facilityCycleId) {
+        return tableLink(
+          `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`,
+          investigationData.title
+        );
+      } else {
+        return investigationData.title;
+      }
+    },
+    [facilityCycles]
+  );
 
   const genericLink = (investigationData: Investigation): React.ReactElement =>
     tableLink(
@@ -148,7 +147,6 @@ const InvestigationSearchTable = (
       return genericLink;
     }
   }, [hierarchy, isisLink]);
-  // TODO Sam - change above line to [hierarchy]
 
   const selectedRows = React.useMemo(
     () =>
@@ -180,9 +178,7 @@ const InvestigationSearchTable = (
     />
   );
 
-  // TODO Sam - remove below line
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchFacilityCycles = (): void => {
+  const fetchFacilityCycles = React.useCallback(() => {
     axios
       .get(`${apiUrl}/facilitycycles`, {
         headers: {
@@ -195,12 +191,11 @@ const InvestigationSearchTable = (
       .catch((error) => {
         handleICATError(error);
       });
-  };
+  }, [apiUrl]);
 
   React.useEffect(() => {
-    fetchFacilityCycles();
-  }, [fetchFacilityCycles]);
-  // TODO Sam - change above line to []
+    if (hierarchy === 'isis') fetchFacilityCycles();
+  }, [apiUrl, fetchFacilityCycles, hierarchy]);
 
   React.useEffect(() => {
     clearTable();
