@@ -171,21 +171,19 @@ const ISISMyDataTable = (
 
   const urlPrefix = (investigationData: Investigation): string => {
     if (
-      investigationData.INVESTIGATIONINSTRUMENT &&
-      investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT &&
-      investigationData.FACILITY &&
-      investigationData.FACILITY.FACILITYCYCLE
+      investigationData?.investigationInstruments?.[0]?.instrument &&
+      investigationData?.facility?.facilityCycles
     ) {
-      const facilityCycle = investigationData.FACILITY.FACILITYCYCLE.find(
+      const facilityCycle = investigationData.facility.facilityCycles.find(
         (facilitycycle) =>
-          facilitycycle.STARTDATE &&
-          facilitycycle.ENDDATE &&
-          investigationData.STARTDATE &&
-          facilitycycle.STARTDATE <= investigationData.STARTDATE &&
-          facilitycycle.ENDDATE >= investigationData.STARTDATE
+          facilitycycle.startDate &&
+          facilitycycle.endDate &&
+          investigationData.startDate &&
+          facilitycycle.startDate <= investigationData.startDate &&
+          facilitycycle.endDate >= investigationData.startDate
       );
       if (facilityCycle) {
-        return `/browse/instrument/${investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT.ID}/facilityCycle/${facilityCycle.ID}/investigation`;
+        return `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation`;
       }
     }
     return '';
