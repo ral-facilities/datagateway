@@ -343,7 +343,7 @@ describe('ISIS Investigations table component', () => {
   });
 
   it('renders details panel without datasets link if Facility not set', () => {
-    state.dgcommon.data[0].FACILITY = {};
+    state.dgcommon.data[0].facility = {};
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>

@@ -78,7 +78,7 @@ const DatasetDetailsPanel = (
           <Tab
             id="dataset-datafiles-tab"
             label={t('datasets.details.datafiles')}
-            onClick={() => viewDatafiles(datasetData.ID)}
+            onClick={() => viewDatafiles(datasetData.id)}
           />
         )}
       </Tabs>

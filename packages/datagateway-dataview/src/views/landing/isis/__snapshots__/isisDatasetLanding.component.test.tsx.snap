@@ -8,17 +8,17 @@ exports[`ISIS Dataset Landing page renders correctly 1`] = `
     data={
       Array [
         Object {
-          "COMPLETE": true,
-          "CREATE_TIME": "2019-06-10",
-          "DESCRIPTION": "foo bar",
-          "DOI": "doi 1",
-          "ENDDATE": "2019-06-11",
-          "ID": 87,
+          "complete": true,
+          "createTime": "2019-06-10",
+          "description": "foo bar",
+          "doi": "doi 1",
+          "endDate": "2019-06-11",
+          "id": 87,
           "INVESTIGATION_ID": 1,
-          "MOD_TIME": "2019-06-10",
-          "NAME": "Test 1",
-          "SIZE": 1,
-          "STARTDATE": "2019-06-10",
+          "modTime": "2019-06-10",
+          "name": "Test 1",
+          "size": 1,
+          "startDate": "2019-06-10",
         },
       ]
     }

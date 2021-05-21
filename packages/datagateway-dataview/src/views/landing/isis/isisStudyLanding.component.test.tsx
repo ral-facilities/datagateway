@@ -19,89 +19,82 @@ describe('ISIS Study Landing page', () => {
 
   const investigationUser = [
     {
-      ID: 1,
-      USER_ID: 1,
+      id: 1,
       INVESTIGATION_ID: 1,
-      ROLE: 'principal_experimenter',
-      USER_: {
-        ID: 1,
-        NAME: 'JS',
-        FULLNAME: 'John Smith',
+      role: 'principal_experimenter',
+      user: {
+        id: 1,
+        name: 'JS',
+        fullName: 'John Smith',
       },
     },
     {
-      ID: 2,
-      USER_ID: 2,
+      id: 2,
       INVESTIGATION_ID: 1,
-      ROLE: 'local_contact',
-      USER_: {
-        ID: 2,
-        NAME: 'JS',
-        FULLNAME: 'Jane Smith',
+      role: 'local_contact',
+      user: {
+        id: 2,
+        name: 'JS',
+        fullName: 'Jane Smith',
       },
     },
     {
-      ID: 3,
-      USER_ID: 3,
+      id: 3,
       INVESTIGATION_ID: 1,
-      ROLE: 'experimenter',
-      USER_: {
-        ID: 3,
-        NAME: 'JS',
-        FULLNAME: 'Jesse Smith',
+      role: 'experimenter',
+      user: {
+        id: 3,
+        name: 'JS',
+        fullName: 'Jesse Smith',
       },
     },
     {
-      ID: 4,
-      USER_ID: 4,
+      id: 4,
       INVESTIGATION_ID: 4,
-      ROLE: 'experimenter',
-      USER_: {
-        ID: 4,
-        NAME: 'JS',
-        FULLNAME: '',
+      role: 'experimenter',
+      user: {
+        id: 4,
+        name: 'JS',
+        fullName: '',
       },
     },
   ];
 
   const investigationInstrument = [
     {
-      ID: 1,
+      id: 1,
       INVESTIGATION_ID: 1,
-      INSTRUMENT_ID: 3,
-      INSTRUMENT: {
-        ID: 3,
-        NAME: 'LARMOR',
-        FACILITY_ID: 1,
+      instrument: {
+        id: 3,
+        name: 'LARMOR',
       },
     },
   ];
 
   const study = {
-    ID: 7,
-    PID: 'study pid',
-    STARTDATE: '2019-06-10',
-    ENDDATE: '2019-06-11',
+    id: 7,
+    pid: 'study pid',
+    startDate: '2019-06-10',
+    endDate: '2019-06-11',
   };
 
   const investigation = {
-    ID: 1,
-    TITLE: 'Title 1',
-    NAME: 'Name 1',
-    SUMMARY: 'foo bar',
-    VISIT_ID: '1',
-    RB_NUMBER: '1',
-    DOI: 'doi 1',
-    SIZE: 1,
-    INVESTIGATIONINSTRUMENT: investigationInstrument,
-    STARTDATE: '2019-06-10',
-    ENDDATE: '2019-06-11',
+    id: 1,
+    title: 'Title 1',
+    name: 'Name 1',
+    summary: 'foo bar',
+    visitId: '1',
+    rbNumber: '1',
+    doi: 'doi 1',
+    size: 1,
+    investigationInstruments: investigationInstrument,
+    startDate: '2019-06-10',
+    endDate: '2019-06-11',
   };
 
   const initialData = [
     {
-      ID: 6,
-      STUDY_ID: 7,
+      id: 6,
       INVESTIGATION_ID: 1,
     },
   ];
@@ -209,10 +202,10 @@ describe('ISIS Study Landing page', () => {
           data: [
             {
               ...initialData,
-              STUDY: study,
-              INVESTIGATION: {
+              study: study,
+              investigation: {
                 ...investigation,
-                INVESTIGATIONUSER: [investigationUser[0]],
+                investigationUsers: [investigationUser[0]],
               },
             },
           ],
@@ -257,10 +250,10 @@ describe('ISIS Study Landing page', () => {
           data: [
             {
               ...initialData,
-              STUDY: study,
-              INVESTIGATION: {
+              study: study,
+              investigation: {
                 ...investigation,
-                INVESTIGATIONUSER: investigationUser,
+                investigationUsers: investigationUser,
               },
             },
           ],
@@ -296,7 +289,7 @@ describe('ISIS Study Landing page', () => {
       ...state,
       dgcommon: {
         ...state.dgcommon,
-        data: [{ ...initialData, INVESTIGATION: { ...investigation } }],
+        data: [{ ...initialData, investigation: { ...investigation } }],
       },
     });
     const wrapper = mount(
@@ -317,7 +310,7 @@ describe('ISIS Study Landing page', () => {
       ...state,
       dgcommon: {
         ...state.dgcommon,
-        data: [{ ...initialData, STUDY: { ...study } }],
+        data: [{ ...initialData, study: { ...study } }],
       },
     });
     const wrapper = mount(

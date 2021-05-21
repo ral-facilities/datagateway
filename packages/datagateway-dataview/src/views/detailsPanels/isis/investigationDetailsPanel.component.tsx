@@ -109,7 +109,7 @@ const InvestigationDetailsPanel = (
           <Tab
             id="investigation-datasets-tab"
             label={t('investigations.details.datasets')}
-            onClick={() => viewDatasets(investigationData.ID)}
+            onClick={() => viewDatasets(investigationData.id)}
           />
         )}
       </Tabs>

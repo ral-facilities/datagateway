@@ -8,48 +8,45 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
     data={
       Array [
         Object {
-          "DATASET": Array [
+          "datasets": Array [
             Object {
-              "DOI": "dataset doi",
-              "ID": 1,
-              "NAME": "dataset 1",
+              "doi": "dataset doi",
+              "id": 1,
+              "name": "dataset 1",
             },
           ],
-          "DOI": "doi 1",
-          "ENDDATE": "2019-06-11",
-          "ID": 1,
-          "INVESTIGATIONINSTRUMENT": Array [
+          "doi": "doi 1",
+          "endDate": "2019-06-11",
+          "id": 1,
+          "investigationInstruments": Array [
             Object {
-              "ID": 1,
-              "INSTRUMENT": Object {
-                "FACILITY_ID": 1,
-                "ID": 3,
-                "NAME": "LARMOR",
+              "id": 1,
+              "instrument": Object {
+                "id": 3,
+                "name": "LARMOR",
               },
-              "INSTRUMENT_ID": 3,
               "INVESTIGATION_ID": 1,
             },
           ],
-          "NAME": "Test 1",
-          "RB_NUMBER": "1",
-          "SIZE": 1,
-          "STARTDATE": "2019-06-10",
-          "STUDYINVESTIGATION": Array [
+          "name": "Test 1",
+          "rbNumber": "1",
+          "size": 1,
+          "startDate": "2019-06-10",
+          "studyInvestigations": Array [
             Object {
-              "ID": 6,
+              "id": 6,
               "INVESTIGATION_ID": 1,
-              "STUDY": Object {
-                "ENDDATE": "2019-06-11",
-                "ID": 7,
-                "PID": "study pid",
-                "STARTDATE": "2019-06-10",
+              "study": Object {
+                "endDate": "2019-06-11",
+                "id": 7,
+                "pid": "study pid",
+                "startDate": "2019-06-10",
               },
-              "STUDY_ID": 7,
             },
           ],
-          "SUMMARY": "foo bar",
-          "TITLE": "Test 1",
-          "VISIT_ID": "1",
+          "summary": "foo bar",
+          "title": "Test 1",
+          "visitId": "1",
         },
       ]
     }
@@ -83,48 +80,45 @@ exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`
     data={
       Array [
         Object {
-          "DATASET": Array [
+          "datasets": Array [
             Object {
-              "DOI": "dataset doi",
-              "ID": 1,
-              "NAME": "dataset 1",
+              "doi": "dataset doi",
+              "id": 1,
+              "name": "dataset 1",
             },
           ],
-          "DOI": "doi 1",
-          "ENDDATE": "2019-06-11",
-          "ID": 1,
-          "INVESTIGATIONINSTRUMENT": Array [
+          "doi": "doi 1",
+          "endDate": "2019-06-11",
+          "id": 1,
+          "investigationInstruments": Array [
             Object {
-              "ID": 1,
-              "INSTRUMENT": Object {
-                "FACILITY_ID": 1,
-                "ID": 3,
-                "NAME": "LARMOR",
+              "id": 1,
+              "instrument": Object {
+                "id": 3,
+                "name": "LARMOR",
               },
-              "INSTRUMENT_ID": 3,
               "INVESTIGATION_ID": 1,
             },
           ],
-          "NAME": "Test 1",
-          "RB_NUMBER": "1",
-          "SIZE": 1,
-          "STARTDATE": "2019-06-10",
-          "STUDYINVESTIGATION": Array [
+          "name": "Test 1",
+          "rbNumber": "1",
+          "size": 1,
+          "startDate": "2019-06-10",
+          "studyInvestigations": Array [
             Object {
-              "ID": 6,
+              "id": 6,
               "INVESTIGATION_ID": 1,
-              "STUDY": Object {
-                "ENDDATE": "2019-06-11",
-                "ID": 7,
-                "PID": "study pid",
-                "STARTDATE": "2019-06-10",
+              "study": Object {
+                "endDate": "2019-06-11",
+                "id": 7,
+                "pid": "study pid",
+                "startDate": "2019-06-10",
               },
-              "STUDY_ID": 7,
             },
           ],
-          "SUMMARY": "foo bar",
-          "TITLE": "Test 1",
-          "VISIT_ID": "1",
+          "summary": "foo bar",
+          "title": "Test 1",
+          "visitId": "1",
         },
       ]
     }
