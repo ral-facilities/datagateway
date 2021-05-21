@@ -4,14 +4,14 @@ import {
   configureApp,
   settingsLoaded,
   loadSelectAllSetting,
-  loadPluginHostUrl,
+  loadPluginHostSetting,
 } from '.';
 import {
   ConfigureFeatureSwitchesType,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   ConfigureSelectAllSettingType,
-  ConfigurePluginHostUrlType,
+  ConfigurePluginHostSettingType,
 } from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -79,14 +79,15 @@ describe('Actions', () => {
     });
   });
 
-  it('sets the plugin host URL if given', () => {
-    const testPluginHost = 'http://localhost-test:5001';
-    const action = loadPluginHostUrl(testPluginHost);
-    expect(action.type).toEqual(ConfigurePluginHostUrlType);
-    expect(action.payload).toEqual({ pluginHostUrl: testPluginHost });
+  it('given JSON loadPluginHostSetting returns a ConfigurePluginHostSettingType with ConfigurePluginHostSettingPayload', () => {
+    const action = loadPluginHostSetting('http://localhost:3000');
+    expect(action.type).toEqual(ConfigurePluginHostSettingType);
+    expect(action.payload).toEqual({
+      settings: 'http://localhost:3000',
+    });
   });
 
-  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings, settingsLoaded and loadPluginHostUrl actions are sent', async () => {
+  it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
         Promise.resolve({
@@ -143,7 +144,9 @@ describe('Actions', () => {
     );
     expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(loadSelectAllSetting(false));
-    expect(actions).toContainEqual(loadPluginHostUrl('http://localhost:3000/'));
+    expect(actions).toContainEqual(
+      loadPluginHostSetting('http://localhost:3000/')
+    );
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
       detail: {

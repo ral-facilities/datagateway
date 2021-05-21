@@ -9,8 +9,8 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingPayload,
   ConfigureSelectAllSettingType,
-  ConfigurePluginHostUrlType,
-  ConfigurePluginHostUrlPayload,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
 } from './actions.types';
 import {
   loadUrls,
@@ -58,12 +58,12 @@ export const loadSelectAllSetting = (
   },
 });
 
-export const loadPluginHostUrl = (
-  pluginHostUrl: string
-): ActionType<ConfigurePluginHostUrlPayload> => ({
-  type: ConfigurePluginHostUrlType,
+export const loadPluginHostSetting = (
+  pluginHostSetting: string
+): ActionType<ConfigurePluginHostSettingPayload> => ({
+  type: ConfigurePluginHostSettingType,
   payload: {
-    pluginHostUrl: pluginHostUrl,
+    settings: pluginHostSetting,
   },
 });
 
@@ -120,6 +120,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('selectAllSetting' in settings) {
           dispatch(loadSelectAllSetting(settings['selectAllSetting']));
+        }
+
+        if ('pluginHost' in settings) {
+          dispatch(loadPluginHostSetting(settings['pluginHost']));
         }
 
         if (Array.isArray(settings['routes']) && settings['routes'].length) {

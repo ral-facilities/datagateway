@@ -51,6 +51,7 @@ exports[`ISIS Investigations - Card View renders correctly 1`] = `
       }
     }
     totalDataCount={1}
+    viewDatasets={[Function]}
   />
 </ContextProvider>
 `;

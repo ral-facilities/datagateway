@@ -5,7 +5,7 @@ import {
   loadBreadcrumbSettings,
   settingsLoaded,
   loadSelectAllSetting,
-  loadPluginHostUrl,
+  loadPluginHostSetting,
 } from '../actions';
 
 describe('dgdataview reducer', () => {
@@ -71,14 +71,14 @@ describe('dgdataview reducer', () => {
     expect(updatedState.selectAllSetting).toEqual(false);
   });
 
-  it('should set a plugin host url when one is received', () => {
-    expect(state.dgdataview.pluginHostUrl).toEqual(undefined);
-    const testPluginHostUrl = 'http://localhost-test:5001';
+  it('should set pluginHostSetting when configuring action is sent', () => {
+    expect(state.dgdataview.pluginHost).toEqual('');
+
     const updatedState = DGDataViewReducer(
       state,
-      loadPluginHostUrl(testPluginHostUrl)
+      loadPluginHostSetting('http://localhost:3000')
     );
 
-    expect(updatedState.pluginHostUrl).toEqual(testPluginHostUrl);
+    expect(updatedState.pluginHost).toEqual('http://localhost:3000');
   });
 });

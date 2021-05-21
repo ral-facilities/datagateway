@@ -8,8 +8,8 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingPayload,
   ConfigureSelectAllSettingType,
-  ConfigurePluginHostUrlType,
-  ConfigurePluginHostUrlPayload,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
 } from '../actions/actions.types';
 
 export const initialState: DGDataViewState = {
@@ -17,6 +17,7 @@ export const initialState: DGDataViewState = {
   breadcrumbSettings: {},
   settingsLoaded: false,
   selectAllSetting: true,
+  pluginHost: '',
 };
 
 export function handleSettingsLoaded(state: DGDataViewState): DGDataViewState {
@@ -58,13 +59,13 @@ export function handleConfigureSelectAllSetting(
   };
 }
 
-export function handleConfigurePluginHostUrl(
+export function handleConfigurePluginHostSetting(
   state: DGDataViewState,
-  payload: ConfigurePluginHostUrlPayload
+  payload: ConfigurePluginHostSettingPayload
 ): DGDataViewState {
   return {
     ...state,
-    pluginHostUrl: payload.pluginHostUrl,
+    pluginHost: payload.settings,
   };
 }
 
@@ -73,7 +74,7 @@ const DGDataViewReducer = createReducer(initialState, {
   [ConfigureFeatureSwitchesType]: handleConfigureFeatureSwitches,
   [ConfigureBreadcrumbSettingsType]: handleConfigureBreadcrumbSettings,
   [ConfigureSelectAllSettingType]: handleConfigureSelectAllSetting,
-  [ConfigurePluginHostUrlType]: handleConfigurePluginHostUrl,
+  [ConfigurePluginHostSettingType]: handleConfigurePluginHostSetting,
 });
 
 export default DGDataViewReducer;
