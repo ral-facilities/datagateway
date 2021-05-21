@@ -36,6 +36,7 @@ import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
+import TranslatedHomePage from './translatedHomePage.component';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -75,6 +76,7 @@ const StyledGrid = withStyles(gridStyles)(Grid);
 
 // Define all the supported paths for data-view.
 export const paths = {
+  homepage: '/datagateway',
   root: '/browse',
   myData: {
     root: '/my-data',
@@ -134,7 +136,7 @@ export const paths = {
   },
 };
 
-const NavBar = (props: {
+export const NavBar = (props: {
   entityCount: number;
   cartItems: DownloadCartItem[];
   navigateToSearch: () => Action;
@@ -504,49 +506,58 @@ class PageContainer extends React.Component<
 
   public render(): React.ReactElement {
     return (
-      <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-        <NavBar
-          entityCount={this.props.entityCount}
-          cartItems={this.props.cartItems}
-          navigateToSearch={this.props.navigateToSearch}
-          navigateToDownload={this.props.navigateToDownload}
-        />
-
-        <StyledGrid container>
-          {/* Toggle between the table and card view */}
-          <Grid item xs={12}>
-            <Route
-              exact
-              path={this.state.paths}
-              render={() => (
-                <CardSwitch
-                  toggleCard={this.state.toggleCard}
-                  handleToggleChange={this.handleToggleChange}
-                />
-              )}
-            />
-          </Grid>
-
-          {/* Show loading progress if data is still being loaded */}
-          {this.props.loading && (
-            <Grid item xs={12}>
-              <LinearProgress color="secondary" />
-            </Grid>
-          )}
-
-          {/* Hold the table for remainder of the page */}
-          <Grid item xs={12} aria-label="container-table">
-            {document.getElementById('datagateway-dataview') && (
-              <ViewRouting
-                view={this.props.query.view}
-                loadedCount={this.props.loadedCount}
-                totalDataCount={this.props.totalDataCount}
-                location={this.state.modifiedLocation}
+      <SwitchRouting location={this.props.location}>
+        {/* Load the homepage */}
+        <Route exact path={paths.homepage} component={TranslatedHomePage} />
+        <Route
+          render={() => (
+            // Load the standard dataview pageContainer
+            <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+              <NavBar
+                entityCount={this.props.entityCount}
+                cartItems={this.props.cartItems}
+                navigateToSearch={this.props.navigateToSearch}
+                navigateToDownload={this.props.navigateToDownload}
               />
-            )}
-          </Grid>
-        </StyledGrid>
-      </Paper>
+
+              <StyledGrid container>
+                {/* Toggle between the table and card view */}
+                <Grid item xs={12}>
+                  <Route
+                    exact
+                    path={this.state.paths}
+                    render={() => (
+                      <CardSwitch
+                        toggleCard={this.state.toggleCard}
+                        handleToggleChange={this.handleToggleChange}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                {/* Show loading progress if data is still being loaded */}
+                {this.props.loading && (
+                  <Grid item xs={12}>
+                    <LinearProgress color="secondary" />
+                  </Grid>
+                )}
+
+                {/* Hold the table for remainder of the page */}
+                <Grid item xs={12} aria-label="container-table">
+                  {document.getElementById('datagateway-dataview') && (
+                    <ViewRouting
+                      view={this.props.query.view}
+                      loadedCount={this.props.loadedCount}
+                      totalDataCount={this.props.totalDataCount}
+                      location={this.state.modifiedLocation}
+                    />
+                  )}
+                </Grid>
+              </StyledGrid>
+            </Paper>
+          )}
+        />
+      </SwitchRouting>
     );
   }
 }
