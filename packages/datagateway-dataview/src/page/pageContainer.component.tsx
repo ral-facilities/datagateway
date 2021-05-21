@@ -40,7 +40,7 @@ import { Location as LocationType } from 'history';
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
-      cardPaper: { backgroundColor: 'inhereit' },
+      cardPaper: { backgroundColor: 'inherit' },
       tablePaper: {
         height: 'calc(100vh - 180px)',
         width: '100%',
