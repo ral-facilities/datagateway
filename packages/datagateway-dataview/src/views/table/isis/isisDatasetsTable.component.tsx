@@ -27,7 +27,7 @@ import {
   ViewsType,
 } from 'datagateway-common';
 import { IconButton } from '@material-ui/core';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { StateType } from '../../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -39,6 +39,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import TitleIcon from '@material-ui/icons/Title';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { push } from 'connected-react-router';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
@@ -75,6 +76,7 @@ interface ISISDatasetsTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
+  viewDatafiles: (urlPrefix: string) => (id: number) => Action;
 }
 
 type ISISDatasetsTableCombinedProps = ISISDatasetsTableProps &
@@ -104,6 +106,7 @@ const ISISDatasetsTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    viewDatafiles,
     selectAllSetting,
     studyHierarchy,
   } = props;
@@ -153,6 +156,7 @@ const ISISDatasetsTable = (
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   return (
     <Table
@@ -173,6 +177,7 @@ const ISISDatasetsTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            viewDatafiles={viewDatafiles(urlPrefix)}
           />
         );
       }}
@@ -200,7 +205,7 @@ const ISISDatasetsTable = (
           dataKey: 'NAME',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${cellProps.rowData.ID}/datafile`,
+              `${urlPrefix}/${cellProps.rowData.ID}`,
               cellProps.rowData.NAME,
               view
             ),
@@ -285,6 +290,11 @@ const mapDispatchToProps = (
         },
       ])
     ),
+  viewDatafiles: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/datafile`));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {

@@ -24,7 +24,7 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('#card').contains('DATASET 87').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118'
     );
   });
 
@@ -105,5 +105,10 @@ describe('ISIS - Datasets Cards', () => {
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('DATASETTYPE 1');
+    cy.get('#dataset-datafiles-tab').click({ force: true });
+    cy.location('pathname').should(
+      'eq',
+      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+    );
   });
 });

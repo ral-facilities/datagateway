@@ -22,6 +22,8 @@ export interface Investigation {
   PUBLICATION?: Publication[];
   STUDYINVESTIGATION?: StudyInvestigation[];
   FACILITY?: Facility;
+  RELEASEDATE?: string;
+  DATASET?: Dataset[];
 }
 
 export interface Dataset {
@@ -36,6 +38,8 @@ export interface Dataset {
   SIZE?: number;
   DATAFILE_COUNT?: number;
   DATASETTYPE?: DatasetType;
+  DOI?: string;
+  COMPLETE?: boolean;
 }
 
 export interface Datafile {
@@ -82,7 +86,7 @@ export interface InvestigationUser {
 export interface User {
   ID: number;
   NAME: string;
-  FULL_NAME?: string;
+  FULLNAME?: string;
 }
 
 export interface Sample {

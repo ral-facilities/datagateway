@@ -36,7 +36,11 @@ describe('ISIS Investigations - Card View', () => {
     return mount(
       <Provider store={store}>
         <MemoryRouter>
-          <ISISInvestigationsCardView instrumentId="1" facilityCycleId="1" />
+          <ISISInvestigationsCardView
+            instrumentId="1"
+            instrumentChildId="1"
+            studyHierarchy={false}
+          />
         </MemoryRouter>
       </Provider>
     );
@@ -256,5 +260,11 @@ describe('ISIS Investigations - Card View', () => {
 
     expect(store.getActions().length).toEqual(3);
     expect(store.getActions()[2]).toEqual(fetchInvestigationDetailsRequest());
+
+    wrapper.find('#investigation-datasets-tab').first().simulate('click');
+    expect(store.getActions()).toHaveLength(4);
+    expect(store.getActions()[3]).toEqual(
+      push('/browse/instrument/1/facilityCycle/1/investigation/1/dataset')
+    );
   });
 });

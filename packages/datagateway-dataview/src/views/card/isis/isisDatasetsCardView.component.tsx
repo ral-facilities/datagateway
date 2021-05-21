@@ -23,10 +23,11 @@ import {
   QueryParams,
   pushPageNum,
   pushQuery,
+  ViewsType,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import {
@@ -37,6 +38,7 @@ import {
   CalendarToday,
 } from '@material-ui/icons';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
+import { push } from 'connected-react-router';
 import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -53,6 +55,7 @@ interface ISISDatasetCVDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => (id: number) => Action;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -99,6 +102,7 @@ const ISISDatasetsCardView = (
     pushFilters,
     pushPage,
     pushQuery,
+    viewDatafiles,
     studyHierarchy,
   } = props;
 
@@ -139,6 +143,7 @@ const ISISDatasetsCardView = (
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
   const loadCount = React.useCallback(
     () => fetchCount(parseInt(investigationId)),
     [fetchCount, investigationId]
@@ -164,11 +169,7 @@ const ISISDatasetsCardView = (
         label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
-          tableLink(
-            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME,
-            query.view
-          ),
+          tableLink(`${urlPrefix}/${dataset.ID}`, dataset.NAME, query.view),
         filterComponent: textFilter,
       }}
       description={{
@@ -198,7 +199,11 @@ const ISISDatasetsCardView = (
         },
       ]}
       moreInformation={(dataset: Dataset) => (
-        <DatasetDetailsPanel rowData={dataset} fetchDetails={fetchDetails} />
+        <DatasetDetailsPanel
+          rowData={dataset}
+          fetchDetails={fetchDetails}
+          viewDatafiles={viewDatafiles(urlPrefix, query.view)}
+        />
       )}
       buttons={[
         function cartButton(dataset: Dataset) {
@@ -290,6 +295,14 @@ const mapDispatchToProps = (
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => {
+    return (id: number) => {
+      const url = view
+        ? `${urlPrefix}/${id}/datafile?view=${view}`
+        : `${urlPrefix}/${id}/datafile`;
+      return dispatch(push(url));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {

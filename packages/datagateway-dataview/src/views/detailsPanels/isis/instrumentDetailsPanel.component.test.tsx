@@ -45,7 +45,7 @@ describe('Instrument details panel component', () => {
         USER_: {
           ID: 5,
           NAME: 'Louise',
-          FULL_NAME: 'Louise Davies',
+          FULLNAME: 'Louise Davies',
         },
       },
       {
@@ -78,7 +78,7 @@ describe('Instrument details panel component', () => {
         USER_: {
           ID: 5,
           NAME: 'Louise',
-          FULL_NAME: 'Louise Davies',
+          FULLNAME: 'Louise Davies',
         },
       },
     ];
