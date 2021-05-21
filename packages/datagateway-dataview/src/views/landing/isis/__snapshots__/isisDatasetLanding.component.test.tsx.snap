@@ -14,7 +14,6 @@ exports[`ISIS Dataset Landing page renders correctly 1`] = `
           "doi": "doi 1",
           "endDate": "2019-06-11",
           "id": 87,
-          "INVESTIGATION_ID": 1,
           "modTime": "2019-06-10",
           "name": "Test 1",
           "size": 1,

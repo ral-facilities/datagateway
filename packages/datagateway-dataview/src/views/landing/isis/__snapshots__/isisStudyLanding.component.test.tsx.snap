@@ -9,7 +9,9 @@ exports[`ISIS Study Landing page renders correctly 1`] = `
       Array [
         Object {
           "id": 6,
-          "INVESTIGATION_ID": 1,
+          "investigation": Object {
+            "id": 1,
+          },
         },
       ]
     }

@@ -411,7 +411,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                   aria-label="landing-study-part-label"
                 >
                   {tableLink(
-                    `${urlPrefix}/investigation/${studyInvestigation.INVESTIGATION_ID}`,
+                    `${urlPrefix}/investigation/${studyInvestigation.investigation.id}`,
                     `${t('investigations.visit_id')}: ${
                       studyInvestigation.investigation?.visitId
                     }`,
@@ -438,8 +438,8 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 <div className={classes.actionButtons}>
                   <AddToCartButton
                     entityType="investigation"
-                    allIds={[parseInt(studyInvestigation.INVESTIGATION_ID)]}
-                    entityId={parseInt(studyInvestigation.INVESTIGATION_ID)}
+                    allIds={[parseInt(studyInvestigation.investigation.id)]}
+                    entityId={parseInt(studyInvestigation.investigation.id)}
                   />
                 </div>
               </div>

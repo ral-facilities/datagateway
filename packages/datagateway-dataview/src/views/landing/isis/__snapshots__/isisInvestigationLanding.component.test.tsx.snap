@@ -25,7 +25,6 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
                 "id": 3,
                 "name": "LARMOR",
               },
-              "INVESTIGATION_ID": 1,
             },
           ],
           "name": "Test 1",
@@ -35,7 +34,6 @@ exports[`ISIS Investigation Landing page renders correctly 1`] = `
           "studyInvestigations": Array [
             Object {
               "id": 6,
-              "INVESTIGATION_ID": 1,
               "study": Object {
                 "endDate": "2019-06-11",
                 "id": 7,
@@ -97,7 +95,6 @@ exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`
                 "id": 3,
                 "name": "LARMOR",
               },
-              "INVESTIGATION_ID": 1,
             },
           ],
           "name": "Test 1",
@@ -107,7 +104,6 @@ exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`
           "studyInvestigations": Array [
             Object {
               "id": 6,
-              "INVESTIGATION_ID": 1,
               "study": Object {
                 "endDate": "2019-06-11",
                 "id": 7,

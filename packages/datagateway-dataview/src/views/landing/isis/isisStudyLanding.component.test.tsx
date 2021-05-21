@@ -20,7 +20,9 @@ describe('ISIS Study Landing page', () => {
   const investigationUser = [
     {
       id: 1,
-      INVESTIGATION_ID: 1,
+      investigation: {
+        id: 1,
+      },
       role: 'principal_experimenter',
       user: {
         id: 1,
@@ -30,7 +32,9 @@ describe('ISIS Study Landing page', () => {
     },
     {
       id: 2,
-      INVESTIGATION_ID: 1,
+      investigation: {
+        id: 1,
+      },
       role: 'local_contact',
       user: {
         id: 2,
@@ -40,7 +44,9 @@ describe('ISIS Study Landing page', () => {
     },
     {
       id: 3,
-      INVESTIGATION_ID: 1,
+      investigation: {
+        id: 1,
+      },
       role: 'experimenter',
       user: {
         id: 3,
@@ -50,7 +56,9 @@ describe('ISIS Study Landing page', () => {
     },
     {
       id: 4,
-      INVESTIGATION_ID: 4,
+      investigation: {
+        id: 1,
+      },
       role: 'experimenter',
       user: {
         id: 4,
@@ -63,7 +71,9 @@ describe('ISIS Study Landing page', () => {
   const investigationInstrument = [
     {
       id: 1,
-      INVESTIGATION_ID: 1,
+      investigation: {
+        id: 1,
+      },
       instrument: {
         id: 3,
         name: 'LARMOR',
@@ -95,7 +105,9 @@ describe('ISIS Study Landing page', () => {
   const initialData = [
     {
       id: 6,
-      INVESTIGATION_ID: 1,
+      investigation: {
+        id: 1,
+      },
     },
   ];
 
