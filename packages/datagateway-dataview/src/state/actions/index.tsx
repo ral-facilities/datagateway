@@ -169,8 +169,6 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
           throw new Error('No routes provided in the settings');
         }
 
-        dispatch(loadPluginHostUrl(settings['pluginHost']));
-
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
           const splitUrl = settings.downloadApiUrl.split('/');
