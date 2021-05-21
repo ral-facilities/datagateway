@@ -13,6 +13,7 @@ export interface Investigation {
   doi?: string;
   startDate?: string;
   endDate?: string;
+  releaseDate?: string;
   summary?: string;
   investigationInstruments?: InvestigationInstrument[];
   size?: number;
@@ -22,6 +23,7 @@ export interface Investigation {
   publications?: Publication[];
   studyInvestigations?: StudyInvestigation[];
   facility?: Facility;
+  datasets?: Dataset[];
 }
 
 export interface Dataset {
@@ -32,6 +34,8 @@ export interface Dataset {
   description?: string;
   startDate?: string;
   endDate?: string;
+  doi?: string;
+  complete?: boolean;
   size?: number;
   datafileCount?: number;
   investigation?: Investigation;
@@ -199,7 +203,9 @@ export interface Download {
   [key: string]: string | number | boolean | DownloadItem[] | undefined;
 }
 
-export interface FormattedDownload extends Omit<Download, 'status'> {
+export interface FormattedDownload
+  extends Omit<Download, 'status' | 'isDeleted'> {
+  isDeleted: string;
   status: string;
 }
 

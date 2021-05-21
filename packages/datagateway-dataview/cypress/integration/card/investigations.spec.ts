@@ -2,7 +2,6 @@ describe('Investigations Cards', () => {
   beforeEach(() => {
     cy.intercept('**/investigations/count*').as('getInvestigationsCount');
     cy.intercept('**/investigations?order*').as('getInvestigationsOrder');
-    cy.intercept('/investigations?include').as('getInvestigationsInclude');
     cy.login();
     cy.visit('/browse/investigation').wait(
       [
@@ -10,20 +9,13 @@ describe('Investigations Cards', () => {
         '@getInvestigationsOrder',
         '@getInvestigationsOrder',
       ],
-      { timeout: 10000 }
+      { timeout: 15000 }
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
-      .wait(
-        [
-          '@getInvestigationsCount',
-          '@getInvestigationsOrder',
-          '@getInvestigationsInclude',
-        ],
-        {
-          timeout: 15000,
-        }
-      );
+      .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
+        timeout: 15000,
+      });
   });
 
   it('should load correctly', () => {

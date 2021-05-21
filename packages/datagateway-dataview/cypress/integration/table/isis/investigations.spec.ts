@@ -9,11 +9,11 @@ describe('ISIS - Investigations Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click an investigation to see its datasets', () => {
+  it('should be able to click an investigation to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+      '/browse/instrument/1/facilityCycle/14/investigation/87'
     );
   });
 
@@ -246,6 +246,16 @@ describe('ISIS - Investigations Table', () => {
           'Follow team before this. Beat likely soldier anyone. By management look activity economic plant others. Take move turn pay. Walk project charge against sell.'
         )
         .should('be.visible');
+    });
+
+    it('and view datasets', () => {
+      cy.get('[aria-label="Show details"]').first().click();
+      cy.get('#investigation-datasets-tab').click({ force: true });
+
+      cy.location('pathname').should(
+        'eq',
+        '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+      );
     });
 
     it('and then not view details anymore', () => {

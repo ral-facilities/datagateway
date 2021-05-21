@@ -9,6 +9,7 @@ describe('Investigation details panel component', () => {
   let rowData: Investigation;
   const detailsPanelResize = jest.fn();
   const fetchDetails = jest.fn();
+  const viewDatasets = jest.fn();
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
@@ -49,6 +50,7 @@ describe('Investigation details panel component', () => {
     mount.cleanUp();
     detailsPanelResize.mockClear();
     fetchDetails.mockClear();
+    viewDatasets.mockClear();
   });
 
   it('renders correctly', () => {
@@ -57,6 +59,7 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -102,6 +105,7 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
     expect(wrapper).toMatchSnapshot();
@@ -120,6 +124,7 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
 
@@ -164,6 +169,7 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
 
@@ -177,6 +183,7 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
 
@@ -190,6 +197,7 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
 
@@ -203,6 +211,7 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
     expect(fetchDetails).not.toHaveBeenCalled();
@@ -227,8 +236,26 @@ describe('Investigation details panel component', () => {
         rowData={rowData}
         detailsPanelResize={detailsPanelResize}
         fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
       />
     );
     expect(wrapper).toMatchSnapshot();
+  });
+
+  it('push new address when clicking dataset tab', () => {
+    const wrapper = mount(
+      <InvestigationsDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+        viewDatasets={viewDatasets}
+      />
+    );
+
+    expect(viewDatasets).toHaveBeenCalledTimes(0);
+
+    wrapper.find('#investigation-datasets-tab').hostNodes().simulate('click');
+
+    expect(viewDatasets).toHaveBeenCalledTimes(1);
   });
 });

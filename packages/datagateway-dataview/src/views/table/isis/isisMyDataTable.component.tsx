@@ -30,7 +30,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
@@ -41,6 +41,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { push } from 'connected-react-router';
 
 interface ISISMyDataTableStoreProps {
   sort: SortType;
@@ -66,6 +67,7 @@ interface ISISMyDataTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: (username: string) => Promise<void>;
+  viewDatasets: (urlPrefix: string) => (id: number) => Action;
 }
 
 type ISISMyDataTableCombinedProps = ISISMyDataTableStoreProps &
@@ -90,6 +92,7 @@ const ISISMyDataTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    viewDatasets,
     selectAllSetting,
   } = props;
 
@@ -166,6 +169,26 @@ const ISISMyDataTable = (
     });
   }, [fetchData, username, sort, filters]);
 
+  const urlPrefix = (investigationData: Investigation): string => {
+    if (
+      investigationData?.investigationInstruments?.[0]?.instrument &&
+      investigationData?.facility?.facilityCycles
+    ) {
+      const facilityCycle = investigationData.facility.facilityCycles.find(
+        (facilitycycle) =>
+          facilitycycle.startDate &&
+          facilitycycle.endDate &&
+          investigationData.startDate &&
+          facilitycycle.startDate <= investigationData.startDate &&
+          facilitycycle.endDate >= investigationData.startDate
+      );
+      if (facilityCycle) {
+        return `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation`;
+      }
+    }
+    return '';
+  };
+
   return (
     <Table
       loading={loading}
@@ -185,6 +208,11 @@ const ISISMyDataTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            viewDatasets={
+              urlPrefix(rowData as Investigation)
+                ? viewDatasets(urlPrefix(rowData as Investigation))
+                : undefined
+            }
           />
         );
       }}
@@ -195,27 +223,15 @@ const ISISMyDataTable = (
           dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData?.investigationInstruments?.[0]?.instrument &&
-              investigationData?.facility?.facilityCycles
-            ) {
-              const facilityCycle = investigationData.facility.facilityCycles.find(
-                (facilitycycle) =>
-                  facilitycycle.startDate &&
-                  facilitycycle.endDate &&
-                  investigationData.startDate &&
-                  facilitycycle.startDate <= investigationData.startDate &&
-                  facilitycycle.endDate >= investigationData.startDate
+            const url = urlPrefix(investigationData);
+            if (url) {
+              return tableLink(
+                `${url}/${investigationData.id}`,
+                investigationData.title,
+                view
               );
-              if (facilityCycle) {
-                return tableLink(
-                  `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
-                  investigationData.title,
-                  view
-                );
-              } else {
-                return investigationData.title;
-              }
+            } else {
+              return investigationData.title;
             }
           },
           filterComponent: textFilter,
@@ -246,27 +262,15 @@ const ISISMyDataTable = (
           dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData?.investigationInstruments?.[0]?.instrument &&
-              investigationData?.facility?.facilityCycles
-            ) {
-              const facilityCycle = investigationData.facility.facilityCycles.find(
-                (facilitycycle) =>
-                  facilitycycle.startDate &&
-                  facilitycycle.endDate &&
-                  investigationData.startDate &&
-                  facilitycycle.startDate <= investigationData.startDate &&
-                  facilitycycle.endDate >= investigationData.startDate
+            const url = urlPrefix(investigationData);
+            if (url) {
+              return tableLink(
+                `${url}/${investigationData.id}`,
+                investigationData.name,
+                view
               );
-              if (facilityCycle) {
-                return tableLink(
-                  `/browse/instrument/${investigationData.investigationInstruments[0].instrument.id}/facilityCycle/${facilityCycle.id}/investigation/${investigationData.id}/dataset`,
-                  investigationData.name,
-                  view
-                );
-              } else {
-                return investigationData.name;
-              }
+            } else {
+              return investigationData.name;
             }
           },
           filterComponent: textFilter,
@@ -379,6 +383,11 @@ const mapDispatchToProps = (
         },
       ])
     ),
+  viewDatasets: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/dataset`));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {

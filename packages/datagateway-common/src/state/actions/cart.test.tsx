@@ -67,12 +67,22 @@ describe('Cart actions', () => {
       );
 
       const asyncAction = fetchDownloadCart();
+      const getState = (): Partial<StateType> => ({
+        dgcommon: {
+          ...initialState,
+          facilityName: 'TEST',
+          urls: {
+            ...initialState.urls,
+            downloadApiUrl: 'http://example.com',
+          },
+        },
+      });
       await asyncAction(dispatch, getState, null);
 
       expect(actions[0]).toEqual(fetchDownloadCartRequest());
       expect(actions[1]).toEqual(fetchDownloadCartSuccess(mockData));
       expect(axios.get).toHaveBeenCalledWith(
-        '/user/cart/LILS',
+        'http://example.com/user/cart/TEST',
         expect.objectContaining({
           params: {
             sessionId: null,
@@ -112,6 +122,16 @@ describe('Cart actions', () => {
       );
 
       const asyncAction = addToCart('dataset', [1, 2]);
+      const getState = (): Partial<StateType> => ({
+        dgcommon: {
+          ...initialState,
+          facilityName: 'TEST',
+          urls: {
+            ...initialState.urls,
+            downloadApiUrl: 'http://example.com',
+          },
+        },
+      });
       await asyncAction(dispatch, getState, null);
 
       const params = new URLSearchParams();
@@ -121,7 +141,7 @@ describe('Cart actions', () => {
       expect(actions[0]).toEqual(addToCartRequest());
       expect(actions[1]).toEqual(addToCartSuccess(mockData));
       expect(axios.post).toHaveBeenCalledWith(
-        '/user/cart/LILS/cartItems',
+        'http://example.com/user/cart/TEST/cartItems',
         params
       );
     });
@@ -155,12 +175,22 @@ describe('Cart actions', () => {
       );
 
       const asyncAction = removeFromCart('dataset', [1, 2]);
+      const getState = (): Partial<StateType> => ({
+        dgcommon: {
+          ...initialState,
+          facilityName: 'TEST',
+          urls: {
+            ...initialState.urls,
+            downloadApiUrl: 'http://example.com',
+          },
+        },
+      });
       await asyncAction(dispatch, getState, null);
 
       expect(actions[0]).toEqual(removeFromCartRequest());
       expect(actions[1]).toEqual(removeFromCartSuccess(mockData));
       expect(axios.delete).toHaveBeenCalledWith(
-        '/user/cart/LILS/cartItems',
+        'http://example.com/user/cart/TEST/cartItems',
         expect.objectContaining({
           params: {
             sessionId: null,

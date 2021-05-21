@@ -25,7 +25,7 @@ describe('ISIS - Investigations Cards', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+      '/browse/instrument/1/facilityCycle/14/investigation/87'
     );
   });
 
@@ -116,5 +116,10 @@ describe('ISIS - Investigations Cards', () => {
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
       .contains('Follow team before this.');
+    cy.get('#investigation-datasets-tab').click({ force: true });
+    cy.location('pathname').should(
+      'eq',
+      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+    );
   });
 });

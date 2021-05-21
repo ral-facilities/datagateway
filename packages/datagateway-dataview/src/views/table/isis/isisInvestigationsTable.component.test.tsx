@@ -20,6 +20,7 @@ import thunk from 'redux-thunk';
 import { Table } from 'datagateway-common';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { push } from 'connected-react-router';
 
 describe('ISIS Investigations table component', () => {
   let shallow;
@@ -313,7 +314,7 @@ describe('ISIS Investigations table component', () => {
     expect(selectAllCheckbox.prop('data-indeterminate')).toEqual(false);
   });
 
-  it('renders details panel correctly and it sends off an FetchInvestigationDetails action', () => {
+  it('renders details panel correctly and it sends actions', () => {
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -343,6 +344,12 @@ describe('ISIS Investigations table component', () => {
 
     expect(testStore.getActions()[3]).toEqual(
       fetchInvestigationDetailsRequest()
+    );
+
+    detailsPanelWrapper.find('#investigation-datasets-tab').simulate('click');
+    expect(testStore.getActions()).toHaveLength(5);
+    expect(testStore.getActions()[4]).toEqual(
+      push('/browse/instrument/4/facilityCycle/5/investigation/1/dataset')
     );
   });
 
