@@ -10,7 +10,7 @@ import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
 
 export interface TranslatedHomePageStateProps {
-  pluginHostUrl: string | undefined;
+  pluginHost: string | undefined;
 }
 
 export const TranslatedHomePage = React.memo(
@@ -28,11 +28,11 @@ export const TranslatedHomePage = React.memo(
         discoverDescription={t('homePage.discoverDescription')}
         downloadLabel={t('homePage.downloadLabel')}
         downloadDescription={t('homePage.downloadDescription')}
-        logo={props.pluginHostUrl + DGLogo}
-        backgroundImage={props.pluginHostUrl + BackgroundImage}
-        exploreImage={props.pluginHostUrl + ExploreImage}
-        discoverImage={props.pluginHostUrl + DiscoverImage}
-        downloadImage={props.pluginHostUrl + DownloadImage}
+        logo={props.pluginHost + DGLogo}
+        backgroundImage={props.pluginHost + BackgroundImage}
+        exploreImage={props.pluginHost + ExploreImage}
+        discoverImage={props.pluginHost + DiscoverImage}
+        downloadImage={props.pluginHost + DownloadImage}
       />
     );
   }
@@ -41,7 +41,7 @@ export const TranslatedHomePage = React.memo(
 TranslatedHomePage.displayName = 'TranslatedHomePage';
 
 const mapStateToProps = (state: StateType): TranslatedHomePageStateProps => ({
-  pluginHostUrl: state.dgdataview.pluginHostUrl,
+  pluginHost: state.dgdataview.pluginHost,
 });
 
 export default connect(mapStateToProps)(TranslatedHomePage);

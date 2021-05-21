@@ -8,8 +8,6 @@ export const ConfigureSelectAllSettingType =
 export const ConfigurePluginHostSettingType =
   'datagateway_dataview:configure_plugin_host';
 export const SettingsLoadedType = 'datagateway_dataview:settings_loaded';
-export const ConfigurePluginHostUrlType =
-  'datagateway_common:configure_plugin_host_url';
 
 export interface FeatureSwitchesPayload {
   switches: FeatureSwitches;
@@ -34,8 +32,4 @@ export interface BreadcrumbSettings {
     replaceEntity?: string;
     parentEntity?: string;
   };
-}
-
-export interface ConfigurePluginHostUrlPayload {
-  pluginHostUrl: string;
 }

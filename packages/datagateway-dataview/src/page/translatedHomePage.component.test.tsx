@@ -13,7 +13,7 @@ describe('HomePage', () => {
     shallow = createShallow({ untilSelector: 'div' });
 
     props = {
-      pluginHostUrl: 'test',
+      pluginHost: 'test',
     };
   });
 
