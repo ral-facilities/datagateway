@@ -205,6 +205,8 @@ describe('Investigation actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('id asc'));
+    params.append('skip', JSON.stringify(0));
+    params.append('limit', JSON.stringify(50));
     params.append(
       'include',
       JSON.stringify([
@@ -212,8 +214,6 @@ describe('Investigation actions', () => {
         { studyInvestigations: 'study' },
       ])
     );
-    params.append('skip', JSON.stringify(0));
-    params.append('limit', JSON.stringify(50));
 
     expect(axios.get).toHaveBeenCalledWith(
       '/instruments/1/facilitycycles/2/investigations',
@@ -347,10 +347,26 @@ describe('Investigation actions', () => {
     );
   });
 
-  it('fetchISISInvestigations action applies filters and sort state to request params', async () => {
+  it('fetchISISInvestigations action applies filters and sort state to request params, as well as applying optional additional filters', async () => {
     const asyncAction = fetchISISInvestigations({
       instrumentId: 1,
       facilityCycleId: 2,
+      optionalParams: {
+        additionalFilters: [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({ column3: { eq: 3 } }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('single'),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify(['array1', 'array2']),
+          },
+        ],
+      },
     });
     const getState = (): Partial<StateType> => ({
       dgcommon: {
@@ -375,11 +391,15 @@ describe('Investigation actions', () => {
     params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
+    params.append('where', JSON.stringify({ column3: { eq: 3 } }));
     params.append(
       'include',
       JSON.stringify([
         { investigationInstruments: 'instrument' },
         { studyInvestigations: 'study' },
+        'single',
+        'array1',
+        'array2',
       ])
     );
 

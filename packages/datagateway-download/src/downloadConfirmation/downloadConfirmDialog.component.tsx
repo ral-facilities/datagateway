@@ -594,9 +594,10 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
 
                         <Typography
                           id={`confirm-access-method-${type}-description`}
-                        >
-                          {methodInfo.description}
-                        </Typography>
+                          dangerouslySetInnerHTML={{
+                            __html: methodInfo.description || '',
+                          }}
+                        />
                       </span>
                     ))}
                 </Grid>

@@ -46,16 +46,15 @@ export const fetchDownloadCartRequest = (): Action => ({
   type: FetchDownloadCartRequestType,
 });
 
-// TODO: Pass in facilityName as a parameter?
 export const fetchDownloadCart = (): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(fetchDownloadCartRequest());
 
+    const { facilityName } = getState().dgcommon;
     const { downloadApiUrl } = getState().dgcommon.urls;
 
-    // TODO: get facility name from somewhere else...
     await axios
-      .get(`${downloadApiUrl}/user/cart/LILS`, {
+      .get(`${downloadApiUrl}/user/cart/${facilityName}`, {
         params: {
           sessionId: readSciGatewayToken().sessionId,
         },
@@ -92,7 +91,6 @@ export const addToCartRequest = (): Action => ({
   type: AddToCartRequestType,
 });
 
-// TODO: Pass in facilityName as a parameter?
 export const addToCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[]
@@ -100,6 +98,7 @@ export const addToCart = (
   return async (dispatch, getState) => {
     dispatch(addToCartRequest());
 
+    const { facilityName } = getState().dgcommon;
     const { downloadApiUrl } = getState().dgcommon.urls;
 
     const params = new URLSearchParams();
@@ -109,9 +108,8 @@ export const addToCart = (
       `${entityType} ${entityIds.join(`, ${entityType} `)}`
     );
 
-    // TODO: get facility name from somewhere else...
     await axios
-      .post(`${downloadApiUrl}/user/cart/LILS/cartItems`, params)
+      .post(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, params)
       .then((response) => {
         dispatch(addToCartSuccess(response.data));
       })
@@ -144,7 +142,6 @@ export const removeFromCartRequest = (): Action => ({
   type: RemoveFromCartRequestType,
 });
 
-// TODO: Pass in facilityName as a parameter?
 export const removeFromCart = (
   entityType: 'investigation' | 'dataset' | 'datafile',
   entityIds: number[]
@@ -152,11 +149,11 @@ export const removeFromCart = (
   return async (dispatch, getState) => {
     dispatch(removeFromCartRequest());
 
+    const { facilityName } = getState().dgcommon;
     const { downloadApiUrl } = getState().dgcommon.urls;
 
-    // TODO: get facility name from somewhere else...
     await axios
-      .delete(`${downloadApiUrl}/user/cart/LILS/cartItems`, {
+      .delete(`${downloadApiUrl}/user/cart/${facilityName}/cartItems`, {
         params: {
           sessionId: readSciGatewayToken().sessionId,
           items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,

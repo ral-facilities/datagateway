@@ -6,7 +6,7 @@ describe('Download Cart', () => {
     cy.clearDownloadCart();
 
     cy.seedDownloadCart().then(() => {
-      cy.visit('/').wait('@fetchCart');
+      cy.visit('/download').wait('@fetchCart');
     });
   });
 

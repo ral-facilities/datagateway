@@ -75,7 +75,7 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
       "render": [Function],
     }
   }
-  to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+  to="/browseStudyHierarchy/instrument/1/study/1"
 >
   <ForwardRef(Link)
     classes={
@@ -102,7 +102,7 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
         "render": [Function],
       }
     }
-    to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+    to="/browseStudyHierarchy/instrument/1/study/1"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
@@ -123,7 +123,7 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
       }
       onBlur={[Function]}
       onFocus={[Function]}
-      to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+      to="/browseStudyHierarchy/instrument/1/study/1"
       variant="inherit"
     >
       <ForwardRef(Typography)
@@ -179,25 +179,25 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
         }
         onBlur={[Function]}
         onFocus={[Function]}
-        to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+        to="/browseStudyHierarchy/instrument/1/study/1"
         variant="inherit"
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
           onBlur={[Function]}
           onFocus={[Function]}
-          to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+          to="/browseStudyHierarchy/instrument/1/study/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-            href="/browseStudyHierarchy/instrument/1/study/1/investigation"
+            href="/browseStudyHierarchy/instrument/1/study/1"
             navigate={[Function]}
             onBlur={[Function]}
             onFocus={[Function]}
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-              href="/browseStudyHierarchy/instrument/1/study/1/investigation"
+              href="/browseStudyHierarchy/instrument/1/study/1"
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}

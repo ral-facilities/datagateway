@@ -135,7 +135,7 @@ const ISISStudiesTable = (
           dataKey: 'study.name',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.study?.id}/investigation`,
+              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${cellProps.rowData.study?.id}`,
               cellProps.rowData.study?.name,
               view
             ),

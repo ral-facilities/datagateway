@@ -102,6 +102,7 @@ describe('ConfigProvider', () => {
           link: 'link',
           plugin: 'datagateway-download',
           displayName: '\xa0displayName',
+          admin: false,
           order: 0,
           helpSteps: [],
           logoLightMode: 'http://localhost:3000/' + LogoLight,
@@ -140,6 +141,13 @@ describe('ConfigProvider', () => {
           displayName: 'displayName1',
           order: 1,
         },
+        {
+          section: 'admin0',
+          link: 'link0',
+          displayName: 'displayNameAdmin0',
+          admin: true,
+          order: 0,
+        },
       ],
       helpSteps: [{ target: '#id', content: 'content' }],
     };
@@ -167,7 +175,7 @@ describe('ConfigProvider', () => {
     expect(wrapper.find('#settings').text()).toEqual(
       JSON.stringify(settingsResult)
     );
-    expect(CustomEvent).toHaveBeenCalledTimes(2);
+    expect(CustomEvent).toHaveBeenCalledTimes(3);
     expect(CustomEvent).toHaveBeenNthCalledWith(1, MicroFrontendId, {
       detail: {
         type: RegisterRouteType,
@@ -176,6 +184,7 @@ describe('ConfigProvider', () => {
           link: 'link0',
           plugin: 'datagateway-download',
           displayName: '\xa0displayName0',
+          admin: false,
           order: 0,
           helpSteps: [{ target: '#id', content: 'content' }],
           logoLightMode: undefined,
@@ -192,7 +201,25 @@ describe('ConfigProvider', () => {
           link: 'link1',
           plugin: 'datagateway-download',
           displayName: '\xa0displayName1',
+          admin: false,
           order: 1,
+          helpSteps: [],
+          logoLightMode: undefined,
+          logoDarkMode: undefined,
+          logoAltText: 'DataGateway',
+        },
+      },
+    });
+    expect(CustomEvent).toHaveBeenNthCalledWith(3, MicroFrontendId, {
+      detail: {
+        type: RegisterRouteType,
+        payload: {
+          section: 'admin0',
+          link: 'link0',
+          plugin: 'datagateway-download',
+          displayName: '\xa0displayNameAdmin0',
+          admin: true,
+          order: 0,
           helpSteps: [],
           logoLightMode: undefined,
           logoDarkMode: undefined,

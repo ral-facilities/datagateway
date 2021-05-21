@@ -135,7 +135,7 @@ const ISISStudiesCardView = (
         dataKey: 'study.name',
         content: (studyInvestigation: StudyInvestigation) =>
           tableLink(
-            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyInvestigation.study?.id}/investigation`,
+            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyInvestigation.study?.id}`,
             studyInvestigation.study?.name,
             query.view
           ),

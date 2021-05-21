@@ -12,6 +12,7 @@ import {
   Link,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { Action } from 'redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,12 +29,13 @@ interface InvestigationDetailsPanelProps {
   rowData: Entity;
   fetchDetails: (investigationId: number) => Promise<void>;
   detailsPanelResize?: () => void;
+  viewDatasets?: (id: number) => Action;
 }
 
 const InvestigationDetailsPanel = (
   props: InvestigationDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, detailsPanelResize } = props;
+  const { rowData, fetchDetails, viewDatasets, detailsPanelResize } = props;
   const [value, setValue] = React.useState<
     'details' | 'users' | 'samples' | 'publications'
   >('details');
@@ -101,6 +103,13 @@ const InvestigationDetailsPanel = (
             aria-controls="investigation-publications-panel"
             label={t('investigations.details.publications.label')}
             value="publications"
+          />
+        )}
+        {viewDatasets && (
+          <Tab
+            id="investigation-datasets-tab"
+            label={t('investigations.details.datasets')}
+            onClick={() => viewDatasets(investigationData.ID)}
           />
         )}
       </Tabs>
