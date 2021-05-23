@@ -16,7 +16,7 @@
     "custom-event-polyfill": "^1.0.7",
     "datagateway-common": "0.1.0",
     "history": "^4.10.1",
-    "i18next": "^19.9.0",
+    "i18next": "^20.3.0",
     "i18next-browser-languagedetector": "^6.0.0",
     "i18next-http-backend": "^1.1.1",
     "lodash.debounce": "^4.0.8",
