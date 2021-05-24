@@ -19,6 +19,8 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
+import { act } from 'react-dom/test-utils';
+import { flushPromises } from '../setupTests';
 
 describe('Investigation Search Table component', () => {
   let shallow;
@@ -73,14 +75,6 @@ describe('Investigation Search Table component', () => {
         facility: {
           id: 2,
           name: 'facility name',
-          facilityCycles: [
-            {
-              id: 2,
-              name: 'facility cycle name',
-              startDate: '2000-06-10',
-              endDate: '2020-06-11',
-            },
-          ],
         },
       },
     ];
@@ -376,7 +370,20 @@ describe('Investigation Search Table component', () => {
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
   });
 
-  it('renders ISIS link correctly', () => {
+  it('renders ISIS link correctly', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [
+          {
+            id: 2,
+            name: 'facility cycle name',
+            startDate: '2000-06-10',
+            endDate: '2020-06-11',
+          },
+        ],
+      })
+    );
+
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -386,13 +393,18 @@ describe('Investigation Search Table component', () => {
       </Provider>
     );
 
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       '/browse/instrument/3/facilityCycle/2/investigation/1/dataset'
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
   });
 
-  it('does not render ISIS link when instrumentId cannot be found', () => {
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
     delete state.dgcommon.data[0].investigationInstruments;
     const testStore = mockStore(state);
     const wrapper = mount(
@@ -403,12 +415,22 @@ describe('Investigation Search Table component', () => {
       </Provider>
     );
 
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
   });
 
-  it('does not render ISIS link when facilityCycleId cannot be found', () => {
-    delete state.dgcommon.data[0].facility;
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -418,13 +440,29 @@ describe('Investigation Search Table component', () => {
       </Provider>
     );
 
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
   });
 
-  it('does not render ISIS link when facilityCycleId has incompatible dates', () => {
-    state.dgcommon.data[0].facility.facilityCycles[0].startDate = '2020-06-11';
-    state.dgcommon.data[0].facility.facilityCycles[0].endDate = '2000-06-10';
+  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [
+          {
+            id: 2,
+            name: 'facility cycle name',
+            startDate: '2020-06-11',
+            endDate: '2000-06-10',
+          },
+        ],
+      })
+    );
+
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -433,6 +471,11 @@ describe('Investigation Search Table component', () => {
         </MemoryRouter>
       </Provider>
     );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');

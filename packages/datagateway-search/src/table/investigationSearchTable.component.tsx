@@ -195,7 +195,7 @@ const InvestigationSearchTable = (
 
   React.useEffect(() => {
     if (hierarchy === 'isis') fetchFacilityCycles();
-  }, [apiUrl, fetchFacilityCycles, hierarchy]);
+  }, [fetchFacilityCycles, hierarchy]);
 
   React.useEffect(() => {
     clearTable();
@@ -337,7 +337,6 @@ const mapDispatchToProps = (
             filterType: 'include',
             filterValue: JSON.stringify([
               { investigationInstruments: 'instrument' },
-              { facility: 'facilityCycles' },
             ]),
           },
         ],
