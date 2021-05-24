@@ -18,7 +18,7 @@ exports[`Investigation Search Table component renders correctly 1`] = `
       Object {
         "dataKey": "visitId",
         "filterComponent": [Function],
-        "label": "investigations.visitId",
+        "label": "investigations.visit_id",
       },
       Object {
         "dataKey": "rbNumber",

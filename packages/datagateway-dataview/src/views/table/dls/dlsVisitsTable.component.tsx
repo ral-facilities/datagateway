@@ -133,7 +133,7 @@ const DLSVisitsTable = (
       columns={[
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.visitId'),
+          label: t('investigations.visit_id'),
           dataKey: 'visitId',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
