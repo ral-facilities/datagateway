@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import InvestigationTable from '../views/table/investigationTable.component';
 import DatasetTable from '../views/table/datasetTable.component';
+import DatafileTable from '../views/table/datafileTable.component';
 
 import DLSProposalsTable from '../views/table/dls/dlsProposalsTable.component';
 import DLSVisitsTable from '../views/table/dls/dlsVisitsTable.component';
@@ -48,18 +49,19 @@ import {
 import { paths } from './pageContainer.component';
 import { ViewsType } from 'datagateway-common';
 
-// TODO - Remove checkInvestigationId call
 const SafeDatafileTable = React.memo(
   (props: {
     investigationId: string;
     datasetId: string;
   }): React.ReactElement => {
-    return (
-      <SafeDatafileTable
-        datasetId={props.datasetId}
-        investigationId={props.investigationId}
-      />
-    );
+    const SafeDatafileTable = withIdCheck(
+      checkInvestigationId(
+        parseInt(props.investigationId),
+        parseInt(props.datasetId)
+      )
+    )(DatafileTable);
+
+    return <SafeDatafileTable datasetId={props.datasetId} />;
   }
 );
 SafeDatafileTable.displayName = 'SafeDatafileTable';
@@ -80,6 +82,10 @@ const SafeISISDatafilesTable = React.memo(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
+            ),
           ]).then((values) => !values.includes(false))
         )(ISISDatafilesTable)
       : withIdCheck(
@@ -89,15 +95,14 @@ const SafeISISDatafilesTable = React.memo(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
+            checkInvestigationId(
+              parseInt(props.investigationId),
+              parseInt(props.datasetId)
+            ),
           ]).then((values) => !values.includes(false))
         )(ISISDatafilesTable);
 
-    return (
-      <SafeISISDatafilesTable
-        datasetId={props.datasetId}
-        investigationId={props.investigationId}
-      />
-    );
+    return <SafeISISDatafilesTable datasetId={props.datasetId} />;
   }
 );
 SafeISISDatafilesTable.displayName = 'SafeISISDatafilesTable';
@@ -236,15 +241,14 @@ const SafeDLSDatafilesTable = React.memo(
     const SafeDLSDatafilesTable = withIdCheck(
       Promise.all([
         checkProposalName(props.proposalName, parseInt(props.investigationId)),
+        checkInvestigationId(
+          parseInt(props.investigationId),
+          parseInt(props.datasetId)
+        ),
       ]).then((values) => !values.includes(false))
     )(DLSDatafilesTable);
 
-    return (
-      <SafeDLSDatafilesTable
-        datasetId={props.datasetId}
-        investigationId={props.investigationId}
-      />
-    );
+    return <SafeDLSDatafilesTable datasetId={props.datasetId} />;
   }
 );
 SafeDLSDatafilesTable.displayName = 'SafeDLSDatafilesTable';

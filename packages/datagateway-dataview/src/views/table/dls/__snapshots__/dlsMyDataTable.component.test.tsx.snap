@@ -16,7 +16,7 @@ exports[`DLS Visits table component renders correctly 1`] = `
         "dataKey": "visitId",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "investigations.visit_id",
+        "label": "investigations.visitId",
       },
       Object {
         "dataKey": "datasetCount",

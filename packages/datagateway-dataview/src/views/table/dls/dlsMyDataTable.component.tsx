@@ -175,7 +175,7 @@ const DLSMyDataTable = (
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
+          label: t('investigations.visitId'),
           dataKey: 'visitId',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;

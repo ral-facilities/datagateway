@@ -58,7 +58,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface DatafileTableProps {
   datasetId: string;
-  investigationId: string;
 }
 
 interface DatafileTableStoreProps {
@@ -76,16 +75,12 @@ interface DatafileTableStoreProps {
 interface DatafileTableDispatchProps {
   pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (
-    datasetId: number,
-    investigationId: number,
-    offsetParams: IndexRange
-  ) => Promise<void>;
-  fetchCount: (datasetId: number, investigationId: number) => Promise<void>;
+  fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
+  fetchCount: (datasetId: number) => Promise<void>;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: (datasetId: number, investigationId: number) => Promise<void>;
+  fetchAllIds: () => Promise<void>;
 }
 
 type DatafileTableCombinedProps = DatafileTableProps &
@@ -105,7 +100,6 @@ const DatafileTable = (
     filters,
     pushFilters,
     datasetId,
-    investigationId,
     downloadData,
     cartItems,
     addToCart,
@@ -133,16 +127,13 @@ const DatafileTable = (
   );
 
   React.useEffect(() => {
-    fetchCount(parseInt(datasetId), parseInt(investigationId));
-    fetchAllIds(parseInt(datasetId), parseInt(investigationId));
-  }, [fetchCount, fetchAllIds, filters, datasetId, investigationId]);
+    fetchCount(parseInt(datasetId));
+    fetchAllIds();
+  }, [fetchCount, fetchAllIds, filters, datasetId]);
 
   React.useEffect(() => {
-    fetchData(parseInt(datasetId), parseInt(investigationId), {
-      startIndex: 0,
-      stopIndex: 49,
-    });
-  }, [fetchData, sort, filters, datasetId, investigationId]);
+    fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
+  }, [fetchData, sort, filters, datasetId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -168,9 +159,7 @@ const DatafileTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={(params) =>
-        fetchData(parseInt(datasetId), parseInt(investigationId), params)
-      }
+      loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
@@ -267,18 +256,15 @@ const DatafileTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
+  dispatch: ThunkDispatch<StateType, null, AnyAction>,
+  ownProps: DatafileTableProps
 ): DatafileTableDispatchProps => ({
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  fetchData: (
-    datasetId: number,
-    investigationId: number,
-    offsetParams: IndexRange
-  ) =>
+  fetchData: (datasetId: number, offsetParams: IndexRange) =>
     dispatch(
       fetchDatafiles({
         offsetParams,
@@ -288,15 +274,13 @@ const mapDispatchToProps = (
             filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
           },
           {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'dataset.investigation.id': { eq: investigationId },
-            }),
+            filterType: 'include',
+            filterValue: JSON.stringify('dataset'),
           },
         ],
       })
     ),
-  fetchCount: (datasetId: number, investigationId: number) =>
+  fetchCount: (datasetId: number) =>
     dispatch(
       fetchDatafileCount([
         {
@@ -304,10 +288,8 @@ const mapDispatchToProps = (
           filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
         },
         {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'dataset.investigation.id': { eq: investigationId },
-          }),
+          filterType: 'include',
+          filterValue: JSON.stringify('dataset'),
         },
       ])
     ),
@@ -317,19 +299,13 @@ const mapDispatchToProps = (
     dispatch(addToCart('datafile', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('datafile', entityIds)),
-  fetchAllIds: (datasetId: number, investigationId: number) =>
+  fetchAllIds: () =>
     dispatch(
       fetchAllIds('datafile', [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'dataset.id': { eq: datasetId },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'dataset.investigation.id': { eq: investigationId },
+            'dataset.id': { eq: parseInt(ownProps.datasetId) },
           }),
         },
       ])

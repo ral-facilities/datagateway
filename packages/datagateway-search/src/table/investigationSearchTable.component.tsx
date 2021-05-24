@@ -254,7 +254,7 @@ const InvestigationSearchTable = (
           filterComponent: textFilter,
         },
         {
-          label: t('investigations.visit_id'),
+          label: t('investigations.visitId'),
           dataKey: 'visitId',
           filterComponent: textFilter,
         },

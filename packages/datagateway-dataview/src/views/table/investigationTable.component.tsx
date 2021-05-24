@@ -220,7 +220,7 @@ const InvestigationTable = (
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
+          label: t('investigations.visitId'),
           dataKey: 'visitId',
           filterComponent: textFilter,
         },
