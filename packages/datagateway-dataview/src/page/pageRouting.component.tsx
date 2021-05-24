@@ -60,8 +60,12 @@ const SafeDatafileTable = React.memo(
         parseInt(props.datasetId)
       )
     )(DatafileTable);
-
-    return <SafeDatafileTable datasetId={props.datasetId} />;
+    return (
+      <SafeDatafileTable
+        datasetId={props.datasetId}
+        investigationId={props.investigationId}
+      />
+    );
   }
 );
 SafeDatafileTable.displayName = 'SafeDatafileTable';
