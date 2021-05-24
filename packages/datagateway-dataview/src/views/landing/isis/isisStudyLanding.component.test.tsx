@@ -316,29 +316,4 @@ describe('ISIS Study Landing page', () => {
       wrapper.find('[aria-label="landing-study-citation"]').first().text()
     ).toEqual('Title 1, doi_constants.publisher.name');
   });
-
-  it('displays correctly when investigation missing', () => {
-    const testStore = mockStore({
-      ...state,
-      dgcommon: {
-        ...state.dgcommon,
-        data: [{ ...initialData, study: { ...study } }],
-      },
-    });
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <ISISStudyLanding instrumentId="4" studyId="5" />
-        </MemoryRouter>
-      </Provider>
-    );
-
-    expect(
-      wrapper.find('[aria-label="landing-study-part-label"]').first().text()
-    ).toEqual('investigations.visit_id: undefined');
-
-    expect(
-      wrapper.find('[aria-label="landing-study-citation"]').first().text()
-    ).toEqual('2019: doi_constants.publisher.name, https://doi.org/study pid');
-  });
 });

@@ -111,7 +111,7 @@ export interface DatasetType {
 export interface StudyInvestigation {
   id: number;
   study: Study;
-  investigation?: Investigation;
+  investigation: Investigation;
 }
 
 interface Study {

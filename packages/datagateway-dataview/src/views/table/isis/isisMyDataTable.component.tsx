@@ -252,7 +252,7 @@ const ISISMyDataTable = (
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.visitId'),
+          label: t('investigations.visit_id'),
           dataKey: 'visitId',
           filterComponent: textFilter,
         },
