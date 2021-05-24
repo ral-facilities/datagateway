@@ -44,7 +44,7 @@
     "start": "craco start",
     "build": "craco build",
     "serve:build": "yarn build & serve -l 5001 build",
-    "test": "craco test --env=jsdom --coverage --watchAll=false",
+    "test": "craco test --env=jsdom --coverage --watchAll=false --max-old-space-size=8192",
     "test:watch": "craco test --env=jsdom --watch",
     "build:e2e": "cross-env REACT_APP_E2E_TESTING=true GENERATE_SOURCEMAP=false craco build",
     "e2e:serve": "yarn build:e2e && node ./server/e2e-test-server.js",
