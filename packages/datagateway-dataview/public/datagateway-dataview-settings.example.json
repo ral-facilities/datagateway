@@ -47,28 +47,22 @@
   ],
   "routes": [
     {
-      "section": "Homepage",
-      "link": "/datagateway",
-      "displayName": "DataGateway",
-      "order": 0
-    },
-    {
       "section": "Data",
       "link": "/browse/investigation",
       "displayName": "DataView",
-      "order": 1
+      "order": 0
     },
     {
       "section": "Data",
       "link": "/browse/proposal",
       "displayName": "DLS View",
-      "order": 2
+      "order": 1
     },
     {
       "section": "Data",
       "link": "/browse/instrument",
       "displayName": "ISIS View",
-      "order": 3
+      "order": 2
     }
   ],
   "pluginHost": "http://localhost:3000"

@@ -191,16 +191,6 @@
     "show_more": "Show more",
     "show_less": "Show less"
   },
-  "homePage": {
-    "title": "DataGateway",
-    "howLabel": "How it works...",
-    "exploreLabel": "1. Explore",
-    "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
-    "discoverLabel": "2. Discover",
-    "discoverDescription": "Search for the experimental data according to different criteria.",
-    "downloadLabel": "3. Download",
-    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
-  },
   "doi_constants": {
     "keywords": [
       "STFC > ISIS",
