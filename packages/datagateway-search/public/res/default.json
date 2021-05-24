@@ -34,7 +34,7 @@
     "end_date": "End Date",
     "start_date": "Start Date",
     "instrument": "Instrument",
-    "visitId": "Visit ID",
+    "visit_id": "Visit ID",
     "rb_number": "RB Number",
     "doi": "DOI",
     "dataset_count": "Dataset Count"
