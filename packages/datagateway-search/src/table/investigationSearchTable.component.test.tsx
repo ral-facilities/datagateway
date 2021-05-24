@@ -14,6 +14,7 @@ import {
   dGCommonInitialState,
   clearTable,
   fetchAllIdsRequest,
+  handleICATError,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -21,6 +22,16 @@ import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    handleICATError: jest.fn(),
+  };
+});
 
 describe('Investigation Search Table component', () => {
   let shallow;
@@ -93,6 +104,7 @@ describe('Investigation Search Table component', () => {
 
   afterEach(() => {
     mount.cleanUp();
+    (handleICATError as jest.Mock).mockClear();
   });
 
   it('renders correctly', () => {
@@ -368,6 +380,33 @@ describe('Investigation Search Table component', () => {
       '/browse/proposal/Test 1/investigation/1/dataset'
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Test 1');
+  });
+
+  it('throws an error if facility cycles could not be fetched', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <InvestigationSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
   });
 
   it('renders ISIS link correctly', async () => {
