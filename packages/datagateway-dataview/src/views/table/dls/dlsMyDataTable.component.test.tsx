@@ -146,7 +146,7 @@ describe('DLS Visits table component', () => {
     );
 
     const filterInput = wrapper
-      .find('[aria-label="Filter by investigations.visitId"] input')
+      .find('[aria-label="Filter by investigations.visit_id"] input')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');

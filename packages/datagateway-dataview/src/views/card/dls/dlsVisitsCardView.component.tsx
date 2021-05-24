@@ -139,7 +139,7 @@ const DLSVisitsCardView = (
       loadedData={loadedData}
       loadedCount={loadedCount}
       title={{
-        label: t('investigations.visitId'),
+        label: t('investigations.visit_id'),
         dataKey: 'visitId',
         content: (investigation: Investigation) =>
           tableLink(

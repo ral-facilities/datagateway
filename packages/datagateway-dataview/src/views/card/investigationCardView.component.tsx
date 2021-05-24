@@ -181,7 +181,7 @@ const InvestigationCardView = (
         },
         {
           icon: <Fingerprint />,
-          label: t('investigations.visitId'),
+          label: t('investigations.visit_id'),
           dataKey: 'visitId',
           filterComponent: textFilter,
         },

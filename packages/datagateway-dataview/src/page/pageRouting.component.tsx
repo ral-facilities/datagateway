@@ -86,10 +86,6 @@ const SafeISISDatafilesTable = React.memo(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
-            checkInvestigationId(
-              parseInt(props.investigationId),
-              parseInt(props.datasetId)
-            ),
           ]).then((values) => !values.includes(false))
         )(ISISDatafilesTable)
       : withIdCheck(
@@ -99,14 +95,15 @@ const SafeISISDatafilesTable = React.memo(
               parseInt(props.instrumentChildId),
               parseInt(props.investigationId)
             ),
-            checkInvestigationId(
-              parseInt(props.investigationId),
-              parseInt(props.datasetId)
-            ),
           ]).then((values) => !values.includes(false))
         )(ISISDatafilesTable);
 
-    return <SafeISISDatafilesTable datasetId={props.datasetId} />;
+    return (
+      <SafeISISDatafilesTable
+        datasetId={props.datasetId}
+        investigationId={props.investigationId}
+      />
+    );
   }
 );
 SafeISISDatafilesTable.displayName = 'SafeISISDatafilesTable';
@@ -245,14 +242,15 @@ const SafeDLSDatafilesTable = React.memo(
     const SafeDLSDatafilesTable = withIdCheck(
       Promise.all([
         checkProposalName(props.proposalName, parseInt(props.investigationId)),
-        checkInvestigationId(
-          parseInt(props.investigationId),
-          parseInt(props.datasetId)
-        ),
       ]).then((values) => !values.includes(false))
     )(DLSDatafilesTable);
 
-    return <SafeDLSDatafilesTable datasetId={props.datasetId} />;
+    return (
+      <SafeDLSDatafilesTable
+        datasetId={props.datasetId}
+        investigationId={props.investigationId}
+      />
+    );
   }
 );
 SafeDLSDatafilesTable.displayName = 'SafeDLSDatafilesTable';
