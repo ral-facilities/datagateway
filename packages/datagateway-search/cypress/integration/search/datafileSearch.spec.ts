@@ -29,22 +29,9 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search button"]')
       .click()
-      .wait(
-        [
-          '@investigations',
-          '@investigations',
-          '@investigationsCount',
-          '@datasets',
-          '@datasets',
-          '@datasetsCount',
-          '@datafiles',
-          '@datafiles',
-          '@datafilesCount',
-        ],
-        {
-          timeout: 20000,
-        }
-      );
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Datafile')
@@ -91,19 +78,9 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Submit search button"]')
       .click()
-      .wait(
-        [
-          '@datasets',
-          '@datasets',
-          '@datasetsCount',
-          '@investigations',
-          '@investigations',
-          '@investigationsCount',
-        ],
-        {
-          timeout: 20000,
-        }
-      );
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
