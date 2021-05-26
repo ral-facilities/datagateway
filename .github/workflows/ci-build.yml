@@ -152,7 +152,11 @@ jobs:
         run: |
           cd datagateway-api; poetry run python -m util.icat_db_generator -s 4 -y 3; cd ..
       - name: Start API
-        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt 2>&1 &
+        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+      - name: Sleep
+        run: sleep 30
+      - name: LSOF API
+        run: lsof -i :5000
       - name: Back a dir
         run: cd ..
       
