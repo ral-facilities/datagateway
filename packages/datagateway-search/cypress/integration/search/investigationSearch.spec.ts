@@ -29,33 +29,21 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Submit search button"]')
       .click()
-      .wait(
-        [
-          '@investigations',
-          '@investigations',
-          '@investigationsCount',
-          '@datasets',
-          '@datasets',
-          '@datasetsCount',
-          '@datafiles',
-          '@datafiles',
-          '@datafilesCount',
-        ],
-        {
-          timeout: 20000,
-        }
-      );
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="4"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="6"]').contains('0-942080-93-9');
 
+    // Small wait to ensure rows are selected correctly
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
     // Check that "select all" and individual selection are equivalent
     let i = 1;
     while (i < 5) {
-      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
-        .click()
-        .wait('@topcat', { timeout: 10000 });
+      cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
       i++;
     }
     cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
@@ -73,21 +61,9 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Submit search button"]')
       .click()
-      .wait(
-        [
-          '@investigations',
-          '@investigationsCount',
-          '@datasets',
-          '@datasets',
-          '@datasetsCount',
-          '@datafiles',
-          '@datafiles',
-          '@datafilesCount',
-        ],
-        {
-          timeout: 20000,
-        }
-      );
+      .wait(['@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Investigation')
@@ -120,19 +96,9 @@ describe('Investigation search tab', () => {
 
     cy.get('[aria-label="Submit search button"]')
       .click()
-      .wait(
-        [
-          '@datasets',
-          '@datasets',
-          '@datasetsCount',
-          '@datafiles',
-          '@datafiles',
-          '@datafilesCount',
-        ],
-        {
-          timeout: 20000,
-        }
-      );
+      .wait(['@datasets', '@datasets', '@datasetsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="50"]').should('exist');
 
