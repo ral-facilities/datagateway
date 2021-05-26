@@ -13,12 +13,25 @@ import {
   removeFromCartRequest,
   fetchDatasetCountRequest,
   fetchAllIdsRequest,
+  dGCommonInitialState,
+  handleICATError,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
-import { dGCommonInitialState } from 'datagateway-common';
+import { act } from 'react-dom/test-utils';
+import { flushPromises } from '../setupTests';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    handleICATError: jest.fn(),
+  };
+});
 
 describe('Dataset table component', () => {
   let shallow;
@@ -36,11 +49,50 @@ describe('Dataset table component', () => {
     );
     state.dgcommon.data = [
       {
-        id: 1,
-        name: 'Test 1',
+        id: 2,
+        name: 'Dataset test name',
         size: 1,
         modTime: '2019-07-23',
         createTime: '2019-07-23',
+        startDate: '2019-07-24',
+        endDate: '2019-07-25',
+        investigation: {
+          id: 1,
+          title: 'Investigation test title',
+          name: 'Investigation test name',
+          summary: 'foo bar',
+          visitId: '1',
+          rbNumber: '1',
+          doi: 'doi 1',
+          size: 1,
+          investigationInstruments: [
+            {
+              id: 1,
+              instrument: {
+                id: 3,
+                name: 'LARMOR',
+              },
+            },
+          ],
+          studyInvestigations: [
+            {
+              id: 6,
+              study: {
+                id: 7,
+                pid: 'study pid',
+                name: 'study name',
+                modTime: '2019-06-10',
+                createTime: '2019-06-10',
+              },
+            },
+          ],
+          startDate: '2019-06-10',
+          endDate: '2019-06-11',
+          facility: {
+            id: 2,
+            name: 'facility name',
+          },
+        },
       },
     ];
     state.dgcommon.allIds = [1];
@@ -58,6 +110,7 @@ describe('Dataset table component', () => {
 
   afterEach(() => {
     mount.cleanUp();
+    (handleICATError as jest.Mock).mockClear();
   });
 
   it('renders correctly', () => {
@@ -262,5 +315,211 @@ describe('Dataset table component', () => {
     expect(
       wrapper.find('[aria-colindex=3]').find('p').children()
     ).toMatchSnapshot();
+  });
+
+  // new tests
+
+  it('renders fine with incomplete data', () => {
+    // this can happen when navigating between tables and the previous table's state still exists
+    state.dgcommon.data = [
+      {
+        id: 1,
+        name: 'test',
+        size: 1,
+        modTime: '2019-07-23',
+        createTime: '2019-07-23',
+        investigation: {},
+      },
+    ];
+
+    expect(() =>
+      mount(
+        <Provider store={mockStore(state)}>
+          <MemoryRouter>
+            <DatasetSearchTable />
+          </MemoryRouter>
+        </Provider>
+      )
+    ).not.toThrowError();
+  });
+
+  it('renders generic link correctly', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable hierarchy="data" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+      `/browse/investigation/1/dataset/2/datafile`
+    );
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Dataset test 1');
+  });
+
+  it('renders DLS link correctly', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable hierarchy="dls" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+      '/browse/proposal/Investigation test name/investigation/1/dataset/2/datafile'
+    );
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Dataset test name'
+    );
+  });
+
+  it('throws an error if facility cycles could not be fetched', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.reject({
+        message: 'Test error message',
+      })
+    );
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(handleICATError).toHaveBeenCalled();
+    expect(handleICATError).toHaveBeenCalledWith({
+      message: 'Test error message',
+    });
+  });
+
+  it('renders ISIS link correctly', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [
+          {
+            id: 2,
+            name: 'facility cycle name',
+            startDate: '2000-06-10',
+            endDate: '2020-06-11',
+          },
+        ],
+      })
+    );
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
+      `/browse/instrument/3/facilityCycle/2/investigation/1/dataset/2/datafile`
+    );
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Dataset test name'
+    );
+  });
+
+  it('does not render ISIS link when instrumentId cannot be found', async () => {
+    delete state.dgcommon.data[0].investigationInstruments;
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Dataset test name'
+    );
+  });
+
+  it('does not render ISIS link when facilityCycleId cannot be found', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [],
+      })
+    );
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Dataset test name'
+    );
+  });
+
+  it('does not render ISIS link when facilityCycleId has incompatible dates', async () => {
+    (axios.get as jest.Mock).mockImplementationOnce(() =>
+      Promise.resolve({
+        data: [
+          {
+            id: 2,
+            name: 'facility cycle name',
+            startDate: '2020-06-11',
+            endDate: '2000-06-10',
+          },
+        ],
+      })
+    );
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <DatasetSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Dataset test name'
+    );
   });
 });

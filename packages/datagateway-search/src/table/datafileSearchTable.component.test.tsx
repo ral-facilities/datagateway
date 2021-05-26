@@ -14,12 +14,24 @@ import {
   addToCartRequest,
   removeFromCartRequest,
   fetchDatafileCountRequest,
+  // handleICATError,
 } from 'datagateway-common';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { MemoryRouter } from 'react-router';
 import axios from 'axios';
 import { dGCommonInitialState } from 'datagateway-common';
+// import { act } from 'react-dom/test-utils';
+
+jest.mock('datagateway-common', () => {
+  const originalModule = jest.requireActual('datagateway-common');
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    handleICATError: jest.fn(),
+  };
+});
 
 describe('Datafile search table component', () => {
   let shallow;

@@ -51,6 +51,7 @@ export interface Datafile {
   location?: string;
   description?: string;
   parameters?: DatafileParameter[];
+  dataset?: Dataset;
 }
 
 export interface InvestigationInstrument {
