@@ -4,16 +4,13 @@ import {
   fetchInstrumentDetails,
   fetchInstruments,
   Filter,
-  FiltersType,
   Instrument,
   Order,
   pushPageFilter,
   pushPageSort,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  ViewsType,
   TextFilter,
   readURLQuery,
 } from 'datagateway-common';
@@ -25,7 +22,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 
@@ -34,9 +31,7 @@ interface ISISInstrumentsTableProps {
 }
 
 interface ISISInstrumentsTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -64,11 +59,9 @@ const ISISInstrumentsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     loading,
     selectAllSetting,
     studyHierarchy,
@@ -86,13 +79,17 @@ const ISISInstrumentsTable = (
     />
   );
 
-  useDeepCompareEffect(() => {
-    fetchCount();
-  }, [fetchCount, filters]);
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
 
-  useDeepCompareEffect(() => {
+  React.useEffect(() => {
+    fetchCount();
+  }, [fetchCount, location.query.filters]);
+
+  React.useEffect(() => {
     fetchData({ startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters]);
+  }, [fetchData, location.query.sort, location.query.filters]);
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
@@ -152,9 +149,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
   return {
-    sort: readURLQuery(state.router.location).sort,
-    filters: readURLQuery(state.router.location).filters,
-    view: readURLQuery(state.router.location).view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
