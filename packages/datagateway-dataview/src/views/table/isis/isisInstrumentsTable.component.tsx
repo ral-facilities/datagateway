@@ -15,6 +15,7 @@ import {
   TextColumnFilter,
   ViewsType,
   TextFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +25,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import TitleIcon from '@material-ui/icons/Title';
 
@@ -84,11 +86,11 @@ const ISISInstrumentsTable = (
     />
   );
 
-  React.useEffect(() => {
+  useDeepCompareEffect(() => {
     fetchCount();
   }, [fetchCount, filters]);
 
-  React.useEffect(() => {
+  useDeepCompareEffect(() => {
     fetchData({ startIndex: 0, stopIndex: 49 });
   }, [fetchData, sort, filters]);
 
@@ -150,9 +152,9 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    sort: readURLQuery(state.router.location).sort,
+    filters: readURLQuery(state.router.location).filters,
+    view: readURLQuery(state.router.location).view,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

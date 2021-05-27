@@ -18,17 +18,17 @@ import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
   fetchDownloadCart,
-  loadURLQuery,
   pushPageView,
   saveView,
   Sticky,
   QueryParams,
   ViewsType,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Switch as SwitchRouting, Route } from 'react-router';
+import { Switch as SwitchRouting, Route } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -270,89 +270,95 @@ const CardSwitch = (props: {
   );
 };
 
-const ViewRouting = (props: {
+const StyledRouting = (props: {
+  viewStyle: ViewsType;
   view: ViewsType;
-  loadedCount: boolean;
-  totalDataCount: number;
   location: LocationType;
+  displayFilterMessage: boolean;
 }): React.ReactElement => {
-  const { view, loadedCount, totalDataCount, location } = props;
-  const paperClasses = usePaperStyles();
+  const { view, location, viewStyle, displayFilterMessage } = props;
   const [t] = useTranslation();
-  const displayFilterMessage = loadedCount && totalDataCount === 0;
+  const paperClasses = usePaperStyles();
   const tableClassName = displayFilterMessage
     ? paperClasses.tablePaperMessage
     : paperClasses.tablePaper;
-
   return (
-    <SwitchRouting>
-      {/* For "landing" paths, don't use a containing Paper */}
-      <Route
-        exact
-        path={Object.values(paths.landing).concat(
-          Object.values(paths.studyHierarchy.landing)
-        )}
-        render={() => <PageRouting view={props.view} location={location} />}
-      />
-      {/* For "toggle" paths, check state for the current view */}
-      <Route
-        exact
-        path={Object.values(paths.toggle).concat(
-          Object.values(paths.studyHierarchy.toggle)
-        )}
-        render={() => (
-          <div>
-            {view !== 'card' && displayFilterMessage && (
-              <Paper className={paperClasses.noResultsPaper}>
-                <Typography
-                  align="center"
-                  variant="h6"
-                  component="h6"
-                  aria-label="filter-message"
-                >
-                  {t('loading.filter_message')}
-                </Typography>
-              </Paper>
-            )}
-            <Paper
-              square
-              className={
-                view === 'card' ? paperClasses.cardPaper : tableClassName
-              }
-            >
-              <PageRouting view={view} location={location} />
-            </Paper>
-          </div>
-        )}
-      />
-      {/* Otherwise, use the paper styling for tables*/}
-      <Route
-        render={() => (
-          <div>
-            {displayFilterMessage && (
-              <Paper className={paperClasses.noResultsPaper}>
-                <Typography
-                  align="center"
-                  variant="h6"
-                  component="h6"
-                  aria-label="filter-message"
-                >
-                  {t('loading.filter_message')}
-                </Typography>
-              </Paper>
-            )}
-            <Paper square className={tableClassName}>
-              <PageRouting view={view} location={location} />
-            </Paper>
-          </div>
-        )}
-      />
-    </SwitchRouting>
+    <div>
+      {viewStyle === 'table' && displayFilterMessage && (
+        <Paper className={paperClasses.noResultsPaper}>
+          <Typography
+            align="center"
+            variant="h6"
+            component="h6"
+            aria-label="filter-message"
+          >
+            {t('loading.filter_message')}
+          </Typography>
+        </Paper>
+      )}
+      <Paper
+        square
+        className={
+          viewStyle === 'card' ? paperClasses.cardPaper : tableClassName
+        }
+      >
+        <PageRouting view={view} location={location} />
+      </Paper>
+    </div>
   );
 };
 
+const ViewRouting = React.memo(
+  (props: {
+    view: ViewsType;
+    loadedCount: boolean;
+    totalDataCount: number;
+    location: LocationType;
+  }): React.ReactElement => {
+    const { view, loadedCount, totalDataCount, location } = props;
+    const displayFilterMessage = loadedCount && totalDataCount === 0;
+
+    return (
+      <SwitchRouting>
+        {/* For "landing" paths, don't use a containing Paper */}
+        <Route
+          exact
+          path={Object.values(paths.landing).concat(
+            Object.values(paths.studyHierarchy.landing)
+          )}
+          render={() => <PageRouting view={view} location={location} />}
+        />
+        {/* For "toggle" paths, check state for the current view to determine styling */}
+        <Route
+          exact
+          path={Object.values(paths.toggle).concat(
+            Object.values(paths.studyHierarchy.toggle)
+          )}
+        >
+          <StyledRouting
+            viewStyle={view}
+            view={view}
+            location={location}
+            displayFilterMessage={displayFilterMessage}
+          />
+        </Route>
+
+        {/* Otherwise, use the paper styling for tables*/}
+        <Route>
+          <StyledRouting
+            viewStyle={'table'}
+            view={view}
+            location={location}
+            displayFilterMessage={displayFilterMessage}
+          />
+        </Route>
+      </SwitchRouting>
+    );
+  }
+);
+ViewRouting.displayName = 'ViewRouting';
+
 interface PageContainerDispatchProps {
-  loadQuery: (pathChanged: boolean) => Promise<void>;
   pushView: (view: ViewsType, path: string) => Promise<void>;
   saveView: (view: ViewsType) => Promise<void>;
   fetchDownloadCart: () => Promise<void>;
@@ -387,9 +393,6 @@ class PageContainer extends React.Component<
   public constructor(props: PageContainerCombinedProps) {
     super(props);
 
-    // Load the current URL query parameters.
-    this.props.loadQuery(true);
-
     // Allow for query parameter to override the
     // toggle state in the localStorage.
     this.state = {
@@ -409,27 +412,11 @@ class PageContainer extends React.Component<
   }
 
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
-    // Ensure if the location changes, then we update the query parameters.
-    // Use a dummy URL for the routing until we've updated the query to prevent
-    // sending requests for the old query on the new entity or vice versa.
-    if (prevProps.location.pathname !== this.props.location.pathname) {
-      this.setState({
-        ...this.state,
-        modifiedLocation: { ...this.props.location, pathname: '/' },
-      });
-      this.props.loadQuery(true);
-    } else if (prevProps.location.search !== this.props.location.search) {
-      this.props.loadQuery(false);
-    }
-
-    if (prevProps.query !== this.props.query) {
-      this.setState({ ...this.state, modifiedLocation: this.props.location });
-    }
-
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
-    if (this.getToggle() && !this.props.query.view)
+    if (this.getToggle() && !this.props.query.view) {
       this.props.pushView('card', this.props.location.pathname);
+    }
 
     // Keep the query parameter for view and the state in sync, by getting the latest update.
     if (prevProps.query.view !== this.props.query.view) {
@@ -554,7 +541,7 @@ class PageContainer extends React.Component<
 const mapStateToProps = (state: StateType): PageContainerStateProps => ({
   entityCount: state.dgcommon.totalDataCount,
   location: state.router.location,
-  query: state.dgcommon.query,
+  query: readURLQuery(state.router.location),
   savedView: state.dgcommon.savedQuery.view,
   loading: state.dgcommon.loading,
   loadedCount: state.dgcommon.loadedCount,
@@ -565,7 +552,6 @@ const mapStateToProps = (state: StateType): PageContainerStateProps => ({
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): PageContainerDispatchProps => ({
-  loadQuery: (pathChanged: boolean) => dispatch(loadURLQuery(pathChanged)),
   pushView: (view: ViewsType, path: string) =>
     dispatch(pushPageView(view, path)),
   saveView: (view: ViewsType) => dispatch(saveView(view)),
