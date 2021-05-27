@@ -356,7 +356,9 @@ describe('Dataset table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       `/browse/investigation/1/dataset/2/datafile`
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Dataset test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Dataset test name'
+    );
   });
 
   it('renders DLS link correctly', () => {
@@ -463,11 +465,11 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    (axios.get as jest.Mock).mockImplementationOnce(() =>
-      Promise.resolve({
-        data: [],
-      })
-    );
+    // (axios.get as jest.Mock).mockImplementationOnce(() =>
+    //   Promise.resolve({
+    //     data: [],
+    //   })
+    // );
 
     const testStore = mockStore(state);
     const wrapper = mount(

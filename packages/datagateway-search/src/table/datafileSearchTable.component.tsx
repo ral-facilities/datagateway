@@ -97,17 +97,21 @@ const DatafileSearchTable = (
   const dlsLink = (
     datafileData: Datafile,
     linkType = 'datafile'
-  ): React.ReactElement => {
-    if (linkType === 'dataset') {
-      return tableLink(
-        `/browse/proposal/${datafileData.dataset?.investigation?.name}/investigation/${datafileData.dataset?.investigation?.id}/dataset/${datafileData.dataset?.id}/datafile`,
-        datafileData.dataset?.name
-      );
+  ): React.ReactElement | string => {
+    if (datafileData.dataset?.investigation) {
+      return linkType === 'dataset'
+        ? tableLink(
+            `/browse/proposal/${datafileData.dataset.investigation.name}/investigation/${datafileData.dataset.investigation?.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.dataset.name
+          )
+        : tableLink(
+            `/browse/proposal/${datafileData.dataset.name}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.name
+          );
     }
-    return tableLink(
-      `/browse/proposal/${datafileData.dataset?.name}/investigation/${datafileData.dataset?.investigation?.id}/dataset/${datafileData.dataset.id}/datafile`,
-      datafileData.name
-    );
+    if (linkType === 'dataset')
+      return datafileData.dataset ? datafileData.dataset.name : '';
+    return datafileData.name;
   };
 
   const isisLink = React.useCallback(
@@ -121,10 +125,12 @@ const DatafileSearchTable = (
           datafileData.dataset?.investigation?.investigationInstruments[0]
             .instrument?.id;
       } else {
+        if (linkType === 'dataset')
+          return datafileData.dataset ? datafileData.dataset.name : '';
         return datafileData.name;
       }
 
-      if (datafileData.startDate && facilityCycles.length) {
+      if (datafileData.dataset.startDate && facilityCycles.length) {
         const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
           (facilityCycle: FacilityCycle) =>
             datafileData.dataset?.startDate &&
@@ -139,19 +145,17 @@ const DatafileSearchTable = (
       }
 
       if (facilityCycleId) {
-        if (linkType === 'dataset') {
-          return tableLink(
-            `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset?.investigation?.id}/dataset/${datafileData.dataset?.id}`,
-            datafileData.dataset?.name
-          );
-        }
-        return tableLink(
-          `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset?.investigation?.id}/dataset/${datafileData.dataset?.id}/datafile`,
-          datafileData.name
-        );
-      } else {
-        return datafileData.name;
+        return linkType === 'dataset'
+          ? tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}`,
+              datafileData.dataset?.name
+            )
+          : tableLink(
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+              datafileData.name
+            );
       }
+      return linkType === 'dataset' ? '' : datafileData.name;
     },
     [facilityCycles]
   );
@@ -159,19 +163,22 @@ const DatafileSearchTable = (
   const genericLink = (
     datafileData: Datafile,
     linkType = 'datafile'
-  ): React.ReactElement => {
-    // generic link for dataset
-    if (linkType === 'dataset') {
-      return tableLink(
-        `/browse/investigation/${datafileData.dataset?.investigation?.id}/dataset/${datafileData.dataset?.id}/datafile`,
-        datafileData.dataset?.name
-      );
+  ): React.ReactElement | string => {
+    if (datafileData.dataset?.investigation) {
+      return linkType === 'dataset'
+        ? tableLink(
+            `/browse/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.dataset.name
+          )
+        : tableLink(
+            `/browse/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
+            datafileData.name
+          );
     }
-    // generic link for datafile
-    return tableLink(
-      `/browse/investigation/${datafileData.dataset?.investigation?.id}/dataset/${datafileData.dataset?.id}/datafile`,
-      datafileData.name
-    );
+
+    if (linkType === 'dataset')
+      return datafileData.dataset ? datafileData.dataset.name : '';
+    return datafileData.name;
   };
 
   const hierarchyLink = React.useMemo(() => {
