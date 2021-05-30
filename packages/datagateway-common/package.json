@@ -19,7 +19,7 @@
     "lodash.debounce": "^4.0.8",
     "loglevel": "^1.7.1",
     "react-draggable": "^4.4.3",
-    "react-i18next": "^11.8.8",
+    "react-i18next": "^11.10.0",
     "react-redux": "^7.1.0",
     "react-router": "^5.0.1",
     "react-scripts": "4.0.3",
