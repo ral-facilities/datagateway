@@ -97,13 +97,17 @@ import {
   FetchSizeSuccessPayload,
   FilterTablePayload,
   FilterTableType,
+  FilterUpdateType,
+  PageUpdateType,
   RemoveFromCartFailureType,
   RemoveFromCartRequestType,
   RemoveFromCartSuccessType,
   RequestPayload,
+  ResultsUpdateType,
   SaveViewPayload,
   SortTablePayload,
   SortTableType,
+  SortUpdateType,
   UpdateFiltersPayload,
   UpdateFiltersType,
   UpdatePagePayload,
@@ -407,6 +411,15 @@ export function handleClearData(state: DGCommonState): DGCommonState {
     ...state,
     data: [],
     loadedData: false,
+  };
+}
+
+export function handleClearDataAndCount(state: DGCommonState): DGCommonState {
+  return {
+    ...state,
+    data: [],
+    loadedData: false,
+    loadedCount: false,
   };
 }
 
@@ -839,6 +852,10 @@ const dGCommonReducer = createReducer(initialState, {
   [UpdateSaveViewType]: handleSaveView,
   [ClearTableType]: handleClearTable,
   [ClearDataType]: handleClearData,
+  [SortUpdateType]: handleClearData,
+  [FilterUpdateType]: handleClearDataAndCount,
+  [PageUpdateType]: handleClearData,
+  [ResultsUpdateType]: handleClearData,
   [FetchInvestigationsRequestType]: handleFetchDataRequest,
   [FetchInvestigationsSuccessType]: handleFetchDataSuccess,
   [FetchInvestigationsFailureType]: handleFetchDataFailure,

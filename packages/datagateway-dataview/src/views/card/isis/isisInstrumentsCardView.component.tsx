@@ -1,5 +1,6 @@
 import { Link } from '@material-ui/core';
 import { Title, Link as LinkIcon } from '@material-ui/icons';
+import { RouterLocation } from 'connected-react-router';
 import {
   CardView,
   Entity,
@@ -10,10 +11,14 @@ import {
   Instrument,
   pushPageFilter,
   pushPageNum,
+  pushPageSort,
+  pushPageResults,
   pushQuery,
+  readURLQuery,
   tableLink,
   TextColumnFilter,
   TextFilter,
+  Order,
 } from 'datagateway-common';
 import { QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
@@ -36,7 +41,9 @@ interface ISISInstrumentsCVDispatchProps {
   fetchCount: () => Promise<void>;
   fetchDetails: (instrumentId: number) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
+  pushResults: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
 }
 
@@ -44,9 +51,9 @@ interface ISISInstrumentsCVDispatchProps {
 interface ISISInstrumentsCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  query: QueryParams;
   loadedData: boolean;
   loadedCount: boolean;
+  location: RouterLocation<unknown>;
 }
 
 type ISISInstrumentsCVCombinedProps = ISISInstrumentsCVDispatchProps &
@@ -59,7 +66,7 @@ const ISISInstrumentsCardView = (
   const {
     data,
     totalDataCount,
-    query,
+    location,
     loadedData,
     loadedCount,
     fetchData,
@@ -68,12 +75,29 @@ const ISISInstrumentsCardView = (
     pushFilters,
     pushPage,
     pushQuery,
+    pushSort,
+    pushResults,
     studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
 
-  const filters = query.filters;
+  const { page, results } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+  const query = React.useMemo(() => readURLQuery(location), [location]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = React.useMemo(() => readURLQuery(location).filters, [
+    location.query.filters,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const sort = React.useMemo(() => readURLQuery(location).sort, [
+    location.query.sort,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const view = React.useMemo(() => readURLQuery(location).view, [
+    location.query.view,
+  ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -98,8 +122,14 @@ const ISISInstrumentsCardView = (
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      onSort={pushSort}
+      onResultsChange={pushResults}
       loadedData={loadedData}
       loadedCount={loadedCount}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
       title={{
         label: t('instruments.name'),
         dataKey: 'FULLNAME',
@@ -107,7 +137,7 @@ const ISISInstrumentsCardView = (
           tableLink(
             `/${pathRoot}/instrument/${instrument.ID}/${instrumentChild}`,
             instrument.FULLNAME || instrument.NAME,
-            query.view
+            view
           ),
         filterComponent: textFilter,
       }}
@@ -148,7 +178,7 @@ const mapStateToProps = (state: StateType): ISISInstrumentsCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    query: state.dgcommon.query,
+    location: state.router.location,
     loadedData: state.dgcommon.loadedData,
     loadedCount: state.dgcommon.loadedCount,
   };
@@ -166,6 +196,9 @@ const mapDispatchToProps = (
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 

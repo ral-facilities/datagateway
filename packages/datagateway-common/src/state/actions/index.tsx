@@ -24,9 +24,11 @@ import {
   ConfigureFacilityNameType,
   ConfigureUrlsPayload,
   ConfigureURLsType,
+  FilterUpdateType,
   FilterTablePayload,
   FilterTableType,
   SaveViewPayload,
+  SortUpdateType,
   SortTablePayload,
   SortTableType,
   UpdateFiltersPayload,
@@ -45,6 +47,8 @@ import {
   UpdateViewPayload,
   UpdateViewType,
   URLs,
+  PageUpdateType,
+  ResultsUpdateType,
 } from './actions.types';
 
 export * from './cart';
@@ -510,12 +514,32 @@ export const pushPageSearch = (
   };
 };
 
+export const sortUpdate = (): Action => ({
+  type: SortUpdateType,
+});
+
+export const filterUpdate = (): Action => ({
+  type: FilterUpdateType,
+});
+
+export const pageUpdate = (): Action => ({
+  type: PageUpdateType,
+});
+
+export const resultsUpdate = (): Action => ({
+  type: ResultsUpdateType,
+});
+
 export const pushPageNum = (
   page: number | null
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(updatePage(page));
-    dispatch(push(`?${getURLQuery(getState().dgcommon.query).toString()}`));
+    dispatch(pageUpdate());
+    const query = {
+      ...readURLQuery(getState().router.location),
+      page,
+    };
+    dispatch(push(`?${getURLQuery(query).toString()}`));
   };
 };
 
@@ -523,8 +547,12 @@ export const pushPageResults = (
   results: number | null
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(updateResults(results));
-    dispatch(push(`?${getURLQuery(getState().dgcommon.query).toString()}`));
+    dispatch(resultsUpdate());
+    const query = {
+      ...readURLQuery(getState().router.location),
+      results,
+    };
+    dispatch(push(`?${getURLQuery(query).toString()}`));
   };
 };
 
@@ -533,7 +561,7 @@ export const pushPageFilter = (
   data: Filter | null
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(clearData());
+    dispatch(filterUpdate());
     let query = readURLQuery(getState().router.location);
     if (data !== null) {
       // if given an defined filter, update the relevant column in the sort state
@@ -563,7 +591,7 @@ export const pushPageSort = (
   order: Order | null
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    dispatch(clearData());
+    dispatch(sortUpdate());
     let query = readURLQuery(getState().router.location);
     if (order !== null) {
       query = {
@@ -588,9 +616,9 @@ export const pushPageSort = (
 };
 
 export const pushQuery = (query: QueryParams): ThunkResult<Promise<void>> => {
-  return async (dispatch, getState) => {
-    dispatch(updateQueryParams(query));
-    dispatch(push(`?${getURLQuery(getState().dgcommon.query).toString()}`));
+  return async (dispatch) => {
+    dispatch(clearData());
+    dispatch(push(`?${getURLQuery(query).toString()}`));
   };
 };
 
