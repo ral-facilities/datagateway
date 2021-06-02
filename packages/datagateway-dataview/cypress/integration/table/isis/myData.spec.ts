@@ -12,12 +12,12 @@ describe('ISIS - MyData Table', () => {
     });
   });
 
-  it('should load correctly', () => {
+  it.skip('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click an investigation to see its landing page', () => {
+  it.skip('should be able to click an investigation to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
@@ -32,7 +32,7 @@ describe('ISIS - MyData Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  it('should be able to resize a column', () => {
+  it.skip('should be able to resize a column', () => {
     let columnWidth = 0;
 
     cy.window()
@@ -96,7 +96,7 @@ describe('ISIS - MyData Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    it('text', () => {
+    it.skip('text', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
@@ -106,7 +106,7 @@ describe('ISIS - MyData Table', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
-    it('date between', () => {
+    it.skip('date between', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
 
       cy.get('[aria-label="Start Date date filter to"]')
@@ -130,7 +130,7 @@ describe('ISIS - MyData Table', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
-    it('multiple columns', () => {
+    it.skip('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument"]')
         .find('input')
         .first()
@@ -156,7 +156,7 @@ describe('ISIS - MyData Table', () => {
       );
     });
 
-    it('when not other row is showing details', () => {
+    it.skip('when not other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').should('be.visible');
@@ -166,7 +166,7 @@ describe('ISIS - MyData Table', () => {
     // Cannot test showing details when another row is showing details
     // as well since we are currently limited to 1 investigation to test.
 
-    it('and view investigation details, users, samples and publications', () => {
+    it.skip('and view investigation details, users, samples and publications', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-controls="investigation-details-panel"]').should(
@@ -201,7 +201,7 @@ describe('ISIS - MyData Table', () => {
         .should('be.visible');
     });
 
-    it('and view datasets', () => {
+    it.skip('and view datasets', () => {
       cy.get('[aria-label="Show details"]').first().click();
       cy.get('#investigation-datasets-tab').click({ force: true });
 
@@ -211,7 +211,7 @@ describe('ISIS - MyData Table', () => {
       );
     });
 
-    it('and then not view details anymore', () => {
+    it.skip('and then not view details anymore', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-label="Hide details"]').first().click();

@@ -966,7 +966,7 @@ describe('Add/remove from cart functionality', () => {
         ]);
       });
 
-      it('individually', () => {
+      it.skip('individually', () => {
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
         cy.get('[aria-label="select all rows"]')
@@ -975,7 +975,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]').should('be.checked');
       });
 
-      it('and unselect them individually', () => {
+      it.skip('and unselect them individually', () => {
         cy.get('[aria-label="select row 0"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
 
@@ -987,7 +987,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
       });
 
-      it('by all items', () => {
+      it.skip('by all items', () => {
         cy.get(`[aria-label="select row 0"]`).should('exist');
 
         cy.get('[aria-label="select all rows"]').check();
@@ -1000,7 +1000,7 @@ describe('Add/remove from cart functionality', () => {
           .and('eq', 'false');
       });
 
-      it('and unselect all items', () => {
+      it.skip('and unselect all items', () => {
         cy.get(`[aria-label="select row 0"]`).should('exist');
 
         cy.get('[aria-label="select all rows"]').check();
