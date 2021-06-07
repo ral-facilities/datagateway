@@ -76,9 +76,12 @@ const useCardStyles = makeStyles((theme: Theme) => {
     shadowVisible: {
       position: 'absolute',
       height: 30,
-      minWidth: '30vw',
+      minWidth: '66.5%',
       top: 130,
-      background: 'linear-gradient(rgba(255, 255, 255, 0), #fff)',
+      background:
+        theme.palette.type === 'light'
+          ? 'linear-gradient(rgba(255, 255, 255, 0), #fff)'
+          : 'linear-gradient(rgba(66, 66, 66, 0), rgba(66, 66, 66, 1));',
 
       // Transition showing the shadow.
       visibility: 'visible',
