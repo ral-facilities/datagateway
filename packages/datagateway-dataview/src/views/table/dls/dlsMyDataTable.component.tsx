@@ -7,7 +7,6 @@ import {
   fetchInvestigations,
   fetchInvestigationSize,
   Filter,
-  FiltersType,
   Investigation,
   MicroFrontendId,
   NotificationType,
@@ -15,12 +14,11 @@ import {
   pushPageFilter,
   pushPageSort,
   readSciGatewayToken,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  ViewsType,
   TextFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +28,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
@@ -38,9 +37,7 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface DLSMyDataTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -70,11 +67,9 @@ const DLSMyDataTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     loading,
     selectAllSetting,
   } = props;
@@ -117,6 +112,10 @@ const DLSMyDataTable = (
     />
   );
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     if (localStorage.getItem('autoLogin') === 'true') {
       broadcastWarning(t('my_data_table.login_warning_msg'));
@@ -133,11 +132,11 @@ const DLSMyDataTable = (
 
   React.useEffect(() => {
     fetchCount(username);
-  }, [fetchCount, filters, username]);
+  }, [fetchCount, location.query.filters, username]);
 
   React.useEffect(() => {
     fetchData(username, { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, username]);
+  }, [fetchData, location.query.sort, location.query.filters, username]);
 
   return (
     <Table
@@ -287,9 +286,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSMyDataTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

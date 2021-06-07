@@ -22,8 +22,12 @@ import {
   pushPageFilter,
   QueryParams,
   pushPageNum,
+  pushPageSort,
+  pushPageResults,
   pushQuery,
   ViewsType,
+  readURLQuery,
+  Order,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
@@ -38,7 +42,7 @@ import {
   CalendarToday,
 } from '@material-ui/icons';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
-import { push } from 'connected-react-router';
+import { push, RouterLocation } from 'connected-react-router';
 import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -53,7 +57,9 @@ interface ISISDatasetCVDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
+  pushResults: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
   viewDatafiles: (urlPrefix: string, view: ViewsType) => (id: number) => Action;
 }
@@ -63,7 +69,7 @@ interface ISISDatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
   cartItems: DownloadCartItem[];
-  query: QueryParams;
+  location: RouterLocation<unknown>;
   loadedData: boolean;
   loadedCount: boolean;
 }
@@ -90,7 +96,7 @@ const ISISDatasetsCardView = (
     data,
     totalDataCount,
     cartItems,
-    query,
+    location,
     loadedData,
     loadedCount,
     fetchData,
@@ -102,12 +108,30 @@ const ISISDatasetsCardView = (
     pushFilters,
     pushPage,
     pushQuery,
+    pushSort,
+    pushResults,
     viewDatafiles,
     studyHierarchy,
   } = props;
 
-  const filters = query.filters;
   const [t] = useTranslation();
+
+  const { page, results } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+  const query = React.useMemo(() => readURLQuery(location), [location]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = React.useMemo(() => readURLQuery(location).filters, [
+    location.query.filters,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const sort = React.useMemo(() => readURLQuery(location).sort, [
+    location.query.sort,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const view = React.useMemo(() => readURLQuery(location).view, [
+    location.query.view,
+  ]);
 
   const selectedCards = React.useMemo(
     () =>
@@ -163,13 +187,19 @@ const ISISDatasetsCardView = (
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      onSort={pushSort}
+      onResultsChange={pushResults}
       loadedData={loadedData}
       loadedCount={loadedCount}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) =>
-          tableLink(`${urlPrefix}/${dataset.ID}`, dataset.NAME, query.view),
+          tableLink(`${urlPrefix}/${dataset.ID}`, dataset.NAME, view),
         filterComponent: textFilter,
       }}
       description={{
@@ -202,7 +232,7 @@ const ISISDatasetsCardView = (
         <DatasetDetailsPanel
           rowData={dataset}
           fetchDetails={fetchDetails}
-          viewDatafiles={viewDatafiles(urlPrefix, query.view)}
+          viewDatafiles={viewDatafiles(urlPrefix, view)}
         />
       )}
       buttons={[
@@ -294,6 +324,9 @@ const mapDispatchToProps = (
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
   viewDatafiles: (urlPrefix: string, view: ViewsType) => {
     return (id: number) => {
@@ -310,7 +343,7 @@ const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
-    query: state.dgcommon.query,
+    location: state.router.location,
     loadedData: state.dgcommon.loadedData,
     loadedCount: state.dgcommon.loadedCount,
   };

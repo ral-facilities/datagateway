@@ -12,19 +12,17 @@ import {
   fetchISISInvestigationCount,
   fetchISISInvestigations,
   Filter,
-  FiltersType,
   formatBytes,
   Investigation,
   Order,
   pushPageFilter,
   pushPageSort,
   removeFromCart,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  ViewsType,
   TextFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,7 +39,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { push } from 'connected-react-router';
+import { push, RouterLocation } from 'connected-react-router';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -50,9 +48,7 @@ interface ISISInvestigationsTableProps {
 }
 
 interface ISISInvestigationsTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -103,11 +99,9 @@ const ISISInvestigationsTable = (
     fetchFacilityCycleCount,
     fetchStudyData,
     fetchStudyCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     instrumentId,
     instrumentChildId,
     loading,
@@ -161,17 +155,33 @@ const ISISInvestigationsTable = (
     ? fetchStudyAllIds
     : fetchFacilityCycleAllIds;
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount(parseInt(instrumentId), parseInt(instrumentChildId));
     fetchAllIds();
-  }, [fetchCount, fetchAllIds, instrumentId, instrumentChildId, filters]);
+  }, [
+    fetchCount,
+    fetchAllIds,
+    instrumentId,
+    instrumentChildId,
+    location.query.filters,
+  ]);
 
   React.useEffect(() => {
     fetchData(parseInt(instrumentId), parseInt(instrumentChildId), {
       startIndex: 0,
       stopIndex: 49,
     });
-  }, [fetchData, instrumentId, instrumentChildId, sort, filters]);
+  }, [
+    fetchData,
+    instrumentId,
+    instrumentChildId,
+    location.query.sort,
+    location.query.filters,
+  ]);
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
@@ -422,9 +432,7 @@ const mapStateToProps = (
   state: StateType
 ): ISISInvestigationsTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

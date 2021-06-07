@@ -7,17 +7,15 @@ import {
   fetchInvestigations,
   fetchInvestigationSize,
   Filter,
-  FiltersType,
   Investigation,
   Order,
   pushPageFilter,
   pushPageSort,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  ViewsType,
   TextFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +25,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
+import { RouterLocation } from 'connected-react-router';
 
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -38,9 +37,7 @@ interface DLSVisitsTableProps {
 }
 
 interface DLSVisitsTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -71,11 +68,9 @@ const DLSVisitsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     proposalName,
     loading,
     selectAllSetting,
@@ -103,13 +98,17 @@ const DLSVisitsTable = (
     />
   );
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount(proposalName);
-  }, [fetchCount, filters, proposalName]);
+  }, [fetchCount, location.query.filters, proposalName]);
 
   React.useEffect(() => {
     fetchData(proposalName, { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, proposalName]);
+  }, [fetchData, location.query.sort, location.query.filters, proposalName]);
 
   return (
     <Table
@@ -233,9 +232,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSVisitsTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

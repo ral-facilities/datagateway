@@ -5,17 +5,15 @@ import {
   fetchStudyCount,
   fetchStudies,
   Filter,
-  FiltersType,
   Order,
   pushPageFilter,
   pushPageSort,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
   TextFilter,
   fetchAllIds,
-  ViewsType,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +22,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
+import { RouterLocation } from 'connected-react-router';
 
 import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
@@ -35,9 +34,7 @@ interface ISISStudiesTableProps {
 }
 
 interface ISISStudiesTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -67,11 +64,9 @@ const ISISStudiesTable = (
     fetchIds,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     instrumentId,
     loading,
   } = props;
@@ -99,6 +94,9 @@ const ISISStudiesTable = (
   );
 
   const [allIdsCleared, setAllIdsCleared] = React.useState(false);
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
 
   React.useEffect(() => {
     if (allIds.length === 0) setAllIdsCleared(true);
@@ -110,12 +108,18 @@ const ISISStudiesTable = (
 
   React.useEffect(() => {
     if (allIdsCleared && allIds.length > 0) fetchCount(allIds);
-  }, [fetchCount, filters, allIds, allIdsCleared]);
+  }, [fetchCount, location.query.filters, allIds, allIdsCleared]);
 
   React.useEffect(() => {
     if (allIdsCleared && allIds.length > 0)
       fetchData(allIds, { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, allIds, allIdsCleared]);
+  }, [
+    fetchData,
+    location.query.sort,
+    location.query.filters,
+    allIds,
+    allIdsCleared,
+  ]);
 
   const pathRoot = 'browseStudyHierarchy';
   const instrumentChild = 'study';
@@ -221,9 +225,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISStudiesTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     allIds: state.dgcommon.allIds,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,

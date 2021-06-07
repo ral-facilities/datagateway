@@ -26,9 +26,7 @@ import {
   pushPageFilter,
   pushPageSort,
   DateFilter,
-  SortType,
-  FiltersType,
-  ViewsType,
+  readURLQuery,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
 import { connect } from 'react-redux';
@@ -36,6 +34,7 @@ import { AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { useTranslation } from 'react-i18next';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
@@ -56,9 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface InvestigationTableProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -89,11 +86,9 @@ const InvestigationTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     cartItems,
     addToCart,
     removeFromCart,
@@ -119,6 +114,10 @@ const InvestigationTable = (
     [cartItems, allIds]
   );
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
       label={label}
@@ -142,11 +141,11 @@ const InvestigationTable = (
   React.useEffect(() => {
     fetchCount();
     fetchAllIds();
-  }, [fetchCount, fetchAllIds, filters]);
+  }, [fetchCount, fetchAllIds, location.query.filters]);
 
   React.useEffect(() => {
     fetchData({ startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters]);
+  }, [fetchData, location.query.sort, location.query.filters]);
 
   return (
     <Table
@@ -300,9 +299,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): InvestigationTableProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

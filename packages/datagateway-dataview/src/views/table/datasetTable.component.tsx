@@ -26,9 +26,7 @@ import {
   pushPageFilter,
   pushPageSort,
   DateFilter,
-  SortType,
-  FiltersType,
-  ViewsType,
+  readURLQuery,
 } from 'datagateway-common';
 import { AnyAction } from 'redux';
 import { StateType } from '../../state/app.types';
@@ -36,6 +34,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -57,9 +56,7 @@ interface DatasetTableProps {
 }
 
 interface DatasetTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -92,11 +89,9 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     investigationId,
     cartItems,
     addToCart,
@@ -123,14 +118,18 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
     [cartItems, allIds]
   );
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchAllIds();
-  }, [fetchCount, fetchAllIds, filters, investigationId]);
+  }, [fetchCount, fetchAllIds, location.query.filters, investigationId]);
 
   React.useEffect(() => {
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, investigationId]);
+  }, [fetchData, location.query.sort, location.query.filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -285,9 +284,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DatasetTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

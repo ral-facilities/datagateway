@@ -10,17 +10,15 @@ import {
   fetchDatasets,
   fetchDatasetSize,
   Filter,
-  FiltersType,
   Order,
   pushPageFilter,
   pushPageSort,
   removeFromCart,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  ViewsType,
   TextFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +28,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -41,9 +40,7 @@ interface DLSDatasetsTableProps {
 }
 
 interface DLSDatasetsTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -80,11 +77,9 @@ const DLSDatasetsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     investigationId,
     proposalName,
     loading,
@@ -110,14 +105,18 @@ const DLSDatasetsTable = (
     [cartItems, allIds]
   );
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount(parseInt(investigationId));
     fetchAllIds();
-  }, [fetchCount, fetchAllIds, filters, investigationId]);
+  }, [fetchCount, fetchAllIds, location.query.filters, investigationId]);
 
   React.useEffect(() => {
     fetchData(parseInt(investigationId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, investigationId]);
+  }, [fetchData, location.query.sort, location.query.filters, investigationId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -255,9 +254,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSDatasetsTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

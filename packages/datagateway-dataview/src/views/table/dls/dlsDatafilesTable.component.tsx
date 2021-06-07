@@ -17,9 +17,8 @@ import {
   fetchAllIds,
   pushPageFilter,
   pushPageSort,
-  FiltersType,
-  SortType,
   DateFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import {
   Typography,
@@ -35,6 +34,7 @@ import { StateType } from '../../../state/app.types';
 import { AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -57,8 +57,7 @@ interface DLSDatafilesTableProps {
 }
 
 interface DLSDatafilesTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -90,9 +89,8 @@ const DLSDatafilesTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
+    location,
     pushFilters,
     datasetId,
     loading,
@@ -120,14 +118,18 @@ const DLSDatafilesTable = (
     [cartItems, allIds]
   );
 
+  const { filters, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchAllIds();
-  }, [fetchCount, fetchAllIds, filters, datasetId]);
+  }, [fetchCount, fetchAllIds, location.query.filters, datasetId]);
 
   React.useEffect(() => {
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, datasetId]);
+  }, [fetchData, location.query, location.query.filters, datasetId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -277,8 +279,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DLSDatafilesTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

@@ -26,11 +26,15 @@ import {
   Investigation,
   pushPageFilter,
   pushPageNum,
+  pushPageSort,
+  pushPageResults,
   pushQuery,
+  readURLQuery,
   removeFromCart,
   tableLink,
   TextColumnFilter,
   TextFilter,
+  Order,
 } from 'datagateway-common';
 import {
   QueryParams,
@@ -44,6 +48,7 @@ import { IndexRange } from 'react-virtualized';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
+import { RouterLocation } from 'connected-react-router';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInvestigationsCardViewProps {
@@ -56,7 +61,7 @@ interface ISISInvestigationsCardViewProps {
 interface ISISInvestigationsCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  query: QueryParams;
+  location: RouterLocation<unknown>;
   cartItems: DownloadCartItem[];
   loadedData: boolean;
   loadedCount: boolean;
@@ -83,7 +88,9 @@ interface ISISInvestigationsCVDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
+  pushResults: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
   viewDatasets: (urlPrefix: string, view: ViewsType) => (id: number) => Action;
 }
@@ -100,7 +107,7 @@ const ISISInvestigationsCardView = (
     instrumentChildId,
     data,
     totalDataCount,
-    query,
+    location,
     cartItems,
     loadedData,
     loadedCount,
@@ -114,13 +121,31 @@ const ISISInvestigationsCardView = (
     pushFilters,
     pushPage,
     pushQuery,
+    pushSort,
+    pushResults,
     viewDatasets,
     studyHierarchy,
   } = props;
 
   const [t] = useTranslation();
 
-  const filters = query.filters;
+  const { page, results } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+  const query = React.useMemo(() => readURLQuery(location), [location]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = React.useMemo(() => readURLQuery(location).filters, [
+    location.query.filters,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const sort = React.useMemo(() => readURLQuery(location).sort, [
+    location.query.sort,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const view = React.useMemo(() => readURLQuery(location).view, [
+    location.query.view,
+  ]);
+
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation`;
@@ -179,10 +204,16 @@ const ISISInvestigationsCardView = (
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      onSort={pushSort}
+      onResultsChange={pushResults}
       loadedData={loadedData}
       loadedCount={loadedCount}
       loadData={loadData}
       loadCount={loadCount}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
       title={{
         label: t('investigations.title'),
         dataKey: 'TITLE',
@@ -190,7 +221,7 @@ const ISISInvestigationsCardView = (
           tableLink(
             `${urlPrefix}/${investigation.ID}`,
             investigation.TITLE,
-            query.view
+            view
           ),
         filterComponent: textFilter,
       }}
@@ -249,7 +280,7 @@ const ISISInvestigationsCardView = (
         <InvestigationDetailsPanel
           rowData={investigation}
           fetchDetails={fetchDetails}
-          viewDatasets={viewDatasets(urlPrefix, query.view)}
+          viewDatasets={viewDatasets(urlPrefix, view)}
         />
       )}
       buttons={[
@@ -358,6 +389,9 @@ const mapDispatchToProps = (
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
   viewDatasets: (urlPrefix: string, view: ViewsType) => {
     return (id: number) => {
@@ -373,7 +407,7 @@ const mapStateToProps = (state: StateType): ISISInvestigationsCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    query: state.dgcommon.query,
+    location: state.router.location,
     cartItems: state.dgcommon.cartItems,
     loadedData: state.dgcommon.loadedData,
     loadedCount: state.dgcommon.loadedCount,

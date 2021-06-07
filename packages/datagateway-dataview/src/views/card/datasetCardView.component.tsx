@@ -22,7 +22,11 @@ import {
   TextColumnFilter,
   TextFilter,
   pushPageNum,
+  pushPageSort,
+  pushPageResults,
   pushQuery,
+  readURLQuery,
+  Order,
 } from 'datagateway-common';
 import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
@@ -31,6 +35,7 @@ import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { RouterLocation } from 'connected-react-router';
 
 interface DatasetCVDispatchProps {
   fetchData: (
@@ -41,14 +46,16 @@ interface DatasetCVDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
+  pushResults: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
 }
 
 interface DatasetCVStateProps {
   data: Entity[];
   totalDataCount: number;
-  query: QueryParams;
+  location: RouterLocation<unknown>;
   cartItems: DownloadCartItem[];
   loadedData: boolean;
   loadedCount: boolean;
@@ -74,14 +81,32 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
     fetchCount,
     addToCart,
     removeFromCart,
-    query,
+    location,
     pushPage,
     pushFilters,
     pushQuery,
+    pushSort,
+    pushResults,
   } = props;
 
-  const filters = query.filters;
   const [t] = useTranslation();
+
+  const { page, results } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+  const query = React.useMemo(() => readURLQuery(location), [location]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = React.useMemo(() => readURLQuery(location).filters, [
+    location.query.filters,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const sort = React.useMemo(() => readURLQuery(location).sort, [
+    location.query.sort,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const view = React.useMemo(() => readURLQuery(location).view, [
+    location.query.view,
+  ]);
 
   const selectedCards = React.useMemo(
     () =>
@@ -134,18 +159,19 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      onSort={pushSort}
+      onResultsChange={pushResults}
       loadedData={loadedData}
       loadedCount={loadedCount}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
         content: (dataset: Dataset) => {
-          return datasetLink(
-            investigationId,
-            dataset.ID,
-            dataset.NAME,
-            query.view
-          );
+          return datasetLink(investigationId, dataset.ID, dataset.NAME, view);
         },
         filterComponent: textFilter,
       }}
@@ -214,7 +240,7 @@ const mapStateToProps = (state: StateType): DatasetCVStateProps => {
   return {
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
-    query: state.dgcommon.query,
+    location: state.router.location,
     cartItems: state.dgcommon.cartItems,
     loadedData: state.dgcommon.loadedData,
     loadedCount: state.dgcommon.loadedCount,
@@ -257,6 +283,9 @@ const mapDispatchToProps = (
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 

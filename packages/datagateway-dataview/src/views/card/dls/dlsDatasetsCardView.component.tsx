@@ -20,7 +20,11 @@ import {
   DateColumnFilter,
   DateFilter,
   pushPageNum,
+  pushPageSort,
+  pushPageResults,
   pushQuery,
+  readURLQuery,
+  Order,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import {
@@ -40,6 +44,7 @@ import {
 import { Button } from '@material-ui/core';
 import DatasetDetailsPanel from '../../detailsPanels/dls/datasetDetailsPanel.component';
 import { useTranslation } from 'react-i18next';
+import { RouterLocation } from 'connected-react-router';
 
 interface DLSDatasetsCVProps {
   proposalName: string;
@@ -51,7 +56,7 @@ interface DLSDatasetsCVStateProps {
   totalDataCount: number;
   cartItems: DownloadCartItem[];
   filterData: FilterDataType;
-  query: QueryParams;
+  location: RouterLocation<unknown>;
   loadedData: boolean;
   loadedCount: boolean;
 }
@@ -68,7 +73,9 @@ interface DLSDatasetsCVDispatchProps {
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchTypeFilter: (datasetId: number) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
+  pushResults: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
+  pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
 }
 
@@ -84,7 +91,7 @@ const DLSDatasetsCardView = (
     investigationId,
     data,
     totalDataCount,
-    query,
+    location,
     loadedData,
     loadedCount,
     fetchData,
@@ -99,10 +106,28 @@ const DLSDatasetsCardView = (
     pushFilters,
     pushPage,
     pushQuery,
+    pushSort,
+    pushResults,
   } = props;
 
-  const filters = query.filters;
   const [t] = useTranslation();
+
+  const { page, results } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+  const query = React.useMemo(() => readURLQuery(location), [location]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = React.useMemo(() => readURLQuery(location).filters, [
+    location.query.filters,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const sort = React.useMemo(() => readURLQuery(location).sort, [
+    location.query.sort,
+  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const view = React.useMemo(() => readURLQuery(location).view, [
+    location.query.view,
+  ]);
 
   React.useEffect(() => {
     fetchTypeFilter(parseInt(investigationId));
@@ -164,8 +189,14 @@ const DLSDatasetsCardView = (
       onPageChange={pushPage}
       onFilter={pushFilters}
       pushQuery={pushQuery}
+      onSort={pushSort}
+      onResultsChange={pushResults}
       loadedData={loadedData}
       loadedCount={loadedCount}
+      filters={filters}
+      sort={sort}
+      page={page}
+      results={results}
       title={{
         label: t('datasets.name'),
         dataKey: 'NAME',
@@ -173,7 +204,7 @@ const DLSDatasetsCardView = (
           tableLink(
             `/browse/proposal/${proposalName}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
             dataset.NAME,
-            query.view
+            view
           ),
         filterComponent: textFilter,
       }}
@@ -311,6 +342,9 @@ const mapDispatchToProps = (
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
+  pushResults: (results: number | null) => dispatch(pushPageResults(results)),
+  pushSort: (sort: string, order: Order | null) =>
+    dispatch(pushPageSort(sort, order)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
 });
 
@@ -320,7 +354,7 @@ const mapStateToProps = (state: StateType): DLSDatasetsCVStateProps => {
     totalDataCount: state.dgcommon.totalDataCount,
     cartItems: state.dgcommon.cartItems,
     filterData: state.dgcommon.filterData,
-    query: state.dgcommon.query,
+    location: state.router.location,
     loadedData: state.dgcommon.loadedData,
     loadedCount: state.dgcommon.loadedCount,
   };

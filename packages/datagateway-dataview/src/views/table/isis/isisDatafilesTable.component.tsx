@@ -20,9 +20,8 @@ import {
   fetchAllIds,
   pushPageFilter,
   pushPageSort,
-  FiltersType,
-  SortType,
   DateFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import { IconButton } from '@material-ui/core';
 import { ThunkDispatch } from 'redux-thunk';
@@ -32,6 +31,7 @@ import { AnyAction } from 'redux';
 import DatafileDetailsPanel from '../../detailsPanels/isis/datafileDetailsPanel.component';
 import { IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
+import { RouterLocation } from 'connected-react-router';
 
 import GetApp from '@material-ui/icons/GetApp';
 import TitleIcon from '@material-ui/icons/Title';
@@ -44,8 +44,7 @@ interface ISISDatafilesTableProps {
 }
 
 interface ISISDatafilesTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -79,9 +78,8 @@ const ISISDatafilesTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
+    location,
     pushFilters,
     datasetId,
     downloadData,
@@ -109,14 +107,18 @@ const ISISDatafilesTable = (
     [cartItems, allIds]
   );
 
+  const { filters, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount(parseInt(datasetId));
     fetchAllIds();
-  }, [fetchCount, fetchAllIds, filters, datasetId]);
+  }, [fetchCount, fetchAllIds, location.query.filters, datasetId]);
 
   React.useEffect(() => {
     fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters, datasetId]);
+  }, [fetchData, location.query.sort, location.query.filters, datasetId]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -268,8 +270,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISDatafilesTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

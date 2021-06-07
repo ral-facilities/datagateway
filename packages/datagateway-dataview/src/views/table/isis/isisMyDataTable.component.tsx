@@ -9,7 +9,6 @@ import {
   fetchInvestigationDetails,
   fetchInvestigations,
   Filter,
-  FiltersType,
   formatBytes,
   Investigation,
   MicroFrontendId,
@@ -19,12 +18,11 @@ import {
   pushPageSort,
   readSciGatewayToken,
   removeFromCart,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  ViewsType,
   TextFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,12 +39,10 @@ import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { push } from 'connected-react-router';
+import { push, RouterLocation } from 'connected-react-router';
 
 interface ISISMyDataTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -81,11 +77,9 @@ const ISISMyDataTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     loading,
     cartItems,
     addToCart,
@@ -146,6 +140,10 @@ const ISISMyDataTable = (
     />
   );
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     if (localStorage.getItem('autoLogin') === 'true') {
       broadcastWarning(t('my_data_table.login_warning_msg'));
@@ -160,14 +158,14 @@ const ISISMyDataTable = (
   React.useEffect(() => {
     fetchCount(username);
     fetchAllIds(username);
-  }, [fetchCount, fetchAllIds, username, filters]);
+  }, [fetchCount, fetchAllIds, username, location.query.filters]);
 
   React.useEffect(() => {
     fetchData(username, {
       startIndex: 0,
       stopIndex: 49,
     });
-  }, [fetchData, username, sort, filters]);
+  }, [fetchData, username, location.query.sort, location.query.filters]);
 
   const urlPrefix = (investigationData: Investigation): string => {
     if (
@@ -404,9 +402,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISMyDataTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,
