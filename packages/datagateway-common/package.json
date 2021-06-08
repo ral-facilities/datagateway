@@ -15,6 +15,7 @@
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.1",
     "date-fns": "^2.17.0",
+    "hex-to-rgba": "^2.0.1",
     "i18next": "^19.9.0",
     "lodash.debounce": "^4.0.8",
     "loglevel": "^1.7.1",

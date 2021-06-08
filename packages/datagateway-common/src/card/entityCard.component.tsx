@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowTooltip from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import hexToRbga from 'hex-to-rgba';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
@@ -27,16 +28,8 @@ const useCardStyles = makeStyles((theme: Theme) => {
   const infoDataMaxWidth = '10vw';
 
   // Transparent and opaque values for the background theme (used in the 'show more' shadow gradient)
-  // Accounts for hex codes of varying length
-  // Allows us to add an alpha value to hex codes of length 4 and 6
-  const paperZero =
-    theme.palette.background.paper.length === 4
-      ? theme.palette.background.paper + '0'
-      : theme.palette.background.paper + '00';
-  const paperOne =
-    theme.palette.background.paper.length === 4
-      ? theme.palette.background.paper + 'f'
-      : theme.palette.background.paper + 'ff';
+  const paperZero = hexToRbga(theme.palette.background.paper, 0);
+  const paperOne = hexToRbga(theme.palette.background.paper, 1);
 
   const styles = createStyles({
     root: {
