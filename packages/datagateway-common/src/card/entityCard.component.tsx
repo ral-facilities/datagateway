@@ -25,6 +25,8 @@ const useCardStyles = makeStyles((theme: Theme) => {
   // Expected width of info labels to prevent misalignment due to newlines
   const labelWidth = '15ch';
   const infoDataMaxWidth = '10vw';
+  const paperZero = hexToRgbA(theme.palette.background.paper, 0);
+  const paperOne = hexToRgbA(theme.palette.background.paper, 1);
 
   const styles = createStyles({
     root: {
@@ -76,12 +78,11 @@ const useCardStyles = makeStyles((theme: Theme) => {
     shadowVisible: {
       position: 'absolute',
       height: 30,
-      minWidth: '66.5%',
+      minWidth: '100%',
       top: 130,
-      background:
-        theme.palette.type === 'light'
-          ? 'linear-gradient(rgba(255, 255, 255, 0), #fff)'
-          : 'linear-gradient(rgba(66, 66, 66, 0), rgba(66, 66, 66, 1));',
+
+      //RGBA values seem to work best with linear gradients being dynamically changed by dark mode preference
+      background: 'linear-gradient(' + paperZero + ', ' + paperOne + ')',
 
       // Transition showing the shadow.
       visibility: 'visible',
@@ -176,6 +177,27 @@ interface EntityCardProps {
   image?: EntityImageDetails;
   tags?: string[];
 }
+
+// Converts a hex color code to rgba
+const hexToRgbA = (hex: string, transparency: number): string => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let c: any;
+  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+    c = hex.substring(1).split('');
+    if (c.length === 3) {
+      c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+    }
+    c = '0x' + c.join('');
+    return (
+      'rgba(' +
+      [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') +
+      ', ' +
+      transparency +
+      ')'
+    );
+  }
+  throw new Error('Bad Hex');
+};
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
