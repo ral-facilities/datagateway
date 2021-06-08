@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowTooltip from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import hexToRbga from 'hex-to-rgba';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // NOTE: This is width of the main content
@@ -25,8 +26,8 @@ const useCardStyles = makeStyles((theme: Theme) => {
   // Expected width of info labels to prevent misalignment due to newlines
   const labelWidth = '15ch';
   const infoDataMaxWidth = '10vw';
-  const paperZero = hexToRgbA(theme.palette.background.paper, 0);
-  const paperOne = hexToRgbA(theme.palette.background.paper, 1);
+  const paperZero = hexToRbga(theme.palette.background.paper, 0);
+  const paperOne = hexToRbga(theme.palette.background.paper, 1);
 
   const styles = createStyles({
     root: {
@@ -177,27 +178,6 @@ interface EntityCardProps {
   image?: EntityImageDetails;
   tags?: string[];
 }
-
-// Converts a hex color code to rgba
-const hexToRgbA = (hex: string, transparency: number): string => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let c: any;
-  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-    c = hex.substring(1).split('');
-    if (c.length === 3) {
-      c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-    }
-    c = '0x' + c.join('');
-    return (
-      'rgba(' +
-      [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') +
-      ', ' +
-      transparency +
-      ')'
-    );
-  }
-  throw new Error('Bad Hex');
-};
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
