@@ -1,6 +1,157 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dataset table component renders Dataset title as a link 1`] = `"Test 1"`;
+exports[`Dataset table component renders Dataset title as a link 1`] = `
+<WithStyles(ForwardRef(Link))
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "displayName": "Link",
+      "propTypes": Object {
+        "innerRef": [Function],
+        "onClick": [Function],
+        "replace": [Function],
+        "target": [Function],
+        "to": [Function],
+      },
+      "render": [Function],
+    }
+  }
+  to="/browse/investigation/1/dataset/2/datafile"
+>
+  <ForwardRef(Link)
+    classes={
+      Object {
+        "button": "MuiLink-button",
+        "focusVisible": "Mui-focusVisible",
+        "root": "MuiLink-root",
+        "underlineAlways": "MuiLink-underlineAlways",
+        "underlineHover": "MuiLink-underlineHover",
+        "underlineNone": "MuiLink-underlineNone",
+      }
+    }
+    component={
+      Object {
+        "$$typeof": Symbol(react.forward_ref),
+        "displayName": "Link",
+        "propTypes": Object {
+          "innerRef": [Function],
+          "onClick": [Function],
+          "replace": [Function],
+          "target": [Function],
+          "to": [Function],
+        },
+        "render": [Function],
+      }
+    }
+    to="/browse/investigation/1/dataset/2/datafile"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="MuiLink-root MuiLink-underlineHover"
+      color="primary"
+      component={
+        Object {
+          "$$typeof": Symbol(react.forward_ref),
+          "displayName": "Link",
+          "propTypes": Object {
+            "innerRef": [Function],
+            "onClick": [Function],
+            "replace": [Function],
+            "target": [Function],
+            "to": [Function],
+          },
+          "render": [Function],
+        }
+      }
+      onBlur={[Function]}
+      onFocus={[Function]}
+      to="/browse/investigation/1/dataset/2/datafile"
+      variant="inherit"
+    >
+      <ForwardRef(Typography)
+        className="MuiLink-root MuiLink-underlineHover"
+        classes={
+          Object {
+            "alignCenter": "MuiTypography-alignCenter",
+            "alignJustify": "MuiTypography-alignJustify",
+            "alignLeft": "MuiTypography-alignLeft",
+            "alignRight": "MuiTypography-alignRight",
+            "body1": "MuiTypography-body1",
+            "body2": "MuiTypography-body2",
+            "button": "MuiTypography-button",
+            "caption": "MuiTypography-caption",
+            "colorError": "MuiTypography-colorError",
+            "colorInherit": "MuiTypography-colorInherit",
+            "colorPrimary": "MuiTypography-colorPrimary",
+            "colorSecondary": "MuiTypography-colorSecondary",
+            "colorTextPrimary": "MuiTypography-colorTextPrimary",
+            "colorTextSecondary": "MuiTypography-colorTextSecondary",
+            "displayBlock": "MuiTypography-displayBlock",
+            "displayInline": "MuiTypography-displayInline",
+            "gutterBottom": "MuiTypography-gutterBottom",
+            "h1": "MuiTypography-h1",
+            "h2": "MuiTypography-h2",
+            "h3": "MuiTypography-h3",
+            "h4": "MuiTypography-h4",
+            "h5": "MuiTypography-h5",
+            "h6": "MuiTypography-h6",
+            "noWrap": "MuiTypography-noWrap",
+            "overline": "MuiTypography-overline",
+            "paragraph": "MuiTypography-paragraph",
+            "root": "MuiTypography-root",
+            "srOnly": "MuiTypography-srOnly",
+            "subtitle1": "MuiTypography-subtitle1",
+            "subtitle2": "MuiTypography-subtitle2",
+          }
+        }
+        color="primary"
+        component={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        onBlur={[Function]}
+        onFocus={[Function]}
+        to="/browse/investigation/1/dataset/2/datafile"
+        variant="inherit"
+      >
+        <Link
+          className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          to="/browse/investigation/1/dataset/2/datafile"
+        >
+          <LinkAnchor
+            className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+            href="/browse/investigation/1/dataset/2/datafile"
+            navigate={[Function]}
+            onBlur={[Function]}
+            onFocus={[Function]}
+          >
+            <a
+              className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
+              href="/browse/investigation/1/dataset/2/datafile"
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+            >
+              Dataset test name
+            </a>
+          </LinkAnchor>
+        </Link>
+      </ForwardRef(Typography)>
+    </WithStyles(ForwardRef(Typography))>
+  </ForwardRef(Link)>
+</WithStyles(ForwardRef(Link))>
+`;
 
 exports[`Dataset table component renders correctly 1`] = `
 <WithStyles(VirtualizedTable)
@@ -12,6 +163,7 @@ exports[`Dataset table component renders correctly 1`] = `
   columns={
     Array [
       Object {
+        "cellContentRenderer": [Function],
         "dataKey": "name",
         "filterComponent": [Function],
         "label": "datasets.name",
@@ -20,6 +172,12 @@ exports[`Dataset table component renders correctly 1`] = `
         "dataKey": "datafileCount",
         "disableSort": true,
         "label": "datasets.datafile_count",
+      },
+      Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "investigation",
+        "filterComponent": [Function],
+        "label": "datasets.investigation",
       },
       Object {
         "dataKey": "createTime",
@@ -39,10 +197,49 @@ exports[`Dataset table component renders correctly 1`] = `
     Array [
       Object {
         "createTime": "2019-07-23",
-        "id": 1,
+        "endDate": "2019-07-25",
+        "id": 2,
+        "investigation": Object {
+          "doi": "doi 1",
+          "endDate": "2019-06-11",
+          "facility": Object {
+            "id": 2,
+            "name": "facility name",
+          },
+          "id": 1,
+          "investigationInstruments": Array [
+            Object {
+              "id": 1,
+              "instrument": Object {
+                "id": 3,
+                "name": "LARMOR",
+              },
+            },
+          ],
+          "name": "Investigation test name",
+          "rbNumber": "1",
+          "size": 1,
+          "startDate": "2019-06-10",
+          "studyInvestigations": Array [
+            Object {
+              "id": 6,
+              "study": Object {
+                "createTime": "2019-06-10",
+                "id": 7,
+                "modTime": "2019-06-10",
+                "name": "study name",
+                "pid": "study pid",
+              },
+            },
+          ],
+          "summary": "foo bar",
+          "title": "Investigation test title",
+          "visitId": "1",
+        },
         "modTime": "2019-07-23",
-        "name": "Test 1",
+        "name": "Dataset test name",
         "size": 1,
+        "startDate": "2019-07-24",
       },
     ]
   }
@@ -66,7 +263,7 @@ exports[`Dataset table component renders details panel correctly 1`] = `
       :
     </b>
      
-    Test 1
+    Dataset test name
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
@@ -74,7 +271,7 @@ exports[`Dataset table component renders details panel correctly 1`] = `
       :
     </b>
      
-    Test 1
+    Dataset test name
   </WithStyles(ForwardRef(Typography))>
 </div>
 `;

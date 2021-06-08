@@ -135,7 +135,7 @@ const DatasetSearchTable = (
       if (facilityCycleId) {
         return linkType === 'investigation'
           ? tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}/dataset`,
+              `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datasetData.investigation.id}`,
               datasetData.investigation.title
             )
           : tableLink(

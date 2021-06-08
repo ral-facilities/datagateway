@@ -55,7 +55,7 @@ describe('Datafile search table component', () => {
       {
         id: 3,
         name: 'Datafile test name',
-        location: '/datafiletest1',
+        location: '/datafiletest',
         fileSize: 1,
         modTime: '2019-07-23',
         dataset: {
@@ -351,7 +351,7 @@ describe('Datafile search table component', () => {
       {
         id: 3,
         name: 'Datafile test name',
-        location: '/datafiletest1',
+        location: '/datafiletest',
         fileSize: 1,
         modTime: '2019-07-23',
         dataset: {},
@@ -382,7 +382,9 @@ describe('Datafile search table component', () => {
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
       `/browse/investigation/1/dataset/2/datafile`
     );
-    expect(wrapper.find('[aria-colindex=3]').text()).toEqual('Datafile test 1');
+    expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Datafile test name'
+    );
   });
 
   it('renders DLS link correctly', () => {
@@ -396,7 +398,7 @@ describe('Datafile search table component', () => {
     );
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      '/browse/proposal/Investigation test name/investigation/1/dataset/2/datafile'
+      '/browse/proposal/Dataset test name/investigation/1/dataset/2/datafile'
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Datafile test name'

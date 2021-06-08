@@ -435,7 +435,7 @@ describe('Dataset table component', () => {
     });
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/instrument/3/facilityCycle/2/investigation/1/dataset/2/datafile`
+      `/browse/instrument/3/facilityCycle/2/investigation/1/dataset/2`
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Dataset test name'
@@ -465,12 +465,6 @@ describe('Dataset table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    // (axios.get as jest.Mock).mockImplementationOnce(() =>
-    //   Promise.resolve({
-    //     data: [],
-    //   })
-    // );
-
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
