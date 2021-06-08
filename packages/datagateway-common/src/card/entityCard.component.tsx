@@ -90,8 +90,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
       height: 30,
       minWidth: '66.5%',
       top: 130,
-
-      //RGBA values seem to work best with linear gradients being dynamically changed by dark mode preference
       background: `linear-gradient(${paperZero}, ${paperOne})`,
 
       // Transition showing the shadow.
