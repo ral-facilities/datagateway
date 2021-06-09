@@ -61,7 +61,7 @@ describe('Search Button component tests', () => {
         ...dGCommonInitialState,
         urls: {
           ...dGCommonInitialState.urls,
-          downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+          icatUrl: 'https://example.com/icat',
         },
       },
       dgsearch: dGSearchInitialState,
@@ -115,7 +115,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -160,7 +160,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -205,7 +205,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -243,7 +243,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -286,7 +286,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -329,7 +329,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -366,7 +366,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -409,7 +409,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -452,7 +452,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -481,7 +481,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -520,7 +520,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
@@ -559,7 +559,7 @@ describe('Search Button component tests', () => {
       .find('button[aria-label="searchBox.search_button_arialabel"]')
       .simulate('click');
     expect(axios.get).toHaveBeenLastCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/lucene/data',
+      'https://example.com/icat/lucene/data',
       {
         params: {
           maxCount: 300,
