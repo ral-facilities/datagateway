@@ -343,7 +343,7 @@ const mapDispatchToProps = (
           },
           {
             filterType: 'include',
-            filterValue: 'dataset',
+            filterValue: '"dataset"',
           },
         ],
       })

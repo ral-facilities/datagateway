@@ -159,7 +159,7 @@ const DatasetSearchTable = (
             datasetData.investigation.title
           )
         : tableLink(
-            `/browse/investigation/${datasetData.investigation?.id}/dataset/${datasetData.id}/datafile`,
+            `/browse/investigation/${datasetData.investigation.id}/dataset/${datasetData.id}/datafile`,
             datasetData.name
           );
     }
@@ -325,7 +325,7 @@ const mapDispatchToProps = (
           },
           {
             filterType: 'include',
-            filterValue: 'investigation',
+            filterValue: '"investigation"',
           },
         ],
       })
