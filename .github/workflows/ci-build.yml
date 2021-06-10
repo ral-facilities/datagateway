@@ -136,6 +136,9 @@ jobs:
       - name: Configure log file location
         run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
           '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+      - name: Configure API backend
+        run: echo "`jq -r --arg BACKEND "python_icat" \
+          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
       - name: Create config.json
         run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
       - name: Set debug mode to true
@@ -150,7 +153,7 @@ jobs:
         run: cd datagateway-api; poetry install; cd ..
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator -s 4 -y 3; cd ..
+          cd datagateway-api; poetry run python -m util.icat_db_generator; cd ..
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
       - name: Sleep
