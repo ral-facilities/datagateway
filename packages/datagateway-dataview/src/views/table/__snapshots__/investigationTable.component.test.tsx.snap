@@ -11,45 +11,45 @@ exports[`Investigation table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "TITLE",
+        "dataKey": "title",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.title",
       },
       Object {
-        "dataKey": "VISIT_ID",
+        "dataKey": "visitId",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.visit_id",
       },
       Object {
-        "dataKey": "RB_NUMBER",
+        "dataKey": "rbNumber",
         "disableSort": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.rb_number",
       },
       Object {
-        "dataKey": "DOI",
+        "dataKey": "doi",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.doi",
       },
       Object {
-        "dataKey": "DATASET_COUNT",
+        "dataKey": "datasetCount",
         "disableSort": true,
         "icon": <Memo />,
         "label": "investigations.dataset_count",
       },
       Object {
-        "dataKey": "INSTRUMENT.NAME",
+        "dataKey": "instrument.name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.instrument",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "STARTDATE",
+        "dataKey": "startDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
@@ -57,7 +57,7 @@ exports[`Investigation table component renders correctly 1`] = `
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "ENDDATE",
+        "dataKey": "endDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
@@ -68,18 +68,18 @@ exports[`Investigation table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DOI": "doi 1",
-        "ENDDATE": "2019-07-24",
-        "ID": 1,
-        "INSTRUMENT": Object {
-          "NAME": "LARMOR",
+        "doi": "doi 1",
+        "endDate": "2019-07-24",
+        "id": 1,
+        "instrument": Object {
+          "name": "LARMOR",
         },
-        "NAME": "Test 1",
-        "RB_NUMBER": "1",
-        "SIZE": 1,
-        "STARTDATE": "2019-07-23",
-        "TITLE": "Test 1",
-        "VISIT_ID": "1",
+        "name": "Test 1",
+        "rbNumber": "1",
+        "size": 1,
+        "startDate": "2019-07-23",
+        "title": "Test 1",
+        "visitId": "1",
       },
     ]
   }

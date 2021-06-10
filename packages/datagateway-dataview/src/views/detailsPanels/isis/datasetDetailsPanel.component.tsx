@@ -11,6 +11,7 @@ import {
   Tab,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { Action } from 'redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,12 +28,13 @@ interface DatasetDetailsPanelProps {
   rowData: Entity;
   fetchDetails: (datasetId: number) => Promise<void>;
   detailsPanelResize?: () => void;
+  viewDatafiles?: (id: number) => Action;
 }
 
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, detailsPanelResize } = props;
+  const { rowData, fetchDetails, detailsPanelResize, viewDatafiles } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
   const classes = useStyles();
@@ -40,10 +42,10 @@ const DatasetDetailsPanel = (
   const datasetData = rowData as Dataset;
 
   React.useEffect(() => {
-    if (!datasetData.DATASETTYPE) {
-      fetchDetails(datasetData.ID);
+    if (!datasetData.type) {
+      fetchDetails(datasetData.id);
     }
-  }, [datasetData.DATASETTYPE, datasetData.ID, fetchDetails]);
+  }, [datasetData.type, datasetData.id, fetchDetails]);
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -64,12 +66,19 @@ const DatasetDetailsPanel = (
           label={t('datasets.details.label')}
           value="details"
         />
-        {datasetData.DATASETTYPE && (
+        {datasetData.type && (
           <Tab
             id="dataset-type-tab"
             aria-controls="dataset-type-panel"
             label={t('datasets.details.type.label')}
             value="type"
+          />
+        )}
+        {viewDatafiles && (
+          <Tab
+            id="dataset-datafiles-tab"
+            label={t('datasets.details.datafiles')}
+            onClick={() => viewDatafiles(datasetData.id)}
           />
         )}
       </Tabs>
@@ -82,7 +91,7 @@ const DatasetDetailsPanel = (
         <Grid container className={classes.root} direction="column">
           <Grid item xs>
             <Typography variant="h6">
-              <b>{datasetData.NAME}</b>
+              <b>{datasetData.name}</b>
             </Typography>
             <Divider className={classes.divider} />
           </Grid>
@@ -91,12 +100,12 @@ const DatasetDetailsPanel = (
               {t('datasets.details.description')}
             </Typography>
             <Typography>
-              <b>{datasetData.DESCRIPTION}</b>
+              <b>{datasetData.description}</b>
             </Typography>
           </Grid>
         </Grid>
       </div>
-      {datasetData.DATASETTYPE && (
+      {datasetData.type && (
         <div
           id="dataset-type-panel"
           aria-labelledby="dataset-type-tab"
@@ -106,7 +115,7 @@ const DatasetDetailsPanel = (
           <Grid container className={classes.root} direction="column">
             <Grid item xs>
               <Typography variant="h6">
-                <b>{datasetData.DATASETTYPE.NAME}</b>
+                <b>{datasetData.type.name}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -115,7 +124,7 @@ const DatasetDetailsPanel = (
                 {t('datasets.details.type.description')}
               </Typography>
               <Typography>
-                <b>{datasetData.DATASETTYPE.DESCRIPTION}</b>
+                <b>{datasetData.type.description}</b>
               </Typography>
             </Grid>
           </Grid>

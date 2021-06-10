@@ -9,11 +9,11 @@ describe('ISIS - Studies Table', () => {
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click a facility cycle to see its investigations', () => {
+  it('should be able to click a facility cycle to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/405/investigation'
+      '/browseStudyHierarchy/instrument/1/study/405'
     );
   });
 
@@ -147,7 +147,7 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'Network find should century magazine happen natural.'
+        'It wish different however along whether knowledge media.'
       );
     });
 

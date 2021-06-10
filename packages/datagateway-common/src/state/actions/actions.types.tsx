@@ -259,6 +259,7 @@ export interface PluginRoute {
   section: string;
   link: string;
   displayName: string;
+  admin?: boolean;
   order: number;
 }
 

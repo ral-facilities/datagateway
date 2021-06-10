@@ -12,10 +12,10 @@
   "breadcrumbs": {
     "proposal": {
       "replaceEntity": "investigation",
-      "replaceEntityField": "TITLE"
+      "replaceEntityField": "title"
     },
     "investigation": {
-      "replaceEntityField": "VISIT_ID",
+      "replaceEntityField": "visitId",
       "parentEntity": "proposal"
     }
   },

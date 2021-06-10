@@ -54,25 +54,30 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', () => {
-  // TODO Use the ICAT backend for this request once it is enabled for pre-prod
-  cy.request({
-    method: 'POST',
-    url: 'https://localhost:8181/icat/session',
-    body: {
-      json: JSON.stringify({
-        plugin: 'anon',
-      }),
-    },
-    form: true,
-  }).then((response) => {
-    const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-    const payload = {
-      sessionId: response.body.sessionId,
-      username: 'Robert499',
+Cypress.Commands.add('login', (credentials) => {
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    let body = {
+      username: '',
+      password: '',
+      mechanism: 'anon',
     };
-    const jwt = jsrsasign.KJUR.jws.JWS.sign('HS256', jwtHeader, payload, 'shh');
-    window.localStorage.setItem('scigateway:token', jwt);
+    if (credentials) {
+      body = credentials;
+    }
+    cy.request('POST', `${settings.apiUrl}/sessions`, body).then((response) => {
+      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+      const payload = {
+        sessionId: response.body.sessionID,
+        username: 'test', // TODO - was set to Robert499 before
+      };
+      const jwt = jsrsasign.KJUR.jws.JWS.sign(
+        'HS256',
+        jwtHeader,
+        payload,
+        'shh'
+      );
+      window.localStorage.setItem('scigateway:token', jwt);
+    });
   });
 });
 

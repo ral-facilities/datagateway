@@ -27,13 +27,21 @@ const unmemoizedCheckInvestigationId = (
   datasetId: number
 ): Promise<boolean> => {
   return axios
-    .get(`${apiUrl}/datasets/${datasetId}`, {
+    .get(`${apiUrl}/datasets/findone`, {
+      params: {
+        where: {
+          id: {
+            eq: datasetId,
+          },
+        },
+        include: '"investigation"',
+      },
       headers: {
         Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
       },
     })
     .then((response: AxiosResponse<Dataset>) => {
-      return response.data.INVESTIGATION_ID === investigationId;
+      return response.data.investigation?.id === investigationId;
     })
     .catch((error) => {
       handleICATError(error);
@@ -62,7 +70,7 @@ const unmemoizedCheckInstrumentAndFacilityCycleId = (
       {
         params: {
           where: {
-            ID: {
+            id: {
               eq: investigationId,
             },
           },
@@ -95,9 +103,9 @@ const unmemoizedCheckInstrumentAndStudyId = (
     .get(`${apiUrl}/investigations/`, {
       params: {
         where: {
-          ID: { eq: investigationId },
-          'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
-          'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+          id: { eq: investigationId },
+          'investigationInstruments.instrument.id': { eq: instrumentId },
+          'studyInvestigations.study.id': { eq: studyId },
         },
       },
       headers: {
@@ -129,7 +137,7 @@ export const unmemoizedCheckProposalName = (
       },
     })
     .then((response: AxiosResponse<Investigation>) => {
-      return response.data.NAME === proposalName;
+      return response.data.name === proposalName;
     })
     .catch((error) => {
       handleICATError(error);

@@ -565,7 +565,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     </Box>
 
                     {/* Show all the available sort options: 
-                        TITLE, DESCRIPTION and the further information (if provided) */}
+                        title, description and the further information (if provided) */}
                     <Box>
                       <List component="nav">
                         {cardSort &&

@@ -42,10 +42,10 @@ const InstrumentDetailsPanel = (
   const classes = useStyles();
 
   React.useEffect(() => {
-    if (!instrumentData.INSTRUMENTSCIENTIST) {
-      fetchDetails(instrumentData.ID);
+    if (!instrumentData.instrumentScientists) {
+      fetchDetails(instrumentData.id);
     }
-  }, [instrumentData.INSTRUMENTSCIENTIST, instrumentData.ID, fetchDetails]);
+  }, [instrumentData.instrumentScientists, instrumentData.id, fetchDetails]);
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -66,7 +66,7 @@ const InstrumentDetailsPanel = (
           label={t('instruments.details.label')}
           value="details"
         />
-        {instrumentData.INSTRUMENTSCIENTIST && (
+        {instrumentData.instrumentScientists && (
           <Tab
             id="instrument-users-tab"
             aria-controls="instrument-users-panel"
@@ -84,7 +84,7 @@ const InstrumentDetailsPanel = (
         <Grid container className={classes.root} direction="column">
           <Grid item xs>
             <Typography variant="h6">
-              <b>{instrumentData.FULLNAME}</b>
+              <b>{instrumentData.fullName}</b>
             </Typography>
             <Divider className={classes.divider} />
           </Grid>
@@ -93,7 +93,7 @@ const InstrumentDetailsPanel = (
               {t('instruments.details.description')}
             </Typography>
             <Typography>
-              <b>{instrumentData.DESCRIPTION}</b>
+              <b>{instrumentData.description}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -101,7 +101,7 @@ const InstrumentDetailsPanel = (
               {t('instruments.details.type')}
             </Typography>
             <Typography>
-              <b>{instrumentData.TYPE}</b>
+              <b>{instrumentData.type}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -110,13 +110,13 @@ const InstrumentDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                <Link href={instrumentData.URL}>{instrumentData.URL}</Link>
+                <Link href={instrumentData.url}>{instrumentData.url}</Link>
               </b>
             </Typography>
           </Grid>
         </Grid>
       </div>
-      {instrumentData.INSTRUMENTSCIENTIST && (
+      {instrumentData.instrumentScientists && (
         <div
           id="instrument-users-panel"
           aria-labelledby="instrument-users-tab"
@@ -124,17 +124,17 @@ const InstrumentDetailsPanel = (
           hidden={value !== 'users'}
         >
           <Grid container className={classes.root} direction="column">
-            {instrumentData.INSTRUMENTSCIENTIST.map((instrumentScientist) => {
-              if (instrumentScientist.USER_) {
+            {instrumentData.instrumentScientists.map((instrumentScientist) => {
+              if (instrumentScientist.user) {
                 return (
-                  <Grid key={instrumentScientist.USER_ID} item xs>
+                  <Grid key={instrumentScientist.user.id} item xs>
                     <Typography variant="overline">
                       {t('instruments.details.instrument_scientists.name')}
                     </Typography>
                     <Typography>
                       <b>
-                        {instrumentScientist.USER_.FULL_NAME ||
-                          instrumentScientist.USER_.NAME}
+                        {instrumentScientist.user.fullName ||
+                          instrumentScientist.user.name}
                       </b>
                     </Typography>
                   </Grid>

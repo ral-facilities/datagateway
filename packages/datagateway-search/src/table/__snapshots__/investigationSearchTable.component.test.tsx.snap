@@ -11,46 +11,46 @@ exports[`Investigation Search Table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "TITLE",
+        "dataKey": "title",
         "filterComponent": [Function],
         "label": "investigations.title",
       },
       Object {
-        "dataKey": "VISIT_ID",
+        "dataKey": "visitId",
         "filterComponent": [Function],
         "label": "investigations.visit_id",
       },
       Object {
-        "dataKey": "RB_NUMBER",
+        "dataKey": "rbNumber",
         "filterComponent": [Function],
         "label": "investigations.rb_number",
       },
       Object {
-        "dataKey": "DOI",
+        "dataKey": "doi",
         "filterComponent": [Function],
         "label": "investigations.doi",
       },
       Object {
-        "dataKey": "DATASET_COUNT",
+        "dataKey": "datasetCount",
         "disableSort": true,
         "label": "investigations.dataset_count",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME",
+        "dataKey": "investigationInstruments.instrument.fullName",
         "filterComponent": [Function],
         "label": "investigations.instrument",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "STARTDATE",
+        "dataKey": "startDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "label": "investigations.start_date",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "ENDDATE",
+        "dataKey": "endDate",
         "disableHeaderWrap": true,
         "filterComponent": [Function],
         "label": "investigations.end_date",
@@ -60,55 +60,41 @@ exports[`Investigation Search Table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DOI": "doi 1",
-        "ENDDATE": "2019-06-11",
-        "FACILITY": Object {
-          "FACILITYCYCLE": Array [
-            Object {
-              "ENDDATE": "2020-06-11",
-              "FACILITY_ID": 2,
-              "ID": 2,
-              "NAME": "facility cycle name",
-              "STARTDATE": "2000-06-10",
-            },
-          ],
-          "ID": 2,
-          "NAME": "facility name",
+        "doi": "doi 1",
+        "endDate": "2019-06-11",
+        "facility": Object {
+          "id": 2,
+          "name": "facility name",
         },
-        "ID": 1,
-        "INVESTIGATIONINSTRUMENT": Array [
+        "id": 1,
+        "investigationInstruments": Array [
           Object {
-            "ID": 1,
-            "INSTRUMENT": Object {
-              "FACILITY_ID": 1,
-              "ID": 3,
-              "NAME": "LARMOR",
+            "id": 1,
+            "instrument": Object {
+              "id": 3,
+              "name": "LARMOR",
             },
-            "INSTRUMENT_ID": 3,
-            "INVESTIGATION_ID": 1,
           },
         ],
-        "NAME": "Test 1",
-        "RB_NUMBER": "1",
-        "SIZE": 1,
-        "STARTDATE": "2019-06-10",
-        "STUDYINVESTIGATION": Array [
+        "name": "Test 1",
+        "rbNumber": "1",
+        "size": 1,
+        "startDate": "2019-06-10",
+        "studyInvestigations": Array [
           Object {
-            "ID": 6,
-            "INVESTIGATION_ID": 1,
-            "STUDY": Object {
-              "CREATE_TIME": "2019-06-10",
-              "ID": 7,
-              "MOD_TIME": "2019-06-10",
-              "NAME": "study name",
-              "PID": "study pid",
+            "id": 6,
+            "study": Object {
+              "createTime": "2019-06-10",
+              "id": 7,
+              "modTime": "2019-06-10",
+              "name": "study name",
+              "pid": "study pid",
             },
-            "STUDY_ID": 7,
           },
         ],
-        "SUMMARY": "foo bar",
-        "TITLE": "Test 1",
-        "VISIT_ID": "1",
+        "summary": "foo bar",
+        "title": "Test 1",
+        "visitId": "1",
       },
     ]
   }

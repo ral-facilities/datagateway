@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ISIS Study Landing page renders correctly 1`] = `
+<ContextProvider
+  value={null}
+>
+  <LandingPage
+    data={
+      Array [
+        Object {
+          "id": 6,
+          "investigation": Object {
+            "id": 1,
+          },
+        },
+      ]
+    }
+    fetchStudyData={[Function]}
+    instrumentId="4"
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    studyId="5"
+    view={null}
+    viewAllInvestigations={[Function]}
+  />
+</ContextProvider>
+`;

@@ -159,6 +159,7 @@ class ConfigProvider extends React.Component<
             link: route['link'],
             plugin: 'datagateway-download',
             displayName: '\xa0' + route['displayName'],
+            admin: route['admin'] ? route['admin'] : false,
             order: route['order'] ? route['order'] : 0,
             helpSteps:
               index === 0 && 'helpSteps' in settings

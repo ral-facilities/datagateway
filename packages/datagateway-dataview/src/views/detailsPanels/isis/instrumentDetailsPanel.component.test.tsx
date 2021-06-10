@@ -14,12 +14,12 @@ describe('Instrument details panel component', () => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowData = {
-      ID: 1,
-      NAME: 'Test',
-      FULLNAME: 'Test Instrument',
-      DESCRIPTION: 'An instrument purely for testing',
-      TYPE: 'testing',
-      URL: 'www.example.com',
+      id: 1,
+      name: 'Test',
+      fullName: 'Test Instrument',
+      description: 'An instrument purely for testing',
+      type: 'testing',
+      url: 'www.example.com',
     };
   });
 
@@ -37,24 +37,20 @@ describe('Instrument details panel component', () => {
   });
 
   it('renders users tab when present in the data', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
-        ID: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
-        USER_: {
-          ID: 5,
-          NAME: 'Louise',
-          FULL_NAME: 'Louise Davies',
+        id: 4,
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
         },
       },
       {
-        ID: 9,
-        INSTRUMENT_ID: 1,
-        USER_ID: 10,
-        USER_: {
-          ID: 10,
-          NAME: 'Louise',
+        id: 9,
+        user: {
+          id: 10,
+          name: 'Louise',
         },
       },
     ];
@@ -70,15 +66,13 @@ describe('Instrument details panel component', () => {
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
-        ID: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
-        USER_: {
-          ID: 5,
-          NAME: 'Louise',
-          FULL_NAME: 'Louise Davies',
+        id: 4,
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
         },
       },
     ];
@@ -99,15 +93,13 @@ describe('Instrument details panel component', () => {
   });
 
   it('detailsPanelResize not called when not provided', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
-        ID: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
-        USER_: {
-          ID: 5,
-          NAME: 'Louise',
-          FULL_NAME: 'Louise Davies',
+        id: 4,
+        user: {
+          id: 5,
+          name: 'Louise',
+          fullName: 'Louise Davies',
         },
       },
     ];
@@ -137,11 +129,9 @@ describe('Instrument details panel component', () => {
   });
 
   it('gracefully handles InstrumentScientists without Users', () => {
-    rowData.INSTRUMENTSCIENTIST = [
+    rowData.instrumentScientists = [
       {
-        ID: 4,
-        INSTRUMENT_ID: 1,
-        USER_ID: 5,
+        id: 4,
       },
     ];
 

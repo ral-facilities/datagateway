@@ -40,6 +40,13 @@
       "link": "/download",
       "displayName": "Download",
       "order": 0
+    },
+    {
+      "section": "Admin",
+      "link": "/admin-download",
+      "displayName": "Admin Download",
+      "admin": true,
+      "order": 0
     }
   ]
 }

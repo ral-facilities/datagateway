@@ -27,7 +27,7 @@ import {
   ViewsType,
 } from 'datagateway-common';
 import { IconButton } from '@material-ui/core';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { StateType } from '../../../state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
@@ -39,6 +39,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import TitleIcon from '@material-ui/icons/Title';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { push } from 'connected-react-router';
 
 interface ISISDatasetsTableProps {
   instrumentId: string;
@@ -75,6 +76,7 @@ interface ISISDatasetsTableDispatchProps {
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
   fetchAllIds: () => Promise<void>;
+  viewDatafiles: (urlPrefix: string) => (id: number) => Action;
 }
 
 type ISISDatasetsTableCombinedProps = ISISDatasetsTableProps &
@@ -104,6 +106,7 @@ const ISISDatasetsTable = (
     removeFromCart,
     allIds,
     fetchAllIds,
+    viewDatafiles,
     selectAllSetting,
     studyHierarchy,
   } = props;
@@ -153,6 +156,7 @@ const ISISDatasetsTable = (
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
 
   return (
     <Table
@@ -173,6 +177,7 @@ const ISISDatasetsTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            viewDatafiles={viewDatafiles(urlPrefix)}
           />
         );
       }}
@@ -185,7 +190,7 @@ const ISISDatasetsTable = (
               key="download"
               size="small"
               onClick={() => {
-                downloadData(datasetData.ID, datasetData.NAME);
+                downloadData(datasetData.id, datasetData.name);
               }}
             >
               <GetApp />
@@ -197,11 +202,11 @@ const ISISDatasetsTable = (
         {
           icon: <TitleIcon />,
           label: t('datasets.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${cellProps.rowData.ID}/datafile`,
-              cellProps.rowData.NAME,
+              `${urlPrefix}/${cellProps.rowData.id}`,
+              cellProps.rowData.name,
               view
             ),
           filterComponent: textFilter,
@@ -209,7 +214,7 @@ const ISISDatasetsTable = (
         {
           icon: <SaveIcon />,
           label: t('datasets.size'),
-          dataKey: 'SIZE',
+          dataKey: 'size',
           cellContentRenderer: (cellProps) => {
             return formatBytes(cellProps.cellData);
           },
@@ -218,14 +223,14 @@ const ISISDatasetsTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
           disableHeaderWrap: true,
         },
@@ -251,8 +256,12 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              INVESTIGATION_ID: { eq: investigationId },
+              'investigation.id': { eq: investigationId },
             }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('investigation'),
           },
         ],
       })
@@ -263,8 +272,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: investigationId },
+            'investigation.id': { eq: investigationId },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),
@@ -280,11 +293,16 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+            'investigation.id': { eq: parseInt(ownProps.investigationId) },
           }),
         },
       ])
     ),
+  viewDatafiles: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/datafile`));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetsTableStoreProps => {

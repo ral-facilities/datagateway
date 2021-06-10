@@ -94,15 +94,15 @@ const InvestigationCardView = (
     fetchFacilityFilter();
   }, [fetchTypeFilter, fetchFacilityFilter]);
 
-  // Get the distinct 'TYPE_ID' options.
+  // Get the distinct 'type.id' options.
   const typeFilteredItems = React.useMemo(
-    () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
+    () => ('type.id' in filterData ? filterData['type.id'] : []),
     [filterData]
   );
 
-  // Get the distinct 'FACILITY_ID' options.
+  // Get the distinct 'facility.id' options.
   const facilityFilteredItems = React.useMemo(
-    () => ('FACILITY_ID' in filterData ? filterData['FACILITY_ID'] : []),
+    () => ('facility.id' in filterData ? filterData['facility.id'] : []),
     [filterData]
   );
 
@@ -114,7 +114,7 @@ const InvestigationCardView = (
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             data
-              .map((investigation) => investigation.ID)
+              .map((investigation) => investigation.id)
               .includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
@@ -157,11 +157,11 @@ const InvestigationCardView = (
         // Provide label for filter component.
         label: t('investigations.title'),
         // Provide both the dataKey (for tooltip) and content to render.
-        dataKey: 'TITLE',
+        dataKey: 'title',
         content: (investigation: Investigation) => {
           return investigationLink(
-            investigation.ID,
-            investigation.TITLE,
+            investigation.id,
+            investigation.title,
             query.view
           );
         },
@@ -169,53 +169,53 @@ const InvestigationCardView = (
       }}
       description={{
         label: t('investigations.details.summary'),
-        dataKey: 'SUMMARY',
+        dataKey: 'summary',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Public />,
           label: t('investigations.doi'),
-          dataKey: 'DOI',
+          dataKey: 'doi',
           filterComponent: textFilter,
         },
         {
           icon: <Fingerprint />,
           label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
           icon: <Fingerprint />,
           label: t('investigations.details.rb_number'),
-          dataKey: 'RB_NUMBER',
+          dataKey: 'rbNumber',
           filterComponent: textFilter,
           disableSort: true,
         },
         {
           icon: <ConfirmationNumber />,
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           filterComponent: textFilter,
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.details.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.details.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}
       buttons={[
         function cartButton(investigation: Investigation) {
           return !(
-            selectedCards && selectedCards.includes(investigation.ID)
+            selectedCards && selectedCards.includes(investigation.id)
           ) ? (
             <Button
               id="add-to-cart-btn"
@@ -223,7 +223,7 @@ const InvestigationCardView = (
               color="primary"
               startIcon={<AddCircleOutlineOutlined />}
               disableElevation
-              onClick={() => addToCart([investigation.ID])}
+              onClick={() => addToCart([investigation.id])}
             >
               Add to cart
             </Button>
@@ -235,8 +235,8 @@ const InvestigationCardView = (
               startIcon={<RemoveCircleOutlineOutlined />}
               disableElevation
               onClick={() => {
-                if (selectedCards && selectedCards.includes(investigation.ID))
-                  removeFromCart([investigation.ID]);
+                if (selectedCards && selectedCards.includes(investigation.id))
+                  removeFromCart([investigation.id]);
               }}
             >
               Remove from cart
@@ -248,13 +248,13 @@ const InvestigationCardView = (
       // use that over the filterKey here.
       customFilters={[
         {
-          label: t('investigations.type_id'),
-          dataKey: 'TYPE_ID',
+          label: t('investigations.type.id'),
+          dataKey: 'type.id',
           filterItems: typeFilteredItems,
         },
         {
-          label: t('investigations.facility_id'),
-          dataKey: 'FACILITY_ID',
+          label: t('investigations.facility.id'),
+          dataKey: 'facility.id',
           filterItems: facilityFilteredItems,
         },
       ]}
@@ -285,9 +285,9 @@ const mapDispatchToProps = (
     dispatch(addToCart('investigation', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('investigation', entityIds)),
-  fetchTypeFilter: () => dispatch(fetchFilter('investigation', 'TYPE_ID')),
+  fetchTypeFilter: () => dispatch(fetchFilter('investigation', 'type.id', [])),
   fetchFacilityFilter: () =>
-    dispatch(fetchFilter('investigation', 'FACILITY_ID')),
+    dispatch(fetchFilter('investigation', 'facility.id', [])),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),

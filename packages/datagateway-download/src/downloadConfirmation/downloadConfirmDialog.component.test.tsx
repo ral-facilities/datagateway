@@ -43,7 +43,7 @@ const mockedSettings = {
     https: {
       idsUrl: 'https://localhost:8181/ids',
       displayName: 'HTTPS',
-      description: 'Example description for HTTPS access method.',
+      description: 'Example description for <b>HTTPS</b> access method.',
     },
     globus: {
       idsUrl: 'https://localhost:8181/ids',

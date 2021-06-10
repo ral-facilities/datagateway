@@ -6,31 +6,31 @@ exports[`ISIS Studies table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "STUDY.NAME",
+        "dataKey": "study.name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.name",
       },
       Object {
-        "dataKey": "STUDY.DESCRIPTION",
+        "dataKey": "study.description",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.description",
       },
       Object {
-        "dataKey": "STUDY.PID",
+        "dataKey": "study.pid",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.pid",
       },
       Object {
-        "dataKey": "STUDY.STARTDATE",
+        "dataKey": "study.startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.start_date",
       },
       Object {
-        "dataKey": "STUDY.ENDDATE",
+        "dataKey": "study.endDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "studies.end_date",
@@ -40,16 +40,14 @@ exports[`ISIS Studies table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "ID": 1,
-        "INVESTIGATION_ID": 1,
-        "STUDY": Object {
-          "CREATE_TIME": "2000-01-01",
-          "ID": 1,
-          "MOD_TIME": "2000-01-01",
-          "NAME": "Test 1",
-          "PID": "doi",
+        "id": 1,
+        "study": Object {
+          "createTime": "2000-01-01",
+          "id": 1,
+          "modTime": "2000-01-01",
+          "name": "Test 1",
+          "pid": "doi",
         },
-        "STUDY_ID": 1,
       },
     ]
   }
@@ -77,7 +75,7 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
       "render": [Function],
     }
   }
-  to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+  to="/browseStudyHierarchy/instrument/1/study/1"
 >
   <ForwardRef(Link)
     classes={
@@ -104,7 +102,7 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
         "render": [Function],
       }
     }
-    to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+    to="/browseStudyHierarchy/instrument/1/study/1"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
@@ -125,7 +123,7 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
       }
       onBlur={[Function]}
       onFocus={[Function]}
-      to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+      to="/browseStudyHierarchy/instrument/1/study/1"
       variant="inherit"
     >
       <ForwardRef(Typography)
@@ -181,25 +179,25 @@ exports[`ISIS Studies table component renders studies name as a link 1`] = `
         }
         onBlur={[Function]}
         onFocus={[Function]}
-        to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+        to="/browseStudyHierarchy/instrument/1/study/1"
         variant="inherit"
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
           onBlur={[Function]}
           onFocus={[Function]}
-          to="/browseStudyHierarchy/instrument/1/study/1/investigation"
+          to="/browseStudyHierarchy/instrument/1/study/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-            href="/browseStudyHierarchy/instrument/1/study/1/investigation"
+            href="/browseStudyHierarchy/instrument/1/study/1"
             navigate={[Function]}
             onBlur={[Function]}
             onFocus={[Function]}
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-              href="/browseStudyHierarchy/instrument/1/study/1/investigation"
+              href="/browseStudyHierarchy/instrument/1/study/1"
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}

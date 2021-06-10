@@ -41,7 +41,7 @@ const SelectCell = (props: SelectCellProps): React.ReactElement => {
       variant="body"
     >
       <Checkbox
-        checked={selectedRows.includes(rowData.ID)}
+        checked={selectedRows.includes(rowData.id)}
         inputProps={{
           'aria-label': `select row ${rowIndex}`,
         }}
@@ -55,16 +55,16 @@ const SelectCell = (props: SelectCellProps): React.ReactElement => {
               .fill(Math.min(rowIndex, lastChecked))
               .map((value, index) => {
                 const icatEntity = data[value + index] as ICATEntity;
-                return icatEntity.ID;
+                return icatEntity.id;
               });
 
-            if (selectedRows.includes(rowData.ID)) {
+            if (selectedRows.includes(rowData.id)) {
               onUncheck(shiftClickedRows);
             } else {
               onCheck(shiftClickedRows);
             }
           } else {
-            const id = rowData.ID;
+            const id = rowData.id;
             if (selectedRows.includes(id)) {
               onUncheck([id]);
             } else {
