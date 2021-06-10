@@ -39,8 +39,7 @@ import {
 } from '@material-ui/icons';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
-import { toDate } from 'date-fns-tz';
-import { format } from 'date-fns';
+import { toDate, format } from 'date-fns-tz';
 
 const paperStyles = (theme: Theme): StyleRules =>
   createStyles({

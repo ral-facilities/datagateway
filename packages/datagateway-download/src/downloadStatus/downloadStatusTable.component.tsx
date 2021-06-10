@@ -15,8 +15,7 @@ import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
-import { toDate } from 'date-fns-tz';
-import { format } from 'date-fns';
+import { toDate, format } from 'date-fns-tz';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
