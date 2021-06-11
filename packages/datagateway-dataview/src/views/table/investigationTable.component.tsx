@@ -260,7 +260,6 @@ const InvestigationTable = (
               return cellProps.cellData.toString().split(' ')[0];
             }
           },
-          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
@@ -272,7 +271,6 @@ const InvestigationTable = (
               return cellProps.cellData.toString().split(' ')[0];
             }
           },
-          disableHeaderWrap: true,
         },
       ]}
     />

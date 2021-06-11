@@ -121,7 +121,6 @@ exports[`Admin Download Status Table renders correctly 1`] = `
                   Object {
                     "cellContentRenderer": [Function],
                     "dataKey": "createdAt",
-                    "disableHeaderWrap": true,
                     "filterComponent": [Function],
                     "label": "downloadStatus.createdAt",
                   },
