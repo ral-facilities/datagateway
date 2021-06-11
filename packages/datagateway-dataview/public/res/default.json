@@ -100,7 +100,8 @@
     }
   },
   "datasets": {
-    "name": "Dataset",
+    "dataset": "Dataset",
+    "name": "Name",
     "create_time": "Create Time",
     "modified_time": "Modified Time",
     "size": "Size",
