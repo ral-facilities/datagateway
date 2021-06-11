@@ -22,6 +22,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     typography: {
       color: theme.palette.primary.contrastText,
+      '& a': {
+        '&:link': {
+          color: '#FF6900',
+        },
+        '&:visited': {
+          color: '#FF6900',
+        },
+        '&:active': {
+          color: '#E94D36',
+        },
+      },
     },
     logo: {
       height: 'auto',
