@@ -53,7 +53,7 @@ describe('Datafile search table component', () => {
     );
     state.dgcommon.data = [
       {
-        id: 3,
+        id: 1,
         name: 'Datafile test name',
         location: '/datafiletest',
         fileSize: 1,
@@ -67,7 +67,7 @@ describe('Datafile search table component', () => {
           startDate: '2019-07-24',
           endDate: '2019-07-25',
           investigation: {
-            id: 1,
+            id: 3,
             title: 'Investigation test title',
             name: 'Investigation test name',
             summary: 'foo bar',
@@ -77,9 +77,9 @@ describe('Datafile search table component', () => {
             size: 1,
             investigationInstruments: [
               {
-                id: 1,
+                id: 4,
                 instrument: {
-                  id: 3,
+                  id: 5,
                   name: 'LARMOR',
                 },
               },
@@ -99,7 +99,7 @@ describe('Datafile search table component', () => {
             startDate: '2019-06-10',
             endDate: '2019-06-11',
             facility: {
-              id: 2,
+              id: 8,
               name: 'facility name',
             },
           },
@@ -349,7 +349,7 @@ describe('Datafile search table component', () => {
     // this can happen when navigating between tables and the previous table's state still exists
     state.dgcommon.data = [
       {
-        id: 3,
+        id: 1,
         name: 'Datafile test name',
         location: '/datafiletest',
         fileSize: 1,
@@ -380,7 +380,7 @@ describe('Datafile search table component', () => {
     );
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/investigation/1/dataset/2/datafile`
+      `/browse/investigation/3/dataset/2/datafile`
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Datafile test name'
@@ -398,7 +398,7 @@ describe('Datafile search table component', () => {
     );
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      '/browse/proposal/Dataset test name/investigation/1/dataset/2/datafile'
+      '/browse/proposal/Dataset test name/investigation/3/dataset/2/datafile'
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Datafile test name'
@@ -437,7 +437,7 @@ describe('Datafile search table component', () => {
       Promise.resolve({
         data: [
           {
-            id: 2,
+            id: 4,
             name: 'facility cycle name',
             startDate: '2000-06-10',
             endDate: '2020-06-11',
@@ -461,7 +461,7 @@ describe('Datafile search table component', () => {
     });
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/instrument/3/facilityCycle/2/investigation/1/dataset/2/datafile`
+      `/browse/instrument/5/facilityCycle/4/investigation/3/dataset/2/datafile`
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Datafile test name'

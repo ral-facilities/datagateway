@@ -50,15 +50,15 @@ exports[`Datafile search table component renders correctly 1`] = `
             "doi": "doi 1",
             "endDate": "2019-06-11",
             "facility": Object {
-              "id": 2,
+              "id": 8,
               "name": "facility name",
             },
-            "id": 1,
+            "id": 3,
             "investigationInstruments": Array [
               Object {
-                "id": 1,
+                "id": 4,
                 "instrument": Object {
-                  "id": 3,
+                  "id": 5,
                   "name": "LARMOR",
                 },
               },
@@ -89,7 +89,7 @@ exports[`Datafile search table component renders correctly 1`] = `
           "startDate": "2019-07-24",
         },
         "fileSize": 1,
-        "id": 3,
+        "id": 1,
         "location": "/datafiletest",
         "modTime": "2019-07-23",
         "name": "Datafile test name",

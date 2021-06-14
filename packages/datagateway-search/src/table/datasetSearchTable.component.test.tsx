@@ -49,7 +49,7 @@ describe('Dataset table component', () => {
     );
     state.dgcommon.data = [
       {
-        id: 2,
+        id: 1,
         name: 'Dataset test name',
         size: 1,
         modTime: '2019-07-23',
@@ -57,7 +57,7 @@ describe('Dataset table component', () => {
         startDate: '2019-07-24',
         endDate: '2019-07-25',
         investigation: {
-          id: 1,
+          id: 2,
           title: 'Investigation test title',
           name: 'Investigation test name',
           summary: 'foo bar',
@@ -67,18 +67,18 @@ describe('Dataset table component', () => {
           size: 1,
           investigationInstruments: [
             {
-              id: 1,
+              id: 3,
               instrument: {
-                id: 3,
+                id: 4,
                 name: 'LARMOR',
               },
             },
           ],
           studyInvestigations: [
             {
-              id: 6,
+              id: 5,
               study: {
-                id: 7,
+                id: 6,
                 pid: 'study pid',
                 name: 'study name',
                 modTime: '2019-06-10',
@@ -89,7 +89,7 @@ describe('Dataset table component', () => {
           startDate: '2019-06-10',
           endDate: '2019-06-11',
           facility: {
-            id: 2,
+            id: 7,
             name: 'facility name',
           },
         },
@@ -332,6 +332,8 @@ describe('Dataset table component', () => {
       },
     ];
 
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+
     expect(() =>
       mount(
         <Provider store={mockStore(state)}>
@@ -341,6 +343,9 @@ describe('Dataset table component', () => {
         </Provider>
       )
     ).not.toThrowError();
+
+    expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
   });
 
   it('renders generic link correctly', () => {
@@ -354,7 +359,7 @@ describe('Dataset table component', () => {
     );
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/investigation/1/dataset/2/datafile`
+      `/browse/investigation/2/dataset/1/datafile`
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Dataset test name'
@@ -372,7 +377,7 @@ describe('Dataset table component', () => {
     );
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      '/browse/proposal/Investigation test name/investigation/1/dataset/2/datafile'
+      '/browse/proposal/Investigation test name/investigation/2/dataset/1/datafile'
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Dataset test name'
@@ -411,7 +416,7 @@ describe('Dataset table component', () => {
       Promise.resolve({
         data: [
           {
-            id: 2,
+            id: 6,
             name: 'facility cycle name',
             startDate: '2000-06-10',
             endDate: '2020-06-11',
@@ -435,7 +440,7 @@ describe('Dataset table component', () => {
     });
 
     expect(wrapper.find('[aria-colindex=3]').find('a').prop('href')).toEqual(
-      `/browse/instrument/3/facilityCycle/2/investigation/1/dataset/2`
+      `/browse/instrument/4/facilityCycle/6/investigation/2/dataset/1`
     );
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
       'Dataset test name'
