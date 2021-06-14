@@ -152,6 +152,7 @@ export const initialState: DGCommonState = {
     idsUrl: '',
     apiUrl: '',
     downloadApiUrl: '',
+    icatUrl: '',
   },
   cartItems: [],
   allIds: [],

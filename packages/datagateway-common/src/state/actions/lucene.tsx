@@ -74,13 +74,9 @@ export const fetchLuceneData = async (
   datasearchType: DatasearchType,
   params: LuceneSearchParams,
   settings: {
-    downloadApiUrl: string;
+    icatUrl: string;
   }
 ): Promise<number[]> => {
-  // Create ICAT url.
-  const splitUrl = settings.downloadApiUrl.split('/');
-  const icatUrl = `${splitUrl.slice(0, splitUrl.length - 1).join('/')}/icat`;
-
   // Query params.
   const queryParams = {
     sessionId: readSciGatewayToken().sessionId,
@@ -91,7 +87,7 @@ export const fetchLuceneData = async (
 
   let results = [];
   results = await axios
-    .get(`${icatUrl}/lucene/data`, {
+    .get(`${settings.icatUrl}/lucene/data`, {
       params: queryParams,
     })
     .then((response) => {
@@ -136,13 +132,13 @@ export const fetchLuceneIds = (
   params: LuceneSearchParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    const { downloadApiUrl } = getState().dgcommon.urls;
+    const { icatUrl } = getState().dgcommon.urls;
 
     const timestamp = Date.now();
     dispatch(fetchLuceneIdsRequest(timestamp));
 
     await fetchLuceneData(datasearchType, params, {
-      downloadApiUrl,
+      icatUrl,
     })
       .then((results) => {
         dispatch(fetchLuceneIdsSuccess(results, timestamp));
