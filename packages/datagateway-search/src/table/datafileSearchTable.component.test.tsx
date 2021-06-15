@@ -491,12 +491,6 @@ describe('Datafile search table component', () => {
   });
 
   it('does not render ISIS link when facilityCycleId cannot be found', async () => {
-    // (axios.get as jest.Mock).mockImplementationOnce(() =>
-    //   Promise.resolve({
-    //     data: [],
-    //   })
-    // );
-
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>
@@ -547,6 +541,61 @@ describe('Datafile search table component', () => {
 
     expect(wrapper.find('[aria-colindex=3]').find('a')).toHaveLength(0);
     expect(wrapper.find('[aria-colindex=3]').text()).toEqual(
+      'Datafile test name'
+    );
+  });
+
+  it('displays only the datafile name when there is no DLS dataset to link to', () => {
+    state.dgcommon.data = [
+      {
+        id: 1,
+        name: 'Datafile test name',
+        location: '/datafiletest',
+        fileSize: 1,
+        modTime: '2019-07-23',
+        dataset: {},
+      },
+    ];
+
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <DatafileSearchTable hierarchy="dls" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-colindex=3]').find('p').text()).toEqual(
+      'Datafile test name'
+    );
+  });
+
+  it('displays only the datafile name when there is no ISIS investigation to link to', async () => {
+    state.dgcommon.data = [
+      {
+        id: 1,
+        name: 'Datafile test name',
+        location: '/datafiletest',
+        fileSize: 1,
+        modTime: '2019-07-23',
+        dataset: {},
+      },
+    ];
+
+    const wrapper = mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter>
+          <DatafileSearchTable hierarchy="isis" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await act(async () => {
+      await flushPromises();
+      wrapper.update();
+    });
+
+    expect(wrapper.find('[aria-colindex=3]').find('p').text()).toEqual(
       'Datafile test name'
     );
   });
