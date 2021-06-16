@@ -117,6 +117,9 @@
     "complete": "Complete",
     "incomplete": "Incomplete",
     "location": "Location",
+    "type": {
+      "id": "Type ID"
+    },
     "details": {
       "tabs_label": "Dataset Details Tabs",
       "label": "Dataset Details",
