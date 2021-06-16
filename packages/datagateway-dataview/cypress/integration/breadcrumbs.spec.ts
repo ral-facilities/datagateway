@@ -65,7 +65,7 @@ describe('Breadcrumbs Component', () => {
     // Get current dataset page breadcrumb.
     cy.get('[aria-label="Breadcrumb-hierarchy-2"]').should(
       'have.text',
-      'DATASET 91'
+      'DATASET 1'
     );
 
     // Get page contents breadcrumb.
@@ -84,7 +84,7 @@ describe('Breadcrumbs Component', () => {
     // Check to ensure the location is the datafile.
     cy.location('pathname').should(
       'eq',
-      '/browse/investigation/1/dataset/25/datafile'
+      '/browse/investigation/1/dataset/1/datafile'
     );
 
     // Check the first breadcrumb loaded on the current page.

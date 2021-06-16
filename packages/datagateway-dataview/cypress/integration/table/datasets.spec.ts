@@ -4,6 +4,7 @@ describe('Datasets Table', () => {
     cy.visit('/browse/investigation/1/dataset');
   });
 
+  // TODO - needs fixing
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');

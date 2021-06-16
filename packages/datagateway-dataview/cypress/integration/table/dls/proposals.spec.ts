@@ -23,6 +23,8 @@ describe('DLS - Proposals Table', () => {
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(3000);
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
