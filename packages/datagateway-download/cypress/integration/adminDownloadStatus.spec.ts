@@ -1,7 +1,7 @@
 describe('Admin Download Status', () => {
   before(() => {
     // Ensure the downloads are cleared before running tests.
-    cy.login('root', 'pw');
+    cy.login({username: 'root', password: 'pw', mechanism: 'simple'});
 
     // Seed the initial downloads.
     cy.clearDownloads();
@@ -12,7 +12,7 @@ describe('Admin Download Status', () => {
       'fetchAdminDownloads'
     );
 
-    cy.login('root', 'pw');
+    cy.login({username: 'root', password: 'pw', mechanism: 'simple'});
 
     // Ensure the downloads are cleared before running tests.
     cy.clearDownloads();
