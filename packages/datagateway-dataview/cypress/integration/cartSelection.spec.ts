@@ -1,4 +1,3 @@
-// TODO - _deconstructPacket error
 describe('Add/remove from cart functionality', () => {
   beforeEach(() => {
     cy.login();
@@ -6,7 +5,7 @@ describe('Add/remove from cart functionality', () => {
     cy.intercept('/datasets/').as('getDataset');
     cy.intercept('/investigations/').as('getInvestigation');
     cy.intercept('/instruments/1').as('getInstrument');
-    cy.intercept('/facilitycycles/14').as('getFacilityCycle');
+    cy.intercept('/facilitycycles/16').as('getFacilityCycle');
   });
 
   describe('should be able to select datafiles', () => {
@@ -17,7 +16,7 @@ describe('Add/remove from cart functionality', () => {
 
     describe('in generic table', () => {
       beforeEach(() => {
-        cy.visit('/browse/investigation/1/dataset/25/datafile').wait([
+        cy.visit('/browse/investigation/1/dataset/1/datafile').wait([
           '@getDatafiles',
           '@getDatafiles',
           '@getDatafileCount',
@@ -60,7 +59,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 55"]`).should('be.checked');
+        cy.get(`[aria-label="select row 54"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
@@ -102,12 +101,12 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo(0, 350);
-        cy.get('[aria-label="select row 17"]').should('not.be.checked');
+        cy.get('[aria-label="select row 9"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="select row 53"]').should('be.checked');
         cy.get('[aria-label="select row 54"]').should('be.checked');
-        cy.get('[aria-label="select row 55"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
@@ -144,7 +143,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 55"]`).should('not.be.checked');
+        cy.get(`[aria-label="select row 54"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
@@ -196,7 +195,7 @@ describe('Add/remove from cart functionality', () => {
     describe('in DLS table', () => {
       beforeEach(() => {
         cy.visit(
-          '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
+          '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafile'
         ).wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
       });
 
@@ -233,7 +232,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 55"]`).should('be.checked');
+        cy.get(`[aria-label="select row 54"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
@@ -275,12 +274,12 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="select row 1"]').should('be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo(0, 350);
-        cy.get('[aria-label="select row 17"]').should('not.be.checked');
+        cy.get('[aria-label="select row 9"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
+        cy.get('[aria-label="select row 53"]').should('be.checked');
         cy.get('[aria-label="select row 54"]').should('be.checked');
-        cy.get('[aria-label="select row 55"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
@@ -310,7 +309,7 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 55"]`).should('not.be.checked');
+        cy.get(`[aria-label="select row 54"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]').should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
@@ -362,7 +361,7 @@ describe('Add/remove from cart functionality', () => {
     describe('in ISIS table', () => {
       beforeEach(() => {
         cy.visit(
-          '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+          '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97/datafile'
         ).wait(['@getDatafiles', '@getDatafiles', '@getDatafileCount']);
       });
 
@@ -438,12 +437,11 @@ describe('Add/remove from cart functionality', () => {
 
         cy.get('[aria-label="select row 0"]').should('be.checked');
         cy.get('[aria-label="select row 1"]').should('be.checked');
-        cy.get('[aria-label="select row 2"]').should('not.be.checked');
-        cy.get('[aria-label="select row 3"]').should('not.be.checked');
+        cy.get('[aria-label="select row 20"]').should('not.be.checked');
 
         cy.get('[aria-label="grid"]').scrollTo('bottom').wait('@getDatafiles');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="select row 53"]').should('not.be.checked');
+        cy.get('[aria-label="select row 44"]').should('not.be.checked');
         cy.get('[aria-label="select row 54"]').should('be.checked');
       });
 
@@ -659,7 +657,7 @@ describe('Add/remove from cart functionality', () => {
     describe('in ISIS table', () => {
       beforeEach(() => {
         cy.visit(
-          '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+          '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
         ).wait(['@getDatasets', '@getDatasets', '@getDatasetCount']);
       });
 
@@ -767,7 +765,7 @@ describe('Add/remove from cart functionality', () => {
           .scrollTo('bottom')
           .wait('@getInvestigations');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 55"]`).should('be.checked');
+        cy.get(`[aria-label="select row 54"]`).should('be.checked');
         cy.get('[aria-label="select all rows"]').check();
         cy.get('[aria-label="select all rows"]', { timeout: 10000 })
           .should('have.attr', 'data-indeterminate')
@@ -778,7 +776,7 @@ describe('Add/remove from cart functionality', () => {
         cy.get('[aria-label="Filter by Visit ID"]')
           .find('input')
           .first()
-          .type('6')
+          .type('4')
           .wait(['@getInvestigations', '@getInvestigations']);
 
         cy.get('[aria-label="select all rows"]').check();
@@ -804,17 +802,17 @@ describe('Add/remove from cart functionality', () => {
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'true');
 
-        cy.get('[aria-label="select row 0"]').should('be.checked');
-        cy.get('[aria-label="select row 1"]').should('not.be.checked');
+        cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select row 2"]').should('not.be.checked');
-        cy.get('[aria-label="select row 3"]').should('be.checked');
+        cy.get('[aria-label="select row 7"]').should('not.be.checked');
+        cy.get('[aria-label="select row 8"]').should('be.checked');
 
         cy.get('[aria-label="grid"]')
           .scrollTo('bottom')
           .wait('@getInvestigations');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get('[aria-label="select row 54"]').should('be.checked');
-        cy.get('[aria-label="select row 58"]').should('be.checked');
+        cy.get('[aria-label="select row 51"]').should('be.checked');
+        cy.get('[aria-label="select row 53"]').should('be.checked');
       });
 
       it('and unselect all items', () => {
@@ -848,7 +846,7 @@ describe('Add/remove from cart functionality', () => {
           .scrollTo('bottom')
           .wait('@getInvestigations');
         cy.get('[aria-label="grid"]').scrollTo('bottom');
-        cy.get(`[aria-label="select row 55"]`).should('not.be.checked');
+        cy.get(`[aria-label="select row 54"]`).should('not.be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');
@@ -898,7 +896,7 @@ describe('Add/remove from cart functionality', () => {
 
     describe('in ISIS browse table', () => {
       beforeEach(() => {
-        cy.visit('/browse/instrument/1/facilityCycle/14/investigation').wait([
+        cy.visit('/browse/instrument/1/facilityCycle/16/investigation').wait([
           '@getInvestigations',
           '@getInvestigations',
           '@getInvestigationCount',
@@ -907,7 +905,9 @@ describe('Add/remove from cart functionality', () => {
 
       it('individually', () => {
         cy.get('[aria-label="select row 0"]').click();
+        cy.get('[aria-label="select row 1"]').click();
         cy.get('[aria-label="select row 0"]').should('be.checked');
+        cy.get('[aria-label="select row 1"]').should('be.checked');
         cy.get('[aria-label="select all rows"]')
           .should('have.attr', 'data-indeterminate')
           .and('eq', 'false');

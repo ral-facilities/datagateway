@@ -194,8 +194,7 @@ describe('ISIS - Investigations Table', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
-      // TODO - fix unknown size
-      cy.contains('[aria-rowindex="1"] [aria-colindex="7"]', '11.06 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="7"]', '10.2 GB').should(
         'exist'
       );
     });

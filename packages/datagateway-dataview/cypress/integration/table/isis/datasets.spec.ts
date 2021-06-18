@@ -223,12 +223,11 @@ describe('ISIS - Datasets Table', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
-      // TODO - unknown size needs fixing
-      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '5.23 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '5.78 GB').should(
         'exist'
       );
 
-      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.84 GB').should(
+      cy.contains('[aria-rowindex="2"] [aria-colindex="4"]', '5.15 GB').should(
         'exist'
       );
     });
