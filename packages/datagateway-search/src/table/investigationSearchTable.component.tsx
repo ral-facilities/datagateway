@@ -273,7 +273,6 @@ const InvestigationSearchTable = (
               return cellProps.cellData.toString().split(' ')[0];
             }
           },
-          disableHeaderWrap: true,
         },
         {
           label: t('investigations.end_date'),
@@ -284,7 +283,6 @@ const InvestigationSearchTable = (
               return cellProps.cellData.toString().split(' ')[0];
             }
           },
-          disableHeaderWrap: true,
         },
       ]}
     />

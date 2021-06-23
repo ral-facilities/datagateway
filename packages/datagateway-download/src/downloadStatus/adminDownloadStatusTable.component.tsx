@@ -377,7 +377,6 @@ const AdminDownloadStatusTable: React.FC = () => {
                         }
                       },
                       filterComponent: dateFilter,
-                      disableHeaderWrap: true,
                     },
                     {
                       label: t('downloadStatus.deleted'),

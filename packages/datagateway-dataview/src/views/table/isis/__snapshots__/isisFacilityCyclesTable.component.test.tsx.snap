@@ -19,14 +19,12 @@ exports[`ISIS FacilityCycles table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "STARTDATE",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "facilitycycles.start_date",
       },
       Object {
         "dataKey": "ENDDATE",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "facilitycycles.end_date",

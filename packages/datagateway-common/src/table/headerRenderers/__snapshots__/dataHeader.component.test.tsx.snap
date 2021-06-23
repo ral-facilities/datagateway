@@ -22,7 +22,6 @@ exports[`Data column header component renders correctly with filter but no sort 
   >
     <Styled(MuiBox)
       display="flex"
-      flexWrap="wrap"
     >
       <Styled(MuiBox)
         marginRight={1}
@@ -111,7 +110,6 @@ exports[`Data column header component renders correctly with sort and filter 1`]
   >
     <Styled(MuiBox)
       display="flex"
-      flexWrap="wrap"
     >
       <Styled(MuiBox)
         marginRight={1}
@@ -205,7 +203,6 @@ exports[`Data column header component renders correctly with sort but no filter 
   >
     <Styled(MuiBox)
       display="flex"
-      flexWrap="wrap"
     >
       <Styled(MuiBox)
         marginRight={1}
@@ -295,7 +292,6 @@ exports[`Data column header component renders correctly without sort or filter 1
   >
     <Styled(MuiBox)
       display="flex"
-      flexWrap="wrap"
     >
       <Styled(MuiBox)
         marginRight={1}

@@ -274,7 +274,6 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                   }
                 },
                 filterComponent: dateFilter,
-                disableHeaderWrap: true,
               },
             ]}
             sort={sort}

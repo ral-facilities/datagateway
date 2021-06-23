@@ -177,14 +177,12 @@ exports[`Dataset table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "CREATE_TIME",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.create_time",
       },
       Object {
         "dataKey": "MOD_TIME",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.modified_time",
