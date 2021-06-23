@@ -35,17 +35,22 @@ describe('Admin Download Status', () => {
 
   it('should refresh the table when clicking the refresh downloads button', () => {
     cy.get('[aria-label="Refresh download status table"]').should('exist');
-    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-      'have.text',
-      '675eea67-bad7-4209-b54e-87f0d97eb50d'
-    );
+
+    // Typical `.should('match'...)`  doesn't work for text, tries to match the element,
+    // hence a slightly different approach for doing regex on the actual text
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+      expect($preparedId[0].textContent).match(
+        /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+      );
+    });
 
     cy.get('[aria-label="Refresh download status table"]').click();
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-      'have.text',
-      '675eea67-bad7-4209-b54e-87f0d97eb50d'
-    );
+    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+      expect($preparedId[0].textContent).match(
+        /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+      );
+    });
   });
 
   describe('should be able to sort download items by', () => {
@@ -59,10 +64,11 @@ describe('Admin Download Status', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-        'have.text',
-        '000137b1-9f20-4731-b48c-58a6effdd060'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+        expect($preparedId[0].textContent).match(
+          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        );
+      });
     });
 
     it('descending order', () => {
@@ -80,10 +86,11 @@ describe('Admin Download Status', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-        'have.text',
-        'fffc2df5-bf1e-4403-8a9f-b75f1a0a4d57'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+        expect($preparedId[0].textContent).match(
+          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        );
+      });
     });
 
     it('no order', () => {
@@ -103,34 +110,35 @@ describe('Admin Download Status', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-        'have.text',
-        '675eea67-bad7-4209-b54e-87f0d97eb50d'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+        expect($preparedId[0].textContent).match(
+          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        );
+      });
     });
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Username').click();
       cy.contains('[role="button"]', 'Prepared ID').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-        'have.text',
-        '06bb426b-845f-486a-b5eb-10bfb7e8fb10'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+        expect($preparedId[0].textContent).match(
+          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        );
+      });
     });
   });
 
   describe('should be able to filter download items by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by Prepared ID"]')
+      cy.get('[aria-label="Filter by Availability"]')
         .find('input')
         .first()
-        .type('675eea67');
+        .type('Available');
 
-      cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
         'have.text',
-        '675eea67-bad7-4209-b54e-87f0d97eb50d'
+        'Available'
       );
     });
 
@@ -148,10 +156,11 @@ describe('Admin Download Status', () => {
         .first()
         .type('restoring');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').should(
-        'have.text',
-        '9751a310-e489-4c56-a724-f91dd00cd54d'
-      );
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+        expect($preparedId[0].textContent).match(
+          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        );
+      });
     });
   });
 });
