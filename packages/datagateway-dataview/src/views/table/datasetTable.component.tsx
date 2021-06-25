@@ -218,14 +218,12 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           label: t('datasets.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
           dataKey: 'modTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />

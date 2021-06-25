@@ -50,7 +50,6 @@ exports[`Investigation table component renders correctly 1`] = `
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "startDate",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.start_date",
@@ -58,7 +57,6 @@ exports[`Investigation table component renders correctly 1`] = `
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "endDate",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.end_date",

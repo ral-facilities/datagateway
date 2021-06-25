@@ -292,7 +292,6 @@ const ISISInvestigationsTable = (
           label: t('investigations.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
@@ -300,7 +299,6 @@ const ISISInvestigationsTable = (
           label: t('investigations.end_date'),
           dataKey: 'endDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
