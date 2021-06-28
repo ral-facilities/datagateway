@@ -51,11 +51,12 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
               idsUrl: settings['idsUrl'],
               apiUrl: settings['apiUrl'],
               downloadApiUrl: settings['downloadApiUrl'],
+              icatUrl: settings['icatUrl'],
             })
           );
         } else {
           throw new Error(
-            'One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+            'One of the URL options (idsUrl, apiUrl, downloadApiUrl, icatUrl) is undefined in settings'
           );
         }
 
@@ -105,13 +106,9 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
         /* istanbul ignore if */
         if (process.env.NODE_ENV === `development`) {
           const apiUrl = settings.apiUrl;
-          const splitUrl = settings.downloadApiUrl.split('/');
-          const icatUrl = `${splitUrl
-            .slice(0, splitUrl.length - 1)
-            .join('/')}/icat`;
           axios
             .post(
-              `${icatUrl}/session`,
+              `${settings.icatUrl}/session`,
               `json=${JSON.stringify({
                 plugin: 'simple',
                 credentials: [{ username: 'root' }, { password: 'pw' }],

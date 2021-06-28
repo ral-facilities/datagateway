@@ -37,50 +37,44 @@ jest.mock('../../handleICATError');
 describe('Investigation actions', () => {
   const mockData: Investigation[] = [
     {
-      ID: 1,
-      TITLE: 'Test 1',
-      NAME: 'Test 1',
-      VISIT_ID: '1',
-      RB_NUMBER: '1',
-      DOI: 'doi 1',
-      SIZE: 1,
-      INVESTIGATIONINSTRUMENT: [
+      id: 1,
+      title: 'Test 1',
+      name: 'Test 1',
+      visitId: '1',
+      rbNumber: '1',
+      doi: 'doi 1',
+      size: 1,
+      investigationInstruments: [
         {
-          ID: 3,
-          INVESTIGATION_ID: 1,
-          INSTRUMENT_ID: 4,
-          INSTRUMENT: {
-            ID: 4,
-            NAME: 'LARMOR',
-            FACILITY_ID: 8,
+          id: 3,
+          instrument: {
+            id: 4,
+            name: 'LARMOR',
           },
         },
       ],
-      STARTDATE: '2019-06-10',
-      ENDDATE: '2019-06-11',
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
     },
     {
-      ID: 2,
-      TITLE: 'Test 2',
-      NAME: 'Test 2',
-      VISIT_ID: '2',
-      RB_NUMBER: '2',
-      DOI: 'doi 2',
-      SIZE: 10000,
-      INVESTIGATIONINSTRUMENT: [
+      id: 2,
+      title: 'Test 2',
+      name: 'Test 2',
+      visitId: '2',
+      rbNumber: '2',
+      doi: 'doi 2',
+      size: 10000,
+      investigationInstruments: [
         {
-          ID: 5,
-          INVESTIGATION_ID: 2,
-          INSTRUMENT_ID: 3,
-          INSTRUMENT: {
-            ID: 4,
-            NAME: 'LARMOR',
-            FACILITY_ID: 8,
+          id: 5,
+          instrument: {
+            id: 4,
+            name: 'LARMOR',
           },
         },
       ],
-      STARTDATE: '2019-06-10',
-      ENDDATE: '2019-06-12',
+      startDate: '2019-06-10',
+      endDate: '2019-06-12',
     },
   ];
 
@@ -145,7 +139,7 @@ describe('Investigation actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
     params.append('where', JSON.stringify({ column3: { eq: 3 } }));
@@ -185,7 +179,7 @@ describe('Investigation actions', () => {
     expect(actions[0]).toEqual(fetchInvestigationsRequest(1));
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
 
@@ -210,14 +204,14 @@ describe('Investigation actions', () => {
     await asyncAction(dispatch, getState, null);
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
     params.append(
       'include',
       JSON.stringify([
-        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
-        { STUDYINVESTIGATION: 'STUDY' },
+        { investigationInstruments: 'instrument' },
+        { studyInvestigations: 'study' },
       ])
     );
 
@@ -310,7 +304,7 @@ describe('Investigation actions', () => {
   });
 
   it('dispatches fetchInvestigationSizeRequest and fetchInvestigationSizeSuccess actions upon existing investigation cache and successful fetchInvestigationSize action', async () => {
-    // Call fetch investigations with an ID of 1.
+    // Call fetch investigations with an id of 1.
     const asyncAction = fetchInvestigationSize(1);
 
     // Set up state for calling fetchInvestigationSize with investigation cache.
@@ -394,15 +388,15 @@ describe('Investigation actions', () => {
     expect(actions[1]).toEqual(fetchInvestigationsSuccess(mockData, 1));
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
     params.append('where', JSON.stringify({ column3: { eq: 3 } }));
     params.append(
       'include',
       JSON.stringify([
-        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
-        { STUDYINVESTIGATION: 'STUDY' },
+        { investigationInstruments: 'instrument' },
+        { studyInvestigations: 'study' },
         'single',
         'array1',
         'array2',
@@ -445,24 +439,22 @@ describe('Investigation actions', () => {
   it('dispatches fetchInvestigationDetailsRequest and fetchInvestigationDetailsSuccess actions upon successful fetchInvestigationDetails action', async () => {
     const mockDetailsData: Investigation[] = [
       {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
-        INVESTIGATIONUSER: [
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        visitId: '1',
+        rbNumber: '1',
+        doi: 'doi 1',
+        size: 1,
+        startDate: '2019-06-10',
+        endDate: '2019-06-11',
+        investigationUsers: [
           {
-            ID: 2,
-            INVESTIGATION_ID: 1,
-            USER_ID: 3,
-            ROLE: 'Investigator',
-            USER_: {
-              ID: 3,
-              NAME: 'Louise',
+            id: 2,
+            role: 'Investigator',
+            user: {
+              id: 3,
+              name: 'Louise',
             },
           },
         ],
@@ -484,10 +476,14 @@ describe('Investigation actions', () => {
     );
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ id: { eq: 1 } }));
     params.append(
       'include',
-      JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
+      JSON.stringify([
+        { investigationUsers: 'user' },
+        'samples',
+        'publications',
+      ])
     );
 
     expect(axios.get).toHaveBeenCalledWith('/investigations', {
@@ -541,7 +537,7 @@ describe('Investigation actions', () => {
     const asyncAction = fetchInvestigationCount([
       {
         filterType: 'distinct',
-        filterValue: JSON.stringify(['NAME']),
+        filterValue: JSON.stringify(['name']),
       },
     ]);
 
@@ -566,7 +562,7 @@ describe('Investigation actions', () => {
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('distinct', JSON.stringify(['NAME']));
+    params.append('distinct', JSON.stringify(['name']));
 
     expect(axios.get).toHaveBeenCalledWith('/investigations/count', {
       headers: { Authorization: 'Bearer null' },
@@ -711,7 +707,7 @@ describe('Investigation actions', () => {
     );
 
     const asyncAction = fetchFilter('investigation', '0', [
-      { filterType: 'distinct', filterValue: JSON.stringify('NAME') },
+      { filterType: 'distinct', filterValue: JSON.stringify('name') },
     ]);
     await asyncAction(dispatch, getState, null);
 
@@ -729,7 +725,7 @@ describe('Investigation actions', () => {
     const asyncAction = fetchFilter(
       'investigation',
       '0',
-      [{ filterType: 'distinct', filterValue: JSON.stringify(['NAME', 'ID']) }],
+      [{ filterType: 'distinct', filterValue: JSON.stringify(['name', 'id']) }],
       '1'
     );
     await asyncAction(dispatch, getState, null);

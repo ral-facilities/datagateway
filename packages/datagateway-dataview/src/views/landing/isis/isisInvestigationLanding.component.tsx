@@ -95,8 +95,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface FormattedUser {
-  ROLE: string;
-  FULLNAME: string;
+  role: string;
+  fullName: string;
 }
 
 interface LandingPageDispatchProps {
@@ -158,9 +158,9 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     );
   }, [fetchData, instrumentId, instrumentChildId, investigationId]);
 
-  const title = React.useMemo(() => data[0]?.TITLE, [data]);
-  const doi = React.useMemo(() => data[0]?.DOI, [data]);
-  const studyInvestigation = React.useMemo(() => data[0]?.STUDYINVESTIGATION, [
+  const title = React.useMemo(() => data[0]?.title, [data]);
+  const doi = React.useMemo(() => data[0]?.doi, [data]);
+  const studyInvestigation = React.useMemo(() => data[0]?.studyInvestigations, [
     data,
   ]);
 
@@ -168,89 +168,89 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     const principals: FormattedUser[] = [];
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
-    if (data[0]?.INVESTIGATIONUSER) {
+    if (data[0]?.investigationUsers) {
       const investigationUsers = data[0]
-        .INVESTIGATIONUSER as InvestigationUser[];
+        .investigationUsers as InvestigationUser[];
       investigationUsers.forEach((user) => {
-        // Only keep users where we have their FULLNAME
-        const fullname = user.USER_?.FULLNAME;
+        // Only keep users where we have their fullName
+        const fullname = user.user?.fullName;
         if (fullname) {
-          switch (user.ROLE) {
+          switch (user.role) {
             case 'principal_experimenter':
               principals.push({
-                FULLNAME: fullname,
-                ROLE: 'Principal Investigator',
+                fullName: fullname,
+                role: 'Principal Investigator',
               });
               break;
             case 'local_contact':
-              contacts.push({ FULLNAME: fullname, ROLE: 'Local Contact' });
+              contacts.push({ fullName: fullname, role: 'Local Contact' });
               break;
             default:
-              experimenters.push({ FULLNAME: fullname, ROLE: 'Experimenter' });
+              experimenters.push({ fullName: fullname, role: 'Experimenter' });
           }
         }
       });
     }
     // Ensure PIs are listed first, and sort within roles for consistency
-    principals.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
-    contacts.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
-    experimenters.sort((a, b) => a.FULLNAME.localeCompare(b.FULLNAME));
+    principals.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    contacts.sort((a, b) => a.fullName.localeCompare(b.fullName));
+    experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
   }, [data]);
 
   const formattedPublications = React.useMemo(() => {
-    if (data[0]?.PUBLICATION) {
-      return (data[0].PUBLICATION as Publication[]).map(
-        (publication) => publication.FULLREFERENCE
+    if (data[0]?.publications) {
+      return (data[0].publications as Publication[]).map(
+        (publication) => publication.fullReference
       );
     }
   }, [data]);
 
   const formattedSamples = React.useMemo(() => {
-    if (data[0]?.SAMPLE) {
-      return (data[0].SAMPLE as Sample[]).map((sample) => sample.NAME);
+    if (data[0]?.samples) {
+      return (data[0].samples as Sample[]).map((sample) => sample.name);
     }
   }, [data]);
 
   const shortInfo = [
     {
-      content: (entity: Investigation) => entity.VISIT_ID,
+      content: (entity: Investigation) => entity.visitId,
       label: t('investigations.visit_id'),
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.DOI,
+      content: (entity: Investigation) => entity.doi,
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
       content: (entity: Investigation) => {
-        const studyInvestigation = entity.STUDYINVESTIGATION;
+        const studyInvestigation = entity.studyInvestigations;
         return studyInvestigation
-          ? studyInvestigation[0]?.STUDY?.PID
+          ? studyInvestigation[0]?.study?.pid
           : undefined;
       },
       label: t('investigations.parent_doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.NAME,
+      content: (entity: Investigation) => entity.name,
       label: t('investigations.name'),
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => formatBytes(entity.SIZE),
+      content: (entity: Investigation) => formatBytes(entity.size),
       label: t('investigations.size'),
       icon: <Save className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.FACILITY?.NAME,
+      content: (entity: Investigation) => entity.facility?.name,
       label: t('investigations.details.facility'),
       icon: <Business className={classes.shortInfoIcon} />,
     },
     {
       content: (entity: Investigation) =>
-        entity.INVESTIGATIONINSTRUMENT?.[0]?.INSTRUMENT?.NAME,
+        entity.investigationInstruments?.[0]?.instrument?.name,
       label: t('investigations.instrument'),
       icon: <Assessment className={classes.shortInfoIcon} />,
     },
@@ -266,17 +266,17 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       icon: <Storage className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.RELEASEDATE?.slice(0, 10),
+      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
       label: t('investigations.release_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.STARTDATE?.slice(0, 10),
+      content: (entity: Investigation) => entity.startDate?.slice(0, 10),
       label: t('investigations.start_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.ENDDATE?.slice(0, 10),
+      content: (entity: Investigation) => entity.endDate?.slice(0, 10),
       label: t('investigations.end_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
@@ -284,7 +284,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
 
   const shortDatasetInfo = [
     {
-      content: (entity: Dataset) => entity.DOI,
+      content: (entity: Dataset) => entity.doi,
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -326,11 +326,11 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               variant="h5"
               aria-label="landing-investigation-title"
             >
-              {data[0]?.TITLE}
+              {data[0]?.title}
             </Typography>
 
             <Typography aria-label="landing-investigation-summary">
-              {data[0]?.SUMMARY}
+              {data[0]?.summary}
             </Typography>
 
             {formattedUsers.length > 0 && (
@@ -348,7 +348,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                     aria-label={`landing-investigation-user-${i}`}
                     key={i}
                   >
-                    <b>{user.ROLE}:</b> {user.FULLNAME}
+                    <b>{user.role}:</b> {user.fullName}
                   </Typography>
                 ))}
               </div>
@@ -380,12 +380,12 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             <Typography aria-label="landing-investigation-citation">
               <i>
                 {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].FULLNAME} et al; `}
+                  `${formattedUsers[0].fullName} et al; `}
                 {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].FULLNAME}; `}
+                  `${formattedUsers[0].fullName}; `}
                 {studyInvestigation &&
-                  studyInvestigation[0]?.STUDY?.STARTDATE &&
-                  `${studyInvestigation[0].STUDY.STARTDATE.slice(0, 4)}: `}
+                  studyInvestigation[0]?.study?.startDate &&
+                  `${studyInvestigation[0].study.startDate.slice(0, 4)}: `}
                 {title && `${title}, `}
                 {t('doi_constants.publisher.name')}
                 {doi && `, https://doi.org/${doi}`}
@@ -461,7 +461,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               />
             </div>
             {/* Parts */}
-            {(data[0] as Investigation)?.DATASET?.map((dataset, i) => (
+            {(data[0] as Investigation)?.datasets?.map((dataset, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
                 <Typography
@@ -494,13 +494,13 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 <div className={classes.actionButtons}>
                   <AddToCartButton
                     entityType="investigation"
-                    allIds={[dataset.ID]}
-                    entityId={dataset.ID}
+                    allIds={[dataset.id]}
+                    entityId={dataset.id}
                   />
                   <DownloadButton
                     entityType="dataset"
-                    entityId={dataset.ID}
-                    entityName={dataset.NAME}
+                    entityId={dataset.id}
+                    entityName={dataset.name}
                   />
                 </div>
               </div>
@@ -530,17 +530,17 @@ const mapDispatchToProps = (
             {
               filterType: 'where',
               filterValue: JSON.stringify({
-                ID: { eq: investigationId },
+                id: { eq: investigationId },
               }),
             },
             {
               filterType: 'include',
               filterValue: JSON.stringify([
-                'INVESTIGATIONUSER',
-                'SAMPLE',
-                'PUBLICATION',
-                'DATASET',
-                // STUDY and INSTRUMENT already fetched by default
+                'investigationUsers',
+                'samples',
+                'publications',
+                'datasets',
+                // study and instrument already fetched by default
               ]),
             },
           ],
@@ -559,29 +559,29 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { eq: investigationId },
-              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+              id: { eq: investigationId },
+              'studyInvestigations.study.id': { eq: studyId },
             }),
           },
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { eq: investigationId },
-              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              id: { eq: investigationId },
+              'investigationInstruments.instrument.id': { eq: instrumentId },
             }),
           },
           {
             filterType: 'include',
             filterValue: JSON.stringify([
-              'INVESTIGATIONUSER',
-              'SAMPLE',
-              'PUBLICATION',
-              'DATASET',
+              'investigationUsers',
+              'samples',
+              'publications',
+              'datasets',
               {
-                STUDYINVESTIGATION: 'STUDY',
+                studyInvestigations: 'study',
               },
               {
-                INVESTIGATIONINSTRUMENT: 'INSTRUMENT',
+                investigationInstruments: 'instrument',
               },
             ]),
           },

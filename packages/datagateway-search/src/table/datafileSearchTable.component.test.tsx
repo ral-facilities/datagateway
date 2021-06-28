@@ -40,13 +40,12 @@ describe('Datafile search table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        LOCATION: '/test1',
-        FILESIZE: 1,
-        MOD_TIME: '2019-07-23',
-        CREATE_TIME: '2019-07-23',
-        DATASET_ID: 1,
+        id: 1,
+        name: 'Test 1',
+        location: '/test1',
+        fileSize: 1,
+        modTime: '2019-07-23',
+        dataset: 1,
       },
     ];
     state.dgcommon.allIds = [1];
@@ -114,13 +113,13 @@ describe('Datafile search table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[4]).toEqual(
-      filterTable('NAME', { type: 'include', value: 'test' })
+      filterTable('name', { type: 'include', value: 'test' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('name', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -140,13 +139,13 @@ describe('Datafile search table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[4]).toEqual(
-      filterTable('MOD_TIME', { endDate: '2019-08-06' })
+      filterTable('modTime', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('modTime', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -164,7 +163,7 @@ describe('Datafile search table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[4]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[4]).toEqual(sortTable('name', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -244,7 +243,7 @@ describe('Datafile search table component', () => {
 
   it("doesn't display download button for datafiles with no location", () => {
     const datafile = state.dgcommon.data[0] as Datafile;
-    const { LOCATION, ...datafileWithoutLocation } = datafile;
+    const { location, ...datafileWithoutLocation } = datafile;
     state.dgcommon.data = [datafileWithoutLocation];
 
     const testStore = mockStore(state);

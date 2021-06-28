@@ -50,10 +50,8 @@ describe('ISIS Instruments - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            NAME: 'Test 1',
-            FACILITY_ID: 1,
-            URL: 'test url',
+            id: 1,
+            name: 'Test 1',
           },
         ],
         allIds: [1],
@@ -128,7 +126,7 @@ describe('ISIS Instruments - Card View', () => {
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
     expect(store.getActions()[2]).toEqual(
-      filterTable('FULLNAME', { value: 'test', type: 'include' })
+      filterTable('fullName', { value: 'test', type: 'include' })
     );
     expect(store.getActions()[3]).toEqual(push('?'));
 
@@ -137,7 +135,7 @@ describe('ISIS Instruments - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('FULLNAME', null));
+    expect(store.getActions()[4]).toEqual(filterTable('fullName', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -152,7 +150,7 @@ describe('ISIS Instruments - Card View', () => {
     expect(store.getActions()[2]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { FULLNAME: 'asc' },
+        sort: { fullName: 'asc' },
         page: 1,
       })
     );

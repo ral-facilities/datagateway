@@ -311,12 +311,12 @@ class PageBreadcrumbs extends React.Component<
         // Check if an entity id is present or if the id has changed since the last update to the state.
         if (entityInfo.id.length === 0 || entityInfo.id !== entityId) {
           // In general the API endpoint will be our entity name and
-          // the entity field we want is the NAME of the entity.
+          // the entity field we want is the name of the entity.
           let apiEntity = entity;
 
-          // If the entity is a investigation, we always want to fetch the TITLE field.
+          // If the entity is a investigation, we always want to fetch the title field.
           let requestEntityField =
-            entity === 'investigation' ? 'TITLE' : 'NAME';
+            entity === 'investigation' ? 'title' : 'name';
 
           // Use breadcrumb settings in state to customise API call for entities.
           if (
@@ -359,7 +359,7 @@ class PageBreadcrumbs extends React.Component<
             requestEntityUrl =
               pluralisedApiEntity.toLowerCase() +
               '/findone?where=' +
-              JSON.stringify({ NAME: { eq: entityId } });
+              JSON.stringify({ name: { eq: entityId } });
           }
 
           // Get the entity field for the given entity request.

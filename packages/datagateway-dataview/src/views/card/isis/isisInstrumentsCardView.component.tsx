@@ -102,34 +102,34 @@ const ISISInstrumentsCardView = (
       loadedCount={loadedCount}
       title={{
         label: t('instruments.name'),
-        dataKey: 'FULLNAME',
+        dataKey: 'fullName',
         content: (instrument: Instrument) =>
           tableLink(
-            `/${pathRoot}/instrument/${instrument.ID}/${instrumentChild}`,
-            instrument.FULLNAME || instrument.NAME,
+            `/${pathRoot}/instrument/${instrument.id}/${instrumentChild}`,
+            instrument.fullName || instrument.name,
             query.view
           ),
         filterComponent: textFilter,
       }}
       description={{
         label: t('instruments.description'),
-        dataKey: 'DESCRIPTION',
+        dataKey: 'description',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Title />,
           label: t('instruments.type'),
-          dataKey: 'TYPE',
+          dataKey: 'type',
           filterComponent: textFilter,
         },
         {
           icon: <LinkIcon />,
           label: t('instruments.url'),
-          dataKey: 'URL',
+          dataKey: 'url',
           // eslint-disable-next-line react/display-name
           content: (instrument: Instrument) => (
-            <Link href={instrument.URL}>{instrument.URL}</Link>
+            <Link href={instrument.url}>{instrument.url}</Link>
           ),
           filterComponent: textFilter,
         },

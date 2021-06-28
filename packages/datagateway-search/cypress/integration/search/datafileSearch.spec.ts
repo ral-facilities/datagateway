@@ -2,13 +2,13 @@ describe('Datafile search tab', () => {
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
-    cy.intercept('/investigations/count?where=%7B%22ID').as(
+    cy.intercept('/investigations/count?where=%7B%22id').as(
       'investigationsCount'
     );
     cy.intercept('/investigations?').as('investigations');
-    cy.intercept('/datasets/count?where=%7B%22ID').as('datasetsCount');
+    cy.intercept('/datasets/count?where=%7B%22id').as('datasetsCount');
     cy.intercept('/datasets?').as('datasets');
-    cy.intercept('/datafiles/count?where=%7B%22ID').as('datafilesCount');
+    cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
     cy.intercept('/datafiles?').as('datafiles');
     cy.intercept('/topcat/user/cart/LILS/cartItems').as('topcat');
   });
@@ -73,10 +73,14 @@ describe('Datafile search tab', () => {
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 120');
   });
 
-  it('should be hidden if dataset checkbox is unchecked', () => {
+  it('should be hidden if datafile checkbox is unchecked', () => {
     cy.get('[aria-label="Datafile checkbox"]').click();
 
-    cy.get('[aria-label="Submit search button"]').click();
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="50"]').should('exist');
 

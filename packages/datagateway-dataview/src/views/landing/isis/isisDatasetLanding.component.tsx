@@ -125,35 +125,35 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   }, [fetchData, datasetId]);
 
   React.useEffect(() => {
-    if (data[0] && !data[0]?.DATASETTYPE) {
-      fetchDetails(data[0].ID);
+    if (data[0] && !data[0]?.type) {
+      fetchDetails(data[0].id);
     }
   }, [fetchDetails, data]);
 
   const shortInfo = [
     {
-      content: (entity: Dataset) => entity.DOI,
+      content: (entity: Dataset) => entity.doi,
       label: t('datasets.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Dataset) => formatBytes(entity.SIZE),
+      content: (entity: Dataset) => formatBytes(entity.size),
       label: t('datasets.size'),
       icon: <Save className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Dataset) => entity.STARTDATE?.slice(0, 10),
+      content: (entity: Dataset) => entity.startDate?.slice(0, 10),
       label: t('datasets.details.start_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Dataset) => entity.ENDDATE?.slice(0, 10),
+      content: (entity: Dataset) => entity.endDate?.slice(0, 10),
       label: t('datasets.details.end_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
       content: (entity: Dataset) =>
-        entity.COMPLETE ? t('datasets.complete') : t('datasets.incomplete'),
+        entity.complete ? t('datasets.complete') : t('datasets.incomplete'),
       label: t('datasets.completion'),
       icon: <CheckCircle className={classes.shortInfoIcon} />,
     },
@@ -195,10 +195,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               variant="h6"
               aria-label="landing-dataset-name"
             >
-              {data[0]?.NAME}
+              {data[0]?.name}
             </Typography>
             <Typography aria-label="landing-dataset-description">
-              {data[0]?.DESCRIPTION}
+              {data[0]?.description}
             </Typography>
             <Typography
               className={classes.subHeading}
@@ -209,7 +209,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('datasets.location')}
             </Typography>
             <Typography aria-label="landing-dataset-description">
-              {data[0]?.LOCATION}
+              {data[0]?.location}
             </Typography>
             <Typography
               className={classes.subHeading}
@@ -217,10 +217,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               variant="h6"
               aria-label="landing-dataset-type"
             >
-              {data[0]?.DATASETTYPE?.NAME}
+              {data[0]?.type?.name}
             </Typography>
             <Typography aria-label="landing-dataset-description">
-              {data[0]?.DATASETTYPE?.DESCRIPTION}
+              {data[0]?.type?.description}
             </Typography>
           </Grid>
           <Divider orientation="vertical" />
@@ -251,7 +251,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               <DownloadButton
                 entityType="dataset"
                 entityId={parseInt(datasetId)}
-                entityName={data[0]?.NAME}
+                entityName={data[0]?.name}
               />
             </div>
           </Grid>
@@ -273,7 +273,7 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { eq: datasetId },
+              id: { eq: datasetId },
             }),
           },
         ],

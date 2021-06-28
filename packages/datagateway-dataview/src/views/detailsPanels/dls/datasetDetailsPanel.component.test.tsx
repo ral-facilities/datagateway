@@ -15,11 +15,10 @@ describe('Dataset details panel component', () => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
     rowData = {
-      ID: 1,
-      NAME: 'Test 1',
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-11',
-      INVESTIGATION_ID: 1,
+      id: 1,
+      name: 'Test 1',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
     };
   });
 
@@ -42,10 +41,10 @@ describe('Dataset details panel component', () => {
   });
 
   it('renders type tab when present in the data', () => {
-    rowData.DATASETTYPE = {
-      ID: 7,
-      NAME: 'Test type',
-      DESCRIPTION: 'Test type description',
+    rowData.type = {
+      id: 7,
+      name: 'Test type',
+      description: 'Test type description',
     };
 
     const wrapper = shallow(
@@ -60,7 +59,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('renders calculate size button when size has not been calculated', () => {
-    const { SIZE, ...rowDataWithoutSize } = rowData;
+    const { size, ...rowDataWithoutSize } = rowData;
 
     const wrapper = shallow(
       <DatasetDetailsPanel
@@ -74,7 +73,7 @@ describe('Dataset details panel component', () => {
   });
 
   it('calculates size when button is clicked', () => {
-    const { SIZE, ...rowDataWithoutSize } = rowData;
+    const { size, ...rowDataWithoutSize } = rowData;
 
     const wrapper = mount(
       <DatasetDetailsPanel
@@ -92,10 +91,10 @@ describe('Dataset details panel component', () => {
   });
 
   it('calls detailsPanelResize on load and when tabs are switched between', () => {
-    rowData.DATASETTYPE = {
-      ID: 7,
-      NAME: 'Test type',
-      DESCRIPTION: 'Test type description',
+    rowData.type = {
+      id: 7,
+      name: 'Test type',
+      description: 'Test type description',
     };
 
     const wrapper = mount(
@@ -115,10 +114,10 @@ describe('Dataset details panel component', () => {
   });
 
   it('detailsPanelResize not called when not provided', () => {
-    rowData.DATASETTYPE = {
-      ID: 7,
-      NAME: 'Test type',
-      DESCRIPTION: 'Test type description',
+    rowData.type = {
+      id: 7,
+      name: 'Test type',
+      description: 'Test type description',
     };
 
     const wrapper = mount(

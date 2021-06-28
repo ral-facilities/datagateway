@@ -98,7 +98,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             breadcrumbs: {
               test: {
-                replaceEntityField: 'TITLE',
+                replaceEntityField: 'title',
               },
             },
             downloadApiUrl: 'download-api',
@@ -133,12 +133,13 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+        icatUrl: '',
       })
     );
     expect(actions).toContainEqual(
       loadBreadcrumbSettings({
         test: {
-          replaceEntityField: 'TITLE',
+          replaceEntityField: 'title',
         },
       })
     );
@@ -203,6 +204,7 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+        icatUrl: '',
       })
     );
     expect(actions).toContainEqual(settingsLoaded());
@@ -219,7 +221,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             breadcrumbs: {
               test: {
-                replaceEntityField: 'TITLE',
+                replaceEntityField: 'title',
               },
             },
             downloadApiUrl: 'download-api',

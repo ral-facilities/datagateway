@@ -82,18 +82,18 @@ const DLSProposalsCardView = (
       loadedCount={loadedCount}
       title={{
         label: t('investigations.title'),
-        dataKey: 'TITLE',
+        dataKey: 'title',
         content: (investigation: Investigation) =>
           tableLink(
-            `/browse/proposal/${investigation.NAME}/investigation`,
-            investigation.TITLE,
+            `/browse/proposal/${investigation.name}/investigation`,
+            investigation.title,
             query.view
           ),
         filterComponent: textFilter,
       }}
       description={{
         label: t('investigations.name'),
-        dataKey: 'NAME',
+        dataKey: 'name',
         filterComponent: textFilter,
       }}
     />
@@ -110,7 +110,7 @@ const mapDispatchToProps = (
         additionalFilters: [
           {
             filterType: 'distinct',
-            filterValue: JSON.stringify(['NAME', 'TITLE']),
+            filterValue: JSON.stringify(['name', 'title']),
           },
         ],
       })
@@ -120,7 +120,7 @@ const mapDispatchToProps = (
       fetchInvestigationCount([
         {
           filterType: 'distinct',
-          filterValue: JSON.stringify(['NAME', 'TITLE']),
+          filterValue: JSON.stringify(['name', 'title']),
         },
       ])
     ),
