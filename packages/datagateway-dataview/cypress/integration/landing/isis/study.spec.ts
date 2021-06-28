@@ -24,7 +24,7 @@ describe('ISIS - Study Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/405/investigation/2'
+      '/browseStudyHierarchy/instrument/1/study/405/investigation/72'
     );
   });
 });

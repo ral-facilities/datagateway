@@ -86,7 +86,7 @@ describe('Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'A nothing almost arrive I. Product middle design never. Cup camera then product father sort vote.'
+        'About quickly both stop. Population buy on poor. Avoid teacher summer positive feel sing.'
       );
     });
 
@@ -101,7 +101,7 @@ describe('Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
+        'Yourself smile either I pass significant. Avoid sound suddenly development line get executive ahead.'
       );
     });
 
@@ -128,7 +128,7 @@ describe('Investigations Table', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Color knowledge economy return determine tell. Professor able catch cut nice anyone. Can line benefit home.'
+        'Discussion risk amount hour exist. Off fund usually large else go. Check reflect officer wind main.'
       );
     });
   });
@@ -140,7 +140,7 @@ describe('Investigations Table', () => {
         .first()
         .type('dog');
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
     });
 
@@ -166,7 +166,7 @@ describe('Investigations Table', () => {
 
       cy.get('[aria-rowcount="12"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Happy near day assume draw again. Lead pattern nothing approach spring standard.'
+        'Old ok order wall bank. Floor science physical ask activity alone. Language sort test bill to century.'
       );
     });
 
@@ -200,7 +200,7 @@ describe('Investigations Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Including spend increase ability music skill former. Agreement director concern once technology sometimes someone staff.'
+          'Show fly image herself yard challenge by. Past site her number. Not weight half far move. Leader everyone skin still.'
         )
         .should('be.visible');
       cy.get('#details-panel')

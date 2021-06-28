@@ -8,6 +8,11 @@ import { DownloadSettingsContext } from '../ConfigProvider';
 import { flushPromises } from '../setupTests';
 import DownloadConfirmDialog from './downloadConfirmDialog.component';
 import { handleICATError } from 'datagateway-common';
+import fs from 'fs';
+
+const settings = JSON.parse(
+  fs.readFileSync('server/e2e-settings.json', 'utf-8')
+);
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -36,17 +41,17 @@ const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
   facilityName: 'LILS',
-  apiUrl: 'https://localhost:5000',
-  downloadApiUrl: 'https://localhost:8181/topcat',
-  idsUrl: 'https://localhost:8181/ids',
+  apiUrl: settings.apiUrl,
+  downloadApiUrl: settings.downloadApiUrl,
+  idsUrl: settings.idsUrl,
   accessMethods: {
     https: {
-      idsUrl: 'https://localhost:8181/ids',
+      idsUrl: settings.accessMethods.https.idsUrl,
       displayName: 'HTTPS',
       description: 'Example description for <b>HTTPS</b> access method.',
     },
     globus: {
-      idsUrl: 'https://localhost:8181/ids',
+      idsUrl: settings.accessMethods.globus.idsUrl,
       displayName: 'Globus',
       description: 'Example description for Globus access method.',
     },
@@ -268,7 +273,7 @@ describe('DownloadConfirmDialog', () => {
     // Expect our status requests to have been called.
     expect(axios.get).toHaveBeenCalledTimes(3);
     expect(axios.get).toHaveBeenCalledWith(
-      'https://localhost:8181/topcat/user/downloadType/https/status',
+      `${settings.downloadApiUrl}/user/downloadType/https/status`,
       {
         params: {
           sessionId: null,
@@ -277,7 +282,7 @@ describe('DownloadConfirmDialog', () => {
       }
     );
     expect(axios.get).toHaveBeenCalledWith(
-      'https://localhost:8181/topcat/user/downloadType/globus/status',
+      `${settings.downloadApiUrl}/user/downloadType/globus/status`,
       {
         params: {
           sessionId: null,
@@ -296,13 +301,13 @@ describe('DownloadConfirmDialog', () => {
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://localhost:8181/topcat/user/cart/LILS/submit',
+      `${settings.downloadApiUrl}/user/cart/LILS/submit`,
       params
     );
 
     // Expect fetching of the submitted download requested.
     expect(axios.get).toHaveBeenCalledWith(
-      'https://localhost:8181/topcat/user/downloads',
+      `${settings.downloadApiUrl}/user/downloads`,
       {
         params: {
           sessionId: null,
@@ -372,7 +377,7 @@ describe('DownloadConfirmDialog', () => {
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://localhost:8181/topcat/user/cart/LILS/submit',
+      `${settings.downloadApiUrl}/user/cart/LILS/submit`,
       params
     );
   });
@@ -470,7 +475,7 @@ describe('DownloadConfirmDialog', () => {
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://localhost:8181/topcat/user/cart/LILS/submit',
+      `${settings.downloadApiUrl}/user/cart/LILS/submit`,
       params
     );
   });

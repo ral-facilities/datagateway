@@ -107,11 +107,11 @@ describe('Download Status', () => {
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Requested Date').click();
-      cy.contains('[role="button"]', 'Availability').click().wait(4000);
+      cy.contains('[role="button"]', 'Availability').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-1'
+        'test-file-3'
       );
     });
   });
@@ -203,7 +203,7 @@ describe('Download Status', () => {
         .first()
         .type('restoring');
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
     });
   });
 
