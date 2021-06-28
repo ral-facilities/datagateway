@@ -96,6 +96,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
+          ref: temp-icat-server-config-test
           # need to remove line below when icat-ansible/icatdb-minimal-hosts.yml is added to repo
           # ref: change-payara-setup-script-url
           path: icat-ansible
