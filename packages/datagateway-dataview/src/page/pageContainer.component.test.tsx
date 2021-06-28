@@ -20,7 +20,7 @@ import { createLocation } from 'history';
 import { MemoryRouter } from 'react-router';
 import { push } from 'connected-react-router';
 
-import PageContainer, { paths } from './pageContainer.component';
+import PageContainer from './pageContainer.component';
 import { Provider } from 'react-redux';
 import { checkInvestigationId } from './idCheckFunctions';
 import axios from 'axios';
@@ -205,7 +205,7 @@ describe('PageContainer - Tests', () => {
         router: {
           action: 'POP',
           location: createLocation(
-            paths.toggle.investigation + '/1/dataset/25/datafile'
+            '/browse/investigation/1/dataset/25/datafile'
           ),
         },
       })
@@ -249,7 +249,7 @@ describe('PageContainer - Tests', () => {
         dgdataview: dgDataViewInitialState,
         router: {
           action: 'POP',
-          location: createLocation(paths.toggle.investigation),
+          location: createLocation('/browse/investigation'),
         },
       })
     );
@@ -286,7 +286,7 @@ describe('PageContainer - Tests', () => {
         dgdataview: dgDataViewInitialState,
         router: {
           action: 'POP',
-          location: createLocation(paths.toggle.investigation + '?view=card'),
+          location: createLocation('/browse/investigation?view=card'),
         },
       })
     );
@@ -318,7 +318,7 @@ describe('PageContainer - Tests', () => {
 
         router: {
           action: 'POP',
-          location: createLocation(paths.toggle.investigation),
+          location: createLocation('/browse/investigation'),
         },
       })
     );
@@ -336,7 +336,7 @@ describe('PageContainer - Tests', () => {
       ...state,
       router: {
         action: 'PUSH',
-        location: createLocation(paths.toggle.investigation + '/1/dataset'),
+        location: createLocation('/browse/investigation/1/dataset'),
       },
     });
     wrapper.setProps({ store: testStore });
@@ -354,7 +354,7 @@ describe('PageContainer - Tests', () => {
         dgdataview: dgDataViewInitialState,
         router: {
           action: 'POP',
-          location: createLocation(paths.toggle.investigation),
+          location: createLocation('/browse/investigation'),
         },
       })
     );
@@ -385,10 +385,8 @@ describe('PageContainer - Tests', () => {
 
   it('use/remove dummy url when location/query changes', () => {
     const dummyLocation = createLocation('/');
-    const initialLocation = createLocation(paths.toggle.investigation);
-    const newLocation = createLocation(
-      paths.toggle.investigation + '/1/dataset'
-    );
+    const initialLocation = createLocation('/browse/investigation');
+    const newLocation = createLocation('/browse/investigation/1/dataset');
     state = JSON.parse(
       JSON.stringify({
         dgcommon: dGCommonInitialState,

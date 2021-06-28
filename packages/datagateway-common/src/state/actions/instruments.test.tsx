@@ -35,12 +35,12 @@ describe('Instrument actions', () => {
   it('dispatches fetchInstrumentsRequest and fetchInstrumentsSuccess actions upon successful fetchInstruments action', async () => {
     const mockData: Instrument[] = [
       {
-        ID: 1,
-        NAME: 'Test 1',
+        id: 1,
+        name: 'Test 1',
       },
       {
-        ID: 2,
-        NAME: 'Test 2',
+        id: 2,
+        name: 'Test 2',
       },
     ];
 
@@ -86,7 +86,7 @@ describe('Instrument actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
 
@@ -132,7 +132,7 @@ describe('Instrument actions', () => {
     await asyncAction(dispatch, getState, null);
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
 
@@ -216,16 +216,14 @@ describe('Instrument actions', () => {
   it('dispatches fetchInstrumentDetailsRequest and fetchInstrumentDetailsSuccess actions upon successful fetchInstrumentDetails action', async () => {
     const mockData: Instrument[] = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        INSTRUMENTSCIENTIST: [
+        id: 1,
+        name: 'Test 1',
+        instrumentScientists: [
           {
-            ID: 2,
-            INSTRUMENT_ID: 1,
-            USER_ID: 3,
-            USER_: {
-              ID: 3,
-              NAME: 'Louise',
+            id: 2,
+            user: {
+              id: 3,
+              name: 'Louise',
             },
           },
         ],
@@ -245,8 +243,8 @@ describe('Instrument actions', () => {
     expect(actions[1]).toEqual(fetchInstrumentDetailsSuccess(mockData));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
-    params.append('include', JSON.stringify({ INSTRUMENTSCIENTIST: 'USER_' }));
+    params.append('where', JSON.stringify({ id: { eq: 1 } }));
+    params.append('include', JSON.stringify({ instrumentScientists: 'user' }));
 
     expect(axios.get).toHaveBeenCalledWith('/instruments', {
       headers: { Authorization: 'Bearer null' },

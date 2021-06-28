@@ -35,28 +35,25 @@ describe('DLS Proposals table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        SUMMARY: 'foo bar',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        SIZE: 1,
-        INVESTIGATIONINSTRUMENT: [
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        summary: 'foo bar',
+        visitId: '1',
+        rbNumber: '1',
+        doi: 'doi 1',
+        size: 1,
+        investigationInstruments: [
           {
-            ID: 1,
-            INVESTIGATION_ID: 1,
-            INSTRUMENT_ID: 3,
-            INSTRUMENT: {
-              ID: 3,
-              NAME: 'LARMOR',
-              FACILITY_ID: 8,
+            id: 1,
+            instrument: {
+              id: 3,
+              name: 'LARMOR',
             },
           },
         ],
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
+        startDate: '2019-06-10',
+        endDate: '2019-06-11',
       },
     ];
 
@@ -122,13 +119,13 @@ describe('DLS Proposals table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(
-      filterTable('TITLE', { value: 'test', type: 'include' })
+      filterTable('title', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[4]).toEqual(filterTable('TITLE', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('title', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -146,7 +143,7 @@ describe('DLS Proposals table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(sortTable('TITLE', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('title', 'asc'));
   });
 
   it('renders title and name as links', () => {

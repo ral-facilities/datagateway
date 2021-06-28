@@ -140,10 +140,10 @@ const DatasetSearchTable = (
         return (
           <div>
             <Typography>
-              <b>{t('datasets.name')}:</b> {datasetData.NAME}
+              <b>{t('datasets.name')}:</b> {datasetData.name}
             </Typography>
             <Typography>
-              <b>{t('datasets.description')}:</b> {datasetData.NAME}
+              <b>{t('datasets.description')}:</b> {datasetData.name}
             </Typography>
           </div>
         );
@@ -151,22 +151,22 @@ const DatasetSearchTable = (
       columns={[
         {
           label: t('datasets.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
           label: t('datasets.datafile_count'),
-          dataKey: 'DATAFILE_COUNT',
+          dataKey: 'datafileCount',
           disableSort: true,
         },
         {
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
         },
       ]}
@@ -190,7 +190,7 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { in: luceneData },
+              id: { in: luceneData },
             }),
           },
         ],
@@ -202,7 +202,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -217,7 +217,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])

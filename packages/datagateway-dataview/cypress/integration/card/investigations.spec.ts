@@ -9,12 +9,12 @@ describe('Investigations Cards', () => {
         '@getInvestigationsOrder',
         '@getInvestigationsOrder',
       ],
-      { timeout: 10000 }
+      { timeout: 15000 }
     );
     cy.get('[aria-label="secondary checkbox"]')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
+        timeout: 15000,
       });
   });
 
@@ -78,7 +78,7 @@ describe('Investigations Cards', () => {
       .contains('[role="button"]', '1')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
-        timeout: 10000,
+        timeout: 30000,
       });
     cy.contains('[role="button"]', 'Type ID - 1').should('exist');
     cy.get('#card').contains('Dog want single resource major.');

@@ -59,12 +59,10 @@ describe('Investigation - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            TITLE: 'Test 1',
-            NAME: 'Test 1',
-            VISIT_ID: '1',
-            TYPE_ID: '2',
-            FACILITY_ID: '2',
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
           },
         ],
         allIds: [1],
@@ -140,7 +138,7 @@ describe('Investigation - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
     expect(store.getActions().length).toEqual(6);
     expect(store.getActions()[4]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06', startDate: undefined })
+      filterTable('endDate', { endDate: '2019-08-06', startDate: undefined })
     );
     expect(store.getActions()[5]).toEqual(push('?'));
 
@@ -149,7 +147,7 @@ describe('Investigation - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(8);
-    expect(store.getActions()[6]).toEqual(filterTable('ENDDATE', null));
+    expect(store.getActions()[6]).toEqual(filterTable('endDate', null));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 
@@ -163,7 +161,7 @@ describe('Investigation - Card View', () => {
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(6);
     expect(store.getActions()[4]).toEqual(
-      filterTable('TITLE', { value: 'test', type: 'include' })
+      filterTable('title', { value: 'test', type: 'include' })
     );
     expect(store.getActions()[5]).toEqual(push('?'));
 
@@ -172,7 +170,7 @@ describe('Investigation - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(8);
-    expect(store.getActions()[6]).toEqual(filterTable('TITLE', null));
+    expect(store.getActions()[6]).toEqual(filterTable('title', null));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 
@@ -187,7 +185,7 @@ describe('Investigation - Card View', () => {
     expect(store.getActions()[4]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { TITLE: 'asc' },
+        sort: { title: 'asc' },
         page: 1,
       })
     );
@@ -225,8 +223,8 @@ describe('Investigation - Card View', () => {
 
   it('pushFilters dispatched by filter panel', () => {
     state.dgcommon.filterData = {
-      TYPE_ID: ['1', '2'],
-      FACILITY_ID: ['1', '2'],
+      'type.id': ['1', '2'],
+      'facility.id': ['1', '2'],
     };
     const wrapper = createWrapper();
 
@@ -240,16 +238,16 @@ describe('Investigation - Card View', () => {
     expect(store.getActions().length).toEqual(8);
     expect(store.getActions()[1]).toEqual(fetchFilterRequest());
     expect(store.getActions()[2]).toEqual(fetchFilterRequest());
-    expect(store.getActions()[6]).toEqual(filterTable('TYPE_ID', ['1']));
+    expect(store.getActions()[6]).toEqual(filterTable('type.id', ['1']));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 
   it('pushFilters dispatched by deleting chip', () => {
     state.dgcommon.filterData = {
-      TYPE_ID: ['1', '2'],
-      FACILITY_ID: ['1', '2'],
+      'type.id': ['1', '2'],
+      'facility.id': ['1', '2'],
     };
-    state.dgcommon.query.filters = { TYPE_ID: ['1'] };
+    state.dgcommon.query.filters = { 'type.id': ['1'] };
     const wrapper = createWrapper();
     wrapper.find(Chip).at(4).find(SvgIcon).simulate('click');
 
@@ -257,7 +255,7 @@ describe('Investigation - Card View', () => {
     expect(store.getActions().length).toEqual(8);
     expect(store.getActions()[1]).toEqual(fetchFilterRequest());
     expect(store.getActions()[2]).toEqual(fetchFilterRequest());
-    expect(store.getActions()[6]).toEqual(filterTable('TYPE_ID', null));
+    expect(store.getActions()[6]).toEqual(filterTable('type.id', null));
     expect(store.getActions()[7]).toEqual(push('?'));
   });
 });

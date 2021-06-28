@@ -190,7 +190,7 @@ const ISISDatasetsTable = (
               key="download"
               size="small"
               onClick={() => {
-                downloadData(datasetData.ID, datasetData.NAME);
+                downloadData(datasetData.id, datasetData.name);
               }}
             >
               <GetApp />
@@ -202,11 +202,11 @@ const ISISDatasetsTable = (
         {
           icon: <TitleIcon />,
           label: t('datasets.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `${urlPrefix}/${cellProps.rowData.ID}`,
-              cellProps.rowData.NAME,
+              `${urlPrefix}/${cellProps.rowData.id}`,
+              cellProps.rowData.name,
               view
             ),
           filterComponent: textFilter,
@@ -214,7 +214,7 @@ const ISISDatasetsTable = (
         {
           icon: <SaveIcon />,
           label: t('datasets.size'),
-          dataKey: 'SIZE',
+          dataKey: 'size',
           cellContentRenderer: (cellProps) => {
             return formatBytes(cellProps.cellData);
           },
@@ -223,13 +223,13 @@ const ISISDatasetsTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
         },
       ]}
@@ -254,8 +254,12 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              INVESTIGATION_ID: { eq: investigationId },
+              'investigation.id': { eq: investigationId },
             }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('investigation'),
           },
         ],
       })
@@ -266,8 +270,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: investigationId },
+            'investigation.id': { eq: investigationId },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),
@@ -283,7 +291,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+            'investigation.id': { eq: parseInt(ownProps.investigationId) },
           }),
         },
       ])

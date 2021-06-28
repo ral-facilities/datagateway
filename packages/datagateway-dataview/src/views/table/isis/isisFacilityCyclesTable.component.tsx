@@ -115,11 +115,11 @@ const ISISFacilityCyclesTable = (
         {
           icon: <TitleIcon />,
           label: t('facilitycycles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) =>
             tableLink(
-              `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.ID}/investigation`,
-              cellProps.rowData.NAME,
+              `/browse/instrument/${instrumentId}/facilityCycle/${cellProps.rowData.id}/investigation`,
+              cellProps.rowData.name,
               view
             ),
           filterComponent: textFilter,
@@ -127,19 +127,19 @@ const ISISFacilityCyclesTable = (
         {
           icon: <DescriptionIcon />,
           label: t('facilitycycles.description'),
-          dataKey: 'DESCRIPTION',
+          dataKey: 'description',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('facilitycycles.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('facilitycycles.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}

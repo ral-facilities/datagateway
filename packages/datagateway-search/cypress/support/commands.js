@@ -55,24 +55,25 @@ export const readSciGatewayToken = () => {
 };
 
 Cypress.Commands.add('login', () => {
-  // TODO Use the ICAT backend for this request once it is enabled for pre-prod
-  cy.request({
-    method: 'POST',
-    url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',
-    body: {
-      json: JSON.stringify({
-        plugin: 'anon',
-      }),
-    },
-    form: true,
-  }).then((response) => {
-    const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-    const payload = {
-      sessionId: response.body.sessionId,
-      username: 'test',
-    };
-    const jwt = jsrsasign.KJUR.jws.JWS.sign('HS256', jwtHeader, payload, 'shh');
-    window.localStorage.setItem('scigateway:token', jwt);
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    cy.request('POST', `${settings.apiUrl}/sessions`, {
+      username: '',
+      password: '',
+      mechanism: 'anon',
+    }).then((response) => {
+      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+      const payload = {
+        sessionId: response.body.sessionID,
+        username: 'test', // TODO - was set to Robert499 before
+      };
+      const jwt = jsrsasign.KJUR.jws.JWS.sign(
+        'HS256',
+        jwtHeader,
+        payload,
+        'shh'
+      );
+      window.localStorage.setItem('scigateway:token', jwt);
+    });
   });
 });
 

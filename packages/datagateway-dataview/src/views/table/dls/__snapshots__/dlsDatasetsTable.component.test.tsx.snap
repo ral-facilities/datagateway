@@ -164,25 +164,25 @@ exports[`DLS Dataset table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.name",
       },
       Object {
-        "dataKey": "DATAFILE_COUNT",
+        "dataKey": "datafileCount",
         "disableSort": true,
         "icon": <Memo />,
         "label": "datasets.datafile_count",
       },
       Object {
-        "dataKey": "CREATE_TIME",
+        "dataKey": "createTime",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.create_time",
       },
       Object {
-        "dataKey": "MOD_TIME",
+        "dataKey": "modTime",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.modified_time",
@@ -192,12 +192,11 @@ exports[`DLS Dataset table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "CREATE_TIME": "2019-07-23",
-        "ID": 1,
-        "INVESTIGATION_ID": 1,
-        "MOD_TIME": "2019-07-23",
-        "NAME": "Test 1",
-        "SIZE": 1,
+        "createTime": "2019-07-23",
+        "id": 1,
+        "modTime": "2019-07-23",
+        "name": "Test 1",
+        "size": 1,
       },
     ]
   }

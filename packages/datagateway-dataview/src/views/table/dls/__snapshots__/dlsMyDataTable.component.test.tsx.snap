@@ -6,39 +6,39 @@ exports[`DLS Visits table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "TITLE",
+        "dataKey": "title",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.title",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "VISIT_ID",
+        "dataKey": "visitId",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.visit_id",
       },
       Object {
-        "dataKey": "DATASET_COUNT",
+        "dataKey": "datasetCount",
         "disableSort": true,
         "icon": <Memo />,
         "label": "investigations.dataset_count",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME",
+        "dataKey": "investigationInstruments.instrument.fullName",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.instrument",
       },
       Object {
-        "dataKey": "STARTDATE",
+        "dataKey": "startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.start_date",
       },
       Object {
-        "dataKey": "ENDDATE",
+        "dataKey": "endDate",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.end_date",
@@ -48,27 +48,25 @@ exports[`DLS Visits table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "DOI": "doi 1",
-        "ENDDATE": "2019-06-11",
-        "ID": 1,
-        "INVESTIGATIONINSTRUMENT": Array [
+        "doi": "doi 1",
+        "endDate": "2019-06-11",
+        "id": 1,
+        "investigationInstruments": Array [
           Object {
-            "ID": 1,
-            "INSTRUMENT": Object {
-              "ID": 3,
-              "NAME": "LARMOR",
+            "id": 1,
+            "instrument": Object {
+              "id": 3,
+              "name": "LARMOR",
             },
-            "INSTRUMENT_ID": 3,
-            "INVESTIGATION_ID": 1,
           },
         ],
-        "NAME": "Test 1",
-        "RB_NUMBER": "1",
-        "SIZE": 1,
-        "STARTDATE": "2019-06-10",
-        "SUMMARY": "foo bar",
-        "TITLE": "Test 1",
-        "VISIT_ID": "1",
+        "name": "Test 1",
+        "rbNumber": "1",
+        "size": 1,
+        "startDate": "2019-06-10",
+        "summary": "foo bar",
+        "title": "Test 1",
+        "visitId": "1",
       },
     ]
   }
@@ -153,7 +151,7 @@ exports[`DLS Visits table component renders details panel correctly and it sends
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>

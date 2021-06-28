@@ -274,7 +274,7 @@ const VirtualizedTable = (
                             allIds ||
                             data.map((d) => {
                               const icatEntity = d as ICATEntity;
-                              return icatEntity.ID;
+                              return icatEntity.id;
                             })
                           }
                           loading={loading}

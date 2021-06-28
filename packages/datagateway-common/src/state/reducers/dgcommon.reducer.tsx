@@ -518,8 +518,8 @@ export function handleFetchInvestigationSizeSuccess(
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
 
-      return investigation.ID === payload.id
-        ? { ...investigation, SIZE: payload.size }
+      return investigation.id === payload.id
+        ? { ...investigation, size: payload.size }
         : investigation;
     }),
     investigationCache: {
@@ -542,8 +542,8 @@ export function handleFetchDatasetSizeSuccess(
     data: state.data.map((entity: Entity) => {
       const dataset = entity as Dataset;
 
-      return dataset.ID === payload.id
-        ? { ...dataset, SIZE: payload.size }
+      return dataset.id === payload.id
+        ? { ...dataset, size: payload.size }
         : dataset;
     }),
     datasetCache: {
@@ -592,7 +592,7 @@ export function handleFetchDataDetailsSuccess(
   return {
     ...state,
     data: state.data.map((entity: Entity) => {
-      return entity.ID === payload.data[0].ID
+      return entity.id === payload.data[0].id
         ? { ...payload.data[0], ...entity }
         : entity;
     }),
@@ -630,8 +630,8 @@ export function handleFetchDatasetCountSuccess(
     data: state.data.map((entity: Entity) => {
       const investigation = entity as Investigation;
 
-      return investigation.ID === payload.id
-        ? { ...investigation, DATASET_COUNT: payload.count }
+      return investigation.id === payload.id
+        ? { ...investigation, datasetCount: payload.count }
         : investigation;
     }),
     investigationCache: {
@@ -680,8 +680,8 @@ export function handleFetchDatasetDatafilesCountSuccess(
     data: state.data.map((entity: Entity) => {
       const dataset = entity as Dataset;
 
-      return dataset.ID === payload.id
-        ? { ...dataset, DATAFILE_COUNT: payload.count }
+      return dataset.id === payload.id
+        ? { ...dataset, datafileCount: payload.count }
         : dataset;
     }),
     datasetCache: {

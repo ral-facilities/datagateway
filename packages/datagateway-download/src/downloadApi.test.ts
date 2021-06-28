@@ -440,9 +440,9 @@ describe('Download Cart API functions test', () => {
       axios.get = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: {
-            ID: 1,
-            NAME: 'test datafile',
-            FILESIZE: 1,
+            id: 1,
+            name: 'test datafile',
+            fileSize: 1,
           },
         })
       );
@@ -584,10 +584,11 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              DATASET_ID: {
+              'dataset.id': {
                 eq: 1,
               },
             },
+            include: 'dataset',
           },
           headers: { Authorization: 'Bearer null' },
         }
@@ -612,10 +613,11 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              DATASET_ID: {
+              'dataset.id': {
                 eq: 1,
               },
             },
+            include: 'dataset',
           },
           headers: { Authorization: 'Bearer null' },
         }
@@ -646,9 +648,9 @@ describe('Download Cart API functions test', () => {
         'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
         {
           params: {
-            include: '"DATASET"',
+            include: '{"dataset": "investigation"}',
             where: {
-              'DATASET.INVESTIGATION_ID': {
+              'dataset.investigation.id': {
                 eq: 2,
               },
             },
@@ -675,9 +677,9 @@ describe('Download Cart API functions test', () => {
         'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
         {
           params: {
-            include: '"DATASET"',
+            include: '{"dataset": "investigation"}',
             where: {
-              'DATASET.INVESTIGATION_ID': {
+              'dataset.investigation.id': {
                 eq: 2,
               },
             },
@@ -765,9 +767,9 @@ describe('Download Cart API functions test', () => {
           if (path.includes('datafiles/')) {
             return Promise.resolve({
               data: {
-                ID: 1,
-                NAME: 'test datafile',
-                FILESIZE: 1,
+                id: 1,
+                name: 'test datafile',
+                fileSize: 1,
               },
             });
           } else {

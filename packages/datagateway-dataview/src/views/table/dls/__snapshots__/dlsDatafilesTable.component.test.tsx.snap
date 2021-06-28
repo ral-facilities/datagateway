@@ -10,26 +10,26 @@ exports[`DLS datafiles table component renders correctly 1`] = `
   columns={
     Array [
       Object {
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datafiles.name",
       },
       Object {
-        "dataKey": "LOCATION",
+        "dataKey": "location",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datafiles.location",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "FILESIZE",
+        "dataKey": "fileSize",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datafiles.size",
       },
       Object {
-        "dataKey": "CREATE_TIME",
+        "dataKey": "createTime",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datafiles.create_time",
@@ -39,13 +39,12 @@ exports[`DLS datafiles table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "CREATE_TIME": "2019-07-23",
-        "DATASET_ID": 1,
-        "FILESIZE": 1,
-        "ID": 1,
-        "LOCATION": "/test1",
-        "MOD_TIME": "2019-07-23",
-        "NAME": "Test 1",
+        "createTime": "2019-07-23",
+        "fileSize": 1,
+        "id": 1,
+        "location": "/test1",
+        "modTime": "2019-07-23",
+        "name": "Test 1",
       },
     ]
   }

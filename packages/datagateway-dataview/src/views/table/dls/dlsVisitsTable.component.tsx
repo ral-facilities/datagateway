@@ -134,12 +134,12 @@ const DLSVisitsTable = (
         {
           icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          dataKey: 'visitId',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return tableLink(
-              `/browse/proposal/${proposalName}/investigation/${investigationData.ID}/dataset`,
-              investigationData.VISIT_ID,
+              `/browse/proposal/${proposalName}/investigation/${investigationData.id}/dataset`,
+              investigationData.visitId,
               view
             );
           },
@@ -148,21 +148,18 @@ const DLSVisitsTable = (
         {
           icon: <ConfirmationNumberIcon />,
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           disableSort: true,
         },
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.NAME',
+          dataKey: 'investigationInstruments.instrument.name',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-            ) {
-              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                .NAME;
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
+              return investigationData.investigationInstruments[0].instrument
+                .name;
             } else {
               return '';
             }
@@ -172,13 +169,13 @@ const DLSVisitsTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}
@@ -201,12 +198,12 @@ const mapDispatchToProps = (
         additionalFilters: [
           {
             filterType: 'where',
-            filterValue: JSON.stringify({ NAME: { eq: proposalName } }),
+            filterValue: JSON.stringify({ name: { eq: proposalName } }),
           },
           {
             filterType: 'include',
             filterValue: JSON.stringify({
-              INVESTIGATIONINSTRUMENT: 'INSTRUMENT',
+              investigationInstruments: 'instrument',
             }),
           },
         ],
@@ -218,7 +215,7 @@ const mapDispatchToProps = (
       fetchInvestigationCount([
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ NAME: { eq: proposalName } }),
+          filterValue: JSON.stringify({ name: { eq: proposalName } }),
         },
       ])
     ),

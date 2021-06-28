@@ -176,7 +176,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
           >
             <Grid item xs>
               <Typography variant="h6">
-                <b>{datasetData.NAME}</b>
+                <b>{datasetData.name}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -185,7 +185,7 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
                 {t('datasets.details.description')}
               </Typography>
               <Typography>
-                <b>{datasetData.NAME}</b>
+                <b>{datasetData.name}</b>
               </Typography>
             </Grid>
           </Grid>
@@ -195,13 +195,13 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         {
           icon: <TitleIcon />,
           label: t('datasets.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps) => {
             const datasetData = cellProps.rowData as Dataset;
             return datasetLink(
               investigationId,
-              datasetData.ID,
-              datasetData.NAME,
+              datasetData.id,
+              datasetData.name,
               view
             );
           },
@@ -210,19 +210,19 @@ const DatasetTable = (props: DatasetTableCombinedProps): React.ReactElement => {
         {
           icon: <ConfirmationNumberIcon />,
           label: t('datasets.datafile_count'),
-          dataKey: 'DATAFILE_COUNT',
+          dataKey: 'datafileCount',
           disableSort: true,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
         },
       ]}
@@ -242,8 +242,12 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              INVESTIGATION_ID: { eq: investigationId },
+              'investigation.id': { eq: investigationId },
             }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('investigation'),
           },
         ],
       })
@@ -254,8 +258,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: investigationId },
+            'investigation.id': { eq: investigationId },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),
@@ -269,7 +277,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: parseInt(ownProps.investigationId) },
+            'investigation.id': { eq: parseInt(ownProps.investigationId) },
           }),
         },
       ])

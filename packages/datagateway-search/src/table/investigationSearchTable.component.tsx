@@ -18,6 +18,9 @@ import {
   filterTable,
   clearTable,
   tableLink,
+  handleICATError,
+  readSciGatewayToken,
+  FacilityCycle,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
 import { connect } from 'react-redux';
@@ -25,6 +28,7 @@ import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 interface InvestigationTableProps {
   sort: {
@@ -40,6 +44,7 @@ interface InvestigationTableProps {
   cartItems: DownloadCartItem[];
   allIds: number[];
   luceneData: number[];
+  apiUrl: string;
 }
 
 interface InvestigationTableDispatchProps {
@@ -77,58 +82,60 @@ const InvestigationSearchTable = (
     luceneData,
     loading,
     hierarchy,
+    apiUrl,
   } = props;
+
+  const [facilityCycles, setFacilityCycles] = React.useState([]);
 
   const [t] = useTranslation();
 
   const dlsLink = (investigationData: Investigation): React.ReactElement =>
     tableLink(
-      `/browse/proposal/${investigationData.NAME}/investigation/${investigationData.ID}/dataset`,
-      investigationData.TITLE
+      `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
+      investigationData.title
     );
 
-  const isisLink = (
-    investigationData: Investigation
-  ): React.ReactElement | string => {
-    let instrumentId;
-    let facilityCycleId;
-    if (investigationData.INVESTIGATIONINSTRUMENT?.length) {
-      instrumentId = investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT_ID;
-    } else {
-      return investigationData.TITLE;
-    }
-
-    if (
-      investigationData.STARTDATE &&
-      investigationData.FACILITY?.FACILITYCYCLE?.length
-    ) {
-      const facilityCycles = investigationData.FACILITY.FACILITYCYCLE.filter(
-        (facilityCycle) =>
-          investigationData.STARTDATE &&
-          facilityCycle.STARTDATE &&
-          facilityCycle.ENDDATE &&
-          investigationData.STARTDATE >= facilityCycle.STARTDATE &&
-          investigationData.STARTDATE <= facilityCycle.ENDDATE
-      );
-      if (facilityCycles.length) {
-        facilityCycleId = facilityCycles[0].ID;
+  const isisLink = React.useCallback(
+    (investigationData: Investigation) => {
+      let instrumentId;
+      let facilityCycleId;
+      if (investigationData.investigationInstruments?.length) {
+        instrumentId =
+          investigationData.investigationInstruments[0].instrument?.id;
+      } else {
+        return investigationData.title;
       }
-    }
 
-    if (facilityCycleId) {
-      return tableLink(
-        `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.ID}/dataset`,
-        investigationData.TITLE
-      );
-    } else {
-      return investigationData.TITLE;
-    }
-  };
+      if (investigationData.startDate && facilityCycles.length) {
+        const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
+          (facilityCycle: FacilityCycle) =>
+            investigationData.startDate &&
+            facilityCycle.startDate &&
+            facilityCycle.endDate &&
+            investigationData.startDate >= facilityCycle.startDate &&
+            investigationData.startDate <= facilityCycle.endDate
+        );
+        if (filteredFacilityCycles.length) {
+          facilityCycleId = filteredFacilityCycles[0].id;
+        }
+      }
+
+      if (facilityCycleId) {
+        return tableLink(
+          `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${investigationData.id}/dataset`,
+          investigationData.title
+        );
+      } else {
+        return investigationData.title;
+      }
+    },
+    [facilityCycles]
+  );
 
   const genericLink = (investigationData: Investigation): React.ReactElement =>
     tableLink(
-      `/browse/investigation/${investigationData.ID}/dataset`,
-      investigationData.TITLE
+      `/browse/investigation/${investigationData.id}/dataset`,
+      investigationData.title
     );
 
   const hierarchyLink = React.useMemo(() => {
@@ -139,7 +146,7 @@ const InvestigationSearchTable = (
     } else {
       return genericLink;
     }
-  }, [hierarchy]);
+  }, [hierarchy, isisLink]);
 
   const selectedRows = React.useMemo(
     () =>
@@ -170,6 +177,25 @@ const InvestigationSearchTable = (
       }
     />
   );
+
+  const fetchFacilityCycles = React.useCallback(() => {
+    axios
+      .get(`${apiUrl}/facilitycycles`, {
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      })
+      .then((response) => {
+        setFacilityCycles(response.data);
+      })
+      .catch((error) => {
+        handleICATError(error);
+      });
+  }, [apiUrl]);
+
+  React.useEffect(() => {
+    if (hierarchy === 'isis') fetchFacilityCycles();
+  }, [fetchFacilityCycles, hierarchy]);
 
   React.useEffect(() => {
     clearTable();
@@ -202,17 +228,17 @@ const InvestigationSearchTable = (
           <div>
             <Typography>
               <b>{t('investigations.rb_number')}:</b>{' '}
-              {investigationData.RB_NUMBER}
+              {investigationData.rbNumber}
             </Typography>
             <Typography>
-              <b>{t('investigations.title')}:</b> {investigationData.TITLE}
+              <b>{t('investigations.title')}:</b> {investigationData.title}
             </Typography>
             <Typography>
               <b>{t('investigations.start_date')}:</b>{' '}
-              {investigationData.STARTDATE}
+              {investigationData.startDate}
             </Typography>
             <Typography>
-              <b>{t('investigations.end_date')}:</b> {investigationData.ENDDATE}
+              <b>{t('investigations.end_date')}:</b> {investigationData.endDate}
             </Typography>
           </div>
         );
@@ -220,7 +246,7 @@ const InvestigationSearchTable = (
       columns={[
         {
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return hierarchyLink(investigationData);
@@ -229,35 +255,32 @@ const InvestigationSearchTable = (
         },
         {
           label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
           label: t('investigations.rb_number'),
-          dataKey: 'RB_NUMBER',
+          dataKey: 'rbNumber',
           filterComponent: textFilter,
         },
         {
           label: t('investigations.doi'),
-          dataKey: 'DOI',
+          dataKey: 'doi',
           filterComponent: textFilter,
         },
         {
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           disableSort: true,
         },
         {
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
+          dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-            ) {
-              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                .FULLNAME;
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
+              return investigationData.investigationInstruments[0].instrument
+                .fullName;
             } else {
               return '';
             }
@@ -266,7 +289,7 @@ const InvestigationSearchTable = (
         },
         {
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
           cellContentRenderer: (cellProps: TableCellProps) => {
             if (cellProps.cellData) {
@@ -276,7 +299,7 @@ const InvestigationSearchTable = (
         },
         {
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
           cellContentRenderer: (cellProps: TableCellProps) => {
             if (cellProps.cellData) {
@@ -305,14 +328,13 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              ID: { in: luceneData },
+              id: { in: luceneData },
             }),
           },
           {
             filterType: 'include',
             filterValue: JSON.stringify([
-              { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
-              { FACILITY: 'FACILITYCYCLE' },
+              { investigationInstruments: 'instrument' },
             ]),
           },
         ],
@@ -324,7 +346,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -340,7 +362,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            ID: { in: luceneData },
+            id: { in: luceneData },
           }),
         },
       ])
@@ -358,6 +380,7 @@ const mapStateToProps = (state: StateType): InvestigationTableProps => {
     cartItems: state.dgcommon.cartItems,
     allIds: state.dgcommon.allIds,
     luceneData: state.dgsearch.searchData.investigation,
+    apiUrl: state.dgcommon.urls.apiUrl,
   };
 };
 

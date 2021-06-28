@@ -41,12 +41,11 @@ describe('DLS Dataset table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        SIZE: 1,
-        MOD_TIME: '2019-07-23',
-        CREATE_TIME: '2019-07-23',
-        INVESTIGATION_ID: 1,
+        id: 1,
+        name: 'Test 1',
+        size: 1,
+        modTime: '2019-07-23',
+        createTime: '2019-07-23',
       },
     ];
     state.dgcommon.allIds = [1];
@@ -126,13 +125,13 @@ describe('DLS Dataset table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[3]).toEqual(
-      filterTable('NAME', { value: 'test', type: 'include' })
+      filterTable('name', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('name', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -152,13 +151,13 @@ describe('DLS Dataset table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[3]).toEqual(
-      filterTable('MOD_TIME', { endDate: '2019-08-06' })
+      filterTable('modTime', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('MOD_TIME', null));
+    expect(testStore.getActions()[5]).toEqual(filterTable('modTime', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -176,7 +175,7 @@ describe('DLS Dataset table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[3]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[3]).toEqual(sortTable('name', 'asc'));
   });
 
   it('sends addToCart action on unchecked checkbox click', () => {
@@ -286,7 +285,7 @@ describe('DLS Dataset table component', () => {
   });
 
   it('sends off an FetchDatasetSize action when Calculate button is clicked', () => {
-    const { SIZE, ...rowDataWithoutSize } = state.dgcommon.data[0];
+    const { size, ...rowDataWithoutSize } = state.dgcommon.data[0];
     const newState = state;
     newState.dgcommon.data[0] = rowDataWithoutSize;
     const testStore = mockStore(newState);

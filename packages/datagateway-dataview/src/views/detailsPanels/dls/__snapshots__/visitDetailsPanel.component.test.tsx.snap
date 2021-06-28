@@ -77,7 +77,7 @@ exports[`Visit details panel component gracefully handles InvestigationUsers wit
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
@@ -233,7 +233,7 @@ exports[`Visit details panel component renders calculate size button when size h
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
@@ -385,7 +385,7 @@ exports[`Visit details panel component renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
@@ -547,7 +547,7 @@ exports[`Visit details panel component renders user, sample and publication tabs
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>

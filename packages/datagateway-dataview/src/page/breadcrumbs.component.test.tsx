@@ -76,16 +76,16 @@ describe('PageBreadcrumbs - Snapshot Tests (Generic, DLS, ISIS)', () => {
     );
 
     // Set up generic axios response; to be used for all tests.
-    // We only need to include the ID, NAME, TITLE and VISIT_ID
+    // We only need to include the ID, name, title and visitId
     // as those are the entity fields which the breadcrumb looks for
     // when requesting information from the API.
     (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
-          ID: 1,
-          NAME: 'INVESTIGATION 1',
-          TITLE: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          name: 'INVESTIGATION 1',
+          title: 'Test 1',
+          visitId: '1',
         },
       })
     );
@@ -328,10 +328,10 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
           breadcrumbSettings: {
             proposal: {
               replaceEntity: 'investigation',
-              replaceEntityField: 'TITLE',
+              replaceEntityField: 'title',
             },
             investigation: {
-              replaceEntityField: 'TITLE',
+              replaceEntityField: 'title',
               parentEntity: 'proposal',
             },
           },
@@ -349,10 +349,10 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     (axios.get as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
-          ID: 1,
-          NAME: 'INVESTIGATION 1',
-          TITLE: 'Test 1',
-          VISIT_ID: '1',
+          id: 1,
+          name: 'INVESTIGATION 1',
+          title: 'Test 1',
+          visitId: '1',
         },
       })
     );
@@ -454,7 +454,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
       '/investigations/findone?where=' +
-        JSON.stringify({ NAME: { eq: 'INVESTIGATION 1' } }),
+        JSON.stringify({ name: { eq: 'INVESTIGATION 1' } }),
       {
         headers: {
           Authorization: 'Bearer null',
@@ -479,7 +479,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     expect(axios.get).toHaveBeenNthCalledWith(
       1,
       '/investigations/findone?where=' +
-        JSON.stringify({ NAME: { eq: 'INVESTIGATION 1' } }),
+        JSON.stringify({ name: { eq: 'INVESTIGATION 1' } }),
       {
         headers: {
           Authorization: 'Bearer null',
@@ -509,7 +509,7 @@ describe('PageBreadcrumbs - Axios.GET Tests (Generic, DLS, ISIS)', () => {
     expect(axios.get).toHaveBeenNthCalledWith(
       1,
       '/investigations/findone?where=' +
-        JSON.stringify({ NAME: { eq: 'INVESTIGATION 1' } }),
+        JSON.stringify({ name: { eq: 'INVESTIGATION 1' } }),
       {
         headers: {
           Authorization: 'Bearer null',
