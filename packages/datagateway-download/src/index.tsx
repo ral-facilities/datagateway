@@ -5,6 +5,7 @@ import './i18n';
 import App from './App';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';
+import fs from 'fs';
 
 import singleSpaReact from 'single-spa-react';
 
@@ -13,6 +14,10 @@ import {
   MicroFrontendId,
   MicroFrontendToken,
 } from 'datagateway-common';
+
+const settings = JSON.parse(
+  fs.readFileSync('server/e2e-settings.json', 'utf-8')
+);
 
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
@@ -79,7 +84,7 @@ if (
 
   if (process.env.NODE_ENV === `development`) {
     // TODO: get url from settings file
-    const icatUrl = `https://scigateway-preprod.esc.rl.ac.uk:8181/icat`;
+    const icatUrl = `${settings.icatUrl}`;
     axios
       .post(
         `${icatUrl}/session`,
