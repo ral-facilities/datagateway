@@ -12,6 +12,17 @@ import STFCLogoWhite from 'datagateway-common/src/images/stfc-logo-white-text.pn
 import { StateType } from '../../../state/app.types';
 import { connect } from 'react-redux';
 
+interface UKRITheme extends Theme {
+  ukri: {
+    bright: {
+      orange: string;
+    };
+    deep: {
+      red: string;
+    };
+  };
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
@@ -24,13 +35,13 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.contrastText,
       '& a': {
         '&:link': {
-          color: '#FF6900',
+          color: (theme as UKRITheme).ukri.bright.orange,
         },
         '&:visited': {
-          color: '#FF6900',
+          color: (theme as UKRITheme).ukri.bright.orange,
         },
         '&:active': {
-          color: '#E94D36',
+          color: (theme as UKRITheme).ukri.deep.red,
         },
       },
     },

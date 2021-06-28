@@ -472,8 +472,8 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                   aria-label="landing-investigation-part-label"
                 >
                   {tableLink(
-                    `${urlPrefix}/dataset/${dataset.ID}`,
-                    `${t('datasets.dataset')}: ${dataset.NAME}`,
+                    `${urlPrefix}/dataset/${dataset.id}`,
+                    `${t('datasets.dataset')}: ${dataset.name}`,
                     view
                   )}
                 </Typography>
