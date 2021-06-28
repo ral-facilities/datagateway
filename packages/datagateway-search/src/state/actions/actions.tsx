@@ -145,10 +145,10 @@ export const fetchLuceneInvestigations = (
   params: LuceneSearchParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    const { downloadApiUrl } = getState().dgcommon.urls;
+    const { icatUrl } = getState().dgcommon.urls;
 
     await fetchLuceneData('Investigation', params, {
-      downloadApiUrl,
+      icatUrl,
     }).then((results) => {
       dispatch(storeInvestigationLucene(results));
       dispatch(toggleLuceneRequestReceived(true));
@@ -160,10 +160,10 @@ export const fetchLuceneDatasets = (
   params: LuceneSearchParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    const { downloadApiUrl } = getState().dgcommon.urls;
+    const { icatUrl } = getState().dgcommon.urls;
 
     await fetchLuceneData('Dataset', params, {
-      downloadApiUrl,
+      icatUrl,
     }).then((results) => {
       dispatch(storeDatasetLucene(results));
       dispatch(toggleLuceneRequestReceived(true));
@@ -175,10 +175,10 @@ export const fetchLuceneDatafiles = (
   params: LuceneSearchParams
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
-    const { downloadApiUrl } = getState().dgcommon.urls;
+    const { icatUrl } = getState().dgcommon.urls;
 
     await fetchLuceneData('Datafile', params, {
-      downloadApiUrl,
+      icatUrl,
     }).then((results) => {
       dispatch(storeDatafileLucene(results));
       dispatch(toggleLuceneRequestReceived(true));

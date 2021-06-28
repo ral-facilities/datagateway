@@ -133,6 +133,7 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+        icatUrl: '',
       })
     );
     expect(actions).toContainEqual(
@@ -203,6 +204,7 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+        icatUrl: '',
       })
     );
     expect(actions).toContainEqual(settingsLoaded());

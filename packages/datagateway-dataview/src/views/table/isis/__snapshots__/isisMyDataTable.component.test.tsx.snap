@@ -52,14 +52,12 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "startDate",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.start_date",
       },
       Object {
         "dataKey": "endDate",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.end_date",
