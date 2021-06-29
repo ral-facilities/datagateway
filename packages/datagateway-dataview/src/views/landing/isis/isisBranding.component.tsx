@@ -13,7 +13,7 @@ import { StateType } from '../../../state/app.types';
 import { connect } from 'react-redux';
 import { Theme as MuiTheme } from '@material-ui/core/styles/createMuiTheme';
 
-export interface UKRITheme extends MuiTheme {
+interface UKRITheme extends MuiTheme {
   ukri: {
     bright: {
       orange: string;
