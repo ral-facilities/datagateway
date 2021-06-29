@@ -191,6 +191,22 @@ jobs:
           yarn --frozen-lockfile
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
+      - name: Check working dir
+        if: failure()
+        run: pwd
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: Dataview-Screenshots
+          path: cypress/screenshots
+      - name: Upload Cypress screenshots 1
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: Dataview-Screenshots
+          path: packages/datagateway-dataview/cypress/screenshots
+
 
   # Separate e2e jobs so that they can run in parallel
   # download-e2e-test:
