@@ -11,8 +11,9 @@ import { useTranslation } from 'react-i18next';
 import STFCLogoWhite from 'datagateway-common/src/images/stfc-logo-white-text.png';
 import { StateType } from '../../../state/app.types';
 import { connect } from 'react-redux';
+import { Theme as MuiTheme } from '@material-ui/core/styles/createMuiTheme';
 
-interface UKRITheme extends Theme {
+export interface UKRITheme extends MuiTheme {
   ukri: {
     bright: {
       orange: string;
@@ -35,13 +36,13 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.contrastText,
       '& a': {
         '&:link': {
-          color: (theme as UKRITheme).ukri.bright.orange,
+          color: (theme as UKRITheme).ukri?.bright.orange,
         },
         '&:visited': {
-          color: (theme as UKRITheme).ukri.bright.orange,
+          color: (theme as UKRITheme).ukri?.bright.orange,
         },
         '&:active': {
-          color: (theme as UKRITheme).ukri.deep.red,
+          color: (theme as UKRITheme).ukri?.deep.red,
         },
       },
     },
