@@ -98,7 +98,7 @@ describe('DLS - Proposals Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'A nothing almost arrive I. Product middle design never. Cup camera then product father sort vote.'
+        'About quickly both stop. Population buy on poor. Avoid teacher summer positive feel sing.'
       );
     });
 
@@ -113,7 +113,7 @@ describe('DLS - Proposals Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').contains(
-        'Whom anything affect consider left. Entire order tough. White responsibility economic travel activity.'
+        'Yourself smile either I pass significant. Avoid sound suddenly development line get executive ahead.'
       );
     });
 
@@ -140,8 +140,7 @@ describe('DLS - Proposals Table', () => {
       cy.contains('[role="button"]', 'Title').click();
 
       cy.get('[aria-rowindex="2"] [aria-colindex="1"]').contains(
-        'Billion head kitchen peace appear sit civil car. State both itself only seat mean however treatment. ' +
-          'Standard himself type care respond. Rise response speak worry none.'
+        'Learn street computer. Take voice light on. Wrong structure how year.'
       );
     });
   });
@@ -156,9 +155,9 @@ describe('DLS - Proposals Table', () => {
         .first()
         .type('dog');
 
-      cy.get('[aria-rowcount="4"]').should('exist');
+      cy.get('[aria-rowcount="7"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'INVESTIGATION 17'
+        'INVESTIGATION 6'
       );
     });
 
@@ -171,7 +170,7 @@ describe('DLS - Proposals Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .first()
-        .type('INVESTIGATION 47');
+        .type('INVESTIGATION 36');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
