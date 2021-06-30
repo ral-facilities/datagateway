@@ -94,7 +94,7 @@ const DatasetDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                {datasetData.description
+                {datasetData.description && datasetData.description !== 'null'
                   ? datasetData.description
                   : t('entity_card.no_description')}
               </b>

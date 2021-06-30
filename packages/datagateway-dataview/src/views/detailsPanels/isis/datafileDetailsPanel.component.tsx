@@ -92,7 +92,7 @@ const DatafileDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                {datafileData.description
+                {datafileData.description && datafileData.description !== 'null'
                   ? datafileData.description
                   : t('entity_card.no_description')}
               </b>

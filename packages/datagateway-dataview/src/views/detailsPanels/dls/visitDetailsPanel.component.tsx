@@ -139,7 +139,8 @@ const VisitDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                {investigationData.summary
+                {investigationData.summary &&
+                investigationData.summary !== 'null'
                   ? investigationData.summary
                   : t('entity_card.no_description')}
               </b>

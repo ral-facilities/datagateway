@@ -94,7 +94,8 @@ const InstrumentDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                {instrumentData.description
+                {instrumentData.description &&
+                instrumentData.description !== 'null'
                   ? instrumentData.description
                   : t('entity_card.no_description')}
               </b>

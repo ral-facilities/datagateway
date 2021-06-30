@@ -132,7 +132,8 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const title = React.useMemo(() => data[0]?.investigation?.title, [data]);
   const summary = React.useMemo(
     () =>
-      data[0]?.investigation?.summary
+      data[0]?.investigation?.summary &&
+      data[0]?.investigation?.summary !== 'null'
         ? data[0].investigation.summary
         : t('entity_card.no_description'),
     [data, t]
