@@ -19,6 +19,7 @@ describe('Dataset details panel component', () => {
       name: 'Test 1',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
+      description: 'Test description',
     };
   });
 
@@ -147,5 +148,24 @@ describe('Dataset details panel component', () => {
 
     expect(fetchDetails).toHaveBeenCalled();
     expect(fetchDetails).toHaveBeenCalledWith(1);
+  });
+
+  it('Shows "No description provided" instead of a null field', () => {
+    rowData = {
+      id: 1,
+      name: 'Test 1',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
+    };
+
+    const wrapper = shallow(
+      <DatasetDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+        fetchSize={fetchSize}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 });

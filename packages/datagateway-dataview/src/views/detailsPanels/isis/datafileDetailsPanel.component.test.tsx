@@ -19,6 +19,7 @@ describe('Datafile details panel component', () => {
       location: '/test/location',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
+      description: 'Test description',
     };
   });
 
@@ -137,5 +138,24 @@ describe('Datafile details panel component', () => {
 
     expect(fetchDetails).toHaveBeenCalled();
     expect(fetchDetails).toHaveBeenCalledWith(1);
+  });
+
+  it('Shows "No description provided" instead of a null field', () => {
+    rowData = {
+      id: 1,
+      name: 'Test 1',
+      location: '/test/location',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
+    };
+
+    const wrapper = shallow(
+      <DatafilesDetailsPanel
+        rowData={rowData}
+        detailsPanelResize={detailsPanelResize}
+        fetchDetails={fetchDetails}
+      />
+    );
+    expect(wrapper).toMatchSnapshot();
   });
 });
