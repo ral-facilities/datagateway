@@ -147,7 +147,11 @@ const InvestigationDetailsPanel = (
               {t('investigations.details.summary')}
             </Typography>
             <Typography>
-              <b>{investigationData.summary}</b>
+              <b>
+                {investigationData.summary
+                  ? investigationData.summary
+                  : t('entity_card.no_description')}
+              </b>
             </Typography>
           </Grid>
           {investigationData.studyInvestigations &&

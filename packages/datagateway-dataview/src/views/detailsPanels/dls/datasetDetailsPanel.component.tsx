@@ -93,7 +93,11 @@ const DatasetDetailsPanel = (
               {t('datasets.details.description')}
             </Typography>
             <Typography>
-              <b>{datasetData.description}</b>
+              <b>
+                {datasetData.description
+                  ? datasetData.description
+                  : t('entity_card.no_description')}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>

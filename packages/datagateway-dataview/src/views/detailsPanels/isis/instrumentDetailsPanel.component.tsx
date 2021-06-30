@@ -93,7 +93,11 @@ const InstrumentDetailsPanel = (
               {t('instruments.details.description')}
             </Typography>
             <Typography>
-              <b>{instrumentData.description}</b>
+              <b>
+                {instrumentData.description
+                  ? instrumentData.description
+                  : t('entity_card.no_description')}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>

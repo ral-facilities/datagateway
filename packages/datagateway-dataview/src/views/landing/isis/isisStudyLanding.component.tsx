@@ -130,7 +130,13 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
 
   const pid = React.useMemo(() => data[0]?.study?.pid, [data]);
   const title = React.useMemo(() => data[0]?.investigation?.title, [data]);
-  const summary = React.useMemo(() => data[0]?.investigation?.summary, [data]);
+  const summary = React.useMemo(
+    () =>
+      data[0]?.investigation?.summary
+        ? data[0].investigation.summary
+        : t('entity_card.no_description'),
+    [data, t]
+  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];

@@ -138,7 +138,11 @@ const VisitDetailsPanel = (
               {t('investigations.details.summary')}
             </Typography>
             <Typography>
-              <b>{investigationData.summary}</b>
+              <b>
+                {investigationData.summary
+                  ? investigationData.summary
+                  : t('entity_card.no_description')}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>

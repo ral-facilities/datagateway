@@ -330,7 +330,9 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             </Typography>
 
             <Typography aria-label="landing-investigation-summary">
-              {data[0]?.summary}
+              {data[0]?.summary
+                ? data[0].summary
+                : t('entity_card.no_description')}
             </Typography>
 
             {formattedUsers.length > 0 && (

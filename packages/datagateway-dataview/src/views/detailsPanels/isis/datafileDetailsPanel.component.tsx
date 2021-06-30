@@ -91,7 +91,11 @@ const DatafileDetailsPanel = (
               {t('datafiles.details.description')}
             </Typography>
             <Typography>
-              <b>{datafileData.description}</b>
+              <b>
+                {datafileData.description
+                  ? datafileData.description
+                  : t('entity_card.no_description')}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
