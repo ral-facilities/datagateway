@@ -172,8 +172,8 @@ export const fetchInstrumentDetails = (
 
     const params = new URLSearchParams();
 
-    params.append('where', JSON.stringify({ ID: { eq: instrumentId } }));
-    params.append('include', JSON.stringify({ INSTRUMENTSCIENTIST: 'USER_' }));
+    params.append('where', JSON.stringify({ id: { eq: instrumentId } }));
+    params.append('include', JSON.stringify({ instrumentScientists: 'user' }));
 
     const { apiUrl } = getState().dgcommon.urls;
 

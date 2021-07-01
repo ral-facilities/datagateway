@@ -58,10 +58,10 @@ describe('ISIS Investigations - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            TITLE: 'Test 1',
-            NAME: 'Test 1',
-            VISIT_ID: '1',
+            id: 1,
+            title: 'Test 1',
+            name: 'Test 1',
+            visitId: '1',
           },
         ],
         allIds: [1],
@@ -168,7 +168,7 @@ describe('ISIS Investigations - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
     expect(store.getActions().length).toEqual(4);
     expect(store.getActions()[2]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06', startDate: undefined })
+      filterTable('endDate', { endDate: '2019-08-06', startDate: undefined })
     );
     expect(store.getActions()[3]).toEqual(push('?'));
 
@@ -177,7 +177,7 @@ describe('ISIS Investigations - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('ENDDATE', null));
+    expect(store.getActions()[4]).toEqual(filterTable('endDate', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -191,7 +191,7 @@ describe('ISIS Investigations - Card View', () => {
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
     expect(store.getActions()[2]).toEqual(
-      filterTable('TITLE', { value: 'test', type: 'include' })
+      filterTable('title', { value: 'test', type: 'include' })
     );
     expect(store.getActions()[3]).toEqual(push('?'));
 
@@ -200,7 +200,7 @@ describe('ISIS Investigations - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('TITLE', null));
+    expect(store.getActions()[4]).toEqual(filterTable('title', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -215,7 +215,7 @@ describe('ISIS Investigations - Card View', () => {
     expect(store.getActions()[2]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { TITLE: 'asc' },
+        sort: { title: 'asc' },
         page: 1,
       })
     );

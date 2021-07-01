@@ -147,7 +147,7 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'Network find should century magazine happen natural.'
+        'It wish different however along whether knowledge media.'
       );
     });
 

@@ -3,6 +3,7 @@
   "idsUrl": "example.ids.url",
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
+  "icatUrl": "example.icat.url",
   "helpSteps": [
     {
       "target": "#plugin-link--search-data",

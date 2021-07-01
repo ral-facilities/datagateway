@@ -108,9 +108,4 @@ describe('PageContainer Component', () => {
       'Including spend increase ability music skill former.'
     );
   });
-
-  it('should load the homepage if navigating to home', () => {
-    cy.visit('/datagateway');
-    cy.get('div[id="dg-homepage"]');
-  });
 });

@@ -1,6 +1,6 @@
 describe('ISIS - Study Landing', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/browseStudyHierarchy/instrument/1/study/405');
   });
 

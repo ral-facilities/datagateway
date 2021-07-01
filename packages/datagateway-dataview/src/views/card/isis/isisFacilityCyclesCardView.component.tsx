@@ -113,31 +113,31 @@ const ISISFacilityCyclesCardView = (
       loadedCount={loadedCount}
       title={{
         label: t('facilitycycles.name'),
-        dataKey: 'NAME',
+        dataKey: 'name',
         content: (facilityCycle: FacilityCycle) =>
           tableLink(
-            `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycle.ID}/investigation`,
-            facilityCycle.NAME,
+            `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycle.id}/investigation`,
+            facilityCycle.name,
             query.view
           ),
         filterComponent: textFilter,
       }}
       description={{
         label: t('facilitycycles.description'),
-        dataKey: 'DESCRIPTION',
+        dataKey: 'description',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <CalendarToday />,
           label: t('facilitycycles.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('facilitycycles.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}

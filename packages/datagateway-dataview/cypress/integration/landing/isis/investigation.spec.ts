@@ -1,6 +1,6 @@
 describe('ISIS - Investigation Landing', () => {
   beforeEach(() => {
-    cy.login('user', 'password');
+    cy.login();
     cy.visit('/browse/instrument/1/facilityCycle/14/investigation/87');
   });
 

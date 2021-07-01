@@ -1,16 +1,20 @@
 describe('DLS - MyData Table', () => {
   beforeEach(() => {
-    cy.intercept('/datasets/count').as('getDatasetCount');
-    cy.login();
-    cy.visit('/my-data/DLS').wait(['@getDatasetCount'], { timeout: 10000 });
+    cy.intercept('/investigations/count').as('getInvestigationCount');
+    cy.login({
+      username: 'root',
+      password: 'pw',
+      mechanism: 'simple',
+    });
+    cy.visit('/my-data/DLS');
   });
 
-  it('should load correctly', () => {
+  it.skip('should load correctly', () => {
     cy.title().should('equal', 'DataGateway DataView');
     cy.get('#datagateway-dataview').should('be.visible');
   });
 
-  it('should be able to click an investigation to see its datasets', () => {
+  it.skip('should be able to click an investigation to see its datasets', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
 
     cy.location('pathname').should(
@@ -19,7 +23,7 @@ describe('DLS - MyData Table', () => {
     );
   });
 
-  it('should be able to resize a column', () => {
+  it.skip('should be able to resize a column', () => {
     let columnWidth = 0;
 
     cy.window()
@@ -83,7 +87,7 @@ describe('DLS - MyData Table', () => {
   });
 
   describe('should be able to filter by', () => {
-    it('text', () => {
+    it.skip('text', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
@@ -93,7 +97,7 @@ describe('DLS - MyData Table', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
-    it('date between', () => {
+    it.skip('date between', () => {
       cy.get('[aria-rowcount="1"]').should('exist');
 
       cy.get('[aria-label="Start Date date filter to"]')
@@ -120,11 +124,11 @@ describe('DLS - MyData Table', () => {
       cy.get('[aria-rowcount="0"]').should('exist');
     });
 
-    it('multiple columns', () => {
+    it.skip('multiple columns', () => {
       cy.get('[aria-label="Filter by Instrument')
         .find('input')
         .first()
-        .type('8');
+        .type('Who set wind carry matter.');
 
       cy.get('[aria-rowcount="1"]').should('exist');
 
@@ -138,7 +142,7 @@ describe('DLS - MyData Table', () => {
   });
 
   describe('should be able to view details', () => {
-    it('when no other row is showing details', () => {
+    it.skip('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').should('be.visible');
@@ -148,7 +152,7 @@ describe('DLS - MyData Table', () => {
     // TODO: Since we only have one investigation, we cannot test
     // showing details when another row is showing details at the moment.
 
-    it('and view visit users, samples and publications', () => {
+    it.skip('and view visit users, samples and publications', () => {
       // We need to wait for counts to finish, otherwise cypress
       // might interact with the details panel too quickly and
       // it re-renders during the test.
@@ -173,7 +177,7 @@ describe('DLS - MyData Table', () => {
       );
     });
 
-    it('and then not view details anymore', () => {
+    it.skip('and then not view details anymore', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('[aria-label="Hide details"]').first().click();

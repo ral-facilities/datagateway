@@ -123,6 +123,7 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-controls="instrument-users-panel"]').click({
         scrollBehavior: 'center',
       });
+      // cy.get('[aria-label="grid"]').scrollTo('top'); TODO - need to be removed?
       cy.get('#details-panel').contains('Vanessa Smith').should('be.visible');
     });
 

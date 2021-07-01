@@ -177,7 +177,7 @@ describe('DGCommon reducer', () => {
   it('should clear the table state when given a ClearTable action', () => {
     state = {
       ...initialState,
-      data: [{ ID: 1, NAME: 'test' }],
+      data: [{ id: 1, name: 'test' }],
       totalDataCount: 1,
       loading: true,
       downloading: true,
@@ -187,16 +187,24 @@ describe('DGCommon reducer', () => {
         search: 'searchOne',
         page: 1,
         results: 1,
-        sort: { NAME: 'asc' },
-        filters: { NAME: 't' },
+        sort: { name: 'asc' },
+        filters: { name: 't' },
       },
       savedQuery: {
         view: 'card',
         search: 'searchTwo',
         page: 2,
         results: 2,
-        sort: { NAME: 'desc' },
-        filters: { NAME: 'c' },
+        sort: { name: 'desc' },
+        filters: { name: 'c' },
+      },
+      savedQuery: {
+        view: 'card',
+        search: 'searchTwo',
+        page: 2,
+        results: 2,
+        sort: { name: 'desc' },
+        filters: { name: 'c' },
       },
     };
 
@@ -216,7 +224,7 @@ describe('DGCommon reducer', () => {
   it('should clear data only when given a clearData action', () => {
     state = {
       ...initialState,
-      data: [{ ID: 1, NAME: 'test' }],
+      data: [{ id: 1, name: 'test' }],
       totalDataCount: 1,
       loading: true,
       downloading: true,
@@ -226,8 +234,8 @@ describe('DGCommon reducer', () => {
         search: 'searchOne',
         page: 1,
         results: 1,
-        sort: { NAME: 'asc' },
-        filters: { NAME: 't' },
+        sort: { name: 'asc' },
+        filters: { name: 't' },
       },
     };
 
@@ -244,8 +252,8 @@ describe('DGCommon reducer', () => {
         search: 'searchOne',
         page: 1,
         results: 1,
-        sort: { NAME: 'asc' },
-        filters: { NAME: 't' },
+        sort: { name: 'asc' },
+        filters: { name: 't' },
       },
     });
   });
@@ -256,13 +264,13 @@ describe('DGCommon reducer', () => {
       search: 'searchOne',
       page: 1,
       results: 1,
-      sort: { NAME: 'asc' },
-      filters: { NAME: 't' },
+      sort: { name: 'asc' },
+      filters: { name: 't' },
     };
     state = {
       ...initialState,
       query: queryOne,
-      data: [{ ID: 1, NAME: 'test' }],
+      data: [{ id: 1, name: 'test' }],
     };
 
     const updatedState = DGCommonReducer(state, updateSaveView('table'));
@@ -275,8 +283,8 @@ describe('DGCommon reducer', () => {
         search: null,
         page: null,
         results: null,
-        sort: { NAME: 'asc' },
-        filters: { NAME: 't' },
+        sort: { name: 'asc' },
+        filters: { name: 't' },
       },
       savedQuery: {
         sort: {},
@@ -295,7 +303,7 @@ describe('DGCommon reducer', () => {
       search: 'searchOne',
       page: 1,
       results: 1,
-      sort: { NAME: 'asc' },
+      sort: { name: 'asc' },
       filters: { TABLE: 't', CUSTOM: ['1', '2', '3'] },
     };
     const queryTwo: QueryParams = {
@@ -304,11 +312,11 @@ describe('DGCommon reducer', () => {
       page: 2,
       results: 2,
       filters: { CARD: 'c' },
-      sort: { NAME: 'desc' },
+      sort: { name: 'desc' },
     };
     state = {
       ...initialState,
-      data: [{ ID: 1, NAME: 'test' }],
+      data: [{ id: 1, name: 'test' }],
       totalDataCount: 1,
       query: queryOne,
       savedQuery: queryTwo,
@@ -477,26 +485,26 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Investigation[] = [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
-          RB_NUMBER: '1',
-          DOI: 'doi 1',
-          SIZE: 1,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-11',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
+          rbNumber: '1',
+          doi: 'doi 1',
+          size: 1,
+          startDate: '2019-06-10',
+          endDate: '2019-06-11',
         },
         {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 1',
-          VISIT_ID: '2',
-          RB_NUMBER: '2',
-          DOI: 'doi 2',
-          SIZE: 10000,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-12',
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 1',
+          visitId: '2',
+          rbNumber: '2',
+          doi: 'doi 2',
+          size: 10000,
+          startDate: '2019-06-10',
+          endDate: '2019-06-12',
         },
       ];
 
@@ -535,26 +543,26 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Investigation[] = [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
-          RB_NUMBER: '1',
-          DOI: 'doi 1',
-          SIZE: 1,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-11',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
+          rbNumber: '1',
+          doi: 'doi 1',
+          size: 1,
+          startDate: '2019-06-10',
+          endDate: '2019-06-11',
         },
         {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 1',
-          VISIT_ID: '2',
-          RB_NUMBER: '2',
-          DOI: 'doi 2',
-          SIZE: 10000,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-12',
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 1',
+          visitId: '2',
+          rbNumber: '2',
+          doi: 'doi 2',
+          size: 10000,
+          startDate: '2019-06-10',
+          endDate: '2019-06-12',
         },
       ];
 
@@ -562,13 +570,11 @@ describe('DGCommon reducer', () => {
 
       const investigationDetails = {
         ...mockData[0],
-        INVESTIGATIONUSER: [
+        investigationUsers: [
           {
-            ID: 3,
-            INVESTIGATION_ID: 1,
-            USER_ID: 4,
-            ROLE: 'Investigator',
-            USER_: { ID: 4, NAME: 'Louise' },
+            id: 3,
+            role: 'Investigator',
+            user: { id: 4, name: 'Louise' },
           },
         ],
       };
@@ -600,25 +606,25 @@ describe('DGCommon reducer', () => {
   describe('FetchInvestigationSize and FetchDatasetSize actions', () => {
     const mockData: Investigation[] = [
       {
-        ID: 1,
-        TITLE: 'Test 1',
-        NAME: 'Test 1',
-        VISIT_ID: '1',
-        RB_NUMBER: '1',
-        DOI: 'doi 1',
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-11',
+        id: 1,
+        title: 'Test 1',
+        name: 'Test 1',
+        visitId: '1',
+        rbNumber: '1',
+        doi: 'doi 1',
+        startDate: '2019-06-10',
+        endDate: '2019-06-11',
       },
       {
-        ID: 2,
-        TITLE: 'Test 2',
-        NAME: 'Test 1',
-        VISIT_ID: '2',
-        RB_NUMBER: '2',
-        DOI: 'doi 2',
-        SIZE: 10000,
-        STARTDATE: '2019-06-10',
-        ENDDATE: '2019-06-12',
+        id: 2,
+        title: 'Test 2',
+        name: 'Test 1',
+        visitId: '2',
+        rbNumber: '2',
+        doi: 'doi 2',
+        size: 10000,
+        startDate: '2019-06-10',
+        endDate: '2019-06-12',
       },
     ];
 
@@ -634,7 +640,7 @@ describe('DGCommon reducer', () => {
     it('should set the data and investigationCache state when given a FetchInvestigationSize action', () => {
       state.data = mockData;
 
-      const mockDataUpdated = [{ ...mockData[0], SIZE: 1 }, mockData[1]];
+      const mockDataUpdated = [{ ...mockData[0], size: 1 }, mockData[1]];
       const mockInvestigationCacheUpdated: EntityCache = {
         1: {
           childEntitySize: 1,
@@ -655,7 +661,7 @@ describe('DGCommon reducer', () => {
     it('should set the data and datasetCache state when given a FetchDatasetSize action', () => {
       state.data = mockData;
 
-      const mockDataUpdated = [mockData[0], { ...mockData[1], SIZE: 10000 }];
+      const mockDataUpdated = [mockData[0], { ...mockData[1], size: 10000 }];
       const mockDatasetCacheUpdated: EntityCache = {
         2: {
           childEntitySize: 10000,
@@ -731,18 +737,16 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Dataset[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-11',
-          INVESTIGATION_ID: 1,
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-06-10',
+          createTime: '2019-06-11',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-12',
-          INVESTIGATION_ID: 1,
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
         },
       ];
 
@@ -778,18 +782,16 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Dataset[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-11',
-          INVESTIGATION_ID: 1,
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-06-10',
+          createTime: '2019-06-11',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-12',
-          INVESTIGATION_ID: 1,
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
         },
       ];
 
@@ -797,9 +799,9 @@ describe('DGCommon reducer', () => {
 
       const datasetDetails = {
         ...mockData[0],
-        DATASETTYPE: {
-          ID: 3,
-          NAME: 'Test type',
+        type: {
+          id: 3,
+          name: 'Test type',
         },
       };
 
@@ -904,33 +906,33 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Investigation[] = [
         {
-          ID: 1,
-          TITLE: 'Test 1',
-          NAME: 'Test 1',
-          VISIT_ID: '1',
-          RB_NUMBER: '1',
-          DOI: 'doi 1',
-          SIZE: 1,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-11',
+          id: 1,
+          title: 'Test 1',
+          name: 'Test 1',
+          visitId: '1',
+          rbNumber: '1',
+          doi: 'doi 1',
+          size: 1,
+          startDate: '2019-06-10',
+          endDate: '2019-06-11',
         },
         {
-          ID: 2,
-          TITLE: 'Test 2',
-          NAME: 'Test 2',
-          VISIT_ID: '2',
-          RB_NUMBER: '2',
-          DOI: 'doi 2',
-          SIZE: 10000,
-          STARTDATE: '2019-06-10',
-          ENDDATE: '2019-06-12',
+          id: 2,
+          title: 'Test 2',
+          name: 'Test 2',
+          visitId: '2',
+          rbNumber: '2',
+          doi: 'doi 2',
+          size: 10000,
+          startDate: '2019-06-10',
+          endDate: '2019-06-12',
         },
       ];
 
       state.data = mockData;
 
       const mockDataUpdated: Investigation[] = [
-        { ...mockData[0], DATASET_COUNT: 2 },
+        { ...mockData[0], datasetCount: 2 },
         mockData[1],
       ];
 
@@ -957,24 +959,24 @@ describe('DGCommon reducer', () => {
 
       const mockData: Investigation[] = [
         {
-          ID: 3,
-          TITLE: 'Test 3',
-          VISIT_ID: '3',
-          RB_NUMBER: '3',
-          DOI: 'doi 3',
-          SIZE: 1,
-          INSTRUMENT: {
-            NAME: 'LARMOR',
+          id: 3,
+          title: 'Test 3',
+          visitId: '3',
+          rbNumber: '3',
+          doi: 'doi 3',
+          size: 1,
+          instrument: {
+            name: 'LARMOR',
           },
-          STARTDATE: '2019-10-08',
-          ENDDATE: '2019-10-08',
+          startDate: '2019-10-08',
+          endDate: '2019-10-08',
         },
       ];
 
       state.data = mockData;
 
       const mockDataUpdated: Investigation[] = [
-        { ...mockData[0], DATASET_COUNT: 4 },
+        { ...mockData[0], datasetCount: 4 },
       ];
 
       const mockInvestigationCacheUpdated: EntityCache = {
@@ -1026,22 +1028,20 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Datafile[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
-          LOCATION: '/test1',
-          FILESIZE: 1,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
+          id: 1,
+          name: 'Test 1',
+          location: '/test1',
+          fileSize: 1,
+          modTime: '2019-06-10',
+          createTime: '2019-06-10',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
-          LOCATION: '/test2',
-          FILESIZE: 2,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
+          id: 2,
+          name: 'Test 2',
+          location: '/test2',
+          fileSize: 2,
+          modTime: '2019-06-10',
+          createTime: '2019-06-10',
         },
       ];
 
@@ -1116,22 +1116,20 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Datafile[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
-          LOCATION: '/test1',
-          FILESIZE: 1,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
+          id: 1,
+          name: 'Test 1',
+          location: '/test1',
+          fileSize: 1,
+          modTime: '2019-06-10',
+          createTime: '2019-06-10',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
-          LOCATION: '/test2',
-          FILESIZE: 2,
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-10',
-          DATASET_ID: 1,
+          id: 2,
+          name: 'Test 2',
+          location: '/test2',
+          fileSize: 2,
+          modTime: '2019-06-10',
+          createTime: '2019-06-10',
         },
       ];
 
@@ -1139,15 +1137,13 @@ describe('DGCommon reducer', () => {
 
       const datafileDetails: Datafile = {
         ...mockData[0],
-        DATAFILEPARAMETER: [
+        parameters: [
           {
-            ID: 3,
-            DATAFILE_ID: 1,
-            PARAMETER_TYPE_ID: 4,
-            PARAMETERTYPE: {
-              ID: 4,
-              NAME: 'Test parameter type',
-              UNITS: 'Test unit',
+            id: 3,
+            type: {
+              id: 4,
+              name: 'Test parameter type',
+              units: 'Test unit',
               VALUE_TYPE: 'STRING',
             },
           },
@@ -1219,25 +1215,23 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Dataset[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-11',
-          INVESTIGATION_ID: 1,
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-06-10',
+          createTime: '2019-06-11',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
-          MOD_TIME: '2019-06-10',
-          CREATE_TIME: '2019-06-12',
-          INVESTIGATION_ID: 1,
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-06-10',
+          createTime: '2019-06-12',
         },
       ];
 
       state.data = mockData;
 
       const mockDataUpdated: Dataset[] = [
-        { ...mockData[0], DATAFILE_COUNT: 2 },
+        { ...mockData[0], datafileCount: 2 },
         mockData[1],
       ];
 
@@ -1264,25 +1258,22 @@ describe('DGCommon reducer', () => {
 
       const mockData: Dataset[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
-          MOD_TIME: '2019-10-08',
-          CREATE_TIME: '2019-10-08',
-          INVESTIGATION_ID: 1,
+          id: 1,
+          name: 'Test 1',
+          modTime: '2019-10-08',
+          createTime: '2019-10-08',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
-          MOD_TIME: '2019-10-08',
-          CREATE_TIME: '2019-10-08',
-          INVESTIGATION_ID: 1,
+          id: 2,
+          name: 'Test 2',
+          modTime: '2019-10-08',
+          createTime: '2019-10-08',
         },
         {
-          ID: 3,
-          NAME: 'Test 3',
-          MOD_TIME: '2019-10-08',
-          CREATE_TIME: '2019-10-08',
-          INVESTIGATION_ID: 1,
+          id: 3,
+          name: 'Test 3',
+          modTime: '2019-10-08',
+          createTime: '2019-10-08',
         },
       ];
 
@@ -1291,7 +1282,7 @@ describe('DGCommon reducer', () => {
       const mockDataUpdated: Dataset[] = [
         mockData[0],
         mockData[1],
-        { ...mockData[2], DATAFILE_COUNT: 99 },
+        { ...mockData[2], datafileCount: 99 },
       ];
 
       const mockDatasetCacheUpdated: EntityCache = {
@@ -1342,12 +1333,12 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Instrument[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
+          id: 1,
+          name: 'Test 1',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
+          id: 2,
+          name: 'Test 2',
         },
       ];
 
@@ -1422,12 +1413,12 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: Instrument[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
+          id: 1,
+          name: 'Test 1',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
+          id: 2,
+          name: 'Test 2',
         },
       ];
 
@@ -1435,12 +1426,10 @@ describe('DGCommon reducer', () => {
 
       const instrumentDetails: Instrument = {
         ...mockData[0],
-        INSTRUMENTSCIENTIST: [
+        instrumentScientists: [
           {
-            ID: 3,
-            INSTRUMENT_ID: 1,
-            USER_ID: 4,
-            USER_: { ID: 4, NAME: 'Louise' },
+            id: 3,
+            user: { id: 4, name: 'Louise' },
           },
         ],
       };
@@ -1481,18 +1470,18 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: FacilityCycle[] = [
         {
-          ID: 1,
-          NAME: 'Test 1',
-          DESCRIPTION: 'Test 1',
-          STARTDATE: '2019-07-03',
-          ENDDATE: '2019-07-04',
+          id: 1,
+          name: 'Test 1',
+          description: 'Test 1',
+          startDate: '2019-07-03',
+          endDate: '2019-07-04',
         },
         {
-          ID: 2,
-          NAME: 'Test 2',
-          DESCRIPTION: 'Test 2',
-          STARTDATE: '2019-07-03',
-          ENDDATE: '2019-07-04',
+          id: 2,
+          name: 'Test 2',
+          description: 'Test 2',
+          startDate: '2019-07-03',
+          endDate: '2019-07-04',
         },
       ];
 
@@ -1569,27 +1558,23 @@ describe('DGCommon reducer', () => {
       state.loading = true;
       const mockData: StudyInvestigation[] = [
         {
-          ID: 1,
-          STUDY_ID: 1,
-          INVESTIGATION_ID: 1,
-          STUDY: {
-            ID: 1,
-            PID: 'doi 1',
-            NAME: 'Test 1',
-            MOD_TIME: '2000-01-01',
-            CREATE_TIME: '2000-01-01',
+          id: 1,
+          study: {
+            id: 1,
+            pid: 'doi 1',
+            name: 'Test 1',
+            modTime: '2000-01-01',
+            createTime: '2000-01-01',
           },
         },
         {
-          ID: 2,
-          STUDY_ID: 2,
-          INVESTIGATION_ID: 2,
-          STUDY: {
-            ID: 2,
-            PID: 'doi 2',
-            NAME: 'Test 2',
-            MOD_TIME: '2000-01-02',
-            CREATE_TIME: '2000-01-02',
+          id: 2,
+          study: {
+            id: 2,
+            pid: 'doi 2',
+            name: 'Test 2',
+            modTime: '2000-01-02',
+            createTime: '2000-01-02',
           },
         },
       ];
@@ -1875,8 +1860,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       };
 
@@ -1889,8 +1874,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       });
     });
@@ -1902,8 +1887,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       };
 
@@ -1916,8 +1901,8 @@ describe('DGCommon reducer', () => {
           search: 'searchTwo',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       });
     });
@@ -1930,8 +1915,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       };
 
@@ -1944,8 +1929,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 2,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       });
     });
@@ -1958,8 +1943,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       };
 
@@ -1972,8 +1957,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 2,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       });
     });
@@ -1981,19 +1966,19 @@ describe('DGCommon reducer', () => {
     it('should update filter on UpdateFilters', () => {
       state = {
         ...initialState,
-        data: [{ ID: 1, NAME: 'test' }],
+        data: [{ id: 1, name: 'test' }],
         totalDataCount: 1,
         query: {
           view: 'table',
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       };
 
-      const updatedState = DGCommonReducer(state, updateFilters({ NAME: 'c' }));
+      const updatedState = DGCommonReducer(state, updateFilters({ name: 'c' }));
 
       expect(updatedState).toEqual({
         ...initialState,
@@ -2004,8 +1989,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 'c' },
-          sort: { NAME: 'asc' },
+          filters: { name: 'c' },
+          sort: { name: 'asc' },
         },
       });
     });
@@ -2013,18 +1998,18 @@ describe('DGCommon reducer', () => {
     it('should update sort on UpdateSort', () => {
       state = {
         ...initialState,
-        data: [{ ID: 1, NAME: 'test' }],
+        data: [{ id: 1, name: 'test' }],
         query: {
           view: 'table',
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       };
 
-      const updatedState = DGCommonReducer(state, updateSort({ NAME: 'desc' }));
+      const updatedState = DGCommonReducer(state, updateSort({ name: 'desc' }));
 
       expect(updatedState).toEqual({
         ...initialState,
@@ -2034,8 +2019,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'desc' },
+          filters: { name: 't' },
+          sort: { name: 'desc' },
         },
       });
     });
@@ -2048,8 +2033,8 @@ describe('DGCommon reducer', () => {
           search: 'searchOne',
           page: 1,
           results: 1,
-          filters: { NAME: 't' },
-          sort: { NAME: 'asc' },
+          filters: { name: 't' },
+          sort: { name: 'asc' },
         },
       };
 
@@ -2060,8 +2045,8 @@ describe('DGCommon reducer', () => {
           search: 'searchTwo',
           page: 2,
           results: 2,
-          filters: { NAME: 'c' },
-          sort: { NAME: 'desc' },
+          filters: { name: 'c' },
+          sort: { name: 'desc' },
         })
       );
 
@@ -2072,8 +2057,8 @@ describe('DGCommon reducer', () => {
           search: 'searchTwo',
           page: 2,
           results: 2,
-          filters: { NAME: 'c' },
-          sort: { NAME: 'desc' },
+          filters: { name: 'c' },
+          sort: { name: 'desc' },
         },
       });
     });

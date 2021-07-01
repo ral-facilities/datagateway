@@ -66,8 +66,6 @@
     "doi": "DOI",
     "parent_doi": "Parent DOI",
     "dataset_count": "Dataset Count",
-    "type_id": "Type ID",
-    "facility_id": "Facility ID",
     "release_date": "Public Release",
     "details": {
       "tabs_label": "Investigation Details Tabs",
@@ -96,7 +94,16 @@
       "publications": {
         "label": "Publications",
         "reference": "Reference"
+      },
+      "type": {
+        "id": "Type ID"
       }
+    },
+    "facility": {
+      "id": "Facility ID"
+    },
+    "type": {
+      "id": "Type ID"
     }
   },
   "datasets": {
@@ -124,7 +131,7 @@
         "label": "Dataset Types",
         "name": "Name",
         "description": "Description",
-        "type_id": "Type ID"
+        "id": "Type ID"
       }
     },
     "download": "Download"
@@ -183,16 +190,6 @@
     "no_description": "No description available",
     "show_more": "Show more",
     "show_less": "Show less"
-  },
-  "homePage": {
-    "title": "DataGateway",
-    "howLabel": "How it works...",
-    "exploreLabel": "1. Explore",
-    "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
-    "discoverLabel": "2. Discover",
-    "discoverDescription": "Search for the experimental data according to different criteria.",
-    "downloadLabel": "3. Download",
-    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
   },
   "doi_constants": {
     "keywords": [

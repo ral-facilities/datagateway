@@ -107,7 +107,7 @@ describe('Download Status', () => {
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Requested Date').click();
-      cy.contains('[role="button"]', 'Availability').click();
+      cy.contains('[role="button"]', 'Availability').click().wait(4000);
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
