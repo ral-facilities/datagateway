@@ -187,7 +187,7 @@
     }
   },
   "entity_card": {
-    "no_description": "Description not provided",
+    "no_description": "No description available",
     "show_more": "Show more",
     "show_less": "Show less"
   },

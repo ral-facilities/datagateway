@@ -94,7 +94,7 @@ const DatafileDetailsPanel = (
               <b>
                 {datafileData.description && datafileData.description !== 'null'
                   ? datafileData.description
-                  : t('entity_card.no_description')}
+                  : `${t('datafiles.details.description')} not provided`}
               </b>
             </Typography>
           </Grid>
@@ -103,7 +103,11 @@ const DatafileDetailsPanel = (
               {t('datafiles.details.location')}
             </Typography>
             <Typography>
-              <b>{datafileData.location}</b>
+              <b>
+                {datafileData.location && datafileData.location !== 'null'
+                  ? datafileData.location
+                  : `${t('datafiles.details.location')} not provided`}
+              </b>
             </Typography>
           </Grid>
         </Grid>

@@ -273,7 +273,7 @@ exports[`DLS Dataset table component renders details panel correctly and it send
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            entity_card.no_description
+            datasets.details.description not provided
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
@@ -287,7 +287,9 @@ exports[`DLS Dataset table component renders details panel correctly and it send
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.start_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -300,7 +302,9 @@ exports[`DLS Dataset table component renders details panel correctly and it send
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.end_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

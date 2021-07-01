@@ -135,8 +135,8 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       data[0]?.investigation?.summary &&
       data[0]?.investigation?.summary !== 'null'
         ? data[0].investigation.summary
-        : t('entity_card.no_description'),
-    [data, t]
+        : 'Description not provided',
+    [data]
   );
 
   const formattedUsers = React.useMemo(() => {

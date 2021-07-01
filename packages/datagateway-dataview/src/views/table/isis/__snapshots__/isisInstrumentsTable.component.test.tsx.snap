@@ -114,7 +114,9 @@ exports[`ISIS Instruments table component renders details panel correctly and it
           instruments.details.type
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            instruments.details.type not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))

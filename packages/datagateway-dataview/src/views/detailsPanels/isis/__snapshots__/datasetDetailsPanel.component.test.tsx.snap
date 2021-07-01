@@ -60,7 +60,7 @@ exports[`Dataset details panel component Shows "No description provided" instead
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            entity_card.no_description
+            datasets.details.description not provided
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>

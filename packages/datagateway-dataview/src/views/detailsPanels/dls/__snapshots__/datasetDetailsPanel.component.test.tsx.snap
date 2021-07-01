@@ -60,7 +60,7 @@ exports[`Dataset details panel component Shows "No description provided" instead
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            entity_card.no_description
+            datasets.details.description not provided
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
@@ -74,7 +74,9 @@ exports[`Dataset details panel component Shows "No description provided" instead
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.start_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -87,7 +89,9 @@ exports[`Dataset details panel component Shows "No description provided" instead
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.end_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -192,7 +196,9 @@ exports[`Dataset details panel component renders calculate size button when size
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.start_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -205,7 +211,9 @@ exports[`Dataset details panel component renders calculate size button when size
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.end_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -310,7 +318,9 @@ exports[`Dataset details panel component renders correctly 1`] = `
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.start_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -323,7 +333,9 @@ exports[`Dataset details panel component renders correctly 1`] = `
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.end_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -434,7 +446,9 @@ exports[`Dataset details panel component renders type tab when present in the da
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.start_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -447,7 +461,9 @@ exports[`Dataset details panel component renders type tab when present in the da
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.end_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
