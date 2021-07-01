@@ -144,7 +144,7 @@ exports[`Datafile details panel component renders correctly 1`] = `
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            datafiles.details.description not provided
+            Test description
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
@@ -234,7 +234,7 @@ exports[`Datafile details panel component renders parameters tab when present in
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            datafiles.details.description not provided
+            Test description
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
