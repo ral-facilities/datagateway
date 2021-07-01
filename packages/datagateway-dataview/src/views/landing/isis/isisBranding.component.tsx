@@ -11,18 +11,6 @@ import { useTranslation } from 'react-i18next';
 import STFCLogoWhite from 'datagateway-common/src/images/stfc-logo-white-text.png';
 import { StateType } from '../../../state/app.types';
 import { connect } from 'react-redux';
-import { Theme as MuiTheme } from '@material-ui/core/styles/createMuiTheme';
-
-interface UKRITheme extends MuiTheme {
-  ukri: {
-    bright: {
-      orange: string;
-    };
-    deep: {
-      red: string;
-    };
-  };
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,16 +21,22 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(3),
     },
     typography: {
+      // link color received from parent app theme object
+      // this requires casting the theme to any so that we can explicitly
+      // access properties we know to exist in the received object
       color: theme.palette.primary.contrastText,
       '& a': {
         '&:link': {
-          color: (theme as UKRITheme).ukri?.bright.orange,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).ukri?.bright?.orange,
         },
         '&:visited': {
-          color: (theme as UKRITheme).ukri?.bright.orange,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).ukri?.bright?.orange,
         },
         '&:active': {
-          color: (theme as UKRITheme).ukri?.deep.red,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).ukri?.deep?.red,
         },
       },
     },
