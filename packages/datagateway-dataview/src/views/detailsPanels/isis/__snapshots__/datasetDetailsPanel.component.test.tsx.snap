@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dataset details panel component Shows "No description provided" instead of a null field 1`] = `
+exports[`Dataset details panel component Shows "No <field> provided" incase of a null field 1`] = `
 <div
   id="details-panel"
   style={
