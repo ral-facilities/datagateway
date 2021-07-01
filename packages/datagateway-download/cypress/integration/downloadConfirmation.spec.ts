@@ -18,9 +18,9 @@ describe('Download Confirmation', () => {
     cy.clearDownloadCart();
 
     cy.addCartItem('investigation 1').then(() => {
-      cy.visit('/');
+      cy.visit('/download');
       cy.wait('@fetchIsTwoLevel');
-      cy.wait('@fetchCart');
+      cy.wait('@fetchCart', { timeout: 10000 });
     });
 
     // Open the confirmation dialog and confirm it is present.

@@ -23,10 +23,11 @@ import {
   QueryParams,
   pushPageNum,
   pushQuery,
+  ViewsType,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { Button } from '@material-ui/core';
 import {
@@ -37,6 +38,7 @@ import {
   CalendarToday,
 } from '@material-ui/icons';
 import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
+import { push } from 'connected-react-router';
 import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -53,6 +55,7 @@ interface ISISDatasetCVDispatchProps {
   pushPage: (page: number) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => (id: number) => Action;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -99,6 +102,7 @@ const ISISDatasetsCardView = (
     pushFilters,
     pushPage,
     pushQuery,
+    viewDatafiles,
     studyHierarchy,
   } = props;
 
@@ -111,7 +115,7 @@ const ISISDatasetsCardView = (
         .filter(
           (cartItem) =>
             cartItem.entityType === 'dataset' &&
-            data.map((dataset) => dataset.ID).includes(cartItem.entityId)
+            data.map((dataset) => dataset.id).includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
     [cartItems, data]
@@ -139,6 +143,7 @@ const ISISDatasetsCardView = (
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
+  const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset`;
   const loadCount = React.useCallback(
     () => fetchCount(parseInt(investigationId)),
     [fetchCount, investigationId]
@@ -162,54 +167,54 @@ const ISISDatasetsCardView = (
       loadedCount={loadedCount}
       title={{
         label: t('datasets.name'),
-        dataKey: 'NAME',
+        dataKey: 'name',
         content: (dataset: Dataset) =>
-          tableLink(
-            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${instrumentChildId}/investigation/${investigationId}/dataset/${dataset.ID}/datafile`,
-            dataset.NAME,
-            query.view
-          ),
+          tableLink(`${urlPrefix}/${dataset.id}`, dataset.name, query.view),
         filterComponent: textFilter,
       }}
       description={{
         label: t('datasets.details.description'),
-        dataKey: 'DESCRIPTION',
+        dataKey: 'description',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Save />,
           label: t('datasets.size'),
-          dataKey: 'SIZE',
-          content: (dataset: Dataset) => formatBytes(dataset.SIZE),
+          dataKey: 'size',
+          content: (dataset: Dataset) => formatBytes(dataset.size),
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
           label: t('datasets.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('datasets.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
         },
       ]}
       moreInformation={(dataset: Dataset) => (
-        <DatasetDetailsPanel rowData={dataset} fetchDetails={fetchDetails} />
+        <DatasetDetailsPanel
+          rowData={dataset}
+          fetchDetails={fetchDetails}
+          viewDatafiles={viewDatafiles(urlPrefix, query.view)}
+        />
       )}
       buttons={[
         function cartButton(dataset: Dataset) {
-          return !(selectedCards && selectedCards.includes(dataset.ID)) ? (
+          return !(selectedCards && selectedCards.includes(dataset.id)) ? (
             <Button
               id="add-to-cart-btn"
               variant="contained"
               color="primary"
               startIcon={<AddCircleOutlineOutlined />}
               disableElevation
-              onClick={() => addToCart([dataset.ID])}
+              onClick={() => addToCart([dataset.id])}
             >
               Add to cart
             </Button>
@@ -221,8 +226,8 @@ const ISISDatasetsCardView = (
               startIcon={<RemoveCircleOutlineOutlined />}
               disableElevation
               onClick={() => {
-                if (selectedCards && selectedCards.includes(dataset.ID))
-                  removeFromCart([dataset.ID]);
+                if (selectedCards && selectedCards.includes(dataset.id))
+                  removeFromCart([dataset.id]);
               }}
             >
               Remove from cart
@@ -239,7 +244,7 @@ const ISISDatasetsCardView = (
               color="primary"
               startIcon={<GetApp />}
               disableElevation
-              onClick={() => downloadData(dataset.ID, dataset.NAME)}
+              onClick={() => downloadData(dataset.id, dataset.name)}
             >
               Download
             </Button>
@@ -262,8 +267,12 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              INVESTIGATION_ID: { eq: investigationId },
+              'investigation.id': { eq: investigationId },
             }),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('investigation'),
           },
         ],
       })
@@ -274,8 +283,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { eq: investigationId },
+            'investigation.id': { eq: investigationId },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),
@@ -290,6 +303,14 @@ const mapDispatchToProps = (
     dispatch(pushPageFilter(filter, data)),
   pushPage: (page: number | null) => dispatch(pushPageNum(page)),
   pushQuery: (query: QueryParams) => dispatch(pushQuery(query)),
+  viewDatafiles: (urlPrefix: string, view: ViewsType) => {
+    return (id: number) => {
+      const url = view
+        ? `${urlPrefix}/${id}/datafile?view=${view}`
+        : `${urlPrefix}/${id}/datafile`;
+      return dispatch(push(url));
+    };
+  },
 });
 
 const mapStateToProps = (state: StateType): ISISDatasetCVStateProps => {

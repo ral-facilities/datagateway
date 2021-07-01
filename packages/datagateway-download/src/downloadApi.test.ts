@@ -15,6 +15,9 @@ import {
   removeDownloadCartItem,
   submitCart,
   getDataUrl,
+  fetchAdminDownloads,
+  adminDownloadDeleted,
+  adminDownloadStatus,
 } from './downloadApi';
 
 const settings = {
@@ -437,9 +440,9 @@ describe('Download Cart API functions test', () => {
       axios.get = jest.fn().mockImplementation(() =>
         Promise.resolve({
           data: {
-            ID: 1,
-            NAME: 'test datafile',
-            FILESIZE: 1,
+            id: 1,
+            name: 'test datafile',
+            fileSize: 1,
           },
         })
       );
@@ -581,10 +584,11 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              DATASET_ID: {
+              'dataset.id': {
                 eq: 1,
               },
             },
+            include: 'dataset',
           },
           headers: { Authorization: 'Bearer null' },
         }
@@ -609,10 +613,11 @@ describe('Download Cart API functions test', () => {
         {
           params: {
             where: {
-              DATASET_ID: {
+              'dataset.id': {
                 eq: 1,
               },
             },
+            include: 'dataset',
           },
           headers: { Authorization: 'Bearer null' },
         }
@@ -643,9 +648,9 @@ describe('Download Cart API functions test', () => {
         'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
         {
           params: {
-            include: '"DATASET"',
+            include: '{"dataset": "investigation"}',
             where: {
-              'DATASET.INVESTIGATION_ID': {
+              'dataset.investigation.id': {
                 eq: 2,
               },
             },
@@ -672,9 +677,9 @@ describe('Download Cart API functions test', () => {
         'http://scigateway-preprod.esc.rl.ac.uk:5000/datafiles/count',
         {
           params: {
-            include: '"DATASET"',
+            include: '{"dataset": "investigation"}',
             where: {
-              'DATASET.INVESTIGATION_ID': {
+              'dataset.investigation.id': {
                 eq: 2,
               },
             },
@@ -762,9 +767,9 @@ describe('Download Cart API functions test', () => {
           if (path.includes('datafiles/')) {
             return Promise.resolve({
               data: {
-                ID: 1,
-                NAME: 'test datafile',
-                FILESIZE: 1,
+                id: 1,
+                name: 'test datafile',
+                fileSize: 1,
               },
             });
           } else {
@@ -1002,6 +1007,221 @@ describe('Download Status API functions test', () => {
       const result = getDataUrl(preparedId, fileName, idsUrl);
       [preparedId, fileName, idsUrl].forEach((entry) => {
         expect(result).toContain(entry);
+      });
+    });
+  });
+});
+
+describe('Admin Download Status API functions test', () => {
+  describe('fetchAdminDownloads', () => {
+    const downloadsMockData = [
+      {
+        createdAt: '2020-01-01T01:01:01Z',
+        downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
+        email: 'test@email.com',
+        facilityName: 'LILS',
+        fileName: 'test-file-1',
+        fullName: 'Person 1',
+        id: 1,
+        isDeleted: false,
+        isEmailSent: true,
+        isTwoLevel: false,
+        preparedId: 'e44acee7-2211-4aae-bffb-f6c0e417f43d',
+        sessionId: '6bf8e6e4-58a9-11ea-b823-005056893dd9',
+        size: 0,
+        status: 'COMPLETE',
+        transport: 'https',
+        userName: 'test user',
+      },
+    ];
+
+    it('returns downloads upon successful response', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: downloadsMockData,
+        })
+      );
+
+      const returnData = await fetchAdminDownloads({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
+
+      expect(returnData).toBe(downloadsMockData);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/admin/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: 'where download.isDeleted = false',
+          },
+        }
+      );
+    });
+
+    it('returns downloads with a custom queryOffset upon successful response', async () => {
+      const downloadsData = {
+        ...downloadsMockData[0],
+        isDeleted: true,
+      };
+
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          data: downloadsData,
+        })
+      );
+
+      const returnData = await fetchAdminDownloads(
+        {
+          facilityName: settings.facilityName,
+          downloadApiUrl: settings.downloadApiUrl,
+        },
+        'where download.isDeleted = true'
+      );
+
+      expect(returnData).toBe(downloadsData);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/admin/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: 'where download.isDeleted = true',
+          },
+        }
+      );
+    });
+
+    it('returns empty array and logs error upon unsuccessful response', async () => {
+      axios.get = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      const returnData = await fetchAdminDownloads({
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
+
+      expect(returnData).toEqual([]);
+      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/admin/downloads',
+        {
+          params: {
+            sessionId: null,
+            facilityName: 'LILS',
+            queryOffset: 'where download.isDeleted = false',
+          },
+        }
+      );
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
+    });
+  });
+
+  describe('adminDownloadDeleted', () => {
+    it('successfully sets a download as deleted', async () => {
+      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+
+      await adminDownloadDeleted(1, true, {
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
+
+      const params = new URLSearchParams();
+      params.append('facilityName', 'LILS');
+      params.append('sessionId', '');
+      params.append('value', 'true');
+
+      expect(axios.put).toHaveBeenCalled();
+      expect(axios.put).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/admin/download/1/isDeleted',
+        params
+      );
+    });
+
+    it('logs an error upon unsuccessful response', async () => {
+      axios.put = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      await adminDownloadDeleted(1, true, {
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
+
+      const params = new URLSearchParams();
+      params.append('facilityName', 'LILS');
+      params.append('sessionId', '');
+      params.append('value', 'true');
+
+      expect(axios.put).toHaveBeenCalled();
+      expect(axios.put).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/admin/download/1/isDeleted',
+        params
+      );
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
+      });
+    });
+  });
+
+  describe('adminDownloadStatus', () => {
+    it('successfully sets the status of a download', async () => {
+      axios.put = jest.fn().mockImplementation(() => Promise.resolve());
+
+      await adminDownloadStatus(1, 'RESTORING', {
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
+
+      const params = new URLSearchParams();
+      params.append('facilityName', 'LILS');
+      params.append('sessionId', '');
+      params.append('value', 'RESTORING');
+
+      expect(axios.put).toHaveBeenCalled();
+      expect(axios.put).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/admin/download/1/status',
+        params
+      );
+    });
+
+    it('logs an error upon unsuccessful response', async () => {
+      axios.put = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          message: 'Test error message',
+        })
+      );
+
+      await adminDownloadStatus(1, 'RESTORING', {
+        facilityName: settings.facilityName,
+        downloadApiUrl: settings.downloadApiUrl,
+      });
+
+      const params = new URLSearchParams();
+      params.append('facilityName', 'LILS');
+      params.append('sessionId', '');
+      params.append('value', 'RESTORING');
+
+      expect(axios.put).toHaveBeenCalled();
+      expect(axios.put).toHaveBeenCalledWith(
+        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/admin/download/1/status',
+        params
+      );
+      expect(handleICATError).toHaveBeenCalled();
+      expect(handleICATError).toHaveBeenCalledWith({
+        message: 'Test error message',
       });
     });
   });

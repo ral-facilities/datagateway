@@ -44,6 +44,10 @@ import ISISStudiesCardView from '../views/card/isis/isisStudiesCardView.componen
 import ISISInvestigationsCardView from '../views/card/isis/isisInvestigationsCardView.component';
 import ISISDatasetsCardView from '../views/card/isis/isisDatasetsCardView.component';
 
+import ISISStudyLanding from '../views/landing/isis/isisStudyLanding.component';
+import ISISInvestigationLanding from '../views/landing/isis/isisInvestigationLanding.component';
+import ISISDatasetLanding from '../views/landing/isis/isisDatasetLanding.component';
+
 import {
   checkInstrumentAndFacilityCycleId,
   checkInstrumentAndStudyId,
@@ -73,17 +77,27 @@ const ISISRoutes = {
   datafiles:
     '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1/datafile',
   mydata: '/my-data/ISIS',
+  landing: {
+    investigation: '/browse/instrument/1/facilityCycle/1/investigation/1',
+    dataset: '/browse/instrument/1/facilityCycle/1/investigation/1/dataset/1',
+  },
 };
 
 // The ISIS StudHierarchy routes to test.
 const ISISStudyHierarchyRoutes = {
   instruments: '/browseStudyHierarchy/instrument',
-  facilityCycles: '/browseStudyHierarchy/instrument/1/study',
+  studies: '/browseStudyHierarchy/instrument/1/study',
   investigations: '/browseStudyHierarchy/instrument/1/study/1/investigation',
   datasets:
     '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset',
   datafiles:
     '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1/datafile',
+  landing: {
+    study: '/browseStudyHierarchy/instrument/1/study/1',
+    investigation: '/browseStudyHierarchy/instrument/1/study/1/investigation/1',
+    dataset:
+      '/browseStudyHierarchy/instrument/1/study/1/investigation/1/dataset/1',
+  },
 };
 
 // The DLS routes to test.
@@ -117,6 +131,17 @@ describe('PageTable', () => {
       <Provider store={mockStore(state)}>
         <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
           <PageRouting view="card" />
+        </MemoryRouter>
+      </Provider>
+    );
+  };
+
+  const createLandingWrapper = (path: string): ReactWrapper => {
+    const mockStore = configureStore([thunk]);
+    return mount(
+      <Provider store={mockStore(state)}>
+        <MemoryRouter initialEntries={[{ key: 'testKey', pathname: path }]}>
+          <PageRouting view={null} />
         </MemoryRouter>
       </Provider>
     );
@@ -246,6 +271,31 @@ describe('PageTable', () => {
       expect(wrapper.exists(ISISInvestigationsCardView)).toBe(true);
     });
 
+    it('renders ISISInvestigationLanding for ISIS investigation route', async () => {
+      const wrapper = createLandingWrapper(
+        ISISRoutes['landing']['investigation']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISInvestigationLanding)).toBe(true);
+    });
+
+    it('does not render ISISInvestigationLanding for incorrect ISIS investigation route', async () => {
+      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      const wrapper = createLandingWrapper(
+        ISISRoutes['landing']['investigation']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISInvestigationLanding)).toBe(false);
+    });
+
     it('renders ISISDatasetsTable for ISIS datasets route', async () => {
       const wrapper = createTableWrapper(ISISRoutes['datasets']);
       await act(async () => {
@@ -288,6 +338,27 @@ describe('PageTable', () => {
       expect(wrapper.exists(ISISDatasetsCardView)).toBe(false);
     });
 
+    it('renders ISISDatasetLanding for ISIS dataset route', async () => {
+      const wrapper = createLandingWrapper(ISISRoutes['landing']['dataset']);
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISDatasetLanding)).toBe(true);
+    });
+
+    it('does not render ISISDatasetLanding for incorrect ISIS dataset route', async () => {
+      (checkInstrumentAndFacilityCycleId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      const wrapper = createLandingWrapper(ISISRoutes['landing']['dataset']);
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISDatasetLanding)).toBe(false);
+    });
+
     it('renders ISISDatafilesTable for ISIS datafiles route', async () => {
       const wrapper = createTableWrapper(ISISRoutes['datafiles']);
       await act(async () => {
@@ -328,18 +399,25 @@ describe('PageTable', () => {
       expect(wrapper.exists(ISISInstrumentsCardView)).toBe(true);
     });
 
-    it('renders ISISFacilityCyclesTable for ISIS facilityCycles route in Study Hierarchy', () => {
-      const wrapper = createTableWrapper(
-        ISISStudyHierarchyRoutes['facilityCycles']
-      );
+    it('renders ISISStudiesTable for ISIS studies route in Study Hierarchy', () => {
+      const wrapper = createTableWrapper(ISISStudyHierarchyRoutes['studies']);
       expect(wrapper.exists(ISISStudiesTable)).toBe(true);
     });
 
-    it('renders ISISFacilityCyclesCardView for ISIS facilityCycles route in Study Hierarchy', () => {
-      const wrapper = createCardWrapper(
-        ISISStudyHierarchyRoutes['facilityCycles']
-      );
+    it('renders ISISStudiesCardView for ISIS studies route in Study Hierarchy', () => {
+      const wrapper = createCardWrapper(ISISStudyHierarchyRoutes['studies']);
       expect(wrapper.exists(ISISStudiesCardView)).toBe(true);
+    });
+
+    it('renders ISISStudyLanding for ISIS study route for studyHierarchy', async () => {
+      const wrapper = createLandingWrapper(
+        ISISStudyHierarchyRoutes['landing']['study']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISStudyLanding)).toBe(true);
     });
 
     it('renders ISISInvestigationsTable for ISIS investigations route in Study Hierarchy', () => {
@@ -377,6 +455,31 @@ describe('PageTable', () => {
       expect(wrapper.exists(ISISDatasetsTable)).toBe(false);
     });
 
+    it('renders ISISInvestigationLanding for ISIS investigation route for studyHierarchy', async () => {
+      const wrapper = createLandingWrapper(
+        ISISStudyHierarchyRoutes['landing']['investigation']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISInvestigationLanding)).toBe(true);
+    });
+
+    it('does not render ISISInvestigationLanding for incorrect ISIS investigation route for studyHierarchy', async () => {
+      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      const wrapper = createLandingWrapper(
+        ISISStudyHierarchyRoutes['landing']['investigation']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISInvestigationLanding)).toBe(false);
+    });
+
     it('renders ISISDatasetsCardView for ISIS datasets route in Study Hierarchy', async () => {
       const wrapper = createCardWrapper(ISISStudyHierarchyRoutes['datasets']);
       await act(async () => {
@@ -396,6 +499,31 @@ describe('PageTable', () => {
         wrapper.update();
       });
       expect(wrapper.exists(ISISDatasetsCardView)).toBe(false);
+    });
+
+    it('renders ISISDatasetLanding for ISIS dataset route for studyHierarchy', async () => {
+      const wrapper = createLandingWrapper(
+        ISISStudyHierarchyRoutes['landing']['dataset']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISDatasetLanding)).toBe(true);
+    });
+
+    it('does not render ISISDatasetLanding for incorrect ISIS dataset route for studyHierarchy', async () => {
+      (checkInstrumentAndStudyId as jest.Mock).mockImplementation(() =>
+        Promise.resolve(false)
+      );
+      const wrapper = createLandingWrapper(
+        ISISStudyHierarchyRoutes['landing']['dataset']
+      );
+      await act(async () => {
+        await flushPromises();
+        wrapper.update();
+      });
+      expect(wrapper.exists(ISISDatasetLanding)).toBe(false);
     });
 
     it('renders ISISDatafilesTable for ISIS datafiles route in Study Hierarchy', async () => {

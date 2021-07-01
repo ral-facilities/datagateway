@@ -67,12 +67,22 @@ describe('Cart actions', () => {
       );
 
       const asyncAction = fetchDownloadCart();
+      const getState = (): Partial<StateType> => ({
+        dgcommon: {
+          ...initialState,
+          facilityName: 'TEST',
+          urls: {
+            ...initialState.urls,
+            downloadApiUrl: 'http://example.com',
+          },
+        },
+      });
       await asyncAction(dispatch, getState, null);
 
       expect(actions[0]).toEqual(fetchDownloadCartRequest());
       expect(actions[1]).toEqual(fetchDownloadCartSuccess(mockData));
       expect(axios.get).toHaveBeenCalledWith(
-        '/user/cart/LILS',
+        'http://example.com/user/cart/TEST',
         expect.objectContaining({
           params: {
             sessionId: null,
@@ -112,6 +122,16 @@ describe('Cart actions', () => {
       );
 
       const asyncAction = addToCart('dataset', [1, 2]);
+      const getState = (): Partial<StateType> => ({
+        dgcommon: {
+          ...initialState,
+          facilityName: 'TEST',
+          urls: {
+            ...initialState.urls,
+            downloadApiUrl: 'http://example.com',
+          },
+        },
+      });
       await asyncAction(dispatch, getState, null);
 
       const params = new URLSearchParams();
@@ -121,7 +141,7 @@ describe('Cart actions', () => {
       expect(actions[0]).toEqual(addToCartRequest());
       expect(actions[1]).toEqual(addToCartSuccess(mockData));
       expect(axios.post).toHaveBeenCalledWith(
-        '/user/cart/LILS/cartItems',
+        'http://example.com/user/cart/TEST/cartItems',
         params
       );
     });
@@ -155,12 +175,22 @@ describe('Cart actions', () => {
       );
 
       const asyncAction = removeFromCart('dataset', [1, 2]);
+      const getState = (): Partial<StateType> => ({
+        dgcommon: {
+          ...initialState,
+          facilityName: 'TEST',
+          urls: {
+            ...initialState.urls,
+            downloadApiUrl: 'http://example.com',
+          },
+        },
+      });
       await asyncAction(dispatch, getState, null);
 
       expect(actions[0]).toEqual(removeFromCartRequest());
       expect(actions[1]).toEqual(removeFromCartSuccess(mockData));
       expect(axios.delete).toHaveBeenCalledWith(
-        '/user/cart/LILS/cartItems',
+        'http://example.com/user/cart/TEST/cartItems',
         expect.objectContaining({
           params: {
             sessionId: null,
@@ -191,7 +221,7 @@ describe('Cart actions', () => {
   });
 
   describe('fetchAllIds action', () => {
-    const mockAllIdsData = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
+    const mockAllIdsData = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
     it('dispatches fetchAllIdsRequest and fetchAllIdsSuccess actions upon successful fetchAllIds action', async () => {
       (axios.get as jest.Mock).mockImplementationOnce(() =>
@@ -207,8 +237,8 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
 
       const params = new URLSearchParams();
-      params.append('order', JSON.stringify('ID asc'));
-      params.append('distinct', JSON.stringify('ID'));
+      params.append('order', JSON.stringify('id asc'));
+      params.append('distinct', JSON.stringify('id'));
 
       expect(axios.get).toHaveBeenCalledWith('/investigations', {
         headers: { Authorization: 'Bearer null' },
@@ -226,11 +256,11 @@ describe('Cart actions', () => {
       const asyncAction = fetchAllIds('dataset', [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: 1 } }),
+          filterValue: JSON.stringify({ 'dataset.id': { eq: 1 } }),
         },
         {
           filterType: 'distinct',
-          filterValue: JSON.stringify('NAME'),
+          filterValue: JSON.stringify('name'),
         },
       ]);
 
@@ -254,11 +284,11 @@ describe('Cart actions', () => {
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 desc'));
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ column1: { like: '1' } }));
       params.append('where', JSON.stringify({ column2: { like: '2' } }));
-      params.append('where', JSON.stringify({ DATASET_ID: { eq: 1 } }));
-      params.append('distinct', JSON.stringify(['NAME', 'ID']));
+      params.append('where', JSON.stringify({ 'dataset.id': { eq: 1 } }));
+      params.append('distinct', JSON.stringify(['name', 'id']));
 
       expect(axios.get).toHaveBeenCalledWith('/datasets', {
         headers: { Authorization: 'Bearer null' },
@@ -276,7 +306,7 @@ describe('Cart actions', () => {
       const asyncAction = fetchAllIds('datafile', [
         {
           filterType: 'distinct',
-          filterValue: JSON.stringify(['NAME', 'TITLE']),
+          filterValue: JSON.stringify(['name', 'title']),
         },
       ]);
 
@@ -286,8 +316,8 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
 
       const params = new URLSearchParams();
-      params.append('order', JSON.stringify('ID asc'));
-      params.append('distinct', JSON.stringify(['NAME', 'TITLE', 'ID']));
+      params.append('order', JSON.stringify('id asc'));
+      params.append('distinct', JSON.stringify(['name', 'title', 'id']));
 
       expect(axios.get).toHaveBeenCalledWith('/datafiles', {
         headers: { Authorization: 'Bearer null' },
@@ -316,7 +346,7 @@ describe('Cart actions', () => {
   });
 
   describe('fetchAllISISInvestigationIds action', () => {
-    const mockAllIdsData = [{ ID: 1 }, { ID: 2 }, { ID: 3 }];
+    const mockAllIdsData = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
     it('dispatches fetchAllIdsRequest and fetchAllIdsSuccess actions upon successful fetchAllISISInvestigationIds action', async () => {
       (axios.get as jest.Mock).mockImplementationOnce(() =>
@@ -332,7 +362,7 @@ describe('Cart actions', () => {
       expect(actions[1]).toEqual(fetchAllIdsSuccess([1, 2, 3], 1));
 
       const params = new URLSearchParams();
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
 
       expect(axios.get).toHaveBeenCalledWith(
         '/instruments/1/facilitycycles/2/investigations',
@@ -372,7 +402,7 @@ describe('Cart actions', () => {
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 desc'));
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ column1: { like: '1' } }));
       params.append('where', JSON.stringify({ column2: { like: '2' } }));
 

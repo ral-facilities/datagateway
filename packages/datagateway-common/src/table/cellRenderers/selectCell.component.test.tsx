@@ -9,16 +9,16 @@ describe('Select cell component', () => {
   const onUncheck = jest.fn();
   const data = [
     {
-      ID: 1,
-      NAME: 'test 1',
+      id: 1,
+      name: 'test 1',
     },
     {
-      ID: 2,
-      NAME: 'test 2',
+      id: 2,
+      name: 'test 2',
     },
     {
-      ID: 3,
-      NAME: 'test 3',
+      id: 3,
+      name: 'test 3',
     },
   ];
   const selectCellProps = {

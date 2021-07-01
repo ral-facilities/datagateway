@@ -43,7 +43,16 @@
     "description": "Description",
     "pid": "DOI",
     "end_date": "End Date",
-    "start_date": "Start Date"
+    "start_date": "Start Date",
+    "details": {
+      "label": "Study Details",
+      "investigations": "View Investigations",
+      "users": "Study Users",
+      "publisher": "Publisher",
+      "format": "Data Format",
+      "citation_label": "Data Citation",
+      "citation_format": "The recommended format for citing this data in a research publication is [author]; [date]: [title], [publisher], [doi]:"
+    }
   },
   "investigations": {
     "title": "Title",
@@ -55,9 +64,9 @@
     "visit_id": "Visit ID",
     "rb_number": "RB Number",
     "doi": "DOI",
+    "parent_doi": "Parent DOI",
     "dataset_count": "Dataset Count",
-    "type_id": "Type ID",
-    "facility_id": "Facility ID",
+    "release_date": "Public Release",
     "details": {
       "tabs_label": "Investigation Details Tabs",
       "label": "Investigation Details",
@@ -72,6 +81,8 @@
       "doi": "DOI",
       "size": "Size",
       "calculate": "Calculate",
+      "datasets": "View Datasets",
+      "facility": "Facility",
       "users": {
         "label": "Investigation Users",
         "name": "Name"
@@ -83,7 +94,16 @@
       "publications": {
         "label": "Publications",
         "reference": "Reference"
+      },
+      "type": {
+        "id": "Type ID"
       }
+    },
+    "facility": {
+      "id": "Facility ID"
+    },
+    "type": {
+      "id": "Type ID"
     }
   },
   "datasets": {
@@ -92,6 +112,11 @@
     "modified_time": "Modified Time",
     "size": "Size",
     "datafile_count": "Datafile Count",
+    "doi": "DOI",
+    "completion": "Completion",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
+    "location": "Location",
     "details": {
       "tabs_label": "Dataset Details Tabs",
       "label": "Dataset Details",
@@ -101,11 +126,12 @@
       "end_date": "End Date",
       "start_date": "Start Date",
       "calculate": "Calculate",
+      "datafiles": "View Datafiles",
       "type": {
         "label": "Dataset Types",
         "name": "Name",
         "description": "Description",
-        "type_id": "Type ID"
+        "id": "Type ID"
       }
     },
     "download": "Download"
@@ -139,6 +165,11 @@
     "message": "We&apos;re sorry, it seems as though the URL you requested is attempting to fetch incorrect data. Please double check your URL, navigate back via the breadcrumbs or <2>go back to the top level</2>.",
     "filter_message": "No results found with current filters applied, please modify filter settings and try again."
   },
+  "buttons": {
+    "add_to_cart": "Add to cart",
+    "remove_from_cart": "Remove from cart",
+    "download": "Download"
+  },
   "advanced_filters": {
     "show": "Show Advanced Filters",
     "hide": "Hide Advanced Filters",
@@ -159,5 +190,28 @@
     "no_description": "No description available",
     "show_more": "Show more",
     "show_less": "Show less"
+  },
+  "doi_constants": {
+    "keywords": [
+      "STFC > ISIS",
+      "STFC > ISIS > SYNCHROTRON",
+      "SCIENCE AND TECHNOLOGY FACILITIES COUNCIL",
+      "SUBATOMIC PARTICLE > NEUTRON",
+      "SUBATOMIC PARTICLE > MUON"
+    ],
+    "publisher": {
+      "name": "STFC ISIS Neutron and Muon Source",
+      "url": "https://www.isis.stfc.ac.uk/Pages/home.aspx",
+      "email": "isisdata@stfc.ac.uk",
+      "logo": "https://data.isis.stfc.ac.uk/doi/ISIS/images/dsLogo.png"
+    },
+    "distribution": {
+      "format": "RAW/Nexus",
+      "content_url": "https://data.isis.stfc.ac.uk"
+    },
+    "branding": {
+      "title": "ISIS Neutron and Muon Source",
+      "body": "This is a page describing data taken during an experiment at the ISIS Neutron and Muon Source. Information about the ISIS Neutron and Muon Source can be found at <a href='https://www.isis.stfc.ac.uk'>https://www.isis.stfc.ac.uk</a>."
+    }
   }
 }

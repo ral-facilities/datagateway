@@ -16,28 +16,26 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
     Array [
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "NAME",
+        "dataKey": "name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.name",
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "SIZE",
+        "dataKey": "size",
         "disableSort": true,
         "icon": <Memo />,
         "label": "datasets.size",
       },
       Object {
-        "dataKey": "CREATE_TIME",
-        "disableHeaderWrap": true,
+        "dataKey": "createTime",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.create_time",
       },
       Object {
-        "dataKey": "MOD_TIME",
-        "disableHeaderWrap": true,
+        "dataKey": "modTime",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "datasets.modified_time",
@@ -47,12 +45,11 @@ exports[`ISIS Dataset table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "CREATE_TIME": "2019-07-23",
-        "ID": 1,
-        "INVESTIGATION_ID": 1,
-        "MOD_TIME": "2019-07-23",
-        "NAME": "Test 1",
-        "SIZE": 1,
+        "createTime": "2019-07-23",
+        "id": 1,
+        "modTime": "2019-07-23",
+        "name": "Test 1",
+        "size": 1,
       },
     ]
   }
@@ -85,7 +82,7 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
       "render": [Function],
     }
   }
-  to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
+  to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
 >
   <ForwardRef(Link)
     classes={
@@ -112,7 +109,7 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
         "render": [Function],
       }
     }
-    to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
+    to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
@@ -133,7 +130,7 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
       }
       onBlur={[Function]}
       onFocus={[Function]}
-      to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
+      to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
       variant="inherit"
     >
       <ForwardRef(Typography)
@@ -189,25 +186,25 @@ exports[`ISIS Dataset table component renders dataset name as a link 1`] = `
         }
         onBlur={[Function]}
         onFocus={[Function]}
-        to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
+        to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
         variant="inherit"
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
           onBlur={[Function]}
           onFocus={[Function]}
-          to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
+          to="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-            href="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
+            href="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
             navigate={[Function]}
             onBlur={[Function]}
             onFocus={[Function]}
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-              href="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1/datafile"
+              href="/browse/instrument/1/facilityCycle/2/investigation/3/dataset/1"
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}
@@ -238,7 +235,7 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
       "render": [Function],
     }
   }
-  to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1/datafile"
+  to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
 >
   <ForwardRef(Link)
     classes={
@@ -265,7 +262,7 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
         "render": [Function],
       }
     }
-    to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1/datafile"
+    to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
   >
     <WithStyles(ForwardRef(Typography))
       className="MuiLink-root MuiLink-underlineHover"
@@ -286,7 +283,7 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
       }
       onBlur={[Function]}
       onFocus={[Function]}
-      to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1/datafile"
+      to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
       variant="inherit"
     >
       <ForwardRef(Typography)
@@ -342,25 +339,25 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
         }
         onBlur={[Function]}
         onFocus={[Function]}
-        to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1/datafile"
+        to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
         variant="inherit"
       >
         <Link
           className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
           onBlur={[Function]}
           onFocus={[Function]}
-          to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1/datafile"
+          to="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
         >
           <LinkAnchor
             className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-            href="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1/datafile"
+            href="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
             navigate={[Function]}
             onBlur={[Function]}
             onFocus={[Function]}
           >
             <a
               className="MuiTypography-root MuiLink-root MuiLink-underlineHover MuiTypography-colorPrimary"
-              href="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1/datafile"
+              href="/browseStudyHierarchy/instrument/1/study/2/investigation/3/dataset/1"
               onBlur={[Function]}
               onClick={[Function]}
               onFocus={[Function]}
@@ -375,7 +372,7 @@ exports[`ISIS Dataset table component renders dataset name as a link in StudyHie
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Dataset table component renders details panel correctly and it sends off an FetchDatasetDetails action 1`] = `
+exports[`ISIS Dataset table component renders details panel correctly and it sends actions 1`] = `
 <div
   id="details-panel"
   style={
@@ -396,6 +393,11 @@ exports[`ISIS Dataset table component renders details panel correctly and it sen
       id="dataset-details-tab"
       label="datasets.details.label"
       value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      id="dataset-datafiles-tab"
+      label="datasets.details.datafiles"
+      onClick={[Function]}
     />
   </WithStyles(ForwardRef(Tabs))>
   <div

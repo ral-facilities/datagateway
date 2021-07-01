@@ -5,7 +5,9 @@ describe('ISIS - Datasets Table', () => {
     cy.login();
     cy.visit(
       '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
-    ).wait(['@datasetsCount', '@datasetsOrder'], { timeout: 10000 });
+    ).wait(['@datasetsCount', '@datasetsOrder', '@datasetsOrder'], {
+      timeout: 10000,
+    });
   });
 
   it('should load correctly', () => {
@@ -20,12 +22,12 @@ describe('ISIS - Datasets Table', () => {
     cy.get('[role="grid"]').should('not.exist');
   });
 
-  it('should be able to click a dataset to see its datafiles', () => {
+  it('should be able to click a dataset to see its landing page', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
 
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118'
     );
   });
 
@@ -266,6 +268,16 @@ describe('ISIS - Datasets Table', () => {
           'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
         )
         .should('be.visible');
+    });
+
+    it('and view datafiles', () => {
+      cy.get('[aria-label="Show details"]').first().click();
+      cy.get('#dataset-datafiles-tab').click({ force: true });
+
+      cy.location('pathname').should(
+        'eq',
+        '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+      );
     });
 
     it('and then not view details anymore', () => {

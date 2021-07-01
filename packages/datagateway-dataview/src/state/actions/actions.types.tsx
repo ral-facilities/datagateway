@@ -5,6 +5,8 @@ export const ConfigureBreadcrumbSettingsType =
   'datagateway_dataview:configure_breadcrumb';
 export const ConfigureSelectAllSettingType =
   'datagateway_dataview:configure_select_all';
+export const ConfigurePluginHostSettingType =
+  'datagateway_dataview:configure_plugin_host';
 export const SettingsLoadedType = 'datagateway_dataview:settings_loaded';
 
 export interface FeatureSwitchesPayload {
@@ -19,6 +21,9 @@ export interface ConfigureBreadcrumbSettingsPayload {
 }
 export interface ConfigureSelectAllSettingPayload {
   settings: boolean;
+}
+export interface ConfigurePluginHostSettingPayload {
+  settings: string;
 }
 
 export interface BreadcrumbSettings {

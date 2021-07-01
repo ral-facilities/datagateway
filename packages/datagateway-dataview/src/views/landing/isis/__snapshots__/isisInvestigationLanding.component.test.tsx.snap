@@ -1,0 +1,153 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ISIS Investigation Landing page renders correctly 1`] = `
+<ContextProvider
+  value={null}
+>
+  <LandingPage
+    data={
+      Array [
+        Object {
+          "datasets": Array [
+            Object {
+              "doi": "dataset doi",
+              "id": 1,
+              "name": "dataset 1",
+            },
+          ],
+          "doi": "doi 1",
+          "endDate": "2019-06-11",
+          "id": 1,
+          "investigationInstruments": Array [
+            Object {
+              "id": 1,
+              "instrument": Object {
+                "id": 3,
+                "name": "LARMOR",
+              },
+              "investigation": Object {
+                "id": 1,
+              },
+            },
+          ],
+          "name": "Test 1",
+          "rbNumber": "1",
+          "size": 1,
+          "startDate": "2019-06-10",
+          "studyInvestigations": Array [
+            Object {
+              "id": 6,
+              "investigation": Object {
+                "id": 1,
+              },
+              "study": Object {
+                "endDate": "2019-06-11",
+                "id": 7,
+                "pid": "study pid",
+                "startDate": "2019-06-10",
+              },
+            },
+          ],
+          "summary": "foo bar",
+          "title": "Test 1",
+          "visitId": "1",
+        },
+      ]
+    }
+    fetchFacilityCycleData={[Function]}
+    fetchStudyData={[Function]}
+    instrumentChildId="5"
+    instrumentId="4"
+    investigationId="1"
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    studyHierarchy={false}
+    view={null}
+    viewDatasets={[Function]}
+  />
+</ContextProvider>
+`;
+
+exports[`ISIS Investigation Landing page renders correctly for studyHierarchy 1`] = `
+<ContextProvider
+  value={null}
+>
+  <LandingPage
+    data={
+      Array [
+        Object {
+          "datasets": Array [
+            Object {
+              "doi": "dataset doi",
+              "id": 1,
+              "name": "dataset 1",
+            },
+          ],
+          "doi": "doi 1",
+          "endDate": "2019-06-11",
+          "id": 1,
+          "investigationInstruments": Array [
+            Object {
+              "id": 1,
+              "instrument": Object {
+                "id": 3,
+                "name": "LARMOR",
+              },
+              "investigation": Object {
+                "id": 1,
+              },
+            },
+          ],
+          "name": "Test 1",
+          "rbNumber": "1",
+          "size": 1,
+          "startDate": "2019-06-10",
+          "studyInvestigations": Array [
+            Object {
+              "id": 6,
+              "investigation": Object {
+                "id": 1,
+              },
+              "study": Object {
+                "endDate": "2019-06-11",
+                "id": 7,
+                "pid": "study pid",
+                "startDate": "2019-06-10",
+              },
+            },
+          ],
+          "summary": "foo bar",
+          "title": "Test 1",
+          "visitId": "1",
+        },
+      ]
+    }
+    fetchFacilityCycleData={[Function]}
+    fetchStudyData={[Function]}
+    instrumentChildId="5"
+    instrumentId="4"
+    investigationId="1"
+    store={
+      Object {
+        "clearActions": [Function],
+        "dispatch": [Function],
+        "getActions": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+      }
+    }
+    studyHierarchy={true}
+    view={null}
+    viewDatasets={[Function]}
+  />
+</ContextProvider>
+`;

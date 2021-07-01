@@ -8,6 +8,7 @@ export interface DGDataViewState {
   breadcrumbSettings: BreadcrumbSettings;
   settingsLoaded: boolean;
   selectAllSetting: boolean;
+  pluginHost: string;
 }
 
 export interface EntityCache {

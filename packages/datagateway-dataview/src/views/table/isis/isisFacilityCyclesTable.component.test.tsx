@@ -35,12 +35,11 @@ describe('ISIS FacilityCycles table component', () => {
     );
     state.dgcommon.data = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        DESCRIPTION: 'Test 1',
-        STARTDATE: '2019-07-03',
-        ENDDATE: '2019-07-04',
-        FACILITY_ID: 1,
+        id: 1,
+        name: 'Test 1',
+        description: 'Test 1',
+        startDate: '2019-07-03',
+        endDate: '2019-07-04',
       },
     ];
 
@@ -112,13 +111,13 @@ describe('ISIS FacilityCycles table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(
-      filterTable('NAME', { value: 'test', type: 'include' })
+      filterTable('name', { value: 'test', type: 'include' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[4]).toEqual(filterTable('NAME', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('name', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -138,13 +137,13 @@ describe('ISIS FacilityCycles table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[2]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06' })
+      filterTable('endDate', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[4]).toEqual(filterTable('ENDDATE', null));
+    expect(testStore.getActions()[4]).toEqual(filterTable('endDate', null));
   });
 
   it('sends sortTable action on sort', () => {
@@ -162,7 +161,7 @@ describe('ISIS FacilityCycles table component', () => {
       .first()
       .simulate('click');
 
-    expect(testStore.getActions()[2]).toEqual(sortTable('NAME', 'asc'));
+    expect(testStore.getActions()[2]).toEqual(sortTable('name', 'asc'));
   });
 
   it('renders facilitycycle name as a link', () => {

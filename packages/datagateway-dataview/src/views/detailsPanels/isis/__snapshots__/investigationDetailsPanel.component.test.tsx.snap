@@ -28,6 +28,11 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
       label="investigations.details.users.label"
       value="users"
     />
+    <WithStyles(ForwardRef(Tab))
+      id="investigation-datasets-tab"
+      label="investigations.details.datasets"
+      onClick={[Function]}
+    />
   </WithStyles(ForwardRef(Tabs))>
   <div
     aria-labelledby="investigation-details-tab"
@@ -77,7 +82,7 @@ exports[`Investigation details panel component gracefully handles StudyInvestiga
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
@@ -184,6 +189,11 @@ exports[`Investigation details panel component renders correctly 1`] = `
       label="investigations.details.label"
       value="details"
     />
+    <WithStyles(ForwardRef(Tab))
+      id="investigation-datasets-tab"
+      label="investigations.details.datasets"
+      onClick={[Function]}
+    />
   </WithStyles(ForwardRef(Tabs))>
   <div
     aria-labelledby="investigation-details-tab"
@@ -233,7 +243,7 @@ exports[`Investigation details panel component renders correctly 1`] = `
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
@@ -364,6 +374,11 @@ exports[`Investigation details panel component renders user, sample and publicat
       label="investigations.details.publications.label"
       value="publications"
     />
+    <WithStyles(ForwardRef(Tab))
+      id="investigation-datasets-tab"
+      label="investigations.details.datasets"
+      onClick={[Function]}
+    />
   </WithStyles(ForwardRef(Tabs))>
   <div
     aria-labelledby="investigation-details-tab"
@@ -413,7 +428,7 @@ exports[`Investigation details panel component renders user, sample and publicat
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visit_id
+          investigations.details.visitId
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>

@@ -184,14 +184,14 @@ export const fetchInvestigations = (
           if (optionalParams.getDatasetCount) {
             batch(() => {
               response.data.forEach((investigation: Investigation) => {
-                dispatch(fetchInvestigationDatasetsCount(investigation.ID));
+                dispatch(fetchInvestigationDatasetsCount(investigation.id));
               });
             });
           }
           if (optionalParams.getSize) {
             batch(() => {
               response.data.forEach((investigation: Investigation) => {
-                dispatch(fetchInvestigationSize(investigation.ID));
+                dispatch(fetchInvestigationSize(investigation.id));
               });
             });
           }
@@ -221,13 +221,10 @@ export const fetchISISInvestigations = ({
 
     const params = getApiFilter(getState);
 
-    params.append(
-      'include',
-      JSON.stringify([
-        { INVESTIGATIONINSTRUMENT: 'INSTRUMENT' },
-        { STUDYINVESTIGATION: 'STUDY' },
-      ])
-    );
+    let includeParams = [
+      { investigationInstruments: 'instrument' },
+      { studyInvestigations: 'study' },
+    ];
 
     if (offsetParams) {
       params.append('skip', JSON.stringify(offsetParams.startIndex));
@@ -236,6 +233,22 @@ export const fetchISISInvestigations = ({
         JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
       );
     }
+
+    if (optionalParams && optionalParams.additionalFilters) {
+      optionalParams.additionalFilters.forEach((filter) => {
+        if (filter.filterType === 'include') {
+          const additionalIncludeParams = JSON.parse(filter.filterValue);
+          if (Array.isArray(additionalIncludeParams)) {
+            includeParams = includeParams.concat(additionalIncludeParams);
+          } else {
+            includeParams.push(additionalIncludeParams);
+          }
+        } else {
+          params.append(filter.filterType, filter.filterValue);
+        }
+      });
+    }
+    params.append('include', JSON.stringify(includeParams));
 
     const { apiUrl } = getState().dgcommon.urls;
 
@@ -257,7 +270,7 @@ export const fetchISISInvestigations = ({
         if (optionalParams && optionalParams.getSize) {
           batch(() => {
             response.data.forEach((investigation: Investigation) => {
-              dispatch(fetchInvestigationSize(investigation.ID));
+              dispatch(fetchInvestigationSize(investigation.id));
             });
           });
         }
@@ -319,10 +332,14 @@ export const fetchInvestigationDetails = (
 
     const params = new URLSearchParams();
 
-    params.append('where', JSON.stringify({ ID: { eq: investigationId } }));
+    params.append('where', JSON.stringify({ id: { eq: investigationId } }));
     params.append(
       'include',
-      JSON.stringify([{ INVESTIGATIONUSER: 'USER_' }, 'SAMPLE', 'PUBLICATION'])
+      JSON.stringify([
+        { investigationUsers: 'user' },
+        'samples',
+        'publications',
+      ])
     );
 
     const { apiUrl } = getState().dgcommon.urls;
@@ -475,7 +492,7 @@ export const fetchFilter = (
     const distinctFilterString = params.get('distinct');
     // Use the dataKey if provided, this allows for nested items
     // to be read as requesting them from the API maybe in a different format.
-    // i.e. INVESTIGATIONINSTRUMENT[0].INSTRUMENT maybe requested as INVESTIGATIONINSTRUMENT.INSTRUMENT
+    // i.e. investigationInstruments[0].instrument maybe requested as investigationInstruments.instrument
     const filterValue = dataKey ? dataKey : filterKey;
     if (distinctFilterString) {
       const distinctFilter: string | string[] = JSON.parse(

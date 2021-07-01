@@ -40,10 +40,10 @@ const DatafileDetailsPanel = (
   const datafileData = rowData as Datafile;
 
   React.useEffect(() => {
-    if (!datafileData.DATAFILEPARAMETER) {
-      fetchDetails(datafileData.ID);
+    if (!datafileData.parameters) {
+      fetchDetails(datafileData.id);
     }
-  }, [datafileData.DATAFILEPARAMETER, datafileData.ID, fetchDetails]);
+  }, [datafileData.parameters, datafileData.id, fetchDetails]);
 
   React.useLayoutEffect(() => {
     detailsPanelResize();
@@ -64,7 +64,7 @@ const DatafileDetailsPanel = (
           label={t('datafiles.details.label')}
           value="details"
         />
-        {datafileData.DATAFILEPARAMETER && (
+        {datafileData.parameters && (
           <Tab
             id="datafile-parameters-tab"
             aria-controls="datafile-parameters-panel"
@@ -82,7 +82,7 @@ const DatafileDetailsPanel = (
         <Grid container className={classes.root} direction="column">
           <Grid item xs>
             <Typography variant="h6">
-              <b>{datafileData.NAME}</b>
+              <b>{datafileData.name}</b>
             </Typography>
             <Divider className={classes.divider} />
           </Grid>
@@ -91,7 +91,7 @@ const DatafileDetailsPanel = (
               {t('datafiles.details.description')}
             </Typography>
             <Typography>
-              <b>{datafileData.DESCRIPTION}</b>
+              <b>{datafileData.description}</b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -99,12 +99,12 @@ const DatafileDetailsPanel = (
               {t('datafiles.details.location')}
             </Typography>
             <Typography>
-              <b>{datafileData.LOCATION}</b>
+              <b>{datafileData.location}</b>
             </Typography>
           </Grid>
         </Grid>
       </div>
-      {datafileData.DATAFILEPARAMETER && (
+      {datafileData.parameters && (
         <div
           id="datafile-parameters-panel"
           aria-labelledby="datafile-parameters-tab"
@@ -117,41 +117,41 @@ const DatafileDetailsPanel = (
             className={classes.root}
             direction="column"
           >
-            {datafileData.DATAFILEPARAMETER.map((parameter) => {
-              if (parameter.PARAMETERTYPE) {
-                switch (parameter.PARAMETERTYPE.VALUETYPE) {
+            {datafileData.parameters.map((parameter) => {
+              if (parameter.type) {
+                switch (parameter.type.valueType) {
                   case 'STRING':
                     return (
-                      <Grid key={parameter.ID} item xs>
+                      <Grid key={parameter.id} item xs>
                         <Typography variant="overline">
-                          {parameter.PARAMETERTYPE.NAME}
+                          {parameter.type.name}
                         </Typography>
                         <Typography>
-                          <b>{parameter.STRING_VALUE}</b>
+                          <b>{parameter.stringValue}</b>
                         </Typography>
                       </Grid>
                     );
                   case 'NUMERIC':
                     return (
-                      <Grid key={parameter.ID} item xs>
+                      <Grid key={parameter.id} item xs>
                         <Typography variant="overline">
-                          {parameter.PARAMETERTYPE.NAME}
+                          {parameter.type.name}
                         </Typography>
                         <Typography>
-                          <b>{parameter.NUMERIC_VALUE}</b>
+                          <b>{parameter.numericValue}</b>
                         </Typography>
                       </Grid>
                     );
                   case 'DATE_AND_TIME':
                     return (
-                      <Grid key={parameter.ID} item xs>
+                      <Grid key={parameter.id} item xs>
                         <Typography variant="overline">
-                          {parameter.PARAMETERTYPE.NAME}
+                          {parameter.type.name}
                         </Typography>
                         <Typography>
                           <b>
-                            {parameter.DATETIME_VALUE &&
-                              parameter.DATETIME_VALUE.split(' ')[0]}
+                            {parameter.dateTimeValue &&
+                              parameter.dateTimeValue.split(' ')[0]}
                           </b>
                         </Typography>
                       </Grid>

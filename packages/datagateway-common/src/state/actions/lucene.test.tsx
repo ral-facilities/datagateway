@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { dGCommonInitialState, StateType } from '../..';
 import handleICATError from '../../handleICATError';
 import { actions, resetActions, dispatch, getState } from '../../setupTests';
 import {
@@ -33,6 +34,15 @@ describe('Lucene actions', () => {
       startDate: null,
       endDate: null,
     };
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...dGCommonInitialState,
+        urls: {
+          ...dGCommonInitialState.urls,
+          icatUrl: 'https://example.com/icat',
+        },
+      },
+    });
     const asyncAction = fetchLuceneIds('Datafile', luceneSearchParams);
     await asyncAction(dispatch, getState, null);
 
@@ -48,9 +58,12 @@ describe('Lucene actions', () => {
       },
       maxCount: 300,
     };
-    expect(axios.get).toHaveBeenCalledWith('/icat/lucene/data', {
-      params: params,
-    });
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: params,
+      }
+    );
   });
 
   it('dispatches fetchLuceneIdsRequest and fetchLuceneIdsSuccess actions upon successful fetchLuceneIds action with arguments', async () => {
@@ -66,6 +79,15 @@ describe('Lucene actions', () => {
       endDate: new Date(2020, 11, 31),
       maxCount: 100,
     };
+    const getState = (): Partial<StateType> => ({
+      dgcommon: {
+        ...dGCommonInitialState,
+        urls: {
+          ...dGCommonInitialState.urls,
+          icatUrl: 'https://example.com/icat',
+        },
+      },
+    });
     const asyncAction = fetchLuceneIds('Datafile', luceneSearchParams);
     await asyncAction(dispatch, getState, null);
 
@@ -82,9 +104,12 @@ describe('Lucene actions', () => {
       },
       maxCount: 100,
     };
-    expect(axios.get).toHaveBeenCalledWith('/icat/lucene/data', {
-      params: params,
-    });
+    expect(axios.get).toHaveBeenCalledWith(
+      'https://example.com/icat/lucene/data',
+      {
+        params: params,
+      }
+    );
   });
 
   it('dispatches fetchLuceneIdsRequest and fetchLuceneIdsFailure actions upon unsuccessful fetchLuceneIds action', async () => {

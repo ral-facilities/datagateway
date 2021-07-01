@@ -35,18 +35,16 @@ jest.mock('../../handleICATError');
 describe('Dataset actions', () => {
   const mockData: Dataset[] = [
     {
-      ID: 1,
-      NAME: 'Test 1',
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-11',
-      INVESTIGATION_ID: 1,
+      id: 1,
+      name: 'Test 1',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
     },
     {
-      ID: 2,
-      NAME: 'Test 2',
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-12',
-      INVESTIGATION_ID: 1,
+      id: 2,
+      name: 'Test 2',
+      modTime: '2019-06-10',
+      createTime: '2019-06-12',
     },
   ];
 
@@ -86,7 +84,11 @@ describe('Dataset actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+          filterValue: JSON.stringify({ 'investigation.id': { eq: 1 } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ],
     });
@@ -96,8 +98,9 @@ describe('Dataset actions', () => {
     expect(actions[1]).toEqual(fetchDatasetsSuccess(mockData, 1));
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+    params.append('order', JSON.stringify('id asc'));
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('investigation'));
 
     expect(axios.get).toHaveBeenCalledWith('/datasets', {
       headers: { Authorization: 'Bearer null' },
@@ -110,7 +113,11 @@ describe('Dataset actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+          filterValue: JSON.stringify({ 'investigation.id': { eq: 1 } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ],
     });
@@ -135,10 +142,11 @@ describe('Dataset actions', () => {
 
     const params = new URLSearchParams();
     params.append('order', JSON.stringify('column1 desc'));
-    params.append('order', JSON.stringify('ID asc'));
+    params.append('order', JSON.stringify('id asc'));
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('investigation'));
 
     expect(axios.get).toHaveBeenCalledWith('/datasets', {
       headers: { Authorization: 'Bearer null' },
@@ -270,7 +278,11 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasetCount([
       {
         filterType: 'where',
-        filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+        filterValue: JSON.stringify({ 'investigation.id': { eq: 1 } }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('investigation'),
       },
     ]);
     await asyncAction(dispatch, getState, null);
@@ -279,7 +291,8 @@ describe('Dataset actions', () => {
     expect(actions[1]).toEqual(fetchDatasetCountSuccess(7, 1));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('investigation'));
 
     expect(axios.get).toHaveBeenCalledWith('/datasets/count', {
       headers: { Authorization: 'Bearer null' },
@@ -297,7 +310,11 @@ describe('Dataset actions', () => {
     const asyncAction = fetchDatasetCount([
       {
         filterType: 'where',
-        filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+        filterValue: JSON.stringify({ 'investigation.id': { eq: 1 } }),
+      },
+      {
+        filterType: 'include',
+        filterValue: JSON.stringify('investigation'),
       },
     ]);
     const getState = (): Partial<StateType> => ({
@@ -322,7 +339,8 @@ describe('Dataset actions', () => {
     const params = new URLSearchParams();
     params.append('where', JSON.stringify({ column1: { like: '1' } }));
     params.append('where', JSON.stringify({ column2: { like: '2' } }));
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('investigation'));
 
     expect(axios.get).toHaveBeenCalledWith('/datasets/count', {
       headers: { Authorization: 'Bearer null' },
@@ -355,7 +373,11 @@ describe('Dataset actions', () => {
       additionalFilters: [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }),
+          filterValue: JSON.stringify({ 'investigation.id': { eq: 1 } }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ],
     });
@@ -368,8 +390,9 @@ describe('Dataset actions', () => {
     await asyncAction(dispatch, getState, null);
 
     const params = new URLSearchParams();
-    params.append('order', JSON.stringify('ID asc'));
-    params.append('where', JSON.stringify({ INVESTIGATION_ID: { eq: 1 } }));
+    params.append('order', JSON.stringify('id asc'));
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('investigation'));
     params.append('skip', JSON.stringify(0));
     params.append('limit', JSON.stringify(50));
 
@@ -382,14 +405,13 @@ describe('Dataset actions', () => {
   it('dispatches fetchDatasetDetailsRequest and fetchDatasetDetailsSuccess actions upon successful fetchDatasetDetails action', async () => {
     const mockDetailsData: Dataset[] = [
       {
-        ID: 1,
-        NAME: 'Test 1',
-        MOD_TIME: '2019-06-10',
-        CREATE_TIME: '2019-06-11',
-        INVESTIGATION_ID: 1,
-        DATASETTYPE: {
-          ID: 2,
-          NAME: 'Test type',
+        id: 1,
+        name: 'Test 1',
+        modTime: '2019-06-10',
+        createTime: '2019-06-11',
+        type: {
+          id: 2,
+          name: 'Test type',
         },
       },
     ];
@@ -407,8 +429,8 @@ describe('Dataset actions', () => {
     expect(actions[1]).toEqual(fetchDatasetDetailsSuccess(mockDetailsData));
 
     const params = new URLSearchParams();
-    params.append('where', JSON.stringify({ ID: { eq: 1 } }));
-    params.append('include', JSON.stringify('DATASETTYPE'));
+    params.append('where', JSON.stringify({ id: { eq: 1 } }));
+    params.append('include', JSON.stringify('type'));
 
     expect(axios.get).toHaveBeenCalledWith('/datasets', {
       headers: { Authorization: 'Bearer null' },
@@ -449,13 +471,14 @@ describe('Dataset actions', () => {
 
     expect(actions[0]).toEqual(fetchInvestigationDatasetsCountRequest(1));
     expect(actions[1]).toEqual(fetchInvestigationDatasetsCountSuccess(1, 2, 1));
+
+    const params = new URLSearchParams();
+    params.append('where', JSON.stringify({ 'investigation.id': { eq: 1 } }));
+    params.append('include', JSON.stringify('investigation'));
+
     expect(axios.get).toHaveBeenCalledWith(
       '/datasets/count',
-      expect.objectContaining({
-        params: {
-          where: { INVESTIGATION_ID: { eq: 1 } },
-        },
-      })
+      expect.objectContaining({ params })
     );
   });
 

@@ -30,7 +30,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
+import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
@@ -41,6 +41,7 @@ import PublicIcon from '@material-ui/icons/Public';
 import SaveIcon from '@material-ui/icons/Save';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { push } from 'connected-react-router';
 
 interface ISISInvestigationsTableProps {
   instrumentId: string;
@@ -83,6 +84,7 @@ interface ISISInvestigationsTableDispatchProps {
   fetchDetails: (investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
+  viewDatasets: (urlPrefix: string) => (id: number) => Action;
   fetchFacilityCycleAllIds: () => Promise<void>;
   fetchStudyAllIds: () => Promise<void>;
 }
@@ -196,6 +198,7 @@ const ISISInvestigationsTable = (
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
             fetchDetails={props.fetchDetails}
+            viewDatasets={props.viewDatasets(urlPrefix)}
           />
         );
       }}
@@ -203,12 +206,12 @@ const ISISInvestigationsTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.TITLE,
+              `${urlPrefix}/${investigationData.id}`,
+              investigationData.title,
               view
             );
           },
@@ -217,12 +220,12 @@ const ISISInvestigationsTable = (
         {
           icon: <FingerprintIcon />,
           label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          dataKey: 'visitId',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.VISIT_ID,
+              `${urlPrefix}/${investigationData.id}`,
+              investigationData.visitId,
               view
             );
           },
@@ -231,12 +234,12 @@ const ISISInvestigationsTable = (
         {
           icon: <FingerprintIcon />,
           label: t('investigations.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return tableLink(
-              `${urlPrefix}/${investigationData.ID}/dataset`,
-              investigationData.NAME,
+              `${urlPrefix}/${investigationData.id}`,
+              investigationData.name,
               view
             );
           },
@@ -245,16 +248,13 @@ const ISISInvestigationsTable = (
         {
           icon: <PublicIcon />,
           label: t('investigations.doi'),
-          dataKey: 'STUDYINVESTIGATION.STUDY.PID',
+          dataKey: 'studyInvestigations.study.pid',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.STUDYINVESTIGATION &&
-              investigationData.STUDYINVESTIGATION[0].STUDY
-            ) {
+            if (investigationData?.studyInvestigations?.[0]?.study) {
               return tableLink(
-                `${urlPrefix}/${investigationData.ID}/dataset`,
-                investigationData.STUDYINVESTIGATION[0].STUDY.PID,
+                `${urlPrefix}/${investigationData.id}`,
+                investigationData.studyInvestigations[0].study.pid,
                 view
               );
             } else {
@@ -266,7 +266,7 @@ const ISISInvestigationsTable = (
         {
           icon: <SaveIcon />,
           label: t('investigations.size'),
-          dataKey: 'SIZE',
+          dataKey: 'size',
           cellContentRenderer: (cellProps) => {
             return formatBytes(cellProps.cellData);
           },
@@ -275,15 +275,12 @@ const ISISInvestigationsTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT.INSTRUMENT.FULLNAME',
+          dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
-            if (
-              investigationData.INVESTIGATIONINSTRUMENT &&
-              investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-            ) {
-              return investigationData.INVESTIGATIONINSTRUMENT[0].INSTRUMENT
-                .FULLNAME;
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
+              return investigationData.investigationInstruments[0].instrument
+                .fullName;
             } else {
               return '';
             }
@@ -293,17 +290,15 @@ const ISISInvestigationsTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
         {
           icon: <CalendarTodayIcon />,
 
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
@@ -345,13 +340,13 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              'investigationInstruments.instrument.id': { eq: instrumentId },
             }),
           },
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+              'studyInvestigations.study.id': { eq: studyId },
             }),
           },
         ],
@@ -365,13 +360,13 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'investigationInstruments.instrument.id': { eq: instrumentId },
           }),
         },
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+            'studyInvestigations.study.id': { eq: studyId },
           }),
         },
       ])
@@ -389,13 +384,18 @@ const mapDispatchToProps = (
         parseInt(ownProps.instrumentChildId)
       )
     ),
+  viewDatasets: (urlPrefix: string) => {
+    return (id: number) => {
+      return dispatch(push(`${urlPrefix}/${id}/dataset`));
+    };
+  },
   fetchStudyAllIds: () =>
     dispatch(
       fetchAllIds('investigation', [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': {
+            'investigationInstruments.instrument.id': {
               eq: ownProps.instrumentId,
             },
           }),
@@ -403,7 +403,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'STUDYINVESTIGATION.STUDY.ID': { eq: ownProps.instrumentChildId },
+            'studyInvestigations.study.id': { eq: ownProps.instrumentChildId },
           }),
         },
       ])

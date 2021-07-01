@@ -253,12 +253,14 @@ export interface URLs {
   idsUrl: string;
   apiUrl: string;
   downloadApiUrl: string;
+  icatUrl: string;
 }
 
 export interface PluginRoute {
   section: string;
   link: string;
   displayName: string;
+  admin?: boolean;
   order: number;
 }
 

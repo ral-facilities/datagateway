@@ -81,6 +81,12 @@ export const paths = {
     dls: '/my-data/DLS',
     isis: '/my-data/ISIS',
   },
+  landing: {
+    isisInvestigationLanding:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId',
+    isisDatasetLanding:
+      '/browse/instrument/:instrumentId/facilityCycle/:facilityCycleId/investigation/:investigationId/dataset/:datasetId',
+  },
   toggle: {
     investigation: '/browse/investigation',
     dataset: '/browse/investigation/:investigationId/dataset',
@@ -116,6 +122,14 @@ export const paths = {
     standard: {
       isisDatafile:
         '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId/datafile',
+    },
+    landing: {
+      isisStudyLanding:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId',
+      isisInvestigationLanding:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId',
+      isisDatasetLanding:
+        '/browseStudyHierarchy/instrument/:instrumentId/study/:studyId/investigation/:investigationId/dataset/:datasetId',
     },
   },
 };
@@ -156,7 +170,13 @@ const NavBar = (props: {
           aria-label="container-table-count"
         >
           <Route
-            path={[paths.root, paths.studyHierarchy.root, paths.myData.root]}
+            exact
+            path={Object.values(paths.myData).concat(
+              Object.values(paths.toggle),
+              Object.values(paths.standard),
+              Object.values(paths.studyHierarchy.toggle),
+              Object.values(paths.studyHierarchy.standard)
+            )}
             render={() => {
               return (
                 <Paper
@@ -266,6 +286,14 @@ const ViewRouting = (props: {
 
   return (
     <SwitchRouting>
+      {/* For "landing" paths, don't use a containing Paper */}
+      <Route
+        exact
+        path={Object.values(paths.landing).concat(
+          Object.values(paths.studyHierarchy.landing)
+        )}
+        render={() => <PageRouting view={props.view} location={location} />}
+      />
       {/* For "toggle" paths, check state for the current view */}
       <Route
         exact

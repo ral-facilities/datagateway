@@ -9,6 +9,8 @@ import {
   SettingsLoadedType,
   ConfigureSelectAllSettingPayload,
   ConfigureSelectAllSettingType,
+  ConfigurePluginHostSettingPayload,
+  ConfigurePluginHostSettingType,
 } from './actions.types';
 import {
   loadUrls,
@@ -56,6 +58,15 @@ export const loadSelectAllSetting = (
   },
 });
 
+export const loadPluginHostSetting = (
+  pluginHostSetting: string
+): ActionType<ConfigurePluginHostSettingPayload> => ({
+  type: ConfigurePluginHostSettingType,
+  payload: {
+    settings: pluginHostSetting,
+  },
+});
+
 export const configureApp = (): ThunkResult<Promise<void>> => {
   const settingsPath = process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY
     ? process.env.REACT_APP_DATAVIEW_BUILD_DIRECTORY +
@@ -94,6 +105,7 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
               idsUrl: settings['idsUrl'],
               apiUrl: settings['apiUrl'],
               downloadApiUrl: settings['downloadApiUrl'],
+              icatUrl: '', // we currently don't need icatUrl in dataview so just pass empty string for now
             })
           );
         } else {
@@ -109,6 +121,10 @@ export const configureApp = (): ThunkResult<Promise<void>> => {
 
         if ('selectAllSetting' in settings) {
           dispatch(loadSelectAllSetting(settings['selectAllSetting']));
+        }
+
+        if ('pluginHost' in settings) {
+          dispatch(loadPluginHostSetting(settings['pluginHost']));
         }
 
         if (Array.isArray(settings['routes']) && settings['routes'].length) {

@@ -15,6 +15,8 @@ import { RemoveCircle, GetApp } from '@material-ui/icons';
 import BlackTooltip from '../tooltip.component';
 import { DownloadSettingsContext } from '../ConfigProvider';
 import { useTranslation } from 'react-i18next';
+import { toDate } from 'date-fns-tz';
+import { format } from 'date-fns';
 
 interface DownloadStatusTableProps {
   refreshTable: boolean;
@@ -62,6 +64,7 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
         }).then((downloads) => {
           // Replace the status field here
           const formattedDownloads = downloads.map((download) => {
+            const formattedIsDeleted = download.isDeleted ? 'Yes' : 'No';
             let formattedStatus = '';
             switch (download.status) {
               case 'COMPLETE':
@@ -80,7 +83,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 formattedStatus = t('downloadStatus.restoring');
                 break;
             }
-            return { ...download, status: formattedStatus };
+            return {
+              ...download,
+              status: formattedStatus,
+              isDeleted: formattedIsDeleted,
+            };
           });
           setData([...formattedDownloads].reverse());
           setDataLoaded(true);
@@ -171,8 +178,8 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
             value.startDate
           ) {
             // Check that the given date is in the range specified by the filter.
-            const tableTimestamp = new Date(tableValue).getTime();
-            const startTimestamp = new Date(value.startDate).getTime();
+            const tableTimestamp = toDate(tableValue).getTime();
+            const startTimestamp = toDate(value.startDate).getTime();
             const endTimestamp = value.endDate
               ? new Date(`${value.endDate} 23:59:59`).getTime()
               : Date.now();
@@ -262,12 +269,11 @@ const DownloadStatusTable: React.FC<DownloadStatusTableProps> = (
                 dataKey: 'createdAt',
                 cellContentRenderer: (props: TableCellProps) => {
                   if (props.cellData) {
-                    const date = new Date(props.cellData).toISOString();
-                    return `${date.slice(0, 10)} ${date.slice(11, 19)}`;
+                    const date = toDate(props.cellData);
+                    return format(date, 'yyyy-MM-dd HH:mm:ss');
                   }
                 },
                 filterComponent: dateFilter,
-                disableHeaderWrap: true,
               },
             ]}
             sort={sort}

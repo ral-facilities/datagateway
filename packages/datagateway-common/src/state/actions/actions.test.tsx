@@ -78,7 +78,7 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
 
       expect(filter).toEqual(params);
     });
@@ -100,7 +100,7 @@ describe('Actions', () => {
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ column1: { like: 'test' } }));
       params.append(
         'where',
@@ -125,12 +125,12 @@ describe('Actions', () => {
 
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
 
       expect(filter).toEqual(params);
     });
 
-    it('given a empty sort and filters it returns just sorting by ID', () => {
+    it('given a empty sort and filters it returns just sorting by id', () => {
       const getState = (): StateType => ({
         dgcommon: {
           ...dGCommonInitialState,
@@ -140,7 +140,7 @@ describe('Actions', () => {
       const filter = getApiFilter(getState);
 
       const params = new URLSearchParams();
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
 
       expect(filter).toEqual(params);
     });
@@ -165,7 +165,7 @@ describe('Actions', () => {
       const params = new URLSearchParams();
       params.append('order', JSON.stringify('column1 asc'));
       params.append('order', JSON.stringify('column2 desc'));
-      params.append('order', JSON.stringify('ID asc'));
+      params.append('order', JSON.stringify('id asc'));
       params.append('where', JSON.stringify({ column1: { nlike: 'test' } }));
       params.append(
         'where',
@@ -219,11 +219,10 @@ describe('Actions', () => {
 
   it('nestedValue returns empty string when provided with a falsy entry', () => {
     const datafileEntity: Entity = {
-      ID: 0,
-      NAME: 'test',
-      MOD_TIME: '2019-09-17 00:00:00',
-      CREATE_TIME: '2019-09-17 00:00:00',
-      DATASET_ID: 0,
+      id: 0,
+      name: 'test',
+      modTime: '2019-09-17 00:00:00',
+      createTime: '2019-09-17 00:00:00',
       test: null,
     };
     expect(nestedValue(datafileEntity, 'test')).toEqual('');

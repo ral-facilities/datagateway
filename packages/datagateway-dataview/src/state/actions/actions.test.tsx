@@ -4,12 +4,14 @@ import {
   configureApp,
   settingsLoaded,
   loadSelectAllSetting,
+  loadPluginHostSetting,
 } from '.';
 import {
   ConfigureFeatureSwitchesType,
   ConfigureBreadcrumbSettingsType,
   SettingsLoadedType,
   ConfigureSelectAllSettingType,
+  ConfigurePluginHostSettingType,
 } from './actions.types';
 import axios from 'axios';
 import * as log from 'loglevel';
@@ -77,6 +79,14 @@ describe('Actions', () => {
     });
   });
 
+  it('given JSON loadPluginHostSetting returns a ConfigurePluginHostSettingType with ConfigurePluginHostSettingPayload', () => {
+    const action = loadPluginHostSetting('http://localhost:3000');
+    expect(action.type).toEqual(ConfigurePluginHostSettingType);
+    expect(action.payload).toEqual({
+      settings: 'http://localhost:3000',
+    });
+  });
+
   it('settings are loaded and facilityName, loadFeatureSwitches, loadUrls, loadBreadcrumbSettings and settingsLoaded actions are sent', async () => {
     (axios.get as jest.Mock)
       .mockImplementationOnce(() =>
@@ -88,7 +98,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             breadcrumbs: {
               test: {
-                replaceEntityField: 'TITLE',
+                replaceEntityField: 'title',
               },
             },
             downloadApiUrl: 'download-api',
@@ -115,7 +125,7 @@ describe('Actions', () => {
     const asyncAction = configureApp();
     await asyncAction(dispatch, getState);
 
-    expect(actions.length).toEqual(6);
+    expect(actions.length).toEqual(7);
     expect(actions).toContainEqual(loadFacilityName('Generic'));
     expect(actions).toContainEqual(loadFeatureSwitches({}));
     expect(actions).toContainEqual(
@@ -123,17 +133,21 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+        icatUrl: '',
       })
     );
     expect(actions).toContainEqual(
       loadBreadcrumbSettings({
         test: {
-          replaceEntityField: 'TITLE',
+          replaceEntityField: 'title',
         },
       })
     );
     expect(actions).toContainEqual(settingsLoaded());
     expect(actions).toContainEqual(loadSelectAllSetting(false));
+    expect(actions).toContainEqual(
+      loadPluginHostSetting('http://localhost:3000/')
+    );
     expect(CustomEvent).toHaveBeenCalledTimes(1);
     expect(CustomEvent).toHaveBeenLastCalledWith(MicroFrontendId, {
       detail: {
@@ -190,6 +204,7 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+        icatUrl: '',
       })
     );
     expect(actions).toContainEqual(settingsLoaded());
@@ -206,7 +221,7 @@ describe('Actions', () => {
             apiUrl: 'api',
             breadcrumbs: {
               test: {
-                replaceEntityField: 'TITLE',
+                replaceEntityField: 'title',
               },
             },
             downloadApiUrl: 'download-api',
