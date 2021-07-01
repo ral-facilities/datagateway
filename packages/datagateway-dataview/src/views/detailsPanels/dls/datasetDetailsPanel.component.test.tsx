@@ -1,12 +1,13 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DatasetDetailsPanel from './datasetDetailsPanel.component';
-import { Dataset } from 'datagateway-common';
+import { Dataset, DatasetType } from 'datagateway-common';
 
 describe('Dataset details panel component', () => {
   let shallow;
   let mount;
   let rowData: Dataset;
+  let rowDatasetType: DatasetType;
   const detailsPanelResize = jest.fn();
   const fetchDetails = jest.fn();
   const fetchSize = jest.fn();
@@ -14,12 +15,19 @@ describe('Dataset details panel component', () => {
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+    rowDatasetType = {
+      id: 2,
+      name: 'Test 2',
+    };
     rowData = {
       id: 1,
       name: 'Test 1',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
       description: 'Test description',
+      startDate: '2019-06-11',
+      endDate: '2019-06-12',
+      type: rowDatasetType,
     };
   });
 
@@ -137,6 +145,16 @@ describe('Dataset details panel component', () => {
   });
 
   it('calls fetchDetails on load', () => {
+    rowData = {
+      id: 1,
+      name: 'Test 1',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
+      description: 'Test description',
+      startDate: '2019-06-11',
+      endDate: '2019-06-12',
+    };
+
     mount(
       <DatasetDetailsPanel
         rowData={rowData}
@@ -150,7 +168,7 @@ describe('Dataset details panel component', () => {
     expect(fetchDetails).toHaveBeenCalledWith(1);
   });
 
-  it('Shows "No description provided" instead of a null field', () => {
+  it('Shows "No <field> provided" incase of a null field', () => {
     rowData = {
       id: 1,
       name: 'Test 1',

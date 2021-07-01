@@ -1,24 +1,30 @@
 import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import DatasetsDetailsPanel from './datasetDetailsPanel.component';
-import { Dataset } from 'datagateway-common';
+import { Dataset, DatasetType } from 'datagateway-common';
 
 describe('Dataset details panel component', () => {
   let shallow;
   let mount;
   let rowData: Dataset;
+  let rowDatasetType: DatasetType;
   const detailsPanelResize = jest.fn();
   const fetchDetails = jest.fn();
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
+    rowDatasetType = {
+      id: 2,
+      name: 'Test 2',
+    };
     rowData = {
       id: 1,
       name: 'Test 1',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
       description: 'Test description',
+      type: rowDatasetType,
     };
   });
 
@@ -97,6 +103,14 @@ describe('Dataset details panel component', () => {
   });
 
   it('calls fetchDetails on load', () => {
+    rowData = {
+      id: 1,
+      name: 'Test 1',
+      modTime: '2019-06-10',
+      createTime: '2019-06-11',
+      description: 'Test description',
+    };
+
     mount(
       <DatasetsDetailsPanel
         rowData={rowData}

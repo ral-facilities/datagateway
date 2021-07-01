@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Datafile details panel component Shows "No description provided" instead of a null field 1`] = `
+exports[`Datafile details panel component Shows "No <field> provided" incase of a null field 1`] = `
 <div
   id="details-panel"
   style={
@@ -75,7 +75,7 @@ exports[`Datafile details panel component Shows "No description provided" instea
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            /test/location
+            datafiles.details.location not provided
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
@@ -144,7 +144,7 @@ exports[`Datafile details panel component renders correctly 1`] = `
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            Test description
+            datafiles.details.description not provided
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
@@ -234,7 +234,7 @@ exports[`Datafile details panel component renders parameters tab when present in
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
-            Test description
+            datafiles.details.description not provided
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>

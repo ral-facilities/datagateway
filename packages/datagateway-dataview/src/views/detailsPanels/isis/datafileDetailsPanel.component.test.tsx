@@ -19,7 +19,7 @@ describe('Datafile details panel component', () => {
       location: '/test/location',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
-      description: 'Test description',
+      // description: 'Test description',
     };
   });
 
@@ -140,11 +140,10 @@ describe('Datafile details panel component', () => {
     expect(fetchDetails).toHaveBeenCalledWith(1);
   });
 
-  it('Shows "No description provided" instead of a null field', () => {
+  it('Shows "No <field> provided" incase of a null field', () => {
     rowData = {
       id: 1,
       name: 'Test 1',
-      location: '/test/location',
       modTime: '2019-06-10',
       createTime: '2019-06-11',
     };
