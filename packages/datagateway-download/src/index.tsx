@@ -5,7 +5,6 @@ import './i18n';
 import App from './App';
 import axios from 'axios';
 import jsrsasign from 'jsrsasign';
-import fs from 'fs';
 
 import singleSpaReact from 'single-spa-react';
 
@@ -14,10 +13,6 @@ import {
   MicroFrontendId,
   MicroFrontendToken,
 } from 'datagateway-common';
-
-const settings = JSON.parse(
-  fs.readFileSync('server/e2e-settings.json', 'utf-8')
-);
 
 function domElementGetter(): HTMLElement {
   // Make sure there is a div for us to render into
@@ -83,38 +78,39 @@ if (
   render();
 
   if (process.env.NODE_ENV === `development`) {
-    // TODO: get url from settings file
-    const icatUrl = `${settings.icatUrl}`;
-    axios
-      .post(
-        `${icatUrl}/session`,
-        `json=${JSON.stringify({
-          plugin: 'simple',
-          credentials: [{ username: 'root' }, { password: 'pw' }],
-        })}`,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        }
-      )
-      .then((response) => {
-        const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-        const payload = {
-          sessionId: response.data.sessionId,
-          username: 'dev',
-        };
-        const jwt = jsrsasign.KJUR.jws.JWS.sign(
-          'HS256',
-          jwtHeader,
-          payload,
-          'shh'
-        );
+    axios.get('./datagateway-download-settings.json').then((settings) => {
+      const icatUrl = `${settings.data.icatUrl}`;
+      axios
+        .post(
+          `${icatUrl}/session`,
+          `json=${JSON.stringify({
+            plugin: 'simple',
+            credentials: [{ username: 'root' }, { password: 'pw' }],
+          })}`,
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          }
+        )
+        .then((response) => {
+          const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+          const payload = {
+            sessionId: response.data.sessionId,
+            username: 'dev',
+          };
+          const jwt = jsrsasign.KJUR.jws.JWS.sign(
+            'HS256',
+            jwtHeader,
+            payload,
+            'shh'
+          );
 
-        window.localStorage.setItem(MicroFrontendToken, jwt);
-      })
-      .catch((error) =>
-        console.error(`Can't log in to ICAT: ${error.message}`)
-      );
+          window.localStorage.setItem(MicroFrontendToken, jwt);
+        })
+        .catch((error) =>
+          console.error(`Can't log in to ICAT: ${error.message}`)
+        );
+    });
   }
 }
