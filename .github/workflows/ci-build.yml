@@ -402,6 +402,16 @@ jobs:
       - name: Run ICAT Ansible Playbook
         run: |
           ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+      
+      # Disable Globus for Download e2e tests
+      - name: Login to ICAT
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}' > login_output
+      - name: Disable Globus for testing
+        run: |
+          curl -k --request PUT 'https://localhost:8181/topcat/admin/downloadType/globus/status' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output` --data-urlencode 'facilityName=LILS' --data-urlencode 'disabled=True' --data-urlencode 'message="GLOBUS has been disabled for testing"'
+      - name: Remove session ID data
+        run: rm -f login_output
 
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
