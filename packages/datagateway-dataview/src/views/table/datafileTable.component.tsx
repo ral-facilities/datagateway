@@ -29,8 +29,7 @@ import {
   pushPageFilter,
   pushPageSort,
   DateFilter,
-  SortType,
-  FiltersType,
+  readURLQuery,
 } from 'datagateway-common';
 import { GetApp } from '@material-ui/icons';
 import { ThunkDispatch } from 'redux-thunk';
@@ -39,6 +38,7 @@ import { StateType } from '../../state/app.types';
 import { AnyAction } from 'redux';
 import { IndexRange } from 'react-virtualized';
 import { useTranslation } from 'react-i18next';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -62,8 +62,7 @@ interface DatafileTableProps {
 }
 
 interface DatafileTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -100,9 +99,8 @@ const DatafileTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
+    location,
     pushFilters,
     datasetId,
     investigationId,
@@ -132,17 +130,33 @@ const DatafileTable = (
     [cartItems, allIds]
   );
 
+  const { filters, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount(parseInt(datasetId), parseInt(investigationId));
     fetchAllIds(parseInt(datasetId), parseInt(investigationId));
-  }, [fetchCount, fetchAllIds, filters, datasetId, investigationId]);
+  }, [
+    fetchCount,
+    fetchAllIds,
+    location.query.filters,
+    datasetId,
+    investigationId,
+  ]);
 
   React.useEffect(() => {
     fetchData(parseInt(datasetId), parseInt(investigationId), {
       startIndex: 0,
       stopIndex: 49,
     });
-  }, [fetchData, sort, filters, datasetId, investigationId]);
+  }, [
+    fetchData,
+    location.query.sort,
+    location.query.filters,
+    datasetId,
+    investigationId,
+  ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -337,8 +351,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

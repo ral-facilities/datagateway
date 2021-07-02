@@ -14,7 +14,7 @@ import * as log from 'loglevel';
 import React from 'react';
 import { Translation } from 'react-i18next';
 import { batch, connect, Provider } from 'react-redux';
-import { AnyAction, applyMiddleware, compose, createStore } from 'redux';
+import { AnyAction, applyMiddleware, compose, createStore, Store } from 'redux';
 import { createLogger } from 'redux-logger';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import './App.css';
@@ -95,16 +95,6 @@ const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
-const store = createStore(
-  AppReducer(history),
-  composeEnhancers(applyMiddleware(...middleware))
-);
-
-listenToMessages(store.dispatch);
-
-const dispatch = store.dispatch as ThunkDispatch<StateType, null, AnyAction>;
-dispatch(configureApp());
-
 function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
   return {
     loading: !state.dgdataview.settingsLoaded,
@@ -114,9 +104,25 @@ function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
 export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
 class App extends React.Component<unknown, { hasError: boolean }> {
+  store: Store;
   public constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
+
+    // set up store in constructor to isolate from SciGateway redux store: https://redux.js.org/recipes/isolating-redux-sub-apps
+    this.store = createStore(
+      AppReducer(history),
+      composeEnhancers(applyMiddleware(...middleware))
+    );
+
+    listenToMessages(this.store.dispatch);
+
+    const dispatch = this.store.dispatch as ThunkDispatch<
+      StateType,
+      null,
+      AnyAction
+    >;
+    dispatch(configureApp());
   }
 
   public componentDidCatch(error: Error | null): void {
@@ -147,7 +153,7 @@ class App extends React.Component<unknown, { hasError: boolean }> {
     } else
       return (
         <div className="App">
-          <Provider store={store}>
+          <Provider store={this.store}>
             <ConnectedRouter history={history}>
               <StylesProvider generateClassName={generateClassName}>
                 <DGThemeProvider>

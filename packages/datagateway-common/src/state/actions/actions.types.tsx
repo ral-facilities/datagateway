@@ -24,6 +24,10 @@ export const ConfigureURLsType = 'datagateway_common:configure_urls';
 
 export const SortTableType = 'datagateway_common:sort_table';
 export const FilterTableType = 'datagateway_common:filter_table';
+export const SortUpdateType = 'datagateway_common:sort_update';
+export const FilterUpdateType = 'datagateway_common:filter_update';
+export const PageUpdateType = 'datagateway_common:page_update';
+export const ResultsUpdateType = 'datagateway_common:results_update';
 
 export const UpdateFiltersType = 'datagateway_common:update_filters';
 export const UpdateSortType = 'datagateway_common:update_sort';

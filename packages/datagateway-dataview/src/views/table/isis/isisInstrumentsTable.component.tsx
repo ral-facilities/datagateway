@@ -4,17 +4,15 @@ import {
   fetchInstrumentDetails,
   fetchInstruments,
   Filter,
-  FiltersType,
   Instrument,
   Order,
   pushPageFilter,
   pushPageSort,
-  SortType,
   Table,
   tableLink,
   TextColumnFilter,
-  ViewsType,
   TextFilter,
+  readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +22,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
+import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 
@@ -32,9 +31,7 @@ interface ISISInstrumentsTableProps {
 }
 
 interface ISISInstrumentsTableStoreProps {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
+  location: RouterLocation<unknown>;
   data: Entity[];
   totalDataCount: number;
   loading: boolean;
@@ -62,11 +59,9 @@ const ISISInstrumentsTable = (
     totalDataCount,
     fetchData,
     fetchCount,
-    sort,
     pushSort,
-    filters,
     pushFilters,
-    view,
+    location,
     loading,
     selectAllSetting,
     studyHierarchy,
@@ -84,13 +79,17 @@ const ISISInstrumentsTable = (
     />
   );
 
+  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
+
   React.useEffect(() => {
     fetchCount();
-  }, [fetchCount, filters]);
+  }, [fetchCount, location.query.filters]);
 
   React.useEffect(() => {
     fetchData({ startIndex: 0, stopIndex: 49 });
-  }, [fetchData, sort, filters]);
+  }, [fetchData, location.query.sort, location.query.filters]);
 
   const pathRoot = studyHierarchy ? 'browseStudyHierarchy' : 'browse';
   const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
@@ -150,9 +149,7 @@ const mapDispatchToProps = (
 
 const mapStateToProps = (state: StateType): ISISInstrumentsTableStoreProps => {
   return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    view: state.dgcommon.query.view,
+    location: state.router.location,
     data: state.dgcommon.data,
     totalDataCount: state.dgcommon.totalDataCount,
     loading: state.dgcommon.loading,

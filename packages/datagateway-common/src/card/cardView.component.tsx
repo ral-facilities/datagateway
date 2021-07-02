@@ -21,10 +21,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 import ArrowTooltip from '../arrowtooltip.component';
-import { Entity, Filter, Order } from '../app.types';
+import { Entity, Filter, Order, SortType, FiltersType } from '../app.types';
 import { QueryParams } from '../state/app.types';
 import { nestedValue } from '../state/actions';
-import { SortTablePayload } from '../state/actions/actions.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange } from 'react-virtualized';
@@ -82,6 +81,10 @@ export interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
   query: QueryParams;
+  sort?: SortType;
+  filters?: FiltersType;
+  page?: number | null;
+  results?: number | null;
   loadedData: boolean;
   loadedCount: boolean;
 
@@ -89,6 +92,8 @@ export interface CardViewProps {
   loadCount: () => Promise<void> | undefined;
   onPageChange: (page: number) => Promise<void>;
   onFilter: (filter: string, data: Filter | null) => Promise<void>;
+  onResultsChange?: (page: number) => Promise<void>;
+  onSort?: (sort: string, order: Order | null) => Promise<void>;
   pushQuery: (query: QueryParams) => Promise<void>;
 
   // Props to get title, description of the card
@@ -128,12 +133,6 @@ interface CVSelectedFilter {
 interface CVSort {
   label: string;
   dataKey: string;
-}
-
-interface OptionalQueryParams {
-  newSort?: SortTablePayload;
-  newPage?: number;
-  newResults?: number;
 }
 
 function CVPagination(
@@ -180,7 +179,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     loadCount,
     onPageChange,
     onFilter,
-    pushQuery,
+    onSort,
+    onResultsChange,
   } = props;
 
   // Get card information.
@@ -201,19 +201,19 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   );
 
   // Extract relevant entries from query
-  const filters = query.filters;
-  const sort = query.sort;
-  const page = React.useMemo(
-    () => (query.page && query.page > 0 ? query.page : 1),
-    [query]
-  );
-  const results = React.useMemo(
-    () =>
-      query.results && resOptions.includes(query.results)
-        ? query.results
-        : resOptions[0],
-    [query, resOptions]
-  );
+  const filters = props.filters ? props.filters : query.filters;
+  const sort = props.sort ? props.sort : query.sort;
+  const page = React.useMemo(() => {
+    const queryParamPage = props.page ? props.page : query.page;
+    return queryParamPage && queryParamPage > 0 ? queryParamPage : 1;
+  }, [props.page, query]);
+
+  const results = React.useMemo(() => {
+    const queryParamResults = props.results ? props.results : query.results;
+    return queryParamResults && resOptions.includes(queryParamResults)
+      ? queryParamResults
+      : resOptions[0];
+  }, [query, resOptions, props.results]);
 
   // Pagination.
   const [maxPage, setMaxPage] = React.useState(0);
@@ -355,7 +355,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     if (!remove && !updateItems.includes(filterValue)) {
       // Add a filter item.
       updateItems.push(filterValue);
-      updateQuery({ newPage: 1 }, query);
+      onPageChange(1);
       onFilter(filterKey, updateItems);
     } else {
       if (updateItems.length > 0 && updateItems.includes(filterValue)) {
@@ -365,7 +365,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
         if (i > -1) {
           // Remove the filter value from the update items.
           updateItems.splice(i, 1);
-          updateQuery({ newPage: 1 }, query);
+          onPageChange(1);
           if (updateItems.length > 0) {
             onFilter(filterKey, updateItems);
           } else {
@@ -376,38 +376,6 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     }
   };
 
-  // Allows updating different query entries simultaneously
-  const updateQuery = React.useCallback(
-    (
-      { newPage, newResults, newSort }: OptionalQueryParams,
-      oldQuery: QueryParams
-    ): void => {
-      let combinedSort;
-      if (newSort) {
-        const { column, order } = newSort;
-        if (order !== null) {
-          combinedSort = {
-            ...oldQuery.sort,
-            [column]: order,
-          };
-        } else {
-          const { [column]: order, ...rest } = oldQuery.sort;
-          combinedSort = {
-            ...rest,
-          };
-        }
-      }
-
-      const newQuery = {
-        ...oldQuery,
-        page: newPage ? newPage : oldQuery.page,
-        results: newResults ? newResults : oldQuery.results,
-        sort: combinedSort ? combinedSort : oldQuery.sort,
-      };
-      pushQuery(newQuery);
-    },
-    [pushQuery]
-  );
   const nextSortDirection = (dataKey: string): Order | null => {
     switch (sort[dataKey]) {
       case 'asc':
@@ -515,13 +483,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         1 +
                         (totalDataCount - 1) / newResults
                       );
+                      if (onResultsChange) {
+                        onResultsChange(newResults);
+                      }
                       if (page > newMaxPage) {
-                        updateQuery(
-                          { newResults: newResults, newPage: 1 },
-                          query
-                        );
-                      } else {
-                        updateQuery({ newResults: newResults }, query);
+                        onPageChange(1);
                       }
                     }}
                   >
@@ -574,16 +540,15 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                               key={i}
                               button
                               onClick={() => {
-                                updateQuery(
-                                  {
-                                    newPage: 1,
-                                    newSort: {
-                                      column: s.dataKey,
-                                      order: nextSortDirection(s.dataKey),
-                                    },
-                                  },
-                                  query
-                                );
+                                if (onSort) {
+                                  onSort(
+                                    s.dataKey,
+                                    nextSortDirection(s.dataKey)
+                                  );
+                                  if (page !== 1) {
+                                    onPageChange(1);
+                                  }
+                                }
                               }}
                             >
                               <ListItemText primary={s.label} />
