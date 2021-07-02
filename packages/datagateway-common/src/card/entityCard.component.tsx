@@ -81,7 +81,6 @@ const useCardStyles = makeStyles((theme: Theme) => {
     shadowVisible: {
       position: 'absolute',
       height: 30,
-      minWidth: '66.5%',
       top: 130,
       background: `linear-gradient(${paperZero}, ${paperOne})`,
 
@@ -181,6 +180,8 @@ interface EntityCardProps {
 
 const EntityCard = (props: EntityCardProps): React.ReactElement => {
   const classes = useCardStyles();
+  const [shadowWidth, setShadowWidth] = React.useState<number>(0);
+
   const {
     title,
     description,
@@ -197,6 +198,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
     false
   );
   const descriptionRef = React.useRef<HTMLParagraphElement>(null);
+  const mainContentRef = React.useRef<HTMLParagraphElement>(null);
   const [collapsibleInteraction, setCollapsibleInteraction] = React.useState(
     false
   );
@@ -210,6 +212,19 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
         setCollapsibleInteraction(true);
     }
   }, [setCollapsibleInteraction]);
+
+  React.useEffect(() => {
+    // Receive the resize event and set the shadow width
+    // based on the width of the "main-content" div.
+    function handleResize(): void {
+      if (mainContentRef.current?.clientWidth) {
+        setShadowWidth(mainContentRef.current.clientWidth);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const [t] = useTranslation();
 
@@ -241,7 +256,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
             {/* column:
                 - title/description 
             */}
-            <div>
+            <div aria-label="main-content" ref={mainContentRef}>
               {/* TODO: Delay not consistent between cards? */}
               <ArrowTooltip
                 title={title.label}
@@ -293,6 +308,9 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                           ? classes.shadowInvisible
                           : classes.shadowVisible
                       }
+                      style={{
+                        width: `${shadowWidth}px`,
+                      }}
                     />
                     <Link
                       onClick={() => setDescriptionCollapsed((prev) => !prev)}
