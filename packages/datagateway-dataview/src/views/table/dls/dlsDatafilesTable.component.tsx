@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface DLSDatafilesTableProps {
   datasetId: string;
+  investigationId: string;
 }
 
 interface DLSDatafilesTableStoreProps {
@@ -70,11 +71,15 @@ interface DLSDatafilesTableStoreProps {
 interface DLSDatafilesTableDispatchProps {
   pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (datasetId: number) => Promise<void>;
+  fetchData: (
+    datasetId: number,
+    investigationId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (datasetId: number, investigationId: number) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: () => Promise<void>;
+  fetchAllIds: (datasetId: number, investigationId: number) => Promise<void>;
 }
 
 type DLSDatafilesTableCombinedProps = DLSDatafilesTableProps &
@@ -93,6 +98,7 @@ const DLSDatafilesTable = (
     location,
     pushFilters,
     datasetId,
+    investigationId,
     loading,
     cartItems,
     addToCart,
@@ -123,13 +129,28 @@ const DLSDatafilesTable = (
   ]);
 
   React.useEffect(() => {
-    fetchCount(parseInt(datasetId));
-    fetchAllIds();
-  }, [fetchCount, fetchAllIds, location.query.filters, datasetId]);
+    fetchCount(parseInt(datasetId), parseInt(investigationId));
+    fetchAllIds(parseInt(datasetId), parseInt(investigationId));
+  }, [
+    fetchCount,
+    fetchAllIds,
+    location.query.filters,
+    datasetId,
+    investigationId,
+  ]);
 
   React.useEffect(() => {
-    fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, location.query, location.query.filters, datasetId]);
+    fetchData(parseInt(datasetId), parseInt(investigationId), {
+      startIndex: 0,
+      stopIndex: 49,
+    });
+  }, [
+    fetchData,
+    location.query.sort,
+    location.query.filters,
+    datasetId,
+    investigationId,
+  ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -154,7 +175,9 @@ const DLSDatafilesTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
+      loadMoreRows={(params) =>
+        fetchData(parseInt(datasetId), parseInt(investigationId), params)
+      }
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
@@ -174,7 +197,7 @@ const DLSDatafilesTable = (
           >
             <Grid item xs>
               <Typography variant="h6">
-                <b>{datafileData.NAME}</b>
+                <b>{datafileData.name}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -183,7 +206,7 @@ const DLSDatafilesTable = (
                 {t('datafiles.details.size')}
               </Typography>
               <Typography>
-                <b>{formatBytes(datafileData.FILESIZE)}</b>
+                <b>{formatBytes(datafileData.fileSize)}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -191,7 +214,7 @@ const DLSDatafilesTable = (
                 {t('datafiles.details.location')}
               </Typography>
               <Typography>
-                <b>{datafileData.LOCATION}</b>
+                <b>{datafileData.location}</b>
               </Typography>
             </Grid>
           </Grid>
@@ -201,19 +224,19 @@ const DLSDatafilesTable = (
         {
           icon: <TitleIcon />,
           label: t('datafiles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
           icon: <ExploreIcon />,
           label: t('datafiles.location'),
-          dataKey: 'LOCATION',
+          dataKey: 'location',
           filterComponent: textFilter,
         },
         {
           icon: <SaveIcon />,
           label: t('datafiles.size'),
-          dataKey: 'FILESIZE',
+          dataKey: 'fileSize',
           cellContentRenderer: (cellProps) => {
             return formatBytes(cellProps.cellData);
           },
@@ -222,9 +245,8 @@ const DLSDatafilesTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('datafiles.create_time'),
-          dataKey: 'CREATE_TIME',
+          dataKey: 'createTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
@@ -232,31 +254,46 @@ const DLSDatafilesTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>,
-  ownProps: DLSDatafilesTableProps
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DLSDatafilesTableDispatchProps => ({
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  fetchData: (datasetId: number, offsetParams: IndexRange) =>
+  fetchData: (
+    datasetId: number,
+    investigationId: number,
+    offsetParams: IndexRange
+  ) =>
     dispatch(
       fetchDatafiles({
         offsetParams,
         additionalFilters: [
           {
             filterType: 'where',
-            filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+            filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'dataset.investigation.id': { eq: investigationId },
+            }),
           },
         ],
       })
     ),
-  fetchCount: (datasetId: number) =>
+  fetchCount: (datasetId: number, investigationId: number) =>
     dispatch(
       fetchDatafileCount([
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+          filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'dataset.investigation.id': { eq: investigationId },
+          }),
         },
       ])
     ),
@@ -264,13 +301,19 @@ const mapDispatchToProps = (
     dispatch(addToCart('datafile', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('datafile', entityIds)),
-  fetchAllIds: () =>
+  fetchAllIds: (datasetId: number, investigationId: number) =>
     dispatch(
       fetchAllIds('datafile', [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            DATASET_ID: { eq: parseInt(ownProps.datasetId) },
+            'dataset.id': { eq: datasetId },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'dataset.investigation.id': { eq: investigationId },
           }),
         },
       ])

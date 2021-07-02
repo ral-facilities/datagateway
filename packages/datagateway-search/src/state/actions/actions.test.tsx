@@ -41,6 +41,7 @@ describe('Actions', () => {
             idsUrl: 'ids',
             apiUrl: 'api',
             downloadApiUrl: 'download-api',
+            icatUrl: 'icat',
             routes: [
               {
                 section: 'section',
@@ -70,6 +71,7 @@ describe('Actions', () => {
         idsUrl: 'ids',
         apiUrl: 'api',
         downloadApiUrl: 'download-api',
+        icatUrl: 'icat',
       })
     );
 
@@ -172,6 +174,7 @@ describe('Actions', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          icatUrl: 'icat',
         },
       })
     );
@@ -201,7 +204,7 @@ describe('Actions', () => {
     expect(log.error).toHaveBeenCalled();
     const mockLog = (log.error as jest.Mock).mock;
     expect(mockLog.calls[0][0]).toEqual(
-      'Error loading /datagateway-search-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl) is undefined in settings'
+      'Error loading /datagateway-search-settings.json: One of the URL options (idsUrl, apiUrl, downloadApiUrl, icatUrl) is undefined in settings'
     );
   });
 
@@ -213,6 +216,7 @@ describe('Actions', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          icatUrl: 'icat',
         },
       })
     );
@@ -235,6 +239,7 @@ describe('Actions', () => {
           idsUrl: 'ids',
           apiUrl: 'api',
           downloadApiUrl: 'download-api',
+          icatUrl: 'icat',
           routes: [
             {
               section: 'section',

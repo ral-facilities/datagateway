@@ -116,12 +116,12 @@ const ISISInstrumentsTable = (
         {
           icon: <TitleIcon />,
           label: t('instruments.name'),
-          dataKey: 'FULLNAME',
+          dataKey: 'fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const instrumentData = cellProps.rowData as Instrument;
             return tableLink(
-              `/${pathRoot}/instrument/${instrumentData.ID}/${instrumentChild}`,
-              instrumentData.FULLNAME || instrumentData.NAME,
+              `/${pathRoot}/instrument/${instrumentData.id}/${instrumentChild}`,
+              instrumentData.fullName || instrumentData.name,
               view
             );
           },

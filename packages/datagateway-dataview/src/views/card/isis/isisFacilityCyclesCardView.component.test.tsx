@@ -49,9 +49,8 @@ describe('ISIS Facility Cycles - Card View', () => {
         totalDataCount: 1,
         data: [
           {
-            ID: 1,
-            NAME: 'Test 1',
-            FACILITY_ID: 1,
+            id: 1,
+            name: 'Test 1',
           },
         ],
         allIds: [1],
@@ -98,7 +97,7 @@ describe('ISIS Facility Cycles - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
     expect(store.getActions().length).toEqual(4);
     expect(store.getActions()[2]).toEqual(
-      filterTable('ENDDATE', { endDate: '2019-08-06', startDate: undefined })
+      filterTable('endDate', { endDate: '2019-08-06', startDate: undefined })
     );
     expect(store.getActions()[3]).toEqual(push('?'));
 
@@ -107,7 +106,7 @@ describe('ISIS Facility Cycles - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('ENDDATE', null));
+    expect(store.getActions()[4]).toEqual(filterTable('endDate', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -121,7 +120,7 @@ describe('ISIS Facility Cycles - Card View', () => {
       .simulate('change', { target: { value: 'test' } });
     expect(store.getActions().length).toEqual(4);
     expect(store.getActions()[2]).toEqual(
-      filterTable('NAME', { value: 'test', type: 'include' })
+      filterTable('name', { value: 'test', type: 'include' })
     );
     expect(store.getActions()[3]).toEqual(push('?'));
 
@@ -130,7 +129,7 @@ describe('ISIS Facility Cycles - Card View', () => {
       .first()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(6);
-    expect(store.getActions()[4]).toEqual(filterTable('NAME', null));
+    expect(store.getActions()[4]).toEqual(filterTable('name', null));
     expect(store.getActions()[5]).toEqual(push('?'));
   });
 
@@ -145,7 +144,7 @@ describe('ISIS Facility Cycles - Card View', () => {
     expect(store.getActions()[2]).toEqual(
       updateQueryParams({
         ...dGCommonInitialState.query,
-        sort: { NAME: 'asc' },
+        sort: { name: 'asc' },
         page: 1,
       })
     );

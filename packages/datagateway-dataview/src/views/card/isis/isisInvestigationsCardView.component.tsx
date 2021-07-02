@@ -159,7 +159,7 @@ const ISISInvestigationsCardView = (
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             data
-              .map((investigation) => investigation.ID)
+              .map((investigation) => investigation.id)
               .includes(cartItem.entityId)
         )
         .map((cartItem) => cartItem.entityId),
@@ -216,63 +216,63 @@ const ISISInvestigationsCardView = (
       results={results}
       title={{
         label: t('investigations.title'),
-        dataKey: 'TITLE',
+        dataKey: 'title',
         content: (investigation: Investigation) =>
           tableLink(
-            `${urlPrefix}/${investigation.ID}`,
-            investigation.TITLE,
+            `${urlPrefix}/${investigation.id}`,
+            investigation.title,
             view
           ),
         filterComponent: textFilter,
       }}
       description={{
         label: t('investigations.details.summary'),
-        dataKey: 'SUMMARY',
+        dataKey: 'summary',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Fingerprint />,
           label: t('investigations.visit_id'),
-          dataKey: 'VISIT_ID',
+          dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
           icon: <Fingerprint />,
           label: t('investigations.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
           icon: <Public />,
           label: t('investigations.doi'),
-          dataKey: 'STUDYINVESTIGATION[0].STUDY.PID',
+          dataKey: 'studyInvestigations[0].study.pid',
           filterComponent: textFilter,
         },
         {
           icon: <Save />,
           label: t('investigations.details.size'),
-          dataKey: 'SIZE',
+          dataKey: 'size',
           content: (investigation: Investigation) =>
-            formatBytes(investigation.SIZE),
+            formatBytes(investigation.size),
           disableSort: true,
         },
         {
           icon: <Assessment />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.FULLNAME',
+          dataKey: 'investigationInstruments[0].instrument.fullName',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.details.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.details.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}
@@ -286,7 +286,7 @@ const ISISInvestigationsCardView = (
       buttons={[
         function cartButton(investigation: Investigation) {
           return !(
-            selectedCards && selectedCards.includes(investigation.ID)
+            selectedCards && selectedCards.includes(investigation.id)
           ) ? (
             <Button
               id="add-to-cart-btn"
@@ -294,7 +294,7 @@ const ISISInvestigationsCardView = (
               color="primary"
               startIcon={<AddCircleOutlineOutlined />}
               disableElevation
-              onClick={() => addToCart([investigation.ID])}
+              onClick={() => addToCart([investigation.id])}
             >
               Add to cart
             </Button>
@@ -306,8 +306,8 @@ const ISISInvestigationsCardView = (
               startIcon={<RemoveCircleOutlineOutlined />}
               disableElevation
               onClick={() => {
-                if (selectedCards && selectedCards.includes(investigation.ID))
-                  removeFromCart([investigation.ID]);
+                if (selectedCards && selectedCards.includes(investigation.id))
+                  removeFromCart([investigation.id]);
               }}
             >
               Remove from cart
@@ -348,13 +348,13 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+              'investigationInstruments.instrument.id': { eq: instrumentId },
             }),
           },
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+              'studyInvestigations.study.id': { eq: studyId },
             }),
           },
         ],
@@ -368,13 +368,13 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'investigationInstruments.instrument.id': { eq: instrumentId },
           }),
         },
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'STUDYINVESTIGATION.STUDY.ID': { eq: studyId },
+            'studyInvestigations.study.id': { eq: studyId },
           }),
         },
       ])

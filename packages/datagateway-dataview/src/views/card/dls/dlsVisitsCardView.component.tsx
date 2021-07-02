@@ -118,7 +118,7 @@ const DLSVisitsCardView = (
   }, [proposalName, fetchTypeFilter]);
 
   const typeFilteredItems = React.useMemo(
-    () => ('TYPE_ID' in filterData ? filterData['TYPE_ID'] : []),
+    () => ('type.id' in filterData ? filterData['type.id'] : []),
     [filterData]
   );
 
@@ -171,43 +171,43 @@ const DLSVisitsCardView = (
       results={results}
       title={{
         label: t('investigations.visit_id'),
-        dataKey: 'VISIT_ID',
+        dataKey: 'visitId',
         content: (investigation: Investigation) =>
           tableLink(
-            `/browse/proposal/${proposalName}/investigation/${investigation.ID}/dataset`,
-            investigation.VISIT_ID,
+            `/browse/proposal/${proposalName}/investigation/${investigation.id}/dataset`,
+            investigation.visitId,
             view
           ),
         filterComponent: textFilter,
       }}
       description={{
         label: t('investigations.details.summary'),
-        dataKey: 'SUMMARY',
+        dataKey: 'summary',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Assessment />,
           label: t('investigations.instrument'),
-          dataKey: 'INVESTIGATIONINSTRUMENT[0].INSTRUMENT.NAME',
+          dataKey: 'investigationInstruments[0].instrument.name',
           filterComponent: textFilter,
         },
         {
           icon: <ConfirmationNumber />,
           label: t('investigations.dataset_count'),
-          dataKey: 'DATASET_COUNT',
+          dataKey: 'datasetCount',
           disableSort: true,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.start_date'),
-          dataKey: 'STARTDATE',
+          dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('investigations.end_date'),
-          dataKey: 'ENDDATE',
+          dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}
@@ -220,8 +220,8 @@ const DLSVisitsCardView = (
       )}
       customFilters={[
         {
-          label: t('investigations.type_id'),
-          dataKey: 'TYPE_ID',
+          label: t('investigations.type.id'),
+          dataKey: 'type.id',
           filterItems: typeFilteredItems,
         },
       ]}
@@ -239,12 +239,12 @@ const mapDispatchToProps = (
         additionalFilters: [
           {
             filterType: 'where',
-            filterValue: JSON.stringify({ NAME: { eq: proposalName } }),
+            filterValue: JSON.stringify({ name: { eq: proposalName } }),
           },
           {
             filterType: 'include',
             filterValue: JSON.stringify({
-              INVESTIGATIONINSTRUMENT: 'INSTRUMENT',
+              investigationInstruments: 'instrument',
             }),
           },
         ],
@@ -256,7 +256,7 @@ const mapDispatchToProps = (
       fetchInvestigationCount([
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ NAME: { eq: proposalName } }),
+          filterValue: JSON.stringify({ name: { eq: proposalName } }),
         },
       ])
     ),
@@ -266,10 +266,10 @@ const mapDispatchToProps = (
     dispatch(fetchInvestigationSize(investigationId)),
   fetchTypeFilter: (proposalName: string) =>
     dispatch(
-      fetchFilter('investigation', 'TYPE_ID', [
+      fetchFilter('investigation', 'type.id', [
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ NAME: { eq: proposalName } }),
+          filterValue: JSON.stringify({ name: { eq: proposalName } }),
         },
       ])
     ),

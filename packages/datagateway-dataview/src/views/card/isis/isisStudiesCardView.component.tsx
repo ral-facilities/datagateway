@@ -163,37 +163,37 @@ const ISISStudiesCardView = (
       results={results}
       title={{
         label: t('studies.name'),
-        dataKey: 'STUDY.NAME',
+        dataKey: 'study.name',
         content: (studyInvestigation: StudyInvestigation) =>
           tableLink(
-            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyInvestigation.STUDY?.ID}`,
-            studyInvestigation.STUDY?.NAME,
+            `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyInvestigation.study?.id}`,
+            studyInvestigation.study?.name,
             view
           ),
         filterComponent: textFilter,
       }}
       description={{
         label: t('studies.description'),
-        dataKey: 'STUDY.DESCRIPTION',
+        dataKey: 'study.description',
         filterComponent: textFilter,
       }}
       information={[
         {
           icon: <Public />,
           label: t('studies.pid'),
-          dataKey: 'STUDY.PID',
+          dataKey: 'study.pid',
           filterComponent: textFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('studies.start_date'),
-          dataKey: 'STUDY.STARTDATE',
+          dataKey: 'study.startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('studies.end_date'),
-          dataKey: 'STUDY.ENDDATE',
+          dataKey: 'study.endDate',
           filterComponent: dateFilter,
         },
       ]}
@@ -210,7 +210,7 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            'INVESTIGATIONINSTRUMENT.INSTRUMENT.ID': { eq: instrumentId },
+            'investigationInstruments.instrument.id': { eq: instrumentId },
           }),
         },
       ])
@@ -223,12 +223,16 @@ const mapDispatchToProps = (
           {
             filterType: 'where',
             filterValue: JSON.stringify({
-              INVESTIGATION_ID: { in: allIds },
+              'investigation.id': { in: allIds },
             }),
           },
           {
             filterType: 'include',
-            filterValue: JSON.stringify('STUDY'),
+            filterValue: JSON.stringify('investigation'),
+          },
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify('study'),
           },
         ],
       })
@@ -239,8 +243,12 @@ const mapDispatchToProps = (
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            INVESTIGATION_ID: { in: allIds },
+            'investigation.id': { in: allIds },
           }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify('investigation'),
         },
       ])
     ),

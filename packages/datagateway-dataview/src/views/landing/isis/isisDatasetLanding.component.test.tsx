@@ -26,23 +26,22 @@ describe('ISIS Dataset Landing page', () => {
 
   const initialData: Dataset[] = [
     {
-      ID: 87,
-      INVESTIGATION_ID: 1,
-      NAME: 'Test 1',
-      DESCRIPTION: 'foo bar',
-      MOD_TIME: '2019-06-10',
-      CREATE_TIME: '2019-06-10',
-      DOI: 'doi 1',
-      SIZE: 1,
-      STARTDATE: '2019-06-10',
-      ENDDATE: '2019-06-11',
-      COMPLETE: true,
+      id: 87,
+      name: 'Test 1',
+      description: 'foo bar',
+      modTime: '2019-06-10',
+      createTime: '2019-06-10',
+      doi: 'doi 1',
+      size: 1,
+      startDate: '2019-06-10',
+      endDate: '2019-06-11',
+      complete: true,
     },
   ];
   const datasetType: DatasetType = {
-    ID: 1,
-    NAME: 'Type 1',
-    DESCRIPTION: 'The first type',
+    id: 1,
+    name: 'Type 1',
+    description: 'The first type',
   };
 
   beforeEach(() => {
@@ -138,7 +137,7 @@ describe('ISIS Dataset Landing page', () => {
     state.dgcommon.data = [
       {
         ...initialData[0],
-        DATASETTYPE: datasetType,
+        type: datasetType,
       },
     ];
     const testStore = mockStore(state);
@@ -161,7 +160,7 @@ describe('ISIS Dataset Landing page', () => {
   });
 
   it('incomplete datasets render correctly', () => {
-    state.dgcommon.data[0].COMPLETE = false;
+    state.dgcommon.data[0].complete = false;
     const testStore = mockStore(state);
     const wrapper = mount(
       <Provider store={testStore}>

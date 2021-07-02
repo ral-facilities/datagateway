@@ -96,12 +96,12 @@ const DLSProposalsTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.title'),
-          dataKey: 'TITLE',
+          dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const investigationData = cellProps.rowData as Investigation;
             return tableLink(
-              `/browse/proposal/${investigationData.NAME}/investigation`,
-              investigationData.TITLE,
+              `/browse/proposal/${investigationData.name}/investigation`,
+              investigationData.title,
               view
             );
           },
@@ -110,11 +110,11 @@ const DLSProposalsTable = (
         {
           icon: <TitleIcon />,
           label: t('investigations.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) => {
             return tableLink(
-              `/browse/proposal/${cellProps.rowData.NAME}/investigation`,
-              cellProps.rowData.NAME,
+              `/browse/proposal/${cellProps.rowData.name}/investigation`,
+              cellProps.rowData.name,
               view
             );
           },
@@ -140,7 +140,7 @@ const mapDispatchToProps = (
         additionalFilters: [
           {
             filterType: 'distinct',
-            filterValue: JSON.stringify(['NAME', 'TITLE']),
+            filterValue: JSON.stringify(['name', 'title']),
           },
         ],
       })
@@ -150,7 +150,7 @@ const mapDispatchToProps = (
       fetchInvestigationCount([
         {
           filterType: 'distinct',
-          filterValue: JSON.stringify(['NAME', 'TITLE']),
+          filterValue: JSON.stringify(['name', 'title']),
         },
       ])
     ),

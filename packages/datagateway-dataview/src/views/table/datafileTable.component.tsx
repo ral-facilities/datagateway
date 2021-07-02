@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface DatafileTableProps {
   datasetId: string;
+  investigationId: string;
 }
 
 interface DatafileTableStoreProps {
@@ -74,12 +75,16 @@ interface DatafileTableStoreProps {
 interface DatafileTableDispatchProps {
   pushSort: (sort: string, order: Order | null) => Promise<void>;
   pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (datasetId: number, offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (datasetId: number) => Promise<void>;
+  fetchData: (
+    datasetId: number,
+    investigationId: number,
+    offsetParams: IndexRange
+  ) => Promise<void>;
+  fetchCount: (datasetId: number, investigationId: number) => Promise<void>;
   downloadData: (datafileId: number, filename: string) => Promise<void>;
   addToCart: (entityIds: number[]) => Promise<void>;
   removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: () => Promise<void>;
+  fetchAllIds: (datasetId: number, investigationId: number) => Promise<void>;
 }
 
 type DatafileTableCombinedProps = DatafileTableProps &
@@ -98,6 +103,7 @@ const DatafileTable = (
     location,
     pushFilters,
     datasetId,
+    investigationId,
     downloadData,
     cartItems,
     addToCart,
@@ -129,13 +135,28 @@ const DatafileTable = (
   ]);
 
   React.useEffect(() => {
-    fetchCount(parseInt(datasetId));
-    fetchAllIds();
-  }, [fetchCount, fetchAllIds, location.query.filters, datasetId]);
+    fetchCount(parseInt(datasetId), parseInt(investigationId));
+    fetchAllIds(parseInt(datasetId), parseInt(investigationId));
+  }, [
+    fetchCount,
+    fetchAllIds,
+    location.query.filters,
+    datasetId,
+    investigationId,
+  ]);
 
   React.useEffect(() => {
-    fetchData(parseInt(datasetId), { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, location.query.sort, location.query.filters, datasetId]);
+    fetchData(parseInt(datasetId), parseInt(investigationId), {
+      startIndex: 0,
+      stopIndex: 49,
+    });
+  }, [
+    fetchData,
+    location.query.sort,
+    location.query.filters,
+    datasetId,
+    investigationId,
+  ]);
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
     <TextColumnFilter
@@ -161,7 +182,9 @@ const DatafileTable = (
     <Table
       loading={loading}
       data={data}
-      loadMoreRows={(params) => fetchData(parseInt(datasetId), params)}
+      loadMoreRows={(params) =>
+        fetchData(parseInt(datasetId), parseInt(investigationId), params)
+      }
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
@@ -181,7 +204,7 @@ const DatafileTable = (
           >
             <Grid item xs>
               <Typography variant="h6">
-                <b>{datafileData.NAME}</b>
+                <b>{datafileData.name}</b>
               </Typography>
               <Divider className={classes.divider} />
             </Grid>
@@ -190,7 +213,7 @@ const DatafileTable = (
                 {t('datafiles.details.size')}
               </Typography>
               <Typography>
-                <b>{formatBytes(datafileData.FILESIZE)}</b>
+                <b>{formatBytes(datafileData.fileSize)}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -198,7 +221,7 @@ const DatafileTable = (
                 {t('datafiles.details.location')}
               </Typography>
               <Typography>
-                <b>{datafileData.LOCATION}</b>
+                <b>{datafileData.location}</b>
               </Typography>
             </Grid>
           </Grid>
@@ -206,14 +229,14 @@ const DatafileTable = (
       }}
       actions={[
         function downloadButton({ rowData }: TableActionProps) {
-          const { ID, LOCATION } = rowData as Datafile;
-          if (LOCATION) {
+          const { id, location } = rowData as Datafile;
+          if (location) {
             return (
               <IconButton
                 aria-label={t('datafiles.download')}
                 key="download"
                 onClick={() => {
-                  downloadData(ID, LOCATION);
+                  downloadData(id, location);
                 }}
               >
                 <GetApp />
@@ -228,19 +251,19 @@ const DatafileTable = (
         {
           icon: <TitleIcon />,
           label: t('datafiles.name'),
-          dataKey: 'NAME',
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
           icon: <ExploreIcon />,
           label: t('datafiles.location'),
-          dataKey: 'LOCATION',
+          dataKey: 'location',
           filterComponent: textFilter,
         },
         {
           icon: <SaveIcon />,
           label: t('datafiles.size'),
-          dataKey: 'FILESIZE',
+          dataKey: 'fileSize',
           cellContentRenderer: (cellProps) => {
             return formatBytes(cellProps.cellData);
           },
@@ -248,9 +271,8 @@ const DatafileTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('datafiles.modified_time'),
-          dataKey: 'MOD_TIME',
+          dataKey: 'modTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
@@ -258,32 +280,47 @@ const DatafileTable = (
 };
 
 const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>,
-  ownProps: DatafileTableProps
+  dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): DatafileTableDispatchProps => ({
   pushSort: (sort: string, order: Order | null) =>
     dispatch(pushPageSort(sort, order)),
 
   pushFilters: (filter: string, data: Filter | null) =>
     dispatch(pushPageFilter(filter, data)),
-  fetchData: (datasetId: number, offsetParams: IndexRange) =>
+  fetchData: (
+    datasetId: number,
+    investigationId: number,
+    offsetParams: IndexRange
+  ) =>
     dispatch(
       fetchDatafiles({
         offsetParams,
         additionalFilters: [
           {
             filterType: 'where',
-            filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+            filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'dataset.investigation.id': { eq: investigationId },
+            }),
           },
         ],
       })
     ),
-  fetchCount: (datasetId: number) =>
+  fetchCount: (datasetId: number, investigationId: number) =>
     dispatch(
       fetchDatafileCount([
         {
           filterType: 'where',
-          filterValue: JSON.stringify({ DATASET_ID: { eq: datasetId } }),
+          filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'dataset.investigation.id': { eq: investigationId },
+          }),
         },
       ])
     ),
@@ -293,13 +330,19 @@ const mapDispatchToProps = (
     dispatch(addToCart('datafile', entityIds)),
   removeFromCart: (entityIds: number[]) =>
     dispatch(removeFromCart('datafile', entityIds)),
-  fetchAllIds: () =>
+  fetchAllIds: (datasetId: number, investigationId: number) =>
     dispatch(
       fetchAllIds('datafile', [
         {
           filterType: 'where',
           filterValue: JSON.stringify({
-            DATASET_ID: { eq: parseInt(ownProps.datasetId) },
+            'dataset.id': { eq: datasetId },
+          }),
+        },
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            'dataset.investigation.id': { eq: investigationId },
           }),
         },
       ])
