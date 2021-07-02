@@ -166,6 +166,41 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     return principals.concat(contacts, experimenters);
   }, [data]);
 
+  const getCitation = (): string => {
+    // {formattedUsers.length > 1 &&
+    //   `${formattedUsers[0].fullName} et al; `}
+    // {formattedUsers.length === 1 &&
+    //   `${formattedUsers[0].fullName}; `}
+    // {data[0]?.study?.startDate &&
+    //   `${data[0].study.startDate.slice(0, 4)}: `}
+    // {title && `${title}, `}
+    // {t('doi_constants.publisher.name')}
+    // {pid && `, https://doi.org/${pid}`}
+
+    let citation = '';
+
+    //
+    if (formattedUsers.length > 1) {
+      citation += `${formattedUsers[0].fullName} et al; `;
+    } else {
+      if (formattedUsers.length === 1) {
+        citation += `${formattedUsers[0].fullName}; `;
+      }
+    }
+
+    //
+    citation += data[0]?.study?.startDate
+      ? `${data[0].study.startDate.slice(0, 4)}: `
+      : '';
+
+    //
+    citation += title ? `${title}, ` : '';
+    citation += t('doi_constants.publisher.name');
+    citation += pid ? `, https://doi.org/${pid}` : '';
+
+    return citation;
+  };
+
   React.useEffect(() => {
     fetchStudyData(parseInt(studyId));
   }, [fetchStudyData, studyId]);
@@ -367,17 +402,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-study-citation">
-              <i>
-                {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].fullName} et al; `}
-                {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].fullName}; `}
-                {data[0]?.study?.startDate &&
-                  `${data[0].study.startDate.slice(0, 4)}: `}
-                {title && `${title}, `}
-                {t('doi_constants.publisher.name')}
-                {pid && `, https://doi.org/${pid}`}
-              </i>
+              <i>{getCitation()}</i>
             </Typography>
           </Grid>
 
