@@ -276,6 +276,12 @@ jobs:
       - name: Run ICAT Ansible Playbook
         run: |
           ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+      - name: Add anon user to rootUserNames
+        uses: christian-draeger/write-properties@1.0.1
+        with:
+          path: '/home/runner/install/icat.server/run.properties'
+          property: 'rootUserNames'
+          value: 'simple/root anon/anon'
 
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
