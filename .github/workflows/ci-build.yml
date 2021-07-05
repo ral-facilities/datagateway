@@ -612,6 +612,41 @@ jobs:
       - name: Add dummy data to icatdb
         run: |
           cd datagateway-api; poetry run python -m util.icat_db_generator; cd ..
+      
+      # Recreate Lucene indexes
+      - name: Login to ICAT
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}' > login_output
+      - name: Recreate Datafile index
+        run: |
+          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Datafile/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Recreate Dataset index
+        run: |
+          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Dataset/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Recreate Investigation index
+        run: |
+          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Investigation/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Power nap
+        run: sleep 30
+      - name: Test request
+        run: |
+          curl --location -g --request GET 'https://localhost:8181/icat/lucene/data?query={%22target%22:%22Investigation%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%20%22text%22:%20%22police%22}&sessionId'`jq -r '.sessionId' login_output`
+      - name: Recreate Datafile index1
+        run: |
+          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Datafile/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Recreate Dataset index1
+        run: |
+          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Dataset/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Recreate Investigation index1
+        run: |
+          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Investigation/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Power nap
+        run: sleep 30
+      - name: Test request1
+        run: |
+          curl --location -g --request GET 'https://localhost:8181/icat/lucene/data?query={%22target%22:%22Investigation%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%20%22text%22:%20%22police%22}&sessionId'`jq -r '.sessionId' login_output`
+      - name: Remove session ID data
+        run: rm -f login_output
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
