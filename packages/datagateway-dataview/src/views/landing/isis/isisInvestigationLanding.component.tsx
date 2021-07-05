@@ -33,6 +33,7 @@ import {
   Sample,
   tableLink,
   ViewsType,
+  Mark,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -134,6 +135,7 @@ type LandingPageCombinedProps = LandingPageDispatchProps &
 const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const [t] = useTranslation();
   const [value, setValue] = React.useState<'details'>('details');
+  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
     fetchFacilityCycleData,
     fetchStudyData,
@@ -391,16 +393,29 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             <Typography aria-label="landing-investigation-citation">
               <i>{getCitation()}</i>
             </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={() => {
-                navigator.clipboard.writeText(getCitation());
-              }}
-            >
-              Copy citation
-            </Button>
+            {!copiedCitation ? (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                  navigator.clipboard.writeText(getCitation());
+                  setCopiedCitation(true);
+                  setTimeout(() => setCopiedCitation(false), 1500);
+                }}
+              >
+                Copy citation
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<Mark size={20} visible={true} />}
+              >
+                Copied citation
+              </Button>
+            )}
 
             {formattedSamples && (
               <div>
