@@ -41,6 +41,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
 import DownloadButton from '../../downloadButton.component';
+import { getCitation } from './citation';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -379,16 +380,13 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             </Typography>
             <Typography aria-label="landing-investigation-citation">
               <i>
-                {formattedUsers.length > 1 &&
-                  `${formattedUsers[0].fullName} et al; `}
-                {formattedUsers.length === 1 &&
-                  `${formattedUsers[0].fullName}; `}
-                {studyInvestigation &&
-                  studyInvestigation[0]?.study?.startDate &&
-                  `${studyInvestigation[0].study.startDate.slice(0, 4)}: `}
-                {title && `${title}, `}
-                {t('doi_constants.publisher.name')}
-                {doi && `, https://doi.org/${doi}`}
+                {getCitation(
+                  t('doi_constants.publisher.name'),
+                  formattedUsers,
+                  studyInvestigation && studyInvestigation[0]?.study?.startDate,
+                  title,
+                  doi
+                )}
               </i>
             </Typography>
 

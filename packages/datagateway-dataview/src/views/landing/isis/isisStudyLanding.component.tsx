@@ -34,6 +34,7 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
+import { getCitation } from './citation';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -165,41 +166,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
   }, [data]);
-
-  const getCitation = (): string => {
-    // {formattedUsers.length > 1 &&
-    //   `${formattedUsers[0].fullName} et al; `}
-    // {formattedUsers.length === 1 &&
-    //   `${formattedUsers[0].fullName}; `}
-    // {data[0]?.study?.startDate &&
-    //   `${data[0].study.startDate.slice(0, 4)}: `}
-    // {title && `${title}, `}
-    // {t('doi_constants.publisher.name')}
-    // {pid && `, https://doi.org/${pid}`}
-
-    let citation = '';
-
-    //
-    if (formattedUsers.length > 1) {
-      citation += `${formattedUsers[0].fullName} et al; `;
-    } else {
-      if (formattedUsers.length === 1) {
-        citation += `${formattedUsers[0].fullName}; `;
-      }
-    }
-
-    //
-    citation += data[0]?.study?.startDate
-      ? `${data[0].study.startDate.slice(0, 4)}: `
-      : '';
-
-    //
-    citation += title ? `${title}, ` : '';
-    citation += t('doi_constants.publisher.name');
-    citation += pid ? `, https://doi.org/${pid}` : '';
-
-    return citation;
-  };
 
   React.useEffect(() => {
     fetchStudyData(parseInt(studyId));
@@ -402,7 +368,15 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-study-citation">
-              <i>{getCitation()}</i>
+              <i>
+                {getCitation(
+                  t('doi_constants.publisher.name'),
+                  formattedUsers,
+                  data[0]?.study?.startDate,
+                  title,
+                  pid
+                )}
+              </i>
             </Typography>
           </Grid>
 
