@@ -282,6 +282,9 @@ jobs:
       - name: Apply rootUserNames change
         run: |
           mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Reinstall ICAT Server
+        run: |
+          cd /home/runner/install/icat.server/ && ./setup -vv install
       - name: Display ICAT Server's run.properties
         run: cat /home/runner/install/icat.server/run.properties
 
@@ -416,12 +419,20 @@ jobs:
       - name: Apply rootUserNames change
         run: |
           mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Reinstall ICAT Server
+        run: |
+          cd /home/runner/install/icat.server/ && ./setup -vv install
       - name: Disable Two Level Storage
         run: |
           sed -i '/plugin.archive.class/,/tidyBlockSize/ s/^/#/' /home/glassfish/install/ids.server/run.properties
       - name: Display ICAT Server's run.properties
         run: cat /home/runner/install/icat.server/run.properties
-      
+      - name: Display IDS Server's run.properties
+        run: cat /home/runner/install/ids.server/run.properties
+      - name: Reinstall IDS Server
+        run: |
+          cd /home/runner/install/ids.server/ && ./setup -vv install
+
       # Disable Globus for Download e2e tests
       - name: Login to ICAT
         run: |
@@ -563,6 +574,9 @@ jobs:
       - name: Apply rootUserNames change
         run: |
           mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Reinstall ICAT Server
+        run: |
+          cd /home/runner/install/icat.server/ && ./setup -vv install
       - name: Display ICAT Server's run.properties
         run: cat /home/runner/install/icat.server/run.properties
 
