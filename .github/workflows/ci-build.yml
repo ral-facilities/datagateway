@@ -416,6 +416,9 @@ jobs:
       - name: Apply rootUserNames change
         run: |
           mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Disable Two Level Storage
+        run: |
+          sed -i '/plugin.archive.class/,/tidyBlockSize/ s/^/#/' /home/glassfish/install/ids.server/run.properties
       - name: Display ICAT Server's run.properties
         run: cat /home/runner/install/icat.server/run.properties
       
