@@ -1,4 +1,5 @@
 import {
+  Button,
   createStyles,
   Divider,
   Grid,
@@ -41,7 +42,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
 import DownloadButton from '../../downloadButton.component';
-import { getCitation } from './citation';
+import { generateCitation } from './citation';
 import Branding from './isisBranding.component';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -291,6 +292,15 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     },
   ];
 
+  const getCitation = (): string =>
+    generateCitation(
+      t('doi_constants.publisher.name'),
+      formattedUsers,
+      studyInvestigation && studyInvestigation[0]?.study?.startDate,
+      title,
+      doi
+    );
+
   return (
     <Paper className={classes.paper}>
       <Grid container style={{ padding: 4 }}>
@@ -379,16 +389,18 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-investigation-citation">
-              <i>
-                {getCitation(
-                  t('doi_constants.publisher.name'),
-                  formattedUsers,
-                  studyInvestigation && studyInvestigation[0]?.study?.startDate,
-                  title,
-                  doi
-                )}
-              </i>
+              <i>{getCitation()}</i>
             </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                navigator.clipboard.writeText(getCitation());
+              }}
+            >
+              Copy citation
+            </Button>
 
             {formattedSamples && (
               <div>
