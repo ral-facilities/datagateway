@@ -429,9 +429,11 @@ jobs:
         run: cat /home/runner/install/icat.server/run.properties
       - name: Display IDS Server's run.properties
         run: cat /home/runner/install/ids.server/run.properties
+      - name: Setup Python version
+        run: python --version
       - name: Reinstall IDS Server
         run: |
-          cd /home/runner/install/ids.server/ && ./setup -vv install
+          cd /home/runner/install/ids.server/ && python2 ./setup -vv install
 
       # Disable Globus for Download e2e tests
       - name: Login to ICAT
