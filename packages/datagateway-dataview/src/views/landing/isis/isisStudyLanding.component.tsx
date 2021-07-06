@@ -35,7 +35,6 @@ import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
-import { generateCitation } from './citation';
 import Branding from './isisBranding.component';
 import Button from '@material-ui/core/Button';
 
@@ -117,6 +116,7 @@ type LandingPageCombinedProps = LandingPageDispatchProps &
 const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const [t] = useTranslation();
   const [value, setValue] = React.useState<'details'>('details');
+  const citationRef = React.useRef<HTMLElement>(null);
   const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
     fetchStudyData,
@@ -287,15 +287,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     },
   ];
 
-  const getCitation = (): string =>
-    generateCitation(
-      t('doi_constants.publisher.name'),
-      formattedUsers,
-      data[0]?.study?.startDate,
-      title,
-      pid
-    );
-
   return (
     <Paper className={classes.paper}>
       <Grid container style={{ padding: 4 }}>
@@ -380,7 +371,22 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-study-citation">
-              <i>{getCitation()}</i>
+              <i ref={citationRef}>
+                {formattedUsers.length > 1 &&
+                  `${formattedUsers[0].fullName} et al; `}
+                {formattedUsers.length === 1 &&
+                  `${formattedUsers[0].fullName}; `}
+                {data[0]?.study?.startDate &&
+                  `${data[0].study.startDate.slice(0, 4)}: `}
+                {title && `${title}, `}
+                {t('doi_constants.publisher.name')}
+                {pid && ', '}
+                {pid && (
+                  <a
+                    href={`https://doi.org/${pid}`}
+                  >{`https://doi.org/${pid}`}</a>
+                )}
+              </i>
             </Typography>
             {!copiedCitation ? (
               <Button
@@ -390,7 +396,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 color="primary"
                 size="small"
                 onClick={() => {
-                  navigator.clipboard.writeText(getCitation());
+                  if (citationRef && citationRef.current)
+                    navigator.clipboard.writeText(
+                      citationRef.current.innerText
+                    );
                   setCopiedCitation(true);
                   setTimeout(() => setCopiedCitation(false), 1750);
                 }}
