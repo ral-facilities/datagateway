@@ -400,9 +400,9 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 color="primary"
                 size="small"
                 onClick={() => {
-                  if (citationRef && citationRef.current)
+                  if (citationRef?.current?.textContent)
                     navigator.clipboard.writeText(
-                      citationRef.current.innerText
+                      citationRef.current.textContent
                     );
                   setCopiedCitation(true);
                   setTimeout(() => setCopiedCitation(false), 1750);
