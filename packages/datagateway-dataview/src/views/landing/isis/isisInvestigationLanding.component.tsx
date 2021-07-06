@@ -395,6 +395,8 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             </Typography>
             {!copiedCitation ? (
               <Button
+                id="landing-investigation-copy-citation"
+                aria-label="landing-investigation-copy-citation"
                 variant="contained"
                 color="primary"
                 size="small"
@@ -408,6 +410,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               </Button>
             ) : (
               <Button
+                id="landing-investigation-copied-citation"
                 variant="contained"
                 color="primary"
                 size="small"

@@ -384,19 +384,22 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             </Typography>
             {!copiedCitation ? (
               <Button
+                id="landing-study-copy-citation"
+                aria-label="landing-study-copy-citation"
                 variant="contained"
                 color="primary"
                 size="small"
                 onClick={() => {
                   navigator.clipboard.writeText(getCitation());
                   setCopiedCitation(true);
-                  setTimeout(() => setCopiedCitation(false), 1500);
+                  setTimeout(() => setCopiedCitation(false), 1750);
                 }}
               >
                 Copy citation
               </Button>
             ) : (
               <Button
+                id="landing-study-copied-citation"
                 variant="contained"
                 color="primary"
                 size="small"
