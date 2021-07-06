@@ -473,7 +473,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 >
                   {tableLink(
                     `${urlPrefix}/dataset/${dataset.id}`,
-                    `${t('datasets.name')}: ${dataset.name}`,
+                    `${t('datasets.dataset')}: ${dataset.name}`,
                     view
                   )}
                 </Typography>

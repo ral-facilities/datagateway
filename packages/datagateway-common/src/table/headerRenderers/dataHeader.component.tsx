@@ -19,7 +19,6 @@ const DataHeader = (
     resizeColumn: (deltaX: number) => void;
     icon?: JSX.Element;
     filterComponent?: React.ReactElement;
-    disableHeaderWrap?: boolean;
   }
 ): React.ReactElement => {
   const {
@@ -32,7 +31,6 @@ const DataHeader = (
     resizeColumn,
     icon,
     filterComponent,
-    disableHeaderWrap,
   } = props;
 
   const currSortDirection = sort[dataKey];
@@ -80,7 +78,7 @@ const DataHeader = (
           flex: 1,
         }}
       >
-        <Box display="flex" flexWrap={disableHeaderWrap ? 'nowrap' : 'wrap'}>
+        <Box display="flex">
           <Box marginRight={1}>{icon}</Box>
           <Box>{inner}</Box>
         </Box>

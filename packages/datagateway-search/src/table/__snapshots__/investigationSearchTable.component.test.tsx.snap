@@ -44,14 +44,12 @@ exports[`Investigation Search Table component renders correctly 1`] = `
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "startDate",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "label": "investigations.start_date",
       },
       Object {
         "cellContentRenderer": [Function],
         "dataKey": "endDate",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "label": "investigations.end_date",
       },

@@ -181,13 +181,11 @@ exports[`Dataset table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "createTime",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "label": "datasets.create_time",
       },
       Object {
         "dataKey": "modTime",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "label": "datasets.modified_time",
       },

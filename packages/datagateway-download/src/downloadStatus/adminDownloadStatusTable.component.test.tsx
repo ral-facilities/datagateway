@@ -91,7 +91,7 @@ describe('Admin Download Status Table', () => {
       userName: 'test user',
     },
     {
-      createdAt: '2020-03-01T15:57:28Z',
+      createdAt: '2020-03-01T15:57:28Z[UTC]',
       downloadItems: [{ entityId: 5, entityType: 'investigation', id: 5 }],
       email: 'test5@email.com',
       facilityName: 'LILS',

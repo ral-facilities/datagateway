@@ -233,7 +233,6 @@ const DLSDatafilesTable = (
           label: t('datafiles.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />

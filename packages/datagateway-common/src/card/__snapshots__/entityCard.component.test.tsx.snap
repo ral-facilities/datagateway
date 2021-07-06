@@ -19,7 +19,9 @@ exports[`Card renders correctly 1`] = `
       <div
         className="makeStyles-main-4"
       >
-        <div>
+        <div
+          aria-label="main-content"
+        >
           <ArrowTooltip
             enterDelay={500}
             maxEnabledHeight={32}

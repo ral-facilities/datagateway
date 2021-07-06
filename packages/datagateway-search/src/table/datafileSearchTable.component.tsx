@@ -316,7 +316,6 @@ const DatafileSearchTable = (
           label: t('datafiles.modified_time'),
           dataKey: 'modTime',
           filterComponent: dateFilter,
-          disableHeaderWrap: true,
         },
       ]}
     />
