@@ -223,7 +223,11 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.doi,
+      content: function doiFormat(entity: Investigation) {
+        return (
+          <MuiLink href={`https://doi.org/${entity.doi}`}>{entity.doi}</MuiLink>
+        );
+      },
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
