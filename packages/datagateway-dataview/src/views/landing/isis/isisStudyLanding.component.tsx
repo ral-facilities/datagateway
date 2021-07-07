@@ -272,7 +272,11 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     {
       content: function doiFormat(entity: Investigation) {
         return (
-          <MuiLink href={`https://doi.org/${entity.doi}`}>{entity.doi}</MuiLink>
+          entity?.doi && (
+            <MuiLink href={`https://doi.org/${entity.doi}`}>
+              {entity.doi}
+            </MuiLink>
+          )
         );
       },
       label: t('investigations.doi'),
@@ -400,12 +404,13 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                 color="primary"
                 size="small"
                 onClick={() => {
-                  if (citationRef?.current?.textContent)
+                  if (citationRef?.current?.textContent) {
                     navigator.clipboard.writeText(
                       citationRef.current.textContent
                     );
-                  setCopiedCitation(true);
-                  setTimeout(() => setCopiedCitation(false), 1750);
+                    setCopiedCitation(true);
+                    setTimeout(() => setCopiedCitation(false), 1750);
+                  }
                 }}
               >
                 Copy citation
