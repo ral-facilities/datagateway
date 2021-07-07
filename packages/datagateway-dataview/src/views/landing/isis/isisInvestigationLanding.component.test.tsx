@@ -502,7 +502,7 @@ describe('ISIS Investigation Landing page', () => {
       .first()
       .simulate('click');
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+    expect(testWriteText).toHaveBeenCalledWith(
       'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
     );
 
