@@ -9,67 +9,6 @@ on:
       - use-local-ICAT-in-CI-runs-#641
 
 jobs:
-  # lint-and-unit-test:
-  #   name: Lint & Unit Tests
-  #   runs-on: ubuntu-16.04
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: '14.x'
-  #     # Cache yarn dependencies/ restore the cached dependencies during future workflows
-  #     - name: Get yarn cache directory path
-  #       id: yarn-cache-dir-path
-  #       run: echo "::set-output name=dir::$(yarn cache dir)"
-  #     - name: Cache yarn dependencies
-  #       uses: actions/cache@v2
-  #       id: yarn-cache
-  #       with:
-  #         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-  #         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-yarn-
-  #     - name: Install dependencies
-  #       # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-  #       run: |
-  #         npm config set scripts-prepend-node-path true
-  #         sudo apt-get install libgconf-2-4
-  #         yarn --frozen-lockfile
-  #     - name: Run linting
-  #       run: yarn lint
-  #     - name: Run unit tests
-  #       run: yarn test:unit
-  #     - name: Upload unit test coverage for the Common package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-common/
-  #         flags: common
-  #         fail_ci_if_error: true
-  #     - name: Upload unit test coverage for the DataView package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-dataview/
-  #         flags: dataview
-  #         fail_ci_if_error: true
-  #     - name: Upload unit test coverage for the Search package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-search/
-  #         flags: search
-  #         fail_ci_if_error: true
-  #     - name: Upload unit test coverage for the Download package
-  #       if: success()
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/datagateway-download/
-  #         flags: download
-  #         fail_ci_if_error: true
-
   lint-and-unit-test:
     name: Lint & Unit Tests
     runs-on: ubuntu-16.04
@@ -276,6 +215,8 @@ jobs:
       - name: Run ICAT Ansible Playbook
         run: |
           ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+
+      # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
         run: |
           awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
@@ -285,8 +226,6 @@ jobs:
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
-      - name: Display ICAT Server's run.properties
-        run: cat /home/runner/install/icat.server/run.properties
 
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
@@ -413,6 +352,8 @@ jobs:
       - name: Run ICAT Ansible Playbook
         run: |
           ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+
+      # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
         run: |
           awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
@@ -424,13 +365,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
       - name: Disable Two Level Storage
         run: |
-          sed -i '/plugin.archive.class/,/tidyBlockSize/ s/^/#/' /home/glassfish/install/ids.server/run.properties
-      - name: Display ICAT Server's run.properties
-        run: cat /home/runner/install/icat.server/run.properties
-      - name: Display IDS Server's run.properties
-        run: cat /home/runner/install/ids.server/run.properties
-      - name: Setup Python version
-        run: python --version
+          sed -i '/plugin.archive.class/,/tidyBlockSize/ s/^/#/' /home/runner/install/ids.server/run.properties
       - name: Reinstall IDS Server
         run: |
           cd /home/runner/install/ids.server/ && python2 ./setup -vv install
@@ -579,8 +514,6 @@ jobs:
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
-      - name: Display ICAT Server's run.properties
-        run: cat /home/runner/install/icat.server/run.properties
 
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
@@ -621,32 +554,15 @@ jobs:
           curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}' > login_output
       - name: Recreate Datafile index
         run: |
-          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Datafile/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Datafile/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
       - name: Recreate Dataset index
         run: |
-          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Dataset/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Dataset/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
       - name: Recreate Investigation index
         run: |
-          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Investigation/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
-      - name: Power nap
-        run: sleep 30
-      - name: Test request
-        run: |
-          curl --location -g --request GET 'https://localhost:8181/icat/lucene/data?query={%22target%22:%22Investigation%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%20%22text%22:%20%22police%22}&sessionId'`jq -r '.sessionId' login_output`
-      - name: Recreate Datafile index1
-        run: |
-          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Datafile/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
-      - name: Recreate Dataset index1
-        run: |
-          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Dataset/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
-      - name: Recreate Investigation index1
-        run: |
-          curl --location --request POST 'https://localhost:8181/icat/lucene/db/Investigation/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
-      - name: Power nap
-        run: sleep 30
-      - name: Test request1
-        run: |
-          curl --location -g --request GET 'https://localhost:8181/icat/lucene/data?query={%22target%22:%22Investigation%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%20%22text%22:%20%22police%22}&sessionId'`jq -r '.sessionId' login_output`
+          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Investigation/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Let reindexes complete
+        run: sleep 10
       - name: Remove session ID data
         run: rm -f login_output
 
@@ -688,38 +604,3 @@ jobs:
         with:
           name: Search-Screenshots
           path: packages/datagateway-search/cypress/screenshots
-
-
-  # Separate e2e jobs so that they can run in parallel
-  # download-e2e-test:
-  #   # Run only if the  Lint & Unit Tests job passed
-  #   needs: icat-datagateway-api-setup
-  #   name: DataGateway Download End to End Tests
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: Setup Node.js
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: '14.x'
-  #     # Cache yarn dependencies/ restore the cached dependencies during future workflows
-  #     - name: Get yarn cache directory path
-  #       id: yarn-cache-dir-path
-  #       run: echo "::set-output name=dir::$(yarn cache dir)"
-  #     - name: Cache yarn dependencies
-  #       uses: actions/cache@v2
-  #       id: yarn-cache
-  #       with:
-  #         path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-  #         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-yarn-
-  #     - name: Install dependencies
-  #       # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-  #       run: |
-  #         npm config set scripts-prepend-node-path true
-  #         sudo apt-get install libgconf-2-4
-  #         yarn --frozen-lockfile
-  #     - name: Run datagateway-download e2e tests
-  #       run: yarn workspace datagateway-download run e2e
