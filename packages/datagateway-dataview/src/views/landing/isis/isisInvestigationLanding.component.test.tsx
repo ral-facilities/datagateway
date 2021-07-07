@@ -456,14 +456,12 @@ describe('ISIS Investigation Landing page', () => {
 
   it('copies data citation to clipboard', () => {
     // Mock the clipboard object
+    const testWriteText = jest.fn();
     Object.assign(navigator, {
       clipboard: {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        writeText: () => {},
+        writeText: testWriteText,
       },
     });
-
-    jest.spyOn(navigator.clipboard, 'writeText');
 
     const testStore = mockStore({
       ...state,

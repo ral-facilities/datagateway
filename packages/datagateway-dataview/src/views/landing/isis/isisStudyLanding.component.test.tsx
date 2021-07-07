@@ -314,14 +314,12 @@ describe('ISIS Study Landing page', () => {
 
   it('copies data citation to clipboard', () => {
     // Mock the clipboard object
+    const testWriteText = jest.fn();
     Object.assign(navigator, {
       clipboard: {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        writeText: () => {},
+        writeText: testWriteText,
       },
     });
-
-    jest.spyOn(navigator.clipboard, 'writeText');
 
     const testStore = mockStore(state);
     const wrapper = mount(
@@ -359,7 +357,7 @@ describe('ISIS Study Landing page', () => {
 
     wrapper.find('#landing-study-copy-citation').first().simulate('click');
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+    expect(testWriteText).toHaveBeenCalledWith(
       'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
     );
 

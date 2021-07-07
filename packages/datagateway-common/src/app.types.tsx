@@ -83,11 +83,6 @@ export interface User {
   fullName?: string;
 }
 
-export interface FormattedUser {
-  role: string;
-  fullName: string;
-}
-
 export interface Sample {
   id: number;
   name: string;
