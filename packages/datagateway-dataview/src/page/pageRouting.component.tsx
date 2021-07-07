@@ -3,7 +3,8 @@ import { Location as LocationType } from 'history';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import InvestigationTable from '../views/table/investigationTable.component';
+// import InvestigationTable from '../views/table/investigationTable.component';
+import InvestigationTableQuery from '../views/table/investigationTableQuery.component';
 import DatasetTable from '../views/table/datasetTable.component';
 import DatafileTable from '../views/table/datafileTable.component';
 
@@ -607,7 +608,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           component={
             this.props.view === 'card'
               ? InvestigationCardView
-              : InvestigationTable
+              : InvestigationTableQuery
           }
         />
         <Route

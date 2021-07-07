@@ -21,14 +21,18 @@ import {
   pushPageView,
   saveView,
   Sticky,
-  QueryParams,
   ViewsType,
   readURLQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Switch as SwitchRouting, Route } from 'react-router-dom';
+import {
+  Switch as SwitchRouting,
+  Route,
+  withRouter,
+  RouteComponentProps,
+} from 'react-router-dom';
 import { push } from 'connected-react-router';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -367,9 +371,6 @@ interface PageContainerDispatchProps {
 }
 
 interface PageContainerStateProps {
-  entityCount: number;
-  location: LocationType;
-  query: QueryParams;
   savedView: ViewsType;
   loading: boolean;
   loadedCount: boolean;
@@ -378,12 +379,12 @@ interface PageContainerStateProps {
 }
 
 type PageContainerCombinedProps = PageContainerStateProps &
-  PageContainerDispatchProps;
+  PageContainerDispatchProps &
+  RouteComponentProps<never>;
 
 interface PageContainerState {
   paths: string[];
   toggleCard: boolean;
-  modifiedLocation: LocationType;
 }
 
 class PageContainer extends React.Component<
@@ -400,7 +401,6 @@ class PageContainer extends React.Component<
         Object.values(paths.studyHierarchy.toggle)
       ),
       toggleCard: this.getToggle(),
-      modifiedLocation: props.location,
     };
   }
 
@@ -414,12 +414,13 @@ class PageContainer extends React.Component<
   public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
-    if (this.getToggle() && !this.props.query.view) {
+    const view = readURLQuery(this.props.location).view;
+    if (this.getToggle() && !view) {
       this.props.pushView('card', this.props.location.pathname);
     }
 
     // Keep the query parameter for view and the state in sync, by getting the latest update.
-    if (prevProps.query.view !== this.props.query.view) {
+    if (readURLQuery(prevProps.location).view !== view) {
       this.setState({
         ...this.state,
         toggleCard: this.getToggle(),
@@ -442,9 +443,10 @@ class PageContainer extends React.Component<
   };
 
   public getToggle = (): boolean => {
+    const view = readURLQuery(this.props.location).view;
     return this.getPathMatch()
-      ? this.props.query.view
-        ? this.props.query.view === 'card'
+      ? view
+        ? view === 'card'
           ? true
           : false
         : this.getView() === 'card'
@@ -493,7 +495,7 @@ class PageContainer extends React.Component<
     return (
       <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
         <NavBar
-          entityCount={this.props.entityCount}
+          entityCount={this.props.totalDataCount}
           cartItems={this.props.cartItems}
           navigateToSearch={this.props.navigateToSearch}
           navigateToDownload={this.props.navigateToDownload}
@@ -525,10 +527,10 @@ class PageContainer extends React.Component<
           <Grid item xs={12} aria-label="container-table">
             {document.getElementById('datagateway-dataview') && (
               <ViewRouting
-                view={this.props.query.view}
+                view={readURLQuery(this.props.location).view}
                 loadedCount={this.props.loadedCount}
                 totalDataCount={this.props.totalDataCount}
-                location={this.state.modifiedLocation}
+                location={this.props.location}
               />
             )}
           </Grid>
@@ -539,9 +541,6 @@ class PageContainer extends React.Component<
 }
 
 const mapStateToProps = (state: StateType): PageContainerStateProps => ({
-  entityCount: state.dgcommon.totalDataCount,
-  location: state.router.location,
-  query: readURLQuery(state.router.location),
   savedView: state.dgcommon.savedQuery.view,
   loading: state.dgcommon.loading,
   loadedCount: state.dgcommon.loadedCount,
@@ -560,4 +559,6 @@ const mapDispatchToProps = (
   navigateToSearch: () => dispatch(push('/search/data')),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageContainer);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(PageContainer)
+);

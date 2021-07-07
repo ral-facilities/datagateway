@@ -9,7 +9,12 @@ import {
   listenToMessages,
   Preloader,
 } from 'datagateway-common';
-import { createBrowserHistory } from 'history';
+import {
+  createBrowserHistory,
+  LocationListener,
+  Location,
+  Action,
+} from 'history';
 import * as log from 'loglevel';
 import React from 'react';
 import { Translation } from 'react-i18next';
@@ -23,7 +28,8 @@ import PageContainer from './page/pageContainer.component';
 import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
-import { LocationListener, Location, Action } from 'history';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'dgwt',
@@ -103,6 +109,15 @@ function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
 
 export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+    },
+  },
+});
+
 class App extends React.Component<unknown, { hasError: boolean }> {
   store: Store;
   public constructor(props: unknown) {
@@ -155,19 +170,22 @@ class App extends React.Component<unknown, { hasError: boolean }> {
         <div className="App">
           <Provider store={this.store}>
             <ConnectedRouter history={history}>
-              <StylesProvider generateClassName={generateClassName}>
-                <DGThemeProvider>
-                  <ConnectedPreloader>
-                    <React.Suspense
-                      fallback={
-                        <Preloader loading={true}>Finished loading</Preloader>
-                      }
-                    >
-                      <PageContainer />
-                    </React.Suspense>
-                  </ConnectedPreloader>
-                </DGThemeProvider>
-              </StylesProvider>
+              <QueryClientProvider client={queryClient}>
+                <StylesProvider generateClassName={generateClassName}>
+                  <DGThemeProvider>
+                    <ConnectedPreloader>
+                      <React.Suspense
+                        fallback={
+                          <Preloader loading={true}>Finished loading</Preloader>
+                        }
+                      >
+                        <PageContainer />
+                      </React.Suspense>
+                    </ConnectedPreloader>
+                  </DGThemeProvider>
+                </StylesProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
+              </QueryClientProvider>
             </ConnectedRouter>
           </Provider>
         </div>

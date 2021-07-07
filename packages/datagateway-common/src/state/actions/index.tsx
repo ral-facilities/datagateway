@@ -1,6 +1,6 @@
 import { push } from 'connected-react-router';
 import { Action } from 'redux';
-import { Location } from 'history';
+import { History, Location } from 'history';
 import {
   DateFilter,
   Entity,
@@ -332,6 +332,67 @@ export const readURLQuery = (location: Location): QueryParams => {
   return params;
 };
 
+export const readURLQuerySearch = (queryParams: string): QueryParams => {
+  // Get the URLSearchParams object from the search query.
+  const query = new URLSearchParams(queryParams);
+
+  // Get filters in URL.
+  const search = query.get('search');
+  const page = query.get('page');
+  const results = query.get('results');
+  const filters = query.get('filters');
+  const sort = query.get('sort');
+  const view = query.get('view') as ViewsType;
+
+  // Parse filters in the query.
+  const parsedFilters: FiltersType = {};
+  if (filters) {
+    try {
+      const fq: FiltersType = JSON.parse(filters);
+
+      // Create the entries for the filter.
+      for (const [f, v] of Object.entries(fq)) {
+        // Add only if there are filter items present.
+        if (Array.isArray(v)) {
+          if (v.length > 0) {
+            parsedFilters[f] = v;
+          }
+        } else {
+          parsedFilters[f] = v;
+        }
+      }
+    } catch (e) {
+      console.error('Filter query provided in an incorrect format.');
+    }
+  }
+
+  const parsedSort: SortType = {};
+  if (sort) {
+    try {
+      const sq: SortType = JSON.parse(sort);
+
+      // Create the entries for sort.
+      for (const [s, v] of Object.entries(sq)) {
+        parsedSort[s] = v;
+      }
+    } catch (e) {
+      console.error('Sort query provided in an incorrect format.');
+    }
+  }
+
+  // Create the query parameters object.
+  const params: QueryParams = {
+    view: view,
+    search: search ? search : null,
+    page: page ? Number(page) : null,
+    results: results ? Number(results) : null,
+    filters: parsedFilters,
+    sort: parsedSort,
+  };
+
+  return params;
+};
+
 // Get the current URL query parameters.
 export const getURLQuery = (query: QueryParams): URLSearchParams => {
   const filters = query.filters;
@@ -371,6 +432,64 @@ export const getURLQuery = (query: QueryParams): URLSearchParams => {
   }
 
   return queryParams;
+};
+
+export const getApiParams = (props: {
+  sort: SortType;
+  filters: FiltersType;
+}): URLSearchParams => {
+  const { sort, filters } = props;
+  const searchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(sort)) {
+    searchParams.append('order', JSON.stringify(`${key} ${value}`));
+  }
+
+  // sort by ID first to guarantee order
+  searchParams.append('order', JSON.stringify(`id asc`));
+
+  for (const [column, filter] of Object.entries(filters)) {
+    if (typeof filter === 'object') {
+      if (!Array.isArray(filter)) {
+        if ('startDate' in filter && filter.startDate) {
+          searchParams.append(
+            'where',
+            JSON.stringify({
+              [column]: { gte: `${filter.startDate} 00:00:00` },
+            })
+          );
+        }
+        if ('endDate' in filter && filter.endDate) {
+          searchParams.append(
+            'where',
+            JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
+          );
+        }
+        if ('type' in filter && filter.type) {
+          if (filter.type === 'include') {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { like: filter.value } })
+            );
+          } else {
+            searchParams.append(
+              'where',
+              JSON.stringify({ [column]: { nlike: filter.value } })
+            );
+          }
+        }
+      } else {
+        // If it is an array (strings or numbers) we use IN
+        // and filter by what is in the array at the moment.
+        searchParams.append(
+          'where',
+          JSON.stringify({ [column]: { in: filter } })
+        );
+      }
+    }
+  }
+
+  return searchParams;
 };
 
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
@@ -612,7 +731,74 @@ export const pushPageSort = (
       };
     }
     dispatch(push({ search: `?${getURLQuery(query).toString()}` }));
+    // Use sortTable present already.
+    // dispatch(sortTable(sortKey, order));
+    // dispatch(
+    //   push({ search: `?${getURLQuery(getState().dgcommon.query).toString()}` })
+    // );
   };
+};
+
+export const pushPageSortHistory = (
+  sortKey: string,
+  order: Order | null,
+  history: History
+): ThunkResult<Promise<void>> => {
+  return async (dispatch, getState) => {
+    console.log('pushPageSortHistory');
+    dispatch(sortUpdate());
+    console.log('sort update sent');
+    let query = readURLQuery(history.location);
+    if (order !== null) {
+      query = {
+        ...query,
+        sort: {
+          ...query.sort,
+          [sortKey]: order,
+        },
+      };
+    } else {
+      // if order is null, user no longer wants to sort by that column so remove column from sort state
+      const { [sortKey]: order, ...rest } = query.sort;
+      query = {
+        ...query,
+        sort: {
+          ...rest,
+        },
+      };
+    }
+    history.push({ search: `?${getURLQuery(query).toString()}` });
+    console.log('history pushed');
+  };
+};
+
+export const pushPageSortHistoryAction = (
+  sortKey: string,
+  order: Order | null,
+  history: History
+): Action => {
+  let query = readURLQuery(history.location);
+  if (order !== null) {
+    query = {
+      ...query,
+      sort: {
+        ...query.sort,
+        [sortKey]: order,
+      },
+    };
+  } else {
+    // if order is null, user no longer wants to sort by that column so remove column from sort state
+    const { [sortKey]: order, ...rest } = query.sort;
+    query = {
+      ...query,
+      sort: {
+        ...rest,
+      },
+    };
+  }
+  history.push({ search: `?${getURLQuery(query).toString()}` });
+
+  return sortUpdate();
 };
 
 export const pushQuery = (query: QueryParams): ThunkResult<Promise<void>> => {
