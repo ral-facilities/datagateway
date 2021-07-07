@@ -436,7 +436,9 @@ exports[`ISIS Dataset table component renders details panel correctly and it sen
           datasets.details.description
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.description not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
     </WithStyles(ForwardRef(Grid))>
