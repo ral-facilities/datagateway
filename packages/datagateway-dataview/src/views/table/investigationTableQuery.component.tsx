@@ -52,7 +52,7 @@ import {
   // UseInfiniteQueryResult,
   // InfiniteData,
 } from 'react-query';
-import pLimit from 'p-limit';
+// import pLimit from 'p-limit';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -195,20 +195,18 @@ const InvestigationTableQuery = (
   const [t] = useTranslation();
 
   // const throttle = pThrottle({ limit: 5, interval: 500 });
-  const limit = pLimit(5);
+  // const limit = pLimit(5);
 
-  React.useEffect(() => {
-    return () => {
-      console.log('limit useeffect cleanup');
-      limit.clearQueue();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // React.useEffect(() => {
+  //   return () => {
+  //     limit.clearQueue();
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const pushSort = React.useCallback(
     (sortKey: string, order: Order | null): void => {
       let query = readURLQuerySearch(location.search);
-      console.log('old query', getURLQuery(query).toString());
       if (order !== null) {
         query = {
           ...query,
@@ -227,7 +225,6 @@ const InvestigationTableQuery = (
           },
         };
       }
-      console.log('new query', getURLQuery(query).toString());
       history.push({ search: `?${getURLQuery(query).toString()}` });
     },
     [history, location]
@@ -236,8 +233,6 @@ const InvestigationTableQuery = (
   const pushFilters = React.useCallback(
     (filterKey: string, filter: Filter | null): void => {
       let query = readURLQuerySearch(location.search);
-      console.log('old query', getURLQuery(query).toString());
-
       if (filter !== null) {
         // if given an defined filter, update the relevant column in the sort state
         query = {
@@ -257,7 +252,6 @@ const InvestigationTableQuery = (
           },
         };
       }
-      console.log('new query', getURLQuery(query).toString());
       history.push({ search: `?${getURLQuery(query).toString()}` });
     },
     [history, location]
@@ -278,9 +272,9 @@ const InvestigationTableQuery = (
     ['investigationCount', { filters }],
     (params) => {
       const { filters } = params.queryKey[1];
-      return fetchCount({ filters });
+      return fetchCount(filters);
     },
-    { initialData: 0 }
+    { placeholderData: 0 }
   );
 
   const { isLoading: loading, fetchNextPage, data } = useInfiniteQuery<
@@ -308,7 +302,7 @@ const InvestigationTableQuery = (
 
   // go through the data array and fetch sizes
   // useQueries(
-  //   data?.pages.flat().map((investigation) => {
+  //   aggregatedData.map((investigation) => {
   //     return {
   //       queryKey: ['investigationSize', investigation.id],
   //       queryFn: () => limit(fetchInvestigationSize, investigation.id),
@@ -343,7 +337,7 @@ const InvestigationTableQuery = (
     [string, { filters: FiltersType }]
   >(['investigationIds', { filters }], (params) => {
     const { filters } = params.queryKey[1];
-    return fetchIds({ filters }, 'investigation');
+    return fetchIds(filters, 'investigation');
   });
 
   const selectedRows = React.useMemo(
@@ -357,6 +351,11 @@ const InvestigationTableQuery = (
         )
         .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
+  );
+
+  const aggregatedData: Investigation[] = React.useMemo(
+    () => data?.pages.flat() ?? [],
+    [data]
   );
 
   const textFilter = (label: string, dataKey: string): React.ReactElement => (
@@ -382,7 +381,7 @@ const InvestigationTableQuery = (
   return (
     <Table
       loading={loading}
-      data={data?.pages.flat() ?? []}
+      data={aggregatedData}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       loadMoreRows={(offsetParams) =>

@@ -23,23 +23,19 @@ import {
   Sticky,
   ViewsType,
   readURLQuery,
+  clearTable,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import {
-  Switch as SwitchRouting,
-  Route,
-  withRouter,
-  RouteComponentProps,
-} from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Switch as SwitchRouting, Route, useLocation } from 'react-router-dom';
 import { push } from 'connected-react-router';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
 import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
+import { useIsFetching, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -137,6 +133,10 @@ export const paths = {
     },
   },
 };
+
+const togglePaths = Object.values(paths.toggle).concat(
+  Object.values(paths.studyHierarchy.toggle)
+);
 
 const NavBar = (props: {
   entityCount: number;
@@ -288,7 +288,7 @@ const StyledRouting = (props: {
     : paperClasses.tablePaper;
   return (
     <div>
-      {viewStyle === 'table' && displayFilterMessage && (
+      {viewStyle !== 'card' && displayFilterMessage && (
         <Paper className={paperClasses.noResultsPaper}>
           <Typography
             align="center"
@@ -333,12 +333,7 @@ const ViewRouting = React.memo(
           render={() => <PageRouting view={view} location={location} />}
         />
         {/* For "toggle" paths, check state for the current view to determine styling */}
-        <Route
-          exact
-          path={Object.values(paths.toggle).concat(
-            Object.values(paths.studyHierarchy.toggle)
-          )}
-        >
+        <Route exact path={togglePaths}>
           <StyledRouting
             viewStyle={view}
             view={view}
@@ -362,203 +357,184 @@ const ViewRouting = React.memo(
 );
 ViewRouting.displayName = 'ViewRouting';
 
-interface PageContainerDispatchProps {
-  pushView: (view: ViewsType, path: string) => Promise<void>;
-  saveView: (view: ViewsType) => Promise<void>;
-  fetchDownloadCart: () => Promise<void>;
-  navigateToDownload: () => Action;
-  navigateToSearch: () => Action;
-}
+const storeDataView = (view: ViewsType): void => {
+  if (view) localStorage.setItem('dataView', view);
+};
 
-interface PageContainerStateProps {
-  savedView: ViewsType;
-  loading: boolean;
-  loadedCount: boolean;
-  totalDataCount: number;
-  cartItems: DownloadCartItem[];
-}
+const getView = (): string => {
+  // We store the view into localStorage so the user can
+  // return to the view they were on the next time they open the page.
+  const savedView = localStorage.getItem('dataView');
 
-type PageContainerCombinedProps = PageContainerStateProps &
-  PageContainerDispatchProps &
-  RouteComponentProps<never>;
+  // We set to 'table' initially if there is none present.
+  if (!savedView) storeDataView('table');
+  else return savedView;
+  return 'table';
+};
 
-interface PageContainerState {
-  paths: string[];
-  toggleCard: boolean;
-}
+const getPathMatch = (pathname: string): boolean => {
+  const res = togglePaths.some((p) => {
+    // Look for the character set where the parameter for ID would be
+    // replaced with the regex to catch any character between the forward slashes.
+    const match = pathname.match(p.replace(/(:[^./]*)/g, '(.)+'));
+    return match && pathname === match[0];
+  });
+  return res;
+};
 
-class PageContainer extends React.Component<
-  PageContainerCombinedProps,
-  PageContainerState
-> {
-  public constructor(props: PageContainerCombinedProps) {
-    super(props);
+const getToggle = (pathname: string, view: ViewsType): boolean => {
+  return getPathMatch(pathname)
+    ? view
+      ? view === 'card'
+        ? true
+        : false
+      : getView() === 'card'
+      ? true
+      : false
+    : false;
+};
 
-    // Allow for query parameter to override the
-    // toggle state in the localStorage.
-    this.state = {
-      paths: Object.values(paths.toggle).concat(
-        Object.values(paths.studyHierarchy.toggle)
-      ),
-      toggleCard: this.getToggle(),
-    };
-  }
+const PageContainer: React.FC = () => {
+  const location = useLocation();
+  const prevLocationRef = React.useRef(location);
+  const { view, filters } = React.useMemo(() => readURLQuery(location), [
+    location,
+  ]);
 
-  public componentDidMount(): void {
-    // Fetch the download cart on mount, ensuring dataview element is present.
+  const isFetchingNum = useIsFetching();
+  const loading = isFetchingNum > 0;
+
+  const queryClient = useQueryClient();
+
+  // if location.pathname.split("/") is odd, then it's a data view
+  // if it's even, it's a landing page
+  // this determines what query we're using aka either the last or second last item in path
+  const splitPath = location.pathname.split('/');
+  const currQueryEntity =
+    splitPath.length % 2 !== 0
+      ? splitPath[splitPath.length - 1]
+      : splitPath[splitPath.length - 2];
+
+  const totalDataCount = queryClient.getQueryData<number>([
+    `${currQueryEntity}Count`,
+    { filters },
+  ]);
+
+  const isCountFetchingNum = useIsFetching({
+    predicate: (query) => query.queryKey.includes('Count'),
+  });
+  const loadedCount = isCountFetchingNum === 0;
+
+  const cartItems = useSelector((state: StateType) => state.dgcommon.cartItems);
+
+  const [toggleCard, setToggleCard] = React.useState(false);
+
+  const dispatch = useDispatch();
+
+  const handleToggleChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      const nextView = event.target.checked ? 'card' : 'table';
+
+      // Save the current view information to state and restore the previous view information.
+      dispatch(saveView(toggleCard ? 'card' : 'table'));
+
+      // Set the view in local storage.
+      storeDataView(nextView);
+
+      // Add the view and push the final query parameters.
+      dispatch(pushPageView(nextView, location.pathname));
+
+      // Set the state with the toggled card option and the saved query.
+
+      setToggleCard(event.target.checked);
+    },
+    [location.pathname, dispatch, toggleCard]
+  );
+
+  const navigateToDownload = React.useCallback(
+    () => dispatch(push('/download')),
+    [dispatch]
+  );
+
+  const navigateToSearch = React.useCallback(
+    () => dispatch(push('/search/data')),
+    [dispatch]
+  );
+
+  React.useEffect(() => {
     if (document.getElementById('datagateway-dataview')) {
-      this.props.fetchDownloadCart();
+      dispatch(fetchDownloadCart());
     }
-  }
+  }, [dispatch]);
 
-  public componentDidUpdate(prevProps: PageContainerCombinedProps): void {
+  React.useEffect(() => {
+    prevLocationRef.current = location;
+  });
+  const prevLocation = prevLocationRef.current;
+  const prevView = React.useMemo(() => readURLQuery(prevLocation).view, [
+    prevLocation,
+  ]);
+
+  React.useEffect(() => {
+    // Ensure if the location changes, then we clear the view.
+    if (prevLocation.pathname !== location.pathname) {
+      dispatch(clearTable());
+    }
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
-    const view = readURLQuery(this.props.location).view;
-    if (this.getToggle() && !view) {
-      this.props.pushView('card', this.props.location.pathname);
+    if (getToggle(location.pathname, view) && !view) {
+      dispatch(pushPageView('card', location.pathname));
     }
 
     // Keep the query parameter for view and the state in sync, by getting the latest update.
-    if (readURLQuery(prevProps.location).view !== view) {
-      this.setState({
-        ...this.state,
-        toggleCard: this.getToggle(),
-      });
+    if (prevView !== view) {
+      setToggleCard(getToggle(location.pathname, view));
     }
-  }
+  }, [location.pathname, view, prevView, dispatch, prevLocation.pathname]);
 
-  public getPathMatch = (): boolean => {
-    const res = Object.values(paths.toggle)
-      .concat(Object.values(paths.studyHierarchy.toggle))
-      .some((p) => {
-        // Look for the character set where the parameter for ID would be
-        // replaced with the regex to catch any character between the forward slashes.
-        const match = this.props.location.pathname.match(
-          p.replace(/(:[^./]*)/g, '(.)+')
-        );
-        return match && this.props.location.pathname === match[0];
-      });
-    return res;
-  };
+  return (
+    <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+      <NavBar
+        entityCount={totalDataCount ?? 0}
+        cartItems={cartItems}
+        navigateToSearch={navigateToSearch}
+        navigateToDownload={navigateToDownload}
+      />
 
-  public getToggle = (): boolean => {
-    const view = readURLQuery(this.props.location).view;
-    return this.getPathMatch()
-      ? view
-        ? view === 'card'
-          ? true
-          : false
-        : this.getView() === 'card'
-        ? true
-        : false
-      : false;
-  };
-
-  public storeDataView = (view: ViewsType): void => {
-    if (view) localStorage.setItem('dataView', view);
-  };
-
-  public getView = (): string => {
-    // We store the view into localStorage so the user can
-    // return to the view they were on the next time they open the page.
-    const savedView = localStorage.getItem('dataView');
-
-    // We set to 'table' initially if there is none present.
-    if (!savedView) this.storeDataView('table');
-    else return savedView;
-    return 'table';
-  };
-
-  public handleToggleChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    const nextView = event.target.checked ? 'card' : 'table';
-
-    // Save the current view information to state and restore the previous view information.
-    this.props.saveView(this.state.toggleCard ? 'card' : 'table');
-
-    // Set the view in local storage.
-    this.storeDataView(nextView);
-
-    // Add the view and push the final query parameters.
-    this.props.pushView(nextView, this.props.location.pathname);
-
-    // Set the state with the toggled card option and the saved query.
-    this.setState({
-      ...this.state,
-      toggleCard: event.target.checked,
-    });
-  };
-
-  public render(): React.ReactElement {
-    return (
-      <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-        <NavBar
-          entityCount={this.props.totalDataCount}
-          cartItems={this.props.cartItems}
-          navigateToSearch={this.props.navigateToSearch}
-          navigateToDownload={this.props.navigateToDownload}
-        />
-
-        <StyledGrid container>
-          {/* Toggle between the table and card view */}
-          <Grid item xs={12}>
-            <Route
-              exact
-              path={this.state.paths}
-              render={() => (
-                <CardSwitch
-                  toggleCard={this.state.toggleCard}
-                  handleToggleChange={this.handleToggleChange}
-                />
-              )}
-            />
-          </Grid>
-
-          {/* Show loading progress if data is still being loaded */}
-          {this.props.loading && (
-            <Grid item xs={12}>
-              <LinearProgress color="secondary" />
-            </Grid>
-          )}
-
-          {/* Hold the table for remainder of the page */}
-          <Grid item xs={12} aria-label="container-table">
-            {document.getElementById('datagateway-dataview') && (
-              <ViewRouting
-                view={readURLQuery(this.props.location).view}
-                loadedCount={this.props.loadedCount}
-                totalDataCount={this.props.totalDataCount}
-                location={this.props.location}
+      <StyledGrid container>
+        {/* Toggle between the table and card view */}
+        <Grid item xs={12}>
+          <Route
+            exact
+            path={togglePaths}
+            render={() => (
+              <CardSwitch
+                toggleCard={toggleCard}
+                handleToggleChange={handleToggleChange}
               />
             )}
+          />
+        </Grid>
+
+        {/* Show loading progress if data is still being loaded */}
+        {loading && (
+          <Grid item xs={12}>
+            <LinearProgress color="secondary" />
           </Grid>
-        </StyledGrid>
-      </Paper>
-    );
-  }
-}
+        )}
 
-const mapStateToProps = (state: StateType): PageContainerStateProps => ({
-  savedView: state.dgcommon.savedQuery.view,
-  loading: state.dgcommon.loading,
-  loadedCount: state.dgcommon.loadedCount,
-  totalDataCount: state.dgcommon.totalDataCount,
-  cartItems: state.dgcommon.cartItems,
-});
+        {/* Hold the table for remainder of the page */}
+        <Grid item xs={12} aria-label="container-table">
+          <ViewRouting
+            view={view}
+            location={location}
+            loadedCount={loadedCount}
+            totalDataCount={totalDataCount ?? 0}
+          />
+        </Grid>
+      </StyledGrid>
+    </Paper>
+  );
+};
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): PageContainerDispatchProps => ({
-  pushView: (view: ViewsType, path: string) =>
-    dispatch(pushPageView(view, path)),
-  saveView: (view: ViewsType) => dispatch(saveView(view)),
-  fetchDownloadCart: () => dispatch(fetchDownloadCart()),
-  navigateToDownload: () => dispatch(push('/download')),
-  navigateToSearch: () => dispatch(push('/search/data')),
-});
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(PageContainer)
-);
+export default PageContainer;
