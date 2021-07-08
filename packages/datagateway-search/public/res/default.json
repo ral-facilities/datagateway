@@ -44,13 +44,15 @@
     "create_time": "Create Time",
     "modified_time": "Modified Time",
     "datafile_count": "Datafile Count",
-    "description": "Description"
+    "description": "Description",
+    "investigation": "Investigation"
   },
   "datafiles": {
     "name": "Name",
     "modified_time": "Modified Time",
     "location": "Location",
-    "size": "Size"
+    "size": "Size",
+    "dataset": "Dataset"
   },
   "app": {
     "error": "Something went wrong..."
