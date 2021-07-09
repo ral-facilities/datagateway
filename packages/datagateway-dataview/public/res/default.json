@@ -104,7 +104,8 @@
     },
     "type": {
       "id": "Type ID"
-    }
+    },
+    "missing": "Missing investigation",
   },
   "datasets": {
     "dataset": "Dataset",
