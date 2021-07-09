@@ -23,7 +23,8 @@ import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component
 import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
 import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
 
-import InvestigationCardView from '../views/card/investigationCardView.component';
+// import InvestigationCardView from '../views/card/investigationCardView.component';
+import InvestigationCardViewQuery from '../views/card/investigationCardViewQuery.component';
 import DatasetCardView from '../views/card/datasetCardView.component';
 
 import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
@@ -607,7 +608,7 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.toggle.investigation}
           component={
             this.props.view === 'card'
-              ? InvestigationCardView
+              ? InvestigationCardViewQuery
               : InvestigationTableQuery
           }
         />
