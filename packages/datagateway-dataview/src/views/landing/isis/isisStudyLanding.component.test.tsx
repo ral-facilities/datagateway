@@ -316,4 +316,29 @@ describe('ISIS Study Landing page', () => {
       wrapper.find('[aria-label="landing-study-citation"]').first().text()
     ).toEqual('Title 1, doi_constants.publisher.name');
   });
+
+  it('displays missing investigation label when investigation is null', () => {
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [
+          {
+            study: study,
+          },
+        ],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISStudyLanding instrumentId="4" studyId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-label="landing-study-part-label"]').first().text()
+    ).toEqual('investigations.missing');
+  });
 });

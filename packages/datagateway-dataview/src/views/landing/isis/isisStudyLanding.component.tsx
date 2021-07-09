@@ -123,6 +123,8 @@ const LinkedInvestigation = (
   const [t] = useTranslation();
   const classes = useStyles();
 
+  const investigation = props.studyInvestigation.investigation as Investigation;
+
   const shortInvestigationInfo = [
     {
       content: (entity: Investigation) => entity.doi,
@@ -151,41 +153,28 @@ const LinkedInvestigation = (
         align="center"
         aria-label="landing-study-part-label"
       >
-        {props.studyInvestigation.investigation &&
-          tableLink(
-            `${props.urlPrefix}/investigation/${props.studyInvestigation.investigation.id}`,
-            `${t('investigations.visit_id')}: ${
-              props.studyInvestigation.investigation?.visitId
-            }`,
-            props.view
-          )}
+        {tableLink(
+          `${props.urlPrefix}/investigation/${investigation.id}`,
+          `${t('investigations.visit_id')}: ${investigation.visitId}`,
+          props.view
+        )}
       </Typography>
-      {shortInvestigationInfo.map(
-        (field, i) =>
-          // data[0]?.investigation &&
-          props.studyInvestigation.investigation &&
-          // field.content(data[0].investigation as Investigation) && (
-          field.content(
-            props.studyInvestigation.investigation as Investigation
-          ) && (
-            <div className={classes.shortInfoRow} key={i}>
-              <Typography className={classes.shortInfoLabel}>
-                {field.icon}
-                {field.label}:
-              </Typography>
-              <Typography className={classes.shortInfoValue}>
-                {field.content(
-                  props.studyInvestigation.investigation as Investigation
-                )}
-              </Typography>
-            </div>
-          )
-      )}
+      {shortInvestigationInfo.map((field, i) => (
+        <div className={classes.shortInfoRow} key={i}>
+          <Typography className={classes.shortInfoLabel}>
+            {field.icon}
+            {field.label}:
+          </Typography>
+          <Typography className={classes.shortInfoValue}>
+            {field.content(investigation)}
+          </Typography>
+        </div>
+      ))}
       <div className={classes.actionButtons}>
         <AddToCartButton
           entityType="investigation"
-          allIds={[props.studyInvestigation.investigation.id]}
-          entityId={props.studyInvestigation.investigation.id}
+          allIds={[investigation.id]}
+          entityId={investigation.id}
         />
       </div>
     </div>
