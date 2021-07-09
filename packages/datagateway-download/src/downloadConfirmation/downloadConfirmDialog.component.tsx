@@ -19,12 +19,12 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import Mark from './mark.component';
 
 import {
   formatBytes,
   MicroFrontendId,
   NotificationType,
+  Mark,
 } from 'datagateway-common';
 import {
   submitCart,
@@ -722,13 +722,13 @@ const DownloadConfirmDialog: React.FC<DownloadConfirmDialogProps> = (
             >
               <Grid item xs>
                 {isSubmitSuccessful ? (
-                  <Mark size={100} colour="#3E863E" visible={props.open} />
+                  <Mark size={100} visible={props.open} colour="#3e863e" />
                 ) : (
                   <Mark
                     size={100}
-                    colour="#A91B2E"
-                    isCross={true}
                     visible={props.open}
+                    colour="#a91b2e"
+                    isCross={true}
                   />
                 )}
               </Grid>

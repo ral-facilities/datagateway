@@ -26,6 +26,7 @@ import {
   StudyInvestigation,
   tableLink,
   ViewsType,
+  Mark,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +36,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 import AddToCartButton from '../../addToCartButton.component';
 import Branding from './isisBranding.component';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -184,6 +186,8 @@ const LinkedInvestigation = (
 const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const [t] = useTranslation();
   const [value, setValue] = React.useState<'details'>('details');
+  const citationRef = React.useRef<HTMLElement>(null);
+  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
     fetchStudyData,
     viewAllInvestigations,
@@ -200,7 +204,14 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
 
   const pid = React.useMemo(() => data[0]?.study?.pid, [data]);
   const title = React.useMemo(() => data[0]?.investigation?.title, [data]);
-  const summary = React.useMemo(() => data[0]?.investigation?.summary, [data]);
+  const summary = React.useMemo(
+    () =>
+      data[0]?.investigation?.summary &&
+      data[0]?.investigation?.summary !== 'null'
+        ? data[0].investigation.summary
+        : 'Description not provided',
+    [data]
+  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
@@ -419,7 +430,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-study-citation">
-              <i>
+              <i ref={citationRef}>
                 {formattedUsers.length > 1 &&
                   `${formattedUsers[0].fullName} et al; `}
                 {formattedUsers.length === 1 &&
@@ -428,9 +439,44 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                   `${data[0].study.startDate.slice(0, 4)}: `}
                 {title && `${title}, `}
                 {t('doi_constants.publisher.name')}
-                {pid && `, https://doi.org/${pid}`}
+                {pid && ', '}
+                {pid && (
+                  <a
+                    href={`https://doi.org/${pid}`}
+                  >{`https://doi.org/${pid}`}</a>
+                )}
               </i>
             </Typography>
+            {!copiedCitation ? (
+              <Button
+                id="landing-study-copy-citation"
+                aria-label="landing-study-copy-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                  if (citationRef?.current?.textContent) {
+                    navigator.clipboard.writeText(
+                      citationRef.current.textContent
+                    );
+                    setCopiedCitation(true);
+                    setTimeout(() => setCopiedCitation(false), 1750);
+                  }
+                }}
+              >
+                Copy citation
+              </Button>
+            ) : (
+              <Button
+                id="landing-study-copied-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<Mark size={20} visible={true} />}
+              >
+                Copied citation
+              </Button>
+            )}
           </Grid>
 
           <Divider orientation="vertical" />

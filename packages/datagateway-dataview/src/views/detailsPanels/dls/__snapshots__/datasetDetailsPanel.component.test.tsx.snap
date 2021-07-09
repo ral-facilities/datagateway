@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Dataset details panel component renders calculate size button when size has not been calculated 1`] = `
+exports[`Dataset details panel component Shows "No <field> provided" incase of a null field 1`] = `
 <div
   id="details-panel"
   style={
@@ -59,7 +59,9 @@ exports[`Dataset details panel component renders calculate size button when size
           datasets.details.description
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.description not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -72,7 +74,9 @@ exports[`Dataset details panel component renders calculate size button when size
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.start_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -85,7 +89,9 @@ exports[`Dataset details panel component renders calculate size button when size
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datasets.details.end_date not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -116,7 +122,7 @@ exports[`Dataset details panel component renders calculate size button when size
 </div>
 `;
 
-exports[`Dataset details panel component renders correctly 1`] = `
+exports[`Dataset details panel component renders calculate size button when size has not been calculated 1`] = `
 <div
   id="details-panel"
   style={
@@ -137,6 +143,12 @@ exports[`Dataset details panel component renders correctly 1`] = `
       id="dataset-details-tab"
       label="datasets.details.label"
       value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-type-panel"
+      id="dataset-type-tab"
+      label="datasets.details.type.label"
+      value="type"
     />
   </WithStyles(ForwardRef(Tabs))>
   <div
@@ -175,7 +187,9 @@ exports[`Dataset details panel component renders correctly 1`] = `
           datasets.details.description
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            Test description
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -188,7 +202,9 @@ exports[`Dataset details panel component renders correctly 1`] = `
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            2019-06-11
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -201,7 +217,9 @@ exports[`Dataset details panel component renders correctly 1`] = `
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            2019-06-12
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -224,6 +242,220 @@ exports[`Dataset details panel component renders correctly 1`] = `
             >
               datasets.details.calculate
             </WithStyles(ForwardRef(Button))>
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+  <div
+    aria-labelledby="dataset-type-tab"
+    hidden={true}
+    id="dataset-type-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 2
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.type.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            datasets.details.type.description not provided
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+</div>
+`;
+
+exports[`Dataset details panel component renders correctly 1`] = `
+<div
+  id="details-panel"
+  style={
+    Object {
+      "minWidth": 0,
+    }
+  }
+>
+  <WithStyles(ForwardRef(Tabs))
+    aria-label="datasets.details.tabs_label"
+    onChange={[Function]}
+    scrollButtons="auto"
+    value="details"
+    variant="scrollable"
+  >
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-details-panel"
+      id="dataset-details-tab"
+      label="datasets.details.label"
+      value="details"
+    />
+    <WithStyles(ForwardRef(Tab))
+      aria-controls="dataset-type-panel"
+      id="dataset-type-tab"
+      label="datasets.details.type.label"
+      value="type"
+    />
+  </WithStyles(ForwardRef(Tabs))>
+  <div
+    aria-labelledby="dataset-details-tab"
+    hidden={false}
+    id="dataset-details-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 1
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            Test description
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.start_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            2019-06-11
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.end_date
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            2019-06-12
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.size
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            <WithStyles(ForwardRef(Button))
+              color="secondary"
+              id="calculate-size-btn"
+              onClick={[Function]}
+              size="small"
+              variant="outlined"
+            >
+              datasets.details.calculate
+            </WithStyles(ForwardRef(Button))>
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+  <div
+    aria-labelledby="dataset-type-tab"
+    hidden={true}
+    id="dataset-type-panel"
+    role="tabpanel"
+  >
+    <WithStyles(ForwardRef(Grid))
+      className="makeStyles-root-1"
+      container={true}
+      direction="column"
+    >
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="h6"
+        >
+          <b>
+            Test 2
+          </b>
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Divider))
+          className="makeStyles-divider-2"
+        />
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        item={true}
+        xs={true}
+      >
+        <WithStyles(ForwardRef(Typography))
+          variant="overline"
+        >
+          datasets.details.type.description
+        </WithStyles(ForwardRef(Typography))>
+        <WithStyles(ForwardRef(Typography))>
+          <b>
+            datasets.details.type.description not provided
           </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
@@ -297,7 +529,9 @@ exports[`Dataset details panel component renders type tab when present in the da
           datasets.details.description
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            Test description
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -310,7 +544,9 @@ exports[`Dataset details panel component renders type tab when present in the da
           datasets.details.start_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            2019-06-11
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
@@ -323,7 +559,9 @@ exports[`Dataset details panel component renders type tab when present in the da
           datasets.details.end_date
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            2019-06-12
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
