@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
@@ -11,6 +11,7 @@ import {
 import { push } from 'connected-react-router';
 import {
   addToCart,
+  ArrowTooltip,
   CardView,
   DateColumnFilter,
   DateFilter,
@@ -24,6 +25,7 @@ import {
   Filter,
   formatBytes,
   Investigation,
+  nestedValue,
   pushPageFilter,
   pushPageNum,
   pushQuery,
@@ -229,7 +231,20 @@ const ISISInvestigationsCardView = (
         {
           icon: <Assessment />,
           label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments[0].instrument.fullName',
+          dataKey: 'investigationInstruments.instrument.fullName',
+          // eslint-disable-next-line react/display-name
+          content: (investigation: Investigation) => {
+            const instrument = nestedValue(
+              investigation,
+              'investigationInstruments[0].instrument.fullName'
+            );
+            return (
+              <ArrowTooltip title={instrument}>
+                <Typography>{instrument}</Typography>
+              </ArrowTooltip>
+            );
+          },
+          noTooltip: true,
           filterComponent: textFilter,
         },
         {
