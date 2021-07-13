@@ -666,58 +666,18 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                     >
                       {/* Create an individual card */}
                       <EntityCard
-                        title={{
-                          label: nestedValue(entity, title.dataKey),
-                          content: title.content && title.content(entity),
-                        }}
+                        entity={entity}
+                        title={title}
                         description={
                           description &&
                           nestedValue(entity, description.dataKey)
                         }
-                        information={
-                          information &&
-                          information
-                            .map((details) => ({
-                              // We can say the data key is the label if not defined.
-                              label: details.label
-                                ? details.label
-                                : details.dataKey,
-                              content: details.content
-                                ? details.content(entity)
-                                : nestedValue(entity, details.dataKey),
-                              // Keep the dataKey in so we can use it for adding the tooltip
-                              // once content has been created.
-                              dataKey: details.dataKey,
-                              icon: details.icon,
-                            }))
-                            // Filter afterwards to only show content with information.
-                            .filter((v) => v.content)
-                            // Add in tooltips to the content we have filtered.
-                            .map((details) => ({
-                              ...details,
-                              content: (
-                                <ArrowTooltip
-                                  title={nestedValue(entity, details.dataKey)}
-                                >
-                                  <Typography>{details.content}</Typography>
-                                </ArrowTooltip>
-                              ),
-                            }))
-                        }
-                        moreInformation={
-                          moreInformation && moreInformation(entity)
-                        }
+                        information={information}
+                        moreInformation={moreInformation}
                         // Pass in the react nodes with the data to the card.
-                        buttons={
-                          buttons && buttons.map((button) => button(entity))
-                        }
+                        buttons={buttons}
                         // Pass tag names to the card given the specified data key for the filter.
-                        tags={
-                          customFilters &&
-                          customFilters.map((f) =>
-                            nestedValue(entity, f.dataKey)
-                          )
-                        }
+                        customFilters={customFilters}
                         image={image}
                       />
                     </ListItem>

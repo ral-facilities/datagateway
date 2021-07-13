@@ -15,6 +15,8 @@ import {
   defaultTableRowRenderer,
   InfiniteLoader,
   IndexRange,
+  Index,
+  TableRowRenderer,
 } from 'react-virtualized';
 import clsx from 'clsx';
 import { Entity, Order, ICATEntity } from '../app.types';
@@ -91,7 +93,7 @@ interface VirtualizedTableProps {
   loading: boolean;
   data: Entity[];
   columns: ColumnType[];
-  loadMoreRows?: (offsetParams: IndexRange) => Promise<void>;
+  loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
   totalRowCount?: number;
   sort: { [column: string]: Order };
   onSort: (column: string, order: Order | null) => void;
@@ -174,19 +176,81 @@ const VirtualizedTable = (
     )
   );
 
-  const detailsPanelResize = (): void => {
+  const detailsPanelResize = React.useCallback((): void => {
     if (detailPanelRef && detailPanelRef.current) {
       setDetailPanelHeight(detailPanelRef.current.clientHeight);
     }
     if (tableRef) {
       tableRef.recomputeRowHeights();
     }
-  };
+  }, [tableRef, setDetailPanelHeight]);
 
-  React.useEffect(detailsPanelResize, [tableRef, expandedIndex]);
+  React.useEffect(detailsPanelResize, [
+    tableRef,
+    expandedIndex,
+    detailsPanelResize,
+  ]);
 
   // Select the width to use for the actions column (if it was passed as a prop).
   const actionsColumnWidth = actionsWidth || actionsColumnDefaultWidth;
+
+  const isRowLoaded = React.useCallback(
+    ({ index }: Index): boolean => !!data[index],
+    [data]
+  );
+
+  const getRowHeight = React.useCallback(
+    ({ index }: Index): number =>
+      index === expandedIndex ? rowHeight + detailPanelHeight : rowHeight,
+    [detailPanelHeight, expandedIndex]
+  );
+
+  const getRowClassName = React.useCallback(
+    ({ index }: Index): string =>
+      clsx(
+        classes.tableRow,
+        classes.flexContainer,
+        index > -1 && classes.tableRowHover
+      ),
+    [classes]
+  );
+  const getRow = React.useCallback(({ index }: Index): Entity => data[index], [
+    data,
+  ]);
+  const renderRow: TableRowRenderer = React.useCallback(
+    (props) => {
+      if (detailsPanel && props.index === expandedIndex) {
+        return (
+          <DetailsPanelRow
+            {...props}
+            detailsPanel={detailsPanel}
+            detailPanelRef={detailPanelRef}
+            detailsPanelResize={detailsPanelResize}
+          />
+        );
+      } else {
+        return defaultTableRowRenderer(props);
+      }
+    },
+    [detailsPanel, detailsPanelResize, expandedIndex]
+  );
+
+  const resizeColumn = React.useCallback(
+    (dataKey: string, deltaX: number): void => {
+      const thisColumn = widthProps[dataKey];
+      thisColumn.flexGrow = 0;
+      thisColumn.flexShrink = 0;
+      thisColumn.width = Math.max(
+        thisColumn.width + deltaX,
+        dataColumnMinWidth
+      );
+      setWidthProps({
+        ...widthProps,
+        [dataKey]: thisColumn,
+      });
+    },
+    [widthProps, setWidthProps]
+  );
 
   return (
     <AutoSizer>
@@ -209,7 +273,7 @@ const VirtualizedTable = (
         const rowCount = totalRowCount || data.length;
         return (
           <InfiniteLoader
-            isRowLoaded={({ index }) => !!data[index]}
+            isRowLoaded={isRowLoaded}
             loadMoreRows={loadMoreRows || (() => Promise.resolve())}
             rowCount={rowCount}
             minimumBatchSize={25}
@@ -226,33 +290,10 @@ const VirtualizedTable = (
                 rowCount={data.length}
                 onRowsRendered={onRowsRendered}
                 headerHeight={headerHeight}
-                rowHeight={({ index }) =>
-                  index === expandedIndex
-                    ? rowHeight + detailPanelHeight
-                    : rowHeight
-                }
-                rowClassName={({ index }): string =>
-                  clsx(
-                    classes.tableRow,
-                    classes.flexContainer,
-                    index > -1 && classes.tableRowHover
-                  )
-                }
-                rowGetter={({ index }) => data[index]}
-                rowRenderer={(props) => {
-                  if (detailsPanel && props.index === expandedIndex) {
-                    return (
-                      <DetailsPanelRow
-                        {...props}
-                        detailsPanel={detailsPanel}
-                        detailPanelRef={detailPanelRef}
-                        detailsPanelResize={detailsPanelResize}
-                      />
-                    );
-                  } else {
-                    return defaultTableRowRenderer(props);
-                  }
-                }}
+                rowHeight={getRowHeight}
+                rowClassName={getRowClassName}
+                rowGetter={getRow}
+                rowRenderer={renderRow}
               >
                 {selectedRows && onCheck && onUncheck && (
                   <Column
@@ -363,22 +404,9 @@ const VirtualizedTable = (
                             sort={sort}
                             onSort={onSort}
                             icon={icon}
-                            filterComponent={
-                              filterComponent && filterComponent(label, dataKey)
-                            }
-                            resizeColumn={(deltaX) => {
-                              const thisColumn = widthProps[dataKey];
-                              thisColumn.flexGrow = 0;
-                              thisColumn.flexShrink = 0;
-                              thisColumn.width = Math.max(
-                                thisColumn.width + deltaX,
-                                dataColumnMinWidth
-                              );
-                              setWidthProps({
-                                ...widthProps,
-                                [dataKey]: thisColumn,
-                              });
-                            }}
+                            labelString={label}
+                            filterComponent={filterComponent}
+                            resizeColumn={resizeColumn}
                           />
                         )}
                         className={clsx(classes.flexContainer, className)}
@@ -439,5 +467,6 @@ const VirtualizedTable = (
     </AutoSizer>
   );
 };
+VirtualizedTable.whyDidYouRender = true;
 
 export default withStyles(styles)(VirtualizedTable);

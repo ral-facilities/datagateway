@@ -1,11 +1,8 @@
-import { Button } from '@material-ui/core';
 import {
-  AddCircleOutlineOutlined,
   CalendarToday,
   ConfirmationNumber,
   Fingerprint,
   Public,
-  RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
 import {
   CardViewQuery,
@@ -26,16 +23,14 @@ import {
   getApiParams,
   Entity,
   nestedValue,
-  addToCartQuery,
-  fetchDownloadCartQuery,
-  removeFromCartQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange } from 'react-virtualized';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import axios from 'axios';
+import AddToCartButton from '../addToCartButton.component';
 
 const fetchData = (
   sortAndFilters: {
@@ -196,7 +191,6 @@ const InvestigationCardViewQuery = (): React.ReactElement => {
   const [t] = useTranslation();
   const history = useHistory();
   const location = useLocation();
-  const queryClient = useQueryClient();
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => readURLQuery(location),
@@ -362,54 +356,6 @@ const InvestigationCardViewQuery = (): React.ReactElement => {
     fetchFilter(queryKey[0], queryKey[1], [])
   );
 
-  const { data: cartItems } = useQuery('cart', () =>
-    fetchDownloadCartQuery({
-      facilityName: 'LILS',
-      downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-    })
-  );
-
-  const { mutate: addToCart } = useMutation(
-    (entityIds: number[]) =>
-      addToCartQuery('investigation', entityIds, {
-        facilityName: 'LILS',
-        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-      }),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
-      },
-    }
-  );
-
-  const { mutate: removeFromCart } = useMutation(
-    (entityIds: number[]) =>
-      removeFromCartQuery('investigation', entityIds, {
-        facilityName: 'LILS',
-        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-      }),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
-      },
-    }
-  );
-
-  // Get the selected cards.
-  const selectedCards = React.useMemo(
-    () =>
-      cartItems
-        ?.filter(
-          (cartItem) =>
-            cartItem.entityType === 'investigation' &&
-            data
-              ?.map((investigation) => investigation.id)
-              .includes(cartItem.entityId)
-        )
-        .map((cartItem) => cartItem.entityId),
-    [cartItems, data]
-  );
-
   const title = React.useMemo(
     () => ({
       // Provide label for filter component.
@@ -479,36 +425,15 @@ const InvestigationCardViewQuery = (): React.ReactElement => {
 
   const buttons = React.useMemo(
     () => [
-      function cartButton(investigation: Investigation) {
-        return !(selectedCards && selectedCards.includes(investigation.id)) ? (
-          <Button
-            id="add-to-cart-btn"
-            variant="contained"
-            color="primary"
-            startIcon={<AddCircleOutlineOutlined />}
-            disableElevation
-            onClick={() => addToCart([investigation.id])}
-          >
-            Add to cart
-          </Button>
-        ) : (
-          <Button
-            id="remove-from-cart-btn"
-            variant="contained"
-            color="secondary"
-            startIcon={<RemoveCircleOutlineOutlined />}
-            disableElevation
-            onClick={() => {
-              if (selectedCards && selectedCards.includes(investigation.id))
-                removeFromCart([investigation.id]);
-            }}
-          >
-            Remove from cart
-          </Button>
-        );
-      },
+      (investigation: Investigation) => (
+        <AddToCartButton
+          entityType="investigation"
+          allIds={data?.map((investigation) => investigation.id) ?? []}
+          entityId={investigation.id}
+        />
+      ),
     ],
-    [addToCart, removeFromCart, selectedCards]
+    [data]
   );
 
   const customFilters = React.useMemo(
