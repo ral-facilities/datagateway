@@ -16,9 +16,6 @@ import {
   Order,
   Filter,
   Investigation,
-  DownloadCartItem,
-  addToCart,
-  removeFromCart,
   DateFilter,
   readURLQuery,
   SortType,
@@ -28,12 +25,14 @@ import {
   formatBytes,
   readURLQuerySearch,
   getURLQuery,
+  addToCartQuery,
+  removeFromCartQuery,
+  fetchDownloadCartQuery,
+  ColumnType,
 } from 'datagateway-common';
 import { StateType } from '../../state/app.types';
-import { connect } from 'react-redux';
-import { AnyAction } from 'redux';
+import { useSelector } from 'react-redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
-import { ThunkDispatch } from 'redux-thunk';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -46,8 +45,9 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {
   useInfiniteQuery,
+  useMutation,
   useQuery,
-  // useQueryClient,
+  useQueryClient,
   // useQueries,
   // UseInfiniteQueryResult,
   // InfiniteData,
@@ -64,17 +64,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-interface InvestigationTableProps {
-  error: string | null;
-  cartItems: DownloadCartItem[];
-  selectAllSetting: boolean;
-}
-
-interface InvestigationTableDispatchProps {
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
-}
 
 const fetchData = (
   sortAndFilters: {
@@ -181,17 +170,13 @@ export const fetchIds = (
     });
 };
 
-type InvestigationTableCombinedProps = InvestigationTableProps &
-  InvestigationTableDispatchProps;
-
-const InvestigationTableQuery = (
-  props: InvestigationTableCombinedProps
-): React.ReactElement => {
-  const { cartItems, addToCart, removeFromCart, selectAllSetting } = props;
-
+const InvestigationTableQuery = (): React.ReactElement => {
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgdataview.selectAllSetting
+  );
   const history = useHistory();
   const location = useLocation();
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const [t] = useTranslation();
 
   // const throttle = pThrottle({ limit: 5, interval: 500 });
@@ -277,7 +262,7 @@ const InvestigationTableQuery = (
     { placeholderData: 0 }
   );
 
-  const { isLoading: loading, fetchNextPage, data } = useInfiniteQuery<
+  const { fetchNextPage, data } = useInfiniteQuery<
     Investigation[],
     Error,
     Investigation[],
@@ -340,10 +325,46 @@ const InvestigationTableQuery = (
     return fetchIds(filters, 'investigation');
   });
 
+  const { data: cartItems } = useQuery('cart', () =>
+    fetchDownloadCartQuery({
+      facilityName: 'LILS',
+      downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+    })
+  );
+
+  const { mutate: addToCart, isLoading: addToCartLoading } = useMutation(
+    (entityIds: number[]) =>
+      addToCartQuery('investigation', entityIds, {
+        facilityName: 'LILS',
+        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+      }),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData('cart', data);
+      },
+    }
+  );
+
+  const {
+    mutate: removeFromCart,
+    isLoading: removeFromCartLoading,
+  } = useMutation(
+    (entityIds: number[]) =>
+      removeFromCartQuery('investigation', entityIds, {
+        facilityName: 'LILS',
+        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+      }),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData('cart', data);
+      },
+    }
+  );
+
   const selectedRows = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
             allIds &&
             cartItem.entityType === 'investigation' &&
@@ -358,35 +379,119 @@ const InvestigationTableQuery = (
     [data]
   );
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+  const textFilter = React.useMemo(() => {
+    const TextFilter = (label: string, dataKey: string): React.ReactElement => (
+      <TextColumnFilter
+        label={label}
+        value={filters[dataKey] as TextFilter}
+        onChange={(value: { value?: string | number; type: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return TextFilter;
+  }, [filters, pushFilters]);
+
+  const dateFilter = React.useMemo(() => {
+    const DateFilter = (label: string, dataKey: string): React.ReactElement => (
+      <DateColumnFilter
+        label={label}
+        value={filters[dataKey] as DateFilter}
+        onChange={(value: { startDate?: string; endDate?: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return DateFilter;
+  }, [filters, pushFilters]);
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
   );
 
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        icon: <TitleIcon />,
+        label: t('investigations.title'),
+        dataKey: 'title',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return investigationLink(
+            investigationData.id,
+            investigationData.title,
+            view
+          );
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: <FingerprintIcon />,
+        label: t('investigations.visit_id'),
+        dataKey: 'visitId',
+        filterComponent: textFilter,
+      },
+      {
+        icon: <FingerprintIcon />,
+        label: t('investigations.rb_number'),
+        dataKey: 'rbNumber',
+        filterComponent: textFilter,
+        disableSort: true,
+      },
+      {
+        icon: <PublicIcon />,
+        label: t('investigations.doi'),
+        dataKey: 'doi',
+        filterComponent: textFilter,
+      },
+      {
+        icon: <SaveIcon />,
+        label: t('investigations.size'),
+        dataKey: 'size',
+        cellContentRenderer: (cellProps) => {
+          return formatBytes(cellProps.cellData);
+        },
+        disableSort: true,
+      },
+      {
+        icon: <AssessmentIcon />,
+        label: t('investigations.instrument'),
+        dataKey: 'instrument.name',
+        filterComponent: textFilter,
+      },
+      {
+        icon: <CalendarTodayIcon />,
+
+        label: t('investigations.start_date'),
+        dataKey: 'startDate',
+        filterComponent: dateFilter,
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          if (cellProps.cellData) {
+            return cellProps.cellData.toString().split(' ')[0];
+          }
+        },
+      },
+      {
+        icon: <CalendarTodayIcon />,
+        label: t('investigations.end_date'),
+        dataKey: 'endDate',
+        filterComponent: dateFilter,
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          if (cellProps.cellData) {
+            return cellProps.cellData.toString().split(' ')[0];
+          }
+        },
+      },
+    ],
+    [t, dateFilter, textFilter, view]
   );
 
   return (
     <Table
-      loading={loading}
+      loading={addToCartLoading || removeFromCartLoading}
       data={aggregatedData}
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      loadMoreRows={(offsetParams) =>
-        fetchNextPage({ pageParam: offsetParams })
-      }
+      loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
@@ -437,103 +542,11 @@ const InvestigationTableQuery = (
           </Grid>
         );
       }}
-      columns={[
-        {
-          icon: <TitleIcon />,
-          label: t('investigations.title'),
-          dataKey: 'title',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            return investigationLink(
-              investigationData.id,
-              investigationData.title,
-              view
-            );
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: <FingerprintIcon />,
-          label: t('investigations.visit_id'),
-          dataKey: 'visitId',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <FingerprintIcon />,
-          label: t('investigations.rb_number'),
-          dataKey: 'rbNumber',
-          filterComponent: textFilter,
-          disableSort: true,
-        },
-        {
-          icon: <PublicIcon />,
-          label: t('investigations.doi'),
-          dataKey: 'doi',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <SaveIcon />,
-          label: t('investigations.size'),
-          dataKey: 'size',
-          cellContentRenderer: (cellProps) => {
-            return formatBytes(cellProps.cellData);
-          },
-          disableSort: true,
-        },
-        {
-          icon: <AssessmentIcon />,
-          label: t('investigations.instrument'),
-          dataKey: 'instrument.name',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <CalendarTodayIcon />,
-
-          label: t('investigations.start_date'),
-          dataKey: 'startDate',
-          filterComponent: dateFilter,
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            if (cellProps.cellData) {
-              return cellProps.cellData.toString().split(' ')[0];
-            }
-          },
-        },
-        {
-          icon: <CalendarTodayIcon />,
-          label: t('investigations.end_date'),
-          dataKey: 'endDate',
-          filterComponent: dateFilter,
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            if (cellProps.cellData) {
-              return cellProps.cellData.toString().split(' ')[0];
-            }
-          },
-        },
-      ]}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): InvestigationTableDispatchProps => ({
-  addToCart: (entityIds: number[]) =>
-    dispatch(addToCart('investigation', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('investigation', entityIds)),
-});
-
-const mapStateToProps = (state: StateType): InvestigationTableProps => {
-  return {
-    error: state.dgcommon.error,
-    cartItems: state.dgcommon.cartItems,
-    selectAllSetting: state.dgdataview.selectAllSetting,
-  };
-};
-
 // these all need to be converted to dgcommon
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvestigationTableQuery);
+export default InvestigationTableQuery;

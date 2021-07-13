@@ -8,15 +8,12 @@ import {
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
 import {
-  addToCart,
   CardViewQuery,
   DateColumnFilter,
   DateFilter,
-  DownloadCartItem,
   Filter,
   Investigation,
   investigationLink,
-  removeFromCart,
   TextColumnFilter,
   TextFilter,
   readURLQuery,
@@ -29,29 +26,16 @@ import {
   getApiParams,
   Entity,
   nestedValue,
-  StateType,
+  addToCartQuery,
+  fetchDownloadCartQuery,
+  removeFromCartQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
-
-interface InvestigationCVDispatchProps {
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
-}
-
-interface InvestigationCVStateProps {
-  cartItems: DownloadCartItem[];
-}
-
-type InvestigationCVCombinedProps = InvestigationCVDispatchProps &
-  InvestigationCVStateProps;
 
 const fetchData = (
   sortAndFilters: {
@@ -208,38 +192,15 @@ export const fetchIds = (
     });
 };
 
-const InvestigationCardViewQuery = (
-  props: InvestigationCVCombinedProps
-): React.ReactElement => {
-  const { cartItems, addToCart, removeFromCart } = props;
-
+const InvestigationCardViewQuery = (): React.ReactElement => {
   const [t] = useTranslation();
   const history = useHistory();
   const location = useLocation();
+  const queryClient = useQueryClient();
 
   const { filters, view, sort, page, results } = React.useMemo(
     () => readURLQuery(location),
     [location]
-  );
-
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
-
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
   );
 
   const pushSort = React.useCallback(
@@ -317,6 +278,32 @@ const InvestigationCardViewQuery = (
     [history]
   );
 
+  const textFilter = React.useMemo(() => {
+    const TextFilter = (label: string, dataKey: string): React.ReactElement => (
+      <TextColumnFilter
+        label={label}
+        value={filters[dataKey] as TextFilter}
+        onChange={(value: { value?: string | number; type: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return TextFilter;
+  }, [filters, pushFilters]);
+
+  const dateFilter = React.useMemo(() => {
+    const DateFilter = (label: string, dataKey: string): React.ReactElement => (
+      <DateColumnFilter
+        label={label}
+        value={filters[dataKey] as DateFilter}
+        onChange={(value: { startDate?: string; endDate?: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return DateFilter;
+  }, [filters, pushFilters]);
+
   const { isLoading: countLoading, data: totalDataCount } = useQuery<
     number,
     Error,
@@ -375,11 +362,44 @@ const InvestigationCardViewQuery = (
     fetchFilter(queryKey[0], queryKey[1], [])
   );
 
+  const { data: cartItems } = useQuery('cart', () =>
+    fetchDownloadCartQuery({
+      facilityName: 'LILS',
+      downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+    })
+  );
+
+  const { mutate: addToCart } = useMutation(
+    (entityIds: number[]) =>
+      addToCartQuery('investigation', entityIds, {
+        facilityName: 'LILS',
+        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+      }),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData('cart', data);
+      },
+    }
+  );
+
+  const { mutate: removeFromCart } = useMutation(
+    (entityIds: number[]) =>
+      removeFromCartQuery('investigation', entityIds, {
+        facilityName: 'LILS',
+        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+      }),
+    {
+      onSuccess: (data) => {
+        queryClient.setQueryData('cart', data);
+      },
+    }
+  );
+
   // Get the selected cards.
   const selectedCards = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
             cartItem.entityType === 'investigation' &&
             data
@@ -388,6 +408,123 @@ const InvestigationCardViewQuery = (
         )
         .map((cartItem) => cartItem.entityId),
     [cartItems, data]
+  );
+
+  const title = React.useMemo(
+    () => ({
+      // Provide label for filter component.
+      label: t('investigations.title'),
+      // Provide both the dataKey (for tooltip) and content to render.
+      dataKey: 'title',
+      content: (investigation: Investigation) => {
+        return investigationLink(investigation.id, investigation.title, view);
+      },
+      filterComponent: textFilter,
+    }),
+    [t, textFilter, view]
+  );
+
+  const description = React.useMemo(
+    () => ({
+      label: t('investigations.details.summary'),
+      dataKey: 'summary',
+      filterComponent: textFilter,
+    }),
+    [t, textFilter]
+  );
+
+  const information = React.useMemo(
+    () => [
+      {
+        icon: <Public />,
+        label: t('investigations.doi'),
+        dataKey: 'doi',
+        filterComponent: textFilter,
+      },
+      {
+        icon: <Fingerprint />,
+        label: t('investigations.visit_id'),
+        dataKey: 'visitId',
+        filterComponent: textFilter,
+      },
+      {
+        icon: <Fingerprint />,
+        label: t('investigations.details.rb_number'),
+        dataKey: 'rbNumber',
+        filterComponent: textFilter,
+        disableSort: true,
+      },
+      {
+        icon: <ConfirmationNumber />,
+        label: t('investigations.dataset_count'),
+        dataKey: 'datasetCount',
+        filterComponent: textFilter,
+        disableSort: true,
+      },
+      {
+        icon: <CalendarToday />,
+        label: t('investigations.details.start_date'),
+        dataKey: 'startDate',
+        filterComponent: dateFilter,
+      },
+      {
+        icon: <CalendarToday />,
+        label: t('investigations.details.end_date'),
+        dataKey: 'endDate',
+        filterComponent: dateFilter,
+      },
+    ],
+    [dateFilter, t, textFilter]
+  );
+
+  const buttons = React.useMemo(
+    () => [
+      function cartButton(investigation: Investigation) {
+        return !(selectedCards && selectedCards.includes(investigation.id)) ? (
+          <Button
+            id="add-to-cart-btn"
+            variant="contained"
+            color="primary"
+            startIcon={<AddCircleOutlineOutlined />}
+            disableElevation
+            onClick={() => addToCart([investigation.id])}
+          >
+            Add to cart
+          </Button>
+        ) : (
+          <Button
+            id="remove-from-cart-btn"
+            variant="contained"
+            color="secondary"
+            startIcon={<RemoveCircleOutlineOutlined />}
+            disableElevation
+            onClick={() => {
+              if (selectedCards && selectedCards.includes(investigation.id))
+                removeFromCart([investigation.id]);
+            }}
+          >
+            Remove from cart
+          </Button>
+        );
+      },
+    ],
+    [addToCart, removeFromCart, selectedCards]
+  );
+
+  const customFilters = React.useMemo(
+    () => [
+      {
+        label: t('investigations.type.id'),
+        dataKey: 'type.id',
+        filterItems: typeIds ?? [],
+      },
+      {
+        label: t('investigations.facility.id'),
+        dataKey: 'facility.id',
+        filterItems: facilityIds ?? [],
+      },
+    ],
+    [facilityIds, t, typeIds]
   );
 
   return (
@@ -404,127 +541,15 @@ const InvestigationCardViewQuery = (
       sort={sort}
       page={page}
       results={results}
-      title={{
-        // Provide label for filter component.
-        label: t('investigations.title'),
-        // Provide both the dataKey (for tooltip) and content to render.
-        dataKey: 'title',
-        content: (investigation: Investigation) => {
-          return investigationLink(investigation.id, investigation.title, view);
-        },
-        filterComponent: textFilter,
-      }}
-      description={{
-        label: t('investigations.details.summary'),
-        dataKey: 'summary',
-        filterComponent: textFilter,
-      }}
-      information={[
-        {
-          icon: <Public />,
-          label: t('investigations.doi'),
-          dataKey: 'doi',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <Fingerprint />,
-          label: t('investigations.visit_id'),
-          dataKey: 'visitId',
-          filterComponent: textFilter,
-        },
-        {
-          icon: <Fingerprint />,
-          label: t('investigations.details.rb_number'),
-          dataKey: 'rbNumber',
-          filterComponent: textFilter,
-          disableSort: true,
-        },
-        {
-          icon: <ConfirmationNumber />,
-          label: t('investigations.dataset_count'),
-          dataKey: 'datasetCount',
-          filterComponent: textFilter,
-          disableSort: true,
-        },
-        {
-          icon: <CalendarToday />,
-          label: t('investigations.details.start_date'),
-          dataKey: 'startDate',
-          filterComponent: dateFilter,
-        },
-        {
-          icon: <CalendarToday />,
-          label: t('investigations.details.end_date'),
-          dataKey: 'endDate',
-          filterComponent: dateFilter,
-        },
-      ]}
-      buttons={[
-        function cartButton(investigation: Investigation) {
-          return !(
-            selectedCards && selectedCards.includes(investigation.id)
-          ) ? (
-            <Button
-              id="add-to-cart-btn"
-              variant="contained"
-              color="primary"
-              startIcon={<AddCircleOutlineOutlined />}
-              disableElevation
-              onClick={() => addToCart([investigation.id])}
-            >
-              Add to cart
-            </Button>
-          ) : (
-            <Button
-              id="remove-from-cart-btn"
-              variant="contained"
-              color="secondary"
-              startIcon={<RemoveCircleOutlineOutlined />}
-              disableElevation
-              onClick={() => {
-                if (selectedCards && selectedCards.includes(investigation.id))
-                  removeFromCart([investigation.id]);
-              }}
-            >
-              Remove from cart
-            </Button>
-          );
-        },
-      ]}
+      title={title}
+      description={description}
+      information={information}
+      buttons={buttons}
       // If was a specific dataKey on the custom filter request,
       // use that over the filterKey here.
-      customFilters={[
-        {
-          label: t('investigations.type.id'),
-          dataKey: 'type.id',
-          filterItems: typeIds ?? [],
-        },
-        {
-          label: t('investigations.facility.id'),
-          dataKey: 'facility.id',
-          filterItems: facilityIds ?? [],
-        },
-      ]}
+      customFilters={customFilters}
     />
   );
 };
 
-const mapStateToProps = (state: StateType): InvestigationCVStateProps => {
-  return {
-    cartItems: state.dgcommon.cartItems,
-  };
-};
-
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): InvestigationCVDispatchProps => ({
-  addToCart: (entityIds: number[]) =>
-    dispatch(addToCart('investigation', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('investigation', entityIds)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvestigationCardViewQuery);
+export default InvestigationCardViewQuery;

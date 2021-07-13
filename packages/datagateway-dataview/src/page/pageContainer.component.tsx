@@ -17,25 +17,24 @@ import SearchIcon from '@material-ui/icons/Search';
 import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
-  fetchDownloadCart,
   pushPageView,
   saveView,
   Sticky,
   ViewsType,
   readURLQuery,
   clearTable,
+  fetchDownloadCartQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Switch as SwitchRouting, Route, useLocation } from 'react-router-dom';
 import { push } from 'connected-react-router';
 import { Action } from 'redux';
-import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
-import { useIsFetching, useQueryClient } from 'react-query';
+import { useIsFetching, useQuery, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -425,7 +424,15 @@ const PageContainer: React.FC = () => {
   });
   const loadedCount = isCountFetchingNum === 0;
 
-  const cartItems = useSelector((state: StateType) => state.dgcommon.cartItems);
+  const { data: cartItems } = useQuery(
+    'cart',
+    () =>
+      fetchDownloadCartQuery({
+        facilityName: 'LILS',
+        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
+      }),
+    { enabled: document.getElementById('datagateway-dataview') !== null }
+  );
 
   const [toggleCard, setToggleCard] = React.useState(false);
 
@@ -462,12 +469,6 @@ const PageContainer: React.FC = () => {
   );
 
   React.useEffect(() => {
-    if (document.getElementById('datagateway-dataview')) {
-      dispatch(fetchDownloadCart());
-    }
-  }, [dispatch]);
-
-  React.useEffect(() => {
     prevLocationRef.current = location;
   });
   const prevLocation = prevLocationRef.current;
@@ -496,7 +497,7 @@ const PageContainer: React.FC = () => {
     <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
       <NavBar
         entityCount={totalDataCount ?? 0}
-        cartItems={cartItems}
+        cartItems={cartItems ?? []}
         navigateToSearch={navigateToSearch}
         navigateToDownload={navigateToDownload}
       />
