@@ -24,6 +24,8 @@ import {
   TextFilter,
   pushPageNum,
   pushQuery,
+  nestedValue,
+  ArrowTooltip,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
@@ -35,6 +37,7 @@ import {
   ConfirmationNumber,
 } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
+import { Typography } from '@material-ui/core';
 
 interface DLSVisitsCVProps {
   proposalName: string;
@@ -158,7 +161,20 @@ const DLSVisitsCardView = (
         {
           icon: <Assessment />,
           label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments[0].instrument.name',
+          dataKey: 'investigationInstruments.instrument.name',
+          // eslint-disable-next-line react/display-name
+          content: (investigation: Investigation) => {
+            const instrument = nestedValue(
+              investigation,
+              'investigationInstruments[0].instrument.name'
+            );
+            return (
+              <ArrowTooltip title={instrument}>
+                <Typography>{instrument}</Typography>
+              </ArrowTooltip>
+            );
+          },
+          noTooltip: true,
           filterComponent: textFilter,
         },
         {

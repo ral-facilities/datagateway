@@ -429,6 +429,30 @@ describe('Card View', () => {
     });
   });
 
+  it('information displays with content that has no tooltip', () => {
+    const updatedProps = {
+      ...props,
+      title: { dataKey: 'title', disableSort: true },
+      description: { dataKey: 'name', disableSort: true },
+      information: [
+        {
+          dataKey: 'name',
+          label: 'Name',
+          content: (entity: Entity) => 'Content',
+          noTooltip: true,
+        },
+      ],
+    };
+
+    const wrapper = createWrapper(updatedProps);
+    expect(
+      wrapper.find('[aria-label="card-info-Name"]').first().text()
+    ).toEqual('Name:');
+    expect(
+      wrapper.find('[aria-label="card-info-data-Name"]').first().text()
+    ).toEqual('Content');
+  });
+
   it('cannot sort when fields are disabled', () => {
     const updatedProps = {
       ...props,
