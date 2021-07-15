@@ -215,6 +215,8 @@ jobs:
       - name: Run ICAT Ansible Playbook
         run: |
           ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+
+      # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
         run: |
           awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
@@ -224,8 +226,8 @@ jobs:
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
-      - name: Display ICAT Server's run.properties
-        run: cat /home/runner/install/icat.server/run.properties
+      #- name: Display ICAT Server's run.properties
+        #run: cat /home/runner/install/icat.server/run.properties
 
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
@@ -352,6 +354,8 @@ jobs:
       - name: Run ICAT Ansible Playbook
         run: |
           ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+
+      # Fixes on ICAT components needed for e2e tests
       - name: Add anon user to rootUserNames
         run: |
           awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
@@ -364,12 +368,12 @@ jobs:
       - name: Disable Two Level Storage
         run: |
           sed -i '/plugin.archive.class/,/tidyBlockSize/ s/^/#/' /home/runner/install/ids.server/run.properties
-      - name: Display ICAT Server's run.properties
-        run: cat /home/runner/install/icat.server/run.properties
-      - name: Display IDS Server's run.properties
-        run: cat /home/runner/install/ids.server/run.properties
-      - name: Setup Python version
-        run: python --version
+      #- name: Display ICAT Server's run.properties
+        #run: cat /home/runner/install/icat.server/run.properties
+      #- name: Display IDS Server's run.properties
+        #run: cat /home/runner/install/ids.server/run.properties
+      #- name: Setup Python version
+        #run: python --version
       - name: Reinstall IDS Server
         run: |
           cd /home/runner/install/ids.server/ && python2 ./setup -vv install
@@ -518,8 +522,8 @@ jobs:
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
-      - name: Display ICAT Server's run.properties
-        run: cat /home/runner/install/icat.server/run.properties
+      #- name: Display ICAT Server's run.properties
+        #run: cat /home/runner/install/icat.server/run.properties
 
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
@@ -567,19 +571,19 @@ jobs:
       - name: Recreate Investigation index
         run: |
           curl -k --request POST 'https://localhost:8181/icat/lucene/db/Investigation/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
-      - name: Power nap
+      - name: Let reindexes complete
         run: sleep 30
-      - name: Getpopulating request
-        run: curl -k --request GET 'https://localhost:8181/icat/lucene/db?sessionId='`jq -r '.sessionId' login_output`
-      - name: Test request
-        run: |
-          curl -k -g --request GET 'https://localhost:8181/icat/lucene/data?query=%7B%22target%22:%22Datafile%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%22text%22:%222106%22%7D&sessionId='`jq -r '.sessionId' login_output`
-      - name: Test request (datafile)
-        run: |
-          curl -k -g --request GET 'https://localhost:8181/icat/lucene/data?query=%7B%22target%22:%22Datafile%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%22text%22:%222106%22%7D&sessionId='`jq -r '.sessionId' login_output`
-      - name: Test request (datafile, 1874)
-        run: |
-          curl -k -g --request GET 'https://localhost:8181/icat/lucene/data?query=%7B%22target%22:%22Datafile%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%22text%22:%221874%22%7D&sessionId='`jq -r '.sessionId' login_output`
+      #- name: Are indexes still finishing?
+        #run: curl -k --request GET 'https://localhost:8181/icat/lucene/db?sessionId='`jq -r '.sessionId' login_output`
+      #- name: Test request
+        #run: |
+          #curl -k -g --request GET 'https://localhost:8181/icat/lucene/data?query=%7B%22target%22:%22Datafile%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%22text%22:%222106%22%7D&sessionId='`jq -r '.sessionId' login_output`
+      #- name: Test request (datafile)
+        #run: |
+          #curl -k -g --request GET 'https://localhost:8181/icat/lucene/data?query=%7B%22target%22:%22Datafile%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%22text%22:%222106%22%7D&sessionId='`jq -r '.sessionId' login_output`
+      #- name: Test request (datafile, 1874)
+        #run: |
+          #curl -k -g --request GET 'https://localhost:8181/icat/lucene/data?query=%7B%22target%22:%22Datafile%22,%22lower%22:%220000001010000%22,%22upper%22:%229000012312359%22,%22text%22:%221874%22%7D&sessionId='`jq -r '.sessionId' login_output`
       - name: Remove session ID data
         run: rm -f login_output
 
