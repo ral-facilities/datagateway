@@ -57,7 +57,6 @@ describe('Investigation Search Table component', () => {
         name: 'Test 1',
         summary: 'foo bar',
         visitId: '1',
-        rbNumber: '1',
         doi: 'doi 1',
         size: 1,
         investigationInstruments: [
@@ -301,7 +300,7 @@ describe('Investigation Search Table component', () => {
     expect(detailsPanelWrapper).toMatchSnapshot();
   });
 
-  it('renders title, visit ID, RB number and DOI as links', () => {
+  it('renders title, visit ID, Name and DOI as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
