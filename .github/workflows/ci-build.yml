@@ -164,7 +164,7 @@ jobs:
 
 
   dataview-e2e-tests:
-    # needs: lint-and-unit-test
+    needs: lint-and-unit-test
     name: DataGateway DataView End to End Tests
     runs-on: ubuntu-16.04
     steps:
@@ -303,7 +303,7 @@ jobs:
 
 
   download-e2e-tests:
-    # needs: lint-and-unit-test
+    needs: lint-and-unit-test
     name: DataGateway Download End to End Tests
     runs-on: ubuntu-16.04
     steps:
@@ -462,7 +462,7 @@ jobs:
 
 
   search-e2e-tests:
-    # needs: lint-and-unit-test
+    needs: lint-and-unit-test
     name: DataGateway Search End to End Tests
     runs-on: ubuntu-16.04
     steps:
