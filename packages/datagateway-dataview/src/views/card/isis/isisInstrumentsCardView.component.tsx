@@ -19,8 +19,8 @@ import {
   TextColumnFilter,
   TextFilter,
   Order,
+  QueryParams,
 } from 'datagateway-common';
-import { QueryParams } from 'datagateway-common/lib/state/app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';

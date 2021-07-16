@@ -19,10 +19,11 @@ import {
   pushQuery,
   readURLQuery,
   Order,
+  QueryParams,
+  StateType,
 } from 'datagateway-common';
 import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
-import { QueryParams, StateType } from 'datagateway-common/lib/state/app.types';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
 import { CalendarToday, Public } from '@material-ui/icons';

@@ -2,11 +2,6 @@ import React from 'react';
 
 import { IndexRange } from 'react-virtualized';
 import {
-  StateType,
-  FilterDataType,
-  QueryParams,
-} from 'datagateway-common/lib/state/app.types';
-import {
   CardView,
   Entity,
   fetchInvestigations,
@@ -28,6 +23,9 @@ import {
   pushPageResults,
   readURLQuery,
   Order,
+  StateType,
+  FilterDataType,
+  QueryParams,
 } from 'datagateway-common';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';

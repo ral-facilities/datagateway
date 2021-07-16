@@ -25,13 +25,11 @@ import {
   pushQuery,
   readURLQuery,
   Order,
-} from 'datagateway-common';
-import { IndexRange } from 'react-virtualized';
-import {
   StateType,
   FilterDataType,
   QueryParams,
-} from 'datagateway-common/lib/state/app.types';
+} from 'datagateway-common';
+import { IndexRange } from 'react-virtualized';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';

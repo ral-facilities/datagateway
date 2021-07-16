@@ -17,8 +17,9 @@ import {
   pushQuery,
   readURLQuery,
   Order,
+  StateType,
+  QueryParams,
 } from 'datagateway-common';
-import { StateType, QueryParams } from 'datagateway-common/lib/state/app.types';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';

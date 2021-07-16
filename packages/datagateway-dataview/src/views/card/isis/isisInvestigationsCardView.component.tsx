@@ -35,12 +35,10 @@ import {
   TextColumnFilter,
   TextFilter,
   Order,
-} from 'datagateway-common';
-import {
   QueryParams,
   StateType,
   ViewsType,
-} from 'datagateway-common/lib/state/app.types';
+} from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
