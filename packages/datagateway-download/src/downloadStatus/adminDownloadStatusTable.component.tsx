@@ -39,6 +39,8 @@ import {
 } from '@material-ui/icons';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import BlackTooltip from '../tooltip.component';
+import { toDate } from 'date-fns-tz';
+import { format } from 'date-fns';
 
 const paperStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -380,12 +382,11 @@ const AdminDownloadStatusTable: React.FC = () => {
                       dataKey: 'createdAt',
                       cellContentRenderer: (props: TableCellProps) => {
                         if (props.cellData) {
-                          const date = new Date(props.cellData).toISOString();
-                          return `${date.slice(0, 10)} ${date.slice(11, 19)}`;
+                          const date = toDate(props.cellData);
+                          return format(date, 'yyyy-MM-dd HH:mm:ss');
                         }
                       },
                       filterComponent: dateFilter,
-                      disableHeaderWrap: true,
                     },
                     {
                       label: t('downloadStatus.deleted'),

@@ -26,7 +26,6 @@ exports[`Datafile search table component renders correctly 1`] = `
       },
       Object {
         "dataKey": "modTime",
-        "disableHeaderWrap": true,
         "filterComponent": [Function],
         "label": "datafiles.modified_time",
       },

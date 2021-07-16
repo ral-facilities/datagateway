@@ -4,21 +4,26 @@ import DownloadTabs from './downloadTab.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
 import { DownloadSettingsContext } from '../ConfigProvider';
+import fs from 'fs';
+
+const settings = JSON.parse(
+  fs.readFileSync('server/e2e-settings.json', 'utf-8')
+);
 
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
   facilityName: 'LILS',
-  apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-  downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-  idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  apiUrl: settings.apiUrl,
+  downloadApiUrl: settings.downloadApiUrl,
+  idsUrl: settings.idsUrl,
   accessMethods: {
     https: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: settings.accessMethods.https.idsUrl,
       displayName: 'HTTPS',
       description: 'Example description for HTTPS access method.',
     },
     globus: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: settings.accessMethods.globus.idsUrl,
       displayName: 'Globus',
       description: 'Example description for Globus access method.',
     },

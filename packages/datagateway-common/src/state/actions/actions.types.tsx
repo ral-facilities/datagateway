@@ -253,6 +253,7 @@ export interface URLs {
   idsUrl: string;
   apiUrl: string;
   downloadApiUrl: string;
+  icatUrl: string;
 }
 
 export interface PluginRoute {
