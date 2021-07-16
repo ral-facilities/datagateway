@@ -51,7 +51,7 @@ describe('Download Cart', () => {
     cy.contains('[role="button"]', 'Name').click();
     cy.get('[aria-rowindex=1] [aria-colindex=1]').should(
       'have.text',
-      'INVESTIGATION 9'
+      'INVESTIGATION 8'
     );
 
     cy.contains('[role="button"]', 'Name').click();
@@ -87,9 +87,9 @@ describe('Download Cart', () => {
       .as('nameFilter');
 
     cy.get('@nameFilter').type('1');
-    cy.get('[aria-rowcount=13]').should('exist');
+    cy.get('[aria-rowcount=15]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo(0, 150);
-    cy.contains('DATASET 31').should('be.visible');
+    cy.contains('DATASET 11').should('be.visible');
 
     cy.get('[aria-label="Filter by Type"]')
       .find('input')
@@ -97,7 +97,7 @@ describe('Download Cart', () => {
       .as('typeFilter');
 
     cy.get('@typeFilter').type('in');
-    cy.get('[aria-rowcount=8]').should('exist');
+    cy.get('[aria-rowcount=5]').should('exist');
     cy.contains('INVESTIGATION 16').should('be.visible');
 
     cy.contains('[role="button"]', 'Name').click();
@@ -126,8 +126,9 @@ describe('Download Cart', () => {
   it('should be able to remove all items from the cart', () => {
     cy.intercept('DELETE', '**/topcat/user/cart/**').as('removeFromCart');
     cy.contains('[role="button"]', 'Name').click();
+    cy.contains('Calculating...', { timeout: 20000 }).should('not.exist');
 
-    cy.contains(/^DATASET 1$/).should('be.visible').wait(10000);
+    cy.contains(/^DATASET 1$/).should('be.visible');
     cy.contains('Remove All').click();
     cy.contains(/^DATASET 1$/).should('not.exist');
     cy.get('[aria-rowcount=0]').should('exist');

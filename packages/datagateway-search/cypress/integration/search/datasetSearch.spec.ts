@@ -30,24 +30,24 @@ describe('Dataset search tab', () => {
     cy.get('[aria-label="Submit search button"]')
       .click()
       .wait(['@investigations', '@investigations', '@investigationsCount'], {
-        timeout: 10000,
+        timeout: 15000,
       });
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
-      .contains('12')
+      .contains('10')
       .click()
       .wait(['@datasets', '@datasets', '@datasetsCount'], {
-        timeout: 10000,
+        timeout: 15000,
       });
 
-    cy.get('[aria-rowcount="12"]').should('exist');
+    cy.get('[aria-rowcount="10"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 97');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 7');
 
     // Check that "select all" and individual selection are equivalent
     let i = 1;
-    while (i < 13) {
+    while (i < 11) {
       cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`)
         .click()
         .wait('@topcat', { timeout: 10000 });
@@ -69,10 +69,10 @@ describe('Dataset search tab', () => {
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Dataset')
-      .contains('1')
+      .contains('4')
       .click();
 
-    cy.get('[aria-rowcount="1"]').should('exist');
+    cy.get('[aria-rowcount="4"]').should('exist');
 
     cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 12');
   });

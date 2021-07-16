@@ -13,7 +13,7 @@ describe('Datasets Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/investigation/1/dataset/25/datafile'
+      '/browse/investigation/1/dataset/1/datafile'
     );
   });
 
@@ -127,7 +127,7 @@ describe('Datasets Table', () => {
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'Name').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
   });
 
@@ -145,7 +145,7 @@ describe('Datasets Table', () => {
     });
 
     it('date between', () => {
-      cy.get('[aria-label="Create Time date filter from"]').type('2002-01-01');
+      cy.get('[aria-label="Create Time date filter from"]').type('2006-01-01');
 
       cy.get('[aria-label="Create Time date filter to"]')
         .parent()
@@ -165,16 +165,16 @@ describe('Datasets Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]').find('input').first().type('1');
 
-      cy.get('[aria-label="Create Time date filter to"]').type('2002-01-01');
+      cy.get('[aria-label="Create Time date filter to"]').type('2003-01-01');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 241');
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('DATASET 1');
     });
   });
 

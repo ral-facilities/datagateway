@@ -13,7 +13,7 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation'
+      '/browse/instrument/1/facilityCycle/1/investigation'
     );
   });
 
@@ -105,7 +105,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Performance lose brother thought recognize different.'
+        'Human leave national head.'
       );
     });
 
@@ -123,7 +123,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power.'
       );
     });
 
@@ -146,7 +146,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        'Movie hour together plan near approach. Body drive today ever after much war. List idea billion health pressure.'
+        'Experience speech attorney other. Value against particularly executive. Instead subject attack Democrat quickly us wonder.'
       );
     });
 
@@ -170,9 +170,9 @@ describe('ISIS - FacilityCycles Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="7"]').should('exist');
+      cy.get('[aria-rowcount="19"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Catch maybe case lawyer also. Role treat my by wish Mrs show. Special size exist position right maybe against husband.'
       );
     });
 
@@ -182,7 +182,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.get('[aria-label="Filter by Description"]')
         .find('input')
         .first()
-        .type('Call');
+        .type('During');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

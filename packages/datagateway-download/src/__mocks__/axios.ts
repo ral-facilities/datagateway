@@ -1,6 +1,9 @@
 // TODO: move __mocks__ folder back to package root once facebook/create-react-app#7539 is fixed
 
 import axios from 'axios';
+import fs from 'fs';
+
+var settings = JSON.parse(fs.readFileSync('server/e2e-settings.json', 'utf-8'));
 
 const requests = {
   get: jest.fn((path) => {
@@ -10,19 +13,19 @@ const requests = {
       return Promise.resolve({
         data: {
           facilityName: 'LILS',
-          apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-          downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-          idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+          apiUrl: settings.apiUrl,
+          downloadApiUrl: settings.downloadApiUrl,
+          idsUrl: settings.idsUrl,
           fileCountMax: 5000,
           totalSizeMax: 1000000000000,
           accessMethods: {
             https: {
-              idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+              idsUrl: settings.accessMethods.https.idsUrl,
               displayName: 'HTTPS',
               description: 'Example description for HTTPS access method.',
             },
             globus: {
-              idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+              idsUrl: settings.accessMethods.globus.idsUrl,
               displayName: 'Globus',
               description: 'Example description for Globus access method.',
             },

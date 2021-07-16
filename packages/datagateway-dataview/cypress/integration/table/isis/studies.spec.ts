@@ -13,7 +13,7 @@ describe('ISIS - Studies Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/405'
+      '/browseStudyHierarchy/instrument/1/study/4'
     );
   });
 
@@ -147,16 +147,16 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'It wish different however along whether knowledge media.'
+        'Give send watch. Bit often pattern seven civil population hear one.'
       );
     });
 
     it('date between', () => {
       cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="8"]').should('exist');
-      cy.get('[aria-rowindex="8"] [aria-colindex="2"]').contains(
-        'Energy job smile learn.'
+      cy.get('[aria-rowcount="9"]').should('exist');
+      cy.get('[aria-rowindex="9"] [aria-colindex="2"]').contains(
+        'Poor serious per still economy life hold.'
       );
     });
 

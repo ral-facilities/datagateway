@@ -25,7 +25,7 @@ describe('Datafile search tab', () => {
     cy.clearDownloadCart();
     cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
-      .type('4961');
+      .type('2106');
 
     cy.get('[aria-label="Submit search button"]')
       .click()
@@ -43,7 +43,7 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-rowcount="1"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 4961');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 2106');
 
     // Check that "select all" and individual selection are equivalent
     cy.get(`[aria-rowindex="1"] [aria-colindex="1"]`)
@@ -65,12 +65,12 @@ describe('Datafile search tab', () => {
 
     cy.get('[aria-label="Search table tabs"]')
       .contains('Datafile')
-      .contains('4')
+      .contains('9')
       .click();
 
-    cy.get('[aria-rowcount="4"]').should('exist');
+    cy.get('[aria-rowcount="9"]').should('exist');
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 120');
+    cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains('Datafile 1956');
   });
 
   it('should be hidden if datafile checkbox is unchecked', () => {

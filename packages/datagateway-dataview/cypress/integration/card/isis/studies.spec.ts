@@ -20,10 +20,10 @@ describe('ISIS - Studies Cards', () => {
   });
 
   it('should be able to click a study to see its landing page', () => {
-    cy.get('#card').contains('STUDY 375').click({ force: true });
+    cy.get('#card').contains('STUDY 4').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/405'
+      '/browseStudyHierarchy/instrument/1/study/4'
     );
   });
 

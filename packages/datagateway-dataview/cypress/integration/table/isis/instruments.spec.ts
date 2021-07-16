@@ -28,7 +28,7 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Art very opportunity glass painting. Point wide toward natural Mrs Republican movie. Sea return sell edge with. Arrive data into and.'
+        'Air it quickly everybody have image left. Likely also region a. Onto most shake necessary.'
       );
     });
 
@@ -43,7 +43,7 @@ describe('ISIS - Instruments Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Who set wind carry matter. South join quality serve food buy responsibility. Fight human situation raise manage positive.'
+        'With piece reason late model. House office fly. International scene call deep answer audience baby true.'
       );
     });
 
@@ -61,7 +61,7 @@ describe('ISIS - Instruments Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Drug something increase common nature reflect purpose. Keep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
+        'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
       );
     });
   });
@@ -71,11 +71,11 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .first()
-        .type('radio');
+        .type('space');
 
-      cy.get('[aria-rowcount="2"]').should('exist');
+      cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Radio land involve economic. Surface law how full election agency. Affect reality oil order catch work everybody. Husband partner do account more may power. Us police difficult fine reach what.'
+        'Exist board space brother section. Fast purpose right power away health south. Me ground more a kind last.'
       );
     });
   });
@@ -97,7 +97,7 @@ describe('ISIS - Instruments Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Drug something increase common nature reflect purpose. Keep meet sing minute. Have run light final summer pass. Hour color maybe word side much team discussion.'
+          'Season identify professor happen third. Beat professional blue clear style have. Light final summer.'
         )
         .should('be.visible');
       cy.get('#details-panel')
@@ -123,8 +123,7 @@ describe('ISIS - Instruments Table', () => {
       cy.get('[aria-controls="instrument-users-panel"]').click({
         scrollBehavior: 'center',
       });
-      // cy.get('[aria-label="grid"]').scrollTo('top'); TODO - need to be removed?
-      cy.get('#details-panel').contains('Vanessa Smith').should('be.visible');
+      cy.get('#details-panel').contains('Marcus Dixon').should('be.visible');
     });
 
     it('and then not view details anymore', () => {

@@ -23,7 +23,7 @@ describe('Datasets Cards', () => {
     cy.get('#card').contains('DATASET 1').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/investigation/1/dataset/25/datafile'
+      '/browse/investigation/1/dataset/1/datafile'
     );
   });
 
@@ -58,14 +58,14 @@ describe('Datasets Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('DATASET 241');
+    cy.get('#card').contains('DATASET 1');
 
     cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
       timeout: 10000,
     });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('DATASET 241');
+    cy.get('#card').contains('DATASET 1');
   });
 
   it('should be able to filter by multiple fields', () => {

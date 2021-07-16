@@ -2,7 +2,7 @@ describe('ISIS - Datset Landing', () => {
   beforeEach(() => {
     cy.login();
     cy.visit(
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118'
+      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97'
     );
   });
 
@@ -15,7 +15,7 @@ describe('ISIS - Datset Landing', () => {
     cy.get('#dataset-datafiles-tab').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/97/datafile'
     );
   });
 });

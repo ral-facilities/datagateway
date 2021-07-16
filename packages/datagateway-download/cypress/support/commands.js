@@ -89,168 +89,162 @@ export const readSciGatewayToken = () => {
   };
 };
 
-Cypress.Commands.add('login', (username = null, password = null) => {
-  let body;
-  if (username === null && password === null) {
-    body = { plugin: 'anon' };
-  } else {
-    body = {
-      plugin: 'simple',
-      credentials: [{ username: username }, { password: password }],
+Cypress.Commands.add('login', (credentials) => {
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    let body = {
+      username: '',
+      password: '',
+      mechanism: 'anon',
     };
-  }
-
-  cy.request({
-    method: 'POST',
-    url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/icat/session',
-    body: {
-      json: JSON.stringify(body),
-    },
-    form: true,
-  }).then((response) => {
-    const jwtHeader = { alg: 'HS256', typ: 'JWT' };
-    const payload = {
-      sessionId: response.body.sessionId,
-      username: 'test',
-    };
-    const jwt = jsrsasign.KJUR.jws.JWS.sign('HS256', jwtHeader, payload, 'shh');
-    window.localStorage.setItem('scigateway:token', jwt);
+    if (credentials) {
+      body = credentials;
+    }
+    cy.request('POST', `${settings.apiUrl}/sessions`, body).then((response) => {
+      const jwtHeader = { alg: 'HS256', typ: 'JWT' };
+      const payload = {
+        sessionId: response.body.sessionID,
+        username: 'test',
+      };
+      const jwt = jsrsasign.KJUR.jws.JWS.sign(
+        'HS256',
+        jwtHeader,
+        payload,
+        'shh'
+      );
+      window.localStorage.setItem('scigateway:token', jwt);
+    });
   });
 });
 
 Cypress.Commands.add('clearDownloadCart', () => {
-  // TODO: get url from settings
-  // TODO: find facility from somewhere... (e2e settings?)
-  cy.request({
-    method: 'DELETE',
-    url:
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
-    qs: {
-      sessionId: readSciGatewayToken().sessionId,
-      items: '*',
-    },
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    cy.request({
+      method: 'DELETE',
+      url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      qs: {
+        sessionId: readSciGatewayToken().sessionId,
+        items: '*',
+      },
+    });
   });
 });
 
 Cypress.Commands.add('seedDownloadCart', () => {
-  // TODO: get url from settings
-  // TODO: find facility from somewhere... (e2e settings?)
-
   const entities = ['investigation', 'dataset', 'datafile'];
   const items = Array(60)
     .fill()
     .map((value, index) => `${entities[index % 2]} ${index}`)
     .join(', ');
 
-  cy.request({
-    method: 'POST',
-    url:
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
-    body: {
-      sessionId: readSciGatewayToken().sessionId,
-      items,
-    },
-    form: true,
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    cy.request({
+      method: 'POST',
+      url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      body: {
+        sessionId: readSciGatewayToken().sessionId,
+        items,
+      },
+      form: true,
+    });
   });
 });
 
 Cypress.Commands.add('addCartItem', (cartItem) => {
-  // TODO: get url from settings
-  // TODO: find facility from somewhere... (e2e settings?)
-
-  cy.request({
-    method: 'POST',
-    url:
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
-    body: {
-      sessionId: readSciGatewayToken().sessionId,
-      items: cartItem,
-    },
-    form: true,
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    cy.request({
+      method: 'POST',
+      url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
+      body: {
+        sessionId: readSciGatewayToken().sessionId,
+        items: cartItem,
+      },
+      form: true,
+    });
   });
 });
 
 Cypress.Commands.add('seedDownloads', () => {
-  let i = 1;
-  for (var info of downloadsInfo) {
-    // Seed a single cart item as items are cleared after each download.
-    cy.request({
-      method: 'POST',
-      url:
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/cartItems',
-      body: {
-        sessionId: readSciGatewayToken().sessionId,
-        items: `investigation ${i}`,
-      },
-      form: true,
-    });
-
-    // Submit each download request.
-    cy.request({
-      method: 'POST',
-      url:
-        'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
-      body: {
-        ...info.submitDetails,
-        sessionId: readSciGatewayToken().sessionId,
-        zipType: 'ZIP',
-      },
-      form: true,
-    });
-  }
-
-  // Change the status of the download on the server for tests.
-  cy.request({
-    method: 'GET',
-    url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
-    qs: {
-      sessionId: readSciGatewayToken().sessionId,
-      facilityName: 'LILS',
-      queryOffset: 'where download.isDeleted = false',
-    },
-  }).then((response) => {
-    const downloads = response.body;
-    for (let i in downloads) {
-      const download = downloads[i];
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    let i = 1;
+    for (var info of downloadsInfo) {
+      // Seed a single cart item as items are cleared after each download.
       cy.request({
-        method: 'PUT',
-        url: `https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/${download.id}/status`,
+        method: 'POST',
+        url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
         body: {
           sessionId: readSciGatewayToken().sessionId,
-          facilityName: 'LILS',
-          value: downloadsInfo[i].availability,
+          items: `investigation ${i}`,
+        },
+        form: true,
+      });
+
+      // Submit each download request.
+      cy.request({
+        method: 'POST',
+        url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/submit`,
+        body: {
+          ...info.submitDetails,
+          sessionId: readSciGatewayToken().sessionId,
+          zipType: 'ZIP',
         },
         form: true,
       });
     }
+
+    // Change the status of the download on the server for tests.
+    cy.request({
+      method: 'GET',
+      url: `${settings.downloadApiUrl}/user/downloads`,
+      qs: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: `${settings.facilityName}`,
+        queryOffset: 'where download.isDeleted = false',
+      },
+    }).then((response) => {
+      const downloads = response.body;
+      for (let i in downloads) {
+        const download = downloads[i];
+        cy.request({
+          method: 'PUT',
+          url: `${settings.downloadApiUrl}/user/download/${download.id}/status`,
+          body: {
+            sessionId: readSciGatewayToken().sessionId,
+            facilityName: `${settings.facilityName}`,
+            value: downloadsInfo[i].availability,
+          },
+          form: true,
+        });
+      }
+    });
   });
 });
 
 Cypress.Commands.add('clearDownloads', () => {
-  // TODO: get url and facility from settings (e2e settings?)
-  cy.request({
-    method: 'GET',
-    url: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
-    qs: {
-      facilityName: 'LILS',
-      sessionId: readSciGatewayToken().sessionId,
-      queryOffset: 'where download.isDeleted = false',
-    },
-  }).then((response) => {
-    const downloads = response.body;
-    for (let i in downloads) {
-      const download = downloads[i];
+  return cy.readFile('server/e2e-settings.json').then((settings) => {
+    cy.request({
+      method: 'GET',
+      url: `${settings.downloadApiUrl}/user/downloads`,
+      qs: {
+        facilityName: `${settings.facilityName}`,
+        sessionId: readSciGatewayToken().sessionId,
+        queryOffset: 'where download.isDeleted = false',
+      },
+    }).then((response) => {
+      const downloads = response.body;
+      for (let i in downloads) {
+        const download = downloads[i];
 
-      cy.request({
-        method: 'PUT',
-        url: `https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/download/${download.id}/isDeleted`,
-        body: {
-          sessionId: readSciGatewayToken().sessionId,
-          facilityName: 'LILS',
-          value: 'true',
-        },
-        form: true,
-      });
-    }
+        cy.request({
+          method: 'PUT',
+          url: `${settings.downloadApiUrl}/user/download/${download.id}/isDeleted`,
+          body: {
+            sessionId: readSciGatewayToken().sessionId,
+            facilityName: `${settings.facilityName}`,
+            value: 'true',
+          },
+          form: true,
+        });
+      }
+    });
   });
 });

@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var serveStatic = require('serve-static');
 var axios = require('axios');
+var fs = require('fs')
 
 var app = express();
 
@@ -15,8 +16,9 @@ app.get('/datagateway-search-settings.json', function(req, res) {
 });
 
 app.get(/\/sessions|investigations|datasets|datafiles/, function(req, res) {
-  axios
-    .get('http://scigateway-preprod.esc.rl.ac.uk:5000' + req.url, {
+  fs.readFile('server/e2e-settings.json').then((settings) => {
+    axios
+    .get(settings.apiUrl + req.url, {
       headers: req.headers,
     })
     .then(apiRes => {
@@ -25,19 +27,22 @@ app.get(/\/sessions|investigations|datasets|datafiles/, function(req, res) {
     .catch(error => {
       res.status(error.response.status).end();
     });
+  });
 });
 
 app.post(/\/sessions|investigations|datasets|datafiles/, function(req, res) {
-  axios
-    .post('http://scigateway-preprod.esc.rl.ac.uk:5000' + req.url, req.body, {
-      headers: req.headers,
-    })
-    .then(apiRes => {
-      res.json(apiRes.data);
-    })
-    .catch(error => {
-      res.status(error.response.status).end();
-    });
+  fs.readFile('server/e2e-settings.json').then((settings) => {
+    axios
+      .post(settings.apiUrl + req.url, req.body, {
+        headers: req.headers,
+      })
+      .then(apiRes => {
+        res.json(apiRes.data);
+      })
+      .catch(error => {
+        res.status(error.response.status).end();
+      });
+  });
 });
 
 app.get('/*', function(req, res) {

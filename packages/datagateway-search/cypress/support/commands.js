@@ -64,7 +64,7 @@ Cypress.Commands.add('login', () => {
       const jwtHeader = { alg: 'HS256', typ: 'JWT' };
       const payload = {
         sessionId: response.body.sessionID,
-        username: 'test', // TODO - was set to Robert499 before
+        username: 'test',
       };
       const jwt = jsrsasign.KJUR.jws.JWS.sign(
         'HS256',
@@ -79,10 +79,9 @@ Cypress.Commands.add('login', () => {
 
 Cypress.Commands.add('clearDownloadCart', () => {
   return cy.readFile('server/e2e-settings.json').then((settings) => {
-    // TODO: find facility from somewhere (should be provided through e2e-settings?)
     cy.request({
       method: 'DELETE',
-      url: `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
+      url: `${settings.downloadApiUrl}/user/cart/${settings.facilityName}/cartItems`,
       qs: {
         sessionId: readSciGatewayToken().sessionId,
         items: '*',
