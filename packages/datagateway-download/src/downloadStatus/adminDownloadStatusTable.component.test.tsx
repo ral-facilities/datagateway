@@ -172,19 +172,19 @@ describe('Admin Download Status Table', () => {
     });
 
     expect(
-      wrapper.find('[aria-rowindex=1]').find('[aria-colindex=4]').text()
+      wrapper.find('[aria-rowindex=1]').find('[aria-colindex=6]').text()
     ).toEqual('downloadStatus.complete');
     expect(
-      wrapper.find('[aria-rowindex=2]').find('[aria-colindex=4]').text()
+      wrapper.find('[aria-rowindex=2]').find('[aria-colindex=6]').text()
     ).toEqual('downloadStatus.preparing');
     expect(
-      wrapper.find('[aria-rowindex=3]').find('[aria-colindex=4]').text()
+      wrapper.find('[aria-rowindex=3]').find('[aria-colindex=6]').text()
     ).toEqual('downloadStatus.restoring');
     expect(
-      wrapper.find('[aria-rowindex=4]').find('[aria-colindex=4]').text()
+      wrapper.find('[aria-rowindex=4]').find('[aria-colindex=6]').text()
     ).toEqual('downloadStatus.expired');
     expect(
-      wrapper.find('[aria-rowindex=5]').find('[aria-colindex=4]').text()
+      wrapper.find('[aria-rowindex=5]').find('[aria-colindex=6]').text()
     ).toEqual('downloadStatus.paused');
   });
 
@@ -233,7 +233,7 @@ describe('Admin Download Status Table', () => {
     // Get the Username sort header
     const usernameSortLabel = wrapper
       .find('[role="columnheader"] span[role="button"]')
-      .at(0);
+      .at(2);
     await act(async () => {
       usernameSortLabel.simulate('click');
       await flushPromises();
@@ -259,7 +259,7 @@ describe('Admin Download Status Table', () => {
     // Get the Access Method sort header.
     const accessMethodSortLabel = wrapper
       .find('[role="columnheader"] span[role="button"]')
-      .at(2);
+      .at(4);
     await act(async () => {
       accessMethodSortLabel.simulate('click');
       await flushPromises();
@@ -377,7 +377,7 @@ describe('Admin Download Status Table', () => {
     );
 
     // We simulate a change in the select from 'include' to 'exclude'.
-    const availabilityFilterSelect = wrapper.find(Select).at(3);
+    const availabilityFilterSelect = wrapper.find(Select).at(5);
     await act(async () => {
       availabilityFilterSelect
         .props()

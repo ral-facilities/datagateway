@@ -12,7 +12,9 @@
     "refreshing_downloads": "Refreshing downloads..."
   },
   "downloadStatus": {
+    "id": "ID",
     "filename": "Download Name",
+    "fullname": "Full Name",
     "username": "Username",
     "preparedId": "Prepared ID",
     "transport": "Access Method",
