@@ -125,7 +125,9 @@ exports[`ISIS datafiles table component renders details panel correctly and it s
           datafiles.details.description
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
-          <b />
+          <b>
+            datafiles.details.description not provided
+          </b>
         </WithStyles(ForwardRef(Typography))>
       </WithStyles(ForwardRef(Grid))>
       <WithStyles(ForwardRef(Grid))
