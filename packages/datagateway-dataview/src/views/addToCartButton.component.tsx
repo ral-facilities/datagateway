@@ -3,14 +3,9 @@ import {
   AddCircleOutlineOutlined,
   RemoveCircleOutlineOutlined,
 } from '@material-ui/icons';
-import {
-  addToCartQuery,
-  fetchDownloadCartQuery,
-  removeFromCartQuery,
-} from 'datagateway-common';
+import { useAddToCart, useCart, useRemoveFromCart } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 interface AddToCartButtonProps {
   entityType: 'investigation' | 'dataset' | 'datafile';
@@ -23,46 +18,10 @@ type AddToCartButtonCombinedProps = AddToCartButtonProps;
 const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
   const { entityType, entityId, allIds } = props;
   const [t] = useTranslation();
-  const queryClient = useQueryClient();
 
-  const { data: cartItems } = useQuery('cart', () =>
-    fetchDownloadCartQuery({
-      facilityName: 'LILS',
-      downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-    })
-  );
-
-  const { mutate: addToCart } = useMutation(
-    (args: {
-      entityType: 'investigation' | 'dataset' | 'datafile';
-      entityIds: number[];
-    }) =>
-      addToCartQuery(args.entityType, args.entityIds, {
-        facilityName: 'LILS',
-        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-      }),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
-      },
-    }
-  );
-
-  const { mutate: removeFromCart } = useMutation(
-    (args: {
-      entityType: 'investigation' | 'dataset' | 'datafile';
-      entityIds: number[];
-    }) =>
-      removeFromCartQuery(args.entityType, args.entityIds, {
-        facilityName: 'LILS',
-        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-      }),
-    {
-      onSuccess: (data) => {
-        queryClient.setQueryData('cart', data);
-      },
-    }
-  );
+  const { data: cartItems } = useCart();
+  const { mutate: addToCart } = useAddToCart(entityType);
+  const { mutate: removeFromCart } = useRemoveFromCart(entityType);
 
   const selectedIds = React.useMemo(
     () =>
@@ -83,7 +42,7 @@ const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
       color="primary"
       startIcon={<AddCircleOutlineOutlined />}
       disableElevation
-      onClick={() => addToCart({ entityType, entityIds: [entityId] })}
+      onClick={() => addToCart([entityId])}
     >
       {t('buttons.add_to_cart')}
     </Button>
@@ -94,7 +53,7 @@ const AddToCartButton = (props: AddToCartButtonCombinedProps): JSX.Element => {
       color="secondary"
       startIcon={<RemoveCircleOutlineOutlined />}
       disableElevation
-      onClick={() => removeFromCart({ entityType, entityIds: [entityId] })}
+      onClick={() => removeFromCart([entityId])}
     >
       {t('buttons.remove_from_cart')}
     </Button>

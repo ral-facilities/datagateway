@@ -21,9 +21,9 @@ import {
   saveView,
   Sticky,
   ViewsType,
-  readURLQuery,
   clearTable,
-  fetchDownloadCartQuery,
+  useCart,
+  parseSearchToQuery,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,7 @@ import { Action } from 'redux';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
-import { useIsFetching, useQuery, useQueryClient } from 'react-query';
+import { useIsFetching, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -396,9 +396,10 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
 const PageContainer: React.FC = () => {
   const location = useLocation();
   const prevLocationRef = React.useRef(location);
-  const { view, filters } = React.useMemo(() => readURLQuery(location), [
-    location,
-  ]);
+  const { view, filters } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
 
   const isFetchingNum = useIsFetching();
   const loading = isFetchingNum > 0;
@@ -424,15 +425,7 @@ const PageContainer: React.FC = () => {
   });
   const loadedCount = isCountFetchingNum === 0;
 
-  const { data: cartItems } = useQuery(
-    'cart',
-    () =>
-      fetchDownloadCartQuery({
-        facilityName: 'LILS',
-        downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-      }),
-    { enabled: document.getElementById('datagateway-dataview') !== null }
-  );
+  const { data: cartItems } = useCart();
 
   const [toggleCard, setToggleCard] = React.useState(false);
 
@@ -472,9 +465,10 @@ const PageContainer: React.FC = () => {
     prevLocationRef.current = location;
   });
   const prevLocation = prevLocationRef.current;
-  const prevView = React.useMemo(() => readURLQuery(prevLocation).view, [
-    prevLocation,
-  ]);
+  const prevView = React.useMemo(
+    () => parseSearchToQuery(prevLocation.search).view,
+    [prevLocation]
+  );
 
   React.useEffect(() => {
     // Ensure if the location changes, then we clear the view.

@@ -1,4 +1,10 @@
-import { Dataset, Entity, FiltersType, Investigation } from '../../app.types';
+import {
+  Dataset,
+  Entity,
+  FiltersType,
+  Investigation,
+  QueryParams,
+} from '../../app.types';
 import {
   AddToCartFailureType,
   AddToCartRequestType,
@@ -124,7 +130,7 @@ import {
   UpdateSearchPayload,
   UpdateSearchType,
 } from '../actions/actions.types';
-import { DGCommonState, QueryParams } from '../app.types';
+import { DGCommonState } from '../app.types';
 import createReducer from './createReducer';
 
 const initialQuery: QueryParams = {

@@ -2,6 +2,8 @@ import React from 'react';
 import { Input, InputAdornment, MenuItem, Select } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import debounce from 'lodash.debounce';
+import { FiltersType, TextFilter } from '../../app.types';
+import { usePushFilters } from '../../api';
 
 export default class TextColumnFilter extends React.Component<
   {
@@ -107,3 +109,21 @@ export default class TextColumnFilter extends React.Component<
     );
   }
 }
+
+export const useTextFilter = (
+  filters: FiltersType
+): ((label: string, dataKey: string) => React.ReactElement) => {
+  const pushFilters = usePushFilters();
+  return React.useMemo(() => {
+    const textFilter = (label: string, dataKey: string): React.ReactElement => (
+      <TextColumnFilter
+        label={label}
+        value={filters[dataKey] as TextFilter}
+        onChange={(value: { value?: string | number; type: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return textFilter;
+  }, [filters, pushFilters]);
+};

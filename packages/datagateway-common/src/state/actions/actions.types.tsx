@@ -4,10 +4,11 @@ import {
   Filter,
   FiltersType,
   Order,
+  QueryParams,
   SortType,
+  ViewsType,
   MicroFrontendId,
 } from '../../app.types';
-import { QueryParams, ViewsType } from '../app.types';
 
 // parent app actions
 export const CustomFrontendMessageType = `${MicroFrontendId}:api`;

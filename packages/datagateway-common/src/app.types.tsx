@@ -270,6 +270,22 @@ export interface FiltersType {
   [column: string]: Filter;
 }
 
+export type AdditionalFilters = {
+  filterType: string;
+  filterValue: string;
+}[];
+
 export interface SortType {
   [column: string]: Order;
+}
+
+export type ViewsType = 'table' | 'card' | null;
+
+export interface QueryParams {
+  sort: SortType;
+  filters: FiltersType;
+  view: ViewsType;
+  search: string | null;
+  page: number | null;
+  results: number | null;
 }

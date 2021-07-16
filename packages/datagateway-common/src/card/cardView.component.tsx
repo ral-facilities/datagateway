@@ -21,8 +21,14 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 import ArrowTooltip from '../arrowtooltip.component';
-import { Entity, Filter, Order, SortType, FiltersType } from '../app.types';
-import { QueryParams } from '../state/app.types';
+import {
+  Entity,
+  Filter,
+  Order,
+  SortType,
+  FiltersType,
+  QueryParams,
+} from '../app.types';
 import { nestedValue } from '../state/actions';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

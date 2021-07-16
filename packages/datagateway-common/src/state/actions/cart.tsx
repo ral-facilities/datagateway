@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Action } from 'redux';
 import { getApiFilter } from '.';
-import { DownloadCart, DownloadCartItem, Investigation } from '../../app.types';
+import { DownloadCart, Investigation } from '../../app.types';
 import handleICATError from '../../handleICATError';
 import { readSciGatewayToken } from '../../parseTokens';
 import { ActionType, ThunkResult } from '../app.types';
@@ -118,59 +118,6 @@ export const addToCart = (
         dispatch(addToCartFailure(error.message));
       });
   };
-};
-
-export const fetchDownloadCartQuery = (config: {
-  facilityName: string;
-  downloadApiUrl: string;
-}): Promise<DownloadCartItem[]> => {
-  const { facilityName, downloadApiUrl } = config;
-
-  return axios
-    .get<DownloadCart>(`${downloadApiUrl}/user/cart/${facilityName}`, {
-      params: {
-        sessionId: readSciGatewayToken().sessionId,
-      },
-    })
-    .then((response) => response.data.cartItems);
-};
-
-export const addToCartQuery = (
-  entityType: 'investigation' | 'dataset' | 'datafile',
-  entityIds: number[],
-  config: { facilityName: string; downloadApiUrl: string }
-): Promise<DownloadCartItem[]> => {
-  const { facilityName, downloadApiUrl } = config;
-  const params = new URLSearchParams();
-  params.append('sessionId', readSciGatewayToken().sessionId || '');
-  params.append('items', `${entityType} ${entityIds.join(`, ${entityType} `)}`);
-
-  return axios
-    .post<DownloadCart>(
-      `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
-      params
-    )
-    .then((response) => response.data.cartItems);
-};
-
-export const removeFromCartQuery = (
-  entityType: 'investigation' | 'dataset' | 'datafile',
-  entityIds: number[],
-  config: { facilityName: string; downloadApiUrl: string }
-): Promise<DownloadCartItem[]> => {
-  const { facilityName, downloadApiUrl } = config;
-
-  return axios
-    .delete<DownloadCart>(
-      `${downloadApiUrl}/user/cart/${facilityName}/cartItems`,
-      {
-        params: {
-          sessionId: readSciGatewayToken().sessionId,
-          items: `${entityType} ${entityIds.join(`, ${entityType} `)}`,
-        },
-      }
-    )
-    .then((response) => response.data.cartItems);
 };
 
 export const removeFromCartSuccess = (

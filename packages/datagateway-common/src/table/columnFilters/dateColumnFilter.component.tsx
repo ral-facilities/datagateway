@@ -6,6 +6,8 @@ import {
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { FiltersType, DateFilter } from '../../app.types';
+import { usePushFilters } from '../../api';
 
 export function datesEqual(
   date1: MaterialUiPickersDate,
@@ -123,3 +125,21 @@ const DateColumnFilter = (props: {
 };
 
 export default DateColumnFilter;
+
+export const useDateFilter = (
+  filters: FiltersType
+): ((label: string, dataKey: string) => React.ReactElement) => {
+  const pushFilters = usePushFilters();
+  return React.useMemo(() => {
+    const dateFilter = (label: string, dataKey: string): React.ReactElement => (
+      <DateColumnFilter
+        label={label}
+        value={filters[dataKey] as DateFilter}
+        onChange={(value: { startDate?: string; endDate?: string } | null) =>
+          pushFilters(dataKey, value ? value : null)
+        }
+      />
+    );
+    return dateFilter;
+  }, [filters, pushFilters]);
+};

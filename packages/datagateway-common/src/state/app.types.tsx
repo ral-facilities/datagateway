@@ -1,7 +1,7 @@
 import { RouterState } from 'connected-react-router';
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { DownloadCartItem, Entity, FiltersType, SortType } from '../app.types';
+import { DownloadCartItem, Entity, QueryParams } from '../app.types';
 import { URLs } from './actions/actions.types';
 
 export interface DGCommonState {
@@ -26,17 +26,6 @@ export interface DGCommonState {
   filterData: FilterDataType;
   query: QueryParams;
   savedQuery: QueryParams;
-}
-
-export type ViewsType = 'table' | 'card' | null;
-
-export interface QueryParams {
-  sort: SortType;
-  filters: FiltersType;
-  view: ViewsType;
-  search: string | null;
-  page: number | null;
-  results: number | null;
 }
 
 export interface FilterDataType {

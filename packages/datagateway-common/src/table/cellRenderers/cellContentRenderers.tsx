@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@material-ui/core';
-import { ViewsType } from '../../state/app.types';
+import { ViewsType } from '../../app.types';
 
 export function formatBytes(bytes: number | undefined): string {
   if (bytes === -1) return 'Loading...';

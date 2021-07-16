@@ -7,16 +7,12 @@ import {
   Filter,
   FiltersType,
   Order,
+  QueryParams,
   SortType,
   TextFilter,
-} from '../../app.types';
-import {
-  ActionType,
-  QueryParams,
-  StateType,
-  ThunkResult,
   ViewsType,
-} from '../app.types';
+} from '../../app.types';
+import { ActionType, StateType, ThunkResult } from '../app.types';
 import {
   ClearDataType,
   ClearTableType,
@@ -50,6 +46,7 @@ import {
   PageUpdateType,
   ResultsUpdateType,
 } from './actions.types';
+import { parseQueryToSearch, parseSearchToQuery } from '../../api';
 
 export * from './cart';
 export * from './datafiles';
@@ -332,169 +329,9 @@ export const readURLQuery = (location: Location): QueryParams => {
   return params;
 };
 
-export const readURLQuerySearch = (queryParams: string): QueryParams => {
-  // Get the URLSearchParams object from the search query.
-  const query = new URLSearchParams(queryParams);
-
-  // Get filters in URL.
-  const search = query.get('search');
-  const page = query.get('page');
-  const results = query.get('results');
-  const filters = query.get('filters');
-  const sort = query.get('sort');
-  const view = query.get('view') as ViewsType;
-
-  // Parse filters in the query.
-  const parsedFilters: FiltersType = {};
-  if (filters) {
-    try {
-      const fq: FiltersType = JSON.parse(filters);
-
-      // Create the entries for the filter.
-      for (const [f, v] of Object.entries(fq)) {
-        // Add only if there are filter items present.
-        if (Array.isArray(v)) {
-          if (v.length > 0) {
-            parsedFilters[f] = v;
-          }
-        } else {
-          parsedFilters[f] = v;
-        }
-      }
-    } catch (e) {
-      console.error('Filter query provided in an incorrect format.');
-    }
-  }
-
-  const parsedSort: SortType = {};
-  if (sort) {
-    try {
-      const sq: SortType = JSON.parse(sort);
-
-      // Create the entries for sort.
-      for (const [s, v] of Object.entries(sq)) {
-        parsedSort[s] = v;
-      }
-    } catch (e) {
-      console.error('Sort query provided in an incorrect format.');
-    }
-  }
-
-  // Create the query parameters object.
-  const params: QueryParams = {
-    view: view,
-    search: search ? search : null,
-    page: page ? Number(page) : null,
-    results: results ? Number(results) : null,
-    filters: parsedFilters,
-    sort: parsedSort,
-  };
-
-  return params;
-};
-
-// Get the current URL query parameters.
-export const getURLQuery = (query: QueryParams): URLSearchParams => {
-  const filters = query.filters;
-  const sort = query.sort;
-
-  const queryParams = new URLSearchParams();
-
-  // Loop and add all the query parameters which is in use.
-  for (const [q, v] of Object.entries(query)) {
-    if (v !== null && q !== 'filters' && q !== 'sort') {
-      queryParams.append(q, v);
-    }
-  }
-
-  // Add filters.
-  const addFilters: FiltersType = {};
-  for (const [f, v] of Object.entries(filters)) {
-    if (Array.isArray(v)) {
-      if (v.length > 0) {
-        addFilters[f] = v;
-      }
-    } else {
-      addFilters[f] = v;
-    }
-  }
-  if (Object.keys(addFilters).length > 0) {
-    queryParams.append('filters', JSON.stringify(addFilters));
-  }
-
-  // Add sort.
-  const addSort: SortType = {};
-  for (const [s, v] of Object.entries(sort)) {
-    addSort[s] = v;
-  }
-  if (Object.keys(addSort).length > 0) {
-    queryParams.append('sort', JSON.stringify(addSort));
-  }
-
-  return queryParams;
-};
-
-export const getApiParams = (props: {
-  sort: SortType;
-  filters: FiltersType;
-}): URLSearchParams => {
-  const { sort, filters } = props;
-  const searchParams = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(sort)) {
-    searchParams.append('order', JSON.stringify(`${key} ${value}`));
-  }
-
-  // sort by ID first to guarantee order
-  searchParams.append('order', JSON.stringify(`id asc`));
-
-  for (const [column, filter] of Object.entries(filters)) {
-    if (typeof filter === 'object') {
-      if (!Array.isArray(filter)) {
-        if ('startDate' in filter && filter.startDate) {
-          searchParams.append(
-            'where',
-            JSON.stringify({
-              [column]: { gte: `${filter.startDate} 00:00:00` },
-            })
-          );
-        }
-        if ('endDate' in filter && filter.endDate) {
-          searchParams.append(
-            'where',
-            JSON.stringify({ [column]: { lte: `${filter.endDate} 23:59:59` } })
-          );
-        }
-        if ('type' in filter && filter.type) {
-          if (filter.type === 'include') {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { like: filter.value } })
-            );
-          } else {
-            searchParams.append(
-              'where',
-              JSON.stringify({ [column]: { nlike: filter.value } })
-            );
-          }
-        }
-      } else {
-        // If it is an array (strings or numbers) we use IN
-        // and filter by what is in the array at the moment.
-        searchParams.append(
-          'where',
-          JSON.stringify({ [column]: { in: filter } })
-        );
-      }
-    }
-  }
-
-  return searchParams;
-};
-
 export const getApiFilter = (getState: () => StateType): URLSearchParams => {
-  const sort = readURLQuery(getState().router.location).sort;
-  const filters = readURLQuery(getState().router.location).filters;
+  const sort = parseSearchToQuery(getState().router.location.search).sort;
+  const filters = parseSearchToQuery(getState().router.location.search).filters;
 
   const searchParams = new URLSearchParams();
 
@@ -618,7 +455,7 @@ export const pushPageView = (
     dispatch(
       push(
         path.replace(/\/$/, '') +
-          `?${getURLQuery(getState().dgcommon.query).toString()}`
+          `?${parseQueryToSearch(getState().dgcommon.query).toString()}`
       )
     );
   };
@@ -629,7 +466,9 @@ export const pushPageSearch = (
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(updateSearch(search));
-    dispatch(push(`?${getURLQuery(getState().dgcommon.query).toString()}`));
+    dispatch(
+      push(`?${parseQueryToSearch(getState().dgcommon.query).toString()}`)
+    );
   };
 };
 
@@ -655,10 +494,10 @@ export const pushPageNum = (
   return async (dispatch, getState) => {
     dispatch(pageUpdate());
     const query = {
-      ...readURLQuery(getState().router.location),
+      ...parseSearchToQuery(getState().router.location.search),
       page,
     };
-    dispatch(push(`?${getURLQuery(query).toString()}`));
+    dispatch(push(`?${parseQueryToSearch(query).toString()}`));
   };
 };
 
@@ -668,10 +507,10 @@ export const pushPageResults = (
   return async (dispatch, getState) => {
     dispatch(resultsUpdate());
     const query = {
-      ...readURLQuery(getState().router.location),
+      ...parseSearchToQuery(getState().router.location.search),
       results,
     };
-    dispatch(push(`?${getURLQuery(query).toString()}`));
+    dispatch(push(`?${parseQueryToSearch(query).toString()}`));
   };
 };
 
@@ -681,7 +520,7 @@ export const pushPageFilter = (
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(filterUpdate());
-    let query = readURLQuery(getState().router.location);
+    let query = parseSearchToQuery(getState().router.location.search);
     if (data !== null) {
       // if given an defined filter, update the relevant column in the sort state
       query = {
@@ -701,7 +540,7 @@ export const pushPageFilter = (
         },
       };
     }
-    dispatch(push({ search: `?${getURLQuery(query).toString()}` }));
+    dispatch(push({ search: `?${parseQueryToSearch(query).toString()}` }));
   };
 };
 
@@ -711,7 +550,7 @@ export const pushPageSort = (
 ): ThunkResult<Promise<void>> => {
   return async (dispatch, getState) => {
     dispatch(sortUpdate());
-    let query = readURLQuery(getState().router.location);
+    let query = parseSearchToQuery(getState().router.location.search);
     if (order !== null) {
       query = {
         ...query,
@@ -730,11 +569,11 @@ export const pushPageSort = (
         },
       };
     }
-    dispatch(push({ search: `?${getURLQuery(query).toString()}` }));
+    dispatch(push({ search: `?${parseQueryToSearch(query).toString()}` }));
     // Use sortTable present already.
     // dispatch(sortTable(sortKey, order));
     // dispatch(
-    //   push({ search: `?${getURLQuery(getState().dgcommon.query).toString()}` })
+    //   push({ search: `?${parseQueryToSearch(getState().dgcommon.query).toString()}` })
     // );
   };
 };
@@ -748,7 +587,7 @@ export const pushPageSortHistory = (
     console.log('pushPageSortHistory');
     dispatch(sortUpdate());
     console.log('sort update sent');
-    let query = readURLQuery(history.location);
+    let query = parseSearchToQuery(history.location.search);
     if (order !== null) {
       query = {
         ...query,
@@ -767,7 +606,7 @@ export const pushPageSortHistory = (
         },
       };
     }
-    history.push({ search: `?${getURLQuery(query).toString()}` });
+    history.push({ search: `?${parseQueryToSearch(query).toString()}` });
     console.log('history pushed');
   };
 };
@@ -777,7 +616,7 @@ export const pushPageSortHistoryAction = (
   order: Order | null,
   history: History
 ): Action => {
-  let query = readURLQuery(history.location);
+  let query = parseSearchToQuery(history.location.search);
   if (order !== null) {
     query = {
       ...query,
@@ -796,7 +635,7 @@ export const pushPageSortHistoryAction = (
       },
     };
   }
-  history.push({ search: `?${getURLQuery(query).toString()}` });
+  history.push({ search: `?${parseQueryToSearch(query).toString()}` });
 
   return sortUpdate();
 };
@@ -804,7 +643,7 @@ export const pushPageSortHistoryAction = (
 export const pushQuery = (query: QueryParams): ThunkResult<Promise<void>> => {
   return async (dispatch) => {
     dispatch(clearData());
-    dispatch(push(`?${getURLQuery(query).toString()}`));
+    dispatch(push(`?${parseQueryToSearch(query).toString()}`));
   };
 };
 

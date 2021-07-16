@@ -3,8 +3,7 @@ import { Location as LocationType } from 'history';
 import { Switch, Route, RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-// import InvestigationTable from '../views/table/investigationTable.component';
-import InvestigationTableQuery from '../views/table/investigationTableQuery.component';
+import InvestigationTable from '../views/table/investigationTable.component';
 import DatasetTable from '../views/table/datasetTable.component';
 import DatafileTable from '../views/table/datafileTable.component';
 
@@ -23,8 +22,7 @@ import ISISDatafilesTable from '../views/table/isis/isisDatafilesTable.component
 import DLSMyDataTable from '../views/table/dls/dlsMyDataTable.component';
 import ISISMyDataTable from '../views/table/isis/isisMyDataTable.component';
 
-// import InvestigationCardView from '../views/card/investigationCardView.component';
-import InvestigationCardViewQuery from '../views/card/investigationCardViewQuery.component';
+import InvestigationCardView from '../views/card/investigationCardView.component';
 import DatasetCardView from '../views/card/datasetCardView.component';
 
 import ISISInstrumentsCardView from '../views/card/isis/isisInstrumentsCardView.component';
@@ -608,8 +606,8 @@ class PageRouting extends React.PureComponent<PageRoutingProps> {
           path={paths.toggle.investigation}
           component={
             this.props.view === 'card'
-              ? InvestigationCardViewQuery
-              : InvestigationTableQuery
+              ? InvestigationCardView
+              : InvestigationTable
           }
         />
         <Route
