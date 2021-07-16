@@ -453,4 +453,61 @@ describe('ISIS Investigation Landing page', () => {
       'John Smith et al; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
     );
   });
+
+  it('copies data citation to clipboard', () => {
+    // Mock the clipboard object
+    const testWriteText = jest.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: testWriteText,
+      },
+    });
+
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [
+          {
+            ...state.dgcommon.data[0],
+            investigationUsers: [investigationUser[0]],
+          },
+        ],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISInvestigationLanding
+            instrumentId="4"
+            instrumentChildId="5"
+            investigationId="1"
+            studyHierarchy={false}
+          />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper
+        .find('[aria-label="landing-investigation-citation"]')
+        .first()
+        .text()
+    ).toEqual(
+      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
+
+    wrapper
+      .find('#landing-investigation-copy-citation')
+      .first()
+      .simulate('click');
+
+    expect(testWriteText).toHaveBeenCalledWith(
+      'John Smith; 2019: Test 1, doi_constants.publisher.name, https://doi.org/doi 1'
+    );
+
+    expect(
+      wrapper.find('#landing-investigation-copied-citation').first().text()
+    ).toEqual('Copied citation');
+  });
 });

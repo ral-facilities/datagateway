@@ -43,5 +43,6 @@ export { default as handleICATError } from './handleICATError';
 export { default as ArrowTooltip } from './arrowtooltip.component';
 export { default as Sticky } from './sticky.component';
 export { default as DGThemeProvider } from './dgThemeProvider.component';
+export { default as Mark } from './mark.component';
 
 // ReactDOM.render(<App />, document.getElementById('root'));
