@@ -56,29 +56,28 @@ describe('Admin Download Status', () => {
   describe('should be able to sort download items by', () => {
     it('ascending order', () => {
       cy.get('.react-draggable')
-        .eq(1)
+        .eq(2)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 300 })
+        .trigger('mousemove', { clientX: 400 })
         .trigger('mouseup');
-      cy.contains('[role="button"]', 'Prepared ID').click();
+      cy.contains('[role="button"]', 'Access Method').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
-        expect($preparedId[0].textContent).match(
-          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-        );
-      });
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+        'have.text',
+        'globus'
+      );
     });
 
     it('descending order', () => {
       cy.get('.react-draggable')
-        .eq(1)
+        .eq(2)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 300 })
+        .trigger('mousemove', { clientX: 400 })
         .trigger('mouseup');
-      cy.contains('[role="button"]', 'Prepared ID').click();
-      cy.contains('[role="button"]', 'Prepared ID').click();
+      cy.contains('[role="button"]', 'Access Method').click();
+      cy.contains('[role="button"]', 'Access Method').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -86,11 +85,10 @@ describe('Admin Download Status', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
-        expect($preparedId[0].textContent).match(
-          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-        );
-      });
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+        'have.text',
+        'https'
+      );
     });
 
     it('no order', () => {
@@ -119,13 +117,12 @@ describe('Admin Download Status', () => {
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Username').click();
-      cy.contains('[role="button"]', 'Prepared ID').click();
+      cy.contains('[role="button"]', 'Access Method').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
-        expect($preparedId[0].textContent).match(
-          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
-        );
-      });
+      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+        'have.text',
+        'globus'
+      );
     });
   });
 
@@ -156,11 +153,10 @@ describe('Admin Download Status', () => {
         .first()
         .type('restoring');
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
-        expect($preparedId[0].textContent).match(
-          /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
+        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+          'have.text',
+          'globus'
         );
-      });
     });
   });
 });
