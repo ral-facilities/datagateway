@@ -106,12 +106,12 @@ describe('Download Status', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Requested Date').click();
+      cy.contains('[role="button"]', 'Access Method').click();
       cy.contains('[role="button"]', 'Availability').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="1"]').should(
         'have.text',
-        'test-file-3'
+        'test-file-4'
       );
     });
   });
