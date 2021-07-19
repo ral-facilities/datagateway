@@ -91,7 +91,11 @@ const DatafileDetailsPanel = (
               {t('datafiles.details.description')}
             </Typography>
             <Typography>
-              <b>{datafileData.description}</b>
+              <b>
+                {datafileData.description && datafileData.description !== 'null'
+                  ? datafileData.description
+                  : `${t('datafiles.details.description')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -99,7 +103,11 @@ const DatafileDetailsPanel = (
               {t('datafiles.details.location')}
             </Typography>
             <Typography>
-              <b>{datafileData.location}</b>
+              <b>
+                {datafileData.location && datafileData.location !== 'null'
+                  ? datafileData.location
+                  : `${t('datafiles.details.location')} not provided`}
+              </b>
             </Typography>
           </Grid>
         </Grid>

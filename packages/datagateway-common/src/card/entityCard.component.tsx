@@ -293,7 +293,7 @@ const EntityCard = (props: EntityCardProps): React.ReactElement => {
                     variant="body1"
                     paragraph
                   >
-                    {description
+                    {description && description !== 'null'
                       ? description
                       : t('entity_card.no_description')}
                   </Typography>
