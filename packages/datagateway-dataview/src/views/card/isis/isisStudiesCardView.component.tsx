@@ -143,7 +143,7 @@ const ISISStudiesCardView = (
       }}
       description={{
         label: t('studies.description'),
-        dataKey: 'study.description',
+        dataKey: 'investigation.title',
         filterComponent: textFilter,
       }}
       information={[
@@ -156,13 +156,13 @@ const ISISStudiesCardView = (
         {
           icon: <CalendarToday />,
           label: t('studies.start_date'),
-          dataKey: 'study.startDate',
+          dataKey: 'investigation.startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarToday />,
           label: t('studies.end_date'),
-          dataKey: 'study.endDate',
+          dataKey: 'investigation.endDate',
           filterComponent: dateFilter,
         },
       ]}

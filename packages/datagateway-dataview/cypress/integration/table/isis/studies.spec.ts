@@ -138,7 +138,7 @@ describe('ISIS - Studies Table', () => {
     });
   });
 
-  describe('should be able to filter by', () => {
+  describe.only('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by RB Number"]')
         .find('input')
@@ -147,16 +147,16 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'It wish different however along whether knowledge media.'
+        'Number name during matter last nation both. Miss site ok minute size direction. Yeah edge method few. Free source someone.'
       );
     });
 
     it('date between', () => {
       cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="8"]').should('exist');
-      cy.get('[aria-rowindex="8"] [aria-colindex="2"]').contains(
-        'Energy job smile learn.'
+      cy.get('[aria-rowcount="5"]').should('exist');
+      cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
+        'Number name during matter last nation both. Miss site ok minute size direction. Yeah edge method few. Free source someone.'
       );
     });
 

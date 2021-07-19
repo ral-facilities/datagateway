@@ -144,7 +144,7 @@ const ISISStudiesTable = (
         {
           icon: <DescriptionIcon />,
           label: t('studies.description'),
-          dataKey: 'study.description',
+          dataKey: 'investigation.title',
           filterComponent: textFilter,
         },
         {
@@ -156,13 +156,13 @@ const ISISStudiesTable = (
         {
           icon: <CalendarTodayIcon />,
           label: t('studies.start_date'),
-          dataKey: 'study.startDate',
+          dataKey: 'investigation.startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
           label: t('studies.end_date'),
-          dataKey: 'study.endDate',
+          dataKey: 'investigation.endDate',
           filterComponent: dateFilter,
         },
       ]}

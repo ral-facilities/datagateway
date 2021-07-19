@@ -149,14 +149,14 @@ describe('ISIS Studies table component', () => {
     filterInput.simulate('change');
 
     expect(testStore.getActions()[1]).toEqual(
-      filterTable('study.endDate', { endDate: '2019-08-06' })
+      filterTable('investigation.endDate', { endDate: '2019-08-06' })
     );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
     expect(testStore.getActions()[3]).toEqual(
-      filterTable('study.endDate', null)
+      filterTable('investigation.endDate', null)
     );
   });
 
