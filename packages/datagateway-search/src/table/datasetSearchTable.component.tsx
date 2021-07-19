@@ -280,7 +280,7 @@ const DatasetSearchTable = (
         },
         {
           label: t('datasets.investigation'),
-          dataKey: 'investigation',
+          dataKey: 'investigation.title',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const datasetData = cellProps.rowData as Dataset;
             return hierarchyLink(datasetData, 'investigation');

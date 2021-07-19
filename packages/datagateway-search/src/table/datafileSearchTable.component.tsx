@@ -309,7 +309,7 @@ const DatafileSearchTable = (
         },
         {
           label: t('datafiles.dataset'),
-          dataKey: 'dataset',
+          dataKey: 'dataset.name',
           cellContentRenderer: (cellProps: TableCellProps) => {
             const datafileData = cellProps.rowData as Datafile;
             return hierarchyLink(datafileData, 'dataset');
