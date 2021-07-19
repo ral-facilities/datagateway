@@ -106,4 +106,17 @@ describe('Investigation search tab', () => {
       .contains('Investigation')
       .should('not.exist');
   });
+
+  it('should link to an investigation', () => {
+    cy.get('[aria-label="Search text input"]')
+      .find('#filled-search')
+      .type('dog');
+
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
+    cy.get('[href="/browse/investigation/3/dataset"');
+  });
 });

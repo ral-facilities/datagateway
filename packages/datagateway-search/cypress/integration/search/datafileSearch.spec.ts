@@ -88,4 +88,24 @@ describe('Datafile search tab', () => {
       .contains('Datafile')
       .should('not.exist');
   });
+
+  it('should link to a parent dataset', () => {
+    cy.get('[aria-label="Search text input"]')
+      .find('#filled-search')
+      .type('4961');
+
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Datafile')
+      .contains('1')
+      .click()
+      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+        timeout: 10000,
+      });
+    cy.get('[href="/browse/investigation/219/dataset/172/datafile"');
+  });
 });

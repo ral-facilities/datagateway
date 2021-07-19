@@ -130,14 +130,19 @@ const DatafileSearchTable = (
         return datafileData.name;
       }
 
-      if (datafileData.dataset.startDate && facilityCycles.length) {
+      if (
+        facilityCycles.length &&
+        datafileData.dataset?.investigation?.startDate
+      ) {
         const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
           (facilityCycle: FacilityCycle) =>
-            datafileData.dataset?.startDate &&
+            datafileData.dataset?.investigation?.startDate &&
             facilityCycle.startDate &&
             facilityCycle.endDate &&
-            datafileData.dataset?.startDate >= facilityCycle.startDate &&
-            datafileData.dataset?.startDate <= facilityCycle.endDate
+            datafileData.dataset.investigation.startDate >=
+              facilityCycle.startDate &&
+            datafileData.dataset.investigation.startDate <=
+              facilityCycle.endDate
         );
         if (filteredFacilityCycles.length) {
           facilityCycleId = filteredFacilityCycles[0].id;
@@ -148,7 +153,7 @@ const DatafileSearchTable = (
         return linkType === 'dataset'
           ? tableLink(
               `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}`,
-              datafileData.dataset?.name
+              datafileData.dataset.name
             )
           : tableLink(
               `/browse/instrument/${instrumentId}/facilityCycle/${facilityCycleId}/investigation/${datafileData.dataset.investigation.id}/dataset/${datafileData.dataset.id}/datafile`,
@@ -175,7 +180,6 @@ const DatafileSearchTable = (
             datafileData.name
           );
     }
-
     if (linkType === 'dataset')
       return datafileData.dataset ? datafileData.dataset.name : '';
     return datafileData.name;
@@ -342,7 +346,11 @@ const mapDispatchToProps = (
           },
           {
             filterType: 'include',
-            filterValue: '"dataset"',
+            filterValue: JSON.stringify({
+              dataset: {
+                investigation: { investigationInstruments: 'instrument' },
+              },
+            }),
           },
         ],
       })

@@ -92,4 +92,32 @@ describe('Dataset search tab', () => {
       .contains('Dataset')
       .should('not.exist');
   });
+
+  it('should link to a dataset', () => {
+    cy.get('[aria-label="Start date input"]').type('2003-01-01');
+    cy.get('[aria-label="End date input"]').type('2004-01-01');
+
+    cy.get('[aria-label="Submit search button"]').click();
+
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Dataset')
+      .contains('1')
+      .click();
+
+    cy.get('[href="/browse/investigation/12/dataset/68/datafile"');
+  });
+
+  it('should link to a parent investigation', () => {
+    cy.get('[aria-label="Start date input"]').type('2003-01-01');
+    cy.get('[aria-label="End date input"]').type('2004-01-01');
+
+    cy.get('[aria-label="Submit search button"]').click();
+
+    cy.get('[aria-label="Search table tabs"]')
+      .contains('Dataset')
+      .contains('1')
+      .click();
+
+    cy.get('[href="/browse/investigation/12/dataset"');
+  });
 });

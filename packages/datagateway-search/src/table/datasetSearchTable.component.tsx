@@ -118,14 +118,14 @@ const DatasetSearchTable = (
         return linkType === 'investigation' ? '' : datasetData.name;
       }
 
-      if (datasetData.startDate && facilityCycles.length) {
+      if (facilityCycles.length && datasetData.investigation?.startDate) {
         const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
           (facilityCycle: FacilityCycle) =>
-            datasetData.startDate &&
+            datasetData.investigation?.startDate &&
             facilityCycle.startDate &&
             facilityCycle.endDate &&
-            datasetData.startDate >= facilityCycle.startDate &&
-            datasetData.startDate <= facilityCycle.endDate
+            datasetData.investigation.startDate >= facilityCycle.startDate &&
+            datasetData.investigation.startDate <= facilityCycle.endDate
         );
         if (filteredFacilityCycles.length) {
           facilityCycleId = filteredFacilityCycles[0].id;
@@ -323,7 +323,9 @@ const mapDispatchToProps = (
           },
           {
             filterType: 'include',
-            filterValue: '"investigation"',
+            filterValue: JSON.stringify({
+              investigation: { investigationInstruments: 'instrument' },
+            }),
           },
         ],
       })
