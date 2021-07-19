@@ -175,7 +175,7 @@ exports[`Dataset table component renders correctly 1`] = `
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "investigation",
+        "dataKey": "investigation.title",
         "filterComponent": [Function],
         "label": "datasets.investigation",
       },

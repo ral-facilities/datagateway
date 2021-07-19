@@ -27,7 +27,7 @@ exports[`Datafile search table component renders correctly 1`] = `
       },
       Object {
         "cellContentRenderer": [Function],
-        "dataKey": "dataset",
+        "dataKey": "dataset.name",
         "filterComponent": [Function],
         "label": "datafiles.dataset",
       },
