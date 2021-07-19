@@ -74,7 +74,7 @@
       "name": "Name",
       "end_date": "End Date",
       "start_date": "Start Date",
-      "visit_id": "Visit ID",
+      "visit_id": "Experiment Part",
       "rb_number": "RB Number",
       "pid": "Part DOI",
       "summary": "Summary",

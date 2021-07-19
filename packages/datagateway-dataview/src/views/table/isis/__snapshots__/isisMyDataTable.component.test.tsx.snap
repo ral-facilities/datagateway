@@ -199,7 +199,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
         <WithStyles(ForwardRef(Typography))
           variant="overline"
         >
-          investigations.details.visitId
+          investigations.details.visit_id
         </WithStyles(ForwardRef(Typography))>
         <WithStyles(ForwardRef(Typography))>
           <b>
