@@ -106,6 +106,6 @@ describe('Datafile search tab', () => {
       .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
         timeout: 10000,
       });
-    cy.get('[href="/browse/investigation/219/dataset/172/datafile"');
+    cy.get('[href="/browse/investigation/219/dataset/172/datafile"]');
   });
 });

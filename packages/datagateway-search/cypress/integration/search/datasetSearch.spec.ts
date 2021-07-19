@@ -104,7 +104,7 @@ describe('Dataset search tab', () => {
       .contains('1')
       .click();
 
-    cy.get('[href="/browse/investigation/12/dataset/68/datafile"');
+    cy.get('[href="/browse/investigation/12/dataset/68/datafile"]');
   });
 
   it('should link to a parent investigation', () => {
@@ -118,6 +118,6 @@ describe('Dataset search tab', () => {
       .contains('1')
       .click();
 
-    cy.get('[href="/browse/investigation/12/dataset"');
+    cy.get('[href="/browse/investigation/12/dataset"]');
   });
 });
