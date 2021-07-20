@@ -138,7 +138,7 @@ describe('ISIS - Studies Table', () => {
     });
   });
 
-  describe.only('should be able to filter by', () => {
+  describe('should be able to filter by', () => {
     it('text', () => {
       cy.get('[aria-label="Filter by RB Number"]')
         .find('input')
