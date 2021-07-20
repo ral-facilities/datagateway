@@ -95,8 +95,6 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-      - name: Back a dir
-        run: cd ..
       
       # DataGateway setup
       - name: Checkout repo
@@ -260,8 +258,6 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-      - name: Back a dir
-        run: cd ..
       
       # E2E tests
       - name: Checkout repo
@@ -412,8 +408,6 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-      - name: Back a dir
-        run: cd ..
       
       # E2E tests
       - name: Checkout repo
@@ -564,8 +558,6 @@ jobs:
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
-      - name: Back a dir
-        run: cd ..
       
       # E2E tests
       - name: Checkout repo
