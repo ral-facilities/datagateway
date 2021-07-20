@@ -14,6 +14,7 @@ interface SearchPageContainerStoreProps {
   entityCount: number;
   loading: boolean;
   sideLayout: boolean;
+  requestReceived: boolean;
 }
 class SearchPageContainer extends React.Component<SearchPageContainerStoreProps> {
   public constructor(props: SearchPageContainerStoreProps) {
@@ -63,27 +64,29 @@ class SearchPageContainer extends React.Component<SearchPageContainerStoreProps>
                   )}
                 </Grid>
 
-                <Grid item id="container-search-table">
-                  <Paper
-                    style={{
-                      height: containerHeight,
-                      minHeight: 326,
-                      width: 'calc(70vw)',
-                      minWidth: 584,
-                    }}
-                  >
-                    {/* Show loading progress if data is still being loaded */}
-                    {this.props.loading && (
-                      <Grid item xs={12}>
-                        <LinearProgress color="secondary" />
-                      </Grid>
-                    )}
-                    <SearchPageTable
-                      containerHeight={containerHeight}
-                      hierarchy={match.params.hierarchy}
-                    />
-                  </Paper>
-                </Grid>
+                {this.props.requestReceived && (
+                  <Grid item id="container-search-table">
+                    <Paper
+                      style={{
+                        height: containerHeight,
+                        minHeight: 326,
+                        width: 'calc(70vw)',
+                        minWidth: 584,
+                      }}
+                    >
+                      {/* Show loading progress if data is still being loaded */}
+                      {this.props.loading && (
+                        <Grid item xs={12}>
+                          <LinearProgress color="secondary" />
+                        </Grid>
+                      )}
+                      <SearchPageTable
+                        containerHeight={containerHeight}
+                        hierarchy={match.params.hierarchy}
+                      />
+                    </Paper>
+                  </Grid>
+                )}
               </Grid>
             </div>
           )}
@@ -97,6 +100,7 @@ const mapStateToProps = (state: StateType): SearchPageContainerStoreProps => ({
   entityCount: state.dgcommon.totalDataCount,
   loading: state.dgcommon.loading,
   sideLayout: state.dgsearch.sideLayout,
+  requestReceived: state.dgsearch.requestReceived,
 });
 
 export default connect(mapStateToProps)(SearchPageContainer);

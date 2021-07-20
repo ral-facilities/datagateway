@@ -63,7 +63,10 @@ describe('SearchPageContainer - Tests', () => {
     state = JSON.parse(
       JSON.stringify({
         dgcommon: { ...dGCommonInitialState, loading: true },
-        dgsearch: dgSearchInitialState,
+        dgsearch: {
+          ...dgSearchInitialState,
+          requestReceived: true,
+        },
 
         router: {
           action: 'POP',

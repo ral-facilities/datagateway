@@ -38,7 +38,6 @@ interface SearchTableProps {
 }
 
 interface SearchTableStoreProps {
-  requestReceived: boolean;
   datafile: number[];
   dataset: number[];
   investigation: number[];
@@ -88,7 +87,6 @@ const SearchPageTable = (
   props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
 ): React.ReactElement => {
   const {
-    requestReceived,
     investigation,
     dataset,
     datafile,
@@ -123,162 +121,153 @@ const SearchPageTable = (
     return length >= 100 ? 3 : length >= 10 ? 2 : 1;
   };
 
-  if (requestReceived) {
-    return (
-      <div>
-        <AppBar position="static">
-          <Tabs
-            className="tour-search-tab-select"
-            value={currentTab}
-            onChange={handleChange}
-            aria-label={t('searchPageTable.tabs_arialabel')}
-          >
-            {investigationTab ? (
-              <Tab
-                label={
-                  <StyledBadge
-                    id="investigation-badge"
-                    badgeContent={investigation.length}
-                    showZero
+  return (
+    <div>
+      <AppBar position="static">
+        <Tabs
+          className="tour-search-tab-select"
+          value={currentTab}
+          onChange={handleChange}
+          aria-label={t('searchPageTable.tabs_arialabel')}
+        >
+          {investigationTab ? (
+            <Tab
+              label={
+                <StyledBadge
+                  id="investigation-badge"
+                  badgeContent={investigation.length}
+                  showZero
+                >
+                  <span
+                    style={{
+                      paddingRight: '1ch',
+                      marginRight: `calc(0.5 * ${badgeDigits(
+                        investigation.length
+                      )}ch + 6px)`,
+                      marginLeft: `calc(-0.5 * ${badgeDigits(
+                        investigation.length
+                      )}ch - 6px)`,
+                    }}
                   >
-                    <span
-                      style={{
-                        paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          investigation.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          investigation.length
-                        )}ch - 6px)`,
-                      }}
-                    >
-                      {t('tabs.investigation')}
-                    </span>
-                  </StyledBadge>
-                }
-                value="investigation"
-                {...a11yProps('investigation')}
-              />
-            ) : (
-              <Tab value="investigation" style={{ display: 'none' }} />
-            )}
-            {datasetTab ? (
-              <Tab
-                label={
-                  <StyledBadge
-                    id="dataset-badge"
-                    badgeContent={dataset.length}
-                    showZero
+                    {t('tabs.investigation')}
+                  </span>
+                </StyledBadge>
+              }
+              value="investigation"
+              {...a11yProps('investigation')}
+            />
+          ) : (
+            <Tab value="investigation" style={{ display: 'none' }} />
+          )}
+          {datasetTab ? (
+            <Tab
+              label={
+                <StyledBadge
+                  id="dataset-badge"
+                  badgeContent={dataset.length}
+                  showZero
+                >
+                  <span
+                    style={{
+                      paddingRight: '1ch',
+                      marginRight: `calc(0.5 * ${badgeDigits(
+                        dataset.length
+                      )}ch + 6px)`,
+                      marginLeft: `calc(-0.5 * ${badgeDigits(
+                        dataset.length
+                      )}ch - 6px)`,
+                    }}
                   >
-                    <span
-                      style={{
-                        paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          dataset.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          dataset.length
-                        )}ch - 6px)`,
-                      }}
-                    >
-                      {t('tabs.dataset')}
-                    </span>
-                  </StyledBadge>
-                }
-                value="dataset"
-                {...a11yProps('dataset')}
-              />
-            ) : (
-              <Tab value="dataset" style={{ display: 'none' }} />
-            )}
-            {datafileTab ? (
-              <Tab
-                label={
-                  <StyledBadge
-                    id="datafile-badge"
-                    badgeContent={datafile.length}
-                    showZero
+                    {t('tabs.dataset')}
+                  </span>
+                </StyledBadge>
+              }
+              value="dataset"
+              {...a11yProps('dataset')}
+            />
+          ) : (
+            <Tab value="dataset" style={{ display: 'none' }} />
+          )}
+          {datafileTab ? (
+            <Tab
+              label={
+                <StyledBadge
+                  id="datafile-badge"
+                  badgeContent={datafile.length}
+                  showZero
+                >
+                  <span
+                    style={{
+                      paddingRight: '1ch',
+                      marginRight: `calc(0.5 * ${badgeDigits(
+                        datafile.length
+                      )}ch + 6px)`,
+                      marginLeft: `calc(-0.5 * ${badgeDigits(
+                        datafile.length
+                      )}ch - 6px)`,
+                    }}
                   >
-                    <span
-                      style={{
-                        paddingRight: '1ch',
-                        marginRight: `calc(0.5 * ${badgeDigits(
-                          datafile.length
-                        )}ch + 6px)`,
-                        marginLeft: `calc(-0.5 * ${badgeDigits(
-                          datafile.length
-                        )}ch - 6px)`,
-                      }}
-                    >
-                      {t('tabs.datafile')}
-                    </span>
-                  </StyledBadge>
-                }
-                value="datafile"
-                {...a11yProps('datafile')}
-              />
-            ) : (
-              <Tab value="datafile" style={{ display: 'none' }} />
-            )}
-          </Tabs>
-        </AppBar>
+                    {t('tabs.datafile')}
+                  </span>
+                </StyledBadge>
+              }
+              value="datafile"
+              {...a11yProps('datafile')}
+            />
+          ) : (
+            <Tab value="datafile" style={{ display: 'none' }} />
+          )}
+        </Tabs>
+      </AppBar>
 
-        {investigationTab ? (
-          <TabPanel value={currentTab} index={'investigation'}>
-            <Paper
-              style={{
-                height: `calc(${containerHeight} - 96px)`,
-                minHeight: 230,
-                overflowX: 'auto',
-              }}
-              elevation={0}
-            >
-              <InvestigationSearchTable hierarchy={hierarchy} />
-            </Paper>
-          </TabPanel>
-        ) : null}
-        {datasetTab ? (
-          <TabPanel value={currentTab} index={'dataset'}>
-            <Paper
-              style={{
-                height: `calc(${containerHeight} - 96px)`,
-                minHeight: 230,
-                overflowX: 'auto',
-              }}
-              elevation={0}
-            >
-              <DatasetSearchTable hierarchy={hierarchy} />
-            </Paper>
-          </TabPanel>
-        ) : null}
-        {datafileTab ? (
-          <TabPanel value={currentTab} index={'datafile'}>
-            <Paper
-              style={{
-                height: `calc(${containerHeight} - 96px)`,
-                minHeight: 230,
-                overflowX: 'auto',
-              }}
-              elevation={0}
-            >
-              <DatafileSearchTable hierarchy={hierarchy} />
-            </Paper>
-          </TabPanel>
-        ) : null}
-      </div>
-    );
-  } else
-    return (
-      <Box color="secondary.main" px={3} py={1}>
-        <h2>{t('searchPageTable.header')}</h2>
-        {t('searchPageTable.text')}
-      </Box>
-    );
+      {investigationTab ? (
+        <TabPanel value={currentTab} index={'investigation'}>
+          <Paper
+            style={{
+              height: `calc(${containerHeight} - 96px)`,
+              minHeight: 230,
+              overflowX: 'auto',
+            }}
+            elevation={0}
+          >
+            <InvestigationSearchTable hierarchy={hierarchy} />
+          </Paper>
+        </TabPanel>
+      ) : null}
+      {datasetTab ? (
+        <TabPanel value={currentTab} index={'dataset'}>
+          <Paper
+            style={{
+              height: `calc(${containerHeight} - 96px)`,
+              minHeight: 230,
+              overflowX: 'auto',
+            }}
+            elevation={0}
+          >
+            <DatasetSearchTable hierarchy={hierarchy} />
+          </Paper>
+        </TabPanel>
+      ) : null}
+      {datafileTab ? (
+        <TabPanel value={currentTab} index={'datafile'}>
+          <Paper
+            style={{
+              height: `calc(${containerHeight} - 96px)`,
+              minHeight: 230,
+              overflowX: 'auto',
+            }}
+            elevation={0}
+          >
+            <DatafileSearchTable hierarchy={hierarchy} />
+          </Paper>
+        </TabPanel>
+      ) : null}
+    </div>
+  );
 };
 
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
-    requestReceived: state.dgsearch.requestReceived,
     datafile: state.dgsearch.searchData.datafile,
     dataset: state.dgsearch.searchData.dataset,
     investigation: state.dgsearch.searchData.investigation,
