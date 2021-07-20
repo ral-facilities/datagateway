@@ -289,7 +289,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
 </div>
 `;
 
-exports[`ISIS Investigations table component renders title and RB number as links 1`] = `
+exports[`ISIS Investigations table component renders title and name as links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -442,7 +442,7 @@ exports[`ISIS Investigations table component renders title and RB number as link
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title and RB number as links 2`] = `
+exports[`ISIS Investigations table component renders title and name as links 2`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
