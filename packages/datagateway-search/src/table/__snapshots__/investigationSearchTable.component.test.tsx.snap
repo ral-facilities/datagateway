@@ -144,7 +144,7 @@ exports[`Investigation Search Table component renders details panel correctly 1`
 </div>
 `;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 1`] = `
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -297,8 +297,8 @@ exports[`Investigation Search Table component renders title, visit ID, RB number
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 2`] = `"1"`;
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 2`] = `"1"`;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 3`] = `"Test 1"`;
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 3`] = `"Test 1"`;
 
-exports[`Investigation Search Table component renders title, visit ID, RB number and DOI as links 4`] = `"doi 1"`;
+exports[`Investigation Search Table component renders title, visit ID, Name and DOI as links 4`] = `"doi 1"`;
