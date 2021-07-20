@@ -1,5 +1,6 @@
 name: CI Build
 on: 
+  workflow_dispatch:
   pull_request:
   # By default, the pull_request event type is not triggered when a PR is merged into master
   push:
@@ -9,7 +10,7 @@ on:
 jobs:
   lint-and-unit-test:
     name: Lint & Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -17,6 +18,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '14.x'
+
       # Cache yarn dependencies/ restore the cached dependencies during future workflows
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -35,10 +37,14 @@ jobs:
           npm config set scripts-prepend-node-path true
           sudo apt-get install libgconf-2-4
           yarn --frozen-lockfile
+      
+      # Linting and unit testing
       - name: Run linting
         run: yarn lint
       - name: Run unit tests
         run: yarn test:unit
+      
+      # Test coverage upload
       - name: Upload unit test coverage for the Common package
         if: success()
         uses: codecov/codecov-action@v1
@@ -68,79 +74,107 @@ jobs:
           flags: download
           fail_ci_if_error: true
 
-  # Seperate e2e jobs so that they can run in parallel
-  download-e2e-test:
-    # Run only if the  Lint & Unit Tests job passed
-    needs: lint-and-unit-test
-    name: DataGateway Download End to End Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache yarn dependencies
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          npm config set scripts-prepend-node-path true
-          sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
-      - name: Run datagateway-download e2e tests
-        run: yarn workspace datagateway-download run e2e
 
-  search-e2e-test:
-    # Run only if  the  Lint & Unit Tests job passed
-    needs: lint-and-unit-test
-    name: DataGateway Search End to End Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      # Cache yarn dependencies/ restore the cached dependencies during future workflows
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache yarn dependencies
-        uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install dependencies
-        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
-        run: |
-          npm config set scripts-prepend-node-path true
-          sudo apt-get install libgconf-2-4
-          yarn --frozen-lockfile
-      - name: Run datagateway-search e2e tests
-        run: yarn workspace datagateway-search run e2e
-
-  dataview-e2e-test:
-    # Run only if  the  Lint & Unit Tests job passed
-    needs: lint-and-unit-test
+  dataview-e2e-tests:
     name: DataGateway DataView End to End Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Add apt repo
+        run: sudo add-apt-repository universe
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          java-package: jdk
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+          architecture: x64
+
+      # ICAT Ansible clone and install dependencies
+      - name: Checkout icat-ansible
+        uses: actions/checkout@v2
+        with:
+          repository: icatproject-contrib/icat-ansible
+          ref: temp-icat-server-config-test
+          path: icat-ansible
+      - name: Install Ansible
+        run: pip install -r icat-ansible/requirements.txt
+
+      # Prep for running the playbook
+      - name: Create hosts file
+        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+      - name: Prepare vault pass
+        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
+      - name: Move vault to directory it'll get detected by Ansible
+        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
+      - name: Replace default payara user with Actions user
+        run: |
+          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      - name: Amending roles
+        run: |
+          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+
+      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
+      - name: Change hostname to localhost
+        run: sudo hostname -b localhost
+
+      # Create local instance of ICAT
+      - name: Run ICAT Ansible Playbook
+        run: |
+          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+
+      # Fixes on ICAT components needed for e2e tests
+      - name: Add anon user to rootUserNames
+        run: |
+          awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
+      - name: Apply rootUserNames change
+        run: |
+          mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Reinstall ICAT Server
+        run: |
+          cd /home/runner/install/icat.server/ && ./setup -vv install
+
+      - name: Checkout datagateway-api
+        uses: actions/checkout@v2
+        with:
+          repository: ral-facilities/datagateway-api
+          path: datagateway-api
+
+      # DataGateway API file setup
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
+          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+      - name: Configure API backend
+        run: echo "`jq -r --arg BACKEND "python_icat" \
+          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+      - name: Set debug mode to true
+        run: |
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
+      - name: Set log level to DEBUG
+        run: |
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
+      - name: Create config.json
+        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+      
+      # DataGateway API dependencies
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: cd datagateway-api; poetry install
+      - name: Add dummy data to icatdb
+        run: |
+          cd datagateway-api; poetry run python -m util.icat_db_generator
+
+      - name: Start API
+        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+      
+      # E2E tests
       - name: Checkout repo
         uses: actions/checkout@v2
       - name: Setup Node.js
@@ -167,3 +201,309 @@ jobs:
           yarn --frozen-lockfile
       - name: Run datagateway-dataview e2e tests
         run: yarn workspace datagateway-dataview run e2e
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: DataView-Screenshots
+          path: packages/datagateway-dataview/cypress/screenshots
+
+
+  download-e2e-tests:
+    name: DataGateway Download End to End Tests
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Add apt repo
+        run: sudo add-apt-repository universe
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          java-package: jdk
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+          architecture: x64
+
+      # ICAT Ansible clone and install dependencies
+      - name: Checkout icat-ansible
+        uses: actions/checkout@v2
+        with:
+          repository: icatproject-contrib/icat-ansible
+          ref: temp-icat-server-config-test
+          path: icat-ansible
+      - name: Install Ansible
+        run: pip install -r icat-ansible/requirements.txt
+
+      # Prep for running the playbook
+      - name: Create hosts file
+        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+      - name: Prepare vault pass
+        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
+      - name: Move vault to directory it'll get detected by Ansible
+        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
+      - name: Replace default payara user with Actions user
+        run: |
+          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      - name: Amending roles
+        run: |
+          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+
+      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
+      - name: Change hostname to localhost
+        run: sudo hostname -b localhost
+
+      # Create local instance of ICAT
+      - name: Run ICAT Ansible Playbook
+        run: |
+          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+
+      # Fixes on ICAT components needed for e2e tests
+      - name: Add anon user to rootUserNames
+        run: |
+          awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
+      - name: Apply rootUserNames change
+        run: |
+          mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Reinstall ICAT Server
+        run: |
+          cd /home/runner/install/icat.server/ && ./setup -vv install
+      - name: Disable Two Level Storage
+        run: |
+          sed -i '/plugin.archive.class/,/tidyBlockSize/ s/^/#/' /home/runner/install/ids.server/run.properties
+      - name: Reinstall IDS Server
+        run: |
+          cd /home/runner/install/ids.server/ && python2 ./setup -vv install
+
+      # Disable Globus for Download e2e tests
+      - name: Login to ICAT
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}' > login_output
+      - name: Disable Globus for testing
+        run: |
+          curl -k --request PUT 'https://localhost:8181/topcat/admin/downloadType/globus/status' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output` --data-urlencode 'facilityName=LILS' --data-urlencode 'disabled=True' --data-urlencode 'message="GLOBUS has been disabled for testing"'
+      - name: Remove session ID data
+        run: rm -f login_output
+
+      - name: Checkout datagateway-api
+        uses: actions/checkout@v2
+        with:
+          repository: ral-facilities/datagateway-api
+          path: datagateway-api
+
+      # DataGateway API file setup
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
+          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+      - name: Configure API backend
+        run: echo "`jq -r --arg BACKEND "python_icat" \
+          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+      - name: Set debug mode to true
+        run: |
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
+      - name: Set log level to DEBUG
+        run: |
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
+      - name: Create config.json
+        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+      
+      # DataGateway API dependencies
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: cd datagateway-api; poetry install
+      - name: Add dummy data to icatdb
+        run: |
+          cd datagateway-api; poetry run python -m util.icat_db_generator
+
+      - name: Start API
+        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+      
+      # E2E tests
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      # Cache yarn dependencies/ restore the cached dependencies during future workflows
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
+        run: |
+          npm config set scripts-prepend-node-path true
+          sudo apt-get install libgconf-2-4
+          yarn --frozen-lockfile
+      - name: Run datagateway-download e2e tests
+        run: yarn workspace datagateway-download run e2e
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: Download-Screenshots
+          path: packages/datagateway-download/cypress/screenshots
+
+
+  search-e2e-tests:
+    name: DataGateway Search End to End Tests
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Add apt repo
+        run: sudo add-apt-repository universe
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          java-package: jdk
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+          architecture: x64
+
+      # ICAT Ansible clone and install dependencies
+      - name: Checkout icat-ansible
+        uses: actions/checkout@v2
+        with:
+          repository: icatproject-contrib/icat-ansible
+          ref: temp-icat-server-config-test
+          path: icat-ansible
+      - name: Install Ansible
+        run: pip install -r icat-ansible/requirements.txt
+
+      # Prep for running the playbook
+      - name: Create hosts file
+        run: echo -e "[icat-test-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+      - name: Prepare vault pass
+        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
+      - name: Move vault to directory it'll get detected by Ansible
+        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
+      - name: Replace default payara user with Actions user
+        run: |
+          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      - name: Amending roles
+        run: |
+          sed -i 's/role: authn-uows-isis/role: authn-anon/' icat-ansible/icat-test-hosts.yml
+
+      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
+      - name: Change hostname to localhost
+        run: sudo hostname -b localhost
+
+      # Create local instance of ICAT
+      - name: Run ICAT Ansible Playbook
+        run: |
+          ansible-playbook icat-ansible/icat-test-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+      - name: Add anon user to rootUserNames
+        run: |
+          awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
+      - name: Apply rootUserNames change
+        run: |
+          mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
+      - name: Reinstall ICAT Server
+        run: |
+          cd /home/runner/install/icat.server/ && ./setup -vv install
+
+      - name: Checkout datagateway-api
+        uses: actions/checkout@v2
+        with:
+          repository: ral-facilities/datagateway-api
+          path: datagateway-api
+
+      # DataGateway API file setup
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
+          '.log_location=$REPO_DIR' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+      - name: Configure API backend
+        run: echo "`jq -r --arg BACKEND "python_icat" \
+          '.backend=$BACKEND' datagateway-api/datagateway_api/config.json.example`" > datagateway-api/datagateway_api/config.json.example
+      - name: Set debug mode to true
+        run: |
+          sed -i -e "s/\"debug_mode\": false,/\"debug_mode\": true,/" datagateway-api/datagateway_api/config.json.example
+      - name: Set log level to DEBUG
+        run: |
+          sed -i -e "s/\"log_level\": \"WARN\",/\"log_level\": \"DEBUG\",/" datagateway-api/datagateway_api/config.json.example
+      - name: Create config.json
+        run: cp datagateway-api/datagateway_api/config.json.example datagateway-api/datagateway_api/config.json
+      
+      # DataGateway API dependencies
+      - name: Install Poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: cd datagateway-api; poetry install
+      - name: Add dummy data to icatdb
+        run: |
+          cd datagateway-api; poetry run python -m util.icat_db_generator
+      
+      # Recreate Lucene indexes
+      - name: Login to ICAT
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/session' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'json={"plugin":"simple", "credentials": [{"username":"root"}, {"password":"pw"}]}' > login_output
+      - name: Recreate Datafile index
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Datafile/0' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Recreate Dataset index
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Dataset/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Recreate Investigation index
+        run: |
+          curl -k --request POST 'https://localhost:8181/icat/lucene/db/Investigation/1' --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'sessionId='`jq -r '.sessionId' login_output`
+      - name: Let reindexes complete
+        run: sleep 30
+      - name: Remove session ID data
+        run: rm -f login_output
+
+      - name: Start API
+        run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
+      
+      # E2E tests
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      # Cache yarn dependencies/ restore the cached dependencies during future workflows
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn dependencies
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install dependencies
+        # Ubuntu 16+ does not install libgconf-2-4 by default, so we need to install it ourselves (for Cypress)
+        run: |
+          npm config set scripts-prepend-node-path true
+          sudo apt-get install libgconf-2-4
+          yarn --frozen-lockfile
+      - name: Run datagateway-search e2e tests
+        run: yarn workspace datagateway-search run e2e
+      - name: Upload Cypress screenshots
+        if: failure()
+        uses: actions/upload-artifact@v1
+        with:
+          name: Search-Screenshots
+          path: packages/datagateway-search/cypress/screenshots
