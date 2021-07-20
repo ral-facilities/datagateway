@@ -35,6 +35,8 @@ import { StateType } from '../state/app.types';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
@@ -252,24 +254,12 @@ const ViewSwitch = (props: {
   const [t] = useTranslation();
 
   return (
-    // <FormControlLabel
-    //   className="tour-dataview-toggle-card"
-    //   value="start"
-    //   control={
-    //     <Switch
-    //       checked={props.toggleCard}
-    //       onChange={props.handleToggleChange}
-    //       name="toggleCard"
-    //       inputProps={{ 'aria-label': 'secondary checkbox' }}
-    //     />
-    //   }
-    //   label={t('app.toggle_cards')}
-    //   labelPlacement="start"
-    // />
     <Button
       className="tour-dataview-toggle-card"
       variant="contained"
       color="primary"
+      size="small"
+      startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
       onClick={props.handleButtonChange}
     >
       {props.viewCards ? t('app.view_table') : t('app.view_cards')}
