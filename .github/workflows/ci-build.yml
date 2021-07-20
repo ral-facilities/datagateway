@@ -88,10 +88,10 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install; cd ..
+        run: cd datagateway-api; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator; cd ..
+          cd datagateway-api; poetry run python -m util.icat_db_generator
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
@@ -251,10 +251,10 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install; cd ..
+        run: cd datagateway-api; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator; cd ..
+          cd datagateway-api; poetry run python -m util.icat_db_generator
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
@@ -401,10 +401,10 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install; cd ..
+        run: cd datagateway-api; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator; cd ..
+          cd datagateway-api; poetry run python -m util.icat_db_generator
 
       - name: Start API
         run: cd datagateway-api; nohup poetry run python -m datagateway_api.src.main > api-output.txt &
@@ -533,10 +533,10 @@ jobs:
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
-        run: cd datagateway-api; poetry install; cd ..
+        run: cd datagateway-api; poetry install
       - name: Add dummy data to icatdb
         run: |
-          cd datagateway-api; poetry run python -m util.icat_db_generator; cd ..
+          cd datagateway-api; poetry run python -m util.icat_db_generator
       
       # Recreate Lucene indexes
       - name: Login to ICAT
