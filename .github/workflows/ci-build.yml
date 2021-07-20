@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - master
-      - use-local-ICAT-in-CI-runs-#641
 
 jobs:
   lint-and-unit-test:
