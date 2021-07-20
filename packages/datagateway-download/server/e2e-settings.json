@@ -8,13 +8,11 @@
   "totalSizeMax": 1000000000000,
   "accessMethods": {
     "https": {
-      "_comment": "go back to this",
       "idsUrl": "https://localhost:8181/ids",
       "displayName": "HTTPS",
       "description": "Example description for HTTPS access method."
     },
     "globus": {
-      "_comment": "go back to this",
       "idsUrl": "https://localhost:8181/ids",
       "displayName": "Globus",
       "description": "Example description for Globus access method."
