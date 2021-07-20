@@ -10,6 +10,7 @@ exports[`Datafile search table component renders correctly 1`] = `
   columns={
     Array [
       Object {
+        "cellContentRenderer": [Function],
         "dataKey": "name",
         "filterComponent": [Function],
         "label": "datafiles.name",
@@ -25,6 +26,12 @@ exports[`Datafile search table component renders correctly 1`] = `
         "label": "datafiles.size",
       },
       Object {
+        "cellContentRenderer": [Function],
+        "dataKey": "dataset.name",
+        "filterComponent": [Function],
+        "label": "datafiles.dataset",
+      },
+      Object {
         "dataKey": "modTime",
         "filterComponent": [Function],
         "label": "datafiles.modified_time",
@@ -34,12 +41,57 @@ exports[`Datafile search table component renders correctly 1`] = `
   data={
     Array [
       Object {
-        "dataset": 1,
+        "dataset": Object {
+          "createTime": "2019-07-23",
+          "endDate": "2019-07-25",
+          "id": 2,
+          "investigation": Object {
+            "doi": "doi 1",
+            "endDate": "2019-06-11",
+            "facility": Object {
+              "id": 8,
+              "name": "facility name",
+            },
+            "id": 3,
+            "investigationInstruments": Array [
+              Object {
+                "id": 4,
+                "instrument": Object {
+                  "id": 5,
+                  "name": "LARMOR",
+                },
+              },
+            ],
+            "name": "Investigation test name",
+            "rbNumber": "1",
+            "size": 1,
+            "startDate": "2019-06-10",
+            "studyInvestigations": Array [
+              Object {
+                "id": 6,
+                "study": Object {
+                  "createTime": "2019-06-10",
+                  "id": 7,
+                  "modTime": "2019-06-10",
+                  "name": "study name",
+                  "pid": "study pid",
+                },
+              },
+            ],
+            "summary": "foo bar",
+            "title": "Investigation test title",
+            "visitId": "1",
+          },
+          "modTime": "2019-07-23",
+          "name": "Dataset test name",
+          "size": 1,
+          "startDate": "2019-07-24",
+        },
         "fileSize": 1,
         "id": 1,
-        "location": "/test1",
+        "location": "/datafiletest",
         "modTime": "2019-07-23",
-        "name": "Test 1",
+        "name": "Datafile test name",
       },
     ]
   }
@@ -63,7 +115,7 @@ exports[`Datafile search table component renders details panel correctly 1`] = `
       :
     </b>
      
-    Test 1
+    Datafile test name
   </WithStyles(ForwardRef(Typography))>
   <WithStyles(ForwardRef(Typography))>
     <b>
@@ -79,7 +131,7 @@ exports[`Datafile search table component renders details panel correctly 1`] = `
       :
     </b>
      
-    /test1
+    /datafiletest
   </WithStyles(ForwardRef(Typography))>
 </div>
 `;
