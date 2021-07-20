@@ -1,5 +1,5 @@
 import React from 'react';
-import { Entity, Instrument } from 'datagateway-common';
+import { Entity, Instrument, useInstrumentDetails } from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -26,26 +26,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface InstrumentDetailsPanelProps {
   rowData: Entity;
-  fetchDetails: (instrumentId: number) => Promise<void>;
   detailsPanelResize?: () => void;
 }
 
 const InstrumentDetailsPanel = (
   props: InstrumentDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, detailsPanelResize } = props;
+  const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'users'>('details');
   const [t] = useTranslation();
-
-  const instrumentData = rowData as Instrument;
-
   const classes = useStyles();
 
-  React.useEffect(() => {
-    if (!instrumentData.instrumentScientists) {
-      fetchDetails(instrumentData.id);
-    }
-  }, [instrumentData.instrumentScientists, instrumentData.id, fetchDetails]);
+  const { data } = useInstrumentDetails(rowData.id);
+  const instrumentData: Instrument = { ...data, ...(rowData as Instrument) };
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();

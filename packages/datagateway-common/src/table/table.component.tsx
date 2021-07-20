@@ -281,8 +281,10 @@ const VirtualizedTable = (
             {({ onRowsRendered, registerChild }) => (
               <Table
                 ref={(ref) => {
-                  tableRef = ref;
-                  registerChild(ref);
+                  if (ref !== null) {
+                    tableRef = ref;
+                  }
+                  return registerChild(ref);
                 }}
                 className={classes.table}
                 height={(height || 500) - scrollBarHeight}

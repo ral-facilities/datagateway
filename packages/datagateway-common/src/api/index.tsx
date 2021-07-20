@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 
 export * from './cart';
+export * from './instruments';
 export * from './investigations';
 
 /**
