@@ -14,18 +14,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - name: Add apt repo
-        run: sudo add-apt-repository universe
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 8
-          java-package: jdk
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
-          architecture: x64
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
