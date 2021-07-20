@@ -469,6 +469,5 @@ const VirtualizedTable = (
     </AutoSizer>
   );
 };
-VirtualizedTable.whyDidYouRender = true;
 
 export default withStyles(styles)(VirtualizedTable);

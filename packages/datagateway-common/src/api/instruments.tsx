@@ -149,11 +149,11 @@ export const useInstrumentCount = (): UseQueryResult<number, AxiosError> => {
     number,
     AxiosError,
     number,
-    [string, { filters: FiltersType }]
+    [string, string, { filters: FiltersType }]
   >(
-    ['instrumentCount', { filters }],
+    ['count', 'instrument', { filters }],
     (params) => {
-      const { filters } = params.queryKey[1];
+      const { filters } = params.queryKey[2];
       return fetchInstrumentCount(apiUrl, filters);
     },
     {

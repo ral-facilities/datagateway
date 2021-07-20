@@ -301,11 +301,11 @@ export const useInvestigationCount = (
     number,
     AxiosError,
     number,
-    [string, { filters: FiltersType }, AdditionalFilters?]
+    [string, string, { filters: FiltersType }, AdditionalFilters?]
   >(
-    ['investigationCount', { filters }, additionalFilters],
+    ['count', 'investigation', { filters }, additionalFilters],
     (params) => {
-      const { filters } = params.queryKey[1];
+      const { filters } = params.queryKey[2];
       return fetchInvestigationCount(apiUrl, filters, additionalFilters);
     },
     {

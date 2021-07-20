@@ -396,32 +396,31 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
 const PageContainer: React.FC = () => {
   const location = useLocation();
   const prevLocationRef = React.useRef(location);
-  const { view, filters } = React.useMemo(
-    () => parseSearchToQuery(location.search),
-    [location.search]
-  );
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+  const [totalDataCount, setTotalDataCount] = React.useState(0);
 
   const isFetchingNum = useIsFetching();
   const loading = isFetchingNum > 0;
 
   const queryClient = useQueryClient();
 
-  // if location.pathname.split("/") is odd, then it's a data view
-  // if it's even, it's a landing page
-  // this determines what query we're using aka either the last or second last item in path
-  const splitPath = location.pathname.split('/');
-  const currQueryEntity =
-    splitPath.length % 2 !== 0
-      ? splitPath[splitPath.length - 1]
-      : splitPath[splitPath.length - 2];
+  // we need to run this hook every render to ensure we have the
+  // most up to date value from the query cache as otherwise
+  // the count can fall behind
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  React.useEffect(() => {
+    const count =
+      queryClient.getQueryData<number>('count', {
+        exact: false,
+        active: true,
+      }) ?? 0;
+    if (count !== totalDataCount) setTotalDataCount(count);
+  });
 
-  const totalDataCount = queryClient.getQueryData<number>([
-    `${currQueryEntity}Count`,
-    { filters },
-  ]);
-
-  const isCountFetchingNum = useIsFetching({
-    predicate: (query) => query.queryKey.includes('Count'),
+  const isCountFetchingNum = useIsFetching('count', {
+    exact: false,
   });
   const loadedCount = isCountFetchingNum === 0;
 
