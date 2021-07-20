@@ -1,9 +1,7 @@
 import {
-  FormControlLabel,
   Grid,
   LinearProgress,
   Paper,
-  Switch,
   Typography,
   Theme,
   withStyles,
@@ -11,6 +9,7 @@ import {
   IconButton,
   Badge,
   makeStyles,
+  Button,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -246,27 +245,35 @@ const NavBar = (props: {
   );
 };
 
-const CardSwitch = (props: {
-  toggleCard: boolean;
-  handleToggleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+const ViewSwitch = (props: {
+  viewCards: boolean;
+  handleButtonChange: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
 
   return (
-    <FormControlLabel
+    // <FormControlLabel
+    //   className="tour-dataview-toggle-card"
+    //   value="start"
+    //   control={
+    //     <Switch
+    //       checked={props.toggleCard}
+    //       onChange={props.handleToggleChange}
+    //       name="toggleCard"
+    //       inputProps={{ 'aria-label': 'secondary checkbox' }}
+    //     />
+    //   }
+    //   label={t('app.toggle_cards')}
+    //   labelPlacement="start"
+    // />
+    <Button
       className="tour-dataview-toggle-card"
-      value="start"
-      control={
-        <Switch
-          checked={props.toggleCard}
-          onChange={props.handleToggleChange}
-          name="toggleCard"
-          inputProps={{ 'aria-label': 'secondary checkbox' }}
-        />
-      }
-      label={t('app.toggle_cards')}
-      labelPlacement="start"
-    />
+      variant="contained"
+      color="primary"
+      onClick={props.handleButtonChange}
+    >
+      {props.viewCards ? t('app.view_table') : t('app.view_cards')}
+    </Button>
   );
 };
 
@@ -376,7 +383,7 @@ type PageContainerCombinedProps = PageContainerStateProps &
 
 interface PageContainerState {
   paths: string[];
-  toggleCard: boolean;
+  viewCards: boolean;
   modifiedLocation: LocationType;
 }
 
@@ -396,7 +403,7 @@ class PageContainer extends React.Component<
       paths: Object.values(paths.toggle).concat(
         Object.values(paths.studyHierarchy.toggle)
       ),
-      toggleCard: this.getToggle(),
+      viewCards: this.getToggle(),
       modifiedLocation: props.location,
     };
   }
@@ -435,7 +442,7 @@ class PageContainer extends React.Component<
     if (prevProps.query.view !== this.props.query.view) {
       this.setState({
         ...this.state,
-        toggleCard: this.getToggle(),
+        viewCards: this.getToggle(),
       });
     }
   }
@@ -481,13 +488,15 @@ class PageContainer extends React.Component<
     return 'table';
   };
 
-  public handleToggleChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+  public handleButtonChange = (
+    event: React.MouseEvent<HTMLButtonElement>
   ): void => {
-    const nextView = event.target.checked ? 'card' : 'table';
+    // TODO: Need state variable to track if clicked or not? Or use state toggleCard?
+    // const nextView = event.target.checked ? 'card' : 'table';
+    const nextView = !this.state.viewCards ? 'card' : 'table';
 
     // Save the current view information to state and restore the previous view information.
-    this.props.saveView(this.state.toggleCard ? 'card' : 'table');
+    this.props.saveView(nextView);
 
     // Set the view in local storage.
     this.storeDataView(nextView);
@@ -498,7 +507,7 @@ class PageContainer extends React.Component<
     // Set the state with the toggled card option and the saved query.
     this.setState({
       ...this.state,
-      toggleCard: event.target.checked,
+      viewCards: !this.state.viewCards,
     });
   };
 
@@ -519,9 +528,9 @@ class PageContainer extends React.Component<
               exact
               path={this.state.paths}
               render={() => (
-                <CardSwitch
-                  toggleCard={this.state.toggleCard}
-                  handleToggleChange={this.handleToggleChange}
+                <ViewSwitch
+                  viewCards={this.state.viewCards}
+                  handleButtonChange={this.handleButtonChange}
                 />
               )}
             />
