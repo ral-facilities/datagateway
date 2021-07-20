@@ -14,7 +14,7 @@
     "datagateway-common": "0.1.0",
     "date-fns": "^2.17.0",
     "date-fns-tz": "^1.1.4",
-    "i18next": "^19.9.0",
+    "i18next": "^20.3.4",
     "i18next-browser-languagedetector": "^6.0.0",
     "i18next-http-backend": "^1.1.1",
     "lodash.chunk": "^4.2.0",
