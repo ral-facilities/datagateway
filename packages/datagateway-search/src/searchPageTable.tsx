@@ -247,7 +247,7 @@ const SearchPageTable = (
               }}
               elevation={0}
             >
-              <DatasetSearchTable />
+              <DatasetSearchTable hierarchy={hierarchy} />
             </Paper>
           </TabPanel>
         ) : null}
@@ -261,7 +261,7 @@ const SearchPageTable = (
               }}
               elevation={0}
             >
-              <DatafileSearchTable />
+              <DatafileSearchTable hierarchy={hierarchy} />
             </Paper>
           </TabPanel>
         ) : null}
