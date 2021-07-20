@@ -94,6 +94,9 @@ describe('Dataset search tab', () => {
   });
 
   it('should link to a dataset', () => {
+    cy.get('[aria-label="Search text input"]')
+      .find('#filled-search')
+      .type('12');
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 
@@ -104,10 +107,13 @@ describe('Dataset search tab', () => {
       .contains('1')
       .click();
 
-    cy.get('[href="/browse/investigation/12/dataset/68/datafile"]');
+    cy.get('[href="/browse/investigation/12/dataset/12/datafile"]');
   });
 
   it('should link to a parent investigation', () => {
+    cy.get('[aria-label="Search text input"]')
+      .find('#filled-search')
+      .type('12');
     cy.get('[aria-label="Start date input"]').type('2003-01-01');
     cy.get('[aria-label="End date input"]').type('2004-01-01');
 

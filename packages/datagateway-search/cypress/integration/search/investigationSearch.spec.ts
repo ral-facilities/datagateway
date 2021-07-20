@@ -117,6 +117,6 @@ describe('Investigation search tab', () => {
       .wait(['@investigations', '@investigationsCount'], {
         timeout: 10000,
       });
-    cy.get('[href="/browse/investigation/3/dataset"]');
+    cy.get('[href="/browse/investigation/6/dataset"]');
   });
 });

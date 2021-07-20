@@ -66,7 +66,10 @@ describe('Datafile search tab', () => {
     cy.get('[aria-label="Search table tabs"]')
       .contains('Datafile')
       .contains('9')
-      .click();
+      .click()
+      .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
+        timeout: 10000,
+      });
 
     cy.get('[aria-rowcount="9"]').should('exist');
 
@@ -89,10 +92,10 @@ describe('Datafile search tab', () => {
       .should('not.exist');
   });
 
-  it('should link to a parent dataset', () => {
+  it.only('should link to a parent dataset', () => {
     cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
-      .type('4961');
+      .type('1956');
 
     cy.get('[aria-label="Submit search button"]')
       .click()
@@ -106,6 +109,6 @@ describe('Datafile search tab', () => {
       .wait(['@datafiles', '@datafiles', '@datafilesCount'], {
         timeout: 10000,
       });
-    cy.get('[href="/browse/investigation/219/dataset/172/datafile"]');
+    cy.get('[href="/browse/investigation/41/dataset/41/datafile"]');
   });
 });
