@@ -27,10 +27,6 @@ jobs:
           python-version: 3.x
           architecture: x64
 
-      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
-      - name: Change hostname to localhost
-        run: sudo hostname -b localhost
-
       - name: Checkout datagateway-api
         uses: actions/checkout@v2
         with:
