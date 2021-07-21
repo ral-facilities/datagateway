@@ -14450,10 +14450,10 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-single-spa-react@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/single-spa-react/-/single-spa-react-4.1.0.tgz#8197d6b220899f422eefe8fe67541bc299ebd84d"
-  integrity sha512-FLcdXuRrnAuWE6ZwIyE1Bj4uSBaQbOH+WG2nKrvq2p+R/3pSmwNKXotvtojINnnbuaNOGUeYjEKeavRWQc84dQ==
+single-spa-react@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/single-spa-react/-/single-spa-react-4.3.0.tgz#610dffc7ce81854cb5b0a356a293f84a47545623"
+  integrity sha512-c7Id3WaVey3q+ofqjghla06fFAHx8v4636XK3Kj2lV98zLRHzYkBm+lIeEzDCcnhi9/clFd1vXshIWYIYT31DA==
 
 sisteransi@^1.0.5:
   version "1.0.5"
