@@ -116,13 +116,19 @@ describe('Admin Download Status', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Username').click();
       cy.get('.react-draggable')
         .eq(4)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 600 })
+        .trigger('mousemove', { clientX: 550 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Access Method').click();
+
+      cy.get('.react-draggable')
+        .eq(2)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 400 })
+        .trigger('mouseup');
+      cy.contains('[role="button"]', 'Username').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
         'have.text',
