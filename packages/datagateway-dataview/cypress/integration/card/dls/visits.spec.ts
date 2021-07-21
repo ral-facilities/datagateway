@@ -116,7 +116,7 @@ describe('DLS - Visits Cards', () => {
     cy.get('#calculate-size-btn').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('10.25 GB');
+      .contains('10.25 GB', { timeout: 10000 });
     cy.get('#visit-users-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')

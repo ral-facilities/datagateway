@@ -253,7 +253,7 @@ describe('DLS - Datasets Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('4.24 GB').should('be.visible');
+      cy.contains('4.24 GB', { timeout: 10000 }).should('be.visible');
     });
 
     it('and view the dataset type panel', () => {
