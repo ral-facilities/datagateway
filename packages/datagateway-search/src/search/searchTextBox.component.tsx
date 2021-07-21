@@ -9,6 +9,10 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import { useTranslation } from 'react-i18next';
 
+interface SearchTextProps {
+  initiateSearch: () => Promise<void>;
+}
+
 interface SearchTextStoreProps {
   searchText: string;
 }
@@ -17,10 +21,12 @@ interface SearchTextDispatchProps {
   submitSearchText: (searchText: string) => Action;
 }
 
-type SearchTextCombinedProps = SearchTextStoreProps & SearchTextDispatchProps;
+type SearchTextCombinedProps = SearchTextProps &
+  SearchTextStoreProps &
+  SearchTextDispatchProps;
 
 const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
-  const { searchText, submitSearchText } = props;
+  const { searchText, submitSearchText, initiateSearch } = props;
 
   const sendSearchText = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const searchText = event.target.value;
@@ -28,6 +34,10 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
   };
 
   const [t] = useTranslation();
+
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter') initiateSearch();
+  };
 
   return (
     <div>
@@ -38,6 +48,7 @@ const SearchTextBox = (props: SearchTextCombinedProps): React.ReactElement => {
         margin="normal"
         value={searchText}
         onChange={sendSearchText}
+        onKeyDown={handleKeyDown}
         fullWidth
         variant="outlined"
         color="secondary"
