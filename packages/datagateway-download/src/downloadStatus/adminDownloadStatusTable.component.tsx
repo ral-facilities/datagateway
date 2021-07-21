@@ -340,6 +340,16 @@ const AdminDownloadStatusTable: React.FC = () => {
                 <Table
                   columns={[
                     {
+                      label: t('downloadStatus.id'),
+                      dataKey: 'id',
+                      filterComponent: textFilter,
+                    },
+                    {
+                      label: t('downloadStatus.fullname'),
+                      dataKey: 'fullName',
+                      filterComponent: textFilter,
+                    },
+                    {
                       label: t('downloadStatus.username'),
                       dataKey: 'userName',
                       filterComponent: textFilter,

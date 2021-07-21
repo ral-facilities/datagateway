@@ -38,7 +38,7 @@ describe('Admin Download Status', () => {
 
     // Typical `.should('match'...)`  doesn't work for text, tries to match the element,
     // hence a slightly different approach for doing regex on the actual text
-    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').find('p').should(($preparedId) => {
       expect($preparedId[0].textContent).match(
         /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
       );
@@ -46,7 +46,7 @@ describe('Admin Download Status', () => {
 
     cy.get('[aria-label="Refresh download status table"]').click();
 
-    cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+    cy.get('[aria-rowindex="1"] [aria-colindex="4"]').find('p').should(($preparedId) => {
       expect($preparedId[0].textContent).match(
         /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
       );
@@ -56,15 +56,15 @@ describe('Admin Download Status', () => {
   describe('should be able to sort download items by', () => {
     it('ascending order', () => {
       cy.get('.react-draggable')
-        .eq(2)
+        .eq(4)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 400 })
+        .trigger('mousemove', { clientX: 600 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Access Method').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
         'have.text',
         'globus'
       );
@@ -72,9 +72,9 @@ describe('Admin Download Status', () => {
 
     it('descending order', () => {
       cy.get('.react-draggable')
-        .eq(2)
+        .eq(4)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 400 })
+        .trigger('mousemove', { clientX: 600 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Access Method').click();
       cy.contains('[role="button"]', 'Access Method').click();
@@ -85,7 +85,7 @@ describe('Admin Download Status', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
         'have.text',
         'https'
       );
@@ -93,9 +93,9 @@ describe('Admin Download Status', () => {
 
     it('no order', () => {
       cy.get('.react-draggable')
-        .eq(1)
+        .eq(3)
         .trigger('mousedown')
-        .trigger('mousemove', { clientX: 300 })
+        .trigger('mousemove', { clientX: 500 })
         .trigger('mouseup');
       cy.contains('[role="button"]', 'Prepared ID').click();
       cy.contains('[role="button"]', 'Prepared ID').click();
@@ -108,7 +108,7 @@ describe('Admin Download Status', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').find('p').should(($preparedId) => {
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').find('p').should(($preparedId) => {
         expect($preparedId[0].textContent).match(
           /[0-9a-zA-Z]{8}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{4}\-[0-9a-zA-Z]{12}/
         );
@@ -116,10 +116,21 @@ describe('Admin Download Status', () => {
     });
 
     it('multiple columns', () => {
-      cy.contains('[role="button"]', 'Username').click();
+      cy.get('.react-draggable')
+        .eq(4)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 550 })
+        .trigger('mouseup');
       cy.contains('[role="button"]', 'Access Method').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+      cy.get('.react-draggable')
+        .eq(2)
+        .trigger('mousedown')
+        .trigger('mousemove', { clientX: 400 })
+        .trigger('mouseup');
+      cy.contains('[role="button"]', 'Username').click();
+
+      cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
         'have.text',
         'globus'
       );
@@ -131,9 +142,9 @@ describe('Admin Download Status', () => {
       cy.get('[aria-label="Filter by Availability"]')
         .find('input')
         .first()
-        .type('Available');
+        .type('Available', { force: true });
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').should(
+      cy.get('[aria-rowindex="1"] [aria-colindex="6"]').should(
         'have.text',
         'Available'
       );
@@ -147,13 +158,13 @@ describe('Admin Download Status', () => {
       cy.get('[aria-label="Filter by Access Method')
         .find('input')
         .first()
-        .type('globus');
+        .type('globus', { force: true });
       cy.get('[aria-label="Filter by Availability"]')
         .find('input')
         .first()
-        .type('restoring');
+        .type('restoring', { force: true });
 
-        cy.get('[aria-rowindex="1"] [aria-colindex="3"]').should(
+        cy.get('[aria-rowindex="1"] [aria-colindex="5"]').should(
           'have.text',
           'globus'
         );
