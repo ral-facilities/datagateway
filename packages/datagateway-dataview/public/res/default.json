@@ -39,7 +39,7 @@
     "start_date": "Start Date"
   },
   "studies": {
-    "name": "RB Number",
+    "name": "Name",
     "description": "Description",
     "pid": "DOI",
     "end_date": "End Date",
@@ -62,7 +62,6 @@
     "size": "Size",
     "instrument": "Instrument",
     "visit_id": "Visit ID",
-    "rb_number": "RB Number",
     "doi": "DOI",
     "parent_doi": "Parent DOI",
     "dataset_count": "Dataset Count",
@@ -75,7 +74,6 @@
       "end_date": "End Date",
       "start_date": "Start Date",
       "visit_id": "Visit ID",
-      "rb_number": "RB Number",
       "pid": "Part DOI",
       "summary": "Summary",
       "doi": "DOI",
@@ -176,7 +174,7 @@
     "hide": "Hide Advanced Filters",
     "icons": {
       "title": ["Title", "Name", "Type"],
-      "fingerprint": ["Visit ID", "RB Number"],
+      "fingerprint": ["Visit ID", "Name"],
       "public": ["DOI"],
       "confirmation_number": ["Dataset Count"," Datafile Count"],
       "assessment": ["Instrument", "Beamline"],
