@@ -247,9 +247,9 @@ const NavBar = (props: {
   );
 };
 
-const ViewSwitch = (props: {
+const ViewButton = (props: {
   viewCards: boolean;
-  handleButtonChange: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  handleButtonChange: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
 
@@ -260,7 +260,7 @@ const ViewSwitch = (props: {
       color="primary"
       size="small"
       startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
-      onClick={props.handleButtonChange}
+      onClick={() => props.handleButtonChange()}
     >
       {props.viewCards ? t('app.view_table') : t('app.view_cards')}
     </Button>
@@ -478,11 +478,7 @@ class PageContainer extends React.Component<
     return 'table';
   };
 
-  public handleButtonChange = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ): void => {
-    // TODO: Need state variable to track if clicked or not? Or use state toggleCard?
-    // const nextView = event.target.checked ? 'card' : 'table';
+  public handleButtonChange = (): void => {
     const nextView = !this.state.viewCards ? 'card' : 'table';
 
     // Save the current view information to state and restore the previous view information.
@@ -518,7 +514,7 @@ class PageContainer extends React.Component<
               exact
               path={this.state.paths}
               render={() => (
-                <ViewSwitch
+                <ViewButton
                   viewCards={this.state.viewCards}
                   handleButtonChange={this.handleButtonChange}
                 />
