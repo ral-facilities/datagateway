@@ -15,7 +15,7 @@ exports[`ISIS Studies table component renders correctly 1`] = `
         "dataKey": "investigation.title",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.description",
+        "label": "investigations.title",
       },
       Object {
         "dataKey": "study.pid",
@@ -27,13 +27,13 @@ exports[`ISIS Studies table component renders correctly 1`] = `
         "dataKey": "investigation.startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.start_date",
+        "label": "investigations.start_date",
       },
       Object {
         "dataKey": "investigation.endDate",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.end_date",
+        "label": "investigations.end_date",
       },
     ]
   }

@@ -27,7 +27,7 @@ import { StateType } from '../../../state/app.types';
 
 import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import DescriptionIcon from '@material-ui/icons/Description';
+import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISStudiesTableProps {
@@ -142,8 +142,8 @@ const ISISStudiesTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <DescriptionIcon />,
-          label: t('studies.description'),
+          icon: <TitleIcon />,
+          label: t('investigations.title'),
           dataKey: 'investigation.title',
           filterComponent: textFilter,
         },
@@ -155,13 +155,13 @@ const ISISStudiesTable = (
         },
         {
           icon: <CalendarTodayIcon />,
-          label: t('studies.start_date'),
+          label: t('investigations.start_date'),
           dataKey: 'investigation.startDate',
           filterComponent: dateFilter,
         },
         {
           icon: <CalendarTodayIcon />,
-          label: t('studies.end_date'),
+          label: t('investigations.end_date'),
           dataKey: 'investigation.endDate',
           filterComponent: dateFilter,
         },
