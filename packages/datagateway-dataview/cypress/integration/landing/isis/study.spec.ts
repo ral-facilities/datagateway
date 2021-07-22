@@ -28,7 +28,7 @@ describe('ISIS - Study Landing', () => {
     );
   });
 
-  it('should display a missing investigation label when investigation is null', () => {
+  it('should load correctly when investigation missing', () => {
     cy.intercept('/studyinvestigations', [
       {
         createId: 'uows/1050072',
@@ -43,8 +43,6 @@ describe('ISIS - Study Landing', () => {
       },
     ]);
     cy.visit('/browseStudyHierarchy/instrument/1/study/405');
-    cy.get('[aria-label="landing-study-part-label"').contains(
-      'Missing investigation'
-    );
+    cy.get('#datagateway-dataview').should('be.visible');
   });
 });

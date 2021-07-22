@@ -501,7 +501,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             {data.map((studyInvestigation, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
-                {studyInvestigation.investigation ? (
+                {studyInvestigation.investigation && (
                   <LinkedInvestigation
                     studyInvestigation={
                       studyInvestigation as StudyInvestigation
@@ -509,16 +509,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                     urlPrefix={urlPrefix}
                     view={view}
                   />
-                ) : (
-                  <Typography
-                    className={classes.subHeading}
-                    component="h6"
-                    variant="h6"
-                    align="center"
-                    aria-label="landing-study-part-label"
-                  >
-                    {t('investigations.missing')}
-                  </Typography>
                 )}
               </div>
             ))}

@@ -366,7 +366,7 @@ describe('ISIS Study Landing page', () => {
     ).toEqual('Copied citation');
   });
 
-  it('displays missing investigation label when investigation is null', () => {
+  it('displays correctly when investigation missing', () => {
     const testStore = mockStore({
       ...state,
       dgcommon: {
@@ -387,7 +387,7 @@ describe('ISIS Study Landing page', () => {
     );
 
     expect(
-      wrapper.find('[aria-label="landing-study-part-label"]').first().text()
-    ).toEqual('investigations.missing');
+      wrapper.find('[aria-label="landing-study-citation"]').first().text()
+    ).toEqual('2019: doi_constants.publisher.name, https://doi.org/study pid');
   });
 });
