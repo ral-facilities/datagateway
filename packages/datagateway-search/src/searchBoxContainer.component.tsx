@@ -45,7 +45,7 @@ const SearchBoxContainer = (
 
         <Grid item>
           <Box px={0.75}>
-            <SelectDates />
+            <SelectDates initiateSearch={initiateSearch} />
           </Box>
         </Grid>
       </Grid>

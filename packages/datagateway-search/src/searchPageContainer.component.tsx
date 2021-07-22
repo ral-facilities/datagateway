@@ -121,7 +121,7 @@ class SearchPageContainer extends React.Component<SearchPageContainerCombinedPro
                 style={{ margin: 0, width: '100%' }}
               >
                 <Grid item id="container-search-filters">
-                  {this.props.sideLayout ? (
+                  {!this.props.sideLayout ? (
                     <Paper style={{ height: '100%', width: '100%' }}>
                       <SearchBoxContainerSide
                         initiateSearch={this.initiateSearch}

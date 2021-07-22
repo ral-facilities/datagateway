@@ -18,7 +18,7 @@ const SearchBoxContainer = (
 
   return (
     <Grid
-      item
+      container
       direction="column"
       justify="flex-start"
       alignItems="stretch"
@@ -32,7 +32,7 @@ const SearchBoxContainer = (
 
       <Grid item>
         <Box px={2}>
-          <SelectDates />
+          <SelectDates initiateSearch={initiateSearch} />
         </Box>
       </Grid>
 

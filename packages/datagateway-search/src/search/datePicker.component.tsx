@@ -13,6 +13,10 @@ import { StateType } from '../state/app.types';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { useTranslation } from 'react-i18next';
 
+interface DatePickerProps {
+  initiateSearch: () => Promise<void>;
+}
+
 interface DatePickerStoreProps {
   startDate: MaterialUiPickersDate;
   endDate: MaterialUiPickersDate;
@@ -24,7 +28,9 @@ interface DatePickerDispatchProps {
   selectEndDate: (date: MaterialUiPickersDate) => Action;
 }
 
-type DatePickerCombinedProps = DatePickerStoreProps & DatePickerDispatchProps;
+type DatePickerCombinedProps = DatePickerProps &
+  DatePickerStoreProps &
+  DatePickerDispatchProps;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,10 +47,37 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
     sideLayout,
     selectStartDate,
     selectEndDate,
+    initiateSearch,
   } = props;
   const classes = useStyles();
 
   const [t] = useTranslation();
+
+  const isValidSearch = (): boolean => {
+    // Check the values for each date field are valid dates
+    const validStartDate = startDate && !isNaN(startDate.getDate());
+    const validEndDate = endDate && !isNaN(endDate.getDate());
+
+    // Two valid dates
+    if (validStartDate && validEndDate) return true;
+
+    // Valid start date, empty end date
+    if (validStartDate && endDate == null) return true;
+
+    // Valid end date, empty start date
+    if (validEndDate && startDate == null) return true;
+
+    if (startDate == null && endDate == null) return true;
+
+    // No valid search
+    return false;
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent): void => {
+    if (e.key === 'Enter' && isValidSearch()) {
+      initiateSearch();
+    }
+  };
 
   return (
     <div>
@@ -63,6 +96,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             onChange={(date) => {
               selectStartDate(date);
             }}
+            onKeyDown={handleKeyDown}
             animateYearScrolling
             placeholder={t('searchBox.start_date')}
             inputProps={{ 'aria-label': t('searchBox.start_date_arialabel') }}
@@ -83,6 +117,7 @@ export function SelectDates(props: DatePickerCombinedProps): JSX.Element {
             onChange={(date) => {
               selectEndDate(date);
             }}
+            onKeyDown={handleKeyDown}
             animateYearScrolling
             placeholder={t('searchBox.end_date')}
             inputProps={{ 'aria-label': t('searchBox.end_date_arialabel') }}
