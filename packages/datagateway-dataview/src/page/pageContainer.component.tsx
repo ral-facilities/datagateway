@@ -256,6 +256,7 @@ const ViewButton = (props: {
   return (
     <Button
       className="tour-dataview-toggle-card"
+      aria-label="container-view-button"
       variant="contained"
       color="primary"
       size="small"

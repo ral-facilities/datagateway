@@ -11,7 +11,7 @@ describe('Investigations Cards', () => {
       ],
       { timeout: 15000 }
     );
-    cy.get('[aria-label="secondary checkbox"]')
+    cy.get('[aria-label="container-view-button"]')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 15000,
