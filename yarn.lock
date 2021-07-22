@@ -6781,10 +6781,10 @@ eslint-plugin-cypress@^2.11.1:
   dependencies:
     globals "^11.12.0"
 
-eslint-plugin-flowtype@^5.2.0, eslint-plugin-flowtype@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-5.3.1.tgz#df6227e28c61d967b825c1327a27818bbb2ad325"
-  integrity sha512-mziJD+zw+VTwLtF9qLIxYac0GJCbSEDyqMLP5ENzQeNY5EOxbAfitMFLo+UItjYOISQdh1BCobwE2d4i1o+9Rw==
+eslint-plugin-flowtype@^5.2.0, eslint-plugin-flowtype@^5.8.1:
+  version "5.8.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-5.8.1.tgz#6f2c313a6e9ec271a51315ccd09c2432b4d1930e"
+  integrity sha512-ADe4cYAn1UYVs1P1F9wKDNP2lbm3JtwbFykxJpO129utErjAhRZYQJCIKmhy6Rpx7Q9p8pc3gLVIFXtatXJriQ==
   dependencies:
     lodash "^4.17.15"
     string-natural-compare "^3.0.1"
