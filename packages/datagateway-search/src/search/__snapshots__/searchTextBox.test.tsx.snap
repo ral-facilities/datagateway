@@ -19,6 +19,7 @@ exports[`Search text box component tests renders correctly 1`] = `
     label="searchBox.search_text"
     margin="normal"
     onChange={[Function]}
+    onKeyDown={[Function]}
     type="search"
     value=""
     variant="outlined"

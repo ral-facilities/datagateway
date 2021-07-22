@@ -28,7 +28,9 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
           }
         }
       >
-        <SearchBoxContainer />
+        <SearchBoxContainer
+          initiateSearch={[Function]}
+        />
       </WithStyles(ForwardRef(Paper))>
     </WithStyles(ForwardRef(Grid))>
   </WithStyles(ForwardRef(Grid))>
