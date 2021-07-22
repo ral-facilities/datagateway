@@ -227,8 +227,7 @@ const InvestigationSearchTable = (
         return (
           <div>
             <Typography>
-              <b>{t('investigations.rb_number')}:</b>{' '}
-              {investigationData.rbNumber}
+              <b>{t('investigations.name')}:</b> {investigationData.name}
             </Typography>
             <Typography>
               <b>{t('investigations.title')}:</b> {investigationData.title}
@@ -259,8 +258,8 @@ const InvestigationSearchTable = (
           filterComponent: textFilter,
         },
         {
-          label: t('investigations.rb_number'),
-          dataKey: 'rbNumber',
+          label: t('investigations.name'),
+          dataKey: 'name',
           filterComponent: textFilter,
         },
         {
