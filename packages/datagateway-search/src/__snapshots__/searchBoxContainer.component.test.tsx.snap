@@ -76,7 +76,7 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
 
 exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly 1`] = `
 <div
-  className="MuiGrid-root MuiGrid-item MuiGrid-direction-xs-column"
+  className="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
   id="container-searchbox"
 >
   <WithStyles(ForwardRef(Grid))

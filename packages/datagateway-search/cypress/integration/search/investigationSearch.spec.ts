@@ -16,6 +16,15 @@ describe('Investigation search tab', () => {
   it('should load correctly', () => {
     cy.title().should('equal', 'DataGateway Search');
 
+    cy.get('[aria-label="Dataset checkbox"]').click();
+    cy.get('[aria-label="Datafile checkbox"]').click();
+
+    cy.get('[aria-label="Submit search button"]')
+      .click()
+      .wait(['@investigations', '@investigations', '@investigationsCount'], {
+        timeout: 10000,
+      });
+
     cy.get('#container-search-filters').should('exist');
 
     cy.get('#container-search-table').should('exist');
