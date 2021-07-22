@@ -25,13 +25,15 @@ describe('ISIS - Investigations Table', () => {
   });
 
   // TODO: Removal of the "visitID" column is breaking this resizing test.
-  it.skip('should be able to resize a column', () => {
+  it('should be able to resize a column', () => {
     let columnWidth = 0;
 
+    // Using Math.floor to solve rounding errors when calculating (1000 - 40 - 40) / 7
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
-        columnWidth = (windowWidth - 40 - 40) / 8;
+        columnWidth = (windowWidth - 40 - 40) / 7;
+        columnWidth = Math.floor(columnWidth * 10) / 10;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -39,12 +41,14 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[role="columnheader"]').eq(3).as('visitColumn');
 
     cy.get('@titleColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
+      let { width } = $column[0].getBoundingClientRect();
+      width = Math.floor(width * 10) / 10;
       expect(width).to.equal(columnWidth);
     });
 
     cy.get('@visitColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
+      let { width } = $column[0].getBoundingClientRect();
+      width = Math.floor(width * 10) / 10;
       expect(width).to.equal(columnWidth);
     });
 

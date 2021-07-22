@@ -25,26 +25,33 @@ describe('ISIS - FacilityCycles Table', () => {
   });
 
   // TODO: Having three columns does not work since the width not calulated correctly.
-  it.skip('should be able to resize a column', () => {
+  it('should be able to resize a column', () => {
     let columnWidth = 0;
 
+    // Using Math.floor to solve rounding errors when calculating 1000 / 3
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = windowWidth / 3;
+        columnWidth = Math.floor(columnWidth * 100) / 100;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
     cy.get('[role="columnheader"]').eq(0).as('titleColumn');
-    cy.get('[role="columnheader"]').eq(1).as('descriptionColumn');
+    cy.get('[role="columnheader"]').eq(1).as('startDateColumn');
+
+    // Filtering results to remove vertical scroll bar affecting width calculations
+    cy.get('[aria-label="Filter by Name"]').find('input').first().type('2004');
 
     cy.get('@titleColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
+      let { width } = $column[0].getBoundingClientRect();
+      width = Math.floor(width * 100) / 100;
       expect(width).to.equal(columnWidth);
     });
 
-    cy.get('@descriptionColumn').should(($column) => {
-      const { width } = $column[0].getBoundingClientRect();
+    cy.get('@startDateColumn').should(($column) => {
+      let { width } = $column[0].getBoundingClientRect();
+      width = Math.floor(width * 100) / 100;
       expect(width).to.equal(columnWidth);
     });
 
@@ -59,7 +66,7 @@ describe('ISIS - FacilityCycles Table', () => {
       expect(width).to.be.greaterThan(columnWidth);
     });
 
-    cy.get('@descriptionColumn').should(($column) => {
+    cy.get('@startDateColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.lessThan(columnWidth);
     });
@@ -68,10 +75,10 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('.react-draggable')
       .first()
       .trigger('mousedown')
-      .trigger('mousemove', { clientX: 800 })
+      .trigger('mousemove', { clientX: 1000 })
       .trigger('mouseup');
 
-    cy.get('@descriptionColumn').should(($column) => {
+    cy.get('@startDateColumn').should(($column) => {
       const { width } = $column[0].getBoundingClientRect();
       expect(width).to.be.equal(84);
     });
