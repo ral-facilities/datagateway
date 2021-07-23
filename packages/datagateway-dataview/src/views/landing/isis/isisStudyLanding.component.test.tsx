@@ -94,7 +94,6 @@ describe('ISIS Study Landing page', () => {
     name: 'Name 1',
     summary: 'foo bar',
     visitId: '1',
-    rbNumber: '1',
     doi: 'doi 1',
     size: 1,
     investigationInstruments: investigationInstrument,

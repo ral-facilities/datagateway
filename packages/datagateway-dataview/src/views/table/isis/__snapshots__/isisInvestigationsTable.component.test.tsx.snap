@@ -81,7 +81,6 @@ exports[`ISIS Investigations table component renders correctly 1`] = `
           },
         ],
         "name": "Test 1",
-        "rbNumber": "1",
         "size": 1,
         "startDate": "2019-06-10",
         "studyInvestigations": Array [
@@ -279,7 +278,7 @@ exports[`ISIS Investigations table component renders details panel correctly and
 </div>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links 1`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -432,7 +431,7 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links 2`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links 2`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -585,7 +584,7 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links 3`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links 3`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -738,7 +737,7 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links 4`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links 4`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -891,7 +890,7 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 1`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links in StudyHierarchy 1`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -1044,7 +1043,7 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 2`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links in StudyHierarchy 2`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -1197,7 +1196,7 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 3`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links in StudyHierarchy 3`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
@@ -1350,7 +1349,7 @@ exports[`ISIS Investigations table component renders title, visit ID, RB number 
 </WithStyles(ForwardRef(Link))>
 `;
 
-exports[`ISIS Investigations table component renders title, visit ID, RB number and DOI as links in StudyHierarchy 4`] = `
+exports[`ISIS Investigations table component renders title, visit ID, name and DOI as links in StudyHierarchy 4`] = `
 <WithStyles(ForwardRef(Link))
   component={
     Object {
