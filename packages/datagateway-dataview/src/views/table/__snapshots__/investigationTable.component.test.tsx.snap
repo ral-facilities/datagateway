@@ -42,7 +42,8 @@ exports[`Investigation table component renders correctly 1`] = `
         "label": "investigations.dataset_count",
       },
       Object {
-        "dataKey": "instrument.name",
+        "cellContentRenderer": [Function],
+        "dataKey": "investigationInstruments.instrument.name",
         "filterComponent": [Function],
         "icon": <Memo />,
         "label": "investigations.instrument",
