@@ -247,6 +247,15 @@ const InvestigationTable = (
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
           dataKey: 'investigationInstruments.instrument.name',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
+              return investigationData.investigationInstruments[0].instrument
+                .name;
+            } else {
+              return '';
+            }
+          },
           filterComponent: textFilter,
         },
         {
@@ -281,7 +290,19 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): InvestigationTableDispatchProps => ({
   fetchData: (offsetParams: IndexRange) =>
-    dispatch(fetchInvestigations({ offsetParams })),
+    dispatch(
+      fetchInvestigations({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify({
+              investigationInstruments: 'instrument',
+            }),
+          },
+        ],
+      })
+    ),
   fetchCount: () => dispatch(fetchInvestigationCount()),
 
   addToCart: (entityIds: number[]) =>
