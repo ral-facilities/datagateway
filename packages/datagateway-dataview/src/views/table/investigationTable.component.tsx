@@ -246,7 +246,7 @@ const InvestigationTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'instrument.name',
+          dataKey: 'investigationInstruments.instrument.name',
           filterComponent: textFilter,
         },
         {
