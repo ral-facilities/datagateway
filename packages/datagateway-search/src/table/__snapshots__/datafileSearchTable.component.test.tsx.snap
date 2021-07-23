@@ -63,7 +63,6 @@ exports[`Datafile search table component renders correctly 1`] = `
               },
             ],
             "name": "Investigation test name",
-            "rbNumber": "1",
             "size": 1,
             "startDate": "2019-06-10",
             "studyInvestigations": Array [

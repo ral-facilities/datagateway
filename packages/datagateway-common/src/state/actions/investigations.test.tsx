@@ -41,7 +41,6 @@ describe('Investigation actions', () => {
       title: 'Test 1',
       name: 'Test 1',
       visitId: '1',
-      rbNumber: '1',
       doi: 'doi 1',
       size: 1,
       investigationInstruments: [
@@ -61,7 +60,6 @@ describe('Investigation actions', () => {
       title: 'Test 2',
       name: 'Test 2',
       visitId: '2',
-      rbNumber: '2',
       doi: 'doi 2',
       size: 10000,
       investigationInstruments: [
@@ -443,7 +441,6 @@ describe('Investigation actions', () => {
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
-        rbNumber: '1',
         doi: 'doi 1',
         size: 1,
         startDate: '2019-06-10',
