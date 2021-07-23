@@ -85,19 +85,19 @@ describe('ISIS - Studies Table', () => {
 
   // Sorting currently broken
   describe('should be able to sort by', () => {
-    it.skip('ascending order', () => {
-      cy.contains('[role="button"]', 'RB Number').click();
+    it('ascending order', () => {
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Economic always lawyer family. Girl amount available. Once great before. Per sure task commercial physical theory economic.'
       );
     });
 
-    it.skip('descending order', () => {
-      cy.contains('[role="button"]', 'RB Number').click();
-      cy.contains('[role="button"]', 'RB Number').click();
+    it('descending order', () => {
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="descending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionDesc').should(
@@ -106,44 +106,41 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Build few thought section wife myself occur. Moment my stand well impact. Ok laugh capital know cell significant window education. Yes save not.'
       );
     });
 
-    it.skip('no order', () => {
-      cy.contains('[role="button"]', 'RB Number').click();
-      cy.contains('[role="button"]', 'RB Number').click();
-      cy.contains('[role="button"]', '').click();
+    it('no order', () => {
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('not.exist');
       cy.get('[aria-sort="descending"]').should('not.exist');
-      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.visible');
+      cy.get('.MuiTableSortLabel-iconDirectionDesc').should('not.be.exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should(
         'have.css',
         'opacity',
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Down free attention recognize travel. Life newspaper anyone father same you. Especially participant discussion night common smile term.'
+        'Network find should century magazine happen natural. Environmental size market product laugh. First kid strong yard.'
       );
     });
 
-    it.skip('multiple columns', () => {
+    it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
-      cy.contains('[role="button"]', 'RB Number').click();
+      cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Many last prepare small. Maintain throw hope parent. Entire soon option bill fish against power. Rather why rise month shake voice.'
+        'It wish different however along whether knowledge media. Name determine wish something might development. Push sound process international scene call.'
       );
     });
   });
 
   describe('should be able to filter by', () => {
     it('text', () => {
-      cy.get('[aria-label="Filter by RB Number"]')
-        .find('input')
-        .first()
-        .type('3');
+      cy.get('[aria-label="Filter by Name"]').find('input').first().type('3');
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
@@ -161,11 +158,8 @@ describe('ISIS - Studies Table', () => {
     });
 
     // Cannot filter on two joined fields at the same time
-    it.skip('multiple columns', () => {
-      cy.get('[aria-label="Filter by RB Number"]')
-        .find('input')
-        .first()
-        .type('4');
+    it('multiple columns', () => {
+      cy.get('[aria-label="Filter by Name"]').find('input').first().type('4');
 
       cy.get('[aria-label="Filter by Description"]')
         .find('input')
