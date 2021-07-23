@@ -70,9 +70,15 @@ exports[`Investigation table component renders correctly 1`] = `
         "doi": "doi 1",
         "endDate": "2019-07-24",
         "id": 1,
-        "instrument": Object {
-          "name": "LARMOR",
-        },
+        "investigationInstruments": Array [
+          Object {
+            "id": 3,
+            "instrument": Object {
+              "id": 4,
+              "name": "LARMOR",
+            },
+          },
+        ],
         "name": "Test 1",
         "rbNumber": "1",
         "size": 1,
