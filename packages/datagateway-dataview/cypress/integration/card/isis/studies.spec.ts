@@ -27,8 +27,7 @@ describe('ISIS - Studies Cards', () => {
     );
   });
 
-  // Sorting currently fails
-  it.skip('should be able to sort by one field', () => {
+  it('should be able to sort by one field', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
       .wait('@getStudiesOrder', {
@@ -36,7 +35,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('STUDY 36');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -45,7 +44,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('2019 cycle ');
+    cy.get('#card').contains('STUDY 406');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -54,10 +53,10 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2006 cycle 3');
+    cy.get('#card').contains('STUDY 375');
   });
 
-  it.skip('should be able to sort by multiple fields', () => {
+  it('should be able to sort by multiple fields', () => {
     cy.contains('[role="button"]', 'Start Date')
       .click()
       .wait('@getStudiesOrder', {
@@ -65,7 +64,7 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('STUDY 36');
 
     cy.contains('[role="button"]', 'End Date')
       .click()
@@ -74,24 +73,20 @@ describe('ISIS - Studies Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('STUDY 36');
   });
 
-  // Cannot filter on two joined fields at the same time
-  it.skip('should be able to filter by multiple fields', () => {
-    cy.get('[aria-label="advanced-filters-link"]')
-      .click()
-      .wait('@getStudiesOrder', {
-        timeout: 10000,
-      });
-    cy.get('[aria-label="Filter by RB Number"]')
+  it('should be able to filter by multiple fields', () => {
+    cy.get('[aria-label="advanced-filters-link"]').click();
+
+    cy.get('[aria-label="Filter by Name"]')
       .find('input')
       .first()
       .type('4')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('STUDY 43');
+    cy.get('#card').contains('STUDY 141');
 
     cy.get('[aria-label="Filter by Description"]')
       .find('input')

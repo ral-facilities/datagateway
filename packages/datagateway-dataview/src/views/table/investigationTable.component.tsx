@@ -178,10 +178,10 @@ const InvestigationTable = (
             </Grid>
             <Grid item xs>
               <Typography variant="overline">
-                {t('investigations.details.rb_number')}
+                {t('investigations.details.name')}
               </Typography>
               <Typography>
-                <b>{investigationData.rbNumber}</b>
+                <b>{investigationData.name}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -226,8 +226,8 @@ const InvestigationTable = (
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.rb_number'),
-          dataKey: 'rbNumber',
+          label: t('investigations.name'),
+          dataKey: 'name',
           filterComponent: textFilter,
           disableSort: true,
         },

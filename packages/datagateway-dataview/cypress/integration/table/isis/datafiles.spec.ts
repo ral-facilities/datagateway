@@ -218,6 +218,7 @@ describe('ISIS - Datafiles Table', () => {
       cy.window()
         .then((window) => {
           const windowWidth = window.innerWidth;
+          // Account for select, details and actions column widths
           columnWidth = (windowWidth - 40 - 40 - 70) / 4;
         })
         .then(() => expect(columnWidth).to.not.equal(0));
