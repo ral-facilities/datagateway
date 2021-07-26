@@ -31,8 +31,14 @@ describe('DLS - Datafiles Table', () => {
     cy.get('[aria-rowcount="55"]').should('exist');
   });
 
-  // TODO - Fix test which doesn't pass on local CI - functionality does work
-  it.skip('should be able to resize a column', () => {
+  it('should be able to resize a column', () => {
+    // Filtering results so vertical scrollbar won't appear as this can impact on the
+    // column width causing these types of tests to intermittently fail
+    cy.get('[aria-label="Filter by Location"]')
+      .find('input')
+      .first()
+      .type('rise');
+
     let columnWidth = 0;
 
     cy.window()
