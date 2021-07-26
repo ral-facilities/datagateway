@@ -163,7 +163,7 @@ const DLSDatasetsTable = (
       }}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('datasets.name'),
           dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) =>
@@ -175,19 +175,19 @@ const DLSDatasetsTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <ConfirmationNumberIcon />,
+          icon: ConfirmationNumberIcon,
           label: t('datasets.datafile_count'),
           dataKey: 'datafileCount',
           disableSort: true,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('datasets.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
 
           label: t('datasets.modified_time'),
           dataKey: 'modTime',

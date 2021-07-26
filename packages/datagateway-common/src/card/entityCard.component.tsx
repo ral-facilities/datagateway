@@ -161,7 +161,7 @@ export interface EntityImageDetails {
 export interface EntityCardDetails {
   label: string;
   content?: React.ReactNode;
-  icon?: JSX.Element;
+  icon?: React.ComponentType<unknown>;
 }
 
 interface EntityCardProps {
@@ -348,15 +348,18 @@ const EntityCard = React.memo(
                 <div className={classes.information}>
                   <div className={classes.informationLabel}>
                     {information.map(
-                      (info: EntityCardDetails, index: number) => (
-                        <Typography
-                          aria-label={`card-info-${info.label}`}
-                          key={index}
-                        >
-                          {info.icon}
-                          {`${info.label}:`}
-                        </Typography>
-                      )
+                      (info: EntityCardDetails, index: number) => {
+                        const { label, icon: Icon } = info;
+                        return (
+                          <Typography
+                            aria-label={`card-info-${label}`}
+                            key={index}
+                          >
+                            {Icon && <Icon />}
+                            {`${label}:`}
+                          </Typography>
+                        );
+                      }
                     )}
                   </div>
 

@@ -209,20 +209,20 @@ const ISISDatasetsCardView = (
       }}
       information={[
         {
-          icon: <Save />,
+          icon: Save,
           label: t('datasets.size'),
           dataKey: 'size',
           content: (dataset: Dataset) => formatBytes(dataset.size),
           disableSort: true,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.modified_time'),
           dataKey: 'modTime',
           filterComponent: dateFilter,

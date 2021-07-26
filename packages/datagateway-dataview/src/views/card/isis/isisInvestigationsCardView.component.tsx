@@ -230,25 +230,25 @@ const ISISInvestigationsCardView = (
       }}
       information={[
         {
-          icon: <Fingerprint />,
+          icon: Fingerprint,
           label: t('investigations.visit_id'),
           dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
-          icon: <Fingerprint />,
+          icon: Fingerprint,
           label: t('investigations.name'),
           dataKey: 'name',
           filterComponent: textFilter,
         },
         {
-          icon: <Public />,
+          icon: Public,
           label: t('investigations.doi'),
           dataKey: 'studyInvestigations[0].study.pid',
           filterComponent: textFilter,
         },
         {
-          icon: <Save />,
+          icon: Save,
           label: t('investigations.details.size'),
           dataKey: 'size',
           content: (investigation: Investigation) =>
@@ -256,19 +256,19 @@ const ISISInvestigationsCardView = (
           disableSort: true,
         },
         {
-          icon: <Assessment />,
+          icon: Assessment,
           label: t('investigations.instrument'),
           dataKey: 'investigationInstruments[0].instrument.fullName',
           filterComponent: textFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('investigations.details.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('investigations.details.end_date'),
           dataKey: 'endDate',
           filterComponent: dateFilter,

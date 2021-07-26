@@ -6,11 +6,9 @@ import {
   Entity,
   fetchInvestigations,
   fetchInvestigationCount,
-  fetchInvestigationDetails,
   Investigation,
   tableLink,
   fetchFilter,
-  fetchInvestigationSize,
   Filter,
   pushPageFilter,
   DateFilter,
@@ -46,8 +44,6 @@ interface DLSVisitsCVProps {
 interface DLSVisitsCVDispatchProps {
   fetchData: (proposalName: string, offsetParams: IndexRange) => Promise<void>;
   fetchCount: (proposalName: string) => Promise<void>;
-  fetchDetails: (investigationId: number) => Promise<void>;
-  fetchSize: (investigationId: number) => Promise<void>;
   fetchTypeFilter: (proposalName: string) => Promise<void>;
   pushPage: (page: number) => Promise<void>;
   pushResults: (page: number) => Promise<void>;
@@ -83,8 +79,6 @@ const DLSVisitsCardView = (
     fetchData,
     fetchCount,
     fetchTypeFilter,
-    fetchDetails,
-    fetchSize,
     pushPage,
     pushFilters,
     pushQuery,
@@ -185,36 +179,32 @@ const DLSVisitsCardView = (
       }}
       information={[
         {
-          icon: <Assessment />,
+          icon: Assessment,
           label: t('investigations.instrument'),
           dataKey: 'investigationInstruments[0].instrument.name',
           filterComponent: textFilter,
         },
         {
-          icon: <ConfirmationNumber />,
+          icon: ConfirmationNumber,
           label: t('investigations.dataset_count'),
           dataKey: 'datasetCount',
           disableSort: true,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('investigations.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('investigations.end_date'),
           dataKey: 'endDate',
           filterComponent: dateFilter,
         },
       ]}
       moreInformation={(investigation: Investigation) => (
-        <VisitDetailsPanel
-          rowData={investigation}
-          fetchDetails={fetchDetails}
-          fetchSize={fetchSize}
-        />
+        <VisitDetailsPanel rowData={investigation} />
       )}
       customFilters={[
         {
@@ -258,10 +248,6 @@ const mapDispatchToProps = (
         },
       ])
     ),
-  fetchDetails: (investigationId: number) =>
-    dispatch(fetchInvestigationDetails(investigationId)),
-  fetchSize: (investigationId: number) =>
-    dispatch(fetchInvestigationSize(investigationId)),
   fetchTypeFilter: (proposalName: string) =>
     dispatch(
       fetchFilter('investigation', 'type.id', [

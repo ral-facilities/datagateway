@@ -213,31 +213,31 @@ const DLSDatasetsCardView = (
       }}
       information={[
         {
-          icon: <ConfirmationNumber />,
+          icon: ConfirmationNumber,
           label: t('datasets.datafile_count'),
           dataKey: 'datafileCount',
           disableSort: true,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.modified_time'),
           dataKey: 'modTime',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.details.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.details.end_date'),
           dataKey: 'END_DATE',
           filterComponent: dateFilter,

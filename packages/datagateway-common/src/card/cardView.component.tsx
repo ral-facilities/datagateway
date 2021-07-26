@@ -71,7 +71,7 @@ const useCardViewStyles = makeStyles((theme: Theme) =>
 export interface CardViewDetails {
   dataKey: string;
 
-  icon?: JSX.Element;
+  icon?: React.ComponentType<unknown>;
   label?: string;
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   content?: (data?: any) => React.ReactNode;

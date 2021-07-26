@@ -222,19 +222,19 @@ const DLSDatafilesTable = (
       }}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('datafiles.name'),
           dataKey: 'name',
           filterComponent: textFilter,
         },
         {
-          icon: <ExploreIcon />,
+          icon: ExploreIcon,
           label: t('datafiles.location'),
           dataKey: 'location',
           filterComponent: textFilter,
         },
         {
-          icon: <SaveIcon />,
+          icon: SaveIcon,
           label: t('datafiles.size'),
           dataKey: 'fileSize',
           cellContentRenderer: (cellProps) => {
@@ -243,7 +243,7 @@ const DLSDatafilesTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('datafiles.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,

@@ -198,7 +198,7 @@ const ISISDatasetsTable = (
       ]}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('datasets.name'),
           dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) =>
@@ -210,7 +210,7 @@ const ISISDatasetsTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <SaveIcon />,
+          icon: SaveIcon,
           label: t('datasets.size'),
           dataKey: 'size',
           cellContentRenderer: (cellProps) => {
@@ -219,13 +219,13 @@ const ISISDatasetsTable = (
           disableSort: true,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('datasets.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('datasets.modified_time'),
           dataKey: 'modTime',
           filterComponent: dateFilter,

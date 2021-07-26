@@ -183,19 +183,19 @@ const DatasetCardView = (props: DatasetCVCombinedProps): React.ReactElement => {
       }}
       information={[
         {
-          icon: <ConfirmationNumber />,
+          icon: ConfirmationNumber,
           label: t('datasets.datafile_count'),
           dataKey: 'datafileCount',
           disableSort: true,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.create_time'),
           dataKey: 'createTime',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('datasets.modified_time'),
           dataKey: 'modTime',
           filterComponent: dateFilter,

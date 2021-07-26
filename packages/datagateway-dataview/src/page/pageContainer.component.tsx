@@ -137,117 +137,120 @@ const togglePaths = Object.values(paths.toggle).concat(
   Object.values(paths.studyHierarchy.toggle)
 );
 
-const NavBar = (props: {
-  entityCount: number;
-  cartItems: DownloadCartItem[];
-  navigateToSearch: () => Action;
-  navigateToDownload: () => Action;
-}): React.ReactElement => {
-  const [t] = useTranslation();
+const NavBar = React.memo(
+  (props: {
+    entityCount: number;
+    cartItems: DownloadCartItem[];
+    navigateToSearch: () => Action;
+    navigateToDownload: () => Action;
+  }): React.ReactElement => {
+    const [t] = useTranslation();
 
-  return (
-    <Sticky>
-      <StyledGrid container>
-        {/* Hold the breadcrumbs at top left of the page. */}
-        <Grid
-          className="tour-dataview-breadcrumbs"
-          item
-          xs
-          aria-label="container-breadcrumbs"
-        >
-          {/* don't show breadcrumbs on /my-data - only on browse */}
-          <Route
-            path={[paths.root, paths.studyHierarchy.root]}
-            component={PageBreadcrumbs}
-          />
-        </Grid>
+    return (
+      <Sticky>
+        <StyledGrid container>
+          {/* Hold the breadcrumbs at top left of the page. */}
+          <Grid
+            className="tour-dataview-breadcrumbs"
+            item
+            xs
+            aria-label="container-breadcrumbs"
+          >
+            {/* don't show breadcrumbs on /my-data - only on browse */}
+            <Route
+              path={[paths.root, paths.studyHierarchy.root]}
+              component={PageBreadcrumbs}
+            />
+          </Grid>
 
-        {/* The table entity count has a size of 2 (or 3 for xs screens); the
+          {/* The table entity count has a size of 2 (or 3 for xs screens); the
             breadcrumbs will take the remainder of the space. */}
-        <Grid
-          className="tour-dataview-results"
-          style={{ textAlign: 'center' }}
-          item
-          sm={2}
-          xs={3}
-          aria-label="container-table-count"
-        >
-          <Route
-            exact
-            path={Object.values(paths.myData).concat(
-              Object.values(paths.toggle),
-              Object.values(paths.standard),
-              Object.values(paths.studyHierarchy.toggle),
-              Object.values(paths.studyHierarchy.standard)
-            )}
-            render={() => {
-              return (
-                <Paper
-                  square
-                  style={{
-                    backgroundColor: 'inherit',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography variant="h6" component="h3">
-                    <b>{t('app.results')}:</b> {props.entityCount}
-                  </Typography>
-                </Paper>
-              );
+          <Grid
+            className="tour-dataview-results"
+            style={{ textAlign: 'center' }}
+            item
+            sm={2}
+            xs={3}
+            aria-label="container-table-count"
+          >
+            <Route
+              exact
+              path={Object.values(paths.myData).concat(
+                Object.values(paths.toggle),
+                Object.values(paths.standard),
+                Object.values(paths.studyHierarchy.toggle),
+                Object.values(paths.studyHierarchy.standard)
+              )}
+              render={() => {
+                return (
+                  <Paper
+                    square
+                    style={{
+                      backgroundColor: 'inherit',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Typography variant="h6" component="h3">
+                      <b>{t('app.results')}:</b> {props.entityCount}
+                    </Typography>
+                  </Paper>
+                );
+              }}
+            />
+          </Grid>
+          <Paper
+            square
+            style={{
+              backgroundColor: 'inherit',
+              display: 'flex',
+              paddingLeft: 6,
+              paddingRight: 6,
             }}
-          />
-        </Grid>
-        <Paper
-          square
-          style={{
-            backgroundColor: 'inherit',
-            display: 'flex',
-            paddingLeft: 6,
-            paddingRight: 6,
-          }}
-        >
-          <IconButton
-            className="tour-dataview-search-icon"
-            onClick={props.navigateToSearch}
-            aria-label="container-table-search"
-            style={{ margin: 'auto' }}
           >
-            <SearchIcon />
-          </IconButton>
-        </Paper>
-        <Paper
-          square
-          style={{
-            backgroundColor: 'inherit',
-            display: 'flex',
-            paddingLeft: 6,
-            paddingRight: 6,
-          }}
-        >
-          <IconButton
-            className="tour-dataview-cart-icon"
-            onClick={props.navigateToDownload}
-            aria-label="container-table-cart"
-            style={{ margin: 'auto' }}
-          >
-            <Badge
-              badgeContent={
-                props.cartItems.length > 0 ? props.cartItems.length : null
-              }
-              color="primary"
-              aria-label="container-table-cart-badge"
+            <IconButton
+              className="tour-dataview-search-icon"
+              onClick={props.navigateToSearch}
+              aria-label="container-table-search"
+              style={{ margin: 'auto' }}
             >
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-        </Paper>
-      </StyledGrid>
-    </Sticky>
-  );
-};
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+          <Paper
+            square
+            style={{
+              backgroundColor: 'inherit',
+              display: 'flex',
+              paddingLeft: 6,
+              paddingRight: 6,
+            }}
+          >
+            <IconButton
+              className="tour-dataview-cart-icon"
+              onClick={props.navigateToDownload}
+              aria-label="container-table-cart"
+              style={{ margin: 'auto' }}
+            >
+              <Badge
+                badgeContent={
+                  props.cartItems.length > 0 ? props.cartItems.length : null
+                }
+                color="primary"
+                aria-label="container-table-cart-badge"
+              >
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+          </Paper>
+        </StyledGrid>
+      </Sticky>
+    );
+  }
+);
+NavBar.displayName = 'NavBar';
 
 const CardSwitch = (props: {
   toggleCard: boolean;
@@ -401,7 +404,13 @@ const PageContainer: React.FC = () => {
   ]);
   const [totalDataCount, setTotalDataCount] = React.useState(0);
 
-  const isFetchingNum = useIsFetching();
+  // exclude size and count queries from showing the linear progress bar for performance
+  const isFetchingNum = useIsFetching({
+    predicate: (query) =>
+      !query.queryHash.includes('Size') &&
+      !query.queryHash.includes('DatasetCount') &&
+      !query.queryHash.includes('DatafileCount'),
+  });
   const loading = isFetchingNum > 0;
 
   const queryClient = useQueryClient();

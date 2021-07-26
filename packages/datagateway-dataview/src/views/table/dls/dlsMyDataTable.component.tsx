@@ -152,14 +152,12 @@ const DLSMyDataTable = (
           <VisitDetailsPanel
             rowData={rowData}
             detailsPanelResize={detailsPanelResize}
-            fetchDetails={props.fetchDetails}
-            fetchSize={props.fetchSize}
           />
         );
       }}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('investigations.title'),
           dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
@@ -173,7 +171,7 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <FingerprintIcon />,
+          icon: FingerprintIcon,
           label: t('investigations.visit_id'),
           dataKey: 'visitId',
           cellContentRenderer: (cellProps: TableCellProps) => {
@@ -187,13 +185,13 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <ConfirmationNumberIcon />,
+          icon: ConfirmationNumberIcon,
           label: t('investigations.dataset_count'),
           dataKey: 'datasetCount',
           disableSort: true,
         },
         {
-          icon: <AssessmentIcon />,
+          icon: AssessmentIcon,
           label: t('investigations.instrument'),
           dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
@@ -208,13 +206,13 @@ const DLSMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('investigations.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
 
           label: t('investigations.end_date'),
           dataKey: 'endDate',

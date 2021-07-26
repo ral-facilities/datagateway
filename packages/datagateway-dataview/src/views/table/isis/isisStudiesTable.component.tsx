@@ -134,7 +134,7 @@ const ISISStudiesTable = (
       onSort={pushSort}
       columns={[
         {
-          icon: <FingerprintIcon />,
+          icon: FingerprintIcon,
           label: t('studies.name'),
           dataKey: 'study.name',
           cellContentRenderer: (cellProps: TableCellProps) =>
@@ -146,25 +146,25 @@ const ISISStudiesTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <DescriptionIcon />,
+          icon: DescriptionIcon,
           label: t('studies.description'),
           dataKey: 'study.description',
           filterComponent: textFilter,
         },
         {
-          icon: <PublicIcon />,
+          icon: PublicIcon,
           label: t('studies.pid'),
           dataKey: 'study.pid',
           filterComponent: textFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('studies.start_date'),
           dataKey: 'study.startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('studies.end_date'),
           dataKey: 'study.endDate',
           filterComponent: dateFilter,

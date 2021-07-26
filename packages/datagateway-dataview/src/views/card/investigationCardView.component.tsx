@@ -74,39 +74,39 @@ const InvestigationCardView = (): React.ReactElement => {
   const information = React.useMemo(
     () => [
       {
-        icon: <Public />,
+        icon: Public,
         label: t('investigations.doi'),
         dataKey: 'doi',
         filterComponent: textFilter,
       },
       {
-        icon: <Fingerprint />,
+        icon: Fingerprint,
         label: t('investigations.visit_id'),
         dataKey: 'visitId',
         filterComponent: textFilter,
       },
       {
-        icon: <Fingerprint />,
+        icon: Fingerprint,
         label: t('investigations.details.rb_number'),
         dataKey: 'rbNumber',
         filterComponent: textFilter,
         disableSort: true,
       },
       {
-        icon: <ConfirmationNumber />,
+        icon: ConfirmationNumber,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
         filterComponent: textFilter,
         disableSort: true,
       },
       {
-        icon: <CalendarToday />,
+        icon: CalendarToday,
         label: t('investigations.details.start_date'),
         dataKey: 'startDate',
         filterComponent: dateFilter,
       },
       {
-        icon: <CalendarToday />,
+        icon: CalendarToday,
         label: t('investigations.details.end_date'),
         dataKey: 'endDate',
         filterComponent: dateFilter,

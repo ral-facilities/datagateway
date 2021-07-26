@@ -249,19 +249,19 @@ const DatafileTable = (
       ]}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('datafiles.name'),
           dataKey: 'name',
           filterComponent: textFilter,
         },
         {
-          icon: <ExploreIcon />,
+          icon: ExploreIcon,
           label: t('datafiles.location'),
           dataKey: 'location',
           filterComponent: textFilter,
         },
         {
-          icon: <SaveIcon />,
+          icon: SaveIcon,
           label: t('datafiles.size'),
           dataKey: 'fileSize',
           cellContentRenderer: (cellProps) => {
@@ -269,7 +269,7 @@ const DatafileTable = (
           },
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('datafiles.modified_time'),
           dataKey: 'modTime',
           filterComponent: dateFilter,

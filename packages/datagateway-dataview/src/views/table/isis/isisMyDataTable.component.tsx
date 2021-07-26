@@ -216,7 +216,7 @@ const ISISMyDataTable = (
       }}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('investigations.title'),
           dataKey: 'title',
           cellContentRenderer: (cellProps: TableCellProps) => {
@@ -235,7 +235,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <PublicIcon />,
+          icon: PublicIcon,
           label: t('investigations.doi'),
           dataKey: 'studyInvestigations.study.pid',
           cellContentRenderer: (cellProps: TableCellProps) => {
@@ -249,13 +249,13 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <FingerprintIcon />,
+          icon: FingerprintIcon,
           label: t('investigations.visit_id'),
           dataKey: 'visitId',
           filterComponent: textFilter,
         },
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('investigations.name'),
           dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) => {
@@ -274,7 +274,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <AssessmentIcon />,
+          icon: AssessmentIcon,
           label: t('investigations.instrument'),
           dataKey: 'investigationInstruments.instrument.fullName',
           cellContentRenderer: (cellProps: TableCellProps) => {
@@ -289,7 +289,7 @@ const ISISMyDataTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <SaveIcon />,
+          icon: SaveIcon,
           label: t('investigations.size'),
           dataKey: 'size',
           cellContentRenderer: (cellProps) => {
@@ -298,13 +298,13 @@ const ISISMyDataTable = (
           disableSort: true,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('investigations.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('investigations.end_date'),
           dataKey: 'endDate',
           filterComponent: dateFilter,

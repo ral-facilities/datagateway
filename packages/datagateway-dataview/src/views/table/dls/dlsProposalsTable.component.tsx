@@ -58,7 +58,7 @@ const DLSProposalsTable = (): React.ReactElement => {
   const columns: ColumnType[] = React.useMemo(
     () => [
       {
-        icon: <TitleIcon />,
+        icon: TitleIcon,
         label: t('investigations.title'),
         dataKey: 'title',
         cellContentRenderer: (cellProps: TableCellProps) => {
@@ -72,7 +72,7 @@ const DLSProposalsTable = (): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: <TitleIcon />,
+        icon: TitleIcon,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {

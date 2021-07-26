@@ -161,13 +161,13 @@ const ISISFacilityCyclesCardView = (
       }}
       information={[
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('facilitycycles.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('facilitycycles.end_date'),
           dataKey: 'endDate',
           filterComponent: dateFilter,

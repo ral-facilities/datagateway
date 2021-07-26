@@ -75,13 +75,13 @@ const ISISInstrumentsCardView = (
   const information = React.useMemo(
     () => [
       {
-        icon: <Title />,
+        icon: Title,
         label: t('instruments.type'),
         dataKey: 'type',
         filterComponent: textFilter,
       },
       {
-        icon: <LinkIcon />,
+        icon: LinkIcon,
         label: t('instruments.url'),
         dataKey: 'url',
         // eslint-disable-next-line react/display-name

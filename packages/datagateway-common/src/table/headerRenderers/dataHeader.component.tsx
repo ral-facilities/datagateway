@@ -19,7 +19,7 @@ const DataHeader = React.memo(
       onSort: (column: string, order: Order | null) => void;
       resizeColumn: (dataKey: string, deltaX: number) => void;
       labelString: string;
-      icon?: JSX.Element;
+      icon?: React.ComponentType<unknown>;
       filterComponent?: (label: string, dataKey: string) => React.ReactElement;
     }
   ): React.ReactElement => {
@@ -32,7 +32,7 @@ const DataHeader = React.memo(
       labelString,
       disableSort,
       resizeColumn,
-      icon,
+      icon: Icon,
       filterComponent,
     } = props;
 
@@ -86,7 +86,7 @@ const DataHeader = React.memo(
           }}
         >
           <Box display="flex">
-            <Box marginRight={1}>{icon}</Box>
+            <Box marginRight={1}>{Icon && <Icon />}</Box>
             <Box>{inner}</Box>
           </Box>
           {filterComponent?.(labelString, dataKey)}

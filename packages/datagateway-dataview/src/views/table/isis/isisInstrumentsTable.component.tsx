@@ -59,7 +59,7 @@ const ISISInstrumentsTable = (
     const instrumentChild = studyHierarchy ? 'study' : 'facilityCycle';
     return [
       {
-        icon: <TitleIcon />,
+        icon: TitleIcon,
         label: t('instruments.name'),
         dataKey: 'fullName',
         cellContentRenderer: (cellProps: TableCellProps) => {

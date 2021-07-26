@@ -180,19 +180,19 @@ const ISISStudiesCardView = (
       }}
       information={[
         {
-          icon: <Public />,
+          icon: Public,
           label: t('studies.pid'),
           dataKey: 'study.pid',
           filterComponent: textFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('studies.start_date'),
           dataKey: 'study.startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarToday />,
+          icon: CalendarToday,
           label: t('studies.end_date'),
           dataKey: 'study.endDate',
           filterComponent: dateFilter,

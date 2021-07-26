@@ -112,7 +112,7 @@ const ISISFacilityCyclesTable = (
       disableSelectAll={!selectAllSetting}
       columns={[
         {
-          icon: <TitleIcon />,
+          icon: TitleIcon,
           label: t('facilitycycles.name'),
           dataKey: 'name',
           cellContentRenderer: (cellProps: TableCellProps) =>
@@ -124,19 +124,19 @@ const ISISFacilityCyclesTable = (
           filterComponent: textFilter,
         },
         {
-          icon: <DescriptionIcon />,
+          icon: DescriptionIcon,
           label: t('facilitycycles.description'),
           dataKey: 'description',
           filterComponent: textFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('facilitycycles.start_date'),
           dataKey: 'startDate',
           filterComponent: dateFilter,
         },
         {
-          icon: <CalendarTodayIcon />,
+          icon: CalendarTodayIcon,
           label: t('facilitycycles.end_date'),
           dataKey: 'endDate',
           filterComponent: dateFilter,
