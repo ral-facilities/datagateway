@@ -1,4 +1,12 @@
 describe('Dataset search tab', () => {
+  let facilityName: string;
+
+  before(() => {
+    cy.readFile('server/e2e-settings.json').then((settings) => {
+      if (settings.facilityName) facilityName = settings.facilityName;
+    });
+  });
+
   beforeEach(() => {
     cy.login();
     cy.visit('/search/data/');
@@ -10,10 +18,6 @@ describe('Dataset search tab', () => {
     cy.intercept('/datasets?').as('datasets');
     cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
     cy.intercept('/datafiles?').as('datafiles');
-    let facilityName;
-    cy.readFile('server/e2e-settings.json').then((settings) => {
-      if (settings.facilityName) facilityName = settings.facilityName;
-    });
     cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
   });
 
