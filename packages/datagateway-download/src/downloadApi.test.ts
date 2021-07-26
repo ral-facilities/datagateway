@@ -19,9 +19,6 @@ import {
   adminDownloadDeleted,
   adminDownloadStatus,
 } from './downloadApi';
-import fs from 'fs';
-
-var settings = JSON.parse(fs.readFileSync('server/e2e-settings.json', 'utf-8'));
 
 jest.mock('datagateway-common', () => {
   const originalModule = jest.requireActual('datagateway-common');
@@ -32,6 +29,28 @@ jest.mock('datagateway-common', () => {
     handleICATError: jest.fn(),
   };
 });
+
+// Create our mocked datagateway-download mockedSettings file.
+const mockedSettings = {
+  facilityName: 'LILS',
+  apiUrl: 'https://example.com/api',
+  downloadApiUrl: 'https://example.com/downloadApi',
+  idsUrl: 'https://example.com/ids',
+  fileCountMax: 5000,
+  totalSizeMax: 1000000000000,
+  accessMethods: {
+    https: {
+      idsUrl: 'https://example.com/ids',
+      displayName: 'HTTPS',
+      description: 'Example description for HTTPS access method.',
+    },
+    globus: {
+      idsUrl: 'https://example.com/ids',
+      displayName: 'Globus',
+      description: 'Example description for Globus access method.',
+    },
+  },
+};
 
 describe('Download Cart API functions test', () => {
   afterEach(() => {
@@ -58,7 +77,7 @@ describe('Download Cart API functions test', () => {
           },
         ],
         createdAt: '2019-11-01T15:18:00Z',
-        facilityName: 'LILS',
+        facilityName: mockedSettings.facilityName,
         id: 1,
         updatedAt: '2019-11-01T15:18:00Z',
         userName: 'test user',
@@ -71,8 +90,8 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await fetchDownloadCartItems({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(downloadCartMockData.cartItems);
@@ -80,7 +99,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.get
       ).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}`,
         { params: { sessionId: null } }
       );
     });
@@ -93,8 +112,8 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await fetchDownloadCartItems({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toEqual([]);
@@ -102,7 +121,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.get
       ).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}`,
         { params: { sessionId: null } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -116,13 +135,17 @@ describe('Download Cart API functions test', () => {
     it('returns nothing upon successful response', async () => {
       axios.delete = jest.fn().mockImplementation(() =>
         Promise.resolve({
-          data: { cartItems: [], facilityName: 'LILS', userName: 'test user' },
+          data: {
+            cartItems: [],
+            facilityName: mockedSettings.facilityName,
+            userName: 'test user',
+          },
         })
       );
 
       const returnData = await removeAllDownloadCartItems({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBeUndefined();
@@ -130,7 +153,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: '*' } }
       );
     });
@@ -143,8 +166,8 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await removeAllDownloadCartItems({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBeUndefined();
@@ -152,7 +175,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: '*' } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -166,13 +189,17 @@ describe('Download Cart API functions test', () => {
     it('returns nothing upon successful response', async () => {
       axios.delete = jest.fn().mockImplementation(() =>
         Promise.resolve({
-          data: { cartItems: [], facilityName: 'LILS', userName: 'test user' },
+          data: {
+            cartItems: [],
+            facilityName: mockedSettings.facilityName,
+            userName: 'test user',
+          },
         })
       );
 
       const returnData = await removeDownloadCartItem(1, 'datafile', {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBeUndefined();
@@ -180,7 +207,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: 'datafile 1' } }
       );
     });
@@ -193,8 +220,8 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await removeDownloadCartItem(1, 'investigation', {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBeUndefined();
@@ -202,7 +229,7 @@ describe('Download Cart API functions test', () => {
       expect(
         axios.delete
       ).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS/cartItems`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/cartItems`,
         { params: { sessionId: null, items: 'investigation 1' } }
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -220,12 +247,12 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel({ idsUrl: settings.idsUrl });
+      const isTwoLevel = await getIsTwoLevel({ idsUrl: mockedSettings.idsUrl });
 
       expect(isTwoLevel).toBe(true);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.idsUrl}/isTwoLevel`
+        `${mockedSettings.idsUrl}/isTwoLevel`
       );
     });
 
@@ -236,12 +263,12 @@ describe('Download Cart API functions test', () => {
         })
       );
 
-      const isTwoLevel = await getIsTwoLevel({ idsUrl: settings.idsUrl });
+      const isTwoLevel = await getIsTwoLevel({ idsUrl: mockedSettings.idsUrl });
 
       expect(isTwoLevel).toBe(false);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.idsUrl}/isTwoLevel`
+        `${mockedSettings.idsUrl}/isTwoLevel`
       );
       expect(handleICATError).toHaveBeenCalled();
       expect(handleICATError).toHaveBeenCalledWith(
@@ -258,7 +285,7 @@ describe('Download Cart API functions test', () => {
       axios.post = jest.fn().mockImplementation(() => {
         return Promise.resolve({
           data: {
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             userName: 'test user',
             cartItems: [],
             downloadId: 1,
@@ -272,8 +299,8 @@ describe('Download Cart API functions test', () => {
         'test@email.com',
         'test-file',
         {
-          facilityName: settings.facilityName,
-          downloadApiUrl: settings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
+          downloadApiUrl: mockedSettings.downloadApiUrl,
         }
       );
       const params = new URLSearchParams();
@@ -286,7 +313,7 @@ describe('Download Cart API functions test', () => {
       expect(downloadId).toBe(1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS/submit`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
         params
       );
     });
@@ -304,8 +331,8 @@ describe('Download Cart API functions test', () => {
         'test@email.com',
         'test-file',
         {
-          facilityName: settings.facilityName,
-          downloadApiUrl: settings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
+          downloadApiUrl: mockedSettings.downloadApiUrl,
         }
       );
       const params = new URLSearchParams();
@@ -318,7 +345,7 @@ describe('Download Cart API functions test', () => {
       expect(downloadId).toBe(-1);
       expect(axios.post).toHaveBeenCalled();
       expect(axios.post).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/cart/LILS/submit`,
+        `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
         params
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -342,7 +369,7 @@ describe('Download Cart API functions test', () => {
                   id: 1,
                 },
               ],
-              facilityName: 'LILS',
+              facilityName: mockedSettings.facilityName,
               fileName: 'test-file',
               fullName: 'simple/root',
               id: 1,
@@ -361,18 +388,18 @@ describe('Download Cart API functions test', () => {
       );
 
       const download = await getDownload(1, {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(download).not.toBe(null);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/downloads`,
+        `${mockedSettings.downloadApiUrl}/user/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: `where download.id = 1`,
           },
         }
@@ -387,18 +414,18 @@ describe('Download Cart API functions test', () => {
       );
 
       const download = await getDownload(1, {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(download).toBe(null);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/downloads`,
+        `${mockedSettings.downloadApiUrl}/user/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: `where download.id = 1`,
           },
         }
@@ -416,14 +443,16 @@ describe('Download Cart API functions test', () => {
       jest.spyOn(document.body, 'appendChild');
 
       await downloadPreparedCart('test-id', 'test-file.zip', {
-        idsUrl: settings.idsUrl,
+        idsUrl: mockedSettings.idsUrl,
       });
 
       expect(document.createElement).toHaveBeenCalledWith('a');
 
       // Create our prepared cart download link.
       const link = document.createElement('a');
-      link.href = `${settings.idsUrl}/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
+      link.href = `${
+        mockedSettings.idsUrl
+      }/getData?sessionId=${null}&preparedId=${'test-id'}&outname=${'test-file.zip'}`;
       link.style.display = 'none';
       link.target = '_blank';
 
@@ -444,15 +473,15 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getSize(1, 'datafile', {
-        facilityName: settings.facilityName,
-        apiUrl: settings.apiUrl,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        apiUrl: mockedSettings.apiUrl,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.apiUrl}/datafiles/1`,
+        `${mockedSettings.apiUrl}/datafiles/1`,
         {
           headers: { Authorization: 'Bearer null' },
         }
@@ -467,15 +496,15 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getSize(1, 'datafile', {
-        facilityName: settings.facilityName,
-        apiUrl: settings.apiUrl,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        apiUrl: mockedSettings.apiUrl,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.apiUrl}/datafiles/1`,
+        `${mockedSettings.apiUrl}/datafiles/1`,
         {
           headers: { Authorization: 'Bearer null' },
         }
@@ -497,19 +526,19 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getSize(1, 'dataset', {
-        facilityName: settings.facilityName,
-        apiUrl: settings.apiUrl,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        apiUrl: mockedSettings.apiUrl,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/getSize`,
+        `${mockedSettings.downloadApiUrl}/user/getSize`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             entityType: 'dataset',
             entityId: 1,
           },
@@ -525,19 +554,19 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getSize(1, 'investigation', {
-        facilityName: settings.facilityName,
-        apiUrl: settings.apiUrl,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        apiUrl: mockedSettings.apiUrl,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/getSize`,
+        `${mockedSettings.downloadApiUrl}/user/getSize`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             entityType: 'investigation',
             entityId: 1,
           },
@@ -556,7 +585,7 @@ describe('Download Cart API functions test', () => {
   describe('getDatafileCount', () => {
     it('returns 1 upon request for datafile entityType', async () => {
       const returnData = await getDatafileCount(1, 'datafile', {
-        apiUrl: settings.apiUrl,
+        apiUrl: mockedSettings.apiUrl,
       });
 
       expect(returnData).toBe(1);
@@ -570,13 +599,13 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getDatafileCount(1, 'dataset', {
-        apiUrl: settings.apiUrl,
+        apiUrl: mockedSettings.apiUrl,
       });
 
       expect(returnData).toBe(2);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.apiUrl}/datafiles/count`,
+        `${mockedSettings.apiUrl}/datafiles/count`,
         {
           params: {
             where: {
@@ -599,13 +628,13 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getDatafileCount(1, 'dataset', {
-        apiUrl: settings.apiUrl,
+        apiUrl: mockedSettings.apiUrl,
       });
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.apiUrl}/datafiles/count`,
+        `${mockedSettings.apiUrl}/datafiles/count`,
         {
           params: {
             where: {
@@ -635,13 +664,13 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getDatafileCount(2, 'investigation', {
-        apiUrl: settings.apiUrl,
+        apiUrl: mockedSettings.apiUrl,
       });
 
       expect(returnData).toBe(5);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.apiUrl}/datafiles/count`,
+        `${mockedSettings.apiUrl}/datafiles/count`,
         {
           params: {
             include: '{"dataset": "investigation"}',
@@ -664,13 +693,13 @@ describe('Download Cart API functions test', () => {
       );
 
       const returnData = await getDatafileCount(2, 'investigation', {
-        apiUrl: settings.apiUrl,
+        apiUrl: mockedSettings.apiUrl,
       });
 
       expect(returnData).toBe(-1);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.apiUrl}/datafiles/count`,
+        `${mockedSettings.apiUrl}/datafiles/count`,
         {
           params: {
             include: '{"dataset": "investigation"}',
@@ -740,7 +769,7 @@ describe('Download Cart API functions test', () => {
       ];
 
       const returnData = await getCartDatafileCount(cartItems, {
-        apiUrl: settings.apiUrl,
+        apiUrl: mockedSettings.apiUrl,
       });
 
       expect(returnData).toBe(3);
@@ -812,9 +841,9 @@ describe('Download Cart API functions test', () => {
       ];
 
       const returnData = await getCartSize(cartItems, {
-        facilityName: settings.facilityName,
-        apiUrl: settings.apiUrl,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        apiUrl: mockedSettings.apiUrl,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(3);
@@ -837,7 +866,7 @@ describe('Download Status API functions test', () => {
         createdAt: '2020-01-01T01:01:01Z',
         downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
         email: 'test@email.com',
-        facilityName: 'LILS',
+        facilityName: mockedSettings.facilityName,
         fileName: 'test-file-1',
         fullName: 'Person 1',
         id: 1,
@@ -861,18 +890,18 @@ describe('Download Status API functions test', () => {
       );
 
       const returnData = await fetchDownloads({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(downloadsMockData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/downloads`,
+        `${mockedSettings.downloadApiUrl}/user/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: 'where download.isDeleted = false',
           },
         }
@@ -893,8 +922,8 @@ describe('Download Status API functions test', () => {
 
       const returnData = await fetchDownloads(
         {
-          facilityName: settings.facilityName,
-          downloadApiUrl: settings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
+          downloadApiUrl: mockedSettings.downloadApiUrl,
         },
         'where download.isDeleted = true'
       );
@@ -902,11 +931,11 @@ describe('Download Status API functions test', () => {
       expect(returnData).toBe(downloadsData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/downloads`,
+        `${mockedSettings.downloadApiUrl}/user/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: 'where download.isDeleted = true',
           },
         }
@@ -921,18 +950,18 @@ describe('Download Status API functions test', () => {
       );
 
       const returnData = await fetchDownloads({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/downloads`,
+        `${mockedSettings.downloadApiUrl}/user/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: 'where download.isDeleted = false',
           },
         }
@@ -949,18 +978,18 @@ describe('Download Status API functions test', () => {
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
       await downloadDeleted(1, true, {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       const params = new URLSearchParams();
-      params.append('facilityName', 'LILS');
+      params.append('facilityName', mockedSettings.facilityName);
       params.append('sessionId', '');
       params.append('value', 'true');
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/download/1/isDeleted`,
+        `${mockedSettings.downloadApiUrl}/user/download/1/isDeleted`,
         params
       );
     });
@@ -973,18 +1002,18 @@ describe('Download Status API functions test', () => {
       );
 
       await downloadDeleted(1, true, {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       const params = new URLSearchParams();
-      params.append('facilityName', 'LILS');
+      params.append('facilityName', mockedSettings.facilityName);
       params.append('sessionId', '');
       params.append('value', 'true');
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/user/download/1/isDeleted`,
+        `${mockedSettings.downloadApiUrl}/user/download/1/isDeleted`,
         params
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -1015,7 +1044,7 @@ describe('Admin Download Status API functions test', () => {
         createdAt: '2020-01-01T01:01:01Z',
         downloadItems: [{ entityId: 1, entityType: 'investigation', id: 1 }],
         email: 'test@email.com',
-        facilityName: 'LILS',
+        facilityName: mockedSettings.facilityName,
         fileName: 'test-file-1',
         fullName: 'Person 1',
         id: 1,
@@ -1039,18 +1068,18 @@ describe('Admin Download Status API functions test', () => {
       );
 
       const returnData = await fetchAdminDownloads({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toBe(downloadsMockData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/admin/downloads`,
+        `${mockedSettings.downloadApiUrl}/admin/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: 'where download.isDeleted = false',
           },
         }
@@ -1071,8 +1100,8 @@ describe('Admin Download Status API functions test', () => {
 
       const returnData = await fetchAdminDownloads(
         {
-          facilityName: settings.facilityName,
-          downloadApiUrl: settings.downloadApiUrl,
+          facilityName: mockedSettings.facilityName,
+          downloadApiUrl: mockedSettings.downloadApiUrl,
         },
         'where download.isDeleted = true'
       );
@@ -1080,11 +1109,11 @@ describe('Admin Download Status API functions test', () => {
       expect(returnData).toBe(downloadsData);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/admin/downloads`,
+        `${mockedSettings.downloadApiUrl}/admin/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: 'where download.isDeleted = true',
           },
         }
@@ -1099,18 +1128,18 @@ describe('Admin Download Status API functions test', () => {
       );
 
       const returnData = await fetchAdminDownloads({
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       expect(returnData).toEqual([]);
       expect(axios.get).toHaveBeenCalled();
       expect(axios.get).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/admin/downloads`,
+        `${mockedSettings.downloadApiUrl}/admin/downloads`,
         {
           params: {
             sessionId: null,
-            facilityName: 'LILS',
+            facilityName: mockedSettings.facilityName,
             queryOffset: 'where download.isDeleted = false',
           },
         }
@@ -1127,18 +1156,18 @@ describe('Admin Download Status API functions test', () => {
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
       await adminDownloadDeleted(1, true, {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       const params = new URLSearchParams();
-      params.append('facilityName', 'LILS');
+      params.append('facilityName', mockedSettings.facilityName);
       params.append('sessionId', '');
       params.append('value', 'true');
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/admin/download/1/isDeleted`,
+        `${mockedSettings.downloadApiUrl}/admin/download/1/isDeleted`,
         params
       );
     });
@@ -1151,18 +1180,18 @@ describe('Admin Download Status API functions test', () => {
       );
 
       await adminDownloadDeleted(1, true, {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       const params = new URLSearchParams();
-      params.append('facilityName', 'LILS');
+      params.append('facilityName', mockedSettings.facilityName);
       params.append('sessionId', '');
       params.append('value', 'true');
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/admin/download/1/isDeleted`,
+        `${mockedSettings.downloadApiUrl}/admin/download/1/isDeleted`,
         params
       );
       expect(handleICATError).toHaveBeenCalled();
@@ -1177,18 +1206,18 @@ describe('Admin Download Status API functions test', () => {
       axios.put = jest.fn().mockImplementation(() => Promise.resolve());
 
       await adminDownloadStatus(1, 'RESTORING', {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       const params = new URLSearchParams();
-      params.append('facilityName', 'LILS');
+      params.append('facilityName', mockedSettings.facilityName);
       params.append('sessionId', '');
       params.append('value', 'RESTORING');
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/admin/download/1/status`,
+        `${mockedSettings.downloadApiUrl}/admin/download/1/status`,
         params
       );
     });
@@ -1201,18 +1230,18 @@ describe('Admin Download Status API functions test', () => {
       );
 
       await adminDownloadStatus(1, 'RESTORING', {
-        facilityName: settings.facilityName,
-        downloadApiUrl: settings.downloadApiUrl,
+        facilityName: mockedSettings.facilityName,
+        downloadApiUrl: mockedSettings.downloadApiUrl,
       });
 
       const params = new URLSearchParams();
-      params.append('facilityName', 'LILS');
+      params.append('facilityName', mockedSettings.facilityName);
       params.append('sessionId', '');
       params.append('value', 'RESTORING');
 
       expect(axios.put).toHaveBeenCalled();
       expect(axios.put).toHaveBeenCalledWith(
-        `${settings.downloadApiUrl}/admin/download/1/status`,
+        `${mockedSettings.downloadApiUrl}/admin/download/1/status`,
         params
       );
       expect(handleICATError).toHaveBeenCalled();

@@ -12,11 +12,6 @@ import {
 } from '../downloadApi';
 import { act } from 'react-dom/test-utils';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import fs from 'fs';
-
-const settings = JSON.parse(
-  fs.readFileSync('server/e2e-settings.json', 'utf-8')
-);
 
 jest.mock('../downloadApi');
 
@@ -58,19 +53,19 @@ describe('Download cart table component', () => {
   // Create our mocked datagateway-download settings file.
   const mockedSettings = {
     facilityName: 'LILS',
-    apiUrl: settings.apiUrl,
-    downloadApiUrl: settings.downloadApiUrl,
-    idsUrl: settings.idsUrl,
+    apiUrl: 'https://example.com/api',
+    downloadApiUrl: 'https://example.com/downloadApi',
+    idsUrl: 'https://example.com/ids',
     fileCountMax: 5000,
     totalSizeMax: 1000000000000,
     accessMethods: {
       https: {
-        idsUrl: settings.accessMethods.https.idsUrl,
+        idsUrl: 'https://example.com/ids',
         displayName: 'HTTPS',
         description: 'Example description for HTTPS access method.',
       },
       globus: {
-        idsUrl: settings.accessMethods.globus.idsUrl,
+        idsUrl: 'https://example.com/ids',
         displayName: 'Globus',
         description: 'Example description for Globus access method.',
       },

@@ -4,26 +4,21 @@ import DownloadTabs from './downloadTab.component';
 import { act } from 'react-dom/test-utils';
 import { flushPromises } from '../setupTests';
 import { DownloadSettingsContext } from '../ConfigProvider';
-import fs from 'fs';
-
-const settings = JSON.parse(
-  fs.readFileSync('server/e2e-settings.json', 'utf-8')
-);
 
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
   facilityName: 'LILS',
-  apiUrl: settings.apiUrl,
-  downloadApiUrl: settings.downloadApiUrl,
-  idsUrl: settings.idsUrl,
+  apiUrl: 'https://example.com/api',
+  downloadApiUrl: 'https://example.com/downloadApi',
+  idsUrl: 'https://example.com/ids',
   accessMethods: {
     https: {
-      idsUrl: settings.accessMethods.https.idsUrl,
+      idsUrl: 'https://example.com/ids',
       displayName: 'HTTPS',
       description: 'Example description for HTTPS access method.',
     },
     globus: {
-      idsUrl: settings.accessMethods.globus.idsUrl,
+      idsUrl: 'https://example.com/ids',
       displayName: 'Globus',
       description: 'Example description for Globus access method.',
     },

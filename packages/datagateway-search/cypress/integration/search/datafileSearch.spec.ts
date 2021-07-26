@@ -10,7 +10,11 @@ describe('Datafile search tab', () => {
     cy.intercept('/datasets?').as('datasets');
     cy.intercept('/datafiles/count?where=%7B%22id').as('datafilesCount');
     cy.intercept('/datafiles?').as('datafiles');
-    cy.intercept('/topcat/user/cart/LILS/cartItems').as('topcat');
+    let facilityName;
+    cy.readFile('server/e2e-settings.json').then((settings) => {
+      if (settings.facilityName) facilityName = settings.facilityName;
+    });
+    cy.intercept(`/topcat/user/cart/${facilityName}/cartItems`).as('topcat');
   });
 
   it('should load correctly', () => {
@@ -92,7 +96,7 @@ describe('Datafile search tab', () => {
       .should('not.exist');
   });
 
-  it.only('should link to a parent dataset', () => {
+  it('should link to a parent dataset', () => {
     cy.get('[aria-label="Search text input"]')
       .find('#filled-search')
       .type('1956');
