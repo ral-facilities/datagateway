@@ -24,7 +24,6 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  // TODO: Removal of the "visitID" column is breaking this resizing test.
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 
@@ -32,6 +31,7 @@ describe('ISIS - Investigations Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
+        // Account for select and details column widths
         columnWidth = (windowWidth - 40 - 40) / 7;
         columnWidth = Math.floor(columnWidth * 10) / 10;
       })

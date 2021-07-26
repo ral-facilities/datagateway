@@ -72,7 +72,6 @@ describe('Datafile search table component', () => {
             name: 'Investigation test name',
             summary: 'foo bar',
             visitId: '1',
-            rbNumber: '1',
             doi: 'doi 1',
             size: 1,
             investigationInstruments: [

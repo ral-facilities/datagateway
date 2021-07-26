@@ -109,9 +109,79 @@ interface LandingPageProps {
   studyId: string;
 }
 
+interface LinkedInvestigationProps {
+  studyInvestigation: StudyInvestigation;
+  urlPrefix: string;
+  view: ViewsType;
+}
+
 type LandingPageCombinedProps = LandingPageDispatchProps &
   LandingPageStateProps &
   LandingPageProps;
+
+const LinkedInvestigation = (
+  props: LinkedInvestigationProps
+): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = useStyles();
+
+  const investigation = props.studyInvestigation.investigation as Investigation;
+
+  const shortInvestigationInfo = [
+    {
+      content: (entity: Investigation) => entity.doi,
+      label: t('investigations.doi'),
+      icon: <Public className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) =>
+        entity.investigationInstruments?.[0]?.instrument?.name,
+      label: t('investigations.instrument'),
+      icon: <Assessment className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
+      label: t('investigations.release_date'),
+      icon: <CalendarToday className={classes.shortInfoIcon} />,
+    },
+  ];
+
+  return (
+    <div>
+      <Typography
+        className={classes.subHeading}
+        component="h6"
+        variant="h6"
+        align="center"
+        aria-label="landing-study-part-label"
+      >
+        {tableLink(
+          `${props.urlPrefix}/investigation/${investigation.id}`,
+          `${t('investigations.visit_id')}: ${investigation.visitId}`,
+          props.view
+        )}
+      </Typography>
+      {shortInvestigationInfo.map((field, i) => (
+        <div className={classes.shortInfoRow} key={i}>
+          <Typography className={classes.shortInfoLabel}>
+            {field.icon}
+            {field.label}:
+          </Typography>
+          <Typography className={classes.shortInfoValue}>
+            {field.content(investigation)}
+          </Typography>
+        </div>
+      ))}
+      <div className={classes.actionButtons}>
+        <AddToCartButton
+          entityType="investigation"
+          allIds={[investigation.id]}
+          entityId={investigation.id}
+        />
+      </div>
+    </div>
+  );
+};
 
 const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   const [t] = useTranslation();
@@ -147,6 +217,7 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     const principals: FormattedUser[] = [];
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
+
     if (data[0]?.investigation?.investigationUsers) {
       const investigationUsers = data[0].investigation
         .investigationUsers as InvestigationUser[];
@@ -271,33 +342,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       content: (entity: StudyInvestigation) =>
         entity.study?.endDate?.slice(0, 10),
       label: t('studies.end_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
-    },
-  ];
-
-  const shortInvestigationInfo = [
-    {
-      content: function doiFormat(entity: Investigation) {
-        return (
-          entity?.doi && (
-            <MuiLink href={`https://doi.org/${entity.doi}`}>
-              {entity.doi}
-            </MuiLink>
-          )
-        );
-      },
-      label: t('investigations.doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
-    },
-    {
-      content: (entity: Investigation) =>
-        entity.investigationInstruments?.[0]?.instrument?.name,
-      label: t('investigations.instrument'),
-      icon: <Assessment className={classes.shortInfoIcon} />,
-    },
-    {
-      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
-      label: t('investigations.release_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
   ];
@@ -457,45 +501,15 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
             {data.map((studyInvestigation, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
-                  variant="h6"
-                  align="center"
-                  aria-label="landing-study-part-label"
-                >
-                  {tableLink(
-                    `${urlPrefix}/investigation/${studyInvestigation.investigation.id}`,
-                    `${t('investigations.visit_id')}: ${
-                      studyInvestigation.investigation?.visitId
-                    }`,
-                    view
-                  )}
-                </Typography>
-                {shortInvestigationInfo.map(
-                  (field, i) =>
-                    data[0]?.investigation &&
-                    field.content(data[0].investigation as Investigation) && (
-                      <div className={classes.shortInfoRow} key={i}>
-                        <Typography className={classes.shortInfoLabel}>
-                          {field.icon}
-                          {field.label}:
-                        </Typography>
-                        <Typography className={classes.shortInfoValue}>
-                          {field.content(
-                            studyInvestigation.investigation as Investigation
-                          )}
-                        </Typography>
-                      </div>
-                    )
-                )}
-                <div className={classes.actionButtons}>
-                  <AddToCartButton
-                    entityType="investigation"
-                    allIds={[parseInt(studyInvestigation.investigation.id)]}
-                    entityId={parseInt(studyInvestigation.investigation.id)}
+                {studyInvestigation.investigation && (
+                  <LinkedInvestigation
+                    studyInvestigation={
+                      studyInvestigation as StudyInvestigation
+                    }
+                    urlPrefix={urlPrefix}
+                    view={view}
                   />
-                </div>
+                )}
               </div>
             ))}
           </Grid>
