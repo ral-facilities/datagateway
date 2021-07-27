@@ -36,17 +36,17 @@ const updateDialogWrapper = async (wrapper: ReactWrapper): Promise<void> => {
 // Create our mocked datagateway-download settings file.
 const mockedSettings = {
   facilityName: 'LILS',
-  apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-  downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-  idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+  apiUrl: 'https://example.com/api',
+  downloadApiUrl: 'https://example.com/downloadApi',
+  idsUrl: 'https://example.com/ids',
   accessMethods: {
     https: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: 'https://example.com/ids',
       displayName: 'HTTPS',
       description: 'Example description for <b>HTTPS</b> access method.',
     },
     globus: {
-      idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+      idsUrl: 'https://example.com/ids',
       displayName: 'Globus',
       description: 'Example description for Globus access method.',
     },
@@ -213,8 +213,8 @@ describe('DownloadConfirmDialog', () => {
                 id: 1,
               },
             ],
-            facilityName: 'LILS',
-            fileName: 'LILS_2020-1-1_1-1-1',
+            facilityName: mockedSettings.facilityName,
+            fileName: `${mockedSettings.facilityName}_2020-1-1_1-1-1`,
             fullName: 'simple/root',
             id: 1,
             isDeleted: false,
@@ -235,7 +235,7 @@ describe('DownloadConfirmDialog', () => {
     (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
-          facilityName: 'LILS',
+          facilityName: mockedSettings.facilityName,
           userName: 'test user',
           cartItems: [],
           downloadId: '1',
@@ -268,20 +268,20 @@ describe('DownloadConfirmDialog', () => {
     // Expect our status requests to have been called.
     expect(axios.get).toHaveBeenCalledTimes(3);
     expect(axios.get).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloadType/https/status',
+      `${mockedSettings.downloadApiUrl}/user/downloadType/https/status`,
       {
         params: {
           sessionId: null,
-          facilityName: 'LILS',
+          facilityName: mockedSettings.facilityName,
         },
       }
     );
     expect(axios.get).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloadType/globus/status',
+      `${mockedSettings.downloadApiUrl}/user/downloadType/globus/status`,
       {
         params: {
           sessionId: null,
-          facilityName: 'LILS',
+          facilityName: mockedSettings.facilityName,
         },
       }
     );
@@ -291,22 +291,22 @@ describe('DownloadConfirmDialog', () => {
     params.append('sessionId', '');
     params.append('transport', 'https');
     params.append('email', '');
-    params.append('fileName', 'LILS_2020-1-1_1-1-1');
+    params.append('fileName', `${mockedSettings.facilityName}_2020-1-1_1-1-1`);
     params.append('zipType', 'ZIP');
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
       params
     );
 
     // Expect fetching of the submitted download requested.
     expect(axios.get).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/downloads',
+      `${mockedSettings.downloadApiUrl}/user/downloads`,
       {
         params: {
           sessionId: null,
-          facilityName: 'LILS',
+          facilityName: mockedSettings.facilityName,
           queryOffset: 'where download.id = 1',
         },
       }
@@ -317,7 +317,7 @@ describe('DownloadConfirmDialog', () => {
     (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
-          facilityName: 'LILS',
+          facilityName: mockedSettings.facilityName,
           userName: 'test user',
           cartItems: [],
           downloadId: '2',
@@ -372,7 +372,7 @@ describe('DownloadConfirmDialog', () => {
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
       params
     );
   });
@@ -440,7 +440,7 @@ describe('DownloadConfirmDialog', () => {
     (axios.post as jest.Mock).mockImplementation(() =>
       Promise.resolve({
         data: {
-          facilityName: 'LILS',
+          facilityName: mockedSettings.facilityName,
           userName: 'test user',
           cartItems: [],
         },
@@ -465,12 +465,12 @@ describe('DownloadConfirmDialog', () => {
     params.append('sessionId', '');
     params.append('transport', 'https');
     params.append('email', '');
-    params.append('fileName', 'LILS_2020-1-1_1-1-1');
+    params.append('fileName', `${mockedSettings.facilityName}_2020-1-1_1-1-1`);
     params.append('zipType', 'ZIP');
 
     expect(axios.post).toHaveBeenCalled();
     expect(axios.post).toHaveBeenCalledWith(
-      'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat/user/cart/LILS/submit',
+      `${mockedSettings.downloadApiUrl}/user/cart/${mockedSettings.facilityName}/submit`,
       params
     );
   });

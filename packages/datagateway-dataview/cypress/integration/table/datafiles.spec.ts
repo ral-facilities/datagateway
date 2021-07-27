@@ -1,11 +1,11 @@
 describe('Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('/investigations/1').as('investigations');
-    cy.intercept('/datasets/25').as('datasets');
+    cy.intercept('/datasets/1').as('datasets');
     cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login();
-    cy.visit('/browse/investigation/1/dataset/25/datafile');
+    cy.visit('/browse/investigation/1/dataset/1/datafile');
   });
 
   it('should load correctly', () => {
@@ -14,7 +14,7 @@ describe('Datafiles Table', () => {
   });
 
   it('should not load incorrect URL', () => {
-    cy.visit('/browse/investigation/2/dataset/25/datafile');
+    cy.visit('/browse/investigation/2/dataset/1/datafile');
 
     cy.contains('Oops!').should('be.visible');
     cy.get('[role="grid"]').should('not.exist');
@@ -83,7 +83,7 @@ describe('Datafiles Table', () => {
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="56"]').should('exist');
+    cy.get('[aria-rowcount="55"]').should('exist');
   });
 
   describe('should be able to sort by', () => {
@@ -110,7 +110,7 @@ describe('Datafiles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/act/friend/general.jpeg'
+        '/anyone/structure/my.jpg'
       );
     });
 
@@ -129,7 +129,7 @@ describe('Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/yes/glass/them.jpg'
+        '/you/want/special.jpeg'
       );
     });
 
@@ -153,7 +153,7 @@ describe('Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/year/how/structure.tiff'
+        '/authority/thousand/treatment.tiff'
       );
     });
 
@@ -169,7 +169,7 @@ describe('Datafiles Table', () => {
         .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 15831'
+        'Datafile 13412'
       );
     });
   });
@@ -194,11 +194,11 @@ describe('Datafiles Table', () => {
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
         .first()
-        .type('ok');
+        .type('treatment');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 13915'
+        'Datafile 479'
       );
     });
 
@@ -226,10 +226,10 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 1940'
+        'Datafile 2395'
       );
       cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
-        'Datafile 6730'
+        'Datafile 11975'
       );
     });
 
@@ -237,17 +237,17 @@ describe('Datafiles Table', () => {
       cy.get('[aria-label="Filter by Name"]')
         .find('input')
         .first()
-        .type('5')
+        .type('4')
         .wait('@datafilesCount', { timeout: 10000 });
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
         .first()
-        .type('.png')
+        .type('.jpeg')
         .wait('@datafilesCount', { timeout: 10000 });
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 15352'
+        'Datafile 14370'
       );
     });
   });
@@ -265,7 +265,7 @@ describe('Datafiles Table', () => {
 
       cy.get('[aria-label="Show details"]').first().click();
 
-      cy.get('#details-panel').contains('Datafile 24').should('be.visible');
+      cy.get('#details-panel').contains('Datafile 479').should('be.visible');
       cy.get('#details-panel').contains('Datafile 3377').should('not.exist');
       cy.get('[aria-label="Hide details"]').should('have.length', 1);
     });
