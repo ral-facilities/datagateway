@@ -86,7 +86,7 @@ describe('ISIS - Studies Cards', () => {
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('STUDY 4');
+    cy.get('#card').contains('STUDY 21');
 
     cy.get('[aria-label="Filter by Title"]')
       .find('input')
