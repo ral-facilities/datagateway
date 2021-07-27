@@ -13,7 +13,7 @@ describe('ISIS - Studies Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browseStudyHierarchy/instrument/1/study/405'
+      '/browseStudyHierarchy/instrument/1/study/4'
     );
   });
 
@@ -91,7 +91,7 @@ describe('ISIS - Studies Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Economic always lawyer family. Girl amount available. Once great before. Per sure task commercial physical theory economic.'
+        'Tell others stay doctor. Who some management admit ahead when. Child everybody lawyer head how. Church test travel data. Skill special within. Capital he involve friend individual.'
       );
     });
 
@@ -106,7 +106,7 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Build few thought section wife myself occur. Moment my stand well impact. Ok laugh capital know cell significant window education. Yes save not.'
+        'Again bad simply low summer. Left hand around position wonder sometimes. Body always prove husband. So understand edge outside prevent. Try little figure. Film name majority he modern value.'
       );
     });
 
@@ -124,7 +124,7 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Network find should century magazine happen natural. Environmental size market product laugh. First kid strong yard.'
+        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
       );
     });
 
@@ -133,7 +133,7 @@ describe('ISIS - Studies Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'It wish different however along whether knowledge media. Name determine wish something might development. Push sound process international scene call.'
+        'Help music rate image common worry reason. Rich green either require. Garden leader answer sort generation. Question decision window send food loss society.'
       );
     });
   });
@@ -144,16 +144,16 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'Number name during matter last nation both. Miss site ok minute size direction. Yeah edge method few. Free source someone.'
+        'Peace attack I history attack. Together company interview often successful few. A fall yard let which house.'
       );
     });
 
     it('date between', () => {
       cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="5"]').should('exist');
+      cy.get('[aria-rowcount="11"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'Number name during matter last nation both. Miss site ok minute size direction. Yeah edge method few. Free source someone.'
+        'Old ok order wall bank. Floor science physical ask activity alone. Language sort test bill to century. Four direction reason. Its arm water box. Also idea quite own. None special now million.'
       );
     });
 
@@ -161,10 +161,10 @@ describe('ISIS - Studies Table', () => {
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]').find('input').first().type('4');
 
-      cy.get('[aria-label="Filter by Description"]')
+      cy.get('[aria-label="Filter by Title"]')
         .find('input')
         .first()
-        .type('energy');
+        .type('peace');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

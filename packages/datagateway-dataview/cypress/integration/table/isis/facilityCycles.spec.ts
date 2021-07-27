@@ -13,7 +13,7 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation'
+      '/browse/instrument/1/facilityCycle/1/investigation'
     );
   });
 
@@ -24,7 +24,6 @@ describe('ISIS - FacilityCycles Table', () => {
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
-  // TODO: Having three columns does not work since the width not calulated correctly.
   it('should be able to resize a column', () => {
     let columnWidth = 0;
 
@@ -33,7 +32,7 @@ describe('ISIS - FacilityCycles Table', () => {
       .then((window) => {
         const windowWidth = window.innerWidth;
         columnWidth = windowWidth / 3;
-        columnWidth = Math.floor(columnWidth * 100) / 100;
+        columnWidth = Math.round(columnWidth * 100) / 100;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
 
@@ -45,13 +44,13 @@ describe('ISIS - FacilityCycles Table', () => {
 
     cy.get('@titleColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
-      width = Math.floor(width * 100) / 100;
+      width = Math.round(width * 100) / 100;
       expect(width).to.equal(columnWidth);
     });
 
     cy.get('@startDateColumn').should(($column) => {
       let { width } = $column[0].getBoundingClientRect();
-      width = Math.floor(width * 100) / 100;
+      width = Math.round(width * 100) / 100;
       expect(width).to.equal(columnWidth);
     });
 
@@ -71,7 +70,7 @@ describe('ISIS - FacilityCycles Table', () => {
       expect(width).to.be.lessThan(columnWidth);
     });
 
-    // table width should grow if a column grows too large
+    // Table width should grow if a column grows too large
     cy.get('.react-draggable')
       .first()
       .trigger('mousedown')
@@ -98,7 +97,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-02-01 00:00:00+00:00'
+        '2000-04-02 00:00:00+01:00'
       );
     });
 
@@ -131,7 +130,7 @@ describe('ISIS - FacilityCycles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2006-06-03 00:00:00+01:00'
+        '2000-04-02 00:00:00+01:00'
       );
     });
 
@@ -140,7 +139,7 @@ describe('ISIS - FacilityCycles Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2004-02-01 00:00:00+00:00'
+        '2000-04-02 00:00:00+01:00'
       );
     });
   });
@@ -154,7 +153,7 @@ describe('ISIS - FacilityCycles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="2"] [aria-colindex="2"]').contains(
-        '2010-02-01 00:00:00+00:00'
+        '2010-08-04 00:00:00+01:00'
       );
     });
 
@@ -178,9 +177,9 @@ describe('ISIS - FacilityCycles Table', () => {
         date.toISOString().slice(0, 10)
       );
 
-      cy.get('[aria-rowcount="7"]').should('exist');
+      cy.get('[aria-rowcount="19"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        '2010-04-02 00:00:00+01:00'
+        '2010-06-03 00:00:00+01:00'
       );
     });
 
