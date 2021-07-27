@@ -83,7 +83,6 @@ describe('ISIS - Studies Table', () => {
     });
   });
 
-  // Sorting currently broken
   describe('should be able to sort by', () => {
     it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
@@ -157,9 +156,8 @@ describe('ISIS - Studies Table', () => {
       );
     });
 
-    // Cannot filter on two joined fields at the same time
     it('multiple columns', () => {
-      cy.get('[aria-label="Filter by Name"]').find('input').first().type('4');
+      cy.get('[aria-label="Filter by Name"]').find('input').first().type('1');
 
       cy.get('[aria-label="Filter by Title"]')
         .find('input')

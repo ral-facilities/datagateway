@@ -82,7 +82,7 @@ describe('ISIS - Studies Cards', () => {
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
       .first()
-      .type('4')
+      .type('1')
       .wait(['@getStudiesCount', '@getStudiesOrder'], {
         timeout: 10000,
       });

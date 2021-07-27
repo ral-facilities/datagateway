@@ -1,11 +1,11 @@
 describe('DLS - Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('/datafiles/count').as('datafilesCount');
-    cy.intercept('/datasets/25').as('datasets');
+    cy.intercept('/datasets/241').as('datasets');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login();
     cy.visit(
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/241/datafile'
     ).wait(['@datafilesCount', '@datasets', '@datafilesOrder'], {
       timeout: 10000,
     });
@@ -28,10 +28,17 @@ describe('DLS - Datafiles Table', () => {
   it('should be able to scroll down and load more rows', () => {
     cy.get('[aria-rowcount="50"]').should('exist');
     cy.get('[aria-label="grid"]').scrollTo('bottom');
-    cy.get('[aria-rowcount="56"]').should('exist');
+    cy.get('[aria-rowcount="55"]').should('exist');
   });
 
   it('should be able to resize a column', () => {
+    // Filtering results so vertical scrollbar won't appear as this can impact on the
+    // column width causing these types of tests to intermittently fail
+    cy.get('[aria-label="Filter by Location"]')
+      .find('input')
+      .first()
+      .type('rise');
+
     let columnWidth = 0;
 
     cy.window()
@@ -100,7 +107,7 @@ describe('DLS - Datafiles Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/act/friend/general.jpeg'
+        '/across/name/television.jpg'
       );
     });
 
@@ -119,7 +126,7 @@ describe('DLS - Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        'yes/glass/them.jpg'
+        '/write/concern/all.jpeg'
       );
     });
 
@@ -143,7 +150,7 @@ describe('DLS - Datafiles Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-        '/year/how/structure.tiff'
+        '/reality/industry/open.gif'
       );
     });
 
@@ -159,7 +166,7 @@ describe('DLS - Datafiles Table', () => {
         .wait('@datafilesOrder', { timeout: 10000 });
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 1940'
+        'Datafile 5030'
       );
     });
   });
@@ -169,11 +176,11 @@ describe('DLS - Datafiles Table', () => {
       cy.get('[aria-label="Filter by Location"]')
         .find('input')
         .first()
-        .type('ok');
+        .type('rise');
 
       cy.get('[aria-rowcount="1"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 13915'
+        'Datafile 1198'
       );
     });
 
@@ -199,10 +206,10 @@ describe('DLS - Datafiles Table', () => {
 
       cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 14873'
+        'Datafile 20837'
       );
       cy.get('[aria-rowindex="2"] [aria-colindex="3"]').contains(
-        'Datafile 20621'
+        'Datafile 25627'
       );
     });
 
@@ -219,9 +226,9 @@ describe('DLS - Datafiles Table', () => {
         .type('.png')
         .wait('@datafilesCount', { timeout: 10000 });
 
-      cy.get('[aria-rowcount="1"]').should('exist');
+      cy.get('[aria-rowcount="2"]').should('exist');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Datafile 15352'
+        'Datafile 3593'
       );
     });
   });
