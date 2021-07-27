@@ -255,12 +255,12 @@ const ViewButton = (props: {
 
   return (
     <Button
-      className="tour-dataview-toggle-card"
+      className="tour-dataview-view-button"
       aria-label="container-view-button"
       variant="contained"
       color="primary"
       size="small"
-      startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
+      endIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
       onClick={() => props.handleButtonChange()}
     >
       {props.viewCards ? t('app.view_table') : t('app.view_cards')}
