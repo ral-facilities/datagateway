@@ -13,9 +13,7 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { StateType } from '../../../state/app.types';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
@@ -31,9 +29,6 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
   const { proposalName } = props;
 
   const [t] = useTranslation();
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
-  );
   const location = useLocation();
 
   const { filters, view, sort } = React.useMemo(
@@ -139,13 +134,11 @@ const DLSVisitsTable = (props: DLSVisitsTableProps): React.ReactElement => {
 
   return (
     <Table
-      loading={false}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={VisitDetailsPanel}
       columns={columns}
     />

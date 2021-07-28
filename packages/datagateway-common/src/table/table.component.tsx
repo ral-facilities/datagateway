@@ -90,7 +90,7 @@ export interface TableActionProps {
 }
 
 interface VirtualizedTableProps {
-  loading: boolean;
+  loading?: boolean;
   data: Entity[];
   columns: ColumnType[];
   loadMoreRows?: (offsetParams: IndexRange) => Promise<unknown>;
@@ -322,7 +322,7 @@ const VirtualizedTable = React.memo(
                                 return icatEntity.id;
                               })
                             }
-                            loading={loading}
+                            loading={loading ?? false}
                             onCheck={onCheck}
                             onUncheck={onUncheck}
                           />
@@ -343,7 +343,7 @@ const VirtualizedTable = React.memo(
                           onUncheck={onUncheck}
                           lastChecked={lastChecked}
                           setLastChecked={setLastChecked}
-                          loading={loading}
+                          loading={loading ?? false}
                         />
                       )}
                     />

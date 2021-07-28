@@ -12,15 +12,10 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { StateType } from '../../../state/app.types';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import TitleIcon from '@material-ui/icons/Title';
 
 const DLSProposalsTable = (): React.ReactElement => {
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
-  );
   const location = useLocation();
   const [t] = useTranslation();
 
@@ -90,13 +85,11 @@ const DLSProposalsTable = (): React.ReactElement => {
 
   return (
     <Table
-      loading={false}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
-      disableSelectAll={!selectAllSetting}
       columns={columns}
     />
   );

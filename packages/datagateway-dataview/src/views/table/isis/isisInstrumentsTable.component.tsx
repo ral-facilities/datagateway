@@ -12,11 +12,9 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { StateType } from '../../../state/app.types';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 import TitleIcon from '@material-ui/icons/Title';
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 interface ISISInstrumentsTableProps {
   studyHierarchy: boolean;
@@ -27,9 +25,6 @@ const ISISInstrumentsTable = (
 ): React.ReactElement => {
   const { studyHierarchy } = props;
 
-  const selectAllSetting = useSelector(
-    (state: StateType) => state.dgdataview.selectAllSetting
-  );
   const location = useLocation();
   const [t] = useTranslation();
 
@@ -77,13 +72,11 @@ const ISISInstrumentsTable = (
 
   return (
     <Table
-      loading={false}
       data={aggregatedData}
       loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
-      disableSelectAll={!selectAllSetting}
       detailsPanel={InstrumentDetailsPanel}
       columns={columns}
     />
