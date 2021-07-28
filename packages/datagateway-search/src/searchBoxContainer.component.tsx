@@ -7,7 +7,15 @@ import CheckboxesGroup from './search/checkBoxes.component';
 import SearchButton from './search/searchButton.component';
 import SearchTextBox from './search/searchTextBox.component';
 
-const SearchBoxContainer = (): React.ReactElement => {
+interface SearchBoxContainerProps {
+  initiateSearch: () => Promise<void>;
+}
+
+const SearchBoxContainer = (
+  props: SearchBoxContainerProps
+): React.ReactElement => {
+  const { initiateSearch } = props;
+
   return (
     <Grid
       container
@@ -18,13 +26,13 @@ const SearchBoxContainer = (): React.ReactElement => {
     >
       <Grid item xs={8}>
         <Box pl={2} pb={1}>
-          <SearchTextBox />
+          <SearchTextBox initiateSearch={initiateSearch} />
         </Box>
       </Grid>
 
       <Grid item style={{ display: 'flex' }}>
         <Box px={2} m="auto">
-          <SearchButton />
+          <SearchButton initiateSearch={initiateSearch} />
         </Box>
       </Grid>
 
@@ -37,7 +45,7 @@ const SearchBoxContainer = (): React.ReactElement => {
 
         <Grid item>
           <Box px={0.75}>
-            <SelectDates />
+            <SelectDates initiateSearch={initiateSearch} />
           </Box>
         </Grid>
       </Grid>
