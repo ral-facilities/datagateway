@@ -45,6 +45,35 @@ const fetchFacilityCycles = (
     });
 };
 
+const fetchAllFacilityCycles = (apiUrl: string): Promise<FacilityCycle[]> => {
+  return axios
+    .get(`${apiUrl}/facilitycycles`, {
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export const useAllFacilityCycles = (): UseQueryResult<
+  FacilityCycle[],
+  AxiosError
+> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<FacilityCycle[], AxiosError, FacilityCycle[], string>(
+    'facilityCycle',
+    () => fetchAllFacilityCycles(apiUrl),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
 export const useFacilityCyclesPaginated = (
   instrumentId: number
 ): UseQueryResult<FacilityCycle[], AxiosError> => {

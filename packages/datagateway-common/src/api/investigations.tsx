@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { IndexRange } from 'react-virtualized';
-import { getApiParams, parseSearchToQuery } from '.';
+import { fetchIds, getApiParams, parseSearchToQuery } from '.';
 import handleICATError from '../handleICATError';
 import { readSciGatewayToken } from '../parseTokens';
 import {
@@ -422,6 +422,371 @@ export const useInvestigationDetails = (
   return useQuery<Investigation, AxiosError, Investigation, [string, number]>(
     ['investigationDetails', investigationId],
     (params) => fetchInvestigationDetails(apiUrl, params.queryKey[1]),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+const fetchISISInvestigations = (
+  apiUrl: string,
+  instrumentId: number,
+  facilityCycleId: number,
+  sortAndFilters: {
+    sort: SortType;
+    filters: FiltersType;
+  },
+  offsetParams?: IndexRange,
+  additionalFilters?: AdditionalFilters
+): Promise<Investigation[]> => {
+  const params = getApiParams(sortAndFilters);
+
+  let includeParams = [
+    { investigationInstruments: 'instrument' },
+    { studyInvestigations: 'study' },
+  ];
+
+  if (offsetParams) {
+    params.append('skip', JSON.stringify(offsetParams.startIndex));
+    params.append(
+      'limit',
+      JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+    );
+  }
+
+  if (additionalFilters) {
+    additionalFilters.forEach((filter) => {
+      if (filter.filterType === 'include') {
+        const additionalIncludeParams = JSON.parse(filter.filterValue);
+        if (Array.isArray(additionalIncludeParams)) {
+          includeParams = includeParams.concat(additionalIncludeParams);
+        } else {
+          includeParams.push(additionalIncludeParams);
+        }
+      } else {
+        params.append(filter.filterType, filter.filterValue);
+      }
+    });
+  }
+  params.append('include', JSON.stringify(includeParams));
+
+  return axios
+    .get(
+      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
+      {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      }
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export const useISISInvestigationsPaginated = (
+  instrumentId: number,
+  instrumentChildId: number,
+  studyHierarchy: boolean
+): UseQueryResult<Investigation[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters, sort, page, results } = parseSearchToQuery(location.search);
+  const queryKey = studyHierarchy
+    ? 'ISISStudyInvestigation'
+    : 'ISISFacilityCycleinvestigation';
+
+  return useQuery<
+    Investigation[],
+    AxiosError,
+    Investigation[],
+    [
+      string,
+      number,
+      number,
+      {
+        sort: SortType;
+        filters: FiltersType;
+        page: number;
+        results: number | null;
+      },
+      AdditionalFilters?
+    ]
+  >(
+    [
+      queryKey,
+      instrumentId,
+      instrumentChildId,
+      { sort, filters, page: page || 1, results: results || 10 },
+    ],
+    (params) => {
+      const { sort, filters, page, results } = params.queryKey[3];
+      const startIndex = (page - 1) * (results ?? 10);
+      const stopIndex = startIndex + (results ?? 10) - 1;
+      if (studyHierarchy) {
+        return fetchInvestigations(
+          apiUrl,
+          { sort, filters },
+          [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'investigationInstruments.instrument.id': { eq: instrumentId },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'studyInvestigations.study.id': { eq: instrumentChildId },
+              }),
+            },
+          ],
+          {
+            startIndex,
+            stopIndex,
+          }
+        );
+      } else {
+        return fetchISISInvestigations(
+          apiUrl,
+          instrumentId,
+          instrumentChildId,
+          { sort, filters },
+          {
+            startIndex,
+            stopIndex,
+          }
+        );
+      }
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+export const useISISInvestigationsInfinite = (
+  instrumentId: number,
+  instrumentChildId: number,
+  studyHierarchy: boolean
+): UseInfiniteQueryResult<Investigation[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters, sort } = parseSearchToQuery(location.search);
+  const queryKey = studyHierarchy
+    ? 'ISISStudyInvestigation'
+    : 'ISISFacilityCycleinvestigation';
+
+  return useInfiniteQuery<
+    Investigation[],
+    AxiosError,
+    Investigation[],
+    [string, number, number, { sort: SortType; filters: FiltersType }]
+  >(
+    [queryKey, instrumentId, instrumentChildId, { sort, filters }],
+    (params) => {
+      const { sort, filters } = params.queryKey[3];
+      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
+      if (studyHierarchy) {
+        return fetchInvestigations(
+          apiUrl,
+          { sort, filters },
+          [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'investigationInstruments.instrument.id': { eq: instrumentId },
+              }),
+            },
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'studyInvestigations.study.id': { eq: instrumentChildId },
+              }),
+            },
+          ],
+          offsetParams
+        );
+      } else {
+        return fetchISISInvestigations(
+          apiUrl,
+          instrumentId,
+          instrumentChildId,
+          { sort, filters },
+          offsetParams
+        );
+      }
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length >= 25) {
+          return true;
+        } else {
+          return undefined;
+        }
+      },
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+const fetchISISInvestigationCount = (
+  apiUrl: string,
+  instrumentId: number,
+  facilityCycleId: number,
+  filters: FiltersType
+): Promise<number> => {
+  const params = getApiParams({ filters, sort: {} });
+  params.delete('order');
+
+  return axios
+    .get(
+      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations/count`,
+      {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      }
+    )
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export const useISISInvestigationCount = (
+  instrumentId: number,
+  instrumentChildId: number,
+  studyHierarchy: boolean
+): UseQueryResult<number, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters } = parseSearchToQuery(location.search);
+  const queryKey = studyHierarchy
+    ? 'ISISStudyInvestigation'
+    : 'ISISFacilityCycleinvestigation';
+
+  return useQuery<
+    number,
+    AxiosError,
+    number,
+    [string, string, number, number, { filters: FiltersType }]
+  >(
+    ['count', queryKey, instrumentId, instrumentChildId, { filters }],
+    (params) => {
+      const { filters } = params.queryKey[4];
+      if (studyHierarchy) {
+        return fetchInvestigationCount(apiUrl, filters, [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'investigationInstruments.instrument.id': { eq: instrumentId },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'studyInvestigations.study.id': { eq: instrumentChildId },
+            }),
+          },
+        ]);
+      } else {
+        return fetchISISInvestigationCount(
+          apiUrl,
+          instrumentId,
+          instrumentChildId,
+          filters
+        );
+      }
+    },
+    {
+      placeholderData: 0,
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+const fetchAllISISInvestigationIds = (
+  apiUrl: string,
+  instrumentId: number,
+  facilityCycleId: number,
+  filters: FiltersType
+): Promise<number[]> => {
+  const params = getApiParams({ filters, sort: {} });
+
+  // TODO: currently datagateway-api can't apply distinct filter to ISIS queries,
+  // so for now just retrieve everything
+  // params.set('distinct', JSON.stringify('id'));
+
+  return axios
+    .get<Investigation[]>(
+      `${apiUrl}/instruments/${instrumentId}/facilitycycles/${facilityCycleId}/investigations`,
+      {
+        params,
+        headers: {
+          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+        },
+      }
+    )
+    .then((response) => {
+      return response.data.map((x) => x.id);
+    });
+};
+
+export const useISISInvestigationIds = (
+  instrumentId: number,
+  instrumentChildId: number,
+  studyHierarchy: boolean
+): UseQueryResult<number[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters } = parseSearchToQuery(location.search);
+  const queryKey = studyHierarchy
+    ? 'ISISStudyInvestigationIds'
+    : 'ISISFacilityCycleinvestigationIds';
+
+  return useQuery<
+    number[],
+    AxiosError,
+    number[],
+    [string, number, number, { filters: FiltersType }]
+  >(
+    [queryKey, instrumentId, instrumentChildId, { filters }],
+    (params) => {
+      const { filters } = params.queryKey[3];
+      if (studyHierarchy) {
+        return fetchIds(apiUrl, 'investigation', filters, [
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'investigationInstruments.instrument.id': { eq: instrumentId },
+            }),
+          },
+          {
+            filterType: 'where',
+            filterValue: JSON.stringify({
+              'studyInvestigations.study.id': { eq: instrumentChildId },
+            }),
+          },
+        ]);
+      } else {
+        return fetchAllISISInvestigationIds(
+          apiUrl,
+          instrumentId,
+          instrumentChildId,
+          filters
+        );
+      }
+    },
     {
       onError: (error) => {
         handleICATError(error);
