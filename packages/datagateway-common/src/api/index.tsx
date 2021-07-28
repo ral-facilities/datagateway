@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { StateType } from '../state/app.types';
 
 export * from './cart';
+export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
 
@@ -208,13 +209,10 @@ export const usePushSort = (): ((
   sortKey: string,
   order: Order | null
 ) => void) => {
-  const {
-    push,
-    location: { search },
-  } = useHistory();
+  const { push } = useHistory();
   return React.useCallback(
     (sortKey: string, order: Order | null): void => {
-      let query = parseSearchToQuery(search);
+      let query = parseSearchToQuery(window.location.search);
       if (order !== null) {
         query = {
           ...query,
@@ -235,7 +233,7 @@ export const usePushSort = (): ((
       }
       push({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [search, push]
+    [push]
   );
 };
 
@@ -243,13 +241,10 @@ export const usePushFilters = (): ((
   filterKey: string,
   filter: Filter | null
 ) => void) => {
-  const {
-    push,
-    location: { search },
-  } = useHistory();
+  const { push } = useHistory();
   return React.useCallback(
     (filterKey: string, filter: Filter | null) => {
-      let query = parseSearchToQuery(search);
+      let query = parseSearchToQuery(window.location.search);
       if (filter !== null) {
         // if given an defined filter, update the relevant column in the sort state
         query = {
@@ -271,43 +266,37 @@ export const usePushFilters = (): ((
       }
       push({ search: `?${parseQueryToSearch(query).toString()}` });
     },
-    [search, push]
+    [push]
   );
 };
 
 export const usePushPage = (): ((page: number) => void) => {
-  const {
-    push,
-    location: { search },
-  } = useHistory();
+  const { push } = useHistory();
 
   return React.useCallback(
     (page: number) => {
       const query = {
-        ...parseSearchToQuery(search),
+        ...parseSearchToQuery(window.location.search),
         page,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [search, push]
+    [push]
   );
 };
 
 export const usePushResults = (): ((results: number) => void) => {
-  const {
-    push,
-    location: { search },
-  } = useHistory();
+  const { push } = useHistory();
 
   return React.useCallback(
     (results: number) => {
       const query = {
-        ...parseSearchToQuery(search),
+        ...parseSearchToQuery(window.location.search),
         results,
       };
       push(`?${parseQueryToSearch(query).toString()}`);
     },
-    [search, push]
+    [push]
   );
 };
 
