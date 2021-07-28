@@ -131,7 +131,7 @@ class SearchPageContainer extends React.Component<SearchPageContainerCombinedPro
                     <Paper
                       style={{
                         height: '100%',
-                        width: 'calc(70vw)',
+                        width: '70vw',
                         minWidth: 584,
                       }}
                     >
@@ -148,7 +148,7 @@ class SearchPageContainer extends React.Component<SearchPageContainerCombinedPro
                       style={{
                         height: containerHeight,
                         minHeight: 326,
-                        width: 'calc(70vw)',
+                        width: '99vw',
                         minWidth: 584,
                       }}
                     >
