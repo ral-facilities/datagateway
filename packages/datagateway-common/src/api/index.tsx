@@ -21,6 +21,7 @@ export * from './cart';
 export * from './facilityCycles';
 export * from './instruments';
 export * from './investigations';
+export * from './datafiles';
 
 /**
  * Get the nested value from an Entity object given a dataKey

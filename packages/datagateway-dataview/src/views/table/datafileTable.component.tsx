@@ -6,39 +6,32 @@ import {
   makeStyles,
   Theme,
   Divider,
-  IconButton,
+  // IconButton,
 } from '@material-ui/core';
 import {
   Table,
-  TableActionProps,
+  // TableActionProps,
   formatBytes,
-  TextColumnFilter,
-  TextFilter,
-  DateColumnFilter,
-  Order,
-  Filter,
   Datafile,
-  Entity,
-  DownloadCartItem,
-  fetchDatafiles,
-  downloadDatafile,
-  fetchDatafileCount,
-  addToCart,
-  removeFromCart,
-  fetchAllIds,
-  pushPageFilter,
-  pushPageSort,
-  DateFilter,
-  readURLQuery,
+  useDatafileCount,
+  useDatafilesInfinite,
+  parseSearchToQuery,
+  useTextFilter,
+  useDateFilter,
+  ColumnType,
+  usePushSort,
+  useIds,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  DetailsPanelProps,
 } from 'datagateway-common';
-import { GetApp } from '@material-ui/icons';
-import { ThunkDispatch } from 'redux-thunk';
-import { connect } from 'react-redux';
-import { StateType } from '../../state/app.types';
-import { AnyAction } from 'redux';
-import { IndexRange } from 'react-virtualized';
+// import { GetApp } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
-import { RouterLocation } from 'connected-react-router';
+import { useLocation } from 'react-router';
+import { StateType } from '../../state/app.types';
+import { useSelector } from 'react-redux';
+import { IndexRange } from 'react-virtualized';
 
 import TitleIcon from '@material-ui/icons/Title';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -61,68 +54,120 @@ interface DatafileTableProps {
   investigationId: string;
 }
 
-interface DatafileTableStoreProps {
-  location: RouterLocation<unknown>;
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  cartItems: DownloadCartItem[];
-  allIds: number[];
-  selectAllSetting: boolean;
-}
-
-interface DatafileTableDispatchProps {
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (
-    datasetId: number,
-    investigationId: number,
-    offsetParams: IndexRange
-  ) => Promise<void>;
-  fetchCount: (datasetId: number, investigationId: number) => Promise<void>;
-  downloadData: (datafileId: number, filename: string) => Promise<void>;
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchAllIds: (datasetId: number, investigationId: number) => Promise<void>;
-}
-
-type DatafileTableCombinedProps = DatafileTableProps &
-  DatafileTableStoreProps &
-  DatafileTableDispatchProps;
-
-const DatafileTable = (
-  props: DatafileTableCombinedProps
-): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    fetchData,
-    fetchCount,
-    pushSort,
-    location,
-    pushFilters,
-    datasetId,
-    investigationId,
-    downloadData,
-    cartItems,
-    addToCart,
-    removeFromCart,
-    allIds,
-    fetchAllIds,
-    loading,
-    selectAllSetting,
-  } = props;
+const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
+  const { datasetId, investigationId } = props;
 
   const [t] = useTranslation();
 
-  const classes = useStyles();
+  const location = useLocation();
+
+  const selectAllSetting = useSelector(
+    (state: StateType) => state.dgdataview.selectAllSetting
+  );
+
+  const { filters, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const pushSort = usePushSort();
+  const { data: allIds } = useIds('datafile', [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'dataset.investigation.id': { eq: investigationId },
+      }),
+    },
+  ]);
+  const { data: cartItems } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
+    'investigation'
+  );
+  const {
+    mutate: removeFromCart,
+    isLoading: removeFromCartLoading,
+  } = useRemoveFromCart('investigation');
+
+  const { data: totalDataCount } = useDatafileCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'dataset.investigation.id': { eq: investigationId },
+      }),
+    },
+  ]);
+
+  const { fetchNextPage, data } = useDatafilesInfinite([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+    },
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'dataset.investigation.id': { eq: investigationId },
+      }),
+    },
+  ]);
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
+
+  const aggregatedData: Datafile[] = React.useMemo(
+    () => data?.pages.flat() ?? [],
+    [data]
+  );
+
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        icon: TitleIcon,
+        label: t('datafiles.name'),
+        dataKey: 'name',
+        filterComponent: textFilter,
+      },
+      {
+        icon: ExploreIcon,
+        label: t('datafiles.location'),
+        dataKey: 'location',
+        filterComponent: textFilter,
+      },
+      {
+        icon: SaveIcon,
+        label: t('datafiles.size'),
+        dataKey: 'fileSize',
+        cellContentRenderer: (cellProps) => {
+          return formatBytes(cellProps.cellData);
+        },
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('datafiles.modified_time'),
+        dataKey: 'modTime',
+        filterComponent: dateFilter,
+      },
+    ],
+    [t, dateFilter, textFilter]
+  );
 
   const selectedRows = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
+            allIds &&
             cartItem.entityType === 'datafile' &&
             allIds.includes(cartItem.entityId)
         )
@@ -130,61 +175,115 @@ const DatafileTable = (
     [cartItems, allIds]
   );
 
-  const { filters, sort } = React.useMemo(() => readURLQuery(location), [
-    location,
-  ]);
+  const DatafileDetailsPanel = (
+    props: DetailsPanelProps
+  ): React.ReactElement => {
+    const classes = useStyles();
+    const [t] = useTranslation();
+    const datafileData = props.rowData as Datafile;
+    return (
+      <Grid
+        id="details-panel"
+        container
+        className={classes.root}
+        direction="column"
+      >
+        <Grid item xs>
+          <Typography variant="h6">
+            <b>{datafileData.name}</b>
+          </Typography>
+          <Divider className={classes.divider} />
+        </Grid>
+        <Grid item xs>
+          <Typography variant="overline">
+            {t('datafiles.details.size')}
+          </Typography>
+          <Typography>
+            <b>{formatBytes(datafileData.fileSize)}</b>
+          </Typography>
+        </Grid>
+        <Grid item xs>
+          <Typography variant="overline">
+            {t('datafiles.details.location')}
+          </Typography>
+          <Typography>
+            <b>{datafileData.location}</b>
+          </Typography>
+        </Grid>
+      </Grid>
+    );
+  };
 
-  React.useEffect(() => {
-    fetchCount(parseInt(datasetId), parseInt(investigationId));
-    fetchAllIds(parseInt(datasetId), parseInt(investigationId));
-  }, [
-    fetchCount,
-    fetchAllIds,
-    location.query.filters,
-    datasetId,
-    investigationId,
-  ]);
+  // const downloadButton = (props: DetailsPanelProps): any => {
+  //   const { id, location } = props.rowData as Datafile;
+  //   if (location) {
+  //     return (
+  //       <IconButton
+  //         aria-label={t('datafiles.download')}
+  //         key="download"
+  //         onClick={() => {
+  //           downloadData(id, location);
+  //         }}
+  //       >
+  //         <GetApp />
+  //       </IconButton>
+  //     );
+  //   } else {
+  //     return null;
+  //   }
+  // };
 
-  React.useEffect(() => {
-    fetchData(parseInt(datasetId), parseInt(investigationId), {
-      startIndex: 0,
-      stopIndex: 49,
-    });
-  }, [
-    fetchData,
-    location.query.sort,
-    location.query.filters,
-    datasetId,
-    investigationId,
-  ]);
+  // const DatafileDownloadActions = (
+  //   props: DetailsPanelProps
+  // ): React.ReactElement => {
+  //   const { id, location } = props.rowData as Datafile;
+  //     if (location) {
+  //       return (
+  //         <IconButton
+  //           aria-label={t('datafiles.download')}
+  //           key="download"
+  //           onClick={() => {
+  //             downloadData(id, location);
+  //           }}
+  //         >
+  //           <GetApp />
+  //         </IconButton>
+  //       );
+  //     } else {
+  //       return null;
+  //     }
+  //   },
+  // };
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
+  // React.useEffect(() => {
+  //   fetchCount(parseInt(datasetId), parseInt(investigationId));
+  //   fetchAllIds(parseInt(datasetId), parseInt(investigationId));
+  // }, [
+  //   fetchCount,
+  //   fetchAllIds,
+  //   location.query.filters,
+  //   datasetId,
+  //   investigationId,
+  // ]);
 
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
+  // React.useEffect(() => {
+  //   fetchData(parseInt(datasetId), parseInt(investigationId), {
+  //     startIndex: 0,
+  //     stopIndex: 49,
+  //   });
+  // }, [
+  //   fetchData,
+  //   location.query.sort,
+  //   location.query.filters,
+  //   datasetId,
+  //   investigationId,
+  // ]);
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) =>
-        fetchData(parseInt(datasetId), parseInt(investigationId), params)
-      }
+      loading={addToCartLoading || removeFromCartLoading}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
@@ -193,173 +292,113 @@ const DatafileTable = (
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={({ rowData }) => {
-        const datafileData = rowData as Datafile;
-        return (
-          <Grid
-            id="details-panel"
-            container
-            className={classes.root}
-            direction="column"
-          >
-            <Grid item xs>
-              <Typography variant="h6">
-                <b>{datafileData.name}</b>
-              </Typography>
-              <Divider className={classes.divider} />
-            </Grid>
-            <Grid item xs>
-              <Typography variant="overline">
-                {t('datafiles.details.size')}
-              </Typography>
-              <Typography>
-                <b>{formatBytes(datafileData.fileSize)}</b>
-              </Typography>
-            </Grid>
-            <Grid item xs>
-              <Typography variant="overline">
-                {t('datafiles.details.location')}
-              </Typography>
-              <Typography>
-                <b>{datafileData.location}</b>
-              </Typography>
-            </Grid>
-          </Grid>
-        );
-      }}
-      actions={[
-        function downloadButton({ rowData }: TableActionProps) {
-          const { id, location } = rowData as Datafile;
-          if (location) {
-            return (
-              <IconButton
-                aria-label={t('datafiles.download')}
-                key="download"
-                onClick={() => {
-                  downloadData(id, location);
-                }}
-              >
-                <GetApp />
-              </IconButton>
-            );
-          } else {
-            return null;
-          }
-        },
-      ]}
-      columns={[
-        {
-          icon: TitleIcon,
-          label: t('datafiles.name'),
-          dataKey: 'name',
-          filterComponent: textFilter,
-        },
-        {
-          icon: ExploreIcon,
-          label: t('datafiles.location'),
-          dataKey: 'location',
-          filterComponent: textFilter,
-        },
-        {
-          icon: SaveIcon,
-          label: t('datafiles.size'),
-          dataKey: 'fileSize',
-          cellContentRenderer: (cellProps) => {
-            return formatBytes(cellProps.cellData);
-          },
-        },
-        {
-          icon: CalendarTodayIcon,
-          label: t('datafiles.modified_time'),
-          dataKey: 'modTime',
-          filterComponent: dateFilter,
-        },
-      ]}
+      detailsPanel={DatafileDetailsPanel}
+      // actions={[
+      //   function downloadButton({ rowData }: TableActionProps) {
+      //     const { id, location } = rowData as Datafile;
+      //     if (location) {
+      //       return (
+      //         <IconButton
+      //           aria-label={t('datafiles.download')}
+      //           key="download"
+      //           onClick={() => {
+      //             downloadData(id, location);
+      //           }}
+      //         >
+      //           <GetApp />
+      //         </IconButton>
+      //       );
+      //     } else {
+      //       return null;
+      //     }
+      //   },
+      // ]}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DatafileTableDispatchProps => ({
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
+// const mapDispatchToProps = (
+//   dispatch: ThunkDispatch<StateType, null, AnyAction>
+// ): DatafileTableDispatchProps => ({
+//   pushSort: (sort: string, order: Order | null) =>
+//     dispatch(pushPageSort(sort, order)),
 
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-  fetchData: (
-    datasetId: number,
-    investigationId: number,
-    offsetParams: IndexRange
-  ) =>
-    dispatch(
-      fetchDatafiles({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-          },
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'dataset.investigation.id': { eq: investigationId },
-            }),
-          },
-        ],
-      })
-    ),
-  fetchCount: (datasetId: number, investigationId: number) =>
-    dispatch(
-      fetchDatafileCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'dataset.investigation.id': { eq: investigationId },
-          }),
-        },
-      ])
-    ),
-  downloadData: (datafileId: number, filename: string) =>
-    dispatch(downloadDatafile(datafileId, filename)),
-  addToCart: (entityIds: number[]) =>
-    dispatch(addToCart('datafile', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('datafile', entityIds)),
-  fetchAllIds: (datasetId: number, investigationId: number) =>
-    dispatch(
-      fetchAllIds('datafile', [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'dataset.id': { eq: datasetId },
-          }),
-        },
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'dataset.investigation.id': { eq: investigationId },
-          }),
-        },
-      ])
-    ),
-});
+//   pushFilters: (filter: string, data: Filter | null) =>
+//     dispatch(pushPageFilter(filter, data)),
+//   fetchData: (
+//     datasetId: number,
+//     investigationId: number,
+//     offsetParams: IndexRange
+//   ) =>
+//     dispatch(
+//       fetchDatafiles({
+//         offsetParams,
+//         additionalFilters: [
+//           {
+//             filterType: 'where',
+//             filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+//           },
+//           {
+//             filterType: 'where',
+//             filterValue: JSON.stringify({
+//               'dataset.investigation.id': { eq: investigationId },
+//             }),
+//           },
+//         ],
+//       })
+//     ),
+//   fetchCount: (datasetId: number, investigationId: number) =>
+//     dispatch(
+//       fetchDatafileCount([
+//         {
+//           filterType: 'where',
+//           filterValue: JSON.stringify({ 'dataset.id': { eq: datasetId } }),
+//         },
+//         {
+//           filterType: 'where',
+//           filterValue: JSON.stringify({
+//             'dataset.investigation.id': { eq: investigationId },
+//           }),
+//         },
+//       ])
+//     ),
+//   downloadData: (datafileId: number, filename: string) =>
+//     dispatch(downloadDatafile(datafileId, filename)),
+//   addToCart: (entityIds: number[]) =>
+//     dispatch(addToCart('datafile', entityIds)),
+//   removeFromCart: (entityIds: number[]) =>
+//     dispatch(removeFromCart('datafile', entityIds)),
+//   fetchAllIds: (datasetId: number, investigationId: number) =>
+//     dispatch(
+//       fetchAllIds('datafile', [
+//         {
+//           filterType: 'where',
+//           filterValue: JSON.stringify({
+//             'dataset.id': { eq: datasetId },
+//           }),
+//         },
+//         {
+//           filterType: 'where',
+//           filterValue: JSON.stringify({
+//             'dataset.investigation.id': { eq: investigationId },
+//           }),
+//         },
+//       ])
+//     ),
+// });
 
-const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
-  return {
-    location: state.router.location,
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-    cartItems: state.dgcommon.cartItems,
-    allIds: state.dgcommon.allIds,
-    selectAllSetting: state.dgdataview.selectAllSetting,
-  };
-};
+// const mapStateToProps = (state: StateType): DatafileTableStoreProps => {
+//   return {
+//     location: state.router.location,
+//     data: state.dgcommon.data,
+//     totalDataCount: state.dgcommon.totalDataCount,
+//     loading: state.dgcommon.loading,
+//     error: state.dgcommon.error,
+//     cartItems: state.dgcommon.cartItems,
+//     allIds: state.dgcommon.allIds,
+//     selectAllSetting: state.dgdataview.selectAllSetting,
+//   };
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DatafileTable);
+export default DatafileTable;
