@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomePage translated homepage renders correctly 1`] = `
+<div
+  id="dg-homepage"
+>
+  <div
+    className="HomePage-bigImage-1"
+  >
+    <div
+      style={
+        Object {
+          "backgroundImage": "url(testbackground.jpg)",
+          "height": 250,
+          "width": "100%",
+        }
+      }
+    >
+      <img
+        alt="homePage.title"
+        src="testdatgateway-white-text-blue-mark-logo.svg"
+      />
+    </div>
+  </div>
+  <div
+    className="HomePage-howItWorks-2"
+  >
+    <WithStyles(ForwardRef(Typography))
+      className="HomePage-howItWorksTitle-3"
+      variant="h4"
+    >
+      homePage.howLabel
+    </WithStyles(ForwardRef(Typography))>
+    <WithStyles(ForwardRef(Grid))
+      container={true}
+      spacing={3}
+    >
+      <WithStyles(ForwardRef(Grid))
+        className="HomePage-howItWorksGridItem-4"
+        item={true}
+        md={4}
+        sm={12}
+      >
+        <WithStyles(ForwardRef(Typography))
+          className="HomePage-howItWorksGridItemTitle-5"
+          variant="h5"
+        >
+          homePage.exploreLabel
+        </WithStyles(ForwardRef(Typography))>
+        <img
+          alt=""
+          className="HomePage-howItWorksGridItemImage-6"
+          src="testexplore.jpg"
+        />
+        <WithStyles(ForwardRef(Typography))
+          className="HomePage-howItWorksGridItemCaption-7"
+          variant="body1"
+        >
+          homePage.exploreDescription
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        className="HomePage-howItWorksGridItem-4"
+        item={true}
+        md={4}
+        sm={12}
+      >
+        <WithStyles(ForwardRef(Typography))
+          className="HomePage-howItWorksGridItemTitle-5"
+          variant="h5"
+        >
+          homePage.discoverLabel
+        </WithStyles(ForwardRef(Typography))>
+        <img
+          alt=""
+          className="HomePage-howItWorksGridItemImage-6"
+          src="testdiscover.jpg"
+        />
+        <WithStyles(ForwardRef(Typography))
+          className="HomePage-howItWorksGridItemCaption-7"
+          variant="body1"
+        >
+          homePage.discoverDescription
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+      <WithStyles(ForwardRef(Grid))
+        className="HomePage-howItWorksGridItem-4"
+        item={true}
+        md={4}
+        sm={12}
+      >
+        <WithStyles(ForwardRef(Typography))
+          className="HomePage-howItWorksGridItemTitle-5"
+          variant="h5"
+        >
+          homePage.downloadLabel
+        </WithStyles(ForwardRef(Typography))>
+        <img
+          alt=""
+          className="HomePage-howItWorksGridItemImage-6"
+          src="testdownload.jpg"
+        />
+        <WithStyles(ForwardRef(Typography))
+          className="HomePage-howItWorksGridItemCaption-7"
+          variant="body1"
+        >
+          homePage.downloadDescription
+        </WithStyles(ForwardRef(Typography))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(Grid))>
+  </div>
+</div>
+`;
