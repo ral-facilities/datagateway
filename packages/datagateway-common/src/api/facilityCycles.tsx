@@ -68,7 +68,7 @@ export const useFacilityCyclesPaginated = (
     ]
   >(
     [
-      'instrument',
+      'facilityCycle',
       instrumentId,
       { sort, filters, page: page || 1, results: results || 10 },
     ],
@@ -107,7 +107,7 @@ export const useFacilityCyclesInfinite = (
     FacilityCycle[],
     [string, number, { sort: SortType; filters: FiltersType }]
   >(
-    ['investigation', instrumentId, { sort, filters }],
+    ['facilityCycle', instrumentId, { sort, filters }],
     (params) => {
       const { sort, filters } = params.queryKey[2];
       const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
@@ -166,7 +166,7 @@ export const useFacilityCycleCount = (
     number,
     [string, string, number, { filters: FiltersType }]
   >(
-    ['count', 'instrument', instrumentId, { filters }],
+    ['count', 'facilityCycle', instrumentId, { filters }],
     (params) => {
       const { filters } = params.queryKey[3];
       return fetchFacilityCycleCount(apiUrl, instrumentId, filters);
