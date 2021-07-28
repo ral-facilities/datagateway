@@ -40,8 +40,8 @@ class SearchPageContainer extends React.Component<SearchPageContainerStoreProps>
               <Grid
                 container
                 direction={this.props.sideLayout ? 'row' : 'column'}
-                justify="flex-start"
-                alignItems="flex-start"
+                justify="center"
+                alignItems="center"
                 spacing={spacing}
                 style={{ margin: 0, width: '100%' }}
               >
@@ -68,7 +68,7 @@ class SearchPageContainer extends React.Component<SearchPageContainerStoreProps>
                     style={{
                       height: containerHeight,
                       minHeight: 326,
-                      width: 'calc(70vw)',
+                      width: '100vw',
                       minWidth: 584,
                     }}
                   >
