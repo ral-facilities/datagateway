@@ -2,17 +2,8 @@
 
 exports[`Search Button component tests renders correctly 1`] = `
 <div>
-  <Connect(TranslatedSearchButton)
-    store={
-      Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
+  <TranslatedSearchButton
+    initiateSearch={[MockFunction]}
   />
 </div>
 `;

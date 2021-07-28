@@ -34,18 +34,7 @@ describe('SearchPageTable', () => {
     );
   });
 
-  it('renders SearchPageTable correctly before request', () => {
-    state.dgsearch.requestReceived = false;
-    const mockStore = configureStore([thunk]);
-    const wrapper = mount(
-      <div>
-        <SearchPageTable store={mockStore(state)} />
-      </div>
-    );
-    expect(wrapper).toMatchSnapshot();
-  });
-
-  it('renders SearchPageTable correctly after request', () => {
+  it('renders correctly when request received', () => {
     state.dgsearch = {
       ...state.dgsearch,
       tabs: {

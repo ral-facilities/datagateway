@@ -9,7 +9,5 @@ describe('SearchPageContainer Component', () => {
     cy.title().should('equal', 'DataGateway Search');
 
     cy.get('#container-search-filters').should('exist');
-
-    cy.get('#container-search-table').should('exist');
   });
 });
