@@ -1,0 +1,181 @@
+import axios, { AxiosError } from 'axios';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { IndexRange } from 'react-virtualized';
+import { getApiParams, parseSearchToQuery } from '.';
+import handleICATError from '../handleICATError';
+import { readSciGatewayToken } from '../parseTokens';
+import { FiltersType, FacilityCycle, SortType } from '../app.types';
+import { StateType } from '../state/app.types';
+import {
+  useQuery,
+  UseQueryResult,
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+} from 'react-query';
+
+const fetchFacilityCycles = (
+  apiUrl: string,
+  instrumentId: number,
+  sortAndFilters: {
+    sort: SortType;
+    filters: FiltersType;
+  },
+  offsetParams?: IndexRange
+): Promise<FacilityCycle[]> => {
+  const params = getApiParams(sortAndFilters);
+
+  if (offsetParams) {
+    params.append('skip', JSON.stringify(offsetParams.startIndex));
+    params.append(
+      'limit',
+      JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+    );
+  }
+
+  return axios
+    .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export const useFacilityCyclesPaginated = (
+  instrumentId: number
+): UseQueryResult<FacilityCycle[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters, sort, page, results } = parseSearchToQuery(location.search);
+
+  return useQuery<
+    FacilityCycle[],
+    AxiosError,
+    FacilityCycle[],
+    [
+      string,
+      number,
+      {
+        sort: SortType;
+        filters: FiltersType;
+        page: number;
+        results: number | null;
+      }
+    ]
+  >(
+    [
+      'instrument',
+      instrumentId,
+      { sort, filters, page: page || 1, results: results || 10 },
+    ],
+    (params) => {
+      const { sort, filters, page, results } = params.queryKey[2];
+      const startIndex = (page - 1) * (results ?? 10);
+      const stopIndex = startIndex + (results ?? 10) - 1;
+      return fetchFacilityCycles(
+        apiUrl,
+        instrumentId,
+        { sort, filters },
+        {
+          startIndex,
+          stopIndex,
+        }
+      );
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+export const useFacilityCyclesInfinite = (
+  instrumentId: number
+): UseInfiniteQueryResult<FacilityCycle[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters, sort } = parseSearchToQuery(location.search);
+
+  return useInfiniteQuery<
+    FacilityCycle[],
+    AxiosError,
+    FacilityCycle[],
+    [string, number, { sort: SortType; filters: FiltersType }]
+  >(
+    ['investigation', instrumentId, { sort, filters }],
+    (params) => {
+      const { sort, filters } = params.queryKey[2];
+      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
+      return fetchFacilityCycles(
+        apiUrl,
+        instrumentId,
+        { sort, filters },
+        offsetParams
+      );
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length >= 25) {
+          return true;
+        } else {
+          return undefined;
+        }
+      },
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+const fetchFacilityCycleCount = (
+  apiUrl: string,
+  instrumentId: number,
+  filters: FiltersType
+): Promise<number> => {
+  const params = getApiParams({ filters, sort: {} });
+  params.delete('order');
+
+  return axios
+    .get(`${apiUrl}/instruments/${instrumentId}/facilitycycles/count`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export const useFacilityCycleCount = (
+  instrumentId: number
+): UseQueryResult<number, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters } = parseSearchToQuery(location.search);
+
+  return useQuery<
+    number,
+    AxiosError,
+    number,
+    [string, string, number, { filters: FiltersType }]
+  >(
+    ['count', 'instrument', instrumentId, { filters }],
+    (params) => {
+      const { filters } = params.queryKey[3];
+      return fetchFacilityCycleCount(apiUrl, instrumentId, filters);
+    },
+    {
+      placeholderData: 0,
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
