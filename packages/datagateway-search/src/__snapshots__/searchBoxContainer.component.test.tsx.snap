@@ -13,7 +13,9 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       pb={1}
       pl={2}
     >
-      <Connect(SearchTextBox) />
+      <Connect(SearchTextBox)
+        initiateSearch={[MockFunction]}
+      />
     </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
@@ -28,7 +30,9 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       m="auto"
       px={2}
     >
-      <Connect(TranslatedSearchButton) />
+      <TranslatedSearchButton
+        initiateSearch={[MockFunction]}
+      />
     </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
   <WithStyles(ForwardRef(Grid))
@@ -61,9 +65,58 @@ exports[`SearchBoxContainer - Tests renders searchBoxContainer correctly 1`] = `
       <Styled(MuiBox)
         px={0.75}
       >
-        <Connect(SelectDates) />
+        <Connect(SelectDates)
+          initiateSearch={[MockFunction]}
+        />
       </Styled(MuiBox)>
     </WithStyles(ForwardRef(Grid))>
+  </WithStyles(ForwardRef(Grid))>
+</div>
+`;
+
+exports[`SearchBoxContainerSide - Tests renders searchBoxContainerSide correctly 1`] = `
+<div
+  className="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column"
+  id="container-searchbox"
+>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Styled(MuiBox)
+      px={2}
+    >
+      <Connect(SearchTextBox)
+        initiateSearch={[MockFunction]}
+      />
+    </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Styled(MuiBox)
+      px={2}
+    >
+      <Connect(SelectDates)
+        initiateSearch={[MockFunction]}
+      />
+    </Styled(MuiBox)>
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Connect(CheckboxesGroup) />
+  </WithStyles(ForwardRef(Grid))>
+  <WithStyles(ForwardRef(Grid))
+    item={true}
+  >
+    <Styled(MuiBox)
+      mx={5}
+      pb={2}
+    >
+      <TranslatedSearchButton
+        initiateSearch={[MockFunction]}
+      />
+    </Styled(MuiBox)>
   </WithStyles(ForwardRef(Grid))>
 </div>
 `;
