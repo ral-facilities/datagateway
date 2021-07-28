@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import InstrumentDetailsPanel from '../../detailsPanels/isis/instrumentDetailsPanel.component';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 interface ISISInstrumentsCVProps {
   studyHierarchy: boolean;
 }
