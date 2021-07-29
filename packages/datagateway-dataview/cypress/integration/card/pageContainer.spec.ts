@@ -61,7 +61,7 @@ describe('PageContainer Component', () => {
       .contains('2');
   });
 
-  it('should be able to chose number of results to display', () => {
+  it('should be able to choose number of results to display', () => {
     cy.get('[aria-label="card-buttons"]', { timeout: 10000 }).should(
       'have.length',
       10
@@ -84,22 +84,22 @@ describe('PageContainer Component', () => {
 
   it('should be able to change page', () => {
     cy.get('[aria-label="Go to page 2"]', { timeout: 10000 }).first().click();
-    cy.get('#card').contains('Law hair score herself threat back often.');
+    cy.get('#card').contains('Guy maintain us process official people suffer.');
 
     cy.get('[aria-label="Go to next page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('#card').contains('Return another mention skin specific.');
+    cy.get('#card').contains('Yourself smile either I pass significant.');
 
     cy.get('[aria-label="Go to last page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('#card').contains('Only deal all player could.');
+    cy.get('#card').contains('Window former upon writer help step account.');
 
     cy.get('[aria-label="Go to previous page"]', { timeout: 10000 })
       .first()
       .click();
-    cy.get('#card').contains('Himself now become speech drug who fine bar.');
+    cy.get('#card').contains('Someone statement Republican plan watch.');
 
     cy.get('[aria-label="Go to first page"]', { timeout: 10000 })
       .first()

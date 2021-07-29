@@ -94,7 +94,6 @@ describe('ISIS Study Landing page', () => {
     name: 'Name 1',
     summary: 'foo bar',
     visitId: '1',
-    rbNumber: '1',
     doi: 'doi 1',
     size: 1,
     investigationInstruments: investigationInstrument,
@@ -364,5 +363,30 @@ describe('ISIS Study Landing page', () => {
     expect(
       wrapper.find('#landing-study-copied-citation').first().text()
     ).toEqual('Copied citation');
+  });
+
+  it('displays correctly when investigation missing', () => {
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [
+          {
+            study: study,
+          },
+        ],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISStudyLanding instrumentId="4" studyId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-label="landing-study-citation"]').first().text()
+    ).toEqual('2019: doi_constants.publisher.name, https://doi.org/study pid');
   });
 });

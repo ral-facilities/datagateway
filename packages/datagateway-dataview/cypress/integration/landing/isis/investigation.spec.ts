@@ -1,7 +1,7 @@
 describe('ISIS - Investigation Landing', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/14/investigation/87');
+    cy.visit('/browse/instrument/1/facilityCycle/16/investigation/97');
   });
 
   it('should load correctly', () => {
@@ -13,7 +13,7 @@ describe('ISIS - Investigation Landing', () => {
     cy.get('#investigation-datasets-tab').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset'
     );
   });
 
@@ -24,7 +24,7 @@ describe('ISIS - Investigation Landing', () => {
       .click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/348'
+      '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337'
     );
   });
 });

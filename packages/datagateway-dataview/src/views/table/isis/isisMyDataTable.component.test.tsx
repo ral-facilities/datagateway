@@ -55,7 +55,6 @@ describe('ISIS Investigations table component', () => {
         name: 'Test 1 name',
         summary: 'foo bar',
         visitId: '1',
-        rbNumber: '1',
         doi: 'doi 1',
         size: 1,
         investigationInstruments: [
@@ -364,7 +363,7 @@ describe('ISIS Investigations table component', () => {
     ).toEqual(0);
   });
 
-  it('renders title and RB number as links', () => {
+  it('renders title and name as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>

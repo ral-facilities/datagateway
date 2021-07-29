@@ -178,10 +178,10 @@ const InvestigationTable = (
             </Grid>
             <Grid item xs>
               <Typography variant="overline">
-                {t('investigations.details.rb_number')}
+                {t('investigations.details.name')}
               </Typography>
               <Typography>
-                <b>{investigationData.rbNumber}</b>
+                <b>{investigationData.name}</b>
               </Typography>
             </Grid>
             <Grid item xs>
@@ -226,8 +226,8 @@ const InvestigationTable = (
         },
         {
           icon: <FingerprintIcon />,
-          label: t('investigations.rb_number'),
-          dataKey: 'rbNumber',
+          label: t('investigations.name'),
+          dataKey: 'name',
           filterComponent: textFilter,
           disableSort: true,
         },
@@ -246,7 +246,16 @@ const InvestigationTable = (
         {
           icon: <AssessmentIcon />,
           label: t('investigations.instrument'),
-          dataKey: 'instrument.name',
+          dataKey: 'investigationInstruments.instrument.name',
+          cellContentRenderer: (cellProps: TableCellProps) => {
+            const investigationData = cellProps.rowData as Investigation;
+            if (investigationData?.investigationInstruments?.[0]?.instrument) {
+              return investigationData.investigationInstruments[0].instrument
+                .name;
+            } else {
+              return '';
+            }
+          },
           filterComponent: textFilter,
         },
         {
@@ -281,7 +290,19 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StateType, null, AnyAction>
 ): InvestigationTableDispatchProps => ({
   fetchData: (offsetParams: IndexRange) =>
-    dispatch(fetchInvestigations({ offsetParams })),
+    dispatch(
+      fetchInvestigations({
+        offsetParams,
+        additionalFilters: [
+          {
+            filterType: 'include',
+            filterValue: JSON.stringify({
+              investigationInstruments: 'instrument',
+            }),
+          },
+        ],
+      })
+    ),
   fetchCount: () => dispatch(fetchInvestigationCount()),
 
   addToCart: (entityIds: number[]) =>

@@ -61,7 +61,6 @@ exports[`DLS Visits table component renders correctly 1`] = `
           },
         ],
         "name": "Test 1",
-        "rbNumber": "1",
         "size": 1,
         "startDate": "2019-06-10",
         "summary": "foo bar",

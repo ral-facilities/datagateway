@@ -1,7 +1,7 @@
 describe('ISIS - Investigations Table', () => {
   beforeEach(() => {
     cy.login();
-    cy.visit('/browse/instrument/1/facilityCycle/14/investigation');
+    cy.visit('/browse/instrument/1/facilityCycle/16/investigation');
   });
 
   it('should load correctly', () => {
@@ -13,7 +13,7 @@ describe('ISIS - Investigations Table', () => {
     cy.get('[role="gridcell"] a').first().click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation/87'
+      '/browse/instrument/1/facilityCycle/16/investigation/16'
     );
   });
 
@@ -30,6 +30,7 @@ describe('ISIS - Investigations Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
+        // Account for select and details column widths
         columnWidth = (windowWidth - 40 - 40) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
@@ -90,7 +91,7 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'Again bad simply low summer. Left hand around position wonder sometimes. Body always prove husband. So understand edge outside prevent.'
       );
     });
 
@@ -105,7 +106,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
       );
     });
 
@@ -123,7 +124,7 @@ describe('ISIS - Investigations Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
       );
     });
 
@@ -133,7 +134,7 @@ describe('ISIS - Investigations Table', () => {
       cy.contains('[role="button"]', 'Visit ID').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-        'Series toward yes cost analysis. Name town other state action like. Culture fill either collection phone. Space few should lawyer various quite today well.'
+        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
       );
     });
   });
@@ -143,10 +144,10 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
         .first()
-        .type('series');
+        .type('again');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('15');
+      cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains('1');
     });
 
     it('date between', () => {
@@ -179,12 +180,12 @@ describe('ISIS - Investigations Table', () => {
       cy.get('[aria-label="Filter by Title"]')
         .find('input')
         .first()
-        .type('series');
+        .type('again');
 
       cy.get('[aria-label="Filter by Visit ID"]')
         .find('input')
         .first()
-        .type('15');
+        .type('1');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });
@@ -194,7 +195,7 @@ describe('ISIS - Investigations Table', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
-      cy.contains('[aria-rowindex="1"] [aria-colindex="7"]', '11.06 GB').should(
+      cy.contains('[aria-rowindex="1"] [aria-colindex="7"]', '10.2 GB').should(
         'exist'
       );
     });
@@ -216,25 +217,34 @@ describe('ISIS - Investigations Table', () => {
         'be.visible'
       );
 
+      // Waits needed due to suspected race condition on fetching the panels
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.get('#details-panel')
         .contains(
-          'Most within thus represent stock entire. Shoulder table board. Tax step street early either third life. Edge building say wife use upon. If half true media matter Mr. Still support shake.'
+          'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
         )
-        .should('be.visible');
+        .should('be.visible')
+        .wait(200);
 
-      cy.get('[aria-controls="investigation-users-panel"]').should(
-        'be.visible'
-      );
-      cy.get('[aria-controls="investigation-users-panel"]').click();
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.get('[aria-controls="investigation-users-panel"]')
+        .should('be.visible')
+        .wait(200);
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.get('[aria-controls="investigation-users-panel"]').wait(200).click();
 
-      cy.get('#details-panel').contains('Scott Brewer').should('be.visible');
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.get('#details-panel')
+        .contains('Corey Cook')
+        .should('be.visible')
+        .wait(200);
 
       cy.get('[aria-controls="investigation-samples-panel"]').should(
         'be.visible'
       );
       cy.get('[aria-controls="investigation-samples-panel"]').click();
 
-      cy.get('#details-panel').contains('SAMPLE 87').should('be.visible');
+      cy.get('#details-panel').contains('SAMPLE 16').should('be.visible');
 
       cy.get('[aria-controls="investigation-publications-panel"]').should(
         'be.visible'
@@ -243,7 +253,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.get('#details-panel')
         .contains(
-          'Follow team before this. Beat likely soldier anyone. By management look activity economic plant others. Take move turn pay. Walk project charge against sell.'
+          'Fish page on factor nature everybody action. Sell police boy determine paper. Join six approach others method. Factor answer this design. Institution respond again area.'
         )
         .should('be.visible');
     });
@@ -254,7 +264,7 @@ describe('ISIS - Investigations Table', () => {
 
       cy.location('pathname').should(
         'eq',
-        '/browse/instrument/1/facilityCycle/14/investigation/87/dataset'
+        '/browse/instrument/1/facilityCycle/16/investigation/16/dataset'
       );
     });
 

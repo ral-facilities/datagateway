@@ -46,7 +46,6 @@ describe('ISIS Investigations table component', () => {
         name: 'Test 1',
         summary: 'foo bar',
         visitId: '1',
-        rbNumber: '1',
         doi: 'doi 1',
         size: 1,
         investigationInstruments: [
@@ -353,7 +352,7 @@ describe('ISIS Investigations table component', () => {
     );
   });
 
-  it('renders title, visit ID, RB number and DOI as links', () => {
+  it('renders title, visit ID, name and DOI as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
@@ -383,7 +382,7 @@ describe('ISIS Investigations table component', () => {
     ).toMatchSnapshot();
   });
 
-  it('renders title, visit ID, RB number and DOI as links in StudyHierarchy', () => {
+  it('renders title, visit ID, name and DOI as links in StudyHierarchy', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>

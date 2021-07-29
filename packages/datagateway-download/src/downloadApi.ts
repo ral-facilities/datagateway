@@ -457,7 +457,7 @@ export const getDatafileCount: (
               eq: entityId,
             },
           },
-          include: 'dataset',
+          include: '"dataset"',
         },
         headers: {
           Authorization: `Bearer ${readSciGatewayToken().sessionId}`,

@@ -53,19 +53,19 @@ describe('Download cart table component', () => {
   // Create our mocked datagateway-download settings file.
   const mockedSettings = {
     facilityName: 'LILS',
-    apiUrl: 'http://scigateway-preprod.esc.rl.ac.uk:5000',
-    downloadApiUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/topcat',
-    idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+    apiUrl: 'https://example.com/api',
+    downloadApiUrl: 'https://example.com/downloadApi',
+    idsUrl: 'https://example.com/ids',
     fileCountMax: 5000,
     totalSizeMax: 1000000000000,
     accessMethods: {
       https: {
-        idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+        idsUrl: 'https://example.com/ids',
         displayName: 'HTTPS',
         description: 'Example description for HTTPS access method.',
       },
       globus: {
-        idsUrl: 'https://scigateway-preprod.esc.rl.ac.uk:8181/ids',
+        idsUrl: 'https://example.com/ids',
         displayName: 'Globus',
         description: 'Example description for Globus access method.',
       },

@@ -9,7 +9,6 @@ export interface Investigation {
   title: string;
   name: string;
   visitId: string;
-  rbNumber?: string;
   doi?: string;
   startDate?: string;
   endDate?: string;
@@ -51,6 +50,7 @@ export interface Datafile {
   location?: string;
   description?: string;
   parameters?: DatafileParameter[];
+  dataset?: Dataset;
 }
 
 export interface InvestigationInstrument {

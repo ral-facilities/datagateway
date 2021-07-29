@@ -35,14 +35,14 @@ describe('DLS - Proposals Cards', () => {
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('A nothing almost arrive I.');
+    cy.get('#card').contains('About quickly both stop.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
       .wait('@getInvestigationsOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('exist');
-    cy.get('#card').contains('Whom anything affect consider left.');
+    cy.get('#card').contains('Yourself smile either I pass significant.');
 
     cy.contains('[role="button"]', 'Title')
       .click()
@@ -79,7 +79,7 @@ describe('DLS - Proposals Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('Dog want single resource major.');
+    cy.get('#card').contains('Energy place money bad authority.');
 
     cy.get('[aria-label="Filter by Name"]')
       .find('input')
@@ -88,6 +88,6 @@ describe('DLS - Proposals Cards', () => {
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('INVESTIGATION 2');
+    cy.get('#card').contains('INVESTIGATION 192');
   });
 });

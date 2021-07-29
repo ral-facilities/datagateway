@@ -42,12 +42,17 @@ describe('Investigation table component', () => {
         title: 'Test 1',
         name: 'Test 1',
         visitId: '1',
-        rbNumber: '1',
         doi: 'doi 1',
         size: 1,
-        instrument: {
-          name: 'LARMOR',
-        },
+        investigationInstruments: [
+          {
+            id: 3,
+            instrument: {
+              id: 4,
+              name: 'LARMOR',
+            },
+          },
+        ],
         startDate: '2019-07-23',
         endDate: '2019-07-24',
       },

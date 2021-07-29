@@ -38,6 +38,7 @@ describe('ISIS - MyData Table', () => {
     cy.window()
       .then((window) => {
         const windowWidth = window.innerWidth;
+        // Account for select and details column widths
         columnWidth = (windowWidth - 40 - 40) / 8;
       })
       .then(() => expect(columnWidth).to.not.equal(0));
