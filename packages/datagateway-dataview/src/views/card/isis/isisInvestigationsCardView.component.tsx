@@ -232,17 +232,18 @@ const ISISInvestigationsCardView = (
           icon: <Assessment />,
           label: t('investigations.instrument'),
           dataKey: 'investigationInstruments.instrument.fullName',
-          // eslint-disable-next-line react/display-name
           content: (investigation: Investigation) => {
             const instrument = nestedValue(
               investigation,
               'investigationInstruments[0].instrument.fullName'
             );
-            return (
-              <ArrowTooltip title={instrument}>
-                <Typography>{instrument}</Typography>
-              </ArrowTooltip>
-            );
+            return function Content(): React.ReactNode {
+              return (
+                <ArrowTooltip title={instrument}>
+                  <Typography>{instrument}</Typography>
+                </ArrowTooltip>
+              );
+            };
           },
           noTooltip: true,
           filterComponent: textFilter,

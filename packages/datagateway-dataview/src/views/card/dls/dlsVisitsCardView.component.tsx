@@ -162,17 +162,18 @@ const DLSVisitsCardView = (
           icon: <Assessment />,
           label: t('investigations.instrument'),
           dataKey: 'investigationInstruments.instrument.name',
-          // eslint-disable-next-line react/display-name
           content: (investigation: Investigation) => {
             const instrument = nestedValue(
               investigation,
               'investigationInstruments[0].instrument.name'
             );
-            return (
-              <ArrowTooltip title={instrument}>
-                <Typography>{instrument}</Typography>
-              </ArrowTooltip>
-            );
+            return function Content(): React.ReactNode {
+              return (
+                <ArrowTooltip title={instrument}>
+                  <Typography>{instrument}</Typography>
+                </ArrowTooltip>
+              );
+            };
           },
           noTooltip: true,
           filterComponent: textFilter,
