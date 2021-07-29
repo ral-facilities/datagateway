@@ -28,26 +28,8 @@ exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`]
           }
         }
       >
-        <SearchBoxContainer />
-      </WithStyles(ForwardRef(Paper))>
-    </WithStyles(ForwardRef(Grid))>
-    <WithStyles(ForwardRef(Grid))
-      id="container-search-table"
-      item={true}
-    >
-      <WithStyles(ForwardRef(Paper))
-        style={
-          Object {
-            "height": "calc(100vh - 64px - 30px - 2*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)",
-            "minHeight": 326,
-            "minWidth": 584,
-            "width": "calc(70vw)",
-          }
-        }
-      >
-        <Connect(SearchPageTable)
-          containerHeight="calc(100vh - 64px - 30px - 2*16px - (69px + 19rem/16) - 42px - (53px + 19rem/16) - 8px)"
-          hierarchy="data"
+        <SearchBoxContainer
+          initiateSearch={[Function]}
         />
       </WithStyles(ForwardRef(Paper))>
     </WithStyles(ForwardRef(Grid))>

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
+exports[`SearchPageTable renders correctly when request received 1`] = `
 <div>
   <WithStyles(ForwardRef(AppBar))
     position="static"
@@ -136,59 +136,5 @@ exports[`SearchPageTable renders SearchPageTable correctly after request 1`] = `
       <Connect(DatafileSearchTable) />
     </WithStyles(ForwardRef(Paper))>
   </TabPanel>
-</div>
-`;
-
-exports[`SearchPageTable renders SearchPageTable correctly before request 1`] = `
-<div>
-  <Connect(SearchPageTable)
-    store={
-      Object {
-        "clearActions": [Function],
-        "dispatch": [Function],
-        "getActions": [Function],
-        "getState": [Function],
-        "replaceReducer": [Function],
-        "subscribe": [Function],
-      }
-    }
-  >
-    <SearchPageTable
-      currentTab="investigation"
-      datafile={Array []}
-      datafileTab={false}
-      dataset={Array []}
-      datasetTab={false}
-      investigation={Array []}
-      investigationTab={false}
-      requestReceived={false}
-      setCurrentTab={[Function]}
-      store={
-        Object {
-          "clearActions": [Function],
-          "dispatch": [Function],
-          "getActions": [Function],
-          "getState": [Function],
-          "replaceReducer": [Function],
-          "subscribe": [Function],
-        }
-      }
-    >
-      <Styled(MuiBox)
-        color="secondary.main"
-        px={3}
-        py={1}
-      >
-        <div
-          className="MuiBox-root MuiBox-root-1"
-        >
-          <h2>
-            searchPageTable.header
-          </h2>
-          searchPageTable.text
-        </div>
-      </Styled(MuiBox)>
-    </SearchPageTable>
-  </Connect(SearchPageTable)>
 </div>
 `;
