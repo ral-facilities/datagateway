@@ -1,4 +1,8 @@
 import React from 'react';
+import TitleIcon from '@material-ui/icons/Title';
+import ExploreIcon from '@material-ui/icons/Explore';
+import SaveIcon from '@material-ui/icons/Save';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import {
   Typography,
   Grid,
@@ -29,14 +33,9 @@ import {
 // import { GetApp } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
-import { StateType } from '../../state/app.types';
 import { useSelector } from 'react-redux';
+import { StateType } from '../../state/app.types';
 import { IndexRange } from 'react-virtualized';
-
-import TitleIcon from '@material-ui/icons/Title';
-import ExploreIcon from '@material-ui/icons/Explore';
-import SaveIcon from '@material-ui/icons/Save';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -87,12 +86,12 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
   ]);
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
-    'investigation'
+    'datafile'
   );
   const {
     mutate: removeFromCart,
     isLoading: removeFromCartLoading,
-  } = useRemoveFromCart('investigation');
+  } = useRemoveFromCart('datafile');
 
   const { data: totalDataCount } = useDatafileCount([
     {
