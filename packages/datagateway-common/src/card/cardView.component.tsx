@@ -725,7 +725,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                               content: details.content
                                 ? details.content(entity)
                                 : nestedValue(entity, details.dataKey),
-                              noTooltip: details.noTooltip ? true : false,
+                              noTooltip: details.noTooltip,
                             }))
                             // Filter afterwards to only show content with information.
                             .filter((v) => v.content)
