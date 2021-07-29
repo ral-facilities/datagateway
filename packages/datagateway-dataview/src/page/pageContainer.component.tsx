@@ -247,24 +247,36 @@ const NavBar = (props: {
   );
 };
 
+const viewButtonStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      root: {
+        padding: theme.spacing(1),
+      },
+    })
+);
+
 const ViewButton = (props: {
   viewCards: boolean;
   handleButtonChange: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
+  const classes = viewButtonStyles();
 
   return (
-    <Button
-      className="tour-dataview-view-button"
-      aria-label="container-view-button"
-      variant="contained"
-      color="primary"
-      size="small"
-      endIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
-      onClick={() => props.handleButtonChange()}
-    >
-      {props.viewCards ? t('app.view_table') : t('app.view_cards')}
-    </Button>
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-view-button"
+        aria-label="container-view-button"
+        variant="contained"
+        color="primary"
+        size="small"
+        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
+        onClick={() => props.handleButtonChange()}
+      >
+        {props.viewCards ? t('app.view_table') : t('app.view_cards')}
+      </Button>
+    </div>
   );
 };
 
