@@ -63,14 +63,10 @@ const DateColumnFilter = (props: {
   onChange: (value: { startDate?: string; endDate?: string } | null) => void;
   value?: { startDate?: string; endDate?: string };
 }): React.ReactElement => {
-  const [startDate, setStartDate] = React.useState<MaterialUiPickersDate>(
-    props.value && props.value.startDate
-      ? new Date(props.value.startDate)
-      : null
-  );
-  const [endDate, setEndDate] = React.useState<MaterialUiPickersDate>(
-    props.value && props.value.endDate ? new Date(props.value.endDate) : null
-  );
+  const startDate = props.value?.startDate
+    ? new Date(props.value.startDate)
+    : null;
+  const endDate = props.value?.endDate ? new Date(props.value.endDate) : null;
 
   return (
     <form>
@@ -94,7 +90,6 @@ const DateColumnFilter = (props: {
               startDateOrEndDateChanged: 'startDate',
               onChange: props.onChange,
             });
-            setStartDate(date);
           }}
         />
         <KeyboardDatePicker
@@ -116,7 +111,6 @@ const DateColumnFilter = (props: {
               startDateOrEndDateChanged: 'endDate',
               onChange: props.onChange,
             });
-            setEndDate(date);
           }}
         />
       </MuiPickersUtilsProvider>

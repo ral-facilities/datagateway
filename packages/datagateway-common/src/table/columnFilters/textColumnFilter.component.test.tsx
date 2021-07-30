@@ -2,6 +2,7 @@ import React from 'react';
 import { createShallow, createMount } from '@material-ui/core/test-utils';
 import TextColumnFilter from './textColumnFilter.component';
 import { Select } from '@material-ui/core';
+import { act } from 'react-dom/test-utils';
 
 describe('Text filter component', () => {
   let shallow;
@@ -20,7 +21,11 @@ describe('Text filter component', () => {
 
   it('renders correctly', () => {
     const wrapper = shallow(
-      <TextColumnFilter value="test value" label="test" onChange={jest.fn()} />
+      <TextColumnFilter
+        value={{ value: 'test value', type: 'include' }}
+        label="test"
+        onChange={jest.fn()}
+      />
     );
     expect(wrapper).toMatchSnapshot();
   });
@@ -97,7 +102,9 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'exclude' to 'include'.
     const textFilterSelect = wrapper.find(Select).at(0);
 
-    textFilterSelect.props().onChange({ target: { value: 'include' } });
+    act(() => {
+      textFilterSelect.props().onChange({ target: { value: 'include' } });
+    });
 
     // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
     // and this setTimeout function set to the actual delay of the debouncing function.
@@ -125,7 +132,9 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'include' to 'exclude'.
     const textFilterSelect = wrapper.find(Select).at(0);
 
-    textFilterSelect.props().onChange({ target: { value: 'exclude' } });
+    act(() => {
+      textFilterSelect.props().onChange({ target: { value: 'exclude' } });
+    });
 
     // Jest timers do not co-operate with lodash.debounce, hence we use jest.useRealTimers
     // and this setTimeout function set to the actual delay of the debouncing function.
@@ -179,8 +188,26 @@ describe('Text filter component', () => {
     // We simulate a change in the select from 'exclude' to 'include'.
     const textFilterSelect = wrapper.find(Select).at(0);
 
-    textFilterSelect.props().onChange({ target: { value: 'include' } });
+    act(() => {
+      textFilterSelect.props().onChange({ target: { value: 'include' } });
+    });
 
     expect(onChange).toHaveBeenCalledTimes(0);
+  });
+
+  it('updates the input value when the value prop changes', () => {
+    const baseProps = { label: 'test', onChange: jest.fn() };
+
+    const wrapper = mount(<TextColumnFilter {...baseProps} />);
+
+    wrapper.setProps({
+      ...baseProps,
+      value: { value: 'changed via props', type: 'include' },
+    });
+    wrapper.update();
+
+    expect(wrapper.find('input#test-filter').prop('value')).toEqual(
+      'changed via props'
+    );
   });
 });
