@@ -3,8 +3,11 @@ import TitleIcon from '@material-ui/icons/Title';
 import ExploreIcon from '@material-ui/icons/Explore';
 import SaveIcon from '@material-ui/icons/Save';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { IconButton } from '@material-ui/core';
+import { GetApp } from '@material-ui/icons';
 import {
   Table,
+  TableActionProps,
   formatBytes,
   Datafile,
   useDatafileCount,
@@ -18,6 +21,7 @@ import {
   useCart,
   useAddToCart,
   useRemoveFromCart,
+  downloadDatafileQuery,
 } from 'datagateway-common';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -43,6 +47,8 @@ const ISISDatafilesTable = (
   const selectAllSetting = useSelector(
     (state: StateType) => state.dgdataview.selectAllSetting
   );
+
+  const idsUrl = useSelector((state: StateType) => state.dgcommon.urls.idsUrl);
 
   const { filters, sort } = React.useMemo(
     () => parseSearchToQuery(location.search),
@@ -176,26 +182,26 @@ const ISISDatafilesTable = (
           />
         );
       }}
-      // actions={[
-      //   function downloadButton({ rowData }: TableActionProps) {
-      //     const { id, location } = rowData as Datafile;
-      //     if (location) {
-      //       return (
-      //         <IconButton
-      //           aria-label={t('datafiles.download')}
-      //           key="download"
-      //           onClick={() => {
-      //             downloadData(id, location);
-      //           }}
-      //         >
-      //           <GetApp />
-      //         </IconButton>
-      //       );
-      //     } else {
-      //       return null;
-      //     }
-      //   },
-      // ]}
+      actions={[
+        function downloadButton({ rowData }: TableActionProps) {
+          const { id, location } = rowData as Datafile;
+          if (location) {
+            return (
+              <IconButton
+                aria-label={t('datafiles.download')}
+                key="download"
+                onClick={() => {
+                  downloadDatafileQuery(idsUrl, id, location);
+                }}
+              >
+                <GetApp />
+              </IconButton>
+            );
+          } else {
+            return null;
+          }
+        },
+      ]}
       columns={columns}
     />
   );
