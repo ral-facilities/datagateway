@@ -89,7 +89,7 @@ const middleware = [
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const logger = (createLogger as any)();
+  const logger = (createLogger as any)({ collapsed: true });
   middleware.push(logger);
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const whyDidYouRender = require('@welldone-software/why-did-you-render');
