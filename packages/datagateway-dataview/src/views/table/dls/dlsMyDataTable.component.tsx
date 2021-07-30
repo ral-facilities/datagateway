@@ -1,81 +1,164 @@
 import {
-  DateColumnFilter,
-  DateFilter,
-  Entity,
-  fetchInvestigationCount,
-  fetchInvestigationDetails,
-  fetchInvestigations,
-  fetchInvestigationSize,
-  Filter,
+  ColumnType,
   Investigation,
   MicroFrontendId,
   NotificationType,
-  Order,
-  pushPageFilter,
-  pushPageSort,
+  parseSearchToQuery,
   readSciGatewayToken,
   Table,
   tableLink,
-  TextColumnFilter,
-  TextFilter,
-  readURLQuery,
+  useDateFilter,
+  useInvestigationCount,
+  useInvestigationsDatasetCount,
+  useInvestigationsInfinite,
+  usePushFilters,
+  usePushSort,
+  useTextFilter,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { IndexRange, TableCellProps } from 'react-virtualized';
-import { AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
-import { RouterLocation } from 'connected-react-router';
 
 import TitleIcon from '@material-ui/icons/Title';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
 import ConfirmationNumberIcon from '@material-ui/icons/ConfirmationNumber';
 import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import { useLocation } from 'react-router';
 
-interface DLSMyDataTableStoreProps {
-  location: RouterLocation<unknown>;
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  selectAllSetting: boolean;
-}
-
-interface DLSMyDataTableDispatchProps {
-  pushSort: (sort: string, order: Order | null) => Promise<void>;
-
-  pushFilters: (filter: string, data: Filter | null) => Promise<void>;
-  fetchData: (username: string, offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (username: string) => Promise<void>;
-
-  fetchDetails: (investigationId: number) => Promise<void>;
-  fetchSize: (investigationId: number) => Promise<void>;
-}
-
-type DLSMyDataTableCombinedProps = DLSMyDataTableStoreProps &
-  DLSMyDataTableDispatchProps;
-
-const DLSMyDataTable = (
-  props: DLSMyDataTableCombinedProps
-): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    fetchData,
-    fetchCount,
-    pushSort,
-    pushFilters,
-    location,
-    loading,
-    selectAllSetting,
-  } = props;
-
+const DLSMyDataTable = (): React.ReactElement => {
   const [t] = useTranslation();
+  const location = useLocation();
   const username = readSciGatewayToken().username || '';
+
+  const { filters, view, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const { data: totalDataCount } = useInvestigationCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationUsers.user.name': { eq: username },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({ investigationUsers: 'user' }),
+    },
+  ]);
+  const { fetchNextPage, data } = useInvestigationsInfinite([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        'investigationUsers.user.name': { eq: username },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify([
+        {
+          investigationInstruments: 'instrument',
+        },
+        { investigationUsers: 'user' },
+      ]),
+    },
+  ]);
+
+  const datasetCountQueries = useInvestigationsDatasetCount(data);
+
+  const aggregatedData: Investigation[] = React.useMemo(
+    () => data?.pages.flat() ?? [],
+    [data]
+  );
+
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const pushSort = usePushSort();
+  const pushFilters = usePushFilters();
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
+
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        icon: TitleIcon,
+        label: t('investigations.title'),
+        dataKey: 'title',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return tableLink(
+            `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
+            investigationData.title,
+            view
+          );
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: FingerprintIcon,
+        label: t('investigations.visit_id'),
+        dataKey: 'visitId',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return tableLink(
+            `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
+            investigationData.visitId,
+            view
+          );
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: ConfirmationNumberIcon,
+        label: t('investigations.dataset_count'),
+        dataKey: 'datasetCount',
+        cellContentRenderer: (cellProps: TableCellProps): number | string => {
+          const countQuery = datasetCountQueries[cellProps.rowIndex];
+          if (countQuery?.isFetching) {
+            return 'Calculating...';
+          } else {
+            return countQuery?.data ?? 'Unknown';
+          }
+        },
+        disableSort: true,
+      },
+      {
+        icon: AssessmentIcon,
+        label: t('investigations.instrument'),
+        dataKey: 'investigationInstruments.instrument.fullName',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          if (investigationData?.investigationInstruments?.[0]?.instrument) {
+            return investigationData.investigationInstruments[0].instrument
+              .fullName;
+          } else {
+            return '';
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
+        icon: CalendarTodayIcon,
+        label: t('investigations.start_date'),
+        dataKey: 'startDate',
+        filterComponent: dateFilter,
+      },
+      {
+        icon: CalendarTodayIcon,
+
+        label: t('investigations.end_date'),
+        dataKey: 'endDate',
+        filterComponent: dateFilter,
+      },
+    ],
+    [t, dateFilter, textFilter, view, datasetCountQueries]
+  );
 
   // Broadcast a SciGateway notification for any warning encountered.
   const broadcastWarning = (message: string): void => {
@@ -92,30 +175,6 @@ const DLSMyDataTable = (
     );
   };
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      value={filters[dataKey] as TextFilter}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
-
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      value={filters[dataKey] as DateFilter}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        pushFilters(dataKey, value ? value : null)
-      }
-    />
-  );
-
-  const { filters, view, sort } = React.useMemo(() => readURLQuery(location), [
-    location,
-  ]);
-
   React.useEffect(() => {
     if (localStorage.getItem('autoLogin') === 'true') {
       broadcastWarning(t('my_data_table.login_warning_msg'));
@@ -124,168 +183,26 @@ const DLSMyDataTable = (
 
   React.useEffect(() => {
     // Sort and filter by startDate upon load.
-    pushSort('startDate', 'desc');
-    pushFilters('startDate', {
-      endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
-    });
-  }, [pushSort, pushFilters]);
-
-  React.useEffect(() => {
-    fetchCount(username);
-  }, [fetchCount, location.query.filters, username]);
-
-  React.useEffect(() => {
-    fetchData(username, { startIndex: 0, stopIndex: 49 });
-  }, [fetchData, location.query.sort, location.query.filters, username]);
+    if (!('startDate' in sort)) pushSort('startDate', 'desc');
+    if (!('startDate' in filters))
+      pushFilters('startDate', {
+        endDate: `${new Date(Date.now()).toISOString().split('T')[0]}`,
+      });
+    // we only want this to run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) => fetchData(username, params)}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount}
       sort={sort}
       onSort={pushSort}
-      disableSelectAll={!selectAllSetting}
-      detailsPanel={({ rowData, detailsPanelResize }) => {
-        return (
-          <VisitDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      }}
-      columns={[
-        {
-          icon: TitleIcon,
-          label: t('investigations.title'),
-          dataKey: 'title',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            return tableLink(
-              `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
-              investigationData.title,
-              view
-            );
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: FingerprintIcon,
-          label: t('investigations.visit_id'),
-          dataKey: 'visitId',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            return tableLink(
-              `/browse/proposal/${investigationData.name}/investigation/${investigationData.id}/dataset`,
-              investigationData.visitId,
-              view
-            );
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: ConfirmationNumberIcon,
-          label: t('investigations.dataset_count'),
-          dataKey: 'datasetCount',
-          disableSort: true,
-        },
-        {
-          icon: AssessmentIcon,
-          label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments.instrument.fullName',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            if (investigationData?.investigationInstruments?.[0]?.instrument) {
-              return investigationData.investigationInstruments[0].instrument
-                .fullName;
-            } else {
-              return '';
-            }
-          },
-          filterComponent: textFilter,
-        },
-        {
-          icon: CalendarTodayIcon,
-          label: t('investigations.start_date'),
-          dataKey: 'startDate',
-          filterComponent: dateFilter,
-        },
-        {
-          icon: CalendarTodayIcon,
-
-          label: t('investigations.end_date'),
-          dataKey: 'endDate',
-          filterComponent: dateFilter,
-        },
-      ]}
+      detailsPanel={VisitDetailsPanel}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): DLSMyDataTableDispatchProps => ({
-  pushSort: (sort: string, order: Order | null) =>
-    dispatch(pushPageSort(sort, order)),
-
-  pushFilters: (filter: string, data: Filter | null) =>
-    dispatch(pushPageFilter(filter, data)),
-  fetchData: (username: string, offsetParams: IndexRange) =>
-    dispatch(
-      fetchInvestigations({
-        offsetParams,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'investigationUsers.user.name': { eq: username },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify([
-              {
-                investigationInstruments: 'instrument',
-              },
-              { investigationUsers: 'user' },
-            ]),
-          },
-        ],
-        getDatasetCount: true,
-      })
-    ),
-  fetchCount: (username: string) =>
-    dispatch(
-      fetchInvestigationCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            'investigationUsers.user.name': { eq: username },
-          }),
-        },
-        {
-          filterType: 'include',
-          filterValue: JSON.stringify({ investigationUsers: 'user' }),
-        },
-      ])
-    ),
-
-  fetchDetails: (investigationId: number) =>
-    dispatch(fetchInvestigationDetails(investigationId)),
-  fetchSize: (investigationId: number) =>
-    dispatch(fetchInvestigationSize(investigationId)),
-});
-
-const mapStateToProps = (state: StateType): DLSMyDataTableStoreProps => {
-  return {
-    location: state.router.location,
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-    selectAllSetting: state.dgdataview.selectAllSetting,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DLSMyDataTable);
+export default DLSMyDataTable;
