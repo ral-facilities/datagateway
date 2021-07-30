@@ -320,7 +320,6 @@ const fetchDatafileDetails = (
 ): Promise<Datafile> => {
   const params = new URLSearchParams();
   params.append('where', JSON.stringify({ id: { eq: datafileId } }));
-  // params.append('include', JSON.stringify({ instrumentScientists: 'user' }));
 
   return axios
     .get(`${apiUrl}/datafiles`, {
