@@ -29,7 +29,6 @@ import {
   FiltersType,
   QueryParams,
 } from '../app.types';
-import { nestedValue } from '../state/actions';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexRange } from 'react-virtualized';
@@ -674,10 +673,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                       <EntityCard
                         entity={entity}
                         title={title}
-                        description={
-                          description &&
-                          nestedValue(entity, description.dataKey)
-                        }
+                        description={description}
                         information={information}
                         moreInformation={moreInformation}
                         // Pass in the react nodes with the data to the card.

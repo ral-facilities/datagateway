@@ -168,7 +168,7 @@ interface EntityCardProps {
   entity: Entity;
   title: CardViewDetails;
 
-  description?: string;
+  description?: CardViewDetails;
   information?: CardViewDetails[];
 
   moreInformation?: (data: Entity) => React.ReactNode;
@@ -181,7 +181,7 @@ interface EntityCardProps {
 const EntityCard = React.memo(
   (props: EntityCardProps): React.ReactElement => {
     const classes = useCardStyles();
-    const { entity, description, image } = props;
+    const { entity, image } = props;
 
     const moreInformation = props.moreInformation?.(entity);
 
@@ -189,6 +189,10 @@ const EntityCard = React.memo(
       label: nestedValue(entity, props.title.dataKey),
       content: props.title.content && props.title.content(entity),
     };
+
+    const description =
+      props.description?.content?.(entity) ??
+      nestedValue(entity, props.description?.dataKey ?? '');
 
     const information: EntityCardDetails[] | undefined = props.information
       ?.map((details) => ({

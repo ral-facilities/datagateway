@@ -114,7 +114,7 @@ export interface StudyInvestigation {
   investigation: Investigation;
 }
 
-interface Study {
+export interface Study {
   id: number;
   pid: string;
   name: string;
@@ -123,6 +123,7 @@ interface Study {
   description?: string;
   startDate?: string;
   endDate?: string;
+  studyInvestigations?: StudyInvestigation[];
 }
 
 interface InstrumentScientist {
@@ -227,7 +228,8 @@ export type ICATEntity =
   | Datafile
   | Instrument
   | FacilityCycle
-  | StudyInvestigation;
+  | StudyInvestigation
+  | Study;
 
 export type Entity = (
   | ICATEntity

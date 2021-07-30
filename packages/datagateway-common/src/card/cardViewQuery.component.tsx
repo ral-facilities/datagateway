@@ -22,7 +22,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 import ArrowTooltip from '../arrowtooltip.component';
 import { Entity, Filter, Order, SortType, FiltersType } from '../app.types';
-import { nestedValue } from '../state/actions';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AdvancedFilter from './advancedFilter.component';
@@ -639,10 +638,7 @@ const CardViewQuery = (props: CardViewProps): React.ReactElement => {
                       <EntityCard
                         entity={entity}
                         title={title}
-                        description={
-                          description &&
-                          nestedValue(entity, description.dataKey)
-                        }
+                        description={description}
                         information={information}
                         moreInformation={moreInformation}
                         // Pass in the react nodes with the data to the card.
