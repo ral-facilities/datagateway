@@ -141,9 +141,11 @@ const ISISMyDataTable = (): React.ReactElement => {
   }, [t]);
 
   React.useEffect(() => {
-    // Sort by startDate on load.
-    pushSort('startDate', 'desc');
-  }, [pushSort]);
+    // Sort and filter by startDate upon load.
+    if (!('startDate' in sort)) pushSort('startDate', 'desc');
+    // we only want this to run on mount so ignore warning
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const urlPrefix = React.useCallback(
     (investigationData: Investigation): string => {
