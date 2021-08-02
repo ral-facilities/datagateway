@@ -25,6 +25,7 @@ const styles = (theme: Theme): StyleRules =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      // TODO: Remove use of "vw" here
       paddingLeft: '10vw',
       paddingRight: '10vw',
       paddingTop: 15,
