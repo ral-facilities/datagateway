@@ -263,7 +263,7 @@ export const useDatafileSizes = (
   return sizes;
 };
 
-const fetchDatafileCount = (
+export const fetchDatafileCountQuery = (
   apiUrl: string,
   filters: FiltersType,
   additionalFilters?: AdditionalFilters
@@ -303,7 +303,7 @@ export const useDatafileCount = (
     ['count', 'datafile', { filters }, additionalFilters],
     (params) => {
       const { filters } = params.queryKey[2];
-      return fetchDatafileCount(apiUrl, filters, additionalFilters);
+      return fetchDatafileCountQuery(apiUrl, filters, additionalFilters);
     },
     {
       placeholderData: 0,

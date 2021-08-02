@@ -95,8 +95,8 @@ const DLSDatasetsCardView = (
     fetchData,
     fetchCount,
     fetchTypeFilter,
-    fetchDetails,
-    fetchSize,
+    // fetchDetails,
+    // fetchSize,
     cartItems,
     filterData,
     addToCart,
@@ -246,8 +246,8 @@ const DLSDatasetsCardView = (
       moreInformation={(dataset: Dataset) => (
         <DatasetDetailsPanel
           rowData={dataset}
-          fetchDetails={fetchDetails}
-          fetchSize={fetchSize}
+          // fetchDetails={fetchDetails}
+          // fetchSize={fetchSize}
         />
       )}
       buttons={[

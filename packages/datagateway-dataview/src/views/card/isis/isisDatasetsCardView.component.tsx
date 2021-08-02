@@ -41,7 +41,7 @@ import {
   Save,
   CalendarToday,
 } from '@material-ui/icons';
-import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
+// import DatasetDetailsPanel from '../../detailsPanels/isis/datasetDetailsPanel.component';
 import { push, RouterLocation } from 'connected-react-router';
 import { useTranslation } from 'react-i18next';
 
@@ -101,7 +101,7 @@ const ISISDatasetsCardView = (
     loadedCount,
     fetchData,
     fetchCount,
-    fetchDetails,
+    // fetchDetails,
     addToCart,
     removeFromCart,
     downloadData,
@@ -110,7 +110,7 @@ const ISISDatasetsCardView = (
     pushQuery,
     pushSort,
     pushResults,
-    viewDatafiles,
+    // viewDatafiles,
     studyHierarchy,
   } = props;
 
@@ -228,13 +228,13 @@ const ISISDatasetsCardView = (
           filterComponent: dateFilter,
         },
       ]}
-      moreInformation={(dataset: Dataset) => (
-        <DatasetDetailsPanel
-          rowData={dataset}
-          fetchDetails={fetchDetails}
-          viewDatafiles={viewDatafiles(urlPrefix, view)}
-        />
-      )}
+      // moreInformation={(dataset: Dataset) => (
+      //   <DatasetDetailsPanel
+      //     rowData={dataset}
+      //     fetchDetails={fetchDetails}
+      //     viewDatafiles={viewDatafiles(urlPrefix, view)}
+      //   />
+      // )}
       buttons={[
         function cartButton(dataset: Dataset) {
           return !(selectedCards && selectedCards.includes(dataset.id)) ? (

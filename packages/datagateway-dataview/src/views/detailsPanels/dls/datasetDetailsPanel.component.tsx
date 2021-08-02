@@ -1,5 +1,11 @@
 import React from 'react';
-import { Entity, Dataset, formatBytes } from 'datagateway-common';
+import {
+  Entity,
+  Dataset,
+  formatBytes,
+  useDatasetDetails,
+  useDatasetSize,
+} from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -26,26 +32,24 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
-  fetchDetails: (datasetId: number) => Promise<void>;
   detailsPanelResize?: () => void;
-  fetchSize: (datasetId: number) => Promise<void>;
 }
 
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, detailsPanelResize, fetchDetails, fetchSize } = props;
+  const { rowData, detailsPanelResize } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
   const classes = useStyles();
 
-  const datasetData = rowData as Dataset;
-
-  React.useEffect(() => {
-    if (!datasetData.type) {
-      fetchDetails(datasetData.id);
-    }
-  }, [datasetData.type, datasetData.id, fetchDetails]);
+  const { data } = useDatasetDetails(rowData.id);
+  const { data: size, refetch: fetchSize } = useDatasetSize(rowData.id);
+  const datasetData: Dataset = {
+    ...data,
+    ...(rowData as Dataset),
+    size,
+  };
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();
@@ -123,7 +127,7 @@ const DatasetDetailsPanel = (
                 ) : (
                   <Button
                     onClick={() => {
-                      fetchSize(datasetData.id);
+                      fetchSize();
                     }}
                     variant="outlined"
                     color="secondary"
