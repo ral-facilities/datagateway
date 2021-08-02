@@ -143,7 +143,7 @@ class SearchPageContainer extends React.Component<SearchPageContainerCombinedPro
                 </Grid>
 
                 {this.props.requestReceived && (
-                  <Grid item id="container-search-table">
+                  <Grid container justify="center" id="container-search-table">
                     <Paper
                       style={{
                         height: containerHeight,
