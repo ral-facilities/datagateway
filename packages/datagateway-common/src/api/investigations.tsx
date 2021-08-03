@@ -60,6 +60,38 @@ const fetchInvestigations = (
     });
 };
 
+export const useInvestigation = (
+  investigationId: number,
+  additionalFilters?: AdditionalFilters
+): UseQueryResult<Investigation[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<
+    Investigation[],
+    AxiosError,
+    Investigation[],
+    [string, number, AdditionalFilters?]
+  >(
+    ['investigation', investigationId, additionalFilters],
+    (params) => {
+      return fetchInvestigations(apiUrl, { sort: {}, filters: {} }, [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { eq: investigationId },
+          }),
+        },
+        ...(additionalFilters ?? []),
+      ]);
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
 export const useInvestigationsPaginated = (
   additionalFilters?: AdditionalFilters
 ): UseQueryResult<Investigation[], AxiosError> => {
