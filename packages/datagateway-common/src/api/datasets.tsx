@@ -59,6 +59,38 @@ const fetchDatasets = (
     });
 };
 
+export const useDataset = (
+  datasetId: number,
+  additionalFilters?: AdditionalFilters
+): UseQueryResult<Dataset[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<
+    Dataset[],
+    AxiosError,
+    Dataset[],
+    [string, number, AdditionalFilters?]
+  >(
+    ['dataset', datasetId, additionalFilters],
+    (params) => {
+      return fetchDatasets(apiUrl, { sort: {}, filters: {} }, [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { eq: datasetId },
+          }),
+        },
+        ...(additionalFilters ?? []),
+      ]);
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
 export const useDatasetsPaginated = (
   additionalFilters?: AdditionalFilters
 ): UseQueryResult<Dataset[], AxiosError> => {

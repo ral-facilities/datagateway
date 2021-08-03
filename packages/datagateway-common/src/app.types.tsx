@@ -36,6 +36,7 @@ export interface Dataset {
   endDate?: string;
   doi?: string;
   complete?: boolean;
+  location?: string;
   size?: number;
   datafileCount?: number;
   investigation?: Investigation;
