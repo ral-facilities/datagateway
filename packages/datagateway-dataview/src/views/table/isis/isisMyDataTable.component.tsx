@@ -265,11 +265,11 @@ const ISISMyDataTable = (): React.ReactElement => {
         label: t('investigations.size'),
         dataKey: 'size',
         cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const countQuery = sizeQueries[cellProps.rowIndex];
-          if (countQuery?.isFetching) {
+          const sizeQuery = sizeQueries[cellProps.rowIndex];
+          if (sizeQuery?.isFetching) {
             return 'Calculating...';
           } else {
-            return formatBytes(countQuery?.data) ?? 'Unknown';
+            return formatBytes(sizeQuery?.data) ?? 'Unknown';
           }
         },
         disableSort: true,
