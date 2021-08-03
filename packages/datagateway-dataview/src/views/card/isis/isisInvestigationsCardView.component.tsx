@@ -23,7 +23,6 @@ import {
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { TableCellProps } from 'react-virtualized';
 import InvestigationDetailsPanel from '../../detailsPanels/isis/investigationDetailsPanel.component';
 import { useHistory, useLocation } from 'react-router';
 import AddToCartButton from '../../addToCartButton.component';
@@ -122,12 +121,14 @@ const ISISInvestigationsCardView = (
         icon: Save,
         label: t('investigations.details.size'),
         dataKey: 'size',
-        cellContentRenderer: (cellProps: TableCellProps): number | string => {
-          const countQuery = sizeQueries[cellProps.rowIndex];
-          if (countQuery?.isFetching) {
+        content: (investigation: Investigation): number | string => {
+          const index = data?.findIndex((item) => item.id === investigation.id);
+          if (typeof index === 'undefined') return 'Unknown';
+          const sizeQuery = sizeQueries[index];
+          if (sizeQuery?.isFetching) {
             return 'Calculating...';
           } else {
-            return formatBytes(countQuery?.data) ?? 'Unknown';
+            return formatBytes(sizeQuery?.data) ?? 'Unknown';
           }
         },
         disableSort: true,
@@ -151,7 +152,7 @@ const ISISInvestigationsCardView = (
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, sizeQueries, t, textFilter]
+    [data, dateFilter, sizeQueries, t, textFilter]
   );
 
   const buttons = React.useMemo(
