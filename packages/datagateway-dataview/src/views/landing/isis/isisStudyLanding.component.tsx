@@ -17,22 +17,17 @@ import {
   Public,
   Storage,
 } from '@material-ui/icons';
-import { push } from 'connected-react-router';
 import {
-  Entity,
-  fetchStudies,
   Investigation,
   InvestigationUser,
-  StudyInvestigation,
+  parseSearchToQuery,
+  Study,
   tableLink,
-  ViewsType,
+  useStudy,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { StateType } from '../../../state/app.types';
+import { useHistory, useLocation } from 'react-router';
 import AddToCartButton from '../../addToCartButton.component';
 import Branding from './isisBranding.component';
 
@@ -92,52 +87,46 @@ interface FormattedUser {
   fullName: string;
 }
 
-interface LandingPageDispatchProps {
-  fetchStudyData: (studyId: number) => Promise<void>;
-  viewAllInvestigations: (urlPrefix: string, view: ViewsType) => Action;
-}
-
-interface LandingPageStateProps {
-  data: Entity[];
-  view: ViewsType;
-}
-
 interface LandingPageProps {
   instrumentId: string;
   studyId: string;
 }
-
-type LandingPageCombinedProps = LandingPageDispatchProps &
-  LandingPageStateProps &
-  LandingPageProps;
-
-const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
+const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
+  const { push } = useHistory();
+  const location = useLocation();
+  const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
+    location.search,
+  ]);
+
   const [value, setValue] = React.useState<'details'>('details');
-  const {
-    fetchStudyData,
-    viewAllInvestigations,
-    data,
-    view,
-    instrumentId,
-    studyId,
-  } = props;
+  const { instrumentId, studyId } = props;
 
   const pathRoot = 'browseStudyHierarchy';
   const instrumentChild = 'study';
   const urlPrefix = `/${pathRoot}/instrument/${instrumentId}/${instrumentChild}/${studyId}`;
   const classes = useStyles();
 
-  const pid = React.useMemo(() => data[0]?.study?.pid, [data]);
-  const title = React.useMemo(() => data[0]?.investigation?.title, [data]);
-  const summary = React.useMemo(() => data[0]?.investigation?.summary, [data]);
+  const { data } = useStudy(parseInt(studyId));
+
+  const pid = React.useMemo(() => data?.[0]?.pid, [data]);
+  const title = React.useMemo(
+    () => data?.[0]?.studyInvestigations?.[0]?.investigation?.title,
+    [data]
+  );
+  const summary = React.useMemo(
+    () => data?.[0]?.studyInvestigations?.[0]?.investigation?.summary,
+    [data]
+  );
 
   const formattedUsers = React.useMemo(() => {
     const principals: FormattedUser[] = [];
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
-    if (data[0]?.investigation?.investigationUsers) {
-      const investigationUsers = data[0].investigation
+    if (
+      data?.[0]?.studyInvestigations?.[0]?.investigation?.investigationUsers
+    ) {
+      const investigationUsers = data[0].studyInvestigations[0].investigation
         .investigationUsers as InvestigationUser[];
       investigationUsers.forEach((user) => {
         // Only keep users where we have their fullName
@@ -165,10 +154,6 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
     experimenters.sort((a, b) => a.fullName.localeCompare(b.fullName));
     return principals.concat(contacts, experimenters);
   }, [data]);
-
-  React.useEffect(() => {
-    fetchStudyData(parseInt(studyId));
-  }, [fetchStudyData, studyId]);
 
   React.useEffect(() => {
     const scriptId = `study-${studyId}`;
@@ -230,17 +215,17 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
 
   const shortInfo = [
     {
-      content: (entity: StudyInvestigation) => entity.study?.pid,
+      content: (entity: Study) => entity.pid,
       label: t('studies.pid'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: StudyInvestigation) => entity.study?.name,
+      content: (entity: Study) => entity.name,
       label: t('studies.name'),
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: function distributionFormat(entity: StudyInvestigation) {
+      content: function distributionFormat(entity: Study) {
         return (
           <MuiLink href="http://www.isis.stfc.ac.uk/groups/computing/isis-raw-file-format11200.html">
             {t('doi_constants.distribution.format')}
@@ -251,14 +236,17 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
       icon: <Storage className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: StudyInvestigation) =>
-        entity.study?.startDate?.slice(0, 10),
+      content: (entity: Study) =>
+        entity?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
+          0,
+          10
+        ),
       label: t('studies.start_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: StudyInvestigation) =>
-        entity.study?.endDate?.slice(0, 10),
+      content: (entity: Study) =>
+        entity?.studyInvestigations?.[0]?.investigation?.endDate?.slice(0, 10),
       label: t('studies.end_date'),
       icon: <CalendarToday className={classes.shortInfoIcon} />,
     },
@@ -304,7 +292,13 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
               <Tab
                 id="study-investigations-tab"
                 label={t('studies.details.investigations')}
-                onClick={() => viewAllInvestigations(urlPrefix, view)}
+                onClick={() =>
+                  push(
+                    view
+                      ? `${urlPrefix}/investigation?view=${view}`
+                      : `${urlPrefix}/investigation`
+                  )
+                }
               />
             </Tabs>
             <Divider />
@@ -372,8 +366,10 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                   `${formattedUsers[0].fullName} et al; `}
                 {formattedUsers.length === 1 &&
                   `${formattedUsers[0].fullName}; `}
-                {data[0]?.study?.startDate &&
-                  `${data[0].study.startDate.slice(0, 4)}: `}
+                {`${data?.[0]?.studyInvestigations?.[0]?.investigation?.startDate?.slice(
+                  0,
+                  4
+                )}: `}
                 {title && `${title}, `}
                 {t('doi_constants.publisher.name')}
                 {pid && `, https://doi.org/${pid}`}
@@ -386,21 +382,21 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
           <Grid item xs={6} sm={5} md={4} lg={3} xl={2}>
             {shortInfo.map(
               (field, i) =>
-                data[0] &&
-                field.content(data[0] as StudyInvestigation) && (
+                data?.[0] &&
+                field.content(data[0] as Study) && (
                   <div className={classes.shortInfoRow} key={i}>
                     <Typography className={classes.shortInfoLabel}>
                       {field.icon}
                       {field.label}:
                     </Typography>
                     <Typography className={classes.shortInfoValue}>
-                      {field.content(data[0] as StudyInvestigation)}
+                      {field.content(data[0] as Study)}
                     </Typography>
                   </div>
                 )
             )}
             {/* Parts */}
-            {data.map((studyInvestigation, i) => (
+            {data?.map((study, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
                 <Typography
@@ -411,17 +407,20 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                   aria-label="landing-study-part-label"
                 >
                   {tableLink(
-                    `${urlPrefix}/investigation/${studyInvestigation.investigation.id}`,
+                    `${urlPrefix}/investigation/${study?.studyInvestigations?.[0]?.investigation.id}`,
                     `${t('investigations.visit_id')}: ${
-                      studyInvestigation.investigation?.visitId
+                      study?.studyInvestigations?.[0]?.investigation?.visitId
                     }`,
                     view
                   )}
                 </Typography>
                 {shortInvestigationInfo.map(
                   (field, i) =>
-                    data[0]?.investigation &&
-                    field.content(data[0].investigation as Investigation) && (
+                    data?.[0]?.studyInvestigations?.[0]?.investigation &&
+                    field.content(
+                      data?.[0]?.studyInvestigations?.[0]
+                        ?.investigation as Investigation
+                    ) && (
                       <div className={classes.shortInfoRow} key={i}>
                         <Typography className={classes.shortInfoLabel}>
                           {field.icon}
@@ -429,18 +428,21 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
                         </Typography>
                         <Typography className={classes.shortInfoValue}>
                           {field.content(
-                            studyInvestigation.investigation as Investigation
+                            data?.[0]?.studyInvestigations?.[0]
+                              ?.investigation as Investigation
                           )}
                         </Typography>
                       </div>
                     )
                 )}
                 <div className={classes.actionButtons}>
-                  <AddToCartButton
-                    entityType="investigation"
-                    allIds={[parseInt(studyInvestigation.investigation.id)]}
-                    entityId={parseInt(studyInvestigation.investigation.id)}
-                  />
+                  {study?.studyInvestigations?.[0]?.investigation && (
+                    <AddToCartButton
+                      entityType="investigation"
+                      allIds={[study.studyInvestigations[0].investigation.id]}
+                      entityId={study.studyInvestigations[0].investigation.id}
+                    />
+                  )}
                 </div>
               </div>
             ))}
@@ -451,47 +453,4 @@ const LandingPage = (props: LandingPageCombinedProps): React.ReactElement => {
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): LandingPageDispatchProps => ({
-  fetchStudyData: (studyId: number) =>
-    dispatch(
-      fetchStudies({
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              'study.id': { eq: studyId },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify([
-              'study',
-              {
-                investigation: [
-                  { investigationUsers: 'user' },
-                  { investigationInstruments: 'instrument' },
-                ],
-              },
-            ]),
-          },
-        ],
-      })
-    ),
-  viewAllInvestigations: (urlPrefix: string, view: ViewsType) => {
-    const url = view
-      ? `${urlPrefix}/investigation?view=${view}`
-      : `${urlPrefix}/investigation`;
-    return dispatch(push(url));
-  },
-});
-
-const mapStateToProps = (state: StateType): LandingPageStateProps => {
-  return {
-    data: state.dgcommon.data,
-    view: state.dgcommon.query.view,
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
+export default LandingPage;
