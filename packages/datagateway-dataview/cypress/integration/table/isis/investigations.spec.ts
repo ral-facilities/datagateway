@@ -191,6 +191,7 @@ describe('ISIS - Investigations Table', () => {
     });
   });
 
+  // TODO: Data mismatch issue (#782)
   describe.skip('should be able to view details', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce

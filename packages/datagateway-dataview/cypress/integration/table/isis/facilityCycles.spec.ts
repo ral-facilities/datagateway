@@ -90,8 +90,9 @@ describe('ISIS - FacilityCycles Table', () => {
     });
   });
 
-  describe('should be able to sort by', () => {
-    it.skip('ascending order', () => {
+  // TODO: Data mismatch issue (#782)
+  describe.skip('should be able to sort by', () => {
+    it('ascending order', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-sort="ascending"]').should('exist');
@@ -101,7 +102,7 @@ describe('ISIS - FacilityCycles Table', () => {
       );
     });
 
-    it.skip('descending order', () => {
+    it('descending order', () => {
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'Name').click();
 
@@ -116,7 +117,7 @@ describe('ISIS - FacilityCycles Table', () => {
       );
     });
 
-    it.skip('no order', () => {
+    it('no order', () => {
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'Name').click();
       cy.contains('[role="button"]', 'Name').click();
@@ -134,7 +135,7 @@ describe('ISIS - FacilityCycles Table', () => {
       );
     });
 
-    it.skip('multiple columns', () => {
+    it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'Name').click();
 
