@@ -127,10 +127,10 @@ const ISISInstrumentsCardView = (
           icon: <LinkIcon />,
           label: t('instruments.url'),
           dataKey: 'url',
-          // eslint-disable-next-line react/display-name
-          content: (instrument: Instrument) => (
-            <Link href={instrument.url}>{instrument.url}</Link>
-          ),
+          content: (instrument: Instrument) =>
+            function Content() {
+              return <Link href={instrument.url}>{instrument.url}</Link>;
+            },
           filterComponent: textFilter,
         },
       ]}
