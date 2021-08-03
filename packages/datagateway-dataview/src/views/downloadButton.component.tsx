@@ -15,6 +15,7 @@ interface DownloadButtonProps {
   entityType: 'dataset' | 'datafile';
   entityId: number;
   entityName: string;
+  variant?: 'text' | 'outlined' | 'contained';
 }
 
 interface DownloadButtonDispatchProps {
@@ -29,14 +30,14 @@ type DownloadButtonCombinedProps = DownloadButtonProps &
   DownloadButtonDispatchProps;
 
 const DownloadButton = (props: DownloadButtonCombinedProps): JSX.Element => {
-  const { entityType, entityId, entityName, downloadData } = props;
+  const { entityType, entityId, entityName, variant, downloadData } = props;
   const [t] = useTranslation();
 
   return (
     <Button
       id="download-btn"
       aria-label="Download"
-      variant="contained"
+      variant={variant ?? 'contained'}
       color="primary"
       startIcon={<GetApp />}
       disableElevation

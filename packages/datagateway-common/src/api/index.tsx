@@ -442,7 +442,8 @@ export const useFilter = (
     ]
   >(
     [entityType, filterKey, additionalFilters],
-    ({ queryKey }) => fetchFilter(apiUrl, queryKey[0], queryKey[1]),
+    ({ queryKey }) =>
+      fetchFilter(apiUrl, queryKey[0], queryKey[1], queryKey[2]),
     {
       onError: (error) => {
         handleICATError(error);
