@@ -12,6 +12,7 @@ import {
   useDateFilter,
   useFilter,
   useInvestigationCount,
+  useInvestigationsDatasetCount,
   useInvestigationsPaginated,
   usePushFilters,
   usePushPage,
@@ -45,6 +46,7 @@ const InvestigationCardView = (): React.ReactElement => {
     isLoading: countLoading,
   } = useInvestigationCount();
   const { isLoading: dataLoading, data } = useInvestigationsPaginated();
+  const countQueries = useInvestigationsDatasetCount(data);
   const { data: typeIds } = useFilter('investigation', 'type.id');
   const { data: facilityIds } = useFilter('investigation', 'facility.id');
 
@@ -96,7 +98,16 @@ const InvestigationCardView = (): React.ReactElement => {
         icon: ConfirmationNumber,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
-        filterComponent: textFilter,
+        content: (investigation: Investigation): number | string => {
+          const index = data?.findIndex((item) => item.id === investigation.id);
+          if (typeof index === 'undefined') return 'Unknown';
+          const countQuery = countQueries[index];
+          if (countQuery?.isFetching) {
+            return 'Calculating...';
+          } else {
+            return countQuery?.data ?? 'Unknown';
+          }
+        },
         disableSort: true,
       },
       {
@@ -112,7 +123,7 @@ const InvestigationCardView = (): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, t, textFilter]
+    [countQueries, data, dateFilter, t, textFilter]
   );
 
   const buttons = React.useMemo(

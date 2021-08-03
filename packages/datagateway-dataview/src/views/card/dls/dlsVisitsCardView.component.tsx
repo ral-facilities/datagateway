@@ -14,6 +14,7 @@ import {
   usePushResults,
   usePushSort,
   useTextFilter,
+  useInvestigationsDatasetCount,
 } from 'datagateway-common';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
@@ -67,6 +68,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       }),
     },
   ]);
+  const countQueries = useInvestigationsDatasetCount(data);
   const { data: typeIds } = useFilter('investigation', 'type.id', [
     {
       filterType: 'where',
@@ -110,6 +112,16 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         icon: ConfirmationNumber,
         label: t('investigations.dataset_count'),
         dataKey: 'datasetCount',
+        content: (investigation: Investigation): number | string => {
+          const index = data?.findIndex((item) => item.id === investigation.id);
+          if (typeof index === 'undefined') return 'Unknown';
+          const countQuery = countQueries[index];
+          if (countQuery?.isFetching) {
+            return 'Calculating...';
+          } else {
+            return countQuery?.data ?? 'Unknown';
+          }
+        },
         disableSort: true,
       },
       {
@@ -125,7 +137,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
         filterComponent: dateFilter,
       },
     ],
-    [dateFilter, t, textFilter]
+    [countQueries, data, dateFilter, t, textFilter]
   );
 
   const customFilters = React.useMemo(
