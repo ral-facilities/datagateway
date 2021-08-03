@@ -19,12 +19,14 @@ import { useTranslation } from 'react-i18next';
 import hexToRbga from 'hex-to-rgba';
 
 const useCardStyles = makeStyles((theme: Theme) => {
+  // TODO: Remove use of "vw" here
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
   //       Change this width in accordance with the maxWidth in root class.
   const mainWidth = '45vw';
   // Expected width of info labels to prevent misalignment due to newlines
   const labelWidth = '15ch';
+  // TODO: Remove use of "vw" here
   const infoDataMaxWidth = '10vw';
 
   // Transparent and opaque values for the background theme (used in the 'show more' shadow gradient)
@@ -57,6 +59,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       flexGrow: 1,
       flexShrink: 1,
       flexBasis: mainWidth,
+      // TODO: Remove use of "vw" here
       minWidth: '30vw',
       paddingRight: '10px',
     },

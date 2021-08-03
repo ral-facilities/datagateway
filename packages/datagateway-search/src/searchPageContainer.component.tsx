@@ -111,62 +111,58 @@ class SearchPageContainer extends React.Component<SearchPageContainerCombinedPro
         <Route
           path="/search/:hierarchy"
           render={({ match }: RouteComponentProps<{ hierarchy: string }>) => (
-            <div>
-              <Grid
-                container
-                direction={this.props.sideLayout ? 'row' : 'column'}
-                justify="flex-start"
-                alignItems="flex-start"
-                spacing={spacing}
-                style={{ margin: 0, width: '100%' }}
-              >
-                <Grid item id="container-search-filters">
-                  {this.props.sideLayout ? (
-                    <Paper style={{ height: '100%', width: '100%' }}>
-                      <SearchBoxContainerSide
-                        initiateSearch={this.initiateSearch}
-                      />
-                    </Paper>
-                  ) : (
-                    <Paper
-                      style={{
-                        height: '100%',
-                        width: 'calc(70vw)',
-                        minWidth: 584,
-                      }}
-                    >
-                      <SearchBoxContainer
-                        initiateSearch={this.initiateSearch}
-                      />
-                    </Paper>
-                  )}
-                </Grid>
-
-                {this.props.requestReceived && (
-                  <Grid item id="container-search-table">
-                    <Paper
-                      style={{
-                        height: containerHeight,
-                        minHeight: 326,
-                        width: 'calc(70vw)',
-                        minWidth: 584,
-                      }}
-                    >
-                      {/* Show loading progress if data is still being loaded */}
-                      {this.props.loading && (
-                        <Grid item xs={12}>
-                          <LinearProgress color="secondary" />
-                        </Grid>
-                      )}
-                      <SearchPageTable
-                        containerHeight={containerHeight}
-                        hierarchy={match.params.hierarchy}
-                      />
-                    </Paper>
-                  </Grid>
+            <Grid
+              container
+              direction={this.props.sideLayout ? 'row' : 'column'}
+              justify="center"
+              alignItems="center"
+              spacing={spacing}
+              style={{ margin: 0, width: '100%' }}
+            >
+              <Grid item id="container-search-filters">
+                {this.props.sideLayout ? (
+                  <Paper style={{ height: '100%', width: '100%' }}>
+                    <SearchBoxContainerSide
+                      initiateSearch={this.initiateSearch}
+                    />
+                  </Paper>
+                ) : (
+                  <Paper
+                    style={{
+                      height: '100%',
+                      width: '70vw',
+                      minWidth: 584, // Minimum width to ensure search box contents stay aligned
+                    }}
+                  >
+                    <SearchBoxContainer initiateSearch={this.initiateSearch} />
+                  </Paper>
                 )}
               </Grid>
-            </div>
+
+              {this.props.requestReceived && (
+                <Grid container justify="center" id="container-search-table">
+                  <Paper
+                    style={{
+                      height: containerHeight,
+                      minHeight: 326,
+                      width: '99vw',
+                      minWidth: 584,
+                    }}
+                  >
+                    {/* Show loading progress if data is still being loaded */}
+                    {this.props.loading && (
+                      <Grid item xs={12}>
+                        <LinearProgress color="secondary" />
+                      </Grid>
+                    )}
+                    <SearchPageTable
+                      containerHeight={containerHeight}
+                      hierarchy={match.params.hierarchy}
+                    />
+                  </Paper>
+                </Grid>
+              )}
+            </Grid>
           )}
         />
       </Switch>
