@@ -111,11 +111,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
     {
       content: (entity: Dataset) => {
-        const countQuery = sizeQueries[0];
-        if (countQuery?.isFetching) {
+        const sizeQuery = sizeQueries[0];
+        if (sizeQuery?.isFetching) {
           return 'Calculating...';
         } else {
-          return formatBytes(countQuery?.data) ?? 'Unknown';
+          return formatBytes(sizeQuery?.data) ?? 'Unknown';
         }
       },
       label: t('datasets.size'),
