@@ -1,9 +1,341 @@
-import axios from 'axios';
-import { getApiParams } from '.';
+import React from 'react';
+import axios, { AxiosError } from 'axios';
+import { getApiParams, parseSearchToQuery } from '.';
 import { readSciGatewayToken } from '../parseTokens';
-import { AdditionalFilters, FiltersType } from '../app.types';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { IndexRange } from 'react-virtualized';
+import handleICATError from '../handleICATError';
+import {
+  AdditionalFilters,
+  FiltersType,
+  Dataset,
+  SortType,
+} from '../app.types';
+import { StateType } from '../state/app.types';
+import {
+  useQuery,
+  UseQueryResult,
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+  InfiniteData,
+  useQueries,
+  UseQueryOptions,
+} from 'react-query';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
-export const fetchDatasetCount = (
+const fetchDatasets = (
+  apiUrl: string,
+  sortAndFilters: {
+    sort: SortType;
+    filters: FiltersType;
+  },
+  additionalFilters?: AdditionalFilters,
+  offsetParams?: IndexRange
+): Promise<Dataset[]> => {
+  const params = getApiParams(sortAndFilters);
+
+  if (offsetParams) {
+    params.append('skip', JSON.stringify(offsetParams.startIndex));
+    params.append(
+      'limit',
+      JSON.stringify(offsetParams.stopIndex - offsetParams.startIndex + 1)
+    );
+  }
+
+  additionalFilters?.forEach((filter) => {
+    params.append(filter.filterType, filter.filterValue);
+  });
+
+  return axios
+    .get(`${apiUrl}/datasets`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+export const useDatasetsPaginated = (
+  additionalFilters?: AdditionalFilters
+): UseQueryResult<Dataset[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters, sort, page, results } = parseSearchToQuery(location.search);
+
+  return useQuery<
+    Dataset[],
+    AxiosError,
+    Dataset[],
+    [
+      string,
+      {
+        sort: SortType;
+        filters: FiltersType;
+        page: number;
+        results: number | null;
+      },
+      AdditionalFilters?
+    ]
+  >(
+    [
+      'dataset',
+      { sort, filters, page: page || 1, results: results || 10 },
+      additionalFilters,
+    ],
+    (params) => {
+      const { sort, filters, page, results } = params.queryKey[1];
+      const startIndex = (page - 1) * (results ?? 10);
+      const stopIndex = startIndex + (results ?? 10) - 1;
+      return fetchDatasets(apiUrl, { sort, filters }, additionalFilters, {
+        startIndex,
+        stopIndex,
+      });
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+export const useDatasetsInfinite = (
+  additionalFilters?: AdditionalFilters
+): UseInfiniteQueryResult<Dataset[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters, sort } = parseSearchToQuery(location.search);
+
+  return useInfiniteQuery<
+    Dataset[],
+    AxiosError,
+    Dataset[],
+    [string, { sort: SortType; filters: FiltersType }, AdditionalFilters?]
+  >(
+    ['dataset', { sort, filters }, additionalFilters],
+    (params) => {
+      const { sort, filters } = params.queryKey[1];
+      const offsetParams = params.pageParam ?? { startIndex: 0, stopIndex: 49 };
+      return fetchDatasets(
+        apiUrl,
+        { sort, filters },
+        additionalFilters,
+        offsetParams
+      );
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length >= 25) {
+          return true;
+        } else {
+          return undefined;
+        }
+      },
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+const fetchDatasetSize = (
+  config: {
+    facilityName: string;
+    downloadApiUrl: string;
+  },
+  datasetId: number
+): Promise<number> => {
+  // Make use of the facility name and download API url for the request.
+  const { facilityName, downloadApiUrl } = config;
+  return axios
+    .get(`${downloadApiUrl}/user/getSize`, {
+      params: {
+        sessionId: readSciGatewayToken().sessionId,
+        facilityName: facilityName,
+        entityType: 'dataset',
+        entityId: datasetId,
+      },
+    })
+    .then((response) => {
+      return response.data;
+    });
+};
+
+/**
+ * For use with DLS button fetch size functionality
+ * via using the refetch function returned by useQuery
+ * Hence why the query is disabled by default
+ */
+export const useDatasetSize = (
+  datasetId: number
+): UseQueryResult<number, AxiosError> => {
+  const downloadApiUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.downloadApiUrl
+  );
+  const facilityName = useSelector(
+    (state: StateType) => state.dgcommon.facilityName
+  );
+
+  return useQuery<number, AxiosError, number, [string, number]>(
+    ['datasetSize', datasetId],
+    (params) =>
+      fetchDatasetSize({ facilityName, downloadApiUrl }, params.queryKey[1]),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+      enabled: false,
+    }
+  );
+};
+
+export const useDatasetSizes = (
+  data: Dataset[] | InfiniteData<Dataset[]> | undefined
+): UseQueryResult<number, AxiosError>[] => {
+  const downloadApiUrl = useSelector(
+    (state: StateType) => state.dgcommon.urls.downloadApiUrl
+  );
+  const facilityName = useSelector(
+    (state: StateType) => state.dgcommon.facilityName
+  );
+
+  const queryConfigs: UseQueryOptions<
+    number,
+    AxiosError,
+    number,
+    ['datasetSize', number]
+  >[] = React.useMemo(() => {
+    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    const aggregatedData = data
+      ? 'pages' in data
+        ? data.pages.flat()
+        : data
+      : [];
+
+    return aggregatedData.map((dataset) => {
+      return {
+        queryKey: ['datasetSize', dataset.id],
+        queryFn: () =>
+          fetchDatasetSize({ facilityName, downloadApiUrl }, dataset.id),
+        onError: (error) => {
+          handleICATError(error, false);
+        },
+        staleTime: Infinity,
+      };
+    });
+  }, [data, facilityName, downloadApiUrl]);
+
+  // useQueries doesn't allow us to specify type info, so ignore this line
+  // since we strongly type the queries object anyway
+  // we also need to prettier-ignore to make sure we don't wrap onto next line
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // prettier-ignore
+  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
+
+  const [sizes, setSizes] = React.useState<
+    UseQueryResult<number, AxiosError>[]
+  >([]);
+
+  const countAppliedRef = React.useRef(0);
+  // need to use useDeepCompareEffect here because the array returned by useQueries
+  // is different every time this hook runs
+  useDeepCompareEffect(() => {
+    const currCountReturned = queries.reduce(
+      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
+      0
+    );
+    const batchMax =
+      sizes.length - currCountReturned < 5
+        ? sizes.length - currCountReturned
+        : 5;
+    // this in effect batches our updates to only happen in batches >= 5
+    if (currCountReturned - countAppliedRef.current >= batchMax) {
+      setSizes(queries);
+      countAppliedRef.current = currCountReturned;
+    }
+  }, [queries]);
+
+  return sizes;
+};
+
+export const useDatasetsDatafileCount = (
+  data: Dataset[] | InfiniteData<Dataset[]> | undefined
+): UseQueryResult<number, AxiosError>[] => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  const queryConfigs: UseQueryOptions<
+    number,
+    AxiosError,
+    number,
+    ['datasetDatafileCount', number]
+  >[] = React.useMemo(() => {
+    // check if we're from an infinite query or not to determine the way the data needs to be iterated
+    const aggregatedData = data
+      ? 'pages' in data
+        ? data.pages.flat()
+        : data
+      : [];
+
+    return aggregatedData.map((dataset) => {
+      return {
+        queryKey: ['datasetDatafileCount', dataset.id],
+        queryFn: () =>
+          fetchDatasetCountQuery(apiUrl, {}, [
+            {
+              filterType: 'where',
+              filterValue: JSON.stringify({
+                'dataset.id': { eq: dataset.id },
+              }),
+            },
+          ]),
+        onError: (error) => {
+          handleICATError(error, false);
+        },
+        staleTime: Infinity,
+      };
+    });
+  }, [data, apiUrl]);
+
+  // useQueries doesn't allow us to specify type info, so ignore this line
+  // since we strongly type the queries object anyway
+  // we also need to prettier-ignore to make sure we don't wrap onto next line
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  // prettier-ignore
+  const queries: UseQueryResult<number, AxiosError>[] = useQueries(queryConfigs);
+
+  const [datasetCounts, setDatasetCounts] = React.useState<
+    UseQueryResult<number, AxiosError>[]
+  >([]);
+
+  const countAppliedRef = React.useRef(0);
+  // need to use useDeepCompareEffect here because the array returned by useQueries
+  // is different every time this hook runs
+  useDeepCompareEffect(() => {
+    const currCountReturned = queries.reduce(
+      (acc, curr) => acc + (curr.isFetched ? 1 : 0),
+      0
+    );
+    const batchMax =
+      datasetCounts.length - currCountReturned < 5
+        ? datasetCounts.length - currCountReturned
+        : 5;
+    // this in effect batches our updates to only happen in batches >= 5
+    if (currCountReturned - countAppliedRef.current >= batchMax) {
+      setDatasetCounts(queries);
+      countAppliedRef.current = currCountReturned;
+    }
+  }, [queries]);
+
+  return datasetCounts;
+};
+
+export const fetchDatasetCountQuery = (
   apiUrl: string,
   filters: FiltersType,
   additionalFilters?: AdditionalFilters
@@ -25,4 +357,90 @@ export const fetchDatasetCount = (
       },
     })
     .then((response) => response.data);
+};
+
+export const useDatasetCount = (
+  additionalFilters?: AdditionalFilters
+): UseQueryResult<number, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+  const location = useLocation();
+  const { filters } = parseSearchToQuery(location.search);
+
+  return useQuery<
+    number,
+    AxiosError,
+    number,
+    [string, string, { filters: FiltersType }, AdditionalFilters?]
+  >(
+    ['count', 'dataset', { filters }, additionalFilters],
+    (params) => {
+      const { filters } = params.queryKey[2];
+      return fetchDatasetCountQuery(apiUrl, filters, additionalFilters);
+    },
+    {
+      placeholderData: 0,
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+const fetchDatasetDetails = (
+  apiUrl: string,
+  datasetId: number
+): Promise<Dataset> => {
+  const params = new URLSearchParams();
+  params.append('where', JSON.stringify({ id: { eq: datasetId } }));
+  params.append('include', JSON.stringify('type'));
+
+  return axios
+    .get(`${apiUrl}/datasets`, {
+      params,
+      headers: {
+        Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+      },
+    })
+    .then((response) => response.data[0]);
+};
+
+export const useDatasetDetails = (
+  datasetId: number
+): UseQueryResult<Dataset, AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<Dataset, AxiosError, Dataset, [string, number]>(
+    ['datasetDetails', datasetId],
+    (params) => fetchDatasetDetails(apiUrl, params.queryKey[1]),
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
+export const downloadDatasetQuery = (
+  idsUrl: string,
+  datasetId: number,
+  datasetName: string
+): void => {
+  const params = {
+    sessionId: readSciGatewayToken().sessionId,
+    datasetIds: datasetId,
+    compress: false,
+    zip: true,
+    outname: datasetName,
+  };
+
+  const link = document.createElement('a');
+  link.href = `${idsUrl}/getData?${Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')}`;
+
+  link.style.display = 'none';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 };

@@ -22,7 +22,7 @@ import {
   useQueries,
   UseQueryOptions,
 } from 'react-query';
-import { fetchDatasetCount } from './datasets';
+import { fetchDatasetCountQuery } from './datasets';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 const fetchInvestigations = (
@@ -324,7 +324,7 @@ export const useInvestigationsDatasetCount = (
       return {
         queryKey: ['investigationDatasetCount', investigation.id],
         queryFn: () =>
-          fetchDatasetCount(apiUrl, {}, [
+          fetchDatasetCountQuery(apiUrl, {}, [
             {
               filterType: 'where',
               filterValue: JSON.stringify({

@@ -347,35 +347,26 @@ export const useDatafileDetails = (
   );
 };
 
-// TODO (Sam) - Convert the download data file functions into react-query style
+export const downloadDatafileQuery = (
+  idsUrl: string,
+  datafileId: number,
+  filename: string
+): void => {
+  const params = {
+    sessionId: readSciGatewayToken().sessionId,
+    datafileIds: datafileId,
+    compress: false,
+    outname: filename,
+  };
 
-// export const downloadDatafile = (
-//   idsUrl: string,
-//   datafileId: number,
-//   filename: string
-// ): <Promise<void>> => {
+  const link = document.createElement('a');
+  link.href = `${idsUrl}/getData?${Object.entries(params)
+    .map(([key, value]) => `${key}=${value}`)
+    .join('&')}`;
 
-//   return async (dispatch, getState) => {
-
-//     // Might not need this? (or its equivalent, at least)
-//     // const timestamp = Date.now();
-//     // dispatch(downloadDatafileRequest(timestamp));
-
-//     const params = {
-//       sessionId: readSciGatewayToken().sessionId,
-//       datafileIds: datafileId,
-//       compress: false,
-//       outname: filename,
-//     };
-
-//     const link = document.createElement('a');
-//     link.href = `${idsUrl}/getData?${Object.entries(params)
-//       .map(([key, value]) => `${key}=${value}`)
-//       .join('&')}`;
-
-//     link.style.display = 'none';
-//     link.target = '_blank';
-//     document.body.appendChild(link);
-//     link.click();
-//     link.remove();
-//   };
+  link.style.display = 'none';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
