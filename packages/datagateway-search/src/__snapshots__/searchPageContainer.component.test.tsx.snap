@@ -1,38 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SearchPageContainer - Tests renders correctly at /search/data route 1`] = `
-<div>
-  <WithStyles(ForwardRef(Grid))
-    alignItems="center"
-    container={true}
-    direction="column"
-    justify="center"
-    spacing={2}
-    style={
-      Object {
-        "margin": 0,
-        "width": "100%",
-      }
+<div
+  className="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 MuiGrid-direction-xs-column MuiGrid-align-items-xs-center MuiGrid-justify-xs-center"
+  style={
+    Object {
+      "margin": 0,
+      "width": "100%",
     }
+  }
+>
+  <WithStyles(ForwardRef(Grid))
+    id="container-search-filters"
+    item={true}
   >
-    <WithStyles(ForwardRef(Grid))
-      id="container-search-filters"
-      item={true}
-    >
-      <WithStyles(ForwardRef(Paper))
-        style={
-          Object {
-            "height": "100%",
-            "minWidth": 584,
-            "width": "70vw",
-          }
+    <WithStyles(ForwardRef(Paper))
+      style={
+        Object {
+          "height": "100%",
+          "minWidth": 584,
+          "width": "70vw",
         }
-      >
-        <SearchBoxContainer
-          initiateSearch={[Function]}
-        />
-      </WithStyles(ForwardRef(Paper))>
-    </WithStyles(ForwardRef(Grid))>
+      }
+    >
+      <SearchBoxContainer
+        initiateSearch={[Function]}
+      />
+    </WithStyles(ForwardRef(Paper))>
   </WithStyles(ForwardRef(Grid))>
 </div>
 `;
