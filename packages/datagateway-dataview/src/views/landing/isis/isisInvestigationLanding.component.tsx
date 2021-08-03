@@ -29,6 +29,7 @@ import {
   Sample,
   tableLink,
   useInvestigation,
+  useInvestigationSizes,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -124,7 +125,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     {
       filterType: 'include',
       filterValue: JSON.stringify([
-        'investigationUsers',
+        {
+          investigationUsers: 'user',
+        },
         'samples',
         'publications',
         'datasets',
@@ -137,6 +140,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       ]),
     },
   ]);
+  const sizeQueries = useInvestigationSizes(data);
 
   const title = React.useMemo(() => data?.[0]?.title, [data]);
   const doi = React.useMemo(() => data?.[0]?.doi, [data]);
@@ -220,7 +224,14 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => formatBytes(entity.size),
+      content: (entity: Investigation) => {
+        const countQuery = sizeQueries[0];
+        if (countQuery?.isFetching) {
+          return 'Calculating...';
+        } else {
+          return formatBytes(countQuery?.data) ?? 'Unknown';
+        }
+      },
       label: t('investigations.size'),
       icon: <Save className={classes.shortInfoIcon} />,
     },
