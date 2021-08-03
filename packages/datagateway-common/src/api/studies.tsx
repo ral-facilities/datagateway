@@ -135,6 +135,44 @@ export const useStudiesInfinite = (
   );
 };
 
+export const useStudy = (
+  studyId: number
+): UseQueryResult<Study[], AxiosError> => {
+  const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
+
+  return useQuery<Study[], AxiosError, Study[], [string, number]>(
+    ['study', studyId],
+    () => {
+      return fetchStudies(apiUrl, { sort: {}, filters: {} }, [
+        {
+          filterType: 'where',
+          filterValue: JSON.stringify({
+            id: { eq: studyId },
+          }),
+        },
+        {
+          filterType: 'include',
+          filterValue: JSON.stringify([
+            {
+              studyInvestigations: {
+                investigation: [
+                  { investigationUsers: 'user' },
+                  { investigationInstruments: 'instrument' },
+                ],
+              },
+            },
+          ]),
+        },
+      ]);
+    },
+    {
+      onError: (error) => {
+        handleICATError(error);
+      },
+    }
+  );
+};
+
 const fetchStudyCount = (
   apiUrl: string,
   filters: FiltersType,
