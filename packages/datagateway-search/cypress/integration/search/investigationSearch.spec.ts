@@ -61,8 +61,10 @@ describe('Investigation search tab', () => {
     let i = 1;
     while (i < 16) {
       cy.get(`[aria-rowindex="${i}"] [aria-colindex="1"]`).click();
+      cy.wait('@topcat', { timeout: 10000 });
       i++;
     }
+
     cy.get('[aria-label="select all rows"]', { timeout: 10000 }).should(
       'be.checked'
     );
