@@ -16,7 +16,7 @@ import { IndexRange, TableCellProps } from 'react-virtualized';
 
 import PublicIcon from '@material-ui/icons/Public';
 import FingerprintIcon from '@material-ui/icons/Fingerprint';
-import DescriptionIcon from '@material-ui/icons/Description';
+import TitleIcon from '@material-ui/icons/Title';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { useLocation } from 'react-router';
 

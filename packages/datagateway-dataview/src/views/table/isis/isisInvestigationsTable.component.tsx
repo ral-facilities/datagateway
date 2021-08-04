@@ -139,20 +139,6 @@ const ISISInvestigationsTable = (
       },
       {
         icon: FingerprintIcon,
-        label: t('investigations.visit_id'),
-        dataKey: 'visitId',
-        cellContentRenderer: (cellProps: TableCellProps) => {
-          const investigationData = cellProps.rowData as Investigation;
-          return tableLink(
-            `${urlPrefix}/${investigationData.id}`,
-            investigationData.visitId,
-            view
-          );
-        },
-        filterComponent: textFilter,
-      },
-      {
-        icon: FingerprintIcon,
         label: t('investigations.name'),
         dataKey: 'name',
         cellContentRenderer: (cellProps: TableCellProps) => {

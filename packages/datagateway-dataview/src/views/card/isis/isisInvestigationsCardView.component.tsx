@@ -104,12 +104,6 @@ const ISISInvestigationsCardView = (
     () => [
       {
         icon: Fingerprint,
-        label: t('investigations.visit_id'),
-        dataKey: 'visitId',
-        filterComponent: textFilter,
-      },
-      {
-        icon: Fingerprint,
         label: t('investigations.name'),
         dataKey: 'name',
         filterComponent: textFilter,

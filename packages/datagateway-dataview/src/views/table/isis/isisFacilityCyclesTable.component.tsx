@@ -15,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 import { IndexRange, TableCellProps } from 'react-virtualized';
 import { useLocation } from 'react-router-dom';
 import TitleIcon from '@material-ui/icons/Title';
-import DescriptionIcon from '@material-ui/icons/Description';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISFacilityCyclesTableProps {
@@ -68,12 +67,6 @@ const ISISFacilityCyclesTable = (
             cellProps.rowData.name,
             view
           ),
-        filterComponent: textFilter,
-      },
-      {
-        icon: DescriptionIcon,
-        label: t('facilitycycles.description'),
-        dataKey: 'description',
         filterComponent: textFilter,
       },
       {
