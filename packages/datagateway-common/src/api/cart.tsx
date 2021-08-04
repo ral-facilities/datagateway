@@ -80,7 +80,9 @@ export const useCart = (): UseQueryResult<DownloadCartItem[], AxiosError> => {
         downloadApiUrl,
       }),
     {
-      enabled: document.getElementById('datagateway-dataview') !== null,
+      enabled:
+        document.getElementById('datagateway-dataview') !== null ||
+        document.getElementById('datagateway-search') !== null,
       onError: (error) => {
         handleICATError(error);
       },
