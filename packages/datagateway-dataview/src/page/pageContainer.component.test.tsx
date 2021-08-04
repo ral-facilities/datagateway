@@ -235,7 +235,7 @@ describe('PageContainer - Tests', () => {
     ).toEqual('loading.filter_message');
   });
 
-  it('switches view button display when clicked', () => {
+  it('switches view button display name when clicked', () => {
     // Mock getElementById so that it returns truthy.
     const testElement = document.createElement('DIV');
     document.getElementById = jest.fn(() => testElement);
