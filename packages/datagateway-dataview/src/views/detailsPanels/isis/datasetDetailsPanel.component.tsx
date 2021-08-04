@@ -1,5 +1,5 @@
 import React from 'react';
-import { Entity, Dataset } from 'datagateway-common';
+import { Entity, Dataset, useDatasetDetails } from 'datagateway-common';
 import {
   Typography,
   Grid,
@@ -11,7 +11,6 @@ import {
   Tab,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Action } from 'redux';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,26 +25,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface DatasetDetailsPanelProps {
   rowData: Entity;
-  fetchDetails: (datasetId: number) => Promise<void>;
   detailsPanelResize?: () => void;
-  viewDatafiles?: (id: number) => Action;
+  viewDatafiles?: (id: number) => void;
 }
 
 const DatasetDetailsPanel = (
   props: DatasetDetailsPanelProps
 ): React.ReactElement => {
-  const { rowData, fetchDetails, detailsPanelResize, viewDatafiles } = props;
+  const { rowData, detailsPanelResize, viewDatafiles } = props;
   const [value, setValue] = React.useState<'details' | 'type'>('details');
   const [t] = useTranslation();
   const classes = useStyles();
 
-  const datasetData = rowData as Dataset;
-
-  React.useEffect(() => {
-    if (!datasetData.type) {
-      fetchDetails(datasetData.id);
-    }
-  }, [datasetData.type, datasetData.id, fetchDetails]);
+  const { data } = useDatasetDetails(rowData.id);
+  const datasetData: Dataset = { ...data, ...(rowData as Dataset) };
 
   React.useLayoutEffect(() => {
     if (detailsPanelResize) detailsPanelResize();

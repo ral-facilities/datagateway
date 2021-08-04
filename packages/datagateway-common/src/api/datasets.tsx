@@ -23,6 +23,7 @@ import {
   UseQueryOptions,
 } from 'react-query';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import { fetchDatafileCountQuery } from './datafiles';
 
 const fetchDatasets = (
   apiUrl: string,
@@ -317,7 +318,7 @@ export const useDatasetsDatafileCount = (
       return {
         queryKey: ['datasetDatafileCount', dataset.id],
         queryFn: () =>
-          fetchDatasetCountQuery(apiUrl, {}, [
+          fetchDatafileCountQuery(apiUrl, {}, [
             {
               filterType: 'where',
               filterValue: JSON.stringify({

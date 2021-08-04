@@ -174,14 +174,7 @@ const ISISDatafilesTable = (
       onCheck={addToCart}
       onUncheck={removeFromCart}
       disableSelectAll={!selectAllSetting}
-      detailsPanel={({ rowData, detailsPanelResize }) => {
-        return (
-          <DatafileDetailsPanel
-            rowData={rowData}
-            detailsPanelResize={detailsPanelResize}
-          />
-        );
-      }}
+      detailsPanel={DatafileDetailsPanel}
       actions={[
         function downloadButton({ rowData }: TableActionProps) {
           const { id, location } = rowData as Datafile;
