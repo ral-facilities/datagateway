@@ -92,7 +92,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
         filterComponent: textFilter,
       },
       {
-        icon: DescriptionIcon,
+        icon: TitleIcon,
         label: t('studies.title'),
         dataKey: 'studyInvestigations.investigation.title',
         cellContentRenderer: (cellProps: TableCellProps) =>
@@ -103,7 +103,7 @@ const ISISStudiesTable = (props: ISISStudiesTableProps): React.ReactElement => {
       {
         icon: PublicIcon,
         label: t('studies.pid'),
-        dataKey: 'study.pid',
+        dataKey: 'pid',
         filterComponent: textFilter,
       },
       {
