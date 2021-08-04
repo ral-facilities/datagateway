@@ -25,6 +25,7 @@ describe('DLS - Proposals Table', () => {
     cy.get('[aria-label="grid"]').scrollTo('bottom');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(3000);
+    cy.get('[aria-label="grid"]').scrollTo('bottom');
     cy.get('[aria-rowcount="75"]').should('exist');
   });
 
