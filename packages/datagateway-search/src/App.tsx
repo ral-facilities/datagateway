@@ -22,6 +22,8 @@ import { configureApp } from './state/actions';
 import { StateType } from './state/app.types';
 import AppReducer from './state/reducers/app.reducer';
 import { Translation } from 'react-i18next';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 /* eslint-disable no-underscore-dangle, @typescript-eslint/no-explicit-any */
 const composeEnhancers =
@@ -42,7 +44,7 @@ const generateClassName = createGenerateClassName({
 
 if (process.env.NODE_ENV === `development`) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const logger = (createLogger as any)();
+  const logger = (createLogger as any)({ collapsed: true });
   middleware.push(logger);
 }
 
@@ -53,6 +55,15 @@ function mapPreloaderStateToProps(state: StateType): { loading: boolean } {
 }
 
 export const ConnectedPreloader = connect(mapPreloaderStateToProps)(Preloader);
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+    },
+  },
+});
 
 class App extends React.Component<unknown, { hasError: boolean }> {
   store: Store;
@@ -104,19 +115,22 @@ class App extends React.Component<unknown, { hasError: boolean }> {
         <div className="App">
           <Provider store={this.store}>
             <ConnectedRouter history={history}>
-              <StylesProvider generateClassName={generateClassName}>
-                <DGThemeProvider>
-                  <ConnectedPreloader>
-                    <React.Suspense
-                      fallback={
-                        <Preloader loading={true}>Finished loading</Preloader>
-                      }
-                    >
-                      <SearchPageContainer />
-                    </React.Suspense>
-                  </ConnectedPreloader>
-                </DGThemeProvider>
-              </StylesProvider>
+              <QueryClientProvider client={queryClient}>
+                <StylesProvider generateClassName={generateClassName}>
+                  <DGThemeProvider>
+                    <ConnectedPreloader>
+                      <React.Suspense
+                        fallback={
+                          <Preloader loading={true}>Finished loading</Preloader>
+                        }
+                      >
+                        <SearchPageContainer />
+                      </React.Suspense>
+                    </ConnectedPreloader>
+                  </DGThemeProvider>
+                </StylesProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
+              </QueryClientProvider>
             </ConnectedRouter>
           </Provider>
         </div>

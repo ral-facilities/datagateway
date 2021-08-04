@@ -57,10 +57,9 @@ const fetchAllFacilityCycles = (apiUrl: string): Promise<FacilityCycle[]> => {
     });
 };
 
-export const useAllFacilityCycles = (): UseQueryResult<
-  FacilityCycle[],
-  AxiosError
-> => {
+export const useAllFacilityCycles = (
+  enabled?: boolean
+): UseQueryResult<FacilityCycle[], AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
   return useQuery<FacilityCycle[], AxiosError, FacilityCycle[], string>(
@@ -70,6 +69,7 @@ export const useAllFacilityCycles = (): UseQueryResult<
       onError: (error) => {
         handleICATError(error);
       },
+      enabled,
     }
   );
 };

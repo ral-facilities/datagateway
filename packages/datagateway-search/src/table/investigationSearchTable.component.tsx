@@ -1,93 +1,172 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import {
+  createStyles,
+  Divider,
+  Grid,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
 import {
   Table,
-  TextColumnFilter,
-  DateColumnFilter,
-  Order,
-  Filter,
   Investigation,
-  Entity,
-  DownloadCartItem,
-  fetchInvestigations,
-  fetchInvestigationCount,
-  addToCart,
-  removeFromCart,
-  fetchAllIds,
-  sortTable,
-  filterTable,
-  clearTable,
   tableLink,
-  handleICATError,
-  readSciGatewayToken,
   FacilityCycle,
+  ColumnType,
+  DetailsPanelProps,
+  parseSearchToQuery,
+  useAddToCart,
+  useAllFacilityCycles,
+  useCart,
+  useDateFilter,
+  useIds,
+  useInvestigationCount,
+  useInvestigationsInfinite,
+  usePushSort,
+  useRemoveFromCart,
+  useTextFilter,
+  useInvestigationsDatasetCount,
+  useInvestigationSizes,
+  formatBytes,
 } from 'datagateway-common';
 import { StateType } from '../state/app.types';
-import { connect } from 'react-redux';
-import { Action, AnyAction } from 'redux';
 import { TableCellProps, IndexRange } from 'react-virtualized';
-import { ThunkDispatch } from 'redux-thunk';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      padding: theme.spacing(2),
+    },
+    divider: {
+      marginBottom: theme.spacing(2),
+    },
+  })
+);
+
+const InvestigationDetailsPanel = (
+  props: DetailsPanelProps
+): React.ReactElement => {
+  const classes = useStyles();
+  const [t] = useTranslation();
+  const investigationData = props.rowData as Investigation;
+  return (
+    <Grid
+      id="details-panel"
+      container
+      className={classes.root}
+      direction="column"
+    >
+      <Grid item xs>
+        <Typography variant="h6">
+          <b>{investigationData.title}</b>
+        </Typography>
+        <Divider className={classes.divider} />
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">
+          {t('investigations.details.name')}
+        </Typography>
+        <Typography>
+          <b>{investigationData.name}</b>
+        </Typography>
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">
+          {t('investigations.details.start_date')}
+        </Typography>
+        <Typography>
+          <b>{investigationData.startDate}</b>
+        </Typography>
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">
+          {t('investigations.details.end_date')}
+        </Typography>
+        <Typography>
+          <b>{investigationData.endDate}</b>
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
 
 interface InvestigationTableProps {
-  sort: {
-    [column: string]: Order;
-  };
-  filters: {
-    [column: string]: Filter;
-  };
-  data: Entity[];
-  totalDataCount: number;
-  loading: boolean;
-  error: string | null;
-  cartItems: DownloadCartItem[];
-  allIds: number[];
-  luceneData: number[];
-  apiUrl: string;
+  hierarchy: string;
 }
-
-interface InvestigationTableDispatchProps {
-  sortTable: (column: string, order: Order | null) => Action;
-  filterTable: (column: string, filter: Filter | null) => Action;
-  addToCart: (entityIds: number[]) => Promise<void>;
-  removeFromCart: (entityIds: number[]) => Promise<void>;
-  fetchData: (luceneData: number[], offsetParams: IndexRange) => Promise<void>;
-  fetchCount: (luceneData: number[]) => Promise<void>;
-  fetchAllIds: (luceneData: number[]) => Promise<void>;
-  clearTable: () => Action;
-}
-
-type InvestigationTableCombinedProps = InvestigationTableProps &
-  InvestigationTableDispatchProps & { hierarchy: string };
 
 const InvestigationSearchTable = (
-  props: InvestigationTableCombinedProps
+  props: InvestigationTableProps
 ): React.ReactElement => {
-  const {
-    data,
-    totalDataCount,
-    fetchData,
-    fetchCount,
-    clearTable,
-    sort,
-    sortTable,
-    filters,
-    filterTable,
-    cartItems,
-    addToCart,
-    removeFromCart,
-    allIds,
-    fetchAllIds,
-    luceneData,
-    loading,
-    hierarchy,
-    apiUrl,
-  } = props;
+  const { hierarchy } = props;
 
-  const [facilityCycles, setFacilityCycles] = React.useState([]);
+  const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
+  const luceneData = useSelector(
+    (state: StateType) => state.dgsearch.searchData.investigation
+  );
+  const location = useLocation();
   const [t] = useTranslation();
+
+  const { filters, sort } = React.useMemo(
+    () => parseSearchToQuery(location.search),
+    [location.search]
+  );
+
+  const { data: totalDataCount } = useInvestigationCount([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: luceneData },
+      }),
+    },
+  ]);
+  const { fetchNextPage, data } = useInvestigationsInfinite([
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: luceneData },
+      }),
+    },
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        investigationInstruments: 'instrument',
+      }),
+    },
+  ]);
+  const { data: allIds } = useIds('investigation', [
+    {
+      filterType: 'where',
+      filterValue: JSON.stringify({
+        id: { in: luceneData },
+      }),
+    },
+  ]);
+  const { data: cartItems } = useCart();
+  const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
+    'investigation'
+  );
+  const {
+    mutate: removeFromCart,
+    isLoading: removeFromCartLoading,
+  } = useRemoveFromCart('investigation');
+
+  const aggregatedData: Investigation[] = React.useMemo(
+    () => data?.pages.flat() ?? [],
+    [data]
+  );
+
+  const textFilter = useTextFilter(filters);
+  const dateFilter = useDateFilter(filters);
+  const pushSort = usePushSort();
+
+  const loadMoreRows = React.useCallback(
+    (offsetParams: IndexRange) => fetchNextPage({ pageParam: offsetParams }),
+    [fetchNextPage]
+  );
 
   const dlsLink = (investigationData: Investigation): React.ReactElement =>
     tableLink(
@@ -106,8 +185,8 @@ const InvestigationSearchTable = (
         return investigationData.title;
       }
 
-      if (investigationData.startDate && facilityCycles.length) {
-        const filteredFacilityCycles: FacilityCycle[] = facilityCycles.filter(
+      if (investigationData.startDate && facilityCycles?.length) {
+        const filteredFacilityCycles: FacilityCycle[] = facilityCycles?.filter(
           (facilityCycle: FacilityCycle) =>
             investigationData.startDate &&
             facilityCycle.startDate &&
@@ -151,8 +230,9 @@ const InvestigationSearchTable = (
   const selectedRows = React.useMemo(
     () =>
       cartItems
-        .filter(
+        ?.filter(
           (cartItem) =>
+            allIds &&
             cartItem.entityType === 'investigation' &&
             allIds.includes(cartItem.entityId)
         )
@@ -160,230 +240,122 @@ const InvestigationSearchTable = (
     [cartItems, allIds]
   );
 
-  const textFilter = (label: string, dataKey: string): React.ReactElement => (
-    <TextColumnFilter
-      label={label}
-      onChange={(value: { value?: string | number; type: string } | null) =>
-        filterTable(dataKey, value ? value : null)
-      }
-    />
+  // hierarchy === 'isis' ? data : [] is a 'hack' to only perform
+  // the correct calculation queries for each facility
+  const datasetCountQueries = useInvestigationsDatasetCount(
+    hierarchy !== 'isis' ? data : []
   );
+  const sizeQueries = useInvestigationSizes(hierarchy === 'isis' ? data : []);
 
-  const dateFilter = (label: string, dataKey: string): React.ReactElement => (
-    <DateColumnFilter
-      label={label}
-      onChange={(value: { startDate?: string; endDate?: string } | null) =>
-        filterTable(dataKey, value)
-      }
-    />
-  );
-
-  const fetchFacilityCycles = React.useCallback(() => {
-    axios
-      .get(`${apiUrl}/facilitycycles`, {
-        headers: {
-          Authorization: `Bearer ${readSciGatewayToken().sessionId}`,
+  const columns: ColumnType[] = React.useMemo(
+    () => [
+      {
+        label: t('investigations.title'),
+        dataKey: 'title',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          return hierarchyLink(investigationData);
         },
-      })
-      .then((response) => {
-        setFacilityCycles(response.data);
-      })
-      .catch((error) => {
-        handleICATError(error);
-      });
-  }, [apiUrl]);
-
-  React.useEffect(() => {
-    if (hierarchy === 'isis') fetchFacilityCycles();
-  }, [fetchFacilityCycles, hierarchy]);
-
-  React.useEffect(() => {
-    clearTable();
-  }, [clearTable, luceneData]);
-
-  React.useEffect(() => {
-    fetchCount(luceneData);
-    fetchAllIds(luceneData);
-  }, [fetchCount, fetchData, fetchAllIds, filters, luceneData]);
-
-  React.useEffect(() => {
-    fetchData(luceneData, { startIndex: 0, stopIndex: 49 });
-  }, [fetchCount, fetchData, fetchAllIds, sort, filters, luceneData]);
+        filterComponent: textFilter,
+      },
+      {
+        label: t('investigations.visit_id'),
+        dataKey: 'visitId',
+        filterComponent: textFilter,
+      },
+      {
+        label: t('investigations.name'),
+        dataKey: 'name',
+        filterComponent: textFilter,
+      },
+      {
+        label: t('investigations.doi'),
+        dataKey: 'doi',
+        filterComponent: textFilter,
+      },
+      {
+        label:
+          hierarchy === 'isis'
+            ? t('investigations.size')
+            : t('investigations.dataset_count'),
+        dataKey: hierarchy === 'isis' ? 'size' : 'datasetCount',
+        cellContentRenderer: (cellProps: TableCellProps): number | string => {
+          const query =
+            hierarchy === 'isis'
+              ? sizeQueries[cellProps.rowIndex]
+              : datasetCountQueries[cellProps.rowIndex];
+          if (query?.isFetching) {
+            return 'Calculating...';
+          } else {
+            return hierarchy === 'isis'
+              ? formatBytes(query?.data)
+              : query?.data ?? 'Unknown';
+          }
+        },
+        disableSort: true,
+      },
+      {
+        label: t('investigations.instrument'),
+        dataKey: 'investigationInstruments.instrument.fullName',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          if (investigationData?.investigationInstruments?.[0]?.instrument) {
+            return investigationData.investigationInstruments[0].instrument
+              .fullName;
+          } else {
+            return '';
+          }
+        },
+        filterComponent: textFilter,
+      },
+      {
+        label: t('investigations.start_date'),
+        dataKey: 'startDate',
+        filterComponent: dateFilter,
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          if (cellProps.cellData) {
+            return cellProps.cellData.toString().split(' ')[0];
+          }
+        },
+      },
+      {
+        label: t('investigations.end_date'),
+        dataKey: 'endDate',
+        filterComponent: dateFilter,
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          if (cellProps.cellData) {
+            return cellProps.cellData.toString().split(' ')[0];
+          }
+        },
+      },
+    ],
+    [
+      t,
+      textFilter,
+      hierarchy,
+      dateFilter,
+      hierarchyLink,
+      sizeQueries,
+      datasetCountQueries,
+    ]
+  );
 
   return (
     <Table
-      loading={loading}
-      data={data}
-      loadMoreRows={(params) => fetchData(luceneData, params)}
+      loading={addToCartLoading || removeFromCartLoading}
+      data={aggregatedData}
+      loadMoreRows={loadMoreRows}
       totalRowCount={totalDataCount}
       sort={sort}
-      onSort={sortTable}
+      onSort={pushSort}
       selectedRows={selectedRows}
       allIds={allIds}
       onCheck={addToCart}
       onUncheck={removeFromCart}
-      detailsPanel={({ rowData }) => {
-        const investigationData = rowData as Investigation;
-        return (
-          <div>
-            <Typography>
-              <b>{t('investigations.name')}:</b> {investigationData.name}
-            </Typography>
-            <Typography>
-              <b>{t('investigations.title')}:</b> {investigationData.title}
-            </Typography>
-            <Typography>
-              <b>{t('investigations.start_date')}:</b>{' '}
-              {investigationData.startDate}
-            </Typography>
-            <Typography>
-              <b>{t('investigations.end_date')}:</b> {investigationData.endDate}
-            </Typography>
-          </div>
-        );
-      }}
-      columns={[
-        {
-          label: t('investigations.title'),
-          dataKey: 'title',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            return hierarchyLink(investigationData);
-          },
-          filterComponent: textFilter,
-        },
-        {
-          label: t('investigations.visit_id'),
-          dataKey: 'visitId',
-          filterComponent: textFilter,
-        },
-        {
-          label: t('investigations.name'),
-          dataKey: 'name',
-          filterComponent: textFilter,
-        },
-        {
-          label: t('investigations.doi'),
-          dataKey: 'doi',
-          filterComponent: textFilter,
-        },
-        {
-          label: t('investigations.dataset_count'),
-          dataKey: 'datasetCount',
-          disableSort: true,
-        },
-        {
-          label: t('investigations.instrument'),
-          dataKey: 'investigationInstruments.instrument.fullName',
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            const investigationData = cellProps.rowData as Investigation;
-            if (investigationData?.investigationInstruments?.[0]?.instrument) {
-              return investigationData.investigationInstruments[0].instrument
-                .fullName;
-            } else {
-              return '';
-            }
-          },
-          filterComponent: textFilter,
-        },
-        {
-          label: t('investigations.start_date'),
-          dataKey: 'startDate',
-          filterComponent: dateFilter,
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            if (cellProps.cellData) {
-              return cellProps.cellData.toString().split(' ')[0];
-            }
-          },
-        },
-        {
-          label: t('investigations.end_date'),
-          dataKey: 'endDate',
-          filterComponent: dateFilter,
-          cellContentRenderer: (cellProps: TableCellProps) => {
-            if (cellProps.cellData) {
-              return cellProps.cellData.toString().split(' ')[0];
-            }
-          },
-        },
-      ]}
+      detailsPanel={InvestigationDetailsPanel}
+      columns={columns}
     />
   );
 };
 
-const mapDispatchToProps = (
-  dispatch: ThunkDispatch<StateType, null, AnyAction>
-): InvestigationTableDispatchProps => ({
-  sortTable: (column: string, order: Order | null) =>
-    dispatch(sortTable(column, order)),
-  filterTable: (column: string, filter: Filter | null) =>
-    dispatch(filterTable(column, filter)),
-  fetchData: (luceneData: number[], offsetParams?: IndexRange) =>
-    dispatch(
-      fetchInvestigations({
-        offsetParams,
-        getDatasetCount: true,
-        additionalFilters: [
-          {
-            filterType: 'where',
-            filterValue: JSON.stringify({
-              id: { in: luceneData },
-            }),
-          },
-          {
-            filterType: 'include',
-            filterValue: JSON.stringify([
-              { investigationInstruments: 'instrument' },
-            ]),
-          },
-        ],
-      })
-    ),
-  fetchCount: (luceneData: number[]) =>
-    dispatch(
-      fetchInvestigationCount([
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: luceneData },
-          }),
-        },
-      ])
-    ),
-  clearTable: () => dispatch(clearTable()),
-  addToCart: (entityIds: number[]) =>
-    dispatch(addToCart('investigation', entityIds)),
-  removeFromCart: (entityIds: number[]) =>
-    dispatch(removeFromCart('investigation', entityIds)),
-  fetchAllIds: (luceneData: number[]) =>
-    dispatch(
-      fetchAllIds('investigation', [
-        {
-          filterType: 'where',
-          filterValue: JSON.stringify({
-            id: { in: luceneData },
-          }),
-        },
-      ])
-    ),
-});
-
-const mapStateToProps = (state: StateType): InvestigationTableProps => {
-  return {
-    sort: state.dgcommon.query.sort,
-    filters: state.dgcommon.query.filters,
-    data: state.dgcommon.data,
-    totalDataCount: state.dgcommon.totalDataCount,
-    loading: state.dgcommon.loading,
-    error: state.dgcommon.error,
-    cartItems: state.dgcommon.cartItems,
-    allIds: state.dgcommon.allIds,
-    luceneData: state.dgsearch.searchData.investigation,
-    apiUrl: state.dgcommon.urls.apiUrl,
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InvestigationSearchTable);
+export default InvestigationSearchTable;
