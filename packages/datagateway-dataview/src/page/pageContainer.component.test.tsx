@@ -121,7 +121,7 @@ describe('PageContainer - Tests', () => {
     );
 
     wrapper
-      .find('[aria-label="container-table-search"]')
+      .find('[aria-label="container-view-search"]')
       .first()
       .simulate('click');
 
@@ -139,7 +139,7 @@ describe('PageContainer - Tests', () => {
     );
 
     wrapper
-      .find('[aria-label="container-table-cart"]')
+      .find('[aria-label="container-view-cart"]')
       .first()
       .simulate('click');
 
@@ -233,6 +233,63 @@ describe('PageContainer - Tests', () => {
     expect(
       wrapper.find('[aria-label="filter-message"]').first().text()
     ).toEqual('loading.filter_message');
+  });
+
+  it('switches view button display when clicked', () => {
+    // Mock getElementById so that it returns truthy.
+    const testElement = document.createElement('DIV');
+    document.getElementById = jest.fn(() => testElement);
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: {
+          ...dGCommonInitialState,
+          totalDataCount: 0,
+          loadedCount: true,
+          query: {
+            ...dGCommonInitialState.query,
+          },
+        },
+        dgdataview: dgDataViewInitialState,
+        router: {
+          action: 'POP',
+          location: createLocation(paths.toggle.investigation),
+        },
+      })
+    );
+
+    const mockStore = configureStore([thunk]);
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter
+          initialEntries={[
+            {
+              key: 'testKey',
+              pathname: '/browse/investigation',
+            },
+          ]}
+        >
+          <PageContainer />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(wrapper.find('[aria-label="container-view"]').exists()).toBeTruthy();
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_cards');
+
+    // Click view button
+    wrapper
+      .find('[aria-label="container-view-button"]')
+      .first()
+      .simulate('click');
+    wrapper.update();
+
+    // Check that the text on the button has changed
+    expect(
+      wrapper.find('[aria-label="container-view-button"]').first().text()
+    ).toEqual('app.view_table');
   });
 
   it('display filter warning on toggle table', () => {

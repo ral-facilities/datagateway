@@ -170,7 +170,7 @@ export const NavBar = (props: {
           item
           sm={2}
           xs={3}
-          aria-label="container-table-count"
+          aria-label="container-view-count"
         >
           <Route
             exact
@@ -212,7 +212,7 @@ export const NavBar = (props: {
           <IconButton
             className="tour-dataview-search-icon"
             onClick={props.navigateToSearch}
-            aria-label="container-table-search"
+            aria-label="container-view-search"
             style={{ margin: 'auto' }}
           >
             <SearchIcon />
@@ -230,7 +230,7 @@ export const NavBar = (props: {
           <IconButton
             className="tour-dataview-cart-icon"
             onClick={props.navigateToDownload}
-            aria-label="container-table-cart"
+            aria-label="container-view-cart"
             style={{ margin: 'auto' }}
           >
             <Badge
@@ -238,7 +238,7 @@ export const NavBar = (props: {
                 props.cartItems.length > 0 ? props.cartItems.length : null
               }
               color="primary"
-              aria-label="container-table-cart-badge"
+              aria-label="container-view-cart-badge"
             >
               <ShoppingCartIcon />
             </Badge>
@@ -550,8 +550,8 @@ class PageContainer extends React.Component<
                   </Grid>
                 )}
 
-                {/* Hold the table for remainder of the page */}
-                <Grid item xs={12} aria-label="container-table">
+                {/* Hold the view for remainder of the page */}
+                <Grid item xs={12} aria-label="container-view">
                   {document.getElementById('datagateway-dataview') && (
                     <ViewRouting
                       view={this.props.query.view}
