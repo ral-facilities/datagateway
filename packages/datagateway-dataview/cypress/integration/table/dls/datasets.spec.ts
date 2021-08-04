@@ -239,7 +239,8 @@ describe('DLS - Datasets Table', () => {
         .should('be.visible');
     });
 
-    it('and then calculate file size', () => {
+    // TODO: Data mismatch issue (#782)
+    it.skip('and then calculate file size', () => {
       // need to wait for counts to finish, otherwise cypress might interact with the details panel
       // too quickly and it rerenders during the test
       cy.contains('[aria-rowindex="1"] [aria-colindex="4"]', '55').should(

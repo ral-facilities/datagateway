@@ -97,7 +97,8 @@ describe('DLS - Datasets Cards', () => {
     cy.get('#card').should('not.exist');
   });
 
-  it('should be able to expand "More Information"', () => {
+  // TODO: Data mismatch issue (#782)
+  it.skip('should be able to expand "More Information"', () => {
     cy.get('#card').contains('More Information').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')

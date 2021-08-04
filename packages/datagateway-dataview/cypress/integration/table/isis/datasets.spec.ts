@@ -233,7 +233,8 @@ describe('ISIS - Datasets Table', () => {
       );
     });
 
-    it('when no other row is showing details', () => {
+    // TODO: Data mismatch issue (#782)
+    it.skip('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').should('be.visible');

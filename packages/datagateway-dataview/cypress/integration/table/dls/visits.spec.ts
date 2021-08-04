@@ -200,7 +200,8 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    it('and then calculate file size', () => {
+    // TODO: Data mismatch issue (#782)
+    it.skip('and then calculate file size', () => {
       // We need to wait for counts to finish, otherwise cypress
       // might interact with the details panel too quickly and
       // it re-renders during the test.
