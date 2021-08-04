@@ -575,6 +575,17 @@ export const useISISInvestigationsPaginated = (
                 'studyInvestigations.study.id': { eq: instrumentChildId },
               }),
             },
+            {
+              filterType: 'include',
+              filterValue: JSON.stringify([
+                {
+                  investigationInstruments: 'instrument',
+                },
+                {
+                  studyInvestigations: 'study',
+                },
+              ]),
+            },
           ],
           {
             startIndex,
@@ -640,6 +651,17 @@ export const useISISInvestigationsInfinite = (
               filterValue: JSON.stringify({
                 'studyInvestigations.study.id': { eq: instrumentChildId },
               }),
+            },
+            {
+              filterType: 'include',
+              filterValue: JSON.stringify([
+                {
+                  investigationInstruments: 'instrument',
+                },
+                {
+                  studyInvestigations: 'study',
+                },
+              ]),
             },
           ],
           offsetParams
