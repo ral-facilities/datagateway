@@ -70,6 +70,7 @@ export interface CardViewDetails {
   // Filter and sort options.
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
   disableSort?: boolean;
+  noTooltip?: boolean;
 }
 
 type CVPaginationPosition = 'top' | 'bottom' | 'both';

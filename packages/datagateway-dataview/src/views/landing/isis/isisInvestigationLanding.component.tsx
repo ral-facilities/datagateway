@@ -1,4 +1,5 @@
 import {
+  Button,
   createStyles,
   Divider,
   Grid,
@@ -30,6 +31,7 @@ import {
   tableLink,
   useInvestigation,
   useInvestigationSizes,
+  Mark,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -109,6 +111,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     location.search,
   ]);
   const [value, setValue] = React.useState<'details'>('details');
+  const citationRef = React.useRef<HTMLElement>(null);
+  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const {
     instrumentId,
     instrumentChildId,
@@ -204,7 +208,15 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
       icon: <Fingerprint className={classes.shortInfoIcon} />,
     },
     {
-      content: (entity: Investigation) => entity.doi,
+      content: function doiFormat(entity: Investigation) {
+        return (
+          entity?.doi && (
+            <MuiLink href={`https://doi.org/${entity.doi}`}>
+              {entity.doi}
+            </MuiLink>
+          )
+        );
+      },
       label: t('investigations.doi'),
       icon: <Public className={classes.shortInfoIcon} />,
     },
@@ -328,7 +340,9 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             </Typography>
 
             <Typography aria-label="landing-investigation-summary">
-              {data?.[0]?.summary}
+              {data?.[0]?.summary && data[0].summary !== 'null'
+                ? data[0].summary
+                : 'Description not provided'}
             </Typography>
 
             {formattedUsers.length > 0 && (
@@ -376,7 +390,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-investigation-citation">
-              <i>
+              <i ref={citationRef}>
                 {formattedUsers.length > 1 &&
                   `${formattedUsers[0].fullName} et al; `}
                 {formattedUsers.length === 1 &&
@@ -386,9 +400,44 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                   `${studyInvestigation[0].study.startDate.slice(0, 4)}: `}
                 {title && `${title}, `}
                 {t('doi_constants.publisher.name')}
-                {doi && `, https://doi.org/${doi}`}
+                {doi && ', '}
+                {doi && (
+                  <a
+                    href={`https://doi.org/${doi}`}
+                  >{`https://doi.org/${doi}`}</a>
+                )}
               </i>
             </Typography>
+            {!copiedCitation ? (
+              <Button
+                id="landing-investigation-copy-citation"
+                aria-label="landing-investigation-copy-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                  if (citationRef?.current?.textContent) {
+                    navigator.clipboard.writeText(
+                      citationRef.current.textContent
+                    );
+                    setCopiedCitation(true);
+                    setTimeout(() => setCopiedCitation(false), 1500);
+                  }
+                }}
+              >
+                Copy citation
+              </Button>
+            ) : (
+              <Button
+                id="landing-investigation-copied-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<Mark size={20} visible={true} />}
+              >
+                Copied citation
+              </Button>
+            )}
 
             {formattedSamples && (
               <div>
@@ -471,7 +520,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 >
                   {tableLink(
                     `${urlPrefix}/dataset/${dataset.id}`,
-                    `${t('datasets.name')}: ${dataset.name}`,
+                    `${t('datasets.dataset')}: ${dataset.name}`,
                     view
                   )}
                 </Typography>

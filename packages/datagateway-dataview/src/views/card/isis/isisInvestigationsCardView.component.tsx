@@ -1,3 +1,4 @@
+import { Typography } from '@material-ui/core';
 import {
   Fingerprint,
   Public,
@@ -9,6 +10,7 @@ import {
   CardViewQuery,
   formatBytes,
   Investigation,
+  nestedValue,
   tableLink,
   useInvestigationSizes,
   parseSearchToQuery,
@@ -20,6 +22,7 @@ import {
   usePushResults,
   usePushSort,
   useTextFilter,
+  ArrowTooltip,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -136,7 +139,19 @@ const ISISInvestigationsCardView = (
       {
         icon: Assessment,
         label: t('investigations.instrument'),
-        dataKey: 'investigationInstruments[0].instrument.fullName',
+        dataKey: 'investigationInstruments.instrument.name',
+        content: function Content(investigation: Investigation) {
+          const instrument = nestedValue(
+            investigation,
+            'investigationInstruments[0].instrument.name'
+          );
+          return (
+            <ArrowTooltip title={instrument}>
+              <Typography>{instrument}</Typography>
+            </ArrowTooltip>
+          );
+        },
+        noTooltip: true,
         filterComponent: textFilter,
       },
       {

@@ -89,8 +89,8 @@ const InvestigationCardView = (): React.ReactElement => {
       },
       {
         icon: Fingerprint,
-        label: t('investigations.details.rb_number'),
-        dataKey: 'rbNumber',
+        label: t('investigations.details.name'),
+        dataKey: 'name',
         filterComponent: textFilter,
         disableSort: true,
       },

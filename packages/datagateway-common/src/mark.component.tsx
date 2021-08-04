@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 // TypeScript linting will need us to define the return type,
 // but as classes may change, there is no need.
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useSharedStyles = (colour: string, visible: boolean) => {
+const useSharedStyles = (visible: boolean, colour?: string) => {
   const useStyles = makeStyles({
     '@keyframes stroke': {
       '100%': {
@@ -21,7 +21,7 @@ const useSharedStyles = (colour: string, visible: boolean) => {
     },
     '@keyframes fill': {
       '100%': {
-        boxShadow: `inset 0 0 0 100vh ${colour}`,
+        boxShadow: `inset 0 0 0 100vh ${colour ? colour : 'inherit'}`,
       },
     },
     mark: {
@@ -32,7 +32,7 @@ const useSharedStyles = (colour: string, visible: boolean) => {
       stroke: '#fff',
       strokeWidth: 5,
       strokeMiterlimit: 10,
-      boxShadow: `inset 0px 0px ${colour}`,
+      boxShadow: `inset 0px 0px ${colour ? colour : 'inherit'}`,
       visibility: visible ? 'visible' : 'hidden',
 
       animation:
@@ -43,7 +43,7 @@ const useSharedStyles = (colour: string, visible: boolean) => {
       strokeDashoffset: 166,
       strokeWidth: 5,
       strokeMiterlimit: 10,
-      stroke: colour,
+      stroke: colour ? colour : 'inherit',
       fill: 'none',
 
       animation: '$stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards',
@@ -62,14 +62,14 @@ const useSharedStyles = (colour: string, visible: boolean) => {
 
 interface MarkProps {
   size: number;
-  colour: string;
-  isCross?: boolean;
   visible: boolean;
+  colour?: string;
+  isCross?: boolean;
 }
 
 const Mark: React.FC<MarkProps> = (props: MarkProps) => {
   const checkmarkStyle = { width: props.size, height: props.size };
-  const classes = useSharedStyles(props.colour, props.visible);
+  const classes = useSharedStyles(props.visible, props.colour);
 
   return (
     <svg

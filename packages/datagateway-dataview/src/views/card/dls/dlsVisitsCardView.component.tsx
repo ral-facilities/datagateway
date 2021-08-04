@@ -15,6 +15,8 @@ import {
   usePushSort,
   useTextFilter,
   useInvestigationsDatasetCount,
+  nestedValue,
+  ArrowTooltip,
 } from 'datagateway-common';
 import VisitDetailsPanel from '../../detailsPanels/dls/visitDetailsPanel.component';
 import {
@@ -24,6 +26,7 @@ import {
 } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { Typography } from '@material-ui/core';
 
 interface DLSVisitsCVProps {
   proposalName: string;
@@ -105,7 +108,19 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
       {
         icon: Assessment,
         label: t('investigations.instrument'),
-        dataKey: 'investigationInstruments[0].instrument.name',
+        dataKey: 'investigationInstruments.instrument.name',
+        content: function Content(investigation: Investigation) {
+          const instrument = nestedValue(
+            investigation,
+            'investigationInstruments[0].instrument.name'
+          );
+          return (
+            <ArrowTooltip title={instrument}>
+              <Typography>{instrument}</Typography>
+            </ArrowTooltip>
+          );
+        },
+        noTooltip: true,
         filterComponent: textFilter,
       },
       {

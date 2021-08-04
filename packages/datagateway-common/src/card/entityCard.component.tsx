@@ -16,18 +16,25 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ArrowTooltip from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import hexToRbga from 'hex-to-rgba';
 import { nestedValue } from '../state/actions';
 import { Entity } from '../app.types';
 import { CardViewDetails } from './cardViewQuery.component';
 
 const useCardStyles = makeStyles((theme: Theme) => {
+  // TODO: Remove use of "vw" here
   // NOTE: This is width of the main content
   //       (this also matches the description shadow width).
   //       Change this width in accordance with the maxWidth in root class.
   const mainWidth = '45vw';
   // Expected width of info labels to prevent misalignment due to newlines
   const labelWidth = '15ch';
+  // TODO: Remove use of "vw" here
   const infoDataMaxWidth = '10vw';
+
+  // Transparent and opaque values for the background theme (used in the 'show more' shadow gradient)
+  const paperZero = hexToRbga(theme.palette.background.paper, 0);
+  const paperOne = hexToRbga(theme.palette.background.paper, 1);
 
   const styles = createStyles({
     root: {
@@ -55,6 +62,7 @@ const useCardStyles = makeStyles((theme: Theme) => {
       flexGrow: 1,
       flexShrink: 1,
       flexBasis: mainWidth,
+      // TODO: Remove use of "vw" here
       minWidth: '30vw',
       paddingRight: '10px',
     },
@@ -79,9 +87,8 @@ const useCardStyles = makeStyles((theme: Theme) => {
     shadowVisible: {
       position: 'absolute',
       height: 30,
-      minWidth: '30vw',
       top: 130,
-      background: 'linear-gradient(rgba(255, 255, 255, 0), #fff)',
+      background: `linear-gradient(${paperZero}, ${paperOne})`,
 
       // Transition showing the shadow.
       visibility: 'visible',
@@ -182,6 +189,7 @@ const EntityCard = React.memo(
   (props: EntityCardProps): React.ReactElement => {
     const classes = useCardStyles();
     const { entity, image } = props;
+    const [shadowWidth, setShadowWidth] = React.useState<number>(0);
 
     const moreInformation = props.moreInformation?.(entity);
 
@@ -196,25 +204,29 @@ const EntityCard = React.memo(
 
     const information: EntityCardDetails[] | undefined = props.information
       ?.map((details) => ({
+        icon: details.icon,
         // We can say the data key is the label if not defined.
         label: details.label ? details.label : details.dataKey,
-        content: details.content
-          ? details.content(entity)
-          : nestedValue(entity, details.dataKey),
         // Keep the dataKey in so we can use it for adding the tooltip
         // once content has been created.
         dataKey: details.dataKey,
-        icon: details.icon,
+        content: details.content
+          ? details.content(entity)
+          : nestedValue(entity, details.dataKey),
+        noTooltip: details.noTooltip,
       }))
       // Filter afterwards to only show content with information.
       .filter((v) => v.content)
       // Add in tooltips to the content we have filtered.
       .map((details) => ({
         ...details,
-        content: (
+        // If we use custom content we can choose to not show a tooltip.
+        content: !details.noTooltip ? (
           <ArrowTooltip title={nestedValue(entity, details.dataKey)}>
             <Typography>{details.content}</Typography>
           </ArrowTooltip>
+        ) : (
+          details.content
         ),
       }));
 
@@ -229,6 +241,7 @@ const EntityCard = React.memo(
       false
     );
     const descriptionRef = React.useRef<HTMLParagraphElement>(null);
+    const mainContentRef = React.useRef<HTMLParagraphElement>(null);
     const [collapsibleInteraction, setCollapsibleInteraction] = React.useState(
       false
     );
@@ -242,6 +255,19 @@ const EntityCard = React.memo(
           setCollapsibleInteraction(true);
       }
     }, [setCollapsibleInteraction]);
+
+    React.useEffect(() => {
+      // Receive the resize event and set the shadow width
+      // based on the width of the "main-content" div.
+      function handleResize(): void {
+        if (mainContentRef.current?.clientWidth) {
+          setShadowWidth(mainContentRef.current.clientWidth);
+        }
+      }
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const [t] = useTranslation();
 
@@ -273,7 +299,7 @@ const EntityCard = React.memo(
               {/* column:
                 - title/description 
             */}
-              <div>
+              <div aria-label="main-content" ref={mainContentRef}>
                 {/* TODO: Delay not consistent between cards? */}
                 <ArrowTooltip
                   title={title.label}
@@ -312,7 +338,7 @@ const EntityCard = React.memo(
                       variant="body1"
                       paragraph
                     >
-                      {description
+                      {description && description !== 'null'
                         ? description
                         : t('entity_card.no_description')}
                     </Typography>
@@ -327,6 +353,9 @@ const EntityCard = React.memo(
                             ? classes.shadowInvisible
                             : classes.shadowVisible
                         }
+                        style={{
+                          width: `${shadowWidth}px`,
+                        }}
                       />
                       <Link
                         onClick={() => setDescriptionCollapsed((prev) => !prev)}

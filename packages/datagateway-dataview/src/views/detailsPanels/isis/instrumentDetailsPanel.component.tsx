@@ -77,7 +77,7 @@ const InstrumentDetailsPanel = (
         <Grid container className={classes.root} direction="column">
           <Grid item xs>
             <Typography variant="h6">
-              <b>{instrumentData.fullName}</b>
+              <b>{instrumentData.fullName || instrumentData.name}</b>
             </Typography>
             <Divider className={classes.divider} />
           </Grid>
@@ -86,7 +86,12 @@ const InstrumentDetailsPanel = (
               {t('instruments.details.description')}
             </Typography>
             <Typography>
-              <b>{instrumentData.description}</b>
+              <b>
+                {instrumentData.description &&
+                instrumentData.description !== 'null'
+                  ? instrumentData.description
+                  : `${t('instruments.details.description')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -94,7 +99,11 @@ const InstrumentDetailsPanel = (
               {t('instruments.details.type')}
             </Typography>
             <Typography>
-              <b>{instrumentData.type}</b>
+              <b>
+                {instrumentData.type && instrumentData.type !== 'null'
+                  ? instrumentData.type
+                  : `${t('instruments.details.type')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -103,7 +112,11 @@ const InstrumentDetailsPanel = (
             </Typography>
             <Typography>
               <b>
-                <Link href={instrumentData.url}>{instrumentData.url}</Link>
+                {instrumentData.url && instrumentData.url !== 'null' ? (
+                  <Link href={instrumentData.url}>{instrumentData.url}</Link>
+                ) : (
+                  `${t('instruments.details.url')} not provided`
+                )}
               </b>
             </Typography>
           </Grid>

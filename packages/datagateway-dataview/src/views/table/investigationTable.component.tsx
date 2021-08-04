@@ -69,10 +69,10 @@ const InvestigationDetailsPanel = (
       </Grid>
       <Grid item xs>
         <Typography variant="overline">
-          {t('investigations.details.rb_number')}
+          {t('investigations.details.name')}
         </Typography>
         <Typography>
-          <b>{investigationData.rbNumber}</b>
+          <b>{investigationData.name}</b>
         </Typography>
       </Grid>
       <Grid item xs>
@@ -108,7 +108,14 @@ const InvestigationTable = (): React.ReactElement => {
   );
 
   const { data: totalDataCount } = useInvestigationCount();
-  const { fetchNextPage, data } = useInvestigationsInfinite();
+  const { fetchNextPage, data } = useInvestigationsInfinite([
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        investigationInstruments: 'instrument',
+      }),
+    },
+  ]);
   const { data: allIds } = useIds('investigation');
   const { data: cartItems } = useCart();
   const { mutate: addToCart, isLoading: addToCartLoading } = useAddToCart(
@@ -172,8 +179,8 @@ const InvestigationTable = (): React.ReactElement => {
       },
       {
         icon: FingerprintIcon,
-        label: t('investigations.rb_number'),
-        dataKey: 'rbNumber',
+        label: t('investigations.name'),
+        dataKey: 'name',
         filterComponent: textFilter,
         disableSort: true,
       },
@@ -200,7 +207,16 @@ const InvestigationTable = (): React.ReactElement => {
       {
         icon: AssessmentIcon,
         label: t('investigations.instrument'),
-        dataKey: 'instrument.name',
+        dataKey: 'investigationInstruments.instrument.name',
+        cellContentRenderer: (cellProps: TableCellProps) => {
+          const investigationData = cellProps.rowData as Investigation;
+          if (investigationData?.investigationInstruments?.[0]?.instrument) {
+            return investigationData.investigationInstruments[0].instrument
+              .name;
+          } else {
+            return '';
+          }
+        },
         filterComponent: textFilter,
       },
       {

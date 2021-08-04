@@ -21,7 +21,24 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(3),
     },
     typography: {
+      // link color received from parent app theme object
+      // this requires casting the theme to any so that we can explicitly
+      // access properties we know to exist in the received object
       color: theme.palette.primary.contrastText,
+      '& a': {
+        '&:link': {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).ukri?.bright?.orange,
+        },
+        '&:visited': {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).ukri?.bright?.orange,
+        },
+        '&:active': {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          color: (theme as any).ukri?.deep?.red,
+        },
+      },
     },
     logo: {
       height: 'auto',

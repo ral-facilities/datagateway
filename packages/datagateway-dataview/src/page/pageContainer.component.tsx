@@ -34,12 +34,13 @@ import { Action } from 'redux';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
+import TranslatedHomePage from './translatedHomePage.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
 const usePaperStyles = makeStyles(
   (theme: Theme): StyleRules =>
     createStyles({
-      cardPaper: { backgroundColor: 'inhereit' },
+      cardPaper: { backgroundColor: 'inherit' },
       tablePaper: {
         height: 'calc(100vh - 180px)',
         width: '100%',
@@ -74,6 +75,7 @@ const StyledGrid = withStyles(gridStyles)(Grid);
 
 // Define all the supported paths for data-view.
 export const paths = {
+  homepage: '/datagateway',
   root: '/browse',
   myData: {
     root: '/my-data',
@@ -496,47 +498,56 @@ const PageContainer: React.FC = () => {
   }, [location.pathname, view, prevView, dispatch, prevLocation.pathname]);
 
   return (
-    <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
-      <NavBar
-        entityCount={totalDataCount ?? 0}
-        cartItems={cartItems ?? []}
-        navigateToSearch={navigateToSearch}
-        navigateToDownload={navigateToDownload}
-      />
+    <SwitchRouting location={location}>
+      {/* Load the homepage */}
+      <Route exact path={paths.homepage} component={TranslatedHomePage} />
+      <Route
+        render={() => (
+          // Load the standard dataview pageContainer
+          <Paper square elevation={0} style={{ backgroundColor: 'inherit' }}>
+            <NavBar
+              entityCount={totalDataCount ?? 0}
+              cartItems={cartItems ?? []}
+              navigateToSearch={navigateToSearch}
+              navigateToDownload={navigateToDownload}
+            />
 
-      <StyledGrid container>
-        {/* Toggle between the table and card view */}
-        <Grid item xs={12}>
-          <Route
-            exact
-            path={togglePaths}
-            render={() => (
-              <CardSwitch
-                toggleCard={toggleCard}
-                handleToggleChange={handleToggleChange}
-              />
-            )}
-          />
-        </Grid>
+            <StyledGrid container>
+              {/* Toggle between the table and card view */}
+              <Grid item xs={12}>
+                <Route
+                  exact
+                  path={togglePaths}
+                  render={() => (
+                    <CardSwitch
+                      toggleCard={toggleCard}
+                      handleToggleChange={handleToggleChange}
+                    />
+                  )}
+                />
+              </Grid>
 
-        {/* Show loading progress if data is still being loaded */}
-        {loading && (
-          <Grid item xs={12}>
-            <LinearProgress color="secondary" />
-          </Grid>
+              {/* Show loading progress if data is still being loaded */}
+              {loading && (
+                <Grid item xs={12}>
+                  <LinearProgress color="secondary" />
+                </Grid>
+              )}
+
+              {/* Hold the table for remainder of the page */}
+              <Grid item xs={12} aria-label="container-table">
+                <ViewRouting
+                  view={view}
+                  location={location}
+                  loadedCount={loadedCount}
+                  totalDataCount={totalDataCount ?? 0}
+                />
+              </Grid>
+            </StyledGrid>
+          </Paper>
         )}
-
-        {/* Hold the table for remainder of the page */}
-        <Grid item xs={12} aria-label="container-table">
-          <ViewRouting
-            view={view}
-            location={location}
-            loadedCount={loadedCount}
-            totalDataCount={totalDataCount ?? 0}
-          />
-        </Grid>
-      </StyledGrid>
-    </Paper>
+      />
+    </SwitchRouting>
   );
 };
 

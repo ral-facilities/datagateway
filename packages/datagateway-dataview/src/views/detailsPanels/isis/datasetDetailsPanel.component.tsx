@@ -93,7 +93,11 @@ const DatasetDetailsPanel = (
               {t('datasets.details.description')}
             </Typography>
             <Typography>
-              <b>{datasetData.description}</b>
+              <b>
+                {datasetData.description && datasetData.description !== 'null'
+                  ? datasetData.description
+                  : `${t('datasets.details.description')} not provided`}
+              </b>
             </Typography>
           </Grid>
         </Grid>
@@ -117,7 +121,12 @@ const DatasetDetailsPanel = (
                 {t('datasets.details.type.description')}
               </Typography>
               <Typography>
-                <b>{datasetData.type.description}</b>
+                <b>
+                  {datasetData.type?.description &&
+                  datasetData.type?.description !== 'null'
+                    ? datasetData.type.description
+                    : `${t('datasets.details.type.description')} not provided`}
+                </b>
               </Typography>
             </Grid>
           </Grid>

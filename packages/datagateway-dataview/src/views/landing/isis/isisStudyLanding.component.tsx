@@ -24,12 +24,15 @@ import {
   Study,
   tableLink,
   useStudy,
+  Mark,
+  ViewsType,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router';
 import AddToCartButton from '../../addToCartButton.component';
 import Branding from './isisBranding.component';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,6 +94,77 @@ interface LandingPageProps {
   instrumentId: string;
   studyId: string;
 }
+
+interface LinkedInvestigationProps {
+  investigation: Investigation;
+  urlPrefix: string;
+  view: ViewsType;
+}
+
+const LinkedInvestigation = (
+  props: LinkedInvestigationProps
+): React.ReactElement => {
+  const [t] = useTranslation();
+  const classes = useStyles();
+
+  const investigation = props.investigation;
+
+  const shortInvestigationInfo = [
+    {
+      content: (entity: Investigation) => entity.doi,
+      label: t('investigations.doi'),
+      icon: <Public className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) =>
+        entity.investigationInstruments?.[0]?.instrument?.name,
+      label: t('investigations.instrument'),
+      icon: <Assessment className={classes.shortInfoIcon} />,
+    },
+    {
+      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
+      label: t('investigations.release_date'),
+      icon: <CalendarToday className={classes.shortInfoIcon} />,
+    },
+  ];
+
+  return (
+    <div>
+      <Typography
+        className={classes.subHeading}
+        component="h6"
+        variant="h6"
+        align="center"
+        aria-label="landing-study-part-label"
+      >
+        {tableLink(
+          `${props.urlPrefix}/investigation/${investigation.id}`,
+          `${t('investigations.visit_id')}: ${investigation.visitId}`,
+          props.view
+        )}
+      </Typography>
+      {shortInvestigationInfo.map((field, i) => (
+        <div className={classes.shortInfoRow} key={i}>
+          <Typography className={classes.shortInfoLabel}>
+            {field.icon}
+            {field.label}:
+          </Typography>
+          <Typography className={classes.shortInfoValue}>
+            {field.content(investigation)}
+          </Typography>
+        </div>
+      ))}
+      <div className={classes.actionButtons}>
+        <AddToCartButton
+          entityType="investigation"
+          allIds={[investigation.id]}
+          entityId={investigation.id}
+        />
+      </div>
+    </div>
+  );
+};
+
 const LandingPage = (props: LandingPageProps): React.ReactElement => {
   const [t] = useTranslation();
   const { push } = useHistory();
@@ -100,6 +174,8 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
   ]);
 
   const [value, setValue] = React.useState<'details'>('details');
+  const citationRef = React.useRef<HTMLElement>(null);
+  const [copiedCitation, setCopiedCitation] = React.useState(false);
   const { instrumentId, studyId } = props;
 
   const pathRoot = 'browseStudyHierarchy';
@@ -115,7 +191,11 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     [data]
   );
   const summary = React.useMemo(
-    () => data?.[0]?.studyInvestigations?.[0]?.investigation?.summary,
+    () =>
+      data?.[0]?.studyInvestigations?.[0]?.investigation?.summary &&
+      data[0].studyInvestigations[0].investigation.summary !== 'null'
+        ? data[0].studyInvestigations[0].investigation.summary
+        : 'Description not provided',
     [data]
   );
 
@@ -123,6 +203,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     const principals: FormattedUser[] = [];
     const contacts: FormattedUser[] = [];
     const experimenters: FormattedUser[] = [];
+
     if (
       data?.[0]?.studyInvestigations?.[0]?.investigation?.investigationUsers
     ) {
@@ -252,25 +333,6 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
     },
   ];
 
-  const shortInvestigationInfo = [
-    {
-      content: (entity: Investigation) => entity.doi,
-      label: t('investigations.doi'),
-      icon: <Public className={classes.shortInfoIcon} />,
-    },
-    {
-      content: (entity: Investigation) =>
-        entity.investigationInstruments?.[0]?.instrument?.name,
-      label: t('investigations.instrument'),
-      icon: <Assessment className={classes.shortInfoIcon} />,
-    },
-    {
-      content: (entity: Investigation) => entity.releaseDate?.slice(0, 10),
-      label: t('investigations.release_date'),
-      icon: <CalendarToday className={classes.shortInfoIcon} />,
-    },
-  ];
-
   return (
     <Paper className={classes.paper}>
       <Grid container style={{ padding: 4 }}>
@@ -361,7 +423,7 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
               {t('studies.details.citation_format')}
             </Typography>
             <Typography aria-label="landing-study-citation">
-              <i>
+              <i ref={citationRef}>
                 {formattedUsers.length > 1 &&
                   `${formattedUsers[0].fullName} et al; `}
                 {formattedUsers.length === 1 &&
@@ -372,9 +434,44 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
                 )}: `}
                 {title && `${title}, `}
                 {t('doi_constants.publisher.name')}
-                {pid && `, https://doi.org/${pid}`}
+                {pid && ', '}
+                {pid && (
+                  <a
+                    href={`https://doi.org/${pid}`}
+                  >{`https://doi.org/${pid}`}</a>
+                )}
               </i>
             </Typography>
+            {!copiedCitation ? (
+              <Button
+                id="landing-study-copy-citation"
+                aria-label="landing-study-copy-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                  if (citationRef?.current?.textContent) {
+                    navigator.clipboard.writeText(
+                      citationRef.current.textContent
+                    );
+                    setCopiedCitation(true);
+                    setTimeout(() => setCopiedCitation(false), 1750);
+                  }
+                }}
+              >
+                Copy citation
+              </Button>
+            ) : (
+              <Button
+                id="landing-study-copied-citation"
+                variant="contained"
+                color="primary"
+                size="small"
+                startIcon={<Mark size={20} visible={true} />}
+              >
+                Copied citation
+              </Button>
+            )}
           </Grid>
 
           <Divider orientation="vertical" />
@@ -399,51 +496,13 @@ const LandingPage = (props: LandingPageProps): React.ReactElement => {
             {data?.map((study, i) => (
               <div key={i} className={classes.shortInfoPart}>
                 <Divider />
-                <Typography
-                  className={classes.subHeading}
-                  component="h6"
-                  variant="h6"
-                  align="center"
-                  aria-label="landing-study-part-label"
-                >
-                  {tableLink(
-                    `${urlPrefix}/investigation/${study?.studyInvestigations?.[0]?.investigation.id}`,
-                    `${t('investigations.visit_id')}: ${
-                      study?.studyInvestigations?.[0]?.investigation?.visitId
-                    }`,
-                    view
-                  )}
-                </Typography>
-                {shortInvestigationInfo.map(
-                  (field, i) =>
-                    data?.[0]?.studyInvestigations?.[0]?.investigation &&
-                    field.content(
-                      data?.[0]?.studyInvestigations?.[0]
-                        ?.investigation as Investigation
-                    ) && (
-                      <div className={classes.shortInfoRow} key={i}>
-                        <Typography className={classes.shortInfoLabel}>
-                          {field.icon}
-                          {field.label}:
-                        </Typography>
-                        <Typography className={classes.shortInfoValue}>
-                          {field.content(
-                            data?.[0]?.studyInvestigations?.[0]
-                              ?.investigation as Investigation
-                          )}
-                        </Typography>
-                      </div>
-                    )
+                {study?.studyInvestigations?.[0]?.investigation && (
+                  <LinkedInvestigation
+                    investigation={study.studyInvestigations[0].investigation}
+                    urlPrefix={urlPrefix}
+                    view={view}
+                  />
                 )}
-                <div className={classes.actionButtons}>
-                  {study?.studyInvestigations?.[0]?.investigation && (
-                    <AddToCartButton
-                      entityType="investigation"
-                      allIds={[study.studyInvestigations[0].investigation.id]}
-                      entityId={study.studyInvestigations[0].investigation.id}
-                    />
-                  )}
-                </div>
               </div>
             ))}
           </Grid>

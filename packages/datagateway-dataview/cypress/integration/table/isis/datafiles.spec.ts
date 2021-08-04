@@ -1,8 +1,8 @@
 describe('ISIS - Datafiles Table', () => {
   beforeEach(() => {
     cy.intercept('/instruments/1').as('instruments');
-    cy.intercept('/facilitycycles/14').as('facilityCycles');
-    cy.intercept('/datasets/118').as('datasets');
+    cy.intercept('/facilitycycles/16').as('facilityCycles');
+    cy.intercept('/datasets/337').as('datasets');
     cy.intercept('/datafiles/count').as('datafilesCount');
     cy.intercept('/datafiles?order=').as('datafilesOrder');
     cy.login();
@@ -11,7 +11,7 @@ describe('ISIS - Datafiles Table', () => {
   describe('Wait for initial requests', () => {
     beforeEach(() => {
       cy.visit(
-        '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile'
       ).wait(
         [
           '@instruments',
@@ -56,7 +56,7 @@ describe('ISIS - Datafiles Table', () => {
         cy.get('[aria-sort="ascending"]').should('exist');
         cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
         cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-          '/ability/save/time.png'
+          '/according/wrong/only.tiff'
         );
       });
 
@@ -75,7 +75,7 @@ describe('ISIS - Datafiles Table', () => {
           '0'
         );
         cy.get('[aria-rowindex="1"] [aria-colindex="4"]').contains(
-          '/worry/anything/able.bmp'
+          '/yes/beyond/property.jpeg'
         );
       });
 
@@ -91,7 +91,7 @@ describe('ISIS - Datafiles Table', () => {
           .wait('@datafilesOrder', { timeout: 10000 });
 
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 13529'
+          'Datafile 25244'
         );
       });
     });
@@ -101,11 +101,11 @@ describe('ISIS - Datafiles Table', () => {
         cy.get('[aria-label="Filter by Location"]')
           .find('input')
           .first()
-          .type('sea');
+          .type('star');
 
         cy.get('[aria-rowcount="1"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 17361'
+          'Datafile 336'
         );
       });
 
@@ -131,9 +131,9 @@ describe('ISIS - Datafiles Table', () => {
           date.toISOString().slice(0, 10)
         );
 
-        cy.get('[aria-rowcount="1"]').should('exist');
+        cy.get('[aria-rowcount="2"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 7302'
+          'Datafile 6084'
         );
       });
 
@@ -150,9 +150,9 @@ describe('ISIS - Datafiles Table', () => {
           .type('.png')
           .wait('@datafilesOrder', { timeout: 10000 });
 
-        cy.get('[aria-rowcount="4"]').should('exist');
+        cy.get('[aria-rowcount="3"]').should('exist');
         cy.get('[aria-rowindex="1"] [aria-colindex="3"]').contains(
-          'Datafile 5865'
+          'Datafile 6563'
         );
       });
     });
@@ -170,7 +170,7 @@ describe('ISIS - Datafiles Table', () => {
 
         cy.get('[aria-label="Show details"]').first().click();
 
-        cy.get('#details-panel').contains('Datafile 117').should('be.visible');
+        cy.get('#details-panel').contains('Datafile 336').should('be.visible');
         cy.get('#details-panel').contains('Datafile 3470').should('not.exist');
         cy.get('[aria-label="Hide details"]').should('have.length', 1);
       });
@@ -182,7 +182,7 @@ describe('ISIS - Datafiles Table', () => {
 
         cy.get('#details-panel')
           .contains(
-            'Remember word economic catch. After television scene alone. Partner send rise your. Exist room long success financial. Help itself culture money child realize take rise.'
+            'Near stand agreement music character require same. Can news some government. Ahead information tree station. Painting see attack space.'
           )
           .should('be.visible');
 
@@ -208,7 +208,7 @@ describe('ISIS - Datafiles Table', () => {
   describe('Do not wait for initial requests', () => {
     beforeEach(() => {
       cy.visit(
-        '/browse/instrument/1/facilityCycle/14/investigation/87/dataset/118/datafile'
+        '/browse/instrument/1/facilityCycle/16/investigation/97/dataset/337/datafile'
       );
     });
 
@@ -218,6 +218,7 @@ describe('ISIS - Datafiles Table', () => {
       cy.window()
         .then((window) => {
           const windowWidth = window.innerWidth;
+          // Account for select, details and actions column widths
           columnWidth = (windowWidth - 40 - 40 - 70) / 4;
         })
         .then(() => expect(columnWidth).to.not.equal(0));

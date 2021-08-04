@@ -39,7 +39,7 @@
     "start_date": "Start Date"
   },
   "studies": {
-    "name": "RB Number",
+    "name": "Name",
     "description": "Description",
     "pid": "DOI",
     "end_date": "End Date",
@@ -62,7 +62,6 @@
     "size": "Size",
     "instrument": "Instrument",
     "visit_id": "Visit ID",
-    "rb_number": "RB Number",
     "doi": "DOI",
     "parent_doi": "Parent DOI",
     "dataset_count": "Dataset Count",
@@ -75,7 +74,6 @@
       "end_date": "End Date",
       "start_date": "Start Date",
       "visit_id": "Visit ID",
-      "rb_number": "RB Number",
       "pid": "Part DOI",
       "summary": "Summary",
       "doi": "DOI",
@@ -107,6 +105,7 @@
     }
   },
   "datasets": {
+    "dataset": "Dataset",
     "name": "Name",
     "create_time": "Create Time",
     "modified_time": "Modified Time",
@@ -117,6 +116,9 @@
     "complete": "Complete",
     "incomplete": "Incomplete",
     "location": "Location",
+    "type": {
+      "id": "Type ID"
+    },
     "details": {
       "tabs_label": "Dataset Details Tabs",
       "label": "Dataset Details",
@@ -175,7 +177,7 @@
     "hide": "Hide Advanced Filters",
     "icons": {
       "title": ["Title", "Name", "Type"],
-      "fingerprint": ["Visit ID", "RB Number"],
+      "fingerprint": ["Visit ID", "Name"],
       "public": ["DOI"],
       "confirmation_number": ["Dataset Count"," Datafile Count"],
       "assessment": ["Instrument", "Beamline"],
@@ -190,6 +192,16 @@
     "no_description": "No description available",
     "show_more": "Show more",
     "show_less": "Show less"
+  },
+  "homePage": {
+    "title": "DataGateway",
+    "howLabel": "How it works...",
+    "exploreLabel": "1. Explore",
+    "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
+    "discoverLabel": "2. Discover",
+    "discoverDescription": "Search for the experimental data according to different criteria.",
+    "downloadLabel": "3. Download",
+    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
   },
   "doi_constants": {
     "keywords": [

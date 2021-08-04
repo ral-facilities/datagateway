@@ -94,7 +94,6 @@ describe('ISIS Study Landing page', () => {
     name: 'Name 1',
     summary: 'foo bar',
     visitId: '1',
-    rbNumber: '1',
     doi: 'doi 1',
     size: 1,
     investigationInstruments: investigationInstrument,
@@ -249,11 +248,6 @@ describe('ISIS Study Landing page', () => {
       </Provider>
     );
 
-    expect(
-      wrapper.find('[aria-label="landing-study-users-label"]')
-    ).toHaveLength(0);
-    expect(wrapper.find('[aria-label="landing-study-user-0"]')).toHaveLength(0);
-
     wrapper.setProps({
       store: mockStore({
         ...state,
@@ -315,5 +309,84 @@ describe('ISIS Study Landing page', () => {
     expect(
       wrapper.find('[aria-label="landing-study-citation"]').first().text()
     ).toEqual('Title 1, doi_constants.publisher.name');
+  });
+
+  it('copies data citation to clipboard', () => {
+    // Mock the clipboard object
+    const testWriteText = jest.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: testWriteText,
+      },
+    });
+
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISStudyLanding instrumentId="4" studyId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    wrapper.setProps({
+      store: mockStore({
+        ...state,
+        dgcommon: {
+          ...state.dgcommon,
+          data: [
+            {
+              ...initialData,
+              study: study,
+              investigation: {
+                ...investigation,
+                investigationUsers: [investigationUser[0]],
+              },
+            },
+          ],
+        },
+      }),
+    });
+
+    expect(
+      wrapper.find('[aria-label="landing-study-citation"]').first().text()
+    ).toEqual(
+      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
+    );
+
+    wrapper.find('#landing-study-copy-citation').first().simulate('click');
+
+    expect(testWriteText).toHaveBeenCalledWith(
+      'John Smith; 2019: Title 1, doi_constants.publisher.name, https://doi.org/study pid'
+    );
+
+    expect(
+      wrapper.find('#landing-study-copied-citation').first().text()
+    ).toEqual('Copied citation');
+  });
+
+  it('displays correctly when investigation missing', () => {
+    const testStore = mockStore({
+      ...state,
+      dgcommon: {
+        ...state.dgcommon,
+        data: [
+          {
+            study: study,
+          },
+        ],
+      },
+    });
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <ISISStudyLanding instrumentId="4" studyId="5" />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(
+      wrapper.find('[aria-label="landing-study-citation"]').first().text()
+    ).toEqual('2019: doi_constants.publisher.name, https://doi.org/study pid');
   });
 });

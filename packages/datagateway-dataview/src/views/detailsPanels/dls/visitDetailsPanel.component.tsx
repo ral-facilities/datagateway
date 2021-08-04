@@ -132,7 +132,12 @@ const VisitDetailsPanel = (
               {t('investigations.details.summary')}
             </Typography>
             <Typography>
-              <b>{investigationData.summary}</b>
+              <b>
+                {investigationData.summary &&
+                investigationData.summary !== 'null'
+                  ? investigationData.summary
+                  : `${t('investigations.details.summary')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -140,7 +145,12 @@ const VisitDetailsPanel = (
               {t('investigations.details.start_date')}
             </Typography>
             <Typography>
-              <b>{investigationData.startDate}</b>
+              <b>
+                {investigationData.startDate &&
+                investigationData.startDate !== 'null'
+                  ? investigationData.startDate
+                  : `${t('investigations.details.start_date')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
@@ -148,7 +158,12 @@ const VisitDetailsPanel = (
               {t('investigations.details.end_date')}
             </Typography>
             <Typography>
-              <b>{investigationData.endDate}</b>
+              <b>
+                {investigationData.endDate &&
+                investigationData.endDate !== 'null'
+                  ? investigationData.endDate
+                  : `${t('investigations.details.end_date')} not provided`}
+              </b>
             </Typography>
           </Grid>
           <Grid item xs>
