@@ -220,7 +220,8 @@ describe('ISIS - Datasets Table', () => {
     });
   });
 
-  describe('should be able to view details', () => {
+  // TODO: Data mismatch issue (#782)
+  describe.skip('should be able to view details', () => {
     beforeEach(() => {
       // Check that we have received the size from the API as this will produce
       // a re-render which can prevent the click.
@@ -233,8 +234,7 @@ describe('ISIS - Datasets Table', () => {
       );
     });
 
-    // TODO: Data mismatch issue (#782)
-    it.skip('when no other row is showing details', () => {
+    it('when no other row is showing details', () => {
       cy.get('[aria-label="Show details"]').first().click();
 
       cy.get('#details-panel').should('be.visible');
