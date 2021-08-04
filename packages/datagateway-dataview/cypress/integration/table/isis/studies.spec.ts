@@ -90,7 +90,7 @@ describe('ISIS - Studies Table', () => {
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Left else college member. Member seat institution great prevent. Medical watch real I.'
+        'Tell others stay doctor. Who some management admit ahead when. Child everybody lawyer head how. Church test travel data. Skill special within. Capital he involve friend individual.'
       );
     });
 
@@ -105,7 +105,7 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Republican source same western. Order suddenly everybody reveal claim.'
+        'Again bad simply low summer. Left hand around position wonder sometimes. Body always prove husband. So understand edge outside prevent. Try little figure. Film name majority he modern value.'
       );
     });
 
@@ -123,7 +123,7 @@ describe('ISIS - Studies Table', () => {
         '0'
       );
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Teach financial vote season. North candidate night sure opportunity design.'
+        'He represent address cut environmental special size. Activity entire which reality not. Better focus people receive.'
       );
     });
 
@@ -132,7 +132,7 @@ describe('ISIS - Studies Table', () => {
       cy.contains('[role="button"]', 'Name').click();
 
       cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains(
-        'Teach financial vote season. North candidate night sure opportunity design. Commercial test wind region meeting her get.'
+        'Help music rate image common worry reason. Rich green either require. Garden leader answer sort generation. Question decision window send food loss society.'
       );
     });
   });
@@ -143,26 +143,26 @@ describe('ISIS - Studies Table', () => {
 
       cy.get('[aria-rowcount="5"]').should('exist');
       cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
-        'Give send watch. Bit often pattern seven civil population hear one.'
+        'Peace attack I history attack. Together company interview often successful few. A fall yard let which house.'
       );
     });
 
     it('date between', () => {
       cy.get('[aria-label="Start Date date filter from"]').type('2010-04-02');
 
-      cy.get('[aria-rowcount="9"]').should('exist');
-      cy.get('[aria-rowindex="9"] [aria-colindex="2"]').contains(
-        'Poor serious per still economy life hold.'
+      cy.get('[aria-rowcount="11"]').should('exist');
+      cy.get('[aria-rowindex="5"] [aria-colindex="2"]').contains(
+        'Old ok order wall bank. Floor science physical ask activity alone. Language sort test bill to century. Four direction reason. Its arm water box. Also idea quite own. None special now million.'
       );
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Name"]').find('input').first().type('1');
 
-      cy.get('[aria-label="Filter by Description"]')
+      cy.get('[aria-label="Filter by Title"]')
         .find('input')
         .first()
-        .type('hotel');
+        .type('peace');
 
       cy.get('[aria-rowcount="1"]').should('exist');
     });

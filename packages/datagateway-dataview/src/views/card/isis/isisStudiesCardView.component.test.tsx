@@ -123,7 +123,7 @@ describe('ISIS Studies - Card View', () => {
       .simulate('change', { target: { value: '2019-08-06' } });
     expect(store.getActions().length).toEqual(3);
     expect(store.getActions()[1]).toEqual(
-      filterTable('study.endDate', {
+      filterTable('investigation.endDate', {
         endDate: '2019-08-06',
         startDate: undefined,
       })
@@ -134,7 +134,9 @@ describe('ISIS Studies - Card View', () => {
       .last()
       .simulate('change', { target: { value: '' } });
     expect(store.getActions().length).toEqual(5);
-    expect(store.getActions()[3]).toEqual(filterTable('study.endDate', null));
+    expect(store.getActions()[3]).toEqual(
+      filterTable('investigation.endDate', null)
+    );
     expect(store.getActions()[4]).toEqual(push('?'));
   });
 
