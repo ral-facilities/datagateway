@@ -1,9 +1,7 @@
 import {
-  FormControlLabel,
   Grid,
   LinearProgress,
   Paper,
-  Switch,
   Typography,
   Theme,
   withStyles,
@@ -11,6 +9,7 @@ import {
   IconButton,
   Badge,
   makeStyles,
+  Button,
 } from '@material-ui/core';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import SearchIcon from '@material-ui/icons/Search';
@@ -34,6 +33,8 @@ import { Action } from 'redux';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import ViewAgendaIcon from '@material-ui/icons/ViewAgenda';
 import TranslatedHomePage from './translatedHomePage.component';
 import { useIsFetching, useQueryClient } from 'react-query';
 
@@ -173,7 +174,7 @@ const NavBar = React.memo(
             item
             sm={2}
             xs={3}
-            aria-label="container-table-count"
+            aria-label="container-view-count"
           >
             <Route
               exact
@@ -215,7 +216,7 @@ const NavBar = React.memo(
             <IconButton
               className="tour-dataview-search-icon"
               onClick={props.navigateToSearch}
-              aria-label="container-table-search"
+              aria-label="container-view-search"
               style={{ margin: 'auto' }}
             >
               <SearchIcon />
@@ -233,7 +234,7 @@ const NavBar = React.memo(
             <IconButton
               className="tour-dataview-cart-icon"
               onClick={props.navigateToDownload}
-              aria-label="container-table-cart"
+              aria-label="container-view-cart"
               style={{ margin: 'auto' }}
             >
               <Badge
@@ -241,7 +242,7 @@ const NavBar = React.memo(
                   props.cartItems.length > 0 ? props.cartItems.length : null
                 }
                 color="primary"
-                aria-label="container-table-cart-badge"
+                aria-label="container-view-cart-badge"
               >
                 <ShoppingCartIcon />
               </Badge>
@@ -254,27 +255,36 @@ const NavBar = React.memo(
 );
 NavBar.displayName = 'NavBar';
 
-const CardSwitch = (props: {
-  toggleCard: boolean;
-  handleToggleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+const viewButtonStyles = makeStyles(
+  (theme: Theme): StyleRules =>
+    createStyles({
+      root: {
+        padding: theme.spacing(1),
+      },
+    })
+);
+
+const ViewButton = (props: {
+  viewCards: boolean;
+  handleButtonChange: () => void;
 }): React.ReactElement => {
   const [t] = useTranslation();
+  const classes = viewButtonStyles();
 
   return (
-    <FormControlLabel
-      className="tour-dataview-toggle-card"
-      value="start"
-      control={
-        <Switch
-          checked={props.toggleCard}
-          onChange={props.handleToggleChange}
-          name="toggleCard"
-          inputProps={{ 'aria-label': 'secondary checkbox' }}
-        />
-      }
-      label={t('app.toggle_cards')}
-      labelPlacement="start"
-    />
+    <div className={classes.root}>
+      <Button
+        className="tour-dataview-view-button"
+        aria-label="container-view-button"
+        variant="contained"
+        color="primary"
+        size="small"
+        startIcon={props.viewCards ? <ViewListIcon /> : <ViewAgendaIcon />}
+        onClick={() => props.handleButtonChange()}
+      >
+        {props.viewCards ? t('app.view_table') : t('app.view_cards')}
+      </Button>
+    </div>
   );
 };
 
@@ -437,29 +447,26 @@ const PageContainer: React.FC = () => {
 
   const { data: cartItems } = useCart();
 
-  const [toggleCard, setToggleCard] = React.useState(false);
+  const [viewCards, setViewCards] = React.useState(false);
 
   const dispatch = useDispatch();
 
-  const handleToggleChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
-      const nextView = event.target.checked ? 'card' : 'table';
+  const handleButtonChange = React.useCallback((): void => {
+    const nextView = !viewCards ? 'card' : 'table';
 
-      // Save the current view information to state and restore the previous view information.
-      dispatch(saveView(toggleCard ? 'card' : 'table'));
+    // Save the current view information to state and restore the previous view information.
+    dispatch(saveView(nextView));
 
-      // Set the view in local storage.
-      storeDataView(nextView);
+    // Set the view in local storage.
+    storeDataView(nextView);
 
-      // Add the view and push the final query parameters.
-      dispatch(pushPageView(nextView, location.pathname));
+    // Add the view and push the final query parameters.
+    dispatch(pushPageView(nextView, location.pathname));
 
-      // Set the state with the toggled card option and the saved query.
+    // Set the state with the toggled card option and the saved query.
 
-      setToggleCard(event.target.checked);
-    },
-    [location.pathname, dispatch, toggleCard]
-  );
+    setViewCards(!viewCards);
+  }, [location.pathname, dispatch, viewCards]);
 
   const navigateToDownload = React.useCallback(
     () => dispatch(push('/download')),
@@ -493,7 +500,7 @@ const PageContainer: React.FC = () => {
 
     // Keep the query parameter for view and the state in sync, by getting the latest update.
     if (prevView !== view) {
-      setToggleCard(getToggle(location.pathname, view));
+      setViewCards(getToggle(location.pathname, view));
     }
   }, [location.pathname, view, prevView, dispatch, prevLocation.pathname]);
 
@@ -519,9 +526,9 @@ const PageContainer: React.FC = () => {
                   exact
                   path={togglePaths}
                   render={() => (
-                    <CardSwitch
-                      toggleCard={toggleCard}
-                      handleToggleChange={handleToggleChange}
+                    <ViewButton
+                      viewCards={viewCards}
+                      handleButtonChange={handleButtonChange}
                     />
                   )}
                 />
@@ -534,8 +541,8 @@ const PageContainer: React.FC = () => {
                 </Grid>
               )}
 
-              {/* Hold the table for remainder of the page */}
-              <Grid item xs={12} aria-label="container-table">
+              {/* Hold the view for remainder of the page */}
+              <Grid item xs={12} aria-label="container-view">
                 <ViewRouting
                   view={view}
                   location={location}

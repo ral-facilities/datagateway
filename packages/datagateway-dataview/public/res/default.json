@@ -1,7 +1,8 @@
 {
   "app": {
     "results": "Results",
-    "toggle_cards": "Toggle Cards",
+    "view_table": "Display as table",
+    "view_cards": "Display as cards",
     "max_results": "Max Results"
   },
   "breadcrumbs": {
