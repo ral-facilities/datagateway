@@ -18,8 +18,6 @@ export interface DGCommonState {
   datasetCache: EntityCache;
   cartItems: DownloadCartItem[];
   allIds: number[];
-  luceneIds: number[];
-  luceneIdsTimestamp: number;
   dataTimestamp: number;
   countTimestamp: number;
   allIdsTimestamp: number;

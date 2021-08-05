@@ -97,9 +97,6 @@ import {
   FetchInvestigationSizeSuccessType,
   FetchInvestigationsRequestType,
   FetchInvestigationsSuccessType,
-  FetchLuceneIdsFailureType,
-  FetchLuceneIdsRequestType,
-  FetchLuceneIdsSuccessType,
   FetchSizeSuccessPayload,
   FilterTablePayload,
   FilterTableType,
@@ -157,7 +154,6 @@ export const initialState: DGCommonState = {
   dataTimestamp: Date.now(),
   countTimestamp: Date.now(),
   allIdsTimestamp: Date.now(),
-  luceneIdsTimestamp: Date.now(),
   urls: {
     idsUrl: '',
     apiUrl: '',
@@ -166,7 +162,6 @@ export const initialState: DGCommonState = {
   },
   cartItems: [],
   allIds: [],
-  luceneIds: [],
   query: initialQuery,
   savedQuery: initialQuery,
 };
@@ -788,37 +783,6 @@ export function handleFetchAllIdsSuccess(
   }
 }
 
-export function handleFetchLuceneIdsRequest(
-  state: DGCommonState,
-  payload: RequestPayload
-): DGCommonState {
-  if (payload.timestamp >= state.luceneIdsTimestamp) {
-    return {
-      ...state,
-      luceneIdsTimestamp: payload.timestamp,
-      loading: true,
-    };
-  } else {
-    return state;
-  }
-}
-
-export function handleFetchLuceneIdsSuccess(
-  state: DGCommonState,
-  payload: FetchIdsSuccessPayload
-): DGCommonState {
-  if (payload.timestamp >= state.luceneIdsTimestamp) {
-    return {
-      ...state,
-      loading: false,
-      luceneIds: payload.data,
-      luceneIdsTimestamp: payload.timestamp,
-    };
-  } else {
-    return state;
-  }
-}
-
 export function handleFetchFilterRequest(
   state: DGCommonState,
   payload: RequestPayload
@@ -947,9 +911,6 @@ const dGCommonReducer = createReducer(initialState, {
   [FetchAllIdsRequestType]: handleFetchAllIdsRequest,
   [FetchAllIdsSuccessType]: handleFetchAllIdsSuccess,
   [FetchAllIdsFailureType]: handleFetchDataFailure,
-  [FetchLuceneIdsRequestType]: handleFetchLuceneIdsRequest,
-  [FetchLuceneIdsSuccessType]: handleFetchLuceneIdsSuccess,
-  [FetchLuceneIdsFailureType]: handleFetchDataFailure,
   [FetchFilterRequestType]: handleFetchFilterRequest,
   [FetchFilterSuccessType]: handleFetchFilterSuccess,
   [FetchFilterFailureType]: handleFetchDataFailure,

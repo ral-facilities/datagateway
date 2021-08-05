@@ -20,6 +20,8 @@ import { useTranslation } from 'react-i18next';
 import { Action, AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { setCurrentTab } from './state/actions/actions';
+import { useLuceneSearch } from 'datagateway-common';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 const badgeStyles = (theme: Theme): StyleRules =>
   createStyles({
@@ -38,9 +40,9 @@ interface SearchTableProps {
 }
 
 interface SearchTableStoreProps {
-  datafile: number[];
-  dataset: number[];
-  investigation: number[];
+  searchText: string;
+  startDate: MaterialUiPickersDate;
+  endDate: MaterialUiPickersDate;
   datasetTab: boolean;
   datafileTab: boolean;
   investigationTab: boolean;
@@ -87,9 +89,9 @@ const SearchPageTable = (
   props: SearchTableProps & SearchTableStoreProps & SearchTableDispatchProps
 ): React.ReactElement => {
   const {
-    investigation,
-    dataset,
-    datafile,
+    searchText,
+    startDate,
+    endDate,
     investigationTab,
     datasetTab,
     datafileTab,
@@ -99,6 +101,22 @@ const SearchPageTable = (
     hierarchy,
   } = props;
   const [t] = useTranslation();
+
+  const { data: investigation } = useLuceneSearch('Investigation', {
+    searchText,
+    startDate,
+    endDate,
+  });
+  const { data: dataset } = useLuceneSearch('Dataset', {
+    searchText,
+    startDate,
+    endDate,
+  });
+  const { data: datafile } = useLuceneSearch('Datafile', {
+    searchText,
+    startDate,
+    endDate,
+  });
 
   useEffect(() => {
     if (investigationTab) {
@@ -117,8 +135,8 @@ const SearchPageTable = (
     setCurrentTab(newValue);
   };
 
-  const badgeDigits = (length: number): 3 | 2 | 1 => {
-    return length >= 100 ? 3 : length >= 10 ? 2 : 1;
+  const badgeDigits = (length?: number): 3 | 2 | 1 => {
+    return length ? (length >= 100 ? 3 : length >= 10 ? 2 : 1) : 1;
   };
 
   return (
@@ -135,17 +153,18 @@ const SearchPageTable = (
               label={
                 <StyledBadge
                   id="investigation-badge"
-                  badgeContent={investigation.length}
+                  badgeContent={investigation?.length ?? 0}
                   showZero
+                  max={999}
                 >
                   <span
                     style={{
                       paddingRight: '1ch',
                       marginRight: `calc(0.5 * ${badgeDigits(
-                        investigation.length
+                        investigation?.length
                       )}ch + 6px)`,
                       marginLeft: `calc(-0.5 * ${badgeDigits(
-                        investigation.length
+                        investigation?.length
                       )}ch - 6px)`,
                     }}
                   >
@@ -164,17 +183,18 @@ const SearchPageTable = (
               label={
                 <StyledBadge
                   id="dataset-badge"
-                  badgeContent={dataset.length}
+                  badgeContent={dataset?.length ?? 0}
                   showZero
+                  max={999}
                 >
                   <span
                     style={{
                       paddingRight: '1ch',
                       marginRight: `calc(0.5 * ${badgeDigits(
-                        dataset.length
+                        dataset?.length
                       )}ch + 6px)`,
                       marginLeft: `calc(-0.5 * ${badgeDigits(
-                        dataset.length
+                        dataset?.length
                       )}ch - 6px)`,
                     }}
                   >
@@ -193,17 +213,18 @@ const SearchPageTable = (
               label={
                 <StyledBadge
                   id="datafile-badge"
-                  badgeContent={datafile.length}
+                  badgeContent={datafile?.length ?? 0}
                   showZero
+                  max={999}
                 >
                   <span
                     style={{
                       paddingRight: '1ch',
                       marginRight: `calc(0.5 * ${badgeDigits(
-                        datafile.length
+                        datafile?.length
                       )}ch + 6px)`,
                       marginLeft: `calc(-0.5 * ${badgeDigits(
-                        datafile.length
+                        datafile?.length
                       )}ch - 6px)`,
                     }}
                   >
@@ -268,9 +289,9 @@ const SearchPageTable = (
 
 const mapStateToProps = (state: StateType): SearchTableStoreProps => {
   return {
-    datafile: state.dgsearch.searchData.datafile,
-    dataset: state.dgsearch.searchData.dataset,
-    investigation: state.dgsearch.searchData.investigation,
+    searchText: state.dgsearch.searchText,
+    startDate: state.dgsearch.selectDate.startDate,
+    endDate: state.dgsearch.selectDate.endDate,
     datasetTab: state.dgsearch.tabs.datasetTab,
     datafileTab: state.dgsearch.tabs.datafileTab,
     investigationTab: state.dgsearch.tabs.investigationTab,

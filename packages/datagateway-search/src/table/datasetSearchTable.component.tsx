@@ -25,6 +25,7 @@ import {
   useDatasetSizes,
   useDateFilter,
   useIds,
+  useLuceneSearch,
   usePushSort,
   useRemoveFromCart,
   useTextFilter,
@@ -82,9 +83,20 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const luceneData = useSelector(
-    (state: StateType) => state.dgsearch.searchData.dataset
+  const searchText = useSelector(
+    (state: StateType) => state.dgsearch.searchText
   );
+  const startDate = useSelector(
+    (state: StateType) => state.dgsearch.selectDate.startDate
+  );
+  const endDate = useSelector(
+    (state: StateType) => state.dgsearch.selectDate.endDate
+  );
+  const { data: luceneData } = useLuceneSearch('Dataset', {
+    searchText,
+    startDate,
+    endDate,
+  });
   const location = useLocation();
   const [t] = useTranslation();
 
@@ -97,7 +109,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        id: { in: luceneData },
+        id: { in: luceneData || [] },
       }),
     },
   ]);
@@ -105,7 +117,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        id: { in: luceneData },
+        id: { in: luceneData || [] },
       }),
     },
     {
@@ -119,7 +131,7 @@ const DatasetSearchTable = (props: DatasetTableProps): React.ReactElement => {
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        id: { in: luceneData },
+        id: { in: luceneData || [] },
       }),
     },
   ]);

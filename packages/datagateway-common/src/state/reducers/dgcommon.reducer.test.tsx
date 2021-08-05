@@ -104,10 +104,6 @@ import {
   DownloadCart,
   StudyInvestigation,
 } from '../../app.types';
-import {
-  fetchLuceneIdsRequest,
-  fetchLuceneIdsSuccess,
-} from '../actions/lucene';
 
 describe('DGCommon reducer', () => {
   let state: DGCommonState;
@@ -1768,55 +1764,6 @@ describe('DGCommon reducer', () => {
       );
       expect(updatedState.loading).toBe(false);
       expect(updatedState.error).toEqual('Test error message');
-    });
-  });
-
-  describe('FetchLuceneIds actions', () => {
-    it('should set state when given a FetchLuceneIdsRequest action', () => {
-      state = { ...initialState, loading: false };
-      expect(state.loading).toBe(false);
-
-      const updatedState = DGCommonReducer(
-        state,
-        fetchLuceneIdsRequest(validTimestamp)
-      );
-      expect(updatedState.loading).toBe(true);
-      expect(updatedState.luceneIdsTimestamp).toEqual(validTimestamp);
-    });
-
-    it('should not set state when given a FetchLuceneIdsRequest action with invalid timestamp', () => {
-      state = { ...initialState, loading: false };
-      expect(state.loading).toBe(false);
-
-      const updatedState = DGCommonReducer(
-        state,
-        fetchLuceneIdsRequest(invalidTimestamp)
-      );
-      expect(updatedState).toEqual(state);
-    });
-
-    it('should set state when given a FetchLuceneIdsSuccess action', () => {
-      state = { ...initialState, loading: true };
-      expect(state.loading).toBe(true);
-
-      const updatedState = DGCommonReducer(
-        state,
-        fetchLuceneIdsSuccess([1], validTimestamp)
-      );
-      expect(updatedState.loading).toBe(false);
-      expect(updatedState.luceneIdsTimestamp).toEqual(validTimestamp);
-      expect(updatedState.luceneIds).toEqual([1]);
-    });
-
-    it('should not set state when given a FetchLuceneIdsSuccess action with invalid timestamp', () => {
-      state = { ...initialState, loading: true };
-      expect(state.loading).toBe(true);
-
-      const updatedState = DGCommonReducer(
-        state,
-        fetchLuceneIdsSuccess([1], invalidTimestamp)
-      );
-      expect(updatedState).toEqual(state);
     });
   });
 

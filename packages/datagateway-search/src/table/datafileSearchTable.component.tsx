@@ -24,6 +24,7 @@ import {
   useDatafilesInfinite,
   useDateFilter,
   useIds,
+  useLuceneSearch,
   usePushSort,
   useRemoveFromCart,
   useTextFilter,
@@ -89,9 +90,20 @@ const DatafileSearchTable = (
 
   const { data: facilityCycles } = useAllFacilityCycles(hierarchy === 'isis');
 
-  const luceneData = useSelector(
-    (state: StateType) => state.dgsearch.searchData.datafile
+  const searchText = useSelector(
+    (state: StateType) => state.dgsearch.searchText
   );
+  const startDate = useSelector(
+    (state: StateType) => state.dgsearch.selectDate.startDate
+  );
+  const endDate = useSelector(
+    (state: StateType) => state.dgsearch.selectDate.endDate
+  );
+  const { data: luceneData } = useLuceneSearch('Investigation', {
+    searchText,
+    startDate,
+    endDate,
+  });
   const location = useLocation();
   const [t] = useTranslation();
 
@@ -104,7 +116,7 @@ const DatafileSearchTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        id: { in: luceneData },
+        id: { in: luceneData || [] },
       }),
     },
   ]);
@@ -112,7 +124,7 @@ const DatafileSearchTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        id: { in: luceneData },
+        id: { in: luceneData || [] },
       }),
     },
     {
@@ -126,7 +138,7 @@ const DatafileSearchTable = (
     {
       filterType: 'where',
       filterValue: JSON.stringify({
-        id: { in: luceneData },
+        id: { in: luceneData || [] },
       }),
     },
   ]);
