@@ -303,6 +303,21 @@ export const usePushResults = (): ((results: number) => void) => {
   );
 };
 
+export const usePushView = (): ((view: ViewsType) => void) => {
+  const { push } = useHistory();
+
+  return React.useCallback(
+    (view: ViewsType) => {
+      const query = {
+        ...parseSearchToQuery(window.location.search),
+        view,
+      };
+      push(`?${parseQueryToSearch(query).toString()}`);
+    },
+    [push]
+  );
+};
+
 export const fetchIds = (
   apiUrl: string,
   entityType: 'investigation' | 'dataset' | 'datafile',

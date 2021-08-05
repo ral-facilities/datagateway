@@ -16,20 +16,20 @@ import SearchIcon from '@material-ui/icons/Search';
 import { StyleRules } from '@material-ui/core/styles';
 import {
   DownloadCartItem,
-  pushPageView,
-  saveView,
   Sticky,
   ViewsType,
-  clearTable,
   useCart,
   parseSearchToQuery,
+  usePushView,
 } from 'datagateway-common';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
-import { Switch as SwitchRouting, Route, useLocation } from 'react-router-dom';
-import { push } from 'connected-react-router';
-import { Action } from 'redux';
+import {
+  Switch as SwitchRouting,
+  Route,
+  useLocation,
+  useHistory,
+} from 'react-router-dom';
 import PageBreadcrumbs from './breadcrumbs.component';
 import PageRouting from './pageRouting.component';
 import { Location as LocationType } from 'history';
@@ -144,8 +144,8 @@ const NavBar = React.memo(
   (props: {
     entityCount: number;
     cartItems: DownloadCartItem[];
-    navigateToSearch: () => Action;
-    navigateToDownload: () => Action;
+    navigateToSearch: () => void;
+    navigateToDownload: () => void;
   }): React.ReactElement => {
     const [t] = useTranslation();
 
@@ -410,6 +410,7 @@ const getToggle = (pathname: string, view: ViewsType): boolean => {
 
 const PageContainer: React.FC = () => {
   const location = useLocation();
+  const { push } = useHistory();
   const prevLocationRef = React.useRef(location);
   const { view } = React.useMemo(() => parseSearchToQuery(location.search), [
     location.search,
@@ -447,36 +448,23 @@ const PageContainer: React.FC = () => {
 
   const { data: cartItems } = useCart();
 
-  const [viewCards, setViewCards] = React.useState(false);
-
-  const dispatch = useDispatch();
+  const pushView = usePushView();
 
   const handleButtonChange = React.useCallback((): void => {
-    const nextView = !viewCards ? 'card' : 'table';
-
-    // Save the current view information to state and restore the previous view information.
-    dispatch(saveView(nextView));
+    const nextView = view !== 'card' ? 'card' : 'table';
 
     // Set the view in local storage.
     storeDataView(nextView);
 
-    // Add the view and push the final query parameters.
-    dispatch(pushPageView(nextView, location.pathname));
+    // push the view to query parameters.
+    pushView(nextView);
+  }, [pushView, view]);
 
-    // Set the state with the toggled card option and the saved query.
+  const navigateToDownload = React.useCallback(() => push('/download'), [push]);
 
-    setViewCards(!viewCards);
-  }, [location.pathname, dispatch, viewCards]);
-
-  const navigateToDownload = React.useCallback(
-    () => dispatch(push('/download')),
-    [dispatch]
-  );
-
-  const navigateToSearch = React.useCallback(
-    () => dispatch(push('/search/data')),
-    [dispatch]
-  );
+  const navigateToSearch = React.useCallback(() => push('/search/data'), [
+    push,
+  ]);
 
   React.useEffect(() => {
     prevLocationRef.current = location;
@@ -488,21 +476,12 @@ const PageContainer: React.FC = () => {
   );
 
   React.useEffect(() => {
-    // Ensure if the location changes, then we clear the view.
-    if (prevLocation.pathname !== location.pathname) {
-      dispatch(clearTable());
-    }
     // If the view query parameter was not found and the previously
     // stored view is in localstorage, update our current query with the view.
     if (getToggle(location.pathname, view) && !view) {
-      dispatch(pushPageView('card', location.pathname));
+      pushView('card');
     }
-
-    // Keep the query parameter for view and the state in sync, by getting the latest update.
-    if (prevView !== view) {
-      setViewCards(getToggle(location.pathname, view));
-    }
-  }, [location.pathname, view, prevView, dispatch, prevLocation.pathname]);
+  }, [location.pathname, view, prevView, prevLocation.pathname, pushView]);
 
   return (
     <SwitchRouting location={location}>
@@ -527,7 +506,7 @@ const PageContainer: React.FC = () => {
                   path={togglePaths}
                   render={() => (
                     <ViewButton
-                      viewCards={viewCards}
+                      viewCards={view === 'card'}
                       handleButtonChange={handleButtonChange}
                     />
                   )}
