@@ -41,7 +41,7 @@
   },
   "studies": {
     "name": "Name",
-    "description": "Description",
+    "title": "Title",
     "pid": "DOI",
     "end_date": "End Date",
     "start_date": "Start Date",
