@@ -74,6 +74,7 @@ export interface CardViewDetails {
   // Filter and sort options.
   filterComponent?: (label: string, dataKey: string) => React.ReactElement;
   disableSort?: boolean;
+  noTooltip?: boolean;
 }
 
 type CVPaginationPosition = 'top' | 'bottom' | 'both';
@@ -713,29 +714,33 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                           information &&
                           information
                             .map((details) => ({
+                              icon: details.icon,
                               // We can say the data key is the label if not defined.
                               label: details.label
                                 ? details.label
                                 : details.dataKey,
-                              content: details.content
-                                ? details.content(entity)
-                                : nestedValue(entity, details.dataKey),
                               // Keep the dataKey in so we can use it for adding the tooltip
                               // once content has been created.
                               dataKey: details.dataKey,
-                              icon: details.icon,
+                              content: details.content
+                                ? details.content(entity)
+                                : nestedValue(entity, details.dataKey),
+                              noTooltip: details.noTooltip,
                             }))
                             // Filter afterwards to only show content with information.
                             .filter((v) => v.content)
                             // Add in tooltips to the content we have filtered.
                             .map((details) => ({
                               ...details,
-                              content: (
+                              // If we use custom content we can choose to not show a tooltip.
+                              content: !details.noTooltip ? (
                                 <ArrowTooltip
                                   title={nestedValue(entity, details.dataKey)}
                                 >
                                   <Typography>{details.content}</Typography>
                                 </ArrowTooltip>
+                              ) : (
+                                details.content
                               ),
                             }))
                         }

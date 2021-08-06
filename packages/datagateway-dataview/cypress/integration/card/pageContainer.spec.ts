@@ -11,7 +11,7 @@ describe('PageContainer Component', () => {
       ],
       { timeout: 10000 }
     );
-    cy.get('[aria-label="secondary checkbox"]')
+    cy.get('[aria-label="container-view-button"]')
       .click()
       .wait(['@getInvestigationsCount', '@getInvestigationsOrder'], {
         timeout: 10000,
@@ -24,38 +24,38 @@ describe('PageContainer Component', () => {
 
     cy.get('[aria-label="container-breadcrumbs"]').should('exist');
 
-    cy.get('[aria-label="container-table-count"]').should('exist');
+    cy.get('[aria-label="container-view-count"]').should('exist');
 
-    cy.get('[aria-label="container-table-search"]').should('exist');
+    cy.get('[aria-label="container-view-search"]').should('exist');
 
-    cy.get('[aria-label="container-table-cart"]').should('exist');
+    cy.get('[aria-label="container-view-cart"]').should('exist');
 
-    cy.get('[aria-label="container-table"]').should('exist');
+    cy.get('[aria-label="container-view"]').should('exist');
   });
 
   it('should display correct entity count', () => {
     // Check that the entity count has displayed correctly.
-    cy.get('[aria-label="container-table-count"]')
+    cy.get('[aria-label="container-view-count"]')
       .should('be.visible')
       .contains('Results: 239');
   });
 
   it('should display number of items in cart correctly', () => {
     // Check that the download cart has displayed correctly.
-    cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
+    cy.get('[aria-label="container-view-cart-badge"]', { timeout: 10000 })
       .children()
       .should('be.hidden');
 
     cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(0).click();
 
-    cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
+    cy.get('[aria-label="container-view-cart-badge"]', { timeout: 10000 })
       .children()
       .should('not.be.hidden')
       .contains('1');
 
     cy.get('[aria-label="card-button-1"]', { timeout: 10000 }).eq(1).click();
 
-    cy.get('[aria-label="container-table-cart-badge"]', { timeout: 10000 })
+    cy.get('[aria-label="container-view-cart-badge"]', { timeout: 10000 })
       .children()
       .should('not.be.hidden')
       .contains('2');
@@ -107,5 +107,10 @@ describe('PageContainer Component', () => {
     cy.get('#card').contains(
       'Including spend increase ability music skill former.'
     );
+  });
+
+  it('should load the homepage if navigating to home', () => {
+    cy.visit('/datagateway');
+    cy.get('div[id="dg-homepage"]');
   });
 });
