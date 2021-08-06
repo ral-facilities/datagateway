@@ -17,7 +17,7 @@ import ArrowTooltip from '../arrowtooltip.component';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import hexToRbga from 'hex-to-rgba';
-import { nestedValue } from '../state/actions';
+import { nestedValue } from '../api';
 import { Entity } from '../app.types';
 import { CardViewDetails } from './cardViewQuery.component';
 
