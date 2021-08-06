@@ -316,10 +316,17 @@ export const useDatafileCount = (
 
 const fetchDatafileDetails = (
   apiUrl: string,
-  datafileId: number
+  datafileId: number,
+  additionalFilters?: AdditionalFilters
 ): Promise<Datafile> => {
   const params = new URLSearchParams();
   params.append('where', JSON.stringify({ id: { eq: datafileId } }));
+
+  if (additionalFilters) {
+    additionalFilters.forEach((filter) => {
+      params.append(filter.filterType, filter.filterValue);
+    });
+  }
 
   return axios
     .get(`${apiUrl}/datafiles`, {
@@ -332,13 +339,20 @@ const fetchDatafileDetails = (
 };
 
 export const useDatafileDetails = (
-  datafileId: number
+  datafileId: number,
+  additionalFilters?: AdditionalFilters
 ): UseQueryResult<Datafile, AxiosError> => {
   const apiUrl = useSelector((state: StateType) => state.dgcommon.urls.apiUrl);
 
-  return useQuery<Datafile, AxiosError, Datafile, [string, number]>(
-    ['datafileDetails', datafileId],
-    (params) => fetchDatafileDetails(apiUrl, params.queryKey[1]),
+  return useQuery<
+    Datafile,
+    AxiosError,
+    Datafile,
+    [string, number, AdditionalFilters?]
+  >(
+    ['datafileDetails', datafileId, additionalFilters],
+    (params) =>
+      fetchDatafileDetails(apiUrl, params.queryKey[1], params.queryKey[2]),
     {
       onError: (error) => {
         handleICATError(error);

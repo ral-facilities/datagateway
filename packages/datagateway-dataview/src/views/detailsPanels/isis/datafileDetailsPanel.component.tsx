@@ -36,7 +36,14 @@ const DatafileDetailsPanel = (
   const [t] = useTranslation();
   const classes = useStyles();
 
-  const { data } = useDatafileDetails(rowData.id);
+  const { data } = useDatafileDetails(rowData.id, [
+    {
+      filterType: 'include',
+      filterValue: JSON.stringify({
+        parameters: 'type',
+      }),
+    },
+  ]);
   const datafileData: Datafile = { ...data, ...(rowData as Datafile) };
 
   React.useLayoutEffect(() => {

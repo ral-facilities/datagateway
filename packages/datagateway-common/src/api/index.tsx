@@ -344,7 +344,6 @@ export const fetchIds = (
   } else {
     params.set('distinct', JSON.stringify('id'));
   }
-  console.log(params.toString());
 
   return axios
     .get<{ id: number }[]>(`${apiUrl}/${entityType}s`, {

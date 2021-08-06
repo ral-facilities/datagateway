@@ -11,7 +11,7 @@ describe('DLS - Datasets Cards', () => {
     );
     cy.get('[aria-label="container-view-button"]')
       .click()
-      .wait(['@getDatasetsCount', '@getDatasetsOrder'], {
+      .wait(['@getDatasetsOrder'], {
         timeout: 10000,
       });
   });
@@ -44,9 +44,7 @@ describe('DLS - Datasets Cards', () => {
     cy.contains('[role="button"]', 'desc').should('exist');
     cy.get('#card').contains('DATASET 241');
 
-    cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
-      timeout: 10000,
-    });
+    cy.contains('[role="button"]', 'Name').click();
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
     cy.get('#card').contains('DATASET 1');
