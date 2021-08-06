@@ -25,7 +25,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { StateType } from '../../../state/app.types';
 
 import TitleIcon from '@material-ui/icons/Title';
-import DescriptionIcon from '@material-ui/icons/Description';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 interface ISISFacilityCyclesTableProps {
@@ -122,12 +121,6 @@ const ISISFacilityCyclesTable = (
               cellProps.rowData.name,
               view
             ),
-          filterComponent: textFilter,
-        },
-        {
-          icon: <DescriptionIcon />,
-          label: t('facilitycycles.description'),
-          dataKey: 'description',
           filterComponent: textFilter,
         },
         {

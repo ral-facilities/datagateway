@@ -121,6 +121,22 @@ describe('SearchPageContainer - Tests', () => {
     expect(wrapper).toMatchSnapshot();
   });
 
+  it('renders side layout correctly', () => {
+    state = JSON.parse(
+      JSON.stringify({
+        dgcommon: { ...dGCommonInitialState },
+        dgsearch: {
+          ...dgSearchInitialState,
+          sideLayout: true,
+        },
+      })
+    );
+
+    const wrapper = createWrapper('/search/data');
+
+    expect(wrapper).toMatchSnapshot();
+  });
+
   it('do not display loading bar loading false', () => {
     const wrapper = createWrapper('/search/data');
 
