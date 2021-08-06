@@ -19,7 +19,6 @@ import {
   updateView,
   loadURLQuery,
   updateQueryParams,
-  nestedValue,
   pushQuery,
   clearData,
 } from '.';
@@ -39,7 +38,7 @@ import {
   initialState as dGCommonInitialState,
   initialState,
 } from '../reducers/dgcommon.reducer';
-import { Entity, FiltersType, SortType } from '../../app.types';
+import { FiltersType, SortType } from '../../app.types';
 
 jest.mock('loglevel');
 
@@ -215,17 +214,6 @@ describe('Actions', () => {
     expect(action.payload).toEqual({
       facilityName: 'Generic',
     });
-  });
-
-  it('nestedValue returns empty string when provided with a falsy entry', () => {
-    const datafileEntity: Entity = {
-      id: 0,
-      name: 'test',
-      modTime: '2019-09-17 00:00:00',
-      createTime: '2019-09-17 00:00:00',
-      test: null,
-    };
-    expect(nestedValue(datafileEntity, 'test')).toEqual('');
   });
 
   describe('async actions', () => {

@@ -30,7 +30,7 @@ export * from './lucene';
  * Get the nested value from an Entity object given a dataKey
  * which drills specifies the property or array indexes.
  */
-const nestedValue = (data: Entity, dataKey: string): string => {
+export const nestedValue = (data: Entity, dataKey: string): string => {
   const v = dataKey.split(/[.[\]]+/).reduce(function (prev, curr) {
     return prev ? prev[curr] : null;
   }, data);
@@ -344,6 +344,7 @@ export const fetchIds = (
   } else {
     params.set('distinct', JSON.stringify('id'));
   }
+  console.log(params.toString());
 
   return axios
     .get<{ id: number }[]>(`${apiUrl}/${entityType}s`, {
