@@ -16,10 +16,10 @@ describe('ISIS - FacilityCycles Cards', () => {
   });
 
   it('should be able to click an investigation to see its datasets', () => {
-    cy.get('#card').contains('2006 cycle 3').click({ force: true });
+    cy.get('#card').contains('2000 cycle 2').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/instrument/1/facilityCycle/14/investigation'
+      '/browse/instrument/1/facilityCycle/1/investigation'
     );
   });
 
@@ -30,7 +30,7 @@ describe('ISIS - FacilityCycles Cards', () => {
       .wait('@getFacilityCyclesOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('2000 cycle 2');
 
     cy.contains('[role="button"]', 'Start Date')
       .click()
@@ -44,7 +44,7 @@ describe('ISIS - FacilityCycles Cards', () => {
       .wait('@getFacilityCyclesOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('not.exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2006 cycle 3');
+    cy.get('#card').contains('2000 cycle 2');
   });
 
   it('should be able to sort by multiple fields', () => {
@@ -53,14 +53,14 @@ describe('ISIS - FacilityCycles Cards', () => {
       .wait('@getFacilityCyclesOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('2000 cycle 2');
 
     cy.contains('[role="button"]', 'End Date')
       .click()
       .wait('@getFacilityCyclesOrder', { timeout: 10000 });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('2004 cycle 1');
+    cy.get('#card').contains('2000 cycle 2');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -72,7 +72,7 @@ describe('ISIS - FacilityCycles Cards', () => {
       .wait(['@getFacilityCyclesCount', '@getFacilityCyclesOrder'], {
         timeout: 10000,
       });
-    cy.get('#card').contains('2006 cycle 4');
+    cy.get('#card').contains('2004 cycle 1');
 
     cy.get('[aria-label="Start Date date filter from"]')
       .type('2019-01-01')

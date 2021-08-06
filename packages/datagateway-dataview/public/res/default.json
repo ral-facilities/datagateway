@@ -1,7 +1,8 @@
 {
   "app": {
     "results": "Results",
-    "toggle_cards": "Toggle Cards",
+    "view_table": "Display as table",
+    "view_cards": "Display as cards",
     "max_results": "Max Results"
   },
   "breadcrumbs": {
@@ -25,7 +26,7 @@
       "name": "Name",
       "description": "Description",
       "type": "Type",
-      "url": "URL",
+      "url": "Information Page",
       "instrument_scientists": {
         "label": "Instrument Scientists",
         "name": "Name"
@@ -73,7 +74,7 @@
       "name": "Name",
       "end_date": "End Date",
       "start_date": "Start Date",
-      "visit_id": "Visit ID",
+      "visit_id": "Experiment Part",
       "pid": "Part DOI",
       "summary": "Summary",
       "doi": "DOI",
@@ -116,6 +117,9 @@
     "complete": "Complete",
     "incomplete": "Incomplete",
     "location": "Location",
+    "type": {
+      "id": "Type ID"
+    },
     "details": {
       "tabs_label": "Dataset Details Tabs",
       "label": "Dataset Details",
@@ -189,6 +193,16 @@
     "no_description": "No description available",
     "show_more": "Show more",
     "show_less": "Show less"
+  },
+  "homePage": {
+    "title": "DataGateway",
+    "howLabel": "How it works...",
+    "exploreLabel": "1. Explore",
+    "exploreDescription": "Browse, explore and visualise the experimental data produced at the facility.",
+    "discoverLabel": "2. Discover",
+    "discoverDescription": "Search for the experimental data according to different criteria.",
+    "downloadLabel": "3. Download",
+    "downloadDescription": "Retrieve the experimental data using a variety of download methods."
   },
   "doi_constants": {
     "keywords": [

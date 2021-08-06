@@ -3,6 +3,7 @@
   "apiUrl": "example.api.url",
   "downloadApiUrl": "example.download.api.url",
   "idsUrl": "example.ids.url",
+  "icatUrl": "example.icat.url",
   "fileCountMax": 5000,
   "totalSizeMax": 1000000000000,
   "accessMethods": {
@@ -44,7 +45,7 @@
       "link": "/admin-download",
       "displayName": "Admin Download",
       "admin": true,
-      "order": 0
+      "order": 1
     }
   ],
   "pluginHost": "http://localhost:3000"

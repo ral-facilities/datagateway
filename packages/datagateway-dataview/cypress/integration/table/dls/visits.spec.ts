@@ -102,7 +102,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-sort="ascending"]').should('exist');
       cy.get('.MuiTableSortLabel-iconDirectionAsc').should('be.visible');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
 
     it('descending order', () => {
@@ -115,7 +115,7 @@ describe('DLS - Visits Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
 
     it('no order', () => {
@@ -131,14 +131,14 @@ describe('DLS - Visits Table', () => {
         'opacity',
         '0'
       );
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
 
     it('multiple columns', () => {
       cy.contains('[role="button"]', 'Start Date').click();
       cy.contains('[role="button"]', 'Visit ID').click();
 
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
   });
 
@@ -147,10 +147,10 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-label="Filter by Visit ID"]')
         .find('input')
         .first()
-        .type('64');
+        .type('42');
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
 
     it('date between', () => {
@@ -174,14 +174,14 @@ describe('DLS - Visits Table', () => {
       );
 
       cy.get('[aria-rowcount="1"]').should('exist');
-      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('64');
+      cy.get('[aria-rowindex="1"] [aria-colindex="2"]').contains('42');
     });
 
     it('multiple columns', () => {
       cy.get('[aria-label="Filter by Visit ID"]')
         .find('input')
         .first()
-        .type('64');
+        .type('42');
 
       cy.get('[aria-label="Filter by Instrument')
         .find('input')
@@ -200,7 +200,8 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-label="Hide details"]').should('exist');
     });
 
-    it('and then calculate file size', () => {
+    // TODO: Data mismatch issue (#782)
+    it.skip('and then calculate file size', () => {
       // We need to wait for counts to finish, otherwise cypress
       // might interact with the details panel too quickly and
       // it re-renders during the test.
@@ -212,7 +213,7 @@ describe('DLS - Visits Table', () => {
       cy.contains('#calculate-size-btn', 'Calculate')
         .should('exist')
         .click({ force: true });
-      cy.contains('10.8 GB').should('be.visible');
+      cy.contains('10.8 GB', { timeout: 10000 }).should('be.visible');
     });
 
     // TODO: Since we only have one investigation, we cannot test
@@ -230,7 +231,7 @@ describe('DLS - Visits Table', () => {
 
       cy.get('[aria-controls="visit-users-panel"]').click();
       cy.get('#visit-users-panel').should('not.have.attr', 'hidden');
-      cy.get('#details-panel').contains('Antonio Cooper').should('be.visible');
+      cy.get('#details-panel').contains('Andrea Clayton').should('be.visible');
 
       cy.get('[aria-controls="visit-samples-panel"]').click();
       cy.get('#visit-samples-panel').should('not.have.attr', 'hidden');
@@ -239,7 +240,7 @@ describe('DLS - Visits Table', () => {
       cy.get('[aria-controls="visit-publications-panel"]').click();
       cy.get('#visit-publications-panel').should('not.have.attr', 'hidden');
       cy.get('#details-panel').contains(
-        'Democrat sea gas road police. Citizen relationship southern affect. Thousand national especially. In edge far education.'
+        'Eat interest seem black easy various. Choose outside develop deep another mouth. Project business base.'
       );
     });
 

@@ -17,6 +17,8 @@ describe('Search text box component tests', () => {
   let mockStore;
   let mount;
 
+  const testInitiateSearch = jest.fn();
+
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'div' });
     mount = createMount();
@@ -52,8 +54,17 @@ describe('Search text box component tests', () => {
     mockStore = configureStore([thunk]);
   });
 
+  afterEach(() => {
+    testInitiateSearch.mockClear();
+  });
+
   it('renders correctly', () => {
-    const wrapper = shallow(<SearchTextBox store={mockStore(state)} />);
+    const wrapper = shallow(
+      <SearchTextBox
+        store={mockStore(state)}
+        initiateSearch={testInitiateSearch}
+      />
+    );
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -62,7 +73,7 @@ describe('Search text box component tests', () => {
     const wrapper = mount(
       <Provider store={testStore}>
         <MemoryRouter>
-          <SearchTextBox />
+          <SearchTextBox initiateSearch={testInitiateSearch} />
         </MemoryRouter>
       </Provider>
     );
@@ -72,5 +83,23 @@ describe('Search text box component tests', () => {
       .simulate('change', { target: { value: 'test' } });
 
     expect(testStore.getActions()[0]).toEqual(submitSearchText('test'));
+  });
+
+  it('initiates search when user presses enter key', () => {
+    const testStore = mockStore(state);
+    const wrapper = mount(
+      <Provider store={testStore}>
+        <MemoryRouter>
+          <SearchTextBox initiateSearch={testInitiateSearch} />
+        </MemoryRouter>
+      </Provider>
+    );
+    wrapper
+      .find('[aria-label="searchBox.search_text_arialabel"] input')
+      .simulate('change', { target: { value: 'test' } });
+    wrapper
+      .find('[aria-label="searchBox.search_text_arialabel"] input')
+      .simulate('keydown', { key: 'Enter' });
+    expect(testInitiateSearch).toHaveBeenCalled();
   });
 });

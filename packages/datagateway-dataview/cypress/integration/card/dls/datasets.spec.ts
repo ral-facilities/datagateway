@@ -9,7 +9,7 @@ describe('DLS - Datasets Cards', () => {
         timeout: 10000,
       }
     );
-    cy.get('[aria-label="secondary checkbox"]')
+    cy.get('[aria-label="container-view-button"]')
       .click()
       .wait(['@getDatasetsCount', '@getDatasetsOrder'], {
         timeout: 10000,
@@ -25,7 +25,7 @@ describe('DLS - Datasets Cards', () => {
     cy.get('#card').contains('DATASET 1').click({ force: true });
     cy.location('pathname').should(
       'eq',
-      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/25/datafile'
+      '/browse/proposal/INVESTIGATION%201/investigation/1/dataset/1/datafile'
     );
   });
 
@@ -60,14 +60,14 @@ describe('DLS - Datasets Cards', () => {
       });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('DATASET 241');
+    cy.get('#card').contains('DATASET 1');
 
     cy.contains('[role="button"]', 'Name').click().wait('@getDatasetsOrder', {
       timeout: 10000,
     });
     cy.contains('[role="button"]', 'asc').should('exist');
     cy.contains('[role="button"]', 'desc').should('not.exist');
-    cy.get('#card').contains('DATASET 241');
+    cy.get('#card').contains('DATASET 1');
   });
 
   it('should be able to filter by multiple fields', () => {
@@ -97,7 +97,8 @@ describe('DLS - Datasets Cards', () => {
     cy.get('#card').should('not.exist');
   });
 
-  it('should be able to expand "More Information"', () => {
+  // TODO: Data mismatch issue (#782)
+  it.skip('should be able to expand "More Information"', () => {
     cy.get('#card').contains('More Information').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
@@ -105,10 +106,11 @@ describe('DLS - Datasets Cards', () => {
     cy.get('#calculate-size-btn').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('5.51 GB');
+      .contains('5.36 GB', { timeout: 10000 });
+
     cy.get('#dataset-type-tab').click({ force: true });
     cy.get('#card')
       .get('[aria-label="card-more-information"]')
-      .contains('DATASETTYPE 3');
+      .contains('DATASETTYPE 2');
   });
 });
