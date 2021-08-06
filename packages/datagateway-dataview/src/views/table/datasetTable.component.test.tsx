@@ -1,14 +1,21 @@
 import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
+// import axios from 'axios';
 import {
   addToCartRequest,
   dGCommonInitialState,
-  fetchAllIdsRequest,
-  fetchDatasetCountRequest,
   fetchDatasetsRequest,
   filterTable,
   removeFromCartRequest,
   sortTable,
+  useDatasetCount,
+  parseSearchToQuery,
+  useIds,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  useDatasetsInfinite,
+  useTextFilter,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -17,17 +24,44 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
-import DatasetTable from './datasetTable.component';
+import DatasetTable, { DatasetDetailsPanel } from './datasetTable.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common');
 
 describe('Dataset table component', () => {
   let shallow;
   let mount;
   let mockStore;
   let state: StateType;
+  let queryClient: QueryClient;
+
+  const createWrapper = (): ReactWrapper => {
+    return shallow(
+      <QueryClientProvider client={queryClient}>
+        <DatasetTable investigationId="1" />
+      </QueryClientProvider>
+    );
+  };
+
+  const createMountedWrapper = (testStore?): ReactWrapper => {
+    const store = testStore ?? mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
+          <QueryClientProvider client={queryClient}>
+            <DatasetTable investigationId="1" />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DatasetTable' });
     mount = createMount();
+    queryClient = new QueryClient();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -47,47 +81,75 @@ describe('Dataset table component', () => {
     ];
     state.dgcommon.allIds = [1];
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    (useDatasetCount as jest.Mock).mockImplementation(() => 1);
+
+    // no need to mock?
+    (parseSearchToQuery as jest.Mock).mockImplementation(() => {
+      return {
+        view: 'table',
+        filters: {},
+        sort: {},
+      };
+    });
+    (useIds as jest.Mock).mockImplementation(() => [1]);
+    (useCart as jest.Mock).mockImplementation(() => []);
+    (useAddToCart as jest.Mock).mockImplementation(() => true);
+    (useRemoveFromCart as jest.Mock).mockImplementation(() => true);
+    (formatBytes as jest.Mock).mockImplementation(() => '1 B');
+    (useDatasetsInfinite as jest.Mock).mockImplementation(
+      () => state.dgcommon.data[0]
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    global.Date.now = jest.fn(() => 1);
+
+    // could just spy on this
+    (useTextFilter as jest.Mock).mockImplementation(() => true);
+
+    // (axios.get as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: [] })
+    // );
+    // (axios.post as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // (axios.delete as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
     mount.cleanUp();
+    (useDatasetCount as jest.Mock).mockRestore();
+    (parseSearchToQuery as jest.Mock).mockRestore();
+    (useIds as jest.Mock).mockRestore();
+    (useCart as jest.Mock).mockRestore();
+    (useAddToCart as jest.Mock).mockRestore();
+    (useRemoveFromCart as jest.Mock).mockRestore();
+    (formatBytes as jest.Mock).mockRestore();
+    (useDatasetsInfinite as jest.Mock).mockRestore();
+    (useTextFilter as jest.Mock).mockRestore();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DatasetTable store={mockStore(state)} />);
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchDatasetCount, fetchDatasets and fetchAllIds actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatasetTable investigationId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls useDatasetCount, useDatasetsInfinite and useIds on page load and when store values change', () => {
+    const wrapper = createMountedWrapper();
 
     // simulate clearTable action
-    testStore = mockStore({
+    const testStore = mockStore({
       ...state,
-      dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
+      dgdataview: {
+        ...state.dgdataview,
+        sort: {},
+        filters: {},
+      },
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatasetCountRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatasetsRequest(1));
+    expect(useDatasetCount).toHaveBeenCalledTimes(2);
+    expect(useDatasetsInfinite).toHaveBeenCalledTimes(2);
+    expect(useIds).toHaveBeenCalledTimes(2);
   });
 
   it('sends fetchDatasets action when loadMoreRows is called', () => {
@@ -248,16 +310,12 @@ describe('Dataset table component', () => {
 
   it('renders details panel correctly', () => {
     const wrapper = shallow(
-      <MemoryRouter>
-        <DatasetTable store={mockStore(state)} investigationId="1" />
-      </MemoryRouter>
+      <DatasetDetailsPanel
+        rowData={state.dgcommon.data[0]}
+        detailsPanelResize={jest.fn()}
+      />
     );
-    const detailsPanelWrapper = shallow(
-      wrapper.prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('renders Dataset title as a link', () => {

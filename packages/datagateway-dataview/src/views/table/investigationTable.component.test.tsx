@@ -1,14 +1,21 @@
 import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
+// import axios from 'axios';
 import {
   addToCartRequest,
   dGCommonInitialState,
-  fetchAllIdsRequest,
-  fetchInvestigationCountRequest,
   fetchInvestigationsRequest,
   filterTable,
   removeFromCartRequest,
   sortTable,
+  useInvestigationCount,
+  parseSearchToQuery,
+  useIds,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  useInvestigationsInfinite,
+  useTextFilter,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -17,17 +24,46 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState } from '../../state/reducers/dgdataview.reducer';
-import InvestigationTable from './investigationTable.component';
+import InvestigationTable, {
+  InvestigationDetailsPanel,
+} from './investigationTable.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common');
 
 describe('Investigation table component', () => {
   let shallow;
   let mount;
   let mockStore;
   let state: StateType;
+  let queryClient: QueryClient;
+
+  const createWrapper = (): ReactWrapper => {
+    return shallow(
+      <QueryClientProvider client={queryClient}>
+        <InvestigationTable />
+      </QueryClientProvider>
+    );
+  };
+
+  const createMountedWrapper = (testStore?): ReactWrapper => {
+    const store = testStore ?? mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
+          <QueryClientProvider client={queryClient}>
+            <InvestigationTable />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'InvestigationTable' });
     mount = createMount();
+    queryClient = new QueryClient();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -59,54 +95,76 @@ describe('Investigation table component', () => {
     ];
     state.dgcommon.allIds = [1];
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    (useInvestigationCount as jest.Mock).mockImplementation(() => 1);
+
+    // no need to mock?
+    (parseSearchToQuery as jest.Mock).mockImplementation(() => {
+      return {
+        view: 'table',
+        filters: {},
+        sort: {},
+      };
+    });
+    (useIds as jest.Mock).mockImplementation(() => [1]);
+    (useCart as jest.Mock).mockImplementation(() => []);
+    (useAddToCart as jest.Mock).mockImplementation(() => true);
+    (useRemoveFromCart as jest.Mock).mockImplementation(() => true);
+    (formatBytes as jest.Mock).mockImplementation(() => '1 B');
+    (useInvestigationsInfinite as jest.Mock).mockImplementation(
+      () => state.dgcommon.data[0]
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    global.Date.now = jest.fn(() => 1);
+    // could just spy on this
+    (useTextFilter as jest.Mock).mockImplementation(() => true);
+
+    // (axios.get as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: [] })
+    // );
+    // (axios.post as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // (axios.delete as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
     mount.cleanUp();
+    (useInvestigationCount as jest.Mock).mockRestore();
+    (parseSearchToQuery as jest.Mock).mockRestore();
+    (useIds as jest.Mock).mockRestore();
+    (useCart as jest.Mock).mockRestore();
+    (useAddToCart as jest.Mock).mockRestore();
+    (useRemoveFromCart as jest.Mock).mockRestore();
+    (formatBytes as jest.Mock).mockRestore();
+    (useInvestigationsInfinite as jest.Mock).mockRestore();
+    (useTextFilter as jest.Mock).mockRestore();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<InvestigationTable store={mockStore(state)} />);
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchInvestigationCount, fetchInvestigations and fetchAllIds actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <InvestigationTable />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls useInvestigationCount, useInvestigationsInfinite and useIds on page load and when store values change', () => {
+    const wrapper = createMountedWrapper();
 
     // simulate clearTable action
-    testStore = mockStore({
+    const testStore = mockStore({
       ...state,
       dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[0]).toEqual(
-      fetchInvestigationCountRequest(1)
-    );
-    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchInvestigationsRequest(1));
+    expect(useInvestigationCount).toHaveBeenCalledTimes(2);
+    expect(useInvestigationsInfinite).toHaveBeenCalledTimes(2);
+    expect(useIds).toHaveBeenCalledTimes(2);
   });
 
   it('sends fetchInvestigations action when loadMoreRows is called', () => {
-    const testStore = mockStore(state);
-    const wrapper = shallow(<InvestigationTable store={testStore} />);
+    // const testStore = mockStore(state);
+    // const wrapper = shallow(<InvestigationTable store={testStore} />);
+    const wrapper = createMountedWrapper();
 
     wrapper.prop('loadMoreRows')({ startIndex: 50, stopIndex: 74 });
 
@@ -260,16 +318,12 @@ describe('Investigation table component', () => {
 
   it('renders details panel correctly', () => {
     const wrapper = shallow(
-      <MemoryRouter>
-        <InvestigationTable store={mockStore(state)} />
-      </MemoryRouter>
+      <InvestigationDetailsPanel
+        rowData={state.dgcommon.data[0]}
+        detailsPanelResize={jest.fn()}
+      />
     );
-    const detailsPanelWrapper = shallow(
-      wrapper.prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 
   it('renders investigation title as a link', () => {
@@ -314,14 +368,6 @@ describe('Investigation table component', () => {
       },
     ];
 
-    expect(() =>
-      mount(
-        <Provider store={mockStore(state)}>
-          <MemoryRouter>
-            <InvestigationTable />
-          </MemoryRouter>
-        </Provider>
-      )
-    ).not.toThrowError();
+    expect(() => createMountedWrapper()).not.toThrowError();
   });
 });

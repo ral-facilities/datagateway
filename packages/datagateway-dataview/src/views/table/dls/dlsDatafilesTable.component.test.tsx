@@ -261,15 +261,16 @@ describe('DLS datafiles table component', () => {
     expect(detailsPanelWrapper).toMatchSnapshot();
   });
 
-  it('renders file size as bytes', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DLSDatafilesTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  // Not necessary as this should be a test of the formatBytes function
+  // it('renders file size as bytes', () => {
+  //   const wrapper = mount(
+  //     <Provider store={mockStore(state)}>
+  //       <MemoryRouter>
+  //         <DLSDatafilesTable datasetId="1" />
+  //       </MemoryRouter>
+  //     </Provider>
+  //   );
 
-    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
-  });
+  //   expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
+  // });
 });

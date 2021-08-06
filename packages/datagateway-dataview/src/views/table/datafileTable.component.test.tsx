@@ -1,16 +1,25 @@
 import { createMount, createShallow } from '@material-ui/core/test-utils';
-import axios from 'axios';
+// import axios from 'axios';
 import {
   addToCartRequest,
   Datafile,
   dGCommonInitialState,
   downloadDatafileRequest,
-  fetchAllIdsRequest,
-  fetchDatafileCountRequest,
+  // fetchAllIdsRequest,
+  // fetchDatafileCountRequest,
   fetchDatafilesRequest,
   filterTable,
   removeFromCartRequest,
   sortTable,
+  useDatafileCount,
+  parseSearchToQuery,
+  useIds,
+  useCart,
+  useAddToCart,
+  useRemoveFromCart,
+  useDatafilesInfinite,
+  useTextFilter,
+  formatBytes,
 } from 'datagateway-common';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -19,17 +28,44 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { StateType } from '../../state/app.types';
 import { initialState as dgDataViewInitialState } from '../../state/reducers/dgdataview.reducer';
-import DatafileTable from './datafileTable.component';
+import DatafileTable, { DatafileDetailsPanel } from './datafileTable.component';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactWrapper } from 'enzyme';
+
+jest.mock('datagateway-common');
 
 describe('Datafile table component', () => {
   let shallow;
   let mount;
   let mockStore;
   let state: StateType;
+  let queryClient: QueryClient;
+
+  const createWrapper = (): ReactWrapper => {
+    return shallow(
+      <QueryClientProvider client={queryClient}>
+        <DatafileTable datasetId="1" investigationId="2" />
+      </QueryClientProvider>
+    );
+  };
+
+  const createMountedWrapper = (testStore?): ReactWrapper => {
+    const store = testStore ?? mockStore(state);
+    return mount(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={['/']}>
+          <QueryClientProvider client={queryClient}>
+            <DatafileTable datasetId="1" investigationId="2" />
+          </QueryClientProvider>
+        </MemoryRouter>
+      </Provider>
+    );
+  };
 
   beforeEach(() => {
     shallow = createShallow({ untilSelector: 'DatafileTable' });
     mount = createMount();
+    queryClient = new QueryClient();
 
     mockStore = configureStore([thunk]);
     state = JSON.parse(
@@ -50,49 +86,77 @@ describe('Datafile table component', () => {
     ];
     state.dgcommon.allIds = [1];
 
-    (axios.get as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: [] })
+    (useDatafileCount as jest.Mock).mockImplementation(() => 1);
+
+    // no need to mock?
+    (parseSearchToQuery as jest.Mock).mockImplementation(() => {
+      return {
+        view: 'table',
+        filters: {},
+        sort: {},
+      };
+    });
+    (useIds as jest.Mock).mockImplementation(() => [1]);
+    (useCart as jest.Mock).mockImplementation(() => []);
+    (useAddToCart as jest.Mock).mockImplementation(() => true);
+    (useRemoveFromCart as jest.Mock).mockImplementation(() => true);
+    (formatBytes as jest.Mock).mockImplementation(() => '1 B');
+    (useDatafilesInfinite as jest.Mock).mockImplementation(
+      () => state.dgcommon.data[0]
     );
-    (axios.post as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    (axios.delete as jest.Mock).mockImplementation(() =>
-      Promise.resolve({ data: {} })
-    );
-    global.Date.now = jest.fn(() => 1);
+    // could just spy on this
+    (useTextFilter as jest.Mock).mockImplementation(() => true);
+
+    // (axios.get as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: [] })
+    // );
+    // (axios.post as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // (axios.delete as jest.Mock).mockImplementation(() =>
+    //   Promise.resolve({ data: {} })
+    // );
+    // global.Date.now = jest.fn(() => 1);
   });
 
   afterEach(() => {
     mount.cleanUp();
+    (useDatafileCount as jest.Mock).mockRestore();
+    (parseSearchToQuery as jest.Mock).mockRestore();
+    (useIds as jest.Mock).mockRestore();
+    (useCart as jest.Mock).mockRestore();
+    (useAddToCart as jest.Mock).mockRestore();
+    (useRemoveFromCart as jest.Mock).mockRestore();
+    (formatBytes as jest.Mock).mockRestore();
+    (useDatafilesInfinite as jest.Mock).mockRestore();
+    (useTextFilter as jest.Mock).mockRestore();
   });
 
   it('renders correctly', () => {
-    const wrapper = shallow(<DatafileTable store={mockStore(state)} />);
+    const wrapper = createWrapper();
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('sends fetchDatafileCount, fetchDatafiles and fetchAllIdsRequest actions when watched store values change', () => {
-    let testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  it('calls useDatafileCount, useDatafilesInfinite and useIds on page load and when store values change', () => {
+    const wrapper = createMountedWrapper();
 
     // simulate clearTable action
-    testStore = mockStore({
+    const testStore = mockStore({
       ...state,
-      dgdataview: { ...state.dgdataview, sort: {}, filters: {} },
+      dgdataview: {
+        ...state.dgdataview,
+        sort: {},
+        filters: {},
+      },
     });
     wrapper.setProps({ store: testStore });
 
-    expect(testStore.getActions()[0]).toEqual(fetchDatafileCountRequest(1));
-    expect(testStore.getActions()[1]).toEqual(fetchAllIdsRequest(1));
-    expect(testStore.getActions()[2]).toEqual(fetchDatafilesRequest(1));
+    expect(useDatafileCount).toHaveBeenCalledTimes(2);
+    expect(useDatafilesInfinite).toHaveBeenCalledTimes(2);
+    expect(useIds).toHaveBeenCalledTimes(2);
   });
 
+  // needs to be adapted
   it('sends fetchDatafiles action when loadMoreRows is called', () => {
     const testStore = mockStore(state);
     const wrapper = shallow(<DatafileTable store={testStore} />);
@@ -102,30 +166,35 @@ describe('Datafile table component', () => {
     expect(testStore.getActions()[0]).toEqual(fetchDatafilesRequest(1));
   });
 
+  // Lots of these base functionality are tested in table.component so may not be needed
   it('sends filterTable action on text filter', () => {
-    const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    // const testStore = mockStore(state);
+    // const wrapper = mount(
+    //   <Provider store={testStore}>
+    //     <MemoryRouter>
+    //       <DatafileTable datasetId="1" />
+    //     </MemoryRouter>
+    //   </Provider>
+    // );
 
+    const wrapper = createMountedWrapper();
+    wrapper.update();
     const filterInput = wrapper
       .find('[aria-label="Filter by datafiles.name"] input')
       .first();
     filterInput.instance().value = 'test';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[3]).toEqual(
-      filterTable('name', { value: 'test', type: 'include' })
-    );
+    // expect(testStore.getActions()[3]).toEqual(
+    //   filterTable('name', { value: 'test', type: 'include' })
+    // );
 
     filterInput.instance().value = '';
     filterInput.simulate('change');
 
-    expect(testStore.getActions()[5]).toEqual(filterTable('name', null));
+    expect(useTextFilter).toBeCalledTimes(3);
+
+    // expect(testStore.getActions()[5]).toEqual(filterTable('name', null));
   });
 
   it('sends filterTable action on date filter', () => {
@@ -262,19 +331,14 @@ describe('Datafile table component', () => {
     expect(testStore.getActions()[3]).toEqual(downloadDatafileRequest(1));
   });
 
+  // passes but only because mount is still not returning all DOM elements
   it("doesn't display download button for datafiles with no location", () => {
     const datafile = state.dgcommon.data[0] as Datafile;
     const { location, ...datafileWithoutLocation } = datafile;
     state.dgcommon.data = [datafileWithoutLocation];
 
     const testStore = mockStore(state);
-    const wrapper = mount(
-      <Provider store={testStore}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+    const wrapper = createMountedWrapper(testStore);
 
     expect(
       wrapper.find('button[aria-label="datafiles.download"]')
@@ -283,27 +347,24 @@ describe('Datafile table component', () => {
 
   it('renders details panel correctly', () => {
     const wrapper = shallow(
-      <MemoryRouter>
-        <DatafileTable store={mockStore(state)} datasetId="1" />
-      </MemoryRouter>
+      <DatafileDetailsPanel
+        rowData={state.dgcommon.data[0]}
+        detailsPanelResize={jest.fn()}
+      />
     );
-    const detailsPanelWrapper = shallow(
-      wrapper.prop('detailsPanel')({
-        rowData: state.dgcommon.data[0],
-      })
-    );
-    expect(detailsPanelWrapper).toMatchSnapshot();
+    expect(wrapper).toMatchSnapshot();
   });
 
-  it('renders file size as bytes', () => {
-    const wrapper = mount(
-      <Provider store={mockStore(state)}>
-        <MemoryRouter>
-          <DatafileTable datasetId="1" />
-        </MemoryRouter>
-      </Provider>
-    );
+  // Not necessary as this should be a test of the formatBytes function
+  // it('renders file size as bytes', () => {
+  //   const wrapper = mount(
+  //     <Provider store={mockStore(state)}>
+  //       <MemoryRouter>
+  //         <DatafileTable datasetId="1" />
+  //       </MemoryRouter>
+  //     </Provider>
+  //   );
 
-    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
-  });
+  //   expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('1 B');
+  // });
 });

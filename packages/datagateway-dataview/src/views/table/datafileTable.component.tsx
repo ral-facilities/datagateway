@@ -49,6 +49,45 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export const DatafileDetailsPanel = (
+  props: DetailsPanelProps
+): React.ReactElement => {
+  const classes = useStyles();
+  const [t] = useTranslation();
+  const datafileData = props.rowData as Datafile;
+  return (
+    <Grid
+      id="details-panel"
+      container
+      className={classes.root}
+      direction="column"
+    >
+      <Grid item xs>
+        <Typography variant="h6">
+          <b>{datafileData.name}</b>
+        </Typography>
+        <Divider className={classes.divider} />
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">
+          {t('datafiles.details.size')}
+        </Typography>
+        <Typography>
+          <b>{formatBytes(datafileData.fileSize)}</b>
+        </Typography>
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">
+          {t('datafiles.details.location')}
+        </Typography>
+        <Typography>
+          <b>{datafileData.location}</b>
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
 interface DatafileTableProps {
   datasetId: string;
   investigationId: string;
@@ -177,45 +216,6 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
     [cartItems, allIds]
   );
 
-  const DatafileDetailsPanel = (
-    props: DetailsPanelProps
-  ): React.ReactElement => {
-    const classes = useStyles();
-    const [t] = useTranslation();
-    const datafileData = props.rowData as Datafile;
-    return (
-      <Grid
-        id="details-panel"
-        container
-        className={classes.root}
-        direction="column"
-      >
-        <Grid item xs>
-          <Typography variant="h6">
-            <b>{datafileData.name}</b>
-          </Typography>
-          <Divider className={classes.divider} />
-        </Grid>
-        <Grid item xs>
-          <Typography variant="overline">
-            {t('datafiles.details.size')}
-          </Typography>
-          <Typography>
-            <b>{formatBytes(datafileData.fileSize)}</b>
-          </Typography>
-        </Grid>
-        <Grid item xs>
-          <Typography variant="overline">
-            {t('datafiles.details.location')}
-          </Typography>
-          <Typography>
-            <b>{datafileData.location}</b>
-          </Typography>
-        </Grid>
-      </Grid>
-    );
-  };
-
   return (
     <Table
       loading={addToCartLoading || removeFromCartLoading}
@@ -231,6 +231,7 @@ const DatafileTable = (props: DatafileTableProps): React.ReactElement => {
       disableSelectAll={!selectAllSetting}
       detailsPanel={DatafileDetailsPanel}
       actions={[
+        //extract this later
         function downloadButton({ rowData }: TableActionProps) {
           const { id, location } = rowData as Datafile;
           if (location) {

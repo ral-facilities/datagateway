@@ -45,6 +45,37 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+export const DatasetDetailsPanel = (
+  props: DetailsPanelProps
+): React.ReactElement => {
+  const classes = useStyles();
+  const [t] = useTranslation();
+  const datasetData = props.rowData as Dataset;
+  return (
+    <Grid
+      id="details-panel"
+      container
+      className={classes.root}
+      direction="column"
+    >
+      <Grid item xs>
+        <Typography variant="h6">
+          <b>{datasetData.name}</b>
+        </Typography>
+        <Divider className={classes.divider} />
+      </Grid>
+      <Grid item xs>
+        <Typography variant="overline">
+          {t('datasets.details.description')}
+        </Typography>
+        <Typography>
+          <b>{datasetData.name}</b>
+        </Typography>
+      </Grid>
+    </Grid>
+  );
+};
+
 interface DatasetTableProps {
   investigationId: string;
 }
@@ -185,37 +216,6 @@ const DatasetTable = (props: DatasetTableProps): React.ReactElement => {
         .map((cartItem) => cartItem.entityId),
     [cartItems, allIds]
   );
-
-  const DatasetDetailsPanel = (
-    props: DetailsPanelProps
-  ): React.ReactElement => {
-    const classes = useStyles();
-    const [t] = useTranslation();
-    const datasetData = props.rowData as Dataset;
-    return (
-      <Grid
-        id="details-panel"
-        container
-        className={classes.root}
-        direction="column"
-      >
-        <Grid item xs>
-          <Typography variant="h6">
-            <b>{datasetData.name}</b>
-          </Typography>
-          <Divider className={classes.divider} />
-        </Grid>
-        <Grid item xs>
-          <Typography variant="overline">
-            {t('datasets.details.description')}
-          </Typography>
-          <Typography>
-            <b>{datasetData.name}</b>
-          </Typography>
-        </Grid>
-      </Grid>
-    );
-  };
 
   return (
     <Table

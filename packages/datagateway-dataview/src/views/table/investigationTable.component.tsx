@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const InvestigationDetailsPanel = (
+export const InvestigationDetailsPanel = (
   props: DetailsPanelProps
 ): React.ReactElement => {
   const classes = useStyles();
