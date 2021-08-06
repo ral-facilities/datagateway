@@ -45,7 +45,7 @@
       "link": "/admin-download",
       "displayName": "Admin Download",
       "admin": true,
-      "order": 0
+      "order": 1
     }
   ],
   "pluginHost": "http://localhost:3000"
