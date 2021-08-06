@@ -2,7 +2,7 @@ import axios from 'axios';
 import { batch } from 'react-redux';
 import { IndexRange } from 'react-virtualized';
 import { Action } from 'redux';
-import { getApiFilter, nestedValue } from '.';
+import { getApiFilter } from '.';
 import { Entity, Investigation } from '../../app.types';
 import handleICATError from '../../handleICATError';
 import { readSciGatewayToken } from '../../parseTokens';
@@ -32,6 +32,7 @@ import {
   RequestPayload,
 } from './actions.types';
 import { fetchInvestigationDatasetsCount } from './datasets';
+import { nestedValue } from '../api';
 
 export const fetchInvestigationsSuccess = (
   investigations: Investigation[],
