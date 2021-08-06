@@ -23,6 +23,7 @@ export interface Investigation {
   studyInvestigations?: StudyInvestigation[];
   facility?: Facility;
   datasets?: Dataset[];
+  type?: InvestigationType;
 }
 
 export interface Dataset {
@@ -104,6 +105,12 @@ export interface FacilityCycle {
 }
 
 export interface DatasetType {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+export interface InvestigationType {
   id: number;
   name: string;
   description?: string;

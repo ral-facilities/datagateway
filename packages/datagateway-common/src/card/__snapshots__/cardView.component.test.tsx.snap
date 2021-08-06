@@ -112,10 +112,83 @@ exports[`Card View renders correctly 1`] = `
           key="0"
         >
           <EntityCard
+            entity={
+              Object {
+                "facility": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "id": 1,
+                "name": "Test 1",
+                "title": "Test 1",
+                "type": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "visitId": "1",
+              }
+            }
             title={
               Object {
-                "content": undefined,
-                "label": "Test 1",
+                "dataKey": "title",
+              }
+            }
+          />
+        </WithStyles(ForwardRef(ListItem))>
+        <WithStyles(ForwardRef(ListItem))
+          alignItems="flex-start"
+          className="makeStyles-root-1"
+          key="1"
+        >
+          <EntityCard
+            entity={
+              Object {
+                "facility": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "id": 2,
+                "name": "Test 2",
+                "title": "Test 2",
+                "type": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "visitId": "2",
+              }
+            }
+            title={
+              Object {
+                "dataKey": "title",
+              }
+            }
+          />
+        </WithStyles(ForwardRef(ListItem))>
+        <WithStyles(ForwardRef(ListItem))
+          alignItems="flex-start"
+          className="makeStyles-root-1"
+          key="2"
+        >
+          <EntityCard
+            entity={
+              Object {
+                "facility": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "id": 3,
+                "name": "Test 3",
+                "title": "Test 3",
+                "type": Object {
+                  "id": 1,
+                  "name": "1",
+                },
+                "visitId": "3",
+              }
+            }
+            title={
+              Object {
+                "dataKey": "title",
               }
             }
           />
