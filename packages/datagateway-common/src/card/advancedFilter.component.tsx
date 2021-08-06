@@ -189,6 +189,8 @@ const AdvancedFilter = (props: AdvancedFilterProps): React.ReactElement => {
       {/* Advanced filters link */}
       <div className={classes.link}>
         <Link
+          component="button"
+          variant="body1"
           aria-label="advanced-filters-link"
           onClick={() => setAdvSearchCollapsed((prev) => !prev)}
         >
