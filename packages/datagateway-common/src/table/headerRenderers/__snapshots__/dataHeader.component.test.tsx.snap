@@ -26,9 +26,7 @@ exports[`Data column header component renders correctly with filter but no sort 
       <Styled(MuiBox)
         marginRight={1}
       >
-        <div>
-          Test
-        </div>
+        <Icon />
       </Styled(MuiBox)>
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(Typography))
@@ -45,7 +43,6 @@ exports[`Data column header component renders correctly with filter but no sort 
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
-      label="test"
       onChange={[MockFunction]}
     />
   </div>
@@ -114,9 +111,7 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       <Styled(MuiBox)
         marginRight={1}
       >
-        <div>
-          Test
-        </div>
+        <Icon />
       </Styled(MuiBox)>
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(TableSortLabel))
@@ -138,7 +133,6 @@ exports[`Data column header component renders correctly with sort and filter 1`]
       </Styled(MuiBox)>
     </Styled(MuiBox)>
     <TextColumnFilter
-      label="test"
       onChange={[MockFunction]}
     />
   </div>
@@ -207,9 +201,7 @@ exports[`Data column header component renders correctly with sort but no filter 
       <Styled(MuiBox)
         marginRight={1}
       >
-        <div>
-          Test
-        </div>
+        <Icon />
       </Styled(MuiBox)>
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(TableSortLabel))
@@ -296,9 +288,7 @@ exports[`Data column header component renders correctly without sort or filter 1
       <Styled(MuiBox)
         marginRight={1}
       >
-        <div>
-          Test
-        </div>
+        <Icon />
       </Styled(MuiBox)>
       <Styled(MuiBox)>
         <WithStyles(ForwardRef(Typography))
