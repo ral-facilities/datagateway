@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  CardViewQuery,
+  CardView,
   Dataset,
   tableLink,
   formatBytes,
@@ -193,7 +193,7 @@ const ISISDatasetsCardView = (
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

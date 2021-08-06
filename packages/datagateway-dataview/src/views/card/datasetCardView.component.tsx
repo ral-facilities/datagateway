@@ -1,7 +1,7 @@
 import React from 'react';
 import { ConfirmationNumber, CalendarToday } from '@material-ui/icons';
 import {
-  CardViewQuery,
+  CardView,
   Dataset,
   datasetLink,
   parseSearchToQuery,
@@ -126,7 +126,7 @@ const DatasetCardView = (props: DatasetCardViewProps): React.ReactElement => {
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

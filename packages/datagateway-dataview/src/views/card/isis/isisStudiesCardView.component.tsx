@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  CardViewQuery,
+  CardView,
   parseSearchToQuery,
   Study,
   tableLink,
@@ -125,7 +125,7 @@ const ISISStudiesCardView = (props: ISISStudiesCVProps): React.ReactElement => {
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

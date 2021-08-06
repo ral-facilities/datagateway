@@ -1,7 +1,7 @@
 import { Link } from '@material-ui/core';
 import { Title, Link as LinkIcon } from '@material-ui/icons';
 import {
-  CardViewQuery,
+  CardView,
   Instrument,
   parseSearchToQuery,
   tableLink,
@@ -93,7 +93,7 @@ const ISISInstrumentsCardView = (
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

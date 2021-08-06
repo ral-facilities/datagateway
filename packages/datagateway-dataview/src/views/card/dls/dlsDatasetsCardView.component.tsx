@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  CardViewQuery,
+  CardView,
   Dataset,
   tableLink,
   parseSearchToQuery,
@@ -179,7 +179,7 @@ const DLSDatasetsCardView = (props: DLSDatasetsCVProps): React.ReactElement => {
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

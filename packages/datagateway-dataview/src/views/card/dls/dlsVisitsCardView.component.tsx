@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  CardViewQuery,
+  CardView,
   Investigation,
   tableLink,
   parseSearchToQuery,
@@ -167,7 +167,7 @@ const DLSVisitsCardView = (props: DLSVisitsCVProps): React.ReactElement => {
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

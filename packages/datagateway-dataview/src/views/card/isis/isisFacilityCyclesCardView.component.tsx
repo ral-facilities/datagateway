@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  CardViewQuery,
+  CardView,
   FacilityCycle,
   parseSearchToQuery,
   tableLink,
@@ -91,7 +91,7 @@ const ISISFacilityCyclesCardView = (
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}

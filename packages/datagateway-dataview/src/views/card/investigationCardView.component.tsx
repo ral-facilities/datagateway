@@ -5,7 +5,7 @@ import {
   Public,
 } from '@material-ui/icons';
 import {
-  CardViewQuery,
+  CardView,
   Investigation,
   investigationLink,
   parseSearchToQuery,
@@ -156,7 +156,7 @@ const InvestigationCardView = (): React.ReactElement => {
   );
 
   return (
-    <CardViewQuery
+    <CardView
       data={data ?? []}
       totalDataCount={totalDataCount ?? 0}
       onPageChange={pushPage}
