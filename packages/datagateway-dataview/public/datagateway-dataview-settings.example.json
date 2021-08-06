@@ -41,28 +41,34 @@
         "Displays the current number of items in the download cart, and navigates to Datagateway Download"
     },
     {
-      "target": ".tour-dataview-toggle-card",
-      "content": "Toggle between list and card view"
+      "target": ".tour-dataview-view-button",
+      "content": "Switch between table and card views"
     }
   ],
   "routes": [
     {
+      "section": "Homepage",
+      "link": "/datagateway",
+      "displayName": "DataGateway",
+      "order": 0
+    },
+    {
       "section": "Data",
       "link": "/browse/investigation",
       "displayName": "DataView",
-      "order": 0
+      "order": 1
     },
     {
       "section": "Data",
       "link": "/browse/proposal",
       "displayName": "DLS View",
-      "order": 1
+      "order": 2
     },
     {
       "section": "Data",
       "link": "/browse/instrument",
       "displayName": "ISIS View",
-      "order": 2
+      "order": 3
     }
   ],
   "pluginHost": "http://localhost:3000"

@@ -352,7 +352,7 @@ describe('ISIS Investigations table component', () => {
     );
   });
 
-  it('renders title, visit ID, name and DOI as links', () => {
+  it('renders title, name and DOI as links', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
@@ -376,13 +376,9 @@ describe('ISIS Investigations table component', () => {
     expect(
       wrapper.find('[aria-colindex=5]').find('p').children()
     ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
-    ).toMatchSnapshot();
   });
 
-  it('renders title, visit ID, name and DOI as links in StudyHierarchy', () => {
+  it('renders title, name and DOI as links in StudyHierarchy', () => {
     const wrapper = mount(
       <Provider store={mockStore(state)}>
         <MemoryRouter>
@@ -405,10 +401,6 @@ describe('ISIS Investigations table component', () => {
 
     expect(
       wrapper.find('[aria-colindex=5]').find('p').children()
-    ).toMatchSnapshot();
-
-    expect(
-      wrapper.find('[aria-colindex=6]').find('p').children()
     ).toMatchSnapshot();
   });
 
@@ -458,8 +450,8 @@ describe('ISIS Investigations table component', () => {
       </Provider>
     );
 
-    expect(wrapper.find('[aria-colindex=6]').find('p').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=5]').find('p').text()).toEqual('');
 
-    expect(wrapper.find('[aria-colindex=8]').find('p').text()).toEqual('');
+    expect(wrapper.find('[aria-colindex=7]').find('p').text()).toEqual('');
   });
 });

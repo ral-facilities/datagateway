@@ -12,10 +12,10 @@ exports[`ISIS Studies table component renders correctly 1`] = `
         "label": "studies.name",
       },
       Object {
-        "dataKey": "study.description",
+        "dataKey": "investigation.title",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.description",
+        "label": "investigations.title",
       },
       Object {
         "dataKey": "study.pid",
@@ -24,16 +24,16 @@ exports[`ISIS Studies table component renders correctly 1`] = `
         "label": "studies.pid",
       },
       Object {
-        "dataKey": "study.startDate",
+        "dataKey": "investigation.startDate",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.start_date",
+        "label": "investigations.start_date",
       },
       Object {
-        "dataKey": "study.endDate",
+        "dataKey": "investigation.endDate",
         "filterComponent": [Function],
         "icon": <Memo />,
-        "label": "studies.end_date",
+        "label": "investigations.end_date",
       },
     ]
   }

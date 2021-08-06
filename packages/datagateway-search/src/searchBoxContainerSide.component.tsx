@@ -11,7 +11,7 @@ interface SearchBoxContainerProps {
   initiateSearch: () => Promise<void>;
 }
 
-const SearchBoxContainer = (
+const SearchBoxContainerSide = (
   props: SearchBoxContainerProps
 ): React.ReactElement => {
   const { initiateSearch } = props;
@@ -49,4 +49,4 @@ const SearchBoxContainer = (
   );
 };
 
-export default SearchBoxContainer;
+export default SearchBoxContainerSide;
