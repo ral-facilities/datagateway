@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import hexToRbga from 'hex-to-rgba';
 import { nestedValue } from '../api';
 import { Entity } from '../app.types';
-import { CardViewDetails } from './cardViewQuery.component';
+import { CardViewDetails } from './cardView.component';
 
 const useCardStyles = makeStyles((theme: Theme) => {
   // TODO: Remove use of "vw" here

@@ -21,17 +21,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Pagination } from '@material-ui/lab';
 import ArrowTooltip from '../arrowtooltip.component';
-import {
-  Entity,
-  Filter,
-  Order,
-  SortType,
-  FiltersType,
-  QueryParams,
-} from '../app.types';
+import { Entity, Filter, Order, SortType, FiltersType } from '../app.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { IndexRange } from 'react-virtualized';
 import AdvancedFilter from './advancedFilter.component';
 import EntityCard, { EntityImageDetails } from './entityCard.component';
 
@@ -86,21 +78,17 @@ type CVPaginationPosition = 'top' | 'bottom' | 'both';
 export interface CardViewProps {
   data: Entity[];
   totalDataCount: number;
-  query: QueryParams;
-  sort?: SortType;
-  filters?: FiltersType;
-  page?: number | null;
-  results?: number | null;
+  sort: SortType;
+  filters: FiltersType;
+  page: number | null;
+  results: number | null;
   loadedData: boolean;
   loadedCount: boolean;
 
-  loadData: (offsetParams: IndexRange) => Promise<void> | undefined;
-  loadCount: () => Promise<void> | undefined;
-  onPageChange: (page: number) => Promise<void>;
-  onFilter: (filter: string, data: Filter | null) => Promise<void>;
-  onResultsChange?: (page: number) => Promise<void>;
-  onSort?: (sort: string, order: Order | null) => Promise<void>;
-  pushQuery: (query: QueryParams) => Promise<void>;
+  onPageChange: (page: number) => void;
+  onFilter: (filter: string, data: Filter | null) => void;
+  onResultsChange: (page: number) => void;
+  onSort: (sort: string, order: Order | null) => void;
 
   // Props to get title, description of the card
   // represented by data.
@@ -175,14 +163,11 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   const {
     data,
     totalDataCount,
-    query,
     customFilters,
     resultsOptions,
     paginationPosition,
     loadedData,
     loadedCount,
-    loadData,
-    loadCount,
     onPageChange,
     onFilter,
     onSort,
@@ -197,6 +182,8 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     moreInformation,
     image,
     buttons,
+    filters,
+    sort,
   } = props;
 
   // Results options (by default it is 10, 20 and 30).
@@ -207,19 +194,15 @@ const CardView = (props: CardViewProps): React.ReactElement => {
   );
 
   // Extract relevant entries from query
-  const filters = props.filters ? props.filters : query.filters;
-  const sort = props.sort ? props.sort : query.sort;
   const page = React.useMemo(() => {
-    const queryParamPage = props.page ? props.page : query.page;
-    return queryParamPage && queryParamPage > 0 ? queryParamPage : 1;
-  }, [props.page, query]);
+    return props.page && props.page > 0 ? props.page : 1;
+  }, [props.page]);
 
   const results = React.useMemo(() => {
-    const queryParamResults = props.results ? props.results : query.results;
-    return queryParamResults && resOptions.includes(queryParamResults)
-      ? queryParamResults
+    return props.results && resOptions.includes(props.results)
+      ? props.results
       : resOptions[0];
-  }, [query, resOptions, props.results]);
+  }, [resOptions, props.results]);
 
   // Pagination.
   const [maxPage, setMaxPage] = React.useState(0);
@@ -393,34 +376,23 @@ const CardView = (props: CardViewProps): React.ReactElement => {
     }
   };
 
-  // Data count only changes when filters change
-  React.useEffect(() => {
-    loadCount();
-  }, [loadCount, filters]);
-
-  // Handle (max) page and loading data
+  // Handle (max) page
   React.useEffect(() => {
     if (loadedCount) {
       const newMaxPage = ~~(1 + (totalDataCount - 1) / results);
       if (newMaxPage !== maxPage) {
-        // Update maxPage (if needed) due to changed fitlers or results
+        // Update maxPage (if needed) due to changed filters or results
         setMaxPage(newMaxPage);
       } else if (maxPage > 0 && page > newMaxPage) {
         // Change page (if needed) before loading data
         onPageChange(1);
-      } else if (results > 0 && totalDataCount > 0 && page > 0) {
-        const startIndex = (page - 1) * results;
-        const stopIndex = startIndex + results - 1;
-        loadData({ startIndex, stopIndex });
       }
     }
   }, [
-    loadData,
     onPageChange,
     maxPage,
     page,
     results,
-    sort,
     filters,
     totalDataCount,
     loadedCount,
@@ -489,9 +461,7 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                         1 +
                         (totalDataCount - 1) / newResults
                       );
-                      if (onResultsChange) {
-                        onResultsChange(newResults);
-                      }
+                      onResultsChange(newResults);
                       if (page > newMaxPage) {
                         onPageChange(1);
                       }
@@ -546,14 +516,9 @@ const CardView = (props: CardViewProps): React.ReactElement => {
                               key={i}
                               button
                               onClick={() => {
-                                if (onSort) {
-                                  onSort(
-                                    s.dataKey,
-                                    nextSortDirection(s.dataKey)
-                                  );
-                                  if (page !== 1) {
-                                    onPageChange(1);
-                                  }
+                                onSort(s.dataKey, nextSortDirection(s.dataKey));
+                                if (page !== 1) {
+                                  onPageChange(1);
                                 }
                               }}
                             >
